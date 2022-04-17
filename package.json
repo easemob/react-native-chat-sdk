@@ -1,5 +1,5 @@
 {
-  "name": "react-native-chat-sdk",
+  "name": "@asteriskzuo/react-native-chat-sdk",
   "version": "1.0.0",
   "description": "react native chat sdk",
   "main": "lib/commonjs/index",
