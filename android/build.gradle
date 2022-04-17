@@ -7,7 +7,7 @@ buildscript {
         }
 
         dependencies {
-            classpath 'com.android.tools.build:gradle:3.5.3'
+            classpath 'com.android.tools.build:gradle:4.2.2'
         }
     }
 }
@@ -19,13 +19,17 @@ def safeExtGet(prop, fallback) {
 }
 
 android {
-    compileSdkVersion safeExtGet('ChatSdk_compileSdkVersion', 29)
+    compileSdkVersion safeExtGet('ChatSdk_compileSdkVersion', 30)
     defaultConfig {
-        minSdkVersion safeExtGet('ChatSdk_minSdkVersion', 16)
-        targetSdkVersion safeExtGet('ChatSdk_targetSdkVersion', 29)
+        minSdkVersion safeExtGet('ChatSdk_minSdkVersion', 21)
+        targetSdkVersion safeExtGet('ChatSdk_targetSdkVersion', 30)
         versionCode 1
         versionName "1.0"
-
+        externalNativeBuild {
+            cmake {
+                cppFlags ''
+            }
+        }
     }
 
     buildTypes {
@@ -39,6 +43,19 @@ android {
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
+    }
+    externalNativeBuild {
+        cmake {
+            path file('src/main/cpp/CMakeLists.txt')
+            version '3.10.2'
+        }
+    }
+
+    sourceSets {
+        main.java {
+            srcDir '../native_src/java'
+            exclude 'com/easemob/ext_sdk/flutter/*.java'
+        }
     }
 }
 
@@ -56,4 +73,5 @@ repositories {
 dependencies {
     //noinspection GradleDynamicVersion
     implementation "com.facebook.react:react-native:+"  // From node_modules
+    implementation 'io.hyphenate:hyphenate-chat:3.9.0'
 }

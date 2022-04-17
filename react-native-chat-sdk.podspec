@@ -11,9 +11,40 @@ Pod::Spec.new do |s|
   s.authors      = package["author"]
 
   s.platforms    = { :ios => "10.0" }
-  s.source       = { :git => "https://github.com/AsteriskZuo/react-native-chat-sdk.git", :tag => "#{s.version}" }
+  s.source       = { :git => "https://github.com/easemob/react-native-chat-sdk.git", :tag => "#{s.version}" }
 
-  s.source_files = "ios/**/*.{h,m,mm}"
+  s.source_files = ['ios/**/*.{h,m,mm}', 'native_src/cpp/**/*.{h,cpp,mm}', 'native_src/objc/**/*']
+  s.private_header_files = ['native_src/cpp/**/*.h']
+  s.exclude_files = ['native_src/cpp/java/**/*', 'native_src/cpp/android/**/*', 'native_src/objc/flutter/**/*']
 
   s.dependency "React-Core"
+  s.dependency 'HyphenateChat','3.9.0'
+
+  s.pod_target_xcconfig = {
+    'DEFINES_MODULE' => 'YES',
+    "CLANG_CXX_LANGUAGE_STANDARD" => "c++11",
+    # 'VALID_ARCHS[sdk=iphonesimulator*]' => 'x86_64',
+    # "ENABLE_BITCODE": "NO",
+    'OTHER_LDFLAGS' => [
+      '-Wunused-function',
+      '-Wunreachable-code',
+      '-Wunused-variable'
+    ],
+    'HEADER_SEARCH_PATHS' => [
+      "$(PODS_TARGET_SRCROOT)/native_src/cpp/common",
+      "$(PODS_TARGET_SRCROOT)/native_src/cpp/core",
+      "$(PODS_TARGET_SRCROOT)/native_src/cpp/objc",
+      "$(PODS_TARGET_SRCROOT)/native_src/objc/common",
+      "$(PODS_TARGET_SRCROOT)/native_src/objc/dispatch",
+      "$(PODS_TARGET_SRCROOT)/native_src/objc/rn"
+    ]
+  }
+  s.xcconfig = {
+    "OTHER_LDFLAGS": "-ObjC",
+    'GCC_PREPROCESSOR_DEFINITIONS' => [
+      "OBJC_LANGUAGE",
+      "REACT_NATIVE_ARCHITECTURE",
+      "IOS_PLATFORM"
+    ]
+  }
 end
