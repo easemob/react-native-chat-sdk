@@ -417,7 +417,8 @@ export class ChatManager extends Native {
     callback?: ChatMessageStatusCallback
   ): Promise<void> {
     console.log(
-      `${ChatManager.TAG}: sendMessage: ${message.msgId}, ${message.localTime}`
+      `${ChatManager.TAG}: sendMessage: ${message.msgId}, ${message.localTime}`,
+      message
     );
     message.status = ChatMessageStatus.PROGRESS;
     ChatManager.handleSendMessageCallback(this, message, callback);

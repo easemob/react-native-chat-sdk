@@ -170,13 +170,23 @@ ChatClient.getInstance()
 
 1. 添加依赖导入
 ```typescript
+import {
+  SafeAreaView,
+  ScrollView,
+  StatusBar,
+  StyleSheet,
+  Text,
+  useColorScheme,
+  View,
+  Button,
+} from 'react-native';
 import {ChatClient, ChatOptions} from 'react-native-chat-sdk';
 ```
 
 2. 可以点击登录的按钮
 ```typescript
 <Button
-  title="test"
+  title="login"
   onPress={() => {
     let o = new ChatOptions({
       autoLogin: false,
@@ -216,10 +226,23 @@ import {ChatClient, ChatOptions} from 'react-native-chat-sdk';
       });
   }}
 />
+<Button
+  title="logout"
+  onPress={() => {
+    ChatClient.getInstance()
+      .logout()
+      .then(() => {
+        console.log('ClientScreen.logout: success');
+      })
+      .catch((reason: any) => {
+        console.log('ClientScreen.logout: fail');
+      });
+  }}
+/>
 ```
 
 3. 编译构建和运行
-  * android设备: 6.0或以上的真机
+  * android设备: **6.0**或以上的**真机**
     1. 设置真机为开发者的可调式模式
     2. 连接android真机设备到Mac系统
     3. 启动`android studio app`，打开`android`文件夹的`rn_demo`项目，等待sync完成
@@ -227,7 +250,7 @@ import {ChatClient, ChatOptions} from 'react-native-chat-sdk';
     5. 在`terminal`命令行执行`adb reverse tcp:8081 tcp:8081`，开启数据转发
     6. 手动启动服务(android项目构建一般会不自动启动服务) 所以执行命令 `yarn start`
     7. 使用android studio app 构建并运行`rn_demo`。
-  * ios设备: 11.0版本或以上的真机
+  * ios设备: **11.0**版本或以上的**真机**
     1. iphone真机设置为开发者模式，
     2. 连接ios真机设备到Mac系统，选择信任该Mac系统
     3. 第一次或者更新项目之后，需要执行`cd ios && pod install --repo-update`
@@ -236,15 +259,15 @@ import {ChatClient, ChatOptions} from 'react-native-chat-sdk';
     6. 由于是真机，需要设置app签名
     7. 在`general`中设置`iphone`开发目标平台`12.0`
     8. 在`xcode app`中，构建并运行`rn_demo`项目。
-  * 使用vscode app进行构建和运行，上面的需求条件也必须满足，不然也无法正常构建和运行。
+  * 使用vscode app进行构建和运行，上面的需求条件也**必须满足**，不然也无法正常构建和运行。
     1. 在命令行执行`yarn start`启动服务
     2. 构建并运行android: 设置数据转发，然后在`terminal`执行`yarn android`命令。(android自动选择已连接的真机)
     3. 构建并运行ios: 在`terminal`执行`npx react-native run-ios --device ${iphone-name}`命令。(ios默认不会选择已连接的真机，所以不能使用命令`yarn ios`)
 
 ## 快速 demo 体验
 
-可以下载源码运行 example 下的 demo，进行体验。 [传送门](https://github.com/easemob/react-native-chat-sdk)。
-可以下载 单独运行的 demo，进行体验。[传送门](https://github.com/AsteriskZuo/test_chat_sdk)。    
+可以下载源码运行 example 下的 demo，进行 **`api references`** 体验。 [传送门](https://github.com/easemob/react-native-chat-sdk)。  
+可以下载 单独运行的 demo，进行 **集成** 体验。[传送门](https://github.com/AsteriskZuo/test_chat_sdk)。    
 
 ## Contributing
 

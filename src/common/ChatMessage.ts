@@ -651,7 +651,7 @@ export class ChatMessage {
     event: string,
     chatType: ChatMessageChatType = ChatMessageChatType.PeerChat,
     opt?: {
-      params: Map<string, any>;
+      params: any;
     }
   ): ChatMessage {
     return ChatMessage.createSendMessage(

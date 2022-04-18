@@ -1,5 +1,5 @@
 import React, { Component, ReactNode } from 'react';
-import { Button, Text, TextInput, View } from 'react-native';
+import { Button, Platform, Text, TextInput, View } from 'react-native';
 import { styleValues } from './Const';
 import ModalDropdown from 'react-native-modal-dropdown';
 import type ImagePicker from 'react-native-image-picker';
@@ -18,6 +18,10 @@ import {
   ChatMessageChatType,
   ChatMessageStatusCallback,
 } from 'react-native-chat-sdk';
+import DocumentPicker, {
+  DocumentPickerResponse,
+} from 'react-native-document-picker';
+import RNFS from 'react-native-fs';
 
 interface State {
   messageType: ChatMessageBodyType;
@@ -34,6 +38,20 @@ interface State {
   width: number;
   height: number;
   fileSize: number;
+  duration: number;
+  thumbnailLocalPath: string;
+
+  // localtion message body
+  latitude: string;
+  longitude: string;
+  address: string;
+
+  // cmd message body
+  action: string;
+
+  // custom message body
+  event: string;
+  ext: string;
 
   // result
   messageResult: string;
@@ -49,6 +67,12 @@ export class ChatManagerScreen extends Component<
   private static messageType = [
     ChatMessageBodyType.TXT,
     ChatMessageBodyType.IMAGE,
+    ChatMessageBodyType.CMD,
+    ChatMessageBodyType.CUSTOM,
+    ChatMessageBodyType.FILE,
+    ChatMessageBodyType.LOCATION,
+    ChatMessageBodyType.VIDEO,
+    ChatMessageBodyType.VOICE,
   ];
   private static messageChatType = [
     'ChatMessageChatType.PeerChat',
@@ -70,9 +94,17 @@ export class ChatManagerScreen extends Component<
       content: '',
       filePath: '',
       displayName: '',
+      thumbnailLocalPath: '',
       width: 0,
       height: 0,
       fileSize: 0,
+      duration: 0.0,
+      latitude: '0.0',
+      longitude: '0.0',
+      address: 'beijing',
+      action: 'action',
+      event: 'event',
+      ext: '{ "key": "value" }',
     };
   }
 
@@ -162,6 +194,51 @@ export class ChatManagerScreen extends Component<
         width,
         height,
       });
+    } else if (messageType === ChatMessageBodyType.CMD) {
+      const { action } = this.state;
+      msg = ChatMessage.createCmdMessage(targetId, action, chatType);
+    } else if (messageType === ChatMessageBodyType.CUSTOM) {
+      const { event, ext } = this.state;
+      console.log(ext);
+      msg = ChatMessage.createCustomMessage(targetId, event, chatType, {
+        params: JSON.parse(ext),
+      });
+    } else if (messageType === ChatMessageBodyType.FILE) {
+      const { filePath, displayName } = this.state;
+      msg = ChatMessage.createFileMessage(targetId, filePath, chatType, {
+        displayName,
+      });
+    } else if (messageType === ChatMessageBodyType.LOCATION) {
+      const { latitude, longitude, address } = this.state;
+      msg = ChatMessage.createLocationMessage(
+        targetId,
+        latitude,
+        longitude,
+        chatType,
+        { address }
+      );
+    } else if (messageType === ChatMessageBodyType.VIDEO) {
+      const {
+        filePath,
+        width,
+        height,
+        displayName,
+        thumbnailLocalPath,
+        duration,
+      } = this.state;
+      msg = ChatMessage.createVideoMessage(targetId, filePath, chatType, {
+        displayName,
+        thumbnailLocalPath,
+        duration,
+        width,
+        height,
+      });
+    } else if (messageType === ChatMessageBodyType.VOICE) {
+      const { filePath, displayName, duration } = this.state;
+      msg = ChatMessage.createVoiceMessage(targetId, filePath, chatType, {
+        displayName,
+        duration,
+      });
     } else {
       throw new Error('Not implemented.');
     }
@@ -218,6 +295,24 @@ export class ChatManagerScreen extends Component<
         break;
       case ChatMessageBodyType.IMAGE:
         ret = this.renderImageMessage();
+        break;
+      case ChatMessageBodyType.CMD:
+        ret = this.renderCmdMessage();
+        break;
+      case ChatMessageBodyType.CUSTOM:
+        ret = this.renderCustomMessage();
+        break;
+      case ChatMessageBodyType.FILE:
+        ret = this.renderFileMessage();
+        break;
+      case ChatMessageBodyType.LOCATION:
+        ret = this.renderLocationMessage();
+        break;
+      case ChatMessageBodyType.VIDEO:
+        ret = this.renderVideoMessage();
+        break;
+      case ChatMessageBodyType.VOICE:
+        ret = this.renderVoiceMessage();
         break;
       default:
         ret = <View />;
@@ -294,7 +389,7 @@ export class ChatManagerScreen extends Component<
           {filePath}
         </TextInput>
         <Button
-          title="selctImage"
+          title="selectImage"
           onPress={() => {
             // console.log(`${ChatManagerScreen.TAG}`);
             const f = (
@@ -372,6 +467,499 @@ export class ChatManagerScreen extends Component<
           }}
         >
           {displayName}
+        </TextInput>
+      </View>,
+      <View style={styleValues.containerRow} key="sendMessage">
+        <Button
+          title="sendMessage"
+          onPress={() => {
+            // console.log(`${ChatManagerScreen.TAG}`);
+            this.sendMessage();
+          }}
+        >
+          sendMessage
+        </Button>
+      </View>,
+    ];
+  }
+
+  private renderVideoMessage(): ReactNode {
+    const { targetId, filePath, displayName, thumbnailLocalPath } = this.state;
+    return [
+      <View style={styleValues.containerRow} key="targetId">
+        <Text style={styleValues.textStyle}>TargetId: </Text>
+        <TextInput
+          style={styleValues.textInputStyle}
+          onChangeText={(text: string) => {
+            // console.log(`${ChatManagerScreen.TAG}: `, text);
+            this.setState({ targetId: text });
+          }}
+        >
+          {targetId}
+        </TextInput>
+      </View>,
+      <View style={styleValues.containerRow} key="filePath">
+        <Text style={styleValues.textStyle}>FilePath: </Text>
+        <TextInput
+          style={styleValues.textInputStyle}
+          onChangeText={(text: string) => {
+            // console.log(`${ChatManagerScreen.TAG}: `, text);
+            this.setState({ filePath: text });
+          }}
+        >
+          {filePath}
+        </TextInput>
+        <Button
+          title="selectVideo"
+          onPress={() => {
+            // console.log(`${ChatManagerScreen.TAG}`);
+            let title = actions[3].title;
+            let type = actions[3].type;
+            let options = actions[3].options;
+            console.log(`${ChatManagerScreen.TAG}: `, title, type, options);
+            launchImageLibrary(options, (response: ImagePickerResponse) => {
+              console.log(`${ChatManagerScreen.TAG}: `, response);
+              if (
+                response.didCancel ||
+                response.errorCode ||
+                response.errorMessage
+              ) {
+                console.log('cancel');
+              } else {
+                if (response.assets && response.assets?.length > 0) {
+                  let s = response.assets[0].uri!;
+                  if (s.startsWith('file://')) {
+                    s = s.substring('file://'.length);
+                  }
+                  this.setState({
+                    // filePath: response.assets[0].uri!,
+                    filePath: s,
+                    width: response.assets[0].width!,
+                    height: response.assets[0].height!,
+                    displayName: response.assets[0].fileName!,
+                    fileSize: response.assets[0].fileSize!,
+                    duration: response.assets[0].duration!,
+                    thumbnailLocalPath: '',
+                  });
+                }
+              }
+            });
+          }}
+        >
+          select
+        </Button>
+      </View>,
+      <View style={styleValues.containerRow} key="thumbImage">
+        <Text style={styleValues.textStyle}>ThumbImage: </Text>
+        <TextInput
+          style={styleValues.textInputStyle}
+          onChangeText={(text: string) => {
+            // console.log(`${ChatManagerScreen.TAG}: `, text);
+            this.setState({ thumbnailLocalPath: text });
+          }}
+        >
+          {thumbnailLocalPath}
+        </TextInput>
+        <Button
+          title="selectVideoThumb"
+          onPress={() => {
+            // console.log(`${ChatManagerScreen.TAG}`);
+            let title = actions[1].title;
+            let type = actions[1].type;
+            let options = actions[1].options;
+            console.log(`${ChatManagerScreen.TAG}: `, title, type, options);
+            launchImageLibrary(options, (response: ImagePickerResponse) => {
+              console.log(`${ChatManagerScreen.TAG}: `, response);
+              if (
+                response.didCancel ||
+                response.errorCode ||
+                response.errorMessage
+              ) {
+                console.log('cancel');
+              } else {
+                if (response.assets && response.assets?.length > 0) {
+                  let s = response.assets[0].uri!;
+                  if (s.startsWith('file://')) {
+                    s = s.substring('file://'.length);
+                  }
+                  this.setState({
+                    thumbnailLocalPath: s,
+                  });
+                }
+              }
+            });
+          }}
+        >
+          select
+        </Button>
+      </View>,
+      <View style={styleValues.containerRow} key="displayName">
+        <Text style={styleValues.textStyle}>DisplayName: </Text>
+        <TextInput
+          style={styleValues.textInputStyle}
+          onChangeText={(text: string) => {
+            // console.log(`${ChatManagerScreen.TAG}: `, text);
+            this.setState({ displayName: text });
+          }}
+        >
+          {displayName}
+        </TextInput>
+      </View>,
+      <View style={styleValues.containerRow} key="sendMessage">
+        <Button
+          title="sendMessage"
+          onPress={() => {
+            // console.log(`${ChatManagerScreen.TAG}`);
+            this.sendMessage();
+          }}
+        >
+          sendMessage
+        </Button>
+      </View>,
+    ];
+  }
+
+  renderVoiceMessage(): React.ReactNode {
+    const { targetId, filePath, displayName, duration } = this.state;
+    return [
+      <View style={styleValues.containerRow} key="targetId">
+        <Text style={styleValues.textStyle}>TargetId: </Text>
+        <TextInput
+          style={styleValues.textInputStyle}
+          onChangeText={(text: string) => {
+            // console.log(`${ChatManagerScreen.TAG}: `, text);
+            this.setState({ targetId: text });
+          }}
+        >
+          {targetId}
+        </TextInput>
+      </View>,
+      <View style={styleValues.containerRow} key="filePath">
+        <Text style={styleValues.textStyle}>FilePath: </Text>
+        <TextInput
+          style={styleValues.textInputStyle}
+          onChangeText={(text: string) => {
+            // console.log(`${ChatManagerScreen.TAG}: `, text);
+            this.setState({ filePath: text });
+          }}
+        >
+          {filePath}
+        </TextInput>
+        <Button
+          title="selectVoice"
+          onPress={() => {
+            // console.log(`${ChatManagerScreen.TAG}`);
+            DocumentPicker.pick({ type: [DocumentPicker.types.audio] })
+              .then((values: DocumentPickerResponse[]) => {
+                // todo: 需要优化
+                // console.log(values);
+                // console.log(RNFS.ExternalStorageDirectoryPath);
+                // console.log(decodeURI(values[0].uri));
+                if (values.length < 1) {
+                  return;
+                }
+                if (Platform.OS === 'ios') {
+                  let s = values[0].uri;
+                  if (s.startsWith('file://')) {
+                    s = s.substring('file://'.length);
+                  }
+                  this.setState({
+                    filePath: s,
+                    displayName: values[0].name,
+                    duration: 20,
+                  });
+                } else {
+                  // todo: content:// 太麻烦
+                  let s =
+                    RNFS.ExternalStorageDirectoryPath +
+                    '/Recorder/' +
+                    values[0].name;
+                  this.setState({
+                    filePath: s,
+                    displayName: values[0].name,
+                    duration: 20,
+                  });
+                }
+              })
+              .catch((reason: any) => {
+                console.log(reason);
+              });
+          }}
+        >
+          select
+        </Button>
+      </View>,
+      <View style={styleValues.containerRow} key="duration">
+        <Text style={styleValues.textStyle}>Duration: </Text>
+        <TextInput
+          style={styleValues.textInputStyle}
+          onChangeText={(text: string) => {
+            // console.log(`${ChatManagerScreen.TAG}: `, text);
+            this.setState({ duration: parseInt(text, 10) });
+          }}
+        >
+          {duration}
+        </TextInput>
+      </View>,
+      <View style={styleValues.containerRow} key="displayName">
+        <Text style={styleValues.textStyle}>DisplayName: </Text>
+        <TextInput
+          style={styleValues.textInputStyle}
+          onChangeText={(text: string) => {
+            // console.log(`${ChatManagerScreen.TAG}: `, text);
+            this.setState({ displayName: text });
+          }}
+        >
+          {displayName}
+        </TextInput>
+      </View>,
+      <View style={styleValues.containerRow} key="sendMessage">
+        <Button
+          title="sendMessage"
+          onPress={() => {
+            // console.log(`${ChatManagerScreen.TAG}`);
+            this.sendMessage();
+          }}
+        >
+          sendMessage
+        </Button>
+      </View>,
+    ];
+  }
+  renderLocationMessage(): React.ReactNode {
+    const { targetId, latitude, longitude, address } = this.state;
+    return [
+      <View style={styleValues.containerRow} key="targetId">
+        <Text style={styleValues.textStyle}>TargetId: </Text>
+        <TextInput
+          style={styleValues.textInputStyle}
+          onChangeText={(text: string) => {
+            // console.log(`${ChatManagerScreen.TAG}: `, text);
+            this.setState({ targetId: text });
+          }}
+        >
+          {targetId}
+        </TextInput>
+      </View>,
+      <View style={styleValues.containerRow} key="latitude">
+        <Text style={styleValues.textStyle}>Latitude: </Text>
+        <TextInput
+          style={styleValues.textInputStyle}
+          onChangeText={(text: string) => {
+            // console.log(`${ChatManagerScreen.TAG}: `, text);
+            this.setState({ latitude: text });
+          }}
+        >
+          {latitude}
+        </TextInput>
+      </View>,
+      <View style={styleValues.containerRow} key="longitude">
+        <Text style={styleValues.textStyle}>Longitude: </Text>
+        <TextInput
+          style={styleValues.textInputStyle}
+          onChangeText={(text: string) => {
+            // console.log(`${ChatManagerScreen.TAG}: `, text);
+            this.setState({ longitude: text });
+          }}
+        >
+          {longitude}
+        </TextInput>
+      </View>,
+      <View style={styleValues.containerRow} key="address">
+        <Text style={styleValues.textStyle}>Address: </Text>
+        <TextInput
+          style={styleValues.textInputStyle}
+          onChangeText={(text: string) => {
+            // console.log(`${ChatManagerScreen.TAG}: `, text);
+            this.setState({ address: text });
+          }}
+        >
+          {address}
+        </TextInput>
+      </View>,
+      <View style={styleValues.containerRow} key="sendMessage">
+        <Button
+          title="sendMessage"
+          onPress={() => {
+            // console.log(`${ChatManagerScreen.TAG}`);
+            this.sendMessage();
+          }}
+        >
+          sendMessage
+        </Button>
+      </View>,
+    ];
+  }
+  renderFileMessage(): React.ReactNode {
+    const { targetId, filePath, displayName } = this.state;
+    return [
+      <View style={styleValues.containerRow} key="targetId">
+        <Text style={styleValues.textStyle}>TargetId: </Text>
+        <TextInput
+          style={styleValues.textInputStyle}
+          onChangeText={(text: string) => {
+            // console.log(`${ChatManagerScreen.TAG}: `, text);
+            this.setState({ targetId: text });
+          }}
+        >
+          {targetId}
+        </TextInput>
+      </View>,
+      <View style={styleValues.containerRow} key="filePath">
+        <Text style={styleValues.textStyle}>FilePath: </Text>
+        <TextInput
+          style={styleValues.textInputStyle}
+          onChangeText={(text: string) => {
+            // console.log(`${ChatManagerScreen.TAG}: `, text);
+            this.setState({ filePath: text });
+          }}
+        >
+          {filePath}
+        </TextInput>
+        <Button
+          title="selectFile"
+          onPress={() => {
+            // console.log(`${ChatManagerScreen.TAG}`);
+            DocumentPicker.pick({ type: [DocumentPicker.types.allFiles] })
+              .then((values: DocumentPickerResponse[]) => {
+                // todo: 需要优化
+                // console.log(values);
+                // console.log(RNFS.ExternalStorageDirectoryPath);
+                // console.log(decodeURI(values[0].uri));
+                if (values.length < 1) {
+                  return;
+                }
+                if (Platform.OS === 'ios') {
+                  let s = values[0].uri;
+                  if (s.startsWith('file://')) {
+                    s = s.substring('file://'.length);
+                  }
+                  this.setState({
+                    filePath: s,
+                    displayName: values[0].name,
+                  });
+                } else {
+                  // todo: content:// 太麻烦
+                  let s =
+                    RNFS.ExternalStorageDirectoryPath +
+                    '/Recorder/' +
+                    values[0].name;
+                  this.setState({
+                    filePath: s,
+                    displayName: values[0].name,
+                  });
+                }
+              })
+              .catch((reason: any) => {
+                console.log(reason);
+              });
+          }}
+        >
+          select
+        </Button>
+      </View>,
+      <View style={styleValues.containerRow} key="displayName">
+        <Text style={styleValues.textStyle}>DisplayName: </Text>
+        <TextInput
+          style={styleValues.textInputStyle}
+          onChangeText={(text: string) => {
+            // console.log(`${ChatManagerScreen.TAG}: `, text);
+            this.setState({ displayName: text });
+          }}
+        >
+          {displayName}
+        </TextInput>
+      </View>,
+      <View style={styleValues.containerRow} key="sendMessage">
+        <Button
+          title="sendMessage"
+          onPress={() => {
+            // console.log(`${ChatManagerScreen.TAG}`);
+            this.sendMessage();
+          }}
+        >
+          sendMessage
+        </Button>
+      </View>,
+    ];
+  }
+  renderCustomMessage(): React.ReactNode {
+    const { targetId, event, ext } = this.state;
+    return [
+      <View style={styleValues.containerRow} key="targetId">
+        <Text style={styleValues.textStyle}>TargetId: </Text>
+        <TextInput
+          style={styleValues.textInputStyle}
+          onChangeText={(text: string) => {
+            // console.log(`${ChatManagerScreen.TAG}: `, text);
+            this.setState({ targetId: text });
+          }}
+        >
+          {targetId}
+        </TextInput>
+      </View>,
+      <View style={styleValues.containerRow} key="event">
+        <Text style={styleValues.textStyle}>Event: </Text>
+        <TextInput
+          style={styleValues.textInputStyle}
+          onChangeText={(text: string) => {
+            // console.log(`${ChatManagerScreen.TAG}: `, text);
+            this.setState({ event: text });
+          }}
+        >
+          {event}
+        </TextInput>
+      </View>,
+      <View style={styleValues.containerRow} key="ext">
+        <Text style={styleValues.textStyle}>Ext: </Text>
+        <TextInput
+          style={styleValues.textInputStyle}
+          onChangeText={(text: string) => {
+            // console.log(`${ChatManagerScreen.TAG}: `, text);
+            this.setState({ ext: text });
+          }}
+        >
+          {ext}
+        </TextInput>
+      </View>,
+      <View style={styleValues.containerRow} key="sendMessage">
+        <Button
+          title="sendMessage"
+          onPress={() => {
+            // console.log(`${ChatManagerScreen.TAG}`);
+            this.sendMessage();
+          }}
+        >
+          sendMessage
+        </Button>
+      </View>,
+    ];
+  }
+  renderCmdMessage(): React.ReactNode {
+    const { targetId, action } = this.state;
+    return [
+      <View style={styleValues.containerRow} key="targetId">
+        <Text style={styleValues.textStyle}>TargetId: </Text>
+        <TextInput
+          style={styleValues.textInputStyle}
+          onChangeText={(text: string) => {
+            // console.log(`${ChatManagerScreen.TAG}: `, text);
+            this.setState({ targetId: text });
+          }}
+        >
+          {targetId}
+        </TextInput>
+      </View>,
+      <View style={styleValues.containerRow} key="action">
+        <Text style={styleValues.textStyle}>Action: </Text>
+        <TextInput
+          style={styleValues.textInputStyle}
+          onChangeText={(text: string) => {
+            // console.log(`${ChatManagerScreen.TAG}: `, text);
+            this.setState({ action: text });
+          }}
+        >
+          {action}
         </TextInput>
       </View>,
       <View style={styleValues.containerRow} key="sendMessage">
