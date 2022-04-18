@@ -45,7 +45,7 @@ cd node_modules/react-native-chat-sdk/native_src/cpp
 sh generate.sh --type rn
 ```
 
-## 代码实现
+## API实现样例
 
 1. 初始化
 
@@ -166,25 +166,85 @@ ChatClient.getInstance()
   });
 ```
 
-6. 运行
-```sh
-# 运行服务
-yarn start
+## demo代码样例
 
-# 运行android
-# 如果是第一次运行android 则需要注意，需要手机和电脑在同一个网络，并且设置端口数据转发`adb reverse tcp:8081 tcp:8081`
-yarn android
-
-# 运行ios，默认是模拟器但react-native部分组件可能不支持
-yarn ios
-
-# 运行ios真机 需要使用xcode打开设置好签名, 并且运行`cd ios && pod install`
-npx react-native run-ios --device ${iphone-name}
+1. 添加依赖导入
+```typescript
+import {ChatClient, ChatOptions} from 'react-native-chat-sdk';
 ```
+
+2. 可以点击登录的按钮
+```typescript
+<Button
+  title="test"
+  onPress={() => {
+    let o = new ChatOptions({
+      autoLogin: false,
+      appKey: 'easemob-demo#easeim',
+    });
+    ChatClient.getInstance()
+      .init(o)
+      .then(() => {
+        console.log('success');
+        let listener = {
+          onTokenWillExpire() {
+            console.log('ClientScreen.onTokenWillExpire');
+          },
+          onTokenDidExpire() {
+            console.log('ClientScreen.onTokenDidExpire');
+          },
+          onConnected() {
+            console.log('ClientScreen.onConnected');
+          },
+          onDisconnected(errorCode) {
+            console.log('ClientScreen.onDisconnected: ', errorCode);
+          },
+        };
+        ChatClient.getInstance().removeAllConnectionListener();
+        ChatClient.getInstance().addConnectionListener(listener);
+        ChatClient.getInstance()
+          .login('asteriskhx1', 'qwer')
+          .then(() => {
+            console.log('ClientScreen.login: success');
+          })
+          .catch(reason => {
+            console.log('ClientScreen.login: fail', reason);
+          });
+      })
+      .catch(() => {
+        console.log('error');
+      });
+  }}
+/>
+```
+
+3. 编译构建和运行
+  * android设备: 6.0或以上的真机
+    1. 设置真机为开发者的可调式模式
+    2. 连接android真机设备到Mac系统
+    3. 启动`android studio app`，打开`android`文件夹的`rn_demo`项目，等待sync完成
+    4. 在`android/app/src/main/AndroidManifest.xml`文件中，设置权限: 包括网络权限、文件读写、录音、相册等。
+    5. 在`terminal`命令行执行`adb reverse tcp:8081 tcp:8081`，开启数据转发
+    6. 手动启动服务(android项目构建一般会不自动启动服务) 所以执行命令 `yarn start`
+    7. 使用android studio app 构建并运行`rn_demo`。
+  * ios设备: 11.0版本或以上的真机
+    1. iphone真机设置为开发者模式，
+    2. 连接ios真机设备到Mac系统，选择信任该Mac系统
+    3. 第一次或者更新项目之后，需要执行`cd ios && pod install --repo-update`
+    4. 启动`xcode app`，打开`ios`文件夹下的`rn_demo`项目
+    5. 在`info`中添加相应权限: 包括网络权限、文件读写、录音、相册等。
+    6. 由于是真机，需要设置app签名
+    7. 在`general`中设置`iphone`开发目标平台`12.0`
+    8. 在`xcode app`中，构建并运行`rn_demo`项目。
+  * 使用vscode app进行构建和运行，上面的需求条件也必须满足，不然也无法正常构建和运行。
+    1. 在命令行执行`yarn start`启动服务
+    2. 构建并运行android: 设置数据转发，然后在`terminal`执行`yarn android`命令。(android自动选择已连接的真机)
+    3. 构建并运行ios: 在`terminal`执行`npx react-native run-ios --device ${iphone-name}`命令。(ios默认不会选择已连接的真机，所以不能使用命令`yarn ios`)
 
 ## 快速 demo 体验
 
 可以下载源码运行 example 下的 demo，进行体验。 [传送门](https://github.com/easemob/react-native-chat-sdk)。
+可以下载 单独运行的 demo，进行体验。[传送门](https://github.com/AsteriskZuo/test_chat_sdk)。    
 
 ## Contributing
 

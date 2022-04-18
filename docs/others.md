@@ -26,6 +26,15 @@ or
 npx react-native info
 ```
 
+## Android devices review
+```sh
+# review tcp port list
+adb reverse --list
+
+# review android devices list
+adb devices --list
+```
+
 ## Common commands
 
 ```sh
