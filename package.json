@@ -1,6 +1,6 @@
 {
   "name": "react-native-chat-sdk",
-  "version": "0.1.0",
+  "version": "0.1.0-beta",
   "description": "react native chat sdk",
   "main": "lib/commonjs/index",
   "module": "lib/module/index",
@@ -42,7 +42,7 @@
     "im"
   ],
   "repository": "https://github.com/easemob/react-native-chat-sdk",
-  "author": "asteriskzuo <asterisk.zuo@easemob.com> (https://github.com/easemob)",
+  "author": "easemob-npm <npm@easemob.com> (https://github.com/easemob)",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/easemob/react-native-chat-sdk/issues"
