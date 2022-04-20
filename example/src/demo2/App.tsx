@@ -1,63 +1,35 @@
 import { NavigationContainer } from '@react-navigation/native';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import React from 'react';
-import { type ViewStyle, ScrollView, View, Button, Text } from 'react-native';
+import { ScrollView, View, Button } from 'react-native';
 import { ChatClient, ChatOptions } from 'react-native-chat-sdk';
 import { ChatManagerScreen } from './ChatManager';
+import { SendMessageScreen } from './ChatManager/SendMessage';
 import { ClientScreen } from './Client';
-import { ConnectScreen } from './Connect';
-
-const styleValue: ViewStyle = {
-  alignItems: 'stretch',
-  justifyContent: 'center',
-  paddingLeft: 16,
-  paddingRight: 16,
-  paddingTop: 8,
-  paddingBottom: 8,
-};
+import { ClientOthersScreen } from './Client/ClientOthers';
+import { CreateAccountScreen } from './Client/CreateAccount';
+import { GetStateScreen } from './Client/GetState';
+import { KickScreen } from './Client/Kick';
+import { LoginAndLogoutScreen } from './Client/LoginAndLogout';
+import { Stack, styleValues } from './Utils';
 
 function HomeScreen(params: { navigation: any }) {
   return (
     <ScrollView>
-      {/* <View style={styleValue}>
+      <View style={styleValues.scrollView}>
         <Button
-          title="测试基础功能"
-          onPress={() => params.navigation?.navigate(ConnectScreen.route)}
-        />
-      </View> */}
-      <View style={styleValue}>
-        <Button
-          title="test base functions"
+          title="ClientScreen"
           onPress={() => params.navigation?.navigate(ClientScreen.route)}
         />
       </View>
-      <View style={styleValue}>
+      <View style={styleValues.scrollView}>
         <Button
-          title="test send and recv message"
+          title="ChatManagerScreen"
           onPress={() => params.navigation?.navigate(ChatManagerScreen.route)}
-        />
-      </View>
-      <View style={styleValue}>
-        <Button
-          title="test"
-          onPress={() => params.navigation?.navigate('Detail')}
         />
       </View>
     </ScrollView>
   );
 }
-
-// const styleValue2 = { flex: 1, alignItems: 'center', justifyContent: 'center' };
-
-function DetailsScreen() {
-  return (
-    <View style={styleValue}>
-      <Text>Details Screen</Text>
-    </View>
-  );
-}
-
-const Stack = createNativeStackNavigator();
 
 function App() {
   return (
@@ -66,15 +38,34 @@ function App() {
         <Stack.Screen
           name="Home"
           component={HomeScreen}
-          options={{ headerShown: true, title: 'SDK Test Item List' }}
+          options={{
+            headerShown: true,
+            title: 'React Native Chat SDK Test List',
+          }}
         />
-        <Stack.Screen name={ConnectScreen.route} component={ConnectScreen} />
         <Stack.Screen name={ClientScreen.route} component={ClientScreen} />
         <Stack.Screen
           name={ChatManagerScreen.route}
           component={ChatManagerScreen}
         />
-        <Stack.Screen name="Detail" component={DetailsScreen} />
+        <Stack.Screen
+          name={LoginAndLogoutScreen.route}
+          component={LoginAndLogoutScreen}
+        />
+        <Stack.Screen
+          name={SendMessageScreen.route}
+          component={SendMessageScreen}
+        />
+        <Stack.Screen
+          name={CreateAccountScreen.route}
+          component={CreateAccountScreen}
+        />
+        <Stack.Screen name={GetStateScreen.route} component={GetStateScreen} />
+        <Stack.Screen name={KickScreen.route} component={KickScreen} />
+        <Stack.Screen
+          name={ClientOthersScreen.route}
+          component={ClientOthersScreen}
+        />
       </Stack.Navigator>
     </NavigationContainer>
   );

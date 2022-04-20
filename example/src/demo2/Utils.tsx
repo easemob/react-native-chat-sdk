@@ -1,6 +1,34 @@
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { StyleSheet } from 'react-native';
+import React from 'react';
+
+export const Stack = createNativeStackNavigator();
+
+const elements: JSX.Element[] = [];
+
+export function RegisterScreen(element: any): void {
+  if (element?.route) {
+    console.log(`add element: `, element.route);
+    let ss: JSX.Element = (
+      <Stack.Screen name={element.route} component={element} />
+    );
+    elements.push(ss);
+  }
+}
+
+export function ScreenList(): JSX.Element[] {
+  return elements;
+}
 
 export const styleValues = StyleSheet.create({
+  scrollView: {
+    alignItems: 'stretch',
+    justifyContent: 'center',
+    paddingLeft: 16,
+    paddingRight: 16,
+    paddingTop: 8,
+    paddingBottom: 8,
+  },
   containerRow: {
     flexDirection: 'row',
     alignItems: 'center',
