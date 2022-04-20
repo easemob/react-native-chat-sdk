@@ -168,80 +168,177 @@ ChatClient.getInstance()
 
 ## demo代码样例
 
-1. 添加依赖导入
+1. 删除文件`App.js`里面的所有源码
+   
+2. 添加依赖导入
 ```typescript
 import {
   SafeAreaView,
   ScrollView,
-  StatusBar,
   StyleSheet,
   Text,
-  useColorScheme,
+  TextInput,
   View,
-  Button,
 } from 'react-native';
-import {ChatClient, ChatOptions} from 'react-native-chat-sdk';
+import {
+  ChatClient,
+  ChatOptions,
+  ChatMessageChatType,
+  ChatMessage,
+} from 'react-native-chat-sdk';
 ```
 
-2. 可以点击登录的按钮
+3. 添加app
 ```typescript
-<Button
-  title="login"
-  onPress={() => {
-    let o = new ChatOptions({
-      autoLogin: false,
-      appKey: 'easemob-demo#easeim',
-    });
-    ChatClient.getInstance()
-      .init(o)
-      .then(() => {
-        console.log('success');
-        let listener = {
-          onTokenWillExpire() {
-            console.log('ClientScreen.onTokenWillExpire');
-          },
-          onTokenDidExpire() {
-            console.log('ClientScreen.onTokenDidExpire');
-          },
-          onConnected() {
-            console.log('ClientScreen.onConnected');
-          },
-          onDisconnected(errorCode) {
-            console.log('ClientScreen.onDisconnected: ', errorCode);
-          },
-        };
-        ChatClient.getInstance().removeAllConnectionListener();
-        ChatClient.getInstance().addConnectionListener(listener);
-        ChatClient.getInstance()
-          .login('asteriskhx1', 'qwer')
-          .then(() => {
-            console.log('ClientScreen.login: success');
-          })
-          .catch(reason => {
-            console.log('ClientScreen.login: fail', reason);
-          });
-      })
-      .catch(() => {
-        console.log('error');
-      });
-  }}
-/>
-<Button
-  title="logout"
-  onPress={() => {
-    ChatClient.getInstance()
-      .logout()
-      .then(() => {
-        console.log('ClientScreen.logout: success');
-      })
-      .catch((reason: any) => {
-        console.log('ClientScreen.logout: fail');
-      });
-  }}
-/>
+const App = () => {
+  // TODO: 添加私有数据
+  const title = 'AgoraChatQuickstart';
+  const [username, setUsername] = React.useState('');
+  const [password, setPassword] = React.useState('');
+  const [userId, setUserId] = React.useState('');
+  const [content, setContent] = React.useState('');
+  const [logText, setWarnText] = React.useState('Show log area');
+
+  // TODO: 添加调用接口
+
+  // TODO: 添加UI界面
+
+}
 ```
 
-3. 编译构建和运行
+4. 在`App`对象里面添加UI界面
+```typescript
+return (
+    <SafeAreaView>
+      <View style={styles.titleContainer}>
+        <Text style={styles.title}>{title}</Text>
+      </View>
+      <ScrollView>
+        <View style={styles.inputCon}>
+          <TextInput
+            multiline
+            style={styles.inputBox}
+            placeholder="Enter username"
+            onChangeText={text => setUsername(text)}
+            value={username}
+          />
+        </View>
+        <View style={styles.inputCon}>
+          <TextInput
+            multiline
+            style={styles.inputBox}
+            placeholder="Enter password"
+            onChangeText={text => setPassword(text)}
+            value={password}
+          />
+        </View>
+        <View style={styles.buttonCon}>
+          <Text style={styles.eachBtn} onPress={login}>
+            SIGN IN
+          </Text>
+          <Text style={styles.eachBtn} onPress={logout}>
+            SIGN OUT
+          </Text>
+        </View>
+        <View style={styles.inputCon}>
+          <TextInput
+            multiline
+            style={styles.inputBox}
+            placeholder="Enter the username you want to send"
+            onChangeText={text => setUserId(text)}
+            value={userId}
+          />
+        </View>
+        <View style={styles.inputCon}>
+          <TextInput
+            multiline
+            style={styles.inputBox}
+            placeholder="Enter content"
+            onChangeText={text => setContent(text)}
+            value={content}
+          />
+        </View>
+        <View style={styles.buttonCon}>
+          <Text style={styles.btn2} onPress={sendmsg}>
+            SEND TEXT
+          </Text>
+        </View>
+        <View>
+          <Text style={styles.logText}>{logText}</Text>
+        </View>
+      </ScrollView>
+    </SafeAreaView>
+  );
+```
+
+3. 在`App`对象里面添加调用接口
+```typescript
+const login = () => {
+  setWarnText(`username:${username},password:${password}`);
+  let listener = {
+    onTokenWillExpire() {
+      console.log('ClientScreen.onTokenWillExpire');
+    },
+    onTokenDidExpire() {
+      console.log('ClientScreen.onTokenDidExpire');
+    },
+    onConnected() {
+      console.log('ClientScreen.onConnected');
+    },
+    onDisconnected(errorCode) {
+      console.log('ClientScreen.onDisconnected: ', errorCode);
+    },
+  };
+  ChatClient.getInstance().removeAllConnectionListener();
+  ChatClient.getInstance().addConnectionListener(listener);
+  ChatClient.getInstance()
+    .login('asteriskhx1', 'qwer')
+    .then(() => {
+      console.log('ClientScreen.login: success');
+    })
+    .catch(reason => {
+      console.log('ClientScreen.login: fail', reason);
+    });
+};
+const logout = () => {
+  ChatClient.getInstance()
+    .logout()
+    .then(() => {
+      console.log('ClientScreen.logout: success');
+    })
+    .catch(reason => {
+      console.log('ClientScreen.logout: fail', reason);
+    });
+};
+const sendmsg = () => {
+  let msg = ChatMessage.createTextMessage(
+    userId,
+    content,
+    ChatMessageChatType.PeerChat,
+  );
+  const callback = new (class {
+    onProgress(locaMsgId, progress) {
+      console.log(
+        'ConnectScreen.sendMessage.onProgress ',
+        locaMsgId,
+        progress,
+      );
+    }
+    onError(locaMsgId, error) {
+      console.log('ConnectScreen.sendMessage.onError ', locaMsgId, error);
+    }
+    onSuccess(message) {
+      console.log('ConnectScreen.sendMessage.onSuccess', message.localMsgId);
+    }
+  })();
+  ChatClient.getInstance()
+    .chatManager.sendMessage(msg, callback)
+    .then(() => console.log('send success'))
+    .catch(() => console.log('send failed'));
+};
+```
+
+4. 编译构建和运行
   * android设备: **6.0**或以上的**真机**
     1. 设置真机为开发者的可调式模式
     2. 连接android真机设备到Mac系统
