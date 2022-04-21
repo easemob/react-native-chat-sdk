@@ -1,7 +1,7 @@
 import React, { Component, ReactNode } from 'react';
 import { View, Button, Text, TextInput, ScrollView } from 'react-native';
 import { ChatClient } from 'react-native-chat-sdk';
-import { styleValues } from '../Utils';
+import { styleValues } from '../__internal__/Css';
 
 interface State {
   result: string;

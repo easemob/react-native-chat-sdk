@@ -3,14 +3,14 @@ import { View, Button, ScrollView } from 'react-native';
 import { getComponentList, ScreenComponent } from './__internal__/Utils';
 import { styleValues } from './__internal__/Css';
 
-export const ChatManagerRoute = 'ChatManagerScreen';
-export function ChatManagerScreen(params: { navigation: any }): JSX.Element {
+export const GroupManagerRoute = 'GroupManagerScreen';
+export function GroupManagerScreen(params: { navigation: any }): JSX.Element {
   return (
     <ScrollView>
       {getComponentList()
         .filter(
           (component: ScreenComponent) =>
-            component.parentScreen === ChatManagerRoute
+            component.parentScreen === GroupManagerRoute
         )
         .map((component: ScreenComponent) => {
           console.log(`route: ${component.route}`);

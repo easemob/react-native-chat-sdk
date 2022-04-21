@@ -1,6 +1,6 @@
 import React, { Component, ReactNode } from 'react';
 import { Button, Platform, Text, TextInput, View } from 'react-native';
-import { styleValues } from '../Utils';
+import { styleValues } from '../__internal__/Css';
 import ModalDropdown from 'react-native-modal-dropdown';
 import type ImagePicker from 'react-native-image-picker';
 import {
@@ -63,6 +63,7 @@ export class SendMessageScreen extends Component<
   State,
   any
 > {
+  public static route = 'SendMessageScreen';
   private static TAG = 'SendMessageScreen';
   private static messageType = [
     ChatMessageBodyType.TXT,
@@ -79,7 +80,7 @@ export class SendMessageScreen extends Component<
     'ChatMessageChatType.GroupChat',
     'ChatMessageChatType.ChatRoom',
   ];
-  public static route = 'SendMessageScreen';
+
   navigation: any;
 
   constructor(props: { navigation: any }) {
