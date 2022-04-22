@@ -1,4 +1,4 @@
-import React, { Component, ReactNode } from 'react';
+import React, { ReactNode } from 'react';
 import { Button, Platform, Text, TextInput, View } from 'react-native';
 import { styleValues } from '../__internal__/Css';
 import ModalDropdown from 'react-native-modal-dropdown';
@@ -17,17 +17,25 @@ import {
   ChatMessageBodyType,
   ChatMessageChatType,
   ChatMessageStatusCallback,
+  ChatConversationType,
+  ChatSearchDirection,
 } from 'react-native-chat-sdk';
 import DocumentPicker, {
   DocumentPickerResponse,
 } from 'react-native-document-picker';
 import RNFS from 'react-native-fs';
+import { datasheet } from '../__default__/Datasheet';
+import {
+  LeafComponentBaseScreen,
+  StateBase,
+} from '../__internal__/LeafComponentBase';
 
-interface State {
+interface State extends StateBase {
   messageType: ChatMessageBodyType;
 
   targetId: string;
   chatType: ChatMessageChatType;
+  convType: ChatConversationType;
 
   // text messge body
   content: string;
@@ -56,15 +64,25 @@ interface State {
   // result
   messageResult: string;
   listenerResult: string;
+  conversationResult: string;
+
+  // last message
+  lastMessage?: ChatMessage;
+  groupId?: string;
+
+  createIfNeed?: boolean;
+
+  withMessage?: boolean;
+
+  pageSize?: number;
+  startMsgId?: string;
+  startAckId?: string;
+  deleteRemoteConversation?: boolean;
 }
 
-export class SendMessageScreen extends Component<
-  { navigation: any },
-  State,
-  any
-> {
+export class SendMessageScreen extends LeafComponentBaseScreen<State> {
   public static route = 'SendMessageScreen';
-  private static TAG = 'SendMessageScreen';
+  protected static TAG = 'SendMessageScreen';
   private static messageType = [
     ChatMessageBodyType.TXT,
     ChatMessageBodyType.IMAGE,
@@ -81,17 +99,18 @@ export class SendMessageScreen extends Component<
     'ChatMessageChatType.ChatRoom',
   ];
 
-  navigation: any;
-
   constructor(props: { navigation: any }) {
     super(props);
-    this.navigation = props.navigation;
     this.state = {
+      sendResult: '',
+      recvResult: '',
       messageType: ChatMessageBodyType.TXT,
       targetId: 'asteriskhx2',
       chatType: ChatMessageChatType.PeerChat,
+      convType: ChatConversationType.PeerChat,
       messageResult: '',
       listenerResult: '',
+      conversationResult: '',
       content: '',
       filePath: '',
       displayName: '',
@@ -99,17 +118,18 @@ export class SendMessageScreen extends Component<
       width: 0,
       height: 0,
       fileSize: 0,
-      duration: 0.0,
-      latitude: '0.0',
-      longitude: '0.0',
-      address: 'beijing',
-      action: 'action',
-      event: 'event',
-      ext: '{ "key": "value" }',
+      duration: datasheet.ChatManager.SendMessage.duration,
+      latitude: datasheet.ChatManager.SendMessage.latitude,
+      longitude: datasheet.ChatManager.SendMessage.longitude,
+      address: datasheet.ChatManager.SendMessage.address,
+      action: datasheet.ChatManager.SendMessage.action,
+      event: datasheet.ChatManager.SendMessage.event,
+      ext: datasheet.ChatManager.SendMessage.ext,
     };
   }
 
-  componentDidMount?(): void {
+  componentDidMount(): void {
+    super.componentDidMount();
     console.log(`${SendMessageScreen.TAG}: componentDidMount: `);
     let msgListener = new (class implements ChatManagerListener {
       that: SendMessageScreen;
@@ -119,7 +139,9 @@ export class SendMessageScreen extends Component<
       onMessagesReceived(messages: ChatMessage[]): void {
         console.log(`${SendMessageScreen.TAG}: onMessagesReceived: `, messages);
         this.that.setState({
-          listenerResult: `onMessagesReceived: ${messages.length}`,
+          listenerResult: `onMessagesReceived: ${messages.length}: ` + messages,
+          lastMessage:
+            messages.length > 0 ? messages[messages.length - 1] : undefined,
         });
       }
       onCmdMessagesReceived(messages: ChatMessage[]): void {
@@ -128,13 +150,14 @@ export class SendMessageScreen extends Component<
           messages
         );
         this.that.setState({
-          listenerResult: `onCmdMessagesReceived: ${messages.length}`,
+          listenerResult:
+            `onCmdMessagesReceived: ${messages.length}: ` + messages,
         });
       }
       onMessagesRead(messages: ChatMessage[]): void {
         console.log(`${SendMessageScreen.TAG}: onMessagesRead: `, messages);
         this.that.setState({
-          listenerResult: `onMessagesRead: ${messages.length}`,
+          listenerResult: `onMessagesRead: ${messages.length}: ` + messages,
         });
       }
       onGroupMessageRead(groupMessageAcks: ChatGroupMessageAck[]): void {
@@ -143,22 +166,26 @@ export class SendMessageScreen extends Component<
           groupMessageAcks
         );
         this.that.setState({
-          listenerResult: `onGroupMessageRead: ${groupMessageAcks.length}`,
+          listenerResult:
+            `onGroupMessageRead: ${groupMessageAcks.length}: ` +
+            groupMessageAcks,
         });
       }
       onMessagesDelivered(messages: ChatMessage[]): void {
         console.log(
-          `${SendMessageScreen.TAG}: onMessagesDelivered: `,
+          `${SendMessageScreen.TAG}: onMessagesDelivered: ${messages.length}: `,
+          messages,
           messages
         );
         this.that.setState({
-          listenerResult: `onMessagesDelivered: ${messages.length}`,
+          listenerResult:
+            `onMessagesDelivered: ${messages.length}: ` + messages,
         });
       }
       onMessagesRecalled(messages: ChatMessage[]): void {
         console.log(`${SendMessageScreen.TAG}: onMessagesRecalled: `, messages);
         this.that.setState({
-          listenerResult: `onMessagesRecalled: ${messages.length}`,
+          listenerResult: `onMessagesRecalled: ${messages.length}: ` + messages,
         });
       }
       onConversationsUpdate(): void {
@@ -177,8 +204,49 @@ export class SendMessageScreen extends Component<
     ChatClient.getInstance().chatManager.addListener(msgListener);
   }
 
-  componentWillUnmount?(): void {
+  componentWillUnmount(): void {
+    super.componentWillUnmount();
     console.log(`${SendMessageScreen.TAG}: componentWillUnmount: `);
+  }
+
+  private createCallback(): ChatMessageStatusCallback {
+    const ret = new (class implements ChatMessageStatusCallback {
+      that: SendMessageScreen;
+      constructor(t: SendMessageScreen) {
+        this.that = t;
+      }
+      onProgress(localMsgId: string, progress: number): void {
+        console.log(
+          `${SendMessageScreen.TAG}: sendMessage: onProgress: `,
+          localMsgId,
+          progress
+        );
+        this.that.setState({
+          messageResult: `onProgress: ${localMsgId}, ${progress}`,
+        });
+      }
+      onError(localMsgId: string, error: ChatError): void {
+        console.log(
+          `${SendMessageScreen.TAG}: sendMessage: onError: `,
+          localMsgId,
+          error
+        );
+        this.that.setState({
+          messageResult: `onError: ${localMsgId}, ${error.code} ${error.description}`,
+        });
+      }
+      onSuccess(message: ChatMessage): void {
+        console.log(
+          `${SendMessageScreen.TAG}: sendMessage: onSuccess: `,
+          message
+        );
+        this.that.setState({
+          messageResult: `onSuccess: ${message.localMsgId}`,
+          lastMessage: message,
+        });
+      }
+    })(this);
+    return ret;
   }
 
   private sendMessage(): void {
@@ -243,49 +311,287 @@ export class SendMessageScreen extends Component<
     } else {
       throw new Error('Not implemented.');
     }
-    const s = new (class implements ChatMessageStatusCallback {
-      that: SendMessageScreen;
-      constructor(t: SendMessageScreen) {
-        this.that = t;
-      }
-      onProgress(localMsgId: string, progress: number): void {
-        console.log(
-          `${SendMessageScreen.TAG}: sendMessage: onProgress: `,
-          localMsgId,
-          progress
-        );
-        this.that.setState({
-          messageResult: `onProgress: ${localMsgId}, ${progress}`,
-        });
-      }
-      onError(localMsgId: string, error: ChatError): void {
-        console.log(
-          `${SendMessageScreen.TAG}: sendMessage: onError: `,
-          localMsgId,
-          error
-        );
-        this.that.setState({
-          messageResult: `onError: ${localMsgId}, ${error.code} ${error.description}`,
-        });
-      }
-      onSuccess(message: ChatMessage): void {
-        console.log(
-          `${SendMessageScreen.TAG}: sendMessage: onSuccess: `,
-          message
-        );
-        this.that.setState({
-          messageResult: `onSuccess: ${message.localMsgId}`,
-        });
-      }
-    })(this);
-    ChatClient.getInstance()
-      .chatManager.sendMessage(msg!, s)
-      .then(() => {
-        console.log(`${SendMessageScreen.TAG}: sendMessage: success`);
-      })
-      .catch((reason: any) => {
-        console.log(`${SendMessageScreen.TAG}: sendMessage: `, reason);
-      });
+
+    this.setState({ lastMessage: msg });
+    this.tryCatch(
+      ChatClient.getInstance().chatManager.sendMessage(
+        msg!,
+        this.createCallback()
+      ),
+      SendMessageScreen.TAG,
+      'sendMessage'
+    );
+  }
+
+  private resendMessage(): void {
+    if (this.state.lastMessage === undefined) {
+      return;
+    }
+    this.tryCatch(
+      ChatClient.getInstance().chatManager.resendMessage(
+        this.state.lastMessage,
+        this.createCallback()
+      ),
+      SendMessageScreen.TAG,
+      'resendMessage'
+    );
+  }
+
+  private sendMessageReadAck(): void {
+    if (this.state.lastMessage === undefined) {
+      return;
+    }
+    this.tryCatch(
+      ChatClient.getInstance().chatManager.sendMessageReadAck(
+        this.state.lastMessage
+      ),
+      SendMessageScreen.TAG,
+      'sendMessageReadAck'
+    );
+  }
+
+  private sendGroupMessageReadAck(): void {
+    if (
+      this.state.lastMessage === undefined ||
+      this.state.groupId === undefined
+    ) {
+      return;
+    }
+    this.tryCatch(
+      ChatClient.getInstance().chatManager.sendGroupMessageReadAck(
+        this.state.lastMessage.msgId,
+        this.state.groupId,
+        { content: 'xxx' }
+      ),
+      SendMessageScreen.TAG,
+      'sendGroupMessageReadAck'
+    );
+  }
+
+  private sendConversationReadAck(): void {
+    this.tryCatch(
+      ChatClient.getInstance().chatManager.sendConversationReadAck(
+        this.state.targetId
+      ),
+      SendMessageScreen.TAG,
+      'sendConversationReadAck'
+    );
+  }
+
+  private recallMessage(): void {
+    if (this.state.lastMessage === undefined) {
+      return;
+    }
+    this.tryCatch(
+      ChatClient.getInstance().chatManager.recallMessage(
+        this.state.lastMessage.msgId
+      ),
+      SendMessageScreen.TAG,
+      'recallMessage'
+    );
+  }
+
+  private getMessage(): void {
+    if (this.state.lastMessage === undefined) {
+      return;
+    }
+    this.tryCatch(
+      ChatClient.getInstance().chatManager.getMessage(
+        this.state.lastMessage.msgId
+      ),
+      SendMessageScreen.TAG,
+      'getMessage'
+    );
+  }
+
+  private getConversation(): void {
+    if (
+      this.state.createIfNeed === undefined ||
+      this.state.lastMessage === undefined
+    ) {
+      return;
+    }
+    this.tryCatch(
+      ChatClient.getInstance().chatManager.getConversation(
+        this.state.targetId,
+        this.state.convType,
+        this.state.createIfNeed
+      ),
+      SendMessageScreen.TAG,
+      'getConversation'
+    );
+  }
+
+  private markAllConversationsAsRead(): void {
+    this.tryCatch(
+      ChatClient.getInstance().chatManager.markAllConversationsAsRead(),
+      SendMessageScreen.TAG,
+      'markAllConversationsAsRead'
+    );
+  }
+
+  private getUnreadMessageCount(): void {
+    this.tryCatch(
+      ChatClient.getInstance().chatManager.getUnreadMessageCount(),
+      SendMessageScreen.TAG,
+      'getUnreadMessageCount'
+    );
+  }
+
+  private updateMessage(): void {
+    if (this.state.lastMessage === undefined) {
+      return;
+    }
+    this.tryCatch(
+      ChatClient.getInstance().chatManager.updateMessage(
+        this.state.lastMessage
+      ),
+      SendMessageScreen.TAG,
+      'updateMessage'
+    );
+  }
+
+  private importMessages(): void {
+    if (this.state.lastMessage === undefined) {
+      return;
+    }
+    let a = [];
+    a.push(this.state.lastMessage);
+    this.tryCatch(
+      ChatClient.getInstance().chatManager.importMessages(a),
+      SendMessageScreen.TAG,
+      'importMessages'
+    );
+  }
+
+  private downloadAttachment(): void {
+    if (
+      this.state.lastMessage === undefined ||
+      this.state.lastMessage.body.type === ChatMessageBodyType.CMD ||
+      this.state.lastMessage.body.type === ChatMessageBodyType.CUSTOM ||
+      this.state.lastMessage.body.type === ChatMessageBodyType.LOCATION ||
+      this.state.lastMessage.body.type === ChatMessageBodyType.TXT
+    ) {
+      return;
+    }
+    this.tryCatch(
+      ChatClient.getInstance().chatManager.downloadAttachment(
+        this.state.lastMessage,
+        this.createCallback()
+      ),
+      SendMessageScreen.TAG,
+      'downloadAttachment'
+    );
+  }
+
+  private downloadThumbnail(): void {
+    if (
+      this.state.lastMessage === undefined ||
+      this.state.lastMessage.body.type === ChatMessageBodyType.CMD ||
+      this.state.lastMessage.body.type === ChatMessageBodyType.CUSTOM ||
+      this.state.lastMessage.body.type === ChatMessageBodyType.LOCATION ||
+      this.state.lastMessage.body.type === ChatMessageBodyType.TXT
+    ) {
+      return;
+    }
+    this.tryCatch(
+      ChatClient.getInstance().chatManager.downloadThumbnail(
+        this.state.lastMessage,
+        this.createCallback()
+      ),
+      SendMessageScreen.TAG,
+      'downloadThumbnail'
+    );
+  }
+
+  private loadAllConversations(): void {
+    this.tryCatch(
+      ChatClient.getInstance().chatManager.loadAllConversations(),
+      SendMessageScreen.TAG,
+      'loadAllConversations'
+    );
+  }
+
+  private getConversationsFromServer(): void {
+    this.tryCatch(
+      ChatClient.getInstance().chatManager.getConversationsFromServer(),
+      SendMessageScreen.TAG,
+      'getConversationsFromServer'
+    );
+  }
+
+  private deleteConversation(): void {
+    if (this.state.withMessage === undefined) {
+      return;
+    }
+    this.tryCatch(
+      ChatClient.getInstance().chatManager.deleteConversation(
+        this.state.targetId,
+        this.state.withMessage
+      ),
+      SendMessageScreen.TAG,
+      'deleteConversation'
+    );
+  }
+
+  private fetchHistoryMessages(): void {
+    if (this.state.lastMessage === undefined) {
+      return;
+    }
+    this.tryCatch(
+      ChatClient.getInstance().chatManager.fetchHistoryMessages(
+        this.state.targetId,
+        this.state.convType,
+        this.state.pageSize,
+        this.state.startMsgId
+      ),
+      SendMessageScreen.TAG,
+      'fetchHistoryMessages'
+    );
+  }
+
+  private searchMsgFromDB(): void {
+    this.tryCatch(
+      ChatClient.getInstance().chatManager.searchMsgFromDB(
+        'sdf',
+        0,
+        10,
+        this.state.targetId,
+        ChatSearchDirection.DOWN
+      ),
+      SendMessageScreen.TAG,
+      'searchMsgFromDB'
+    );
+  }
+
+  private fetchGroupAcks(): void {
+    if (this.state.lastMessage === undefined) {
+      return;
+    }
+    this.tryCatch(
+      ChatClient.getInstance().chatManager.fetchGroupAcks(
+        this.state.lastMessage.msgId,
+        this.state.startAckId,
+        this.state.pageSize
+      ),
+      SendMessageScreen.TAG,
+      'fetchGroupAcks'
+    );
+  }
+
+  private deleteRemoteConversation(): void {
+    if (this.state.lastMessage === undefined) {
+      return;
+    }
+    this.tryCatch(
+      ChatClient.getInstance().chatManager.deleteRemoteConversation(
+        this.state.targetId,
+        this.state.convType,
+        this.state.deleteRemoteConversation
+      ),
+      SendMessageScreen.TAG,
+      'deleteRemoteConversation'
+    );
   }
 
   private renderMessage(messageType: ChatMessageBodyType): ReactNode {
@@ -978,7 +1284,8 @@ export class SendMessageScreen extends Component<
   }
 
   render(): ReactNode {
-    const { messageType, messageResult, listenerResult } = this.state;
+    const { messageType, messageResult, listenerResult, conversationResult } =
+      this.state;
     return (
       <View style={styleValues.containerColumn}>
         <View style={styleValues.containerRow}>
@@ -1016,14 +1323,21 @@ export class SendMessageScreen extends Component<
 
         {this.renderMessage(messageType)}
 
+        {this.renderResult()}
+
         <View style={styleValues.containerRow}>
           <Text style={styleValues.textTipStyle}>
-            Send result: {messageResult}
+            msg_cb_result: {messageResult}
           </Text>
         </View>
         <View style={styleValues.containerRow}>
           <Text style={styleValues.textTipStyle}>
-            Listener result: {listenerResult}
+            msg_li_result: {listenerResult}
+          </Text>
+        </View>
+        <View style={styleValues.containerRow}>
+          <Text style={styleValues.textTipStyle}>
+            conv_li_result: {conversationResult}
           </Text>
         </View>
       </View>

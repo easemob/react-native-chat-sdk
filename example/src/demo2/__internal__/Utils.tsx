@@ -4,8 +4,11 @@ export const Stack = createNativeStackNavigator();
 
 export type NavigationComponentType = (params: {
   navigation: any;
-}) => JSX.Element;
+}) => React.ReactElement<{ navigation: any }>;
 export type LeafComponentType = React.ComponentClass<{ navigation: any }>;
+export type LeafComponentType2 = (params: {
+  navigation: any;
+}) => React.ComponentClass<{ navigation: any }>;
 
 const screens: NavigationComponentType[] = [];
 
@@ -46,7 +49,7 @@ export interface ScreenComponent {
   /**
    * is naviagtion screen
    */
-  isNaviagtion: boolean;
+  isNavigation: boolean;
   /**
    * parent screen
    */

@@ -10,43 +10,43 @@ import { GroupManagerRoute, GroupManagerScreen } from '../GroupManager';
 import type { ScreenComponent } from './Utils';
 
 export const screenComponents: ScreenComponent[] = [
-  { route: GroupManagerRoute, screen: GroupManagerScreen, isNaviagtion: true },
-  { route: ChatManagerRoute, screen: ChatManagerScreen, isNaviagtion: true },
-  { route: ClientRoute, screen: ClientScreen, isNaviagtion: true },
+  { route: GroupManagerRoute, screen: GroupManagerScreen, isNavigation: true },
+  { route: ChatManagerRoute, screen: ChatManagerScreen, isNavigation: true },
+  { route: ClientRoute, screen: ClientScreen, isNavigation: true },
   {
     route: SendMessageScreen.route,
     screen: SendMessageScreen,
-    isNaviagtion: false,
+    isNavigation: false,
     parentScreen: ChatManagerRoute,
   },
   {
     route: ClientOthersScreen.route,
     screen: ClientOthersScreen,
-    isNaviagtion: false,
+    isNavigation: false,
     parentScreen: ClientRoute,
   },
   {
     route: CreateAccountScreen.route,
     screen: CreateAccountScreen,
-    isNaviagtion: false,
+    isNavigation: false,
     parentScreen: ClientRoute,
   },
   {
     route: GetStateScreen.route,
     screen: GetStateScreen,
-    isNaviagtion: false,
+    isNavigation: false,
     parentScreen: ClientRoute,
   },
   {
     route: KickScreen.route,
     screen: KickScreen,
-    isNaviagtion: false,
+    isNavigation: false,
     parentScreen: ClientRoute,
   },
   {
     route: LoginLogoutScreen.route,
     screen: LoginLogoutScreen,
-    isNaviagtion: false,
+    isNavigation: false,
     parentScreen: ClientRoute,
   },
 ];

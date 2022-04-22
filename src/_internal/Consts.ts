@@ -20,7 +20,7 @@ export const MethodTypegetCurrentUser = 'getCurrentUser';
 export const MethodTypegetToken = 'getToken';
 export const MethodTypeloginWithAgoraToken = 'loginWithAgoraToken';
 export const MethodTypeisConnected = 'isConnected';
-export const MethodTyperefreshAgoraToken = 'refreshAgoraToken';
+export const MethodTyperenewToken = 'renewToken';
 
 /// ChatClient listener
 export const MethodTypeonConnected = 'onConnected';

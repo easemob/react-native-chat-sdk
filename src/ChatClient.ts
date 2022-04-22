@@ -35,7 +35,7 @@ import {
   MethodTypeonSendDataToFlutter,
   MethodTypeonTokenDidExpire,
   MethodTypeonTokenWillExpire,
-  MethodTyperefreshAgoraToken,
+  MethodTyperenewToken,
 } from './_internal/Consts';
 import { Native } from './_internal/Native';
 
@@ -500,8 +500,8 @@ export class ChatClient extends Native {
    */
   public async renewAgoraToken(agoraToken: string): Promise<void> {
     console.log(`${ChatClient.TAG}: renewAgoraToken: ${agoraToken}`);
-    let result: any = await Native._callMethod(MethodTyperefreshAgoraToken, {
-      [MethodTyperefreshAgoraToken]: {
+    let result: any = await Native._callMethod(MethodTyperenewToken, {
+      [MethodTyperenewToken]: {
         agoraToken: agoraToken,
       },
     });
@@ -543,7 +543,9 @@ export class ChatClient extends Native {
   public async changeAppKey(newAppKey: string): Promise<void> {
     console.log(`${ChatClient.TAG}: changeAppKey: ${newAppKey}`);
     let r: any = await Native._callMethod(MethodTypechangeAppKey, {
-      appKey: newAppKey,
+      [MethodTypechangeAppKey]: {
+        appKey: newAppKey,
+      },
     });
     ChatClient.hasErrorFromResult(r);
   }
@@ -590,11 +592,13 @@ export class ChatClient extends Native {
       }
     );
     ChatClient.hasErrorFromResult(result);
-    let r = new Array<ChatDeviceInfo>(1);
+    let r: ChatDeviceInfo[] = [];
     let list: Array<any> = result?.[MethodTypegetLoggedInDevicesFromServer];
-    list.forEach((element) => {
-      r.push(new ChatDeviceInfo(element));
-    });
+    if (list) {
+      list.forEach((element) => {
+        r.push(new ChatDeviceInfo(element));
+      });
+    }
     return r;
   }
 

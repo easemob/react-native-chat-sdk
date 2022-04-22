@@ -50,6 +50,11 @@ $ yarn lint
 # fix formatting errors, run the following
 $ yarn lint --fix
 
+# clean watchman for ios
+watchman watch-del-all
+rm -rf node_modules
+yarn install
+rm -rf /tmp/metro-*
 
 
 # Show the development menu

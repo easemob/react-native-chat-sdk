@@ -8,15 +8,15 @@
 
 - MacOS 10.15.7 或以上版本
 - Xcode 12.4 或以上版本，包括命令行工具
-- Android Studio 4.0 或以上版本，包括 JDK1.8 以上版本
+- Android Studio 4.0 或以上版本，包括 JDK 1.8 或以上版本
 - NodeJs 16 或以上版本，包含 npm 包管理工具
-- Cocoapods 包管理工具
+- CocoaPods 包管理工具
 - Yarn 编译运行工具
 - Watchman 调试工具
 - react-native-cli 命令行工具
-- ios-deploy 非Xcode编译react-native工具（可选）
-- react 版本不低于16.13.1
-- react-native 版本不低于0.63.4
+- （可选）ios-deploy，iOS 平台的编译工具
+- react 16.13.1 或以上版本
+- react-native 0.63.4 或以上版本
 
 ### 配置环境
 
@@ -24,9 +24,9 @@
 
 ## 注册开发者账号
 
-注册开发者账号，以及获取`appkey`获取，[传送门](https://console.easemob.com/user/login)。
+注册开发者账号以及获取 App Key，[传送门](https://console.easemob.com/user/login)。
 
-## 创建`react-native app`项目
+## 创建 `react-native app` 项目
 
 ```sh
 npx react-native init rn_demo
@@ -34,20 +34,20 @@ cd rn_demo
 yarn
 ```
 
-## 集成`IM react-native SDK`
+## 集成 `IM react-native SDK`
 
 ```sh
 yarn add react-native-chat-sdk
 ```
-如果是第一次运行`yarn`则还是额外执行一下命令:   
+如果是第一次运行 `yarn` 则还需执行以下命令:   
 ```sh
 cd node_modules/react-native-chat-sdk/native_src/cpp 
 sh generate.sh --type rn
 ```
 
-## API实现样例
+## API 实现样例
 
-1. 初始化
+1. 初始化。
 
 ```typescript
 ChatClient.getInstance().init(
@@ -55,7 +55,7 @@ ChatClient.getInstance().init(
 );
 ```
 
-2. 用户登录
+2. 用户登录。
 
 ```typescript
 ChatClient.getInstance()
@@ -68,7 +68,7 @@ ChatClient.getInstance()
   });
 ```
 
-3. 接收消息（可选）
+3. （可选）接收消息。
 
 ```typescript
 let msgListener = new (class ss implements ChatManagerListener {
@@ -106,7 +106,7 @@ let msgListener = new (class ss implements ChatManagerListener {
 ChatClient.getInstance().chatManager.addListener(msgListener);
 ```
 
-4. 发送文本消息
+4. 发送文本消息。
 
 ```typescript
 let msg = ChatMessage.createTextMessage(
@@ -153,7 +153,7 @@ ChatClient.getInstance()
   .catch(() => console.log('send failed'));
 ```
 
-5. 退出登录
+5. 退出登录。
 
 ```typescript
 ChatClient.getInstance()
@@ -166,11 +166,11 @@ ChatClient.getInstance()
   });
 ```
 
-## demo代码样例
+## demo 代码样例
 
-1. 删除文件`App.js`里面的所有源码
+1. 删除文件 `App.js` 中的所有源码。
    
-2. 添加依赖导入
+2. 导入依赖。 
 ```typescript
 import {
   SafeAreaView,
@@ -188,10 +188,11 @@ import {
 } from 'react-native-chat-sdk';
 ```
 
-3. 添加app
+3. 添加 app。
+
 ```typescript
 const App = () => {
-  // TODO: 添加私有数据
+  // TODO: 添加私有数据。
   const title = 'AgoraChatQuickstart';
   const [username, setUsername] = React.useState('');
   const [password, setPassword] = React.useState('');
@@ -199,14 +200,14 @@ const App = () => {
   const [content, setContent] = React.useState('');
   const [logText, setWarnText] = React.useState('Show log area');
 
-  // TODO: 添加调用接口
+  // TODO: 添加调用接口。
 
-  // TODO: 添加UI界面
+  // TODO: 添加 UI 界面。
 
 }
 ```
 
-4. 在`App`对象里面添加UI界面
+4. 在 `App` 对象里面添加 UI 代码。
 ```typescript
 return (
     <SafeAreaView>
@@ -271,7 +272,7 @@ return (
   );
 ```
 
-3. 在`App`对象里面添加调用接口
+3. 在 `App` 对象中添加调用接口。
 ```typescript
 const login = () => {
   setWarnText(`username:${username},password:${password}`);
@@ -338,37 +339,42 @@ const sendmsg = () => {
 };
 ```
 
-4. 编译构建和运行
-  * android设备: **6.0**或以上的**真机**
-    1. 设置真机为开发者的可调式模式
-    2. 连接android真机设备到Mac系统
-    3. 启动`android studio app`，打开`android`文件夹的`rn_demo`项目，等待sync完成
-    4. 在`android/app/src/main/AndroidManifest.xml`文件中，设置权限: 包括网络权限、文件读写、录音、相册等。
-    5. 在`terminal`命令行执行`adb reverse tcp:8081 tcp:8081`，开启数据转发
-    6. 手动启动服务(android项目构建一般会不自动启动服务) 所以执行命令 `yarn start`
-    7. 使用android studio app 构建并运行`rn_demo`。
-  * ios设备: **11.0**版本或以上的**真机**
-    1. iphone真机设置为开发者模式，
-    2. 连接ios真机设备到Mac系统，选择信任该Mac系统
-    3. 第一次或者更新项目之后，需要执行`cd ios && pod install --repo-update`
-    4. 启动`xcode app`，打开`ios`文件夹下的`rn_demo`项目
-    5. 在`info`中添加相应权限: 包括网络权限、文件读写、录音、相册等。
-    6. 由于是真机，需要设置app签名
-    7. 在`general`中设置`iphone`开发目标平台`12.0`
+4. 编译构建和运行。
+  * Android 设备: **6.0**或以上的**真机**
+    1. 设置真机为开发者模式。
+    2. 连接 android 真机设备到 Mac 系统。
+    3. 启动 `android studio app`，打开 `android` 文件夹的 `rn_demo` 项目，等待 sync 完成。
+    4. 在 `android/app/src/main/AndroidManifest.xml` 文件中，设置权限: 包括网络权限、文件读写、录音、相册等。
+    5. 在 `terminal` 命令行执行`adb reverse tcp:8081 tcp:8081`，开启数据转发。
+    6. 运行 `yarn start` 命令启动服务。Android 项目构建一般会不自动启动服务。
+    7. 使用 Android Studio app 构建并运行 `rn_demo`。
+
+  * iOS 设备：**11.0** 或以上**真机**
+    1. iPhone 真机设置为开发者模式。 
+    2. 连接 iOS 真机设备到 Mac 系统，选择信任该 Mac 系统。
+    3. 首次创建或者更新项目，需要执行 `cd ios && pod install --repo-update`。
+    4. 启动 `xcode app`，打开 `ios` 文件夹下的 `rn_demo` 项目。
+    5. 在 `info` 中添加相应权限: 网络权限、文件读写、录音、相册权限等。
+    6. 由于是真机，需要设置 app 签名。
+    7. 在 `general` 中设置 `iphone` 开发目标平台 `11.0`.
     8. 在`xcode app`中，构建并运行`rn_demo`项目。
-  * 使用vscode app进行构建和运行，上面的需求条件也**必须满足**，不然也无法正常构建和运行。
-    1. 在命令行执行`yarn start`启动服务
-    2. 构建并运行android: 设置数据转发，然后在`terminal`执行`yarn android`命令。(android自动选择已连接的真机)
-    3. 构建并运行ios: 在`terminal`执行`npx react-native run-ios --device ${iphone-name}`命令。(ios默认不会选择已连接的真机，所以不能使用命令`yarn ios`)
+
+  * 使用 vscode app 进行构建和运行。这种情况下，某些操作仍需在 Xcode 或 Android Studio 中执行。
+    1. 在命令行界面执行 `yarn start` 启动服务。
+    2. 构建并运行 android 的 `rn_demo`项目: 设置数据转发，然后在命令行界面执行 `yarn android` 命令。对于 Android，自动选择已连接的真机。
+    3. 构建并运行 ios 的 `rn_demo`项目: 在在命令行界面运行 `npx react-native run-ios --device ${iphone-name}` 命令。iOS 默认不会选择已连接的真机，所以不能使用命令 `yarn ios`。
 
 ## 快速 demo 体验
 
 可以下载源码运行 example 下的 demo，进行 **`api references`** 体验。 [传送门](https://github.com/easemob/react-native-chat-sdk)。  
-可以下载 单独运行的 demo，进行 **集成** 体验。[传送门](https://github.com/AsteriskZuo/test_chat_sdk)。    
+可以下载单独运行的 demo，进行 **集成** 体验。[传送门](https://github.com/AsteriskZuo/test_chat_sdk)。    
 
 ## Contributing
 
-See the [contributing guide](../CONTRIBUTING.md) to learn how to contribute to the repository and the development workflow.
+See the [contributing guide](./CONTRIBUTING.md) to learn how to contribute to the repository and the development workflow.
+
+## Changelog
+See the [change log](./CHANGELOG.md).  
 
 ## License
 

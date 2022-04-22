@@ -11,12 +11,13 @@ import {
   unregisterComponents,
 } from './__internal__/Utils';
 import { styleValues } from './__internal__/Css';
+import { datasheet } from './__default__/Datasheet';
 
 function HomeScreen(params: { navigation: any }) {
   return (
     <ScrollView>
       {getComponentList()
-        .filter((component: ScreenComponent) => component.isNaviagtion)
+        .filter((component: ScreenComponent) => component.isNavigation)
         .map((component: ScreenComponent) => {
           console.log(`route: ${component.route}`);
           return (
@@ -28,6 +29,12 @@ function HomeScreen(params: { navigation: any }) {
             </View>
           );
         })}
+      <View key="ReactComponent2" style={styleValues.scrollView}>
+        <Button
+          title="ReactComponent2"
+          onPress={() => params.navigation?.navigate('ReactComponent2')}
+        />
+      </View>
     </ScrollView>
   );
 }
@@ -59,7 +66,7 @@ function App() {
 }
 
 ChatClient.getInstance().init(
-  new ChatOptions({ appKey: 'easemob-demo#easeim', autoLogin: false })
+  new ChatOptions({ appKey: datasheet.AppKey[0], autoLogin: false })
 );
 
 unregisterComponents();

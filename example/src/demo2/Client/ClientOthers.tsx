@@ -79,29 +79,6 @@ export class ClientOthersScreen extends Component<
       });
   }
 
-  private getLoggedInDevicesFromServer(): void {
-    ChatClient.getInstance()
-      .getLoggedInDevicesFromServer(this.state.username, this.state.password)
-      .then((value: any) => {
-        console.log(
-          `${ClientOthersScreen.TAG}: getLoggedInDevicesFromServer: success`,
-          value
-        );
-        this.setState({
-          result: `getLoggedInDevicesFromServer: success` + value,
-          devices: JSON.stringify(value),
-        });
-      })
-      .catch((reason: any) => {
-        console.log(
-          `${ClientOthersScreen.TAG}: getLoggedInDevicesFromServer: fail`
-        );
-        this.setState({
-          result: `getLoggedInDevicesFromServer: fail: ${reason.code} ${reason.description}`,
-        });
-      });
-  }
-
   componentDidMount?(): void {
     console.log(`${ClientOthersScreen.TAG}: componentDidMount: `);
   }
@@ -111,7 +88,7 @@ export class ClientOthersScreen extends Component<
   }
 
   render(): ReactNode {
-    const { result, agoraToken, newAppKey, username, password } = this.state;
+    const { result, agoraToken, newAppKey } = this.state;
     return (
       <ScrollView>
         <View style={styleValues.containerColumn}>
@@ -164,36 +141,6 @@ export class ClientOthersScreen extends Component<
               }}
             >
               compressLogs
-            </Button>
-          </View>
-          <View style={styleValues.containerRow}>
-            <Text style={styleValues.textStyle}>u:</Text>
-            <TextInput
-              style={styleValues.textInputStyle}
-              onChangeText={(text: string) => {
-                // console.log(`${ClientOthersScreen.TAG}: `, text);
-                this.setState({ username: text });
-              }}
-            >
-              {username}
-            </TextInput>
-            <Text style={styleValues.textStyle}>p:</Text>
-            <TextInput
-              style={styleValues.textInputStyle}
-              onChangeText={(text: string) => {
-                // console.log(`${ClientOthersScreen.TAG}: `, text);
-                this.setState({ password: text });
-              }}
-            >
-              {password}
-            </TextInput>
-            <Button
-              title="devices"
-              onPress={() => {
-                this.getLoggedInDevicesFromServer();
-              }}
-            >
-              getLoggedInDevicesFromServer
             </Button>
           </View>
           <View style={styleValues.containerColumn}>

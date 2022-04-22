@@ -8,7 +8,7 @@ import {
   NativeSyntheticEvent,
   ScrollView,
 } from 'react-native';
-import { ChatClient } from 'react-native-chat-sdk';
+import { ChatClient, ChatDeviceInfo } from 'react-native-chat-sdk';
 import { styleValues } from '../__internal__/Css';
 
 interface State {
@@ -16,6 +16,7 @@ interface State {
   username: string;
   password: string;
   resource: string;
+  devices: string;
 }
 
 export class KickScreen extends Component<{ navigation: any }, State, any> {
@@ -31,6 +32,7 @@ export class KickScreen extends Component<{ navigation: any }, State, any> {
       resource: '',
       username: 'asteriskhx1',
       password: 'qwer',
+      devices: '',
     };
   }
 
@@ -64,6 +66,33 @@ export class KickScreen extends Component<{ navigation: any }, State, any> {
       });
   }
 
+  private getLoggedInDevicesFromServer(): void {
+    ChatClient.getInstance()
+      .getLoggedInDevicesFromServer(this.state.username, this.state.password)
+      .then((value: Array<ChatDeviceInfo>) => {
+        console.log(
+          `${KickScreen.TAG}: getLoggedInDevicesFromServer: success`,
+          value
+        );
+        this.setState({
+          result:
+            `getLoggedInDevicesFromServer: success` + JSON.stringify(value),
+          devices: JSON.stringify(value),
+        });
+        if ((value as any[]).length > 0) {
+          this.setState({
+            resource: value[0].resource,
+          });
+        }
+      })
+      .catch((reason: any) => {
+        console.log(`${KickScreen.TAG}: getLoggedInDevicesFromServer: fail`);
+        this.setState({
+          result: `getLoggedInDevicesFromServer: fail: ${reason.code} ${reason.description}`,
+        });
+      });
+  }
+
   componentDidMount?(): void {
     console.log(`${KickScreen.TAG}: componentDidMount: `);
   }
@@ -77,6 +106,36 @@ export class KickScreen extends Component<{ navigation: any }, State, any> {
     return (
       <ScrollView>
         <View style={styleValues.containerColumn}>
+          <View style={styleValues.containerRow}>
+            <Text style={styleValues.textStyle}>u:</Text>
+            <TextInput
+              style={styleValues.textInputStyle}
+              onChangeText={(text: string) => {
+                // console.log(`${ClientOthersScreen.TAG}: `, text);
+                this.setState({ username: text });
+              }}
+            >
+              {username}
+            </TextInput>
+            <Text style={styleValues.textStyle}>p:</Text>
+            <TextInput
+              style={styleValues.textInputStyle}
+              onChangeText={(text: string) => {
+                // console.log(`${ClientOthersScreen.TAG}: `, text);
+                this.setState({ password: text });
+              }}
+            >
+              {password}
+            </TextInput>
+            <Button
+              title="devices"
+              onPress={() => {
+                this.getLoggedInDevicesFromServer();
+              }}
+            >
+              getLoggedInDevicesFromServer
+            </Button>
+          </View>
           <View style={styleValues.containerRow}>
             <Text style={styleValues.textStyle}>username: </Text>
             <TextInput
@@ -136,7 +195,9 @@ export class KickScreen extends Component<{ navigation: any }, State, any> {
             </Button>
           </View>
           <View style={styleValues.containerColumn}>
-            <Text style={styleValues.textTipStyle}>result: {result}</Text>
+            <Text selectable={true} style={styleValues.textTipStyle}>
+              result: {result}
+            </Text>
           </View>
         </View>
       </ScrollView>

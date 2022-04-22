@@ -441,8 +441,17 @@ export class ChatManager extends Native {
     callback: ChatMessageStatusCallback
   ): Promise<void> {
     console.log(
-      `${ChatManager.TAG}: resendMessage: ${message.msgId}, ${message.localTime}`
+      `${ChatManager.TAG}: resendMessage: ${message.msgId}, ${message.localTime}, ${message.status}`
     );
+    if (
+      message.msgId !== message.localMsgId &&
+      message.status === ChatMessageStatus.SUCCESS
+    ) {
+      callback.onError(
+        message.localMsgId,
+        new ChatError({ code: 1, description: 'message has send success' })
+      );
+    }
     message.status = ChatMessageStatus.PROGRESS;
     ChatManager.handleSendMessageCallback(this, message, callback);
     let r: any = await Native._callMethod(MethodTyperesendMessage, {
@@ -677,13 +686,18 @@ export class ChatManager extends Native {
    * You can call the method again if the attachment download fails.
    *
    * @param message The message with the attachment that is to be downloaded.
+   * @param callback The listener that Listen for message changes.
    *
    * @throws Error, see {@link ChatError}
    */
-  public async downloadAttachment(message: ChatMessage): Promise<void> {
+  public async downloadAttachment(
+    message: ChatMessage,
+    callback?: ChatMessageStatusCallback
+  ): Promise<void> {
     console.log(
       `${ChatManager.TAG}: downloadAttachment: ${message.msgId}, ${message.localTime}`
     );
+    ChatManager.handleSendMessageCallback(this, message, callback);
     let r: any = await Native._callMethod(MethodTypedownloadAttachment, {
       [MethodTypedownloadAttachment]: {
         message: message,
@@ -699,10 +713,14 @@ export class ChatManager extends Native {
    *
    * @throws Error, see {@link ChatError}
    */
-  public async downloadThumbnail(message: ChatMessage): Promise<void> {
+  public async downloadThumbnail(
+    message: ChatMessage,
+    callback?: ChatMessageStatusCallback
+  ): Promise<void> {
     console.log(
       `${ChatManager.TAG}: downloadThumbnail: ${message.msgId}, ${message.localTime}`
     );
+    ChatManager.handleSendMessageCallback(this, message, callback);
     let r: any = await Native._callMethod(MethodTypedownloadThumbnail, {
       [MethodTypedownloadThumbnail]: {
         message: message,
