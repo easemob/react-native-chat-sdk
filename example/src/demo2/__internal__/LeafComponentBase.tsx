@@ -59,10 +59,10 @@ export abstract class LeafComponentBaseScreen<
   protected renderResult(): ReactNode[] {
     const { sendResult, recvResult } = this.state;
     return [
-      <View style={styleValues.containerRow}>
+      <View key="sendResult" style={styleValues.containerRow}>
         <Text style={styleValues.textTipStyle}>send_result: {sendResult}</Text>
       </View>,
-      <View style={styleValues.containerRow}>
+      <View key="recvResult" style={styleValues.containerRow}>
         <Text style={styleValues.textTipStyle}>recv_result: {recvResult}</Text>
       </View>,
     ];

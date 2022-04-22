@@ -290,7 +290,7 @@ export class ChatClient extends Native {
   }
 
   /**
-   * Get SDK Configurations. Make sure to set the param, see {@link EMOptions}.
+   * Gets the configurations. Make sure to set the param, see {@link EMOptions}.
    *
    * @returns The configurations.
    */
@@ -299,38 +299,44 @@ export class ChatClient extends Native {
   }
 
   /**
-   * Get SDK version.
+   * Gets the SDK version.
+   *
+   * @returns The SDK version.
    */
   public get sdkVersion(): string {
     return this._sdkVersion;
   }
 
   /**
-   * Get current user name.
+   * Gets the current logged-in user ID.
    *
    * The value is valid after successful login.
+   * @returns The current logged-in user ID.
    */
   public get currentUserName(): string {
     return this._currentUsername;
   }
 
   /**
-   * Get React-native SDK version.
+   * Gets the version of the React Native SDK.
+   *
+   * @returns The version of the React Native SDK.
    */
   public get rnSdkVersion(): string {
     return this._sdkVersion;
   }
 
   /**
-   * Make sure to initialize the SDK in the main thread. Make sure to set the param, see {@link ChatOptions}.
+   * Initializes the SDK.
+   * Make sure to initialize the SDK in the main thread.
    *
-   * **note**
+   * **Note**
    *
    * **This method must be called before any method can be called.**
    *
-   * @param options The configurations.
+   * @param options The options for SDK initialization. The options are required. See {@link ChatOptions}.
    *
-   * @throws Error, see {@link ChatError}
+   * @throws A description of the exception. See {@link ChatError}.
    */
   public async init(options: ChatOptions): Promise<void> {
     console.log(`${ChatClient.TAG}: init: ${options}`);
@@ -340,13 +346,13 @@ export class ChatClient extends Native {
   }
 
   /**
-   * Check whether you have successfully connected to the server.
+   * Checks whether the SDK is connected to the chat server.
    *
-   * @returns
-   * - `true`: The server has been connected.
-   * - `false`: The server is not connected.
+   * @returns Whether the SDK is connected to the chat server.
+   *         - `true`: Yes.
+   *         - `false`: No.
    *
-   * @throws Error, see {@link ChatError}
+   * @throws A description of the exception. See {@link ChatError}.
    */
   public async isConnected(): Promise<boolean> {
     console.log(`${ChatClient.TAG}: isConnected: `);
@@ -357,10 +363,10 @@ export class ChatClient extends Native {
   }
 
   /**
-   * Get current user name from native. Get cache see {@link currentUserName}
-   * @returns The user name.
+   * Gets the current logged-in user ID from the server. To get it from the memory, see {@link currentUserName}.
+   * @returns The logged-in user ID.
    *
-   * @throws Error, see {@link ChatError}
+   * @throws A description of the exception. See {@link ChatError}.
    */
   public async getCurrentUsername(): Promise<string> {
     console.log(`${ChatClient.TAG}: getCurrentUsername: `);
@@ -376,13 +382,13 @@ export class ChatClient extends Native {
   }
 
   /**
-   * Get login state.
+   * Checks whether the user is logged into the app.
    *
    * @returns
    * - `true`: In automatic login mode, the value is true before successful login and false otherwise.
    * - `false`: In non-automatic login mode, the value is false.
    *
-   * @throws Error, see {@link ChatError}
+   * @throws A description of the exception. See {@link ChatError}.
    */
   public async isLoginBefore(): Promise<boolean> {
     console.log(`${ChatClient.TAG}: isLoginBefore: `);
@@ -393,11 +399,11 @@ export class ChatClient extends Native {
   }
 
   /**
-   * Get login access token.
+   * Gets the token for login.
    *
-   * @returns The token value.
+   * @returns The token.
    *
-   * @throws Error, see {@link ChatError}
+   * @throws A description of the exception. See {@link ChatError}.
    */
   public async getAccessToken(): Promise<string> {
     console.log(`${ChatClient.TAG}: isLoginBefore: `);
@@ -408,12 +414,18 @@ export class ChatClient extends Native {
   }
 
   /**
-   * Register a new user with your chat network.
+   * Creates a new user.
    *
-   * @param username The username. The maximum length is 64 characters. Ensure that you set this parameter. Supported characters include the 26 English letters (a-z), the ten numbers (0-9), the underscore (_), the hyphen (-), and the English period (.). This parameter is case insensitive, and upper-case letters are automatically changed to low-case ones. If you want to set this parameter as a regular expression, set it as ^[a-zA-Z0-9_-]+$.
-   * @param password The password. The maximum length is 64 characters. Ensure that you set this parameter.
+   * @param username The user ID.
+   *                 This parameter is required. The user ID can be a maximum of 64 characters of the following types:
+   *                 - 26 English letters (a-z)
+   *                 - 10 numbers (0-9),
+   *                 - "_", "-", "."
+   *                 This parameter is case insensitive and upper-case letters are automatically changed to low-case ones.
+   *                 Also, you can set this parameter with a regular expression in the format of ^[a-zA-Z0-9_-]+$.
+   * @param password The password. It is required. The password can contain a maximum of 64 characters.
    *
-   * @throws Error, see {@link ChatError}
+   * @throws A description of the exception. See {@link ChatError}.
    */
   public async createAccount(
     username: string,
@@ -430,13 +442,15 @@ export class ChatClient extends Native {
   }
 
   /**
-   * An app user logs in to the chat server with a password or token.
+   * Logs into the chat server with a password or a token.
    *
-   * @param userName The username, see {@link createAccount}.
-   * @param pwdOrToken The password or token, see {@link createAccount} or {@link getAccessToken}
-   * @param isPassword The password or token flag. true is the password, otherwise it is the token.
+   * @param userName The user ID. See {@link createAccount}.
+   * @param pwdOrToken The password or token. See {@link createAccount} or {@link getAccessToken}
+   * @param isPassword  Whether to log in with a password or a token.
+   *  - `true`: A token is used.
+   *  - (Default) `false`: A password is used.
    *
-   * @throws Error, see {@link ChatError}
+   * @throws A description of the exception. See {@link ChatError}.
    */
   public async login(
     userName: string,
@@ -462,12 +476,13 @@ export class ChatClient extends Native {
   }
 
   /**
-   * An app user logs in to the chat server with a agora token.
+   * Logs into the chat server with the user ID and an Agora token.
+   * This method supports automatic login.
    *
-   * @param userName The username, see {@link createAccount}.
-   * @param agoraToken The token from agora api.
+   * @param userName The user ID. See {@link createAccount}.
+   * @param agoraToken The Agora token.
    *
-   * @throws Error, see {@link ChatError}
+   * @throws A description of the exception. See {@link ChatError}.
    */
   public async loginWithAgoraToken(
     userName: string,
@@ -487,16 +502,13 @@ export class ChatClient extends Native {
   }
 
   /**
-   * Renew token.
+   * Renews the Agora token.
    *
-   * When a user is in the Agora token login state and receives a callback
-   * notification of the token is to be expired in the {@link ChatConnectionListener}
-   * implementation class, this API can be called to update the token to
-   * avoid unknown problems caused by the token invalidation.
+   * If you log in with an Agora token and are notified by a callback method {@link ChatConnectionListener} that the token is to be expired, you can call this method to update the token to avoid unknown issues caused by an invalid token.
    *
-   * @param agoraToken The new token.
+   * @param agoraToken The new Agora token.
    *
-   * @throws Error, see {@link ChatError}
+   * @throws A description of the exception. See {@link ChatError}.
    */
   public async renewAgoraToken(agoraToken: string): Promise<void> {
     console.log(`${ChatClient.TAG}: renewAgoraToken: ${agoraToken}`);
@@ -509,12 +521,12 @@ export class ChatClient extends Native {
   }
 
   /**
-   * An app user logs out and returns the result.
+   * Logs out of the chat app.
    *
-   * @param unbindDeviceToken Whether to unbind the token.
-   * - `true`: means to unbind the device token when logout.
-   * - `false`: means to not unbind the device token when logout.
-   * @throws Error, see {@link ChatError}
+   * @param unbindDeviceToken Whether to unbind the token upon logout.
+   * - (Default) `true`: Yes.
+   * - `false`: No.
+   * @throws A description of the exception. See {@link ChatError}.
    */
   public async logout(unbindDeviceToken: boolean = true): Promise<void> {
     console.log(`${ChatClient.TAG}: logout: ${unbindDeviceToken}`);
@@ -528,17 +540,17 @@ export class ChatClient extends Native {
   }
 
   /**
-   * Update the App Key, which is the unique identifier used to access Agora Chat.
+   * Updates the App Key, which is the unique identifier used to access Chat service.
    *
-   * You retrieve the new App Key from Agora Console.
+   * You can retrieve the new App Key from the Console.
    *
-   * As this key controls all access to Agora Chat for your app, you can only update the key when the current user is logged out.
+   * As this key controls all access to Chat service for your app, you can only update the key when the current user is logged out.
    *
-   * Also, you can set App Key by the following method when logged out {@link ChatOptions#appKey}.
+   * Also, you can set App Key by the following method when logged out: {@link ChatOptions#appKey}.
    *
-   * @param newAppKey The App Key, make sure to set the param.
+   * @param newAppKey The App Key. It is required
    *
-   * @throws Error, see {@link ChatError}
+   * @throws A description of the exception. See {@link ChatError}.
    */
   public async changeAppKey(newAppKey: string): Promise<void> {
     console.log(`${ChatClient.TAG}: changeAppKey: ${newAppKey}`);
@@ -553,11 +565,11 @@ export class ChatClient extends Native {
   /**
    * Compresses the debug log into a gzip archive.
    *
-   * Best practice is to delete this debug archive as soon as it is no longer used.
+   * We recommend that you delete this debug archive once it is no longer used.
    *
-   * @returns The path of the compressed gz file.
+   * @returns The path of the compressed gzip file.
    *
-   * @throws Error, see {@link ChatError}
+   * @throws A description of the exception. See {@link ChatError}.
    */
   public async compressLogs(): Promise<string | undefined> {
     console.log(`${ChatClient.TAG}: compressLogs:`);
@@ -567,13 +579,13 @@ export class ChatClient extends Native {
   }
 
   /**
-   * Gets all the information about the logged in devices under the specified account.
+   * Gets all the information about the devices which you have logged into with a specified account.
    *
-   * @param username The user ID you want to get the device information.
+   * @param username The user ID.
    * @param password The password.
-   * @returns The list of the online devices.
+   * @returns The list of the login devices.
    *
-   * @throws Error, see {@link ChatError}
+   * @throws A description of the exception. See {@link ChatError}.
    */
   public async getLoggedInDevicesFromServer(
     username: string,
@@ -603,13 +615,14 @@ export class ChatClient extends Native {
   }
 
   /**
-   * Force the specified account to logout from the specified device, to fetch the device ID: {@link ChatDeviceInfo#resource}.
+   * Logs out from a specified account on a device.
+   * For how to get the device ID, see {@link ChatDeviceInfo#resource}.
    *
-   * @param username The account you want to force logout.
-   * @param password The account's password.
-   * @param resource The device ID, see {@link ChatDeviceInfo#resource}.
+   * @param username The user ID.
+   * @param password The password.
+   * @param resource The device ID. See {@link ChatDeviceInfo#resource}.
    *
-   * @throws Error, see {@link ChatError}
+   * @throws A description of the exception. See {@link ChatError}.
    */
   public async kickDevice(
     username: string,
@@ -630,12 +643,12 @@ export class ChatClient extends Native {
   }
 
   /**
-   * Kicks out all the devices logged in under the specified account.
+   * Logs out from a specified account on all devices.
    *
-   * @param username The account you want to log out from all the devices.
-   * @param password The account's password.
+   * @param username The user ID.
+   * @param password The password.
    *
-   * @throws Error, see {@link ChatError}
+   * @throws A description of the exception. See {@link ChatError}.
    */
   public async kickAllDevices(
     username: string,
@@ -651,45 +664,89 @@ export class ChatClient extends Native {
     ChatClient.hasErrorFromResult(r);
   }
 
+  /**
+   *  Adds the connection listener for the chat server.
+   *
+   *  @param listener The chat server connection listener to be added.
+   */
   public addConnectionListener(listener: ChatConnectionListener): void {
     console.log(`${ChatClient.TAG}: addConnectionListener: `);
     this._connectionListeners.add(listener);
   }
 
+  /**
+   *  Removes the connection listener for the chat server.
+   *
+   *  @param listener The chat server connection listener to be removed.
+   */
   public removeConnectionListener(listener: ChatConnectionListener): void {
     console.log(`${ChatClient.TAG}: removeConnectionListener: `);
     this._connectionListeners.delete(listener);
   }
 
+  /**
+   *  Removes all the connection listeners for the chat server.
+   */
   public removeAllConnectionListener(): void {
     console.log(`${ChatClient.TAG}: removeAllConnectionListener: `);
     this._connectionListeners.clear();
   }
 
+  /**
+   *  Adds the multi-device listener.
+   *
+   *  @param listener The multi-device listener to be added.
+   */
   public addMultiDeviceListener(listener: ChatMultiDeviceListener): void {
     this._multiDeviceListeners.add(listener);
   }
 
+  /**
+   *  Removes the multi-device listener.
+   *
+   *  @param listener The multi-device listener to be removed.
+   */
   public removeMultiDeviceListener(listener: ChatMultiDeviceListener): void {
     this._multiDeviceListeners.delete(listener);
   }
 
+  /**
+   *  Removes all the multi-device listeners.
+   */
   public removeAllMultiDeviceListener(): void {
     this._multiDeviceListeners.clear();
   }
 
+  /**
+   *  Adds a custom listener to receive data from iOS or Android devices.
+   *
+   *  @param listener The custom listener to be added.
+   */
   public addCustomListener(listener: ChatCustomListener): void {
     this._customListeners.add(listener);
   }
 
+  /**
+   *  Removes a custom listener to receive data from iOS or Android devices.
+   *
+   *  @param listener The custom listener to be removed.
+   */
   public removeCustomListener(listener: ChatCustomListener): void {
     this._customListeners.delete(listener);
   }
 
+  /**
+   *  Removes all the custom listeners.
+   */
   public removeAllCustomListener(): void {
     this._customListeners.clear();
   }
 
+  /**
+   *  Gets the `ChatManager` class. Make sure to call it after ChatClient has been initialized.
+   *
+   *  @returns The `ChatManager` class.
+   */
   public get chatManager(): ChatManager {
     return this._chatManager;
   }
