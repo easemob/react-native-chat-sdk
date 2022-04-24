@@ -72,3 +72,8 @@ export function unregisterComponents(): void {
   console.log(`unregisterComponents`);
   components.length = 0;
 }
+
+let _seq = 0;
+export function seq(): number {
+  return ++_seq;
+}

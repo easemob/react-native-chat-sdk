@@ -7,6 +7,7 @@ import { GetStateScreen } from '../Client/GetState';
 import { KickScreen } from '../Client/Kick';
 import { LoginAndLogoutScreen as LoginLogoutScreen } from '../Client/LoginAndLogout';
 import { GroupManagerRoute, GroupManagerScreen } from '../GroupManager';
+// import { LeafScreenClient, LeafScreenTest } from '../__test__/Test1';
 import type { ScreenComponent } from './Utils';
 
 export const screenComponents: ScreenComponent[] = [
@@ -49,4 +50,16 @@ export const screenComponents: ScreenComponent[] = [
     isNavigation: false,
     parentScreen: ClientRoute,
   },
+  // {
+  //   route: LeafScreenTest.route,
+  //   screen: LeafScreenTest,
+  //   isNavigation: false,
+  //   parentScreen: ClientRoute,
+  // },
+  // {
+  //   route: LeafScreenClient.route,
+  //   screen: LeafScreenClient,
+  //   isNavigation: false,
+  //   parentScreen: ClientRoute,
+  // },
 ];

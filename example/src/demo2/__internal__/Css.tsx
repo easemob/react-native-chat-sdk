@@ -46,7 +46,7 @@ export const styleValues = StyleSheet.create({
     textAlign: 'left',
     color: '#3a4a35',
     backgroundColor: '#86dcfc',
-    borderWidth: 1,
+    // borderWidth: 1,
     maxHeight: 40,
   },
   viewStyle: {
@@ -63,5 +63,18 @@ export const styleValues = StyleSheet.create({
     backgroundColor: '#ecadff',
     height: 20,
     width: 200,
+    margin: 5,
+  },
+  dividerContent: {
+    height: 1,
+    width: 10,
+    borderStyle: 'dashed',
+  },
+  dividerContainer: {
+    height: 1,
+    alignItems: 'center',
+    flexDirection: 'row',
+    marginVertical: 10,
+    backgroundColor: '#736287',
   },
 });
