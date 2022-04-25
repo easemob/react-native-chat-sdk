@@ -81,7 +81,7 @@ export enum ChatDownloadStatus {
 /**
  * The message types.
  */
-export enum ChatMessageBodyType {
+export enum ChatMessageType {
   /**
    * Text message.
    */
@@ -179,26 +179,24 @@ export function ChatDownloadStatusToString(params: ChatDownloadStatus): string {
   return ChatDownloadStatus[params];
 }
 
-export function ChatMessageBodyTypeFromString(
-  params: string
-): ChatMessageBodyType {
+export function ChatMessageTypeFromString(params: string): ChatMessageType {
   switch (params) {
     case 'txt':
-      return ChatMessageBodyType.TXT;
+      return ChatMessageType.TXT;
     case 'loc':
-      return ChatMessageBodyType.LOCATION;
+      return ChatMessageType.LOCATION;
     case 'cmd':
-      return ChatMessageBodyType.CMD;
+      return ChatMessageType.CMD;
     case 'custom':
-      return ChatMessageBodyType.CUSTOM;
+      return ChatMessageType.CUSTOM;
     case 'file':
-      return ChatMessageBodyType.FILE;
+      return ChatMessageType.FILE;
     case 'img':
-      return ChatMessageBodyType.IMAGE;
+      return ChatMessageType.IMAGE;
     case 'video':
-      return ChatMessageBodyType.VIDEO;
+      return ChatMessageType.VIDEO;
     case 'voice':
-      return ChatMessageBodyType.VOICE;
+      return ChatMessageType.VOICE;
     default:
       throw new Error(`not exist this type: ${params}`);
   }
@@ -434,30 +432,30 @@ export class ChatMessage {
   }
 
   private static getBody(params: any): ChatMessageBody {
-    let type = ChatMessageBodyTypeFromString(params.type as string);
+    let type = ChatMessageTypeFromString(params.type as string);
     switch (type) {
-      case ChatMessageBodyType.TXT:
+      case ChatMessageType.TXT:
         return new ChatTextMessageBody(params);
 
-      case ChatMessageBodyType.LOCATION:
+      case ChatMessageType.LOCATION:
         return new ChatLocationMessageBody(params);
 
-      case ChatMessageBodyType.CMD:
+      case ChatMessageType.CMD:
         return new ChatCmdMessageBody(params);
 
-      case ChatMessageBodyType.CUSTOM:
+      case ChatMessageType.CUSTOM:
         return new ChatCustomMessageBody(params);
 
-      case ChatMessageBodyType.FILE:
+      case ChatMessageType.FILE:
         return new ChatFileMessageBody(params);
 
-      case ChatMessageBodyType.IMAGE:
+      case ChatMessageType.IMAGE:
         return new ChatImageMessageBody(params);
 
-      case ChatMessageBodyType.VIDEO:
+      case ChatMessageType.VIDEO:
         return new ChatVideoMessageBody(params);
 
-      case ChatMessageBodyType.VOICE:
+      case ChatMessageType.VOICE:
         return new ChatVoiceMessageBody(params);
 
       default:
@@ -497,7 +495,7 @@ export class ChatMessage {
     content: string,
     chatType: ChatMessageChatType = ChatMessageChatType.PeerChat
   ): ChatMessage {
-    let s = ChatMessageBodyType.TXT.valueOf();
+    let s = ChatMessageType.TXT.valueOf();
     return ChatMessage.createSendMessage(
       new ChatTextMessageBody({ type: s, content: content }),
       targetId,
@@ -527,7 +525,7 @@ export class ChatMessage {
   ): ChatMessage {
     return ChatMessage.createSendMessage(
       new ChatFileMessageBody({
-        type: ChatMessageBodyType.FILE.valueOf(),
+        type: ChatMessageType.FILE.valueOf(),
         localPath: filePath,
         displayName: opt?.displayName ?? '',
       }),
@@ -569,7 +567,7 @@ export class ChatMessage {
   ): ChatMessage {
     return ChatMessage.createSendMessage(
       new ChatImageMessageBody({
-        type: ChatMessageBodyType.IMAGE.valueOf(),
+        type: ChatMessageType.IMAGE.valueOf(),
         localPath: filePath,
         displayName: opt?.displayName ?? filePath,
         thumbnailLocalPath: opt?.thumbnailLocalPath,
@@ -613,7 +611,7 @@ export class ChatMessage {
   ): ChatMessage {
     return ChatMessage.createSendMessage(
       new ChatVideoMessageBody({
-        type: ChatMessageBodyType.VIDEO.valueOf(),
+        type: ChatMessageType.VIDEO.valueOf(),
         localPath: filePath,
         displayName: opt?.displayName ?? '',
         thumbnailLocalPath: opt?.thumbnailLocalPath,
@@ -651,7 +649,7 @@ export class ChatMessage {
   ): ChatMessage {
     return ChatMessage.createSendMessage(
       new ChatVoiceMessageBody({
-        type: ChatMessageBodyType.VOICE.valueOf(),
+        type: ChatMessageType.VOICE.valueOf(),
         localPath: filePath,
         displayName: opt?.displayName ?? '',
         duration: opt?.duration,
@@ -686,7 +684,7 @@ export class ChatMessage {
   ): ChatMessage {
     return ChatMessage.createSendMessage(
       new ChatLocationMessageBody({
-        type: ChatMessageBodyType.LOCATION.valueOf(),
+        type: ChatMessageType.LOCATION.valueOf(),
         latitude: latitude,
         longitude: longitude,
         address: opt?.address ?? '',
@@ -764,12 +762,12 @@ export class ChatMessage {
  */
 export class ChatMessageBody {
   /**
-   * The message type. See {@link ChatMessageBodyType}.
+   * The message type. See {@link ChatMessageType}.
    */
-  type: ChatMessageBodyType;
+  type: ChatMessageType;
 
   constructor(type: string) {
-    this.type = ChatMessageBodyTypeFromString(type);
+    this.type = ChatMessageTypeFromString(type);
   }
 }
 
@@ -1051,7 +1049,7 @@ export class ChatCmdMessageBody extends ChatMessageBody {
    */
   deliverOnlineOnly: boolean;
   constructor(params: { action: string; deliverOnlineOnly?: boolean }) {
-    super(ChatMessageBodyType.CMD);
+    super(ChatMessageType.CMD);
     this.action = params.action;
     this.deliverOnlineOnly = params.deliverOnlineOnly ?? false;
   }
@@ -1070,7 +1068,7 @@ export class ChatCustomMessageBody extends ChatMessageBody {
    */
   params: any;
   constructor(params: { event: string; params?: any }) {
-    super(ChatMessageBodyType.CUSTOM);
+    super(ChatMessageType.CUSTOM);
     this.event = params.event;
     this.params = params.params ?? {};
   }

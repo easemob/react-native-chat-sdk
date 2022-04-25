@@ -3,238 +3,225 @@
  */
 
 /// ChatClient methods
-export const MethodTypeinit = 'init';
-export const MethodTypecreateAccount = 'createAccount';
-export const MethodTypelogin = 'login';
-export const MethodTypelogout = 'logout';
-export const MethodTypechangeAppKey = 'changeAppKey';
-export const MethodTypeisLoggedInBefore = 'isLoggedInBefore';
-export const MethodTypeupdateCurrentUserNick = 'updateCurrentUserNick';
-export const MethodTypeuploadLog = 'uploadLog';
-export const MethodTypecompressLogs = 'compressLogs';
-export const MethodTypekickDevice = 'kickDevice';
-export const MethodTypekickAllDevices = 'kickAllDevices';
-export const MethodTypegetLoggedInDevicesFromServer =
-  'getLoggedInDevicesFromServer';
-export const MethodTypegetCurrentUser = 'getCurrentUser';
-export const MethodTypegetToken = 'getToken';
-export const MethodTypeloginWithAgoraToken = 'loginWithAgoraToken';
-export const MethodTypeisConnected = 'isConnected';
-export const MethodTyperenewToken = 'renewToken';
+export const MTinit = 'init';
+export const MTcreateAccount = 'createAccount';
+export const MTlogin = 'login';
+export const MTlogout = 'logout';
+export const MTchangeAppKey = 'changeAppKey';
+export const MTisLoggedInBefore = 'isLoggedInBefore';
+export const MTupdateCurrentUserNick = 'updateCurrentUserNick';
+export const MTuploadLog = 'uploadLog';
+export const MTcompressLogs = 'compressLogs';
+export const MTkickDevice = 'kickDevice';
+export const MTkickAllDevices = 'kickAllDevices';
+export const MTgetLoggedInDevicesFromServer = 'getLoggedInDevicesFromServer';
+export const MTgetCurrentUser = 'getCurrentUser';
+export const MTgetToken = 'getToken';
+export const MTloginWithAgoraToken = 'loginWithAgoraToken';
+export const MTisConnected = 'isConnected';
+export const MTrenewToken = 'renewToken';
 
 /// ChatClient listener
-export const MethodTypeonConnected = 'onConnected';
-export const MethodTypeonDisconnected = 'onDisconnected';
-export const MethodTypeonMultiDeviceEvent = 'onMultiDeviceEvent';
-export const MethodTypeonSendDataToFlutter = 'onSendDataToFlutter';
-export const MethodTypeonTokenWillExpire = 'onTokenWillExpire';
-export const MethodTypeonTokenDidExpire = 'onTokenDidExpire';
+export const MTonConnected = 'onConnected';
+export const MTonDisconnected = 'onDisconnected';
+export const MTonMultiDeviceEvent = 'onMultiDeviceEvent';
+export const MTonSendDataToFlutter = 'onSendDataToFlutter';
+export const MTonTokenWillExpire = 'onTokenWillExpire';
+export const MTonTokenDidExpire = 'onTokenDidExpire';
 
 /// ChatContactManager methods
-export const MethodTypeaddContact = 'addContact';
-export const MethodTypedeleteContact = 'deleteContact';
-export const MethodTypegetAllContactsFromServer = 'getAllContactsFromServer';
-export const MethodTypegetAllContactsFromDB = 'getAllContactsFromDB';
-export const MethodTypeaddUserToBlockList = 'addUserToBlockList';
-export const MethodTyperemoveUserFromBlockList = 'removeUserFromBlockList';
-export const MethodTypegetBlockListFromServer = 'getBlockListFromServer';
-export const MethodTypegetBlockListFromDB = 'getBlockListFromDB';
-export const MethodTypeacceptInvitation = 'acceptInvitation';
-export const MethodTypedeclineInvitation = 'declineInvitation';
-export const MethodTypegetSelfIdsOnOtherPlatform = 'getSelfIdsOnOtherPlatform';
+export const MTaddContact = 'addContact';
+export const MTdeleteContact = 'deleteContact';
+export const MTgetAllContactsFromServer = 'getAllContactsFromServer';
+export const MTgetAllContactsFromDB = 'getAllContactsFromDB';
+export const MTaddUserToBlockList = 'addUserToBlockList';
+export const MTremoveUserFromBlockList = 'removeUserFromBlockList';
+export const MTgetBlockListFromServer = 'getBlockListFromServer';
+export const MTgetBlockListFromDB = 'getBlockListFromDB';
+export const MTacceptInvitation = 'acceptInvitation';
+export const MTdeclineInvitation = 'declineInvitation';
+export const MTgetSelfIdsOnOtherPlatform = 'getSelfIdsOnOtherPlatform';
 
 /// ChatContactManager listener
-export const MethodTypeonContactChanged = 'onContactChanged';
+export const MTonContactChanged = 'onContactChanged';
 
 /// ChatManager methods
-export const MethodTypesendMessage = 'sendMessage';
-export const MethodTyperesendMessage = 'resendMessage';
-export const MethodTypeackMessageRead = 'ackMessageRead';
-export const MethodTypeackGroupMessageRead = 'ackGroupMessageRead';
-export const MethodTypeackConversationRead = 'ackConversationRead';
-export const MethodTyperecallMessage = 'recallMessage';
-export const MethodTypegetConversation = 'getConversation';
-export const MethodTypemarkAllChatMsgAsRead = 'markAllChatMsgAsRead';
-export const MethodTypegetUnreadMessageCount = 'getUnreadMessageCount';
-export const MethodTypeupdateChatMessage = 'updateChatMessage';
-export const MethodTypedownloadAttachment = 'downloadAttachment';
-export const MethodTypedownloadThumbnail = 'downloadThumbnail';
-export const MethodTypeimportMessages = 'importMessages';
-export const MethodTypeloadAllConversations = 'loadAllConversations';
-export const MethodTypegetConversationsFromServer =
-  'getConversationsFromServer';
-export const MethodTypedeleteConversation = 'deleteConversation';
-export const MethodTypefetchHistoryMessages = 'fetchHistoryMessages';
-export const MethodTypesearchChatMsgFromDB = 'searchChatMsgFromDB';
-export const MethodTypegetMessage = 'getMessage';
-export const MethodTypeasyncFetchGroupAcks = 'asyncFetchGroupAcks';
-export const MethodTypedeleteRemoteConversation = 'deleteRemoteConversation';
+export const MTsendMessage = 'sendMessage';
+export const MTresendMessage = 'resendMessage';
+export const MTackMessageRead = 'ackMessageRead';
+export const MTackGroupMessageRead = 'ackGroupMessageRead';
+export const MTackConversationRead = 'ackConversationRead';
+export const MTrecallMessage = 'recallMessage';
+export const MTgetConversation = 'getConversation';
+export const MTmarkAllChatMsgAsRead = 'markAllChatMsgAsRead';
+export const MTgetUnreadMessageCount = 'getUnreadMessageCount';
+export const MTupdateChatMessage = 'updateChatMessage';
+export const MTdownloadAttachment = 'downloadAttachment';
+export const MTdownloadThumbnail = 'downloadThumbnail';
+export const MTimportMessages = 'importMessages';
+export const MTloadAllConversations = 'loadAllConversations';
+export const MTgetConversationsFromServer = 'getConversationsFromServer';
+export const MTdeleteConversation = 'deleteConversation';
+export const MTfetchHistoryMessages = 'fetchHistoryMessages';
+export const MTsearchChatMsgFromDB = 'searchChatMsgFromDB';
+export const MTgetMessage = 'getMessage';
+export const MTasyncFetchGroupAcks = 'asyncFetchGroupAcks';
+export const MTdeleteRemoteConversation = 'deleteRemoteConversation';
 
 /// ChatManager listener
-export const MethodTypeonMessagesReceived = 'onMessagesReceived';
-export const MethodTypeonCmdMessagesReceived = 'onCmdMessagesReceived';
-export const MethodTypeonMessagesRead = 'onMessagesRead';
-export const MethodTypeonGroupMessageRead = 'onGroupMessageRead';
-export const MethodTypeonMessagesDelivered = 'onMessagesDelivered';
-export const MethodTypeonMessagesRecalled = 'onMessagesRecalled';
+export const MTonMessagesReceived = 'onMessagesReceived';
+export const MTonCmdMessagesReceived = 'onCmdMessagesReceived';
+export const MTonMessagesRead = 'onMessagesRead';
+export const MTonGroupMessageRead = 'onGroupMessageRead';
+export const MTonMessagesDelivered = 'onMessagesDelivered';
+export const MTonMessagesRecalled = 'onMessagesRecalled';
 
-export const MethodTypeonConversationUpdate = 'onConversationUpdate';
-export const MethodTypeonConversationHasRead = 'onConversationHasRead';
+export const MTonConversationUpdate = 'onConversationUpdate';
+export const MTonConversationHasRead = 'onConversationHasRead';
 
-export const MethodTypeonMessageProgressUpdate = 'onMessageProgressUpdate';
-export const MethodTypeonMessageError = 'onMessageError';
-export const MethodTypeonMessageSuccess = 'onMessageSuccess';
-export const MethodTypeonMessageReadAck = 'onMessageReadAck';
-export const MethodTypeonMessageDeliveryAck = 'onMessageDeliveryAck';
-export const MethodTypeonMessageStatusChanged = 'onMessageStatusChanged';
+export const MTonMessageProgressUpdate = 'onMessageProgressUpdate';
+export const MTonMessageError = 'onMessageError';
+export const MTonMessageSuccess = 'onMessageSuccess';
+export const MTonMessageReadAck = 'onMessageReadAck';
+export const MTonMessageDeliveryAck = 'onMessageDeliveryAck';
+export const MTonMessageStatusChanged = 'onMessageStatusChanged';
 
 /// ChatConversionManager methods
-export const MethodTypegetUnreadMsgCount = 'getUnreadMsgCount';
-export const MethodTypemarkAllMessagesAsRead = 'markAllMessagesAsRead';
-export const MethodTypemarkMessageAsRead = 'markMessageAsRead';
-export const MethodTypesyncConversationExt = 'syncConversationExt';
-export const MethodTypesyncConversationName = 'syncConversationName';
-export const MethodTyperemoveMessage = 'removeMessage';
-export const MethodTypegetLatestMessage = 'getLatestMessage';
-export const MethodTypegetLatestMessageFromOthers =
-  'getLatestMessageFromOthers';
-export const MethodTypeclearAllMessages = 'clearAllMessages';
-export const MethodTypeinsertMessage = 'insertMessage';
-export const MethodTypeappendMessage = 'appendMessage';
-export const MethodTypeupdateConversationMessage = 'updateConversationMessage';
+export const MTgetUnreadMsgCount = 'getUnreadMsgCount';
+export const MTmarkAllMessagesAsRead = 'markAllMessagesAsRead';
+export const MTmarkMessageAsRead = 'markMessageAsRead';
+export const MTsyncConversationExt = 'syncConversationExt';
+export const MTsyncConversationName = 'syncConversationName';
+export const MTremoveMessage = 'removeMessage';
+export const MTgetLatestMessage = 'getLatestMessage';
+export const MTgetLatestMessageFromOthers = 'getLatestMessageFromOthers';
+export const MTclearAllMessages = 'clearAllMessages';
+export const MTinsertMessage = 'insertMessage';
+export const MTappendMessage = 'appendMessage';
+export const MTupdateConversationMessage = 'updateConversationMessage';
 
-export const MethodTypeloadMsgWithId = 'loadMsgWithId';
-export const MethodTypeloadMsgWithStartId = 'loadMsgWithStartId';
-export const MethodTypeloadMsgWithKeywords = 'loadMsgWithKeywords';
-export const MethodTypeloadMsgWithMsgType = 'loadMsgWithMsgType';
-export const MethodTypeloadMsgWithTime = 'loadMsgWithTime';
+export const MTloadMsgWithId = 'loadMsgWithId';
+export const MTloadMsgWithStartId = 'loadMsgWithStartId';
+export const MTloadMsgWithKeywords = 'loadMsgWithKeywords';
+export const MTloadMsgWithMsgType = 'loadMsgWithMsgType';
+export const MTloadMsgWithTime = 'loadMsgWithTime';
 
 // ChatRoomManager methods
-export const MethodTypejoinChatRoom = 'joinChatRoom';
-export const MethodTypeleaveChatRoom = 'leaveChatRoom';
-export const MethodTypefetchPublicChatRoomsFromServer =
+export const MTjoinChatRoom = 'joinChatRoom';
+export const MTleaveChatRoom = 'leaveChatRoom';
+export const MTfetchPublicChatRoomsFromServer =
   'fetchPublicChatRoomsFromServer';
-export const MethodTypefetchChatRoomInfoFromServer =
-  'fetchChatRoomInfoFromServer';
-export const MethodTypegetChatRoom = 'getChatRoom';
-export const MethodTypegetAllChatRooms = 'getAllChatRooms';
-export const MethodTypecreateChatRoom = 'createChatRoom';
-export const MethodTypedestroyChatRoom = 'destroyChatRoom';
-export const MethodTypechangeChatRoomSubject = 'changeChatRoomSubject';
-export const MethodTypechangeChatRoomDescription = 'changeChatRoomDescription';
-export const MethodTypefetchChatRoomMembers = 'fetchChatRoomMembers';
-export const MethodTypemuteChatRoomMembers = 'muteChatRoomMembers';
-export const MethodTypeunMuteChatRoomMembers = 'unMuteChatRoomMembers';
-export const MethodTypechangeChatRoomOwner = 'changeChatRoomOwner';
-export const MethodTypeaddChatRoomAdmin = 'addChatRoomAdmin';
-export const MethodTyperemoveChatRoomAdmin = 'removeChatRoomAdmin';
-export const MethodTypefetchChatRoomMuteList = 'fetchChatRoomMuteList';
-export const MethodTyperemoveChatRoomMembers = 'removeChatRoomMembers';
-export const MethodTypeblockChatRoomMembers = 'blockChatRoomMembers';
-export const MethodTypeunBlockChatRoomMembers = 'unBlockChatRoomMembers';
-export const MethodTypefetchChatRoomBlockList = 'fetchChatRoomBlockList';
-export const MethodTypeupdateChatRoomAnnouncement =
-  'updateChatRoomAnnouncement';
-export const MethodTypefetchChatRoomAnnouncement = 'fetchChatRoomAnnouncement';
+export const MTfetchChatRoomInfoFromServer = 'fetchChatRoomInfoFromServer';
+export const MTgetChatRoom = 'getChatRoom';
+export const MTgetAllChatRooms = 'getAllChatRooms';
+export const MTcreateChatRoom = 'createChatRoom';
+export const MTdestroyChatRoom = 'destroyChatRoom';
+export const MTchangeChatRoomSubject = 'changeChatRoomSubject';
+export const MTchangeChatRoomDescription = 'changeChatRoomDescription';
+export const MTfetchChatRoomMembers = 'fetchChatRoomMembers';
+export const MTmuteChatRoomMembers = 'muteChatRoomMembers';
+export const MTunMuteChatRoomMembers = 'unMuteChatRoomMembers';
+export const MTchangeChatRoomOwner = 'changeChatRoomOwner';
+export const MTaddChatRoomAdmin = 'addChatRoomAdmin';
+export const MTremoveChatRoomAdmin = 'removeChatRoomAdmin';
+export const MTfetchChatRoomMuteList = 'fetchChatRoomMuteList';
+export const MTremoveChatRoomMembers = 'removeChatRoomMembers';
+export const MTblockChatRoomMembers = 'blockChatRoomMembers';
+export const MTunBlockChatRoomMembers = 'unBlockChatRoomMembers';
+export const MTfetchChatRoomBlockList = 'fetchChatRoomBlockList';
+export const MTupdateChatRoomAnnouncement = 'updateChatRoomAnnouncement';
+export const MTfetchChatRoomAnnouncement = 'fetchChatRoomAnnouncement';
 
-export const MethodTypeaddMembersToChatRoomWhiteList =
-  'addMembersToChatRoomWhiteList';
-export const MethodTyperemoveMembersFromChatRoomWhiteList =
+export const MTaddMembersToChatRoomWhiteList = 'addMembersToChatRoomWhiteList';
+export const MTremoveMembersFromChatRoomWhiteList =
   'removeMembersFromChatRoomWhiteList';
-export const MethodTypefetchChatRoomWhiteListFromServer =
+export const MTfetchChatRoomWhiteListFromServer =
   'fetchChatRoomWhiteListFromServer';
-export const MethodTypeisMemberInChatRoomWhiteListFromServer =
+export const MTisMemberInChatRoomWhiteListFromServer =
   'isMemberInChatRoomWhiteListFromServer';
 
-export const MethodTypemuteAllChatRoomMembers = 'muteAllChatRoomMembers';
-export const MethodTypeunMuteAllChatRoomMembers = 'umMuteAllChatRoomMembers';
+export const MTmuteAllChatRoomMembers = 'muteAllChatRoomMembers';
+export const MTunMuteAllChatRoomMembers = 'umMuteAllChatRoomMembers';
 
 // ChatRoomManager listener
-export const MethodTypechatRoomChange = 'onChatRoomChanged';
+export const MTchatRoomChange = 'onChatRoomChanged';
 
 /// ChatGroupManager methods
-export const MethodTypegetGroupWithId = 'getGroupWithId';
-export const MethodTypegetJoinedGroups = 'getJoinedGroups';
-export const MethodTypegetGroupsWithoutPushNotification =
+export const MTgetGroupWithId = 'getGroupWithId';
+export const MTgetJoinedGroups = 'getJoinedGroups';
+export const MTgetGroupsWithoutPushNotification =
   'getGroupsWithoutPushNotification';
-export const MethodTypegetJoinedGroupsFromServer = 'getJoinedGroupsFromServer';
-export const MethodTypegetPublicGroupsFromServer = 'getPublicGroupsFromServer';
-export const MethodTypecreateGroup = 'createGroup';
-export const MethodTypegetGroupSpecificationFromServer =
+export const MTgetJoinedGroupsFromServer = 'getJoinedGroupsFromServer';
+export const MTgetPublicGroupsFromServer = 'getPublicGroupsFromServer';
+export const MTcreateGroup = 'createGroup';
+export const MTgetGroupSpecificationFromServer =
   'getGroupSpecificationFromServer';
-export const MethodTypegetGroupMemberListFromServer =
-  'getGroupMemberListFromServer';
-export const MethodTypegetGroupBlockListFromServer =
-  'getGroupBlockListFromServer';
-export const MethodTypegetGroupMuteListFromServer =
-  'getGroupMuteListFromServer';
-export const MethodTypegetGroupWhiteListFromServer =
-  'getGroupWhiteListFromServer';
-export const MethodTypeisMemberInWhiteListFromServer =
-  'isMemberInWhiteListFromServer';
-export const MethodTypegetGroupFileListFromServer = 'getGroupFileList';
-export const MethodTypegetGroupAnnouncementFromServer =
+export const MTgetGroupMemberListFromServer = 'getGroupMemberListFromServer';
+export const MTgetGroupBlockListFromServer = 'getGroupBlockListFromServer';
+export const MTgetGroupMuteListFromServer = 'getGroupMuteListFromServer';
+export const MTgetGroupWhiteListFromServer = 'getGroupWhiteListFromServer';
+export const MTisMemberInWhiteListFromServer = 'isMemberInWhiteListFromServer';
+export const MTgetGroupFileListFromServer = 'getGroupFileList';
+export const MTgetGroupAnnouncementFromServer =
   'getGroupAnnouncementFromServer';
-export const MethodTypeaddMembers = 'addMembers';
-export const MethodTypeinviterUser = 'inviterUser';
-export const MethodTyperemoveMembers = 'removeMembers';
-export const MethodTypeblockMembers = 'blockMembers';
-export const MethodTypeunblockMembers = 'unblockMembers';
-export const MethodTypeupdateGroupSubject = 'updateGroupSubject';
-export const MethodTypeupdateDescription = 'updateDescription';
-export const MethodTypeleaveGroup = 'leaveGroup';
-export const MethodTypedestroyGroup = 'destroyGroup';
-export const MethodTypeblockGroup = 'blockGroup';
-export const MethodTypeunblockGroup = 'unblockGroup';
-export const MethodTypeupdateGroupOwner = 'updateGroupOwner';
-export const MethodTypeaddAdmin = 'addAdmin';
-export const MethodTyperemoveAdmin = 'removeAdmin';
-export const MethodTypemuteMembers = 'muteMembers';
-export const MethodTypeunMuteMembers = 'unMuteMembers';
-export const MethodTypemuteAllMembers = 'muteAllMembers';
-export const MethodTypeunMuteAllMembers = 'unMuteAllMembers';
-export const MethodTypeaddWhiteList = 'addWhiteList';
-export const MethodTyperemoveWhiteList = 'removeWhiteList';
-export const MethodTypeuploadGroupSharedFile = 'uploadGroupSharedFile';
-export const MethodTypedownloadGroupSharedFile = 'downloadGroupSharedFile';
-export const MethodTyperemoveGroupSharedFile = 'removeGroupSharedFile';
-export const MethodTypeupdateGroupAnnouncement = 'updateGroupAnnouncement';
-export const MethodTypeupdateGroupExt = 'updateGroupExt';
-export const MethodTypejoinPublicGroup = 'joinPublicGroup';
-export const MethodTyperequestToJoinPublicGroup = 'requestToJoinPublicGroup';
-export const MethodTypeacceptJoinApplication = 'acceptJoinApplication';
-export const MethodTypedeclineJoinApplication = 'declineJoinApplication';
-export const MethodTypeacceptInvitationFromGroup = 'acceptInvitationFromGroup';
-export const MethodTypedeclineInvitationFromGroup =
-  'declineInvitationFromGroup';
-export const MethodTypeignoreGroupPush = 'ignoreGroupPush';
+export const MTaddMembers = 'addMembers';
+export const MTinviterUser = 'inviterUser';
+export const MTremoveMembers = 'removeMembers';
+export const MTblockMembers = 'blockMembers';
+export const MTunblockMembers = 'unblockMembers';
+export const MTupdateGroupSubject = 'updateGroupSubject';
+export const MTupdateDescription = 'updateDescription';
+export const MTleaveGroup = 'leaveGroup';
+export const MTdestroyGroup = 'destroyGroup';
+export const MTblockGroup = 'blockGroup';
+export const MTunblockGroup = 'unblockGroup';
+export const MTupdateGroupOwner = 'updateGroupOwner';
+export const MTaddAdmin = 'addAdmin';
+export const MTremoveAdmin = 'removeAdmin';
+export const MTmuteMembers = 'muteMembers';
+export const MTunMuteMembers = 'unMuteMembers';
+export const MTmuteAllMembers = 'muteAllMembers';
+export const MTunMuteAllMembers = 'unMuteAllMembers';
+export const MTaddWhiteList = 'addWhiteList';
+export const MTremoveWhiteList = 'removeWhiteList';
+export const MTuploadGroupSharedFile = 'uploadGroupSharedFile';
+export const MTdownloadGroupSharedFile = 'downloadGroupSharedFile';
+export const MTremoveGroupSharedFile = 'removeGroupSharedFile';
+export const MTupdateGroupAnnouncement = 'updateGroupAnnouncement';
+export const MTupdateGroupExt = 'updateGroupExt';
+export const MTjoinPublicGroup = 'joinPublicGroup';
+export const MTrequestToJoinPublicGroup = 'requestToJoinPublicGroup';
+export const MTacceptJoinApplication = 'acceptJoinApplication';
+export const MTdeclineJoinApplication = 'declineJoinApplication';
+export const MTacceptInvitationFromGroup = 'acceptInvitationFromGroup';
+export const MTdeclineInvitationFromGroup = 'declineInvitationFromGroup';
+export const MTignoreGroupPush = 'ignoreGroupPush';
 
 /// ChatGroupManager listener
-export const MethodTypeonGroupChanged = 'onGroupChanged';
+export const MTonGroupChanged = 'onGroupChanged';
 
 /// ChatPushManager methods
-export const MethodTypegetImPushConfig = 'getImPushConfig';
-export const MethodTypegetImPushConfigFromServer = 'getImPushConfigFromServer';
-export const MethodTypeupdatePushNickname = 'updatePushNickname';
-export const MethodTypeupdateHMSPushToken = 'updateHMSPushToken';
-export const MethodTypeupdateFCMPushToken = 'updateFCMPushToken';
-export const MethodTypeenableOfflinePush = 'enableOfflinePush';
-export const MethodTypedisableOfflinePush = 'disableOfflinePush';
-export const MethodTypegetNoPushGroups = 'getNoPushGroups';
-export const MethodTypesetNoDisturbUsers = 'setNoDisturbUsers';
-export const MethodTypegetNoDisturbUsersFromServer =
-  'getNoDisturbUsersFromServer';
+export const MTgetImPushConfig = 'getImPushConfig';
+export const MTgetImPushConfigFromServer = 'getImPushConfigFromServer';
+export const MTupdatePushNickname = 'updatePushNickname';
+export const MTupdateHMSPushToken = 'updateHMSPushToken';
+export const MTupdateFCMPushToken = 'updateFCMPushToken';
+export const MTenableOfflinePush = 'enableOfflinePush';
+export const MTdisableOfflinePush = 'disableOfflinePush';
+export const MTgetNoPushGroups = 'getNoPushGroups';
+export const MTsetNoDisturbUsers = 'setNoDisturbUsers';
+export const MTgetNoDisturbUsersFromServer = 'getNoDisturbUsersFromServer';
 
-export const MethodTypeimPushNoDisturb = 'imPushNoDisturb';
-export const MethodTypeupdateImPushStyle = 'updateImPushStyle';
-export const MethodTypeupdateGroupPushService = 'updateGroupPushService';
-export const MethodTypegetNoDisturbGroups = 'getNoDisturbGroups';
+export const MTimPushNoDisturb = 'imPushNoDisturb';
+export const MTupdateImPushStyle = 'updateImPushStyle';
+export const MTupdateGroupPushService = 'updateGroupPushService';
+export const MTgetNoDisturbGroups = 'getNoDisturbGroups';
 
 /// ChatUserInfoManager methods
-export const MethodTypeupdateOwnUserInfo = 'updateOwnUserInfo';
-export const MethodTypeupdateOwnUserInfoWithType = 'updateOwnUserInfoWithType';
-export const MethodTypefetchUserInfoById = 'fetchUserInfoById';
-export const MethodTypefetchUserInfoByIdWithType = 'fetchUserInfoByIdWithType';
+export const MTupdateOwnUserInfo = 'updateOwnUserInfo';
+export const MTupdateOwnUserInfoWithType = 'updateOwnUserInfoWithType';
+export const MTfetchUserInfoById = 'fetchUserInfoById';
+export const MTfetchUserInfoByIdWithType = 'fetchUserInfoByIdWithType';
 
 export const CHAT_ROOM_EVENT_ON_CHAT_ROOM_DESTROYED = 'onChatRoomDestroyed';
 export const CHAT_ROOM_EVENT_ON_MEMBER_JOINED = 'onMemberJoined';

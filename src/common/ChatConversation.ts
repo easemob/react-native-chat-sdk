@@ -31,6 +31,7 @@ export class ChatConversation {
   con_name?: string; // todo: con_name
   lastMessage?: any; // todo:
   lastReceivedMessage?: any; //todo:
+  ext?: any;
 
   constructor(params: {
     con_id: string;
@@ -38,17 +39,16 @@ export class ChatConversation {
     unreadCount: number;
     lastMessage: any;
     lastReceivedMessage: any;
-    ext?: {
-      con_name: string;
-    };
+    ext?: any;
   }) {
     this.con_id = params.con_id;
     this.type = params.type;
     this.unreadCount = params.unreadCount;
-    // this.lastMessage ;
-    // this.lastReceivedMessage;
-    if (params.ext) {
+    this.lastMessage = params.lastMessage;
+    this.lastReceivedMessage = params.lastReceivedMessage;
+    if (params && params.ext) {
       this.con_name = params.ext.con_name;
     }
+    this.ext = params.ext;
   }
 }

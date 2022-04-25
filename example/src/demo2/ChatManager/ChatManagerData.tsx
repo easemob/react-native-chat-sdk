@@ -1,7 +1,4 @@
-import {
-  ChatMessageBodyType,
-  ChatMessageChatType,
-} from 'react-native-chat-sdk';
+import { ChatMessageType, ChatMessageChatType } from 'react-native-chat-sdk';
 import type { StateChatMessage, StatelessChatMessage } from './ChatManagerItem';
 import type { ApiParams } from '../__internal__/DataTypes';
 
@@ -78,7 +75,7 @@ export const metaData: ApiParams[] = [
       {
         paramName: 'messageType',
         paramType: 'object',
-        paramDefaultValue: ChatMessageBodyType.TXT,
+        paramDefaultValue: ChatMessageType.TXT,
       },
     ],
   },

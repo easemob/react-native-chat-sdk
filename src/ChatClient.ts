@@ -5,6 +5,7 @@ import {
   NativeModules,
   Platform,
 } from 'react-native';
+import { ChatContactManager } from './ChatContactManager';
 import {
   ChatConnectionListener,
   ChatContactGroupEventFromNumber,
@@ -16,27 +17,27 @@ import { ChatManager } from './ChatManager';
 import { ChatDeviceInfo } from './common/ChatDeviceInfo';
 import type { ChatOptions } from './common/ChatOptions';
 import {
-  MethodTypechangeAppKey,
-  MethodTypecompressLogs,
-  MethodTypecreateAccount,
-  MethodTypegetCurrentUser,
-  MethodTypegetLoggedInDevicesFromServer,
-  MethodTypegetToken,
-  MethodTypeinit,
-  MethodTypeisConnected,
-  MethodTypeisLoggedInBefore,
-  MethodTypekickAllDevices,
-  MethodTypekickDevice,
-  MethodTypelogin,
-  MethodTypeloginWithAgoraToken,
-  MethodTypelogout,
-  MethodTypeonConnected,
-  MethodTypeonDisconnected,
-  MethodTypeonMultiDeviceEvent,
-  MethodTypeonSendDataToFlutter,
-  MethodTypeonTokenDidExpire,
-  MethodTypeonTokenWillExpire,
-  MethodTyperenewToken,
+  MTchangeAppKey,
+  MTcompressLogs,
+  MTcreateAccount,
+  MTgetCurrentUser,
+  MTgetLoggedInDevicesFromServer,
+  MTgetToken,
+  MTinit,
+  MTisConnected,
+  MTisLoggedInBefore,
+  MTkickAllDevices,
+  MTkickDevice,
+  MTlogin,
+  MTloginWithAgoraToken,
+  MTlogout,
+  MTonConnected,
+  MTonDisconnected,
+  MTonMultiDeviceEvent,
+  MTonSendDataToFlutter,
+  MTonTokenDidExpire,
+  MTonTokenWillExpire,
+  MTrenewToken,
 } from './_internal/Consts';
 import { Native } from './_internal/Native';
 
@@ -76,6 +77,7 @@ export class ChatClient extends Native {
     this.setNativeListener(this.getEventEmitter());
     this._chatManager.setNativeListener(this.getEventEmitter());
     this._groupManager.setNativeListener(this.getEventEmitter());
+    this._contactManager.setNativeListener(this.getEventEmitter());
     console.log('eventEmitter has finished.');
   }
 
@@ -87,8 +89,8 @@ export class ChatClient extends Native {
 
   private _chatManager: ChatManager;
   private _groupManager: ChatGroupManager;
+  private _contactManager: ChatContactManager;
   // todo: no implement
-  // private _contactManager: ChatContactManager;
   // private _chatRoomManager: ChatChatRoomManager;
   // private _pushManager: ChatPushManager;
   // private _userInfoManager: ChatUserInfoManager;
@@ -110,8 +112,8 @@ export class ChatClient extends Native {
 
     this._chatManager = new ChatManager();
     this._groupManager = new ChatGroupManager();
+    this._contactManager = new ChatContactManager();
     // todo: no implement
-    // this._contactManager = new ChatContactManager();
     // this._chatRoomManager = new ChatChatRoomManager();
     // this._pushManager = new ChatPushManager();
     // this._userInfoManager = new ChatUserInfoManager();
@@ -143,12 +145,12 @@ export class ChatClient extends Native {
     this._connectionSubscriptions.clear();
 
     // let s: EmitterSubscription[] | undefined = eventEmitter?.listeners(
-    //   MethodTypeonConnected
+    //   MTonConnected
     // );
     // console.log(`${s?.length}`);
 
     // let s: EmitterSubscription = event.addListener(
-    //   MethodTypeonConnected,
+    //   MTonConnected,
     //   (params: any[]): any => {
     //     console.log('etst', params);
     //     s.remove();
@@ -156,43 +158,31 @@ export class ChatClient extends Native {
     // );
 
     this._connectionSubscriptions.set(
-      MethodTypeonConnected,
-      event.addListener(MethodTypeonConnected, this.onConnected.bind(this))
+      MTonConnected,
+      event.addListener(MTonConnected, this.onConnected.bind(this))
     );
     this._connectionSubscriptions.set(
-      MethodTypeonDisconnected,
-      event.addListener(
-        MethodTypeonDisconnected,
-        this.onDisconnected.bind(this)
-      )
+      MTonDisconnected,
+      event.addListener(MTonDisconnected, this.onDisconnected.bind(this))
     );
     this._connectionSubscriptions.set(
-      MethodTypeonTokenDidExpire,
-      event.addListener(
-        MethodTypeonTokenDidExpire,
-        this.onTokenDidExpire.bind(this)
-      )
+      MTonTokenDidExpire,
+      event.addListener(MTonTokenDidExpire, this.onTokenDidExpire.bind(this))
     );
     this._connectionSubscriptions.set(
-      MethodTypeonTokenWillExpire,
-      event.addListener(
-        MethodTypeonTokenWillExpire,
-        this.onTokenWillExpire.bind(this)
-      )
+      MTonTokenWillExpire,
+      event.addListener(MTonTokenWillExpire, this.onTokenWillExpire.bind(this))
     );
     this._connectionSubscriptions.set(
-      MethodTypeonMultiDeviceEvent,
+      MTonMultiDeviceEvent,
       event.addListener(
-        MethodTypeonMultiDeviceEvent,
+        MTonMultiDeviceEvent,
         this.onMultiDeviceEvent.bind(this)
       )
     );
     this._connectionSubscriptions.set(
-      MethodTypeonSendDataToFlutter,
-      event.addListener(
-        MethodTypeonSendDataToFlutter,
-        this.onCustomEvent.bind(this)
-      )
+      MTonSendDataToFlutter,
+      event.addListener(MTonSendDataToFlutter, this.onCustomEvent.bind(this))
     );
     console.log(`${ChatClient.TAG}: setConnectNativeListener: `, event);
   }
@@ -202,33 +192,21 @@ export class ChatClient extends Native {
       `${ChatClient.TAG}: setNativeListener: ${ChatClient.eventType}`
     );
     if (ChatClient.eventType === 1) {
-      event.removeAllListeners(MethodTypeonConnected);
-      event.addListener(MethodTypeonConnected, this.onConnected.bind(this));
-      event.removeAllListeners(MethodTypeonDisconnected);
+      event.removeAllListeners(MTonConnected);
+      event.addListener(MTonConnected, this.onConnected.bind(this));
+      event.removeAllListeners(MTonDisconnected);
+      event.addListener(MTonDisconnected, this.onDisconnected.bind(this));
+      event.removeAllListeners(MTonTokenDidExpire);
+      event.addListener(MTonTokenDidExpire, this.onTokenDidExpire.bind(this));
+      event.removeAllListeners(MTonTokenWillExpire);
+      event.addListener(MTonTokenWillExpire, this.onTokenWillExpire.bind(this));
+      event.removeAllListeners(MTonMultiDeviceEvent);
       event.addListener(
-        MethodTypeonDisconnected,
-        this.onDisconnected.bind(this)
-      );
-      event.removeAllListeners(MethodTypeonTokenDidExpire);
-      event.addListener(
-        MethodTypeonTokenDidExpire,
-        this.onTokenDidExpire.bind(this)
-      );
-      event.removeAllListeners(MethodTypeonTokenWillExpire);
-      event.addListener(
-        MethodTypeonTokenWillExpire,
-        this.onTokenWillExpire.bind(this)
-      );
-      event.removeAllListeners(MethodTypeonMultiDeviceEvent);
-      event.addListener(
-        MethodTypeonMultiDeviceEvent,
+        MTonMultiDeviceEvent,
         this.onMultiDeviceEvent.bind(this)
       );
-      event.removeAllListeners(MethodTypeonSendDataToFlutter);
-      event.addListener(
-        MethodTypeonSendDataToFlutter,
-        this.onCustomEvent.bind(this)
-      );
+      event.removeAllListeners(MTonSendDataToFlutter);
+      event.addListener(MTonSendDataToFlutter, this.onCustomEvent.bind(this));
     } else if (ChatClient.eventType === 2) {
       this.setConnectNativeListener(event);
     } else {
@@ -343,7 +321,7 @@ export class ChatClient extends Native {
   public async init(options: ChatOptions): Promise<void> {
     console.log(`${ChatClient.TAG}: init: ${options}`);
     this._options = options;
-    await Native._callMethod(MethodTypeinit, { options });
+    await Native._callMethod(MTinit, { options });
     this._isInit = true;
   }
 
@@ -358,9 +336,9 @@ export class ChatClient extends Native {
    */
   public async isConnected(): Promise<boolean> {
     console.log(`${ChatClient.TAG}: isConnected: `);
-    let result: any = await Native._callMethod(MethodTypeisConnected);
-    ChatClient.hasErrorFromResult(result);
-    let _connected = result?.[MethodTypeisConnected] as boolean;
+    let result: any = await Native._callMethod(MTisConnected);
+    ChatClient.checkErrorFromResult(result);
+    let _connected = result?.[MTisConnected] as boolean;
     return _connected;
   }
 
@@ -372,9 +350,9 @@ export class ChatClient extends Native {
    */
   public async getCurrentUsername(): Promise<string> {
     console.log(`${ChatClient.TAG}: getCurrentUsername: `);
-    let result: any = await Native._callMethod(MethodTypegetCurrentUser);
-    ChatClient.hasErrorFromResult(result);
-    let userName = result?.[MethodTypegetCurrentUser] as string;
+    let result: any = await Native._callMethod(MTgetCurrentUser);
+    ChatClient.checkErrorFromResult(result);
+    let userName = result?.[MTgetCurrentUser] as string;
     if (userName && userName.length !== 0) {
       if (userName !== this._currentUsername) {
         this._currentUsername = userName;
@@ -394,9 +372,9 @@ export class ChatClient extends Native {
    */
   public async isLoginBefore(): Promise<boolean> {
     console.log(`${ChatClient.TAG}: isLoginBefore: `);
-    let result: any = await Native._callMethod(MethodTypeisLoggedInBefore);
-    ChatClient.hasErrorFromResult(result);
-    let _isLoginBefore = result?.[MethodTypeisLoggedInBefore] as boolean;
+    let result: any = await Native._callMethod(MTisLoggedInBefore);
+    ChatClient.checkErrorFromResult(result);
+    let _isLoginBefore = result?.[MTisLoggedInBefore] as boolean;
     return _isLoginBefore;
   }
 
@@ -409,9 +387,9 @@ export class ChatClient extends Native {
    */
   public async getAccessToken(): Promise<string> {
     console.log(`${ChatClient.TAG}: isLoginBefore: `);
-    let result: any = await Native._callMethod(MethodTypegetToken);
-    ChatClient.hasErrorFromResult(result);
-    let _token = result?.[MethodTypegetToken] as string;
+    let result: any = await Native._callMethod(MTgetToken);
+    ChatClient.checkErrorFromResult(result);
+    let _token = result?.[MTgetToken] as string;
     return _token;
   }
 
@@ -434,13 +412,13 @@ export class ChatClient extends Native {
     password: string
   ): Promise<void> {
     console.log(`${ChatClient.TAG}: createAccount: ${username}, ${password}`);
-    let result: any = await Native._callMethod(MethodTypecreateAccount, {
-      [MethodTypecreateAccount]: {
+    let result: any = await Native._callMethod(MTcreateAccount, {
+      [MTcreateAccount]: {
         username: username,
         password: password,
       },
     });
-    ChatClient.hasErrorFromResult(result);
+    ChatClient.checkErrorFromResult(result);
   }
 
   /**
@@ -462,15 +440,15 @@ export class ChatClient extends Native {
     console.log(
       `${ChatClient.TAG}: login: ${userName}, ${pwdOrToken}, ${isPassword}`
     );
-    let result: any = await Native._callMethod(MethodTypelogin, {
-      [MethodTypelogin]: {
+    let result: any = await Native._callMethod(MTlogin, {
+      [MTlogin]: {
         username: userName,
         pwdOrToken: pwdOrToken,
         isPassword: isPassword,
       },
     });
-    ChatClient.hasErrorFromResult(result);
-    result = result?.[MethodTypelogin];
+    ChatClient.checkErrorFromResult(result);
+    result = result?.[MTlogin];
     this._currentUsername = result?.username;
     console.log(
       `${ChatClient.TAG}: login: ${result?.username}, ${result?.token}`
@@ -493,13 +471,13 @@ export class ChatClient extends Native {
     console.log(
       `${ChatClient.TAG}: loginWithAgoraToken: ${userName}, ${agoraToken}`
     );
-    let result: any = await Native._callMethod(MethodTypeloginWithAgoraToken, {
-      [MethodTypeloginWithAgoraToken]: {
+    let result: any = await Native._callMethod(MTloginWithAgoraToken, {
+      [MTloginWithAgoraToken]: {
         username: userName,
         agoraToken: agoraToken,
       },
     });
-    ChatClient.hasErrorFromResult(result);
+    ChatClient.checkErrorFromResult(result);
     this._currentUsername = result?.username;
   }
 
@@ -514,12 +492,12 @@ export class ChatClient extends Native {
    */
   public async renewAgoraToken(agoraToken: string): Promise<void> {
     console.log(`${ChatClient.TAG}: renewAgoraToken: ${agoraToken}`);
-    let result: any = await Native._callMethod(MethodTyperenewToken, {
-      [MethodTyperenewToken]: {
+    let result: any = await Native._callMethod(MTrenewToken, {
+      [MTrenewToken]: {
         agoraToken: agoraToken,
       },
     });
-    ChatClient.hasErrorFromResult(result);
+    ChatClient.checkErrorFromResult(result);
   }
 
   /**
@@ -532,12 +510,12 @@ export class ChatClient extends Native {
    */
   public async logout(unbindDeviceToken: boolean = true): Promise<void> {
     console.log(`${ChatClient.TAG}: logout: ${unbindDeviceToken}`);
-    let result: any = await Native._callMethod(MethodTypelogout, {
-      [MethodTypelogout]: {
+    let result: any = await Native._callMethod(MTlogout, {
+      [MTlogout]: {
         unbindToken: unbindDeviceToken,
       },
     });
-    ChatClient.hasErrorFromResult(result);
+    ChatClient.checkErrorFromResult(result);
     this.reset();
   }
 
@@ -556,12 +534,12 @@ export class ChatClient extends Native {
    */
   public async changeAppKey(newAppKey: string): Promise<void> {
     console.log(`${ChatClient.TAG}: changeAppKey: ${newAppKey}`);
-    let r: any = await Native._callMethod(MethodTypechangeAppKey, {
-      [MethodTypechangeAppKey]: {
+    let r: any = await Native._callMethod(MTchangeAppKey, {
+      [MTchangeAppKey]: {
         appKey: newAppKey,
       },
     });
-    ChatClient.hasErrorFromResult(r);
+    ChatClient.checkErrorFromResult(r);
   }
 
   /**
@@ -575,9 +553,9 @@ export class ChatClient extends Native {
    */
   public async compressLogs(): Promise<string | undefined> {
     console.log(`${ChatClient.TAG}: compressLogs:`);
-    let r: any = await Native._callMethod(MethodTypecompressLogs);
-    ChatClient.hasErrorFromResult(r);
-    return r?.[MethodTypecompressLogs];
+    let r: any = await Native._callMethod(MTcompressLogs);
+    ChatClient.checkErrorFromResult(r);
+    return r?.[MTcompressLogs];
   }
 
   /**
@@ -596,18 +574,15 @@ export class ChatClient extends Native {
     console.log(
       `${ChatClient.TAG}: getLoggedInDevicesFromServer: ${username}, ${password}`
     );
-    let result: any = await Native._callMethod(
-      MethodTypegetLoggedInDevicesFromServer,
-      {
-        [MethodTypegetLoggedInDevicesFromServer]: {
-          username: username,
-          password: password,
-        },
-      }
-    );
-    ChatClient.hasErrorFromResult(result);
+    let result: any = await Native._callMethod(MTgetLoggedInDevicesFromServer, {
+      [MTgetLoggedInDevicesFromServer]: {
+        username: username,
+        password: password,
+      },
+    });
+    ChatClient.checkErrorFromResult(result);
     let r: ChatDeviceInfo[] = [];
-    let list: Array<any> = result?.[MethodTypegetLoggedInDevicesFromServer];
+    let list: Array<any> = result?.[MTgetLoggedInDevicesFromServer];
     if (list) {
       list.forEach((element) => {
         r.push(new ChatDeviceInfo(element));
@@ -634,14 +609,14 @@ export class ChatClient extends Native {
     console.log(
       `${ChatClient.TAG}: kickDevice: ${username}, ${password}, ${resource}`
     );
-    let r: any = await Native._callMethod(MethodTypekickDevice, {
-      [MethodTypekickDevice]: {
+    let r: any = await Native._callMethod(MTkickDevice, {
+      [MTkickDevice]: {
         username: username,
         password: password,
         resource: resource,
       },
     });
-    ChatClient.hasErrorFromResult(r);
+    ChatClient.checkErrorFromResult(r);
   }
 
   /**
@@ -657,13 +632,13 @@ export class ChatClient extends Native {
     password: string
   ): Promise<void> {
     console.log(`${ChatClient.TAG}: kickAllDevices: ${username}, ${password}`);
-    let r: any = await Native._callMethod(MethodTypekickAllDevices, {
-      [MethodTypekickAllDevices]: {
+    let r: any = await Native._callMethod(MTkickAllDevices, {
+      [MTkickAllDevices]: {
         username: username,
         password: password,
       },
     });
-    ChatClient.hasErrorFromResult(r);
+    ChatClient.checkErrorFromResult(r);
   }
 
   /**

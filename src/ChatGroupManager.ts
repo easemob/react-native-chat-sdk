@@ -7,51 +7,51 @@ import {
 } from './common/ChatGroup';
 import { ChatCursorResult } from './common/ChatCursorResult';
 import {
-  MethodTypeacceptInvitationFromGroup,
-  MethodTypeacceptJoinApplication,
-  MethodTypeaddAdmin,
-  MethodTypeaddMembers,
-  MethodTypeaddWhiteList,
-  MethodTypeblockGroup,
-  MethodTypeblockMembers,
-  MethodTypecreateGroup,
-  MethodTypedeclineInvitationFromGroup,
-  MethodTypedeclineJoinApplication,
-  MethodTypedestroyGroup,
-  MethodTypedownloadGroupSharedFile,
-  MethodTypegetGroupAnnouncementFromServer,
-  MethodTypegetGroupBlockListFromServer,
-  MethodTypegetGroupFileListFromServer,
-  MethodTypegetGroupMemberListFromServer,
-  MethodTypegetGroupMuteListFromServer,
-  MethodTypegetGroupSpecificationFromServer,
-  MethodTypegetGroupWhiteListFromServer,
-  MethodTypegetGroupWithId,
-  MethodTypegetJoinedGroups,
-  MethodTypegetJoinedGroupsFromServer,
-  MethodTypegetPublicGroupsFromServer,
-  MethodTypeinviterUser,
-  MethodTypeisMemberInWhiteListFromServer,
-  MethodTypejoinPublicGroup,
-  MethodTypeleaveGroup,
-  MethodTypemuteAllMembers,
-  MethodTypemuteMembers,
-  MethodTypeonGroupChanged,
-  MethodTyperemoveAdmin,
-  MethodTyperemoveGroupSharedFile,
-  MethodTyperemoveMembers,
-  MethodTyperemoveWhiteList,
-  MethodTyperequestToJoinPublicGroup,
-  MethodTypeunblockGroup,
-  MethodTypeunblockMembers,
-  MethodTypeunMuteAllMembers,
-  MethodTypeunMuteMembers,
-  MethodTypeupdateDescription,
-  MethodTypeupdateGroupAnnouncement,
-  MethodTypeupdateGroupExt,
-  MethodTypeupdateGroupOwner,
-  MethodTypeupdateGroupSubject,
-  MethodTypeuploadGroupSharedFile,
+  MTacceptInvitationFromGroup,
+  MTacceptJoinApplication,
+  MTaddAdmin,
+  MTaddMembers,
+  MTaddWhiteList,
+  MTblockGroup,
+  MTblockMembers,
+  MTcreateGroup,
+  MTdeclineInvitationFromGroup,
+  MTdeclineJoinApplication,
+  MTdestroyGroup,
+  MTdownloadGroupSharedFile,
+  MTgetGroupAnnouncementFromServer,
+  MTgetGroupBlockListFromServer,
+  MTgetGroupFileListFromServer,
+  MTgetGroupMemberListFromServer,
+  MTgetGroupMuteListFromServer,
+  MTgetGroupSpecificationFromServer,
+  MTgetGroupWhiteListFromServer,
+  MTgetGroupWithId,
+  MTgetJoinedGroups,
+  MTgetJoinedGroupsFromServer,
+  MTgetPublicGroupsFromServer,
+  MTinviterUser,
+  MTisMemberInWhiteListFromServer,
+  MTjoinPublicGroup,
+  MTleaveGroup,
+  MTmuteAllMembers,
+  MTmuteMembers,
+  MTonGroupChanged,
+  MTremoveAdmin,
+  MTremoveGroupSharedFile,
+  MTremoveMembers,
+  MTremoveWhiteList,
+  MTrequestToJoinPublicGroup,
+  MTunblockGroup,
+  MTunblockMembers,
+  MTunMuteAllMembers,
+  MTunMuteMembers,
+  MTupdateDescription,
+  MTupdateGroupAnnouncement,
+  MTupdateGroupExt,
+  MTupdateGroupOwner,
+  MTupdateGroupSubject,
+  MTuploadGroupSharedFile,
 } from './_internal/Consts';
 import { Native } from './_internal/Native';
 
@@ -59,11 +59,12 @@ export class ChatGroupManager extends Native {
   private static TAG = 'ChatGroupManager';
 
   private _groupListeners: Set<ChatGroupEventListener>;
-  private _groupSubscriptions = new Map<string, EmitterSubscription>();
+  private _groupSubscriptions: Map<string, EmitterSubscription>;
 
   constructor() {
     super();
     this._groupListeners = new Set();
+    this._groupSubscriptions = new Map();
   }
 
   public setNativeListener(event: NativeEventEmitter): void {
@@ -73,8 +74,8 @@ export class ChatGroupManager extends Native {
     });
     this._groupSubscriptions.clear();
     this._groupSubscriptions.set(
-      MethodTypeonGroupChanged,
-      event.addListener(MethodTypeonGroupChanged, (params: any) => {
+      MTonGroupChanged,
+      event.addListener(MTonGroupChanged, (params: any) => {
         this.invokeGroupListener(params);
       })
     );
@@ -236,21 +237,21 @@ export class ChatGroupManager extends Native {
 
   public async getGroupWithId(groupId: string): Promise<ChatGroup> {
     console.log(`${ChatGroupManager.TAG}: getGroupWithId: ${groupId}`);
-    let r: any = await Native._callMethod(MethodTypegetGroupWithId, {
-      [MethodTypegetGroupWithId]: {
+    let r: any = await Native._callMethod(MTgetGroupWithId, {
+      [MTgetGroupWithId]: {
         groupId: groupId,
       },
     });
-    ChatGroupManager.hasErrorFromResult(r);
-    let group: ChatGroup = r?.[MethodTypegetGroupWithId];
+    ChatGroupManager.checkErrorFromResult(r);
+    let group: ChatGroup = r?.[MTgetGroupWithId];
     return group;
   }
 
   public async getJoinedGroups(): Promise<Array<ChatGroup>> {
     console.log(`${ChatGroupManager.TAG}: getJoinedGroups: `);
-    let r: any = await Native._callMethod(MethodTypegetJoinedGroups);
-    ChatGroupManager.hasErrorFromResult(r);
-    let groups: ChatGroup[] = r?.[MethodTypegetJoinedGroups];
+    let r: any = await Native._callMethod(MTgetJoinedGroups);
+    ChatGroupManager.checkErrorFromResult(r);
+    let groups: ChatGroup[] = r?.[MTgetJoinedGroups];
     return groups;
   }
 
@@ -259,14 +260,14 @@ export class ChatGroupManager extends Native {
     pageNum: number
   ): Promise<Array<ChatGroup>> {
     console.log(`${ChatGroupManager.TAG}: fetchJoinedGroupsFromServer: `);
-    let r: any = await Native._callMethod(MethodTypegetJoinedGroupsFromServer, {
-      [MethodTypegetJoinedGroupsFromServer]: {
+    let r: any = await Native._callMethod(MTgetJoinedGroupsFromServer, {
+      [MTgetJoinedGroupsFromServer]: {
         pageSize,
         pageNum,
       },
     });
-    ChatGroupManager.hasErrorFromResult(r);
-    let groups: ChatGroup[] = r?.[MethodTypegetJoinedGroupsFromServer];
+    ChatGroupManager.checkErrorFromResult(r);
+    let groups: ChatGroup[] = r?.[MTgetJoinedGroupsFromServer];
     return groups;
   }
 
@@ -275,16 +276,16 @@ export class ChatGroupManager extends Native {
     cursor?: string
   ): Promise<ChatCursorResult<ChatGroup>> {
     console.log(`${ChatGroupManager.TAG}: fetchPublicGroupsFromServer: `);
-    let r: any = await Native._callMethod(MethodTypegetPublicGroupsFromServer, {
-      [MethodTypegetPublicGroupsFromServer]: {
+    let r: any = await Native._callMethod(MTgetPublicGroupsFromServer, {
+      [MTgetPublicGroupsFromServer]: {
         pageSize,
         cursor,
       },
     });
-    ChatGroupManager.hasErrorFromResult(r);
+    ChatGroupManager.checkErrorFromResult(r);
     let ret = new ChatCursorResult<ChatGroup>({
-      cursor: r?.[MethodTypegetPublicGroupsFromServer].cursor,
-      list: r?.[MethodTypegetPublicGroupsFromServer].list,
+      cursor: r?.[MTgetPublicGroupsFromServer].cursor,
+      list: r?.[MTgetPublicGroupsFromServer].list,
       opt: {
         map: (param: any) => {
           return new ChatGroup(param);
@@ -302,8 +303,8 @@ export class ChatGroupManager extends Native {
     inviteReason?: string
   ): Promise<ChatGroup> {
     console.log(`${ChatGroupManager.TAG}: createGroup: `);
-    let r: any = await Native._callMethod(MethodTypecreateGroup, {
-      [MethodTypecreateGroup]: {
+    let r: any = await Native._callMethod(MTcreateGroup, {
+      [MTcreateGroup]: {
         groupName,
         desc,
         inviteMembers,
@@ -311,23 +312,20 @@ export class ChatGroupManager extends Native {
         options,
       },
     });
-    ChatGroupManager.hasErrorFromResult(r);
-    let groups: ChatGroup = r?.[MethodTypecreateGroup];
+    ChatGroupManager.checkErrorFromResult(r);
+    let groups: ChatGroup = r?.[MTcreateGroup];
     return groups;
   }
 
   public async fetchGroupInfoFromServer(groupId: string): Promise<ChatGroup> {
     console.log(`${ChatGroupManager.TAG}: fetchGroupInfoFromServer: `);
-    let r: any = await Native._callMethod(
-      MethodTypegetGroupSpecificationFromServer,
-      {
-        [MethodTypegetGroupSpecificationFromServer]: {
-          groupId,
-        },
-      }
-    );
-    ChatGroupManager.hasErrorFromResult(r);
-    let groups: ChatGroup = r?.[MethodTypegetGroupSpecificationFromServer];
+    let r: any = await Native._callMethod(MTgetGroupSpecificationFromServer, {
+      [MTgetGroupSpecificationFromServer]: {
+        groupId,
+      },
+    });
+    ChatGroupManager.checkErrorFromResult(r);
+    let groups: ChatGroup = r?.[MTgetGroupSpecificationFromServer];
     return groups;
   }
 
@@ -337,20 +335,17 @@ export class ChatGroupManager extends Native {
     cursor?: string
   ): Promise<ChatCursorResult<string>> {
     console.log(`${ChatGroupManager.TAG}: fetchMemberListFromServer: `);
-    let r: any = await Native._callMethod(
-      MethodTypegetGroupMemberListFromServer,
-      {
-        [MethodTypegetGroupMemberListFromServer]: {
-          groupId,
-          pageSize,
-          cursor,
-        },
-      }
-    );
-    ChatGroupManager.hasErrorFromResult(r);
+    let r: any = await Native._callMethod(MTgetGroupMemberListFromServer, {
+      [MTgetGroupMemberListFromServer]: {
+        groupId,
+        pageSize,
+        cursor,
+      },
+    });
+    ChatGroupManager.checkErrorFromResult(r);
     let ret = new ChatCursorResult<string>({
-      cursor: r?.[MethodTypegetGroupMemberListFromServer].cursor,
-      list: r?.[MethodTypegetGroupMemberListFromServer].list,
+      cursor: r?.[MTgetGroupMemberListFromServer].cursor,
+      list: r?.[MTgetGroupMemberListFromServer].list,
       opt: {
         map: (param: any) => {
           return param as string;
@@ -366,18 +361,15 @@ export class ChatGroupManager extends Native {
     pageNum: number = 1
   ): Promise<Array<string>> {
     console.log(`${ChatGroupManager.TAG}: fetchBlockListFromServer: `);
-    let r: any = await Native._callMethod(
-      MethodTypegetGroupBlockListFromServer,
-      {
-        [MethodTypegetGroupBlockListFromServer]: {
-          groupId,
-          pageSize,
-          pageNum,
-        },
-      }
-    );
-    ChatGroupManager.hasErrorFromResult(r);
-    let ret = r?.[MethodTypegetGroupBlockListFromServer];
+    let r: any = await Native._callMethod(MTgetGroupBlockListFromServer, {
+      [MTgetGroupBlockListFromServer]: {
+        groupId,
+        pageSize,
+        pageNum,
+      },
+    });
+    ChatGroupManager.checkErrorFromResult(r);
+    let ret = r?.[MTgetGroupBlockListFromServer];
     return ret;
   }
 
@@ -387,18 +379,15 @@ export class ChatGroupManager extends Native {
     pageNum: number = 1
   ): Promise<Array<string>> {
     console.log(`${ChatGroupManager.TAG}: fetchMuteListFromServer: `);
-    let r: any = await Native._callMethod(
-      MethodTypegetGroupMuteListFromServer,
-      {
-        [MethodTypegetGroupMuteListFromServer]: {
-          groupId,
-          pageSize,
-          pageNum,
-        },
-      }
-    );
-    ChatGroupManager.hasErrorFromResult(r);
-    let ret = r?.[MethodTypegetGroupMuteListFromServer];
+    let r: any = await Native._callMethod(MTgetGroupMuteListFromServer, {
+      [MTgetGroupMuteListFromServer]: {
+        groupId,
+        pageSize,
+        pageNum,
+      },
+    });
+    ChatGroupManager.checkErrorFromResult(r);
+    let ret = r?.[MTgetGroupMuteListFromServer];
     return ret;
   }
 
@@ -406,16 +395,13 @@ export class ChatGroupManager extends Native {
     groupId: string
   ): Promise<Array<string>> {
     console.log(`${ChatGroupManager.TAG}: fetchWhiteListFromServer: `);
-    let r: any = await Native._callMethod(
-      MethodTypegetGroupWhiteListFromServer,
-      {
-        [MethodTypegetGroupWhiteListFromServer]: {
-          groupId,
-        },
-      }
-    );
-    ChatGroupManager.hasErrorFromResult(r);
-    let ret = r?.[MethodTypegetGroupWhiteListFromServer];
+    let r: any = await Native._callMethod(MTgetGroupWhiteListFromServer, {
+      [MTgetGroupWhiteListFromServer]: {
+        groupId,
+      },
+    });
+    ChatGroupManager.checkErrorFromResult(r);
+    let ret = r?.[MTgetGroupWhiteListFromServer];
     return ret;
   }
 
@@ -423,16 +409,13 @@ export class ChatGroupManager extends Native {
     groupId: string
   ): Promise<boolean> {
     console.log(`${ChatGroupManager.TAG}: isMemberInWhiteListFromServer: `);
-    let r: any = await Native._callMethod(
-      MethodTypeisMemberInWhiteListFromServer,
-      {
-        [MethodTypeisMemberInWhiteListFromServer]: {
-          groupId,
-        },
-      }
-    );
-    ChatGroupManager.hasErrorFromResult(r);
-    let ret = r?.[MethodTypeisMemberInWhiteListFromServer] as boolean;
+    let r: any = await Native._callMethod(MTisMemberInWhiteListFromServer, {
+      [MTisMemberInWhiteListFromServer]: {
+        groupId,
+      },
+    });
+    ChatGroupManager.checkErrorFromResult(r);
+    let ret = r?.[MTisMemberInWhiteListFromServer] as boolean;
     return ret;
   }
 
@@ -442,33 +425,27 @@ export class ChatGroupManager extends Native {
     pageNum: number = 1
   ): Promise<Array<ChatGroupSharedFile>> {
     console.log(`${ChatGroupManager.TAG}: fetchGroupFileListFromServer: `);
-    let r: any = await Native._callMethod(
-      MethodTypegetGroupFileListFromServer,
-      {
-        [MethodTypegetGroupFileListFromServer]: {
-          groupId,
-          pageSize,
-          pageNum,
-        },
-      }
-    );
-    ChatGroupManager.hasErrorFromResult(r);
-    let ret: ChatGroupSharedFile[] = r?.[MethodTypegetGroupFileListFromServer];
+    let r: any = await Native._callMethod(MTgetGroupFileListFromServer, {
+      [MTgetGroupFileListFromServer]: {
+        groupId,
+        pageSize,
+        pageNum,
+      },
+    });
+    ChatGroupManager.checkErrorFromResult(r);
+    let ret: ChatGroupSharedFile[] = r?.[MTgetGroupFileListFromServer];
     return ret;
   }
 
   public async fetchAnnouncementFromServer(groupId: string): Promise<string> {
     console.log(`${ChatGroupManager.TAG}: fetchAnnouncementFromServer: `);
-    let r: any = await Native._callMethod(
-      MethodTypegetGroupAnnouncementFromServer,
-      {
-        [MethodTypegetGroupAnnouncementFromServer]: {
-          groupId,
-        },
-      }
-    );
-    ChatGroupManager.hasErrorFromResult(r);
-    let ret: string = r?.[MethodTypegetGroupAnnouncementFromServer];
+    let r: any = await Native._callMethod(MTgetGroupAnnouncementFromServer, {
+      [MTgetGroupAnnouncementFromServer]: {
+        groupId,
+      },
+    });
+    ChatGroupManager.checkErrorFromResult(r);
+    let ret: string = r?.[MTgetGroupAnnouncementFromServer];
     return ret;
   }
 
@@ -478,14 +455,14 @@ export class ChatGroupManager extends Native {
     welcome?: string
   ): Promise<void> {
     console.log(`${ChatGroupManager.TAG}: addMembers: `);
-    let r: any = await Native._callMethod(MethodTypeaddMembers, {
-      [MethodTypeaddMembers]: {
+    let r: any = await Native._callMethod(MTaddMembers, {
+      [MTaddMembers]: {
         groupId,
         members,
         welcome,
       },
     });
-    ChatGroupManager.hasErrorFromResult(r);
+    ChatGroupManager.checkErrorFromResult(r);
   }
 
   public async inviterUser(
@@ -494,14 +471,14 @@ export class ChatGroupManager extends Native {
     reason?: string
   ): Promise<void> {
     console.log(`${ChatGroupManager.TAG}: inviterUser: `);
-    let r: any = await Native._callMethod(MethodTypeinviterUser, {
-      [MethodTypeinviterUser]: {
+    let r: any = await Native._callMethod(MTinviterUser, {
+      [MTinviterUser]: {
         groupId,
         members,
         reason,
       },
     });
-    ChatGroupManager.hasErrorFromResult(r);
+    ChatGroupManager.checkErrorFromResult(r);
   }
 
   public async removeMembers(
@@ -509,13 +486,13 @@ export class ChatGroupManager extends Native {
     members: Array<string>
   ): Promise<void> {
     console.log(`${ChatGroupManager.TAG}: removeMembers: `);
-    let r: any = await Native._callMethod(MethodTyperemoveMembers, {
-      [MethodTyperemoveMembers]: {
+    let r: any = await Native._callMethod(MTremoveMembers, {
+      [MTremoveMembers]: {
         groupId,
         members,
       },
     });
-    ChatGroupManager.hasErrorFromResult(r);
+    ChatGroupManager.checkErrorFromResult(r);
   }
 
   public async blockMembers(
@@ -523,13 +500,13 @@ export class ChatGroupManager extends Native {
     members: Array<string>
   ): Promise<void> {
     console.log(`${ChatGroupManager.TAG}: blockMembers: `);
-    let r: any = await Native._callMethod(MethodTypeblockMembers, {
-      [MethodTypeblockMembers]: {
+    let r: any = await Native._callMethod(MTblockMembers, {
+      [MTblockMembers]: {
         groupId,
         members,
       },
     });
-    ChatGroupManager.hasErrorFromResult(r);
+    ChatGroupManager.checkErrorFromResult(r);
   }
 
   public async unblockMembers(
@@ -537,24 +514,24 @@ export class ChatGroupManager extends Native {
     members: Array<string>
   ): Promise<void> {
     console.log(`${ChatGroupManager.TAG}: unblockMembers: `);
-    let r: any = await Native._callMethod(MethodTypeunblockMembers, {
-      [MethodTypeunblockMembers]: {
+    let r: any = await Native._callMethod(MTunblockMembers, {
+      [MTunblockMembers]: {
         groupId,
         members,
       },
     });
-    ChatGroupManager.hasErrorFromResult(r);
+    ChatGroupManager.checkErrorFromResult(r);
   }
 
   public async changeGroupName(groupId: string, name: string): Promise<void> {
     console.log(`${ChatGroupManager.TAG}: changeGroupName: `);
-    let r: any = await Native._callMethod(MethodTypeupdateGroupSubject, {
-      [MethodTypeupdateGroupSubject]: {
+    let r: any = await Native._callMethod(MTupdateGroupSubject, {
+      [MTupdateGroupSubject]: {
         groupId,
         name,
       },
     });
-    ChatGroupManager.hasErrorFromResult(r);
+    ChatGroupManager.checkErrorFromResult(r);
   }
 
   public async changeGroupDescription(
@@ -562,86 +539,86 @@ export class ChatGroupManager extends Native {
     desc: string
   ): Promise<void> {
     console.log(`${ChatGroupManager.TAG}: changeGroupDescription: `);
-    let r: any = await Native._callMethod(MethodTypeupdateDescription, {
-      [MethodTypeupdateDescription]: {
+    let r: any = await Native._callMethod(MTupdateDescription, {
+      [MTupdateDescription]: {
         groupId,
         desc,
       },
     });
-    ChatGroupManager.hasErrorFromResult(r);
+    ChatGroupManager.checkErrorFromResult(r);
   }
 
   public async leaveGroup(groupId: string): Promise<void> {
     console.log(`${ChatGroupManager.TAG}: leaveGroup: `);
-    let r: any = await Native._callMethod(MethodTypeleaveGroup, {
-      [MethodTypeleaveGroup]: {
+    let r: any = await Native._callMethod(MTleaveGroup, {
+      [MTleaveGroup]: {
         groupId,
       },
     });
-    ChatGroupManager.hasErrorFromResult(r);
+    ChatGroupManager.checkErrorFromResult(r);
   }
 
   public async destroyGroup(groupId: string): Promise<void> {
     console.log(`${ChatGroupManager.TAG}: destroyGroup: `);
-    let r: any = await Native._callMethod(MethodTypedestroyGroup, {
-      [MethodTypedestroyGroup]: {
+    let r: any = await Native._callMethod(MTdestroyGroup, {
+      [MTdestroyGroup]: {
         groupId,
       },
     });
-    ChatGroupManager.hasErrorFromResult(r);
+    ChatGroupManager.checkErrorFromResult(r);
   }
 
   public async blockGroup(groupId: string): Promise<void> {
     console.log(`${ChatGroupManager.TAG}: blockGroup: `);
-    let r: any = await Native._callMethod(MethodTypeblockGroup, {
-      [MethodTypeblockGroup]: {
+    let r: any = await Native._callMethod(MTblockGroup, {
+      [MTblockGroup]: {
         groupId,
       },
     });
-    ChatGroupManager.hasErrorFromResult(r);
+    ChatGroupManager.checkErrorFromResult(r);
   }
 
   public async unblockGroup(groupId: string): Promise<void> {
     console.log(`${ChatGroupManager.TAG}: unblockGroup: `);
-    let r: any = await Native._callMethod(MethodTypeunblockGroup, {
-      [MethodTypeunblockGroup]: {
+    let r: any = await Native._callMethod(MTunblockGroup, {
+      [MTunblockGroup]: {
         groupId,
       },
     });
-    ChatGroupManager.hasErrorFromResult(r);
+    ChatGroupManager.checkErrorFromResult(r);
   }
 
   public async changeOwner(groupId: string, newOwner: string): Promise<void> {
     console.log(`${ChatGroupManager.TAG}: changeOwner: `);
-    let r: any = await Native._callMethod(MethodTypeupdateGroupOwner, {
-      [MethodTypeupdateGroupOwner]: {
+    let r: any = await Native._callMethod(MTupdateGroupOwner, {
+      [MTupdateGroupOwner]: {
         groupId,
         newOwner,
       },
     });
-    ChatGroupManager.hasErrorFromResult(r);
+    ChatGroupManager.checkErrorFromResult(r);
   }
 
   public async addAdmin(groupId: string, memberId: string): Promise<void> {
     console.log(`${ChatGroupManager.TAG}: addAdmin: `);
-    let r: any = await Native._callMethod(MethodTypeaddAdmin, {
-      [MethodTypeaddAdmin]: {
+    let r: any = await Native._callMethod(MTaddAdmin, {
+      [MTaddAdmin]: {
         groupId,
         memberId,
       },
     });
-    ChatGroupManager.hasErrorFromResult(r);
+    ChatGroupManager.checkErrorFromResult(r);
   }
 
   public async removeAdmin(groupId: string, memberId: string): Promise<void> {
     console.log(`${ChatGroupManager.TAG}: removeAdmin: `);
-    let r: any = await Native._callMethod(MethodTyperemoveAdmin, {
-      [MethodTyperemoveAdmin]: {
+    let r: any = await Native._callMethod(MTremoveAdmin, {
+      [MTremoveAdmin]: {
         groupId,
         memberId,
       },
     });
-    ChatGroupManager.hasErrorFromResult(r);
+    ChatGroupManager.checkErrorFromResult(r);
   }
 
   public async muteMembers(
@@ -650,14 +627,14 @@ export class ChatGroupManager extends Native {
     duration: number = -1
   ): Promise<void> {
     console.log(`${ChatGroupManager.TAG}: muteMembers: `);
-    let r: any = await Native._callMethod(MethodTypemuteMembers, {
-      [MethodTypemuteMembers]: {
+    let r: any = await Native._callMethod(MTmuteMembers, {
+      [MTmuteMembers]: {
         groupId,
         members,
         duration,
       },
     });
-    ChatGroupManager.hasErrorFromResult(r);
+    ChatGroupManager.checkErrorFromResult(r);
   }
 
   public async unMuteMembers(
@@ -665,33 +642,33 @@ export class ChatGroupManager extends Native {
     members: Array<string>
   ): Promise<void> {
     console.log(`${ChatGroupManager.TAG}: unMuteMembers: `);
-    let r: any = await Native._callMethod(MethodTypeunMuteMembers, {
-      [MethodTypeunMuteMembers]: {
+    let r: any = await Native._callMethod(MTunMuteMembers, {
+      [MTunMuteMembers]: {
         groupId,
         members,
       },
     });
-    ChatGroupManager.hasErrorFromResult(r);
+    ChatGroupManager.checkErrorFromResult(r);
   }
 
   public async muteAllMembers(groupId: string): Promise<void> {
     console.log(`${ChatGroupManager.TAG}: muteAllMembers: `);
-    let r: any = await Native._callMethod(MethodTypemuteAllMembers, {
-      [MethodTypemuteAllMembers]: {
+    let r: any = await Native._callMethod(MTmuteAllMembers, {
+      [MTmuteAllMembers]: {
         groupId,
       },
     });
-    ChatGroupManager.hasErrorFromResult(r);
+    ChatGroupManager.checkErrorFromResult(r);
   }
 
   public async unMuteAllMembers(groupId: string): Promise<void> {
     console.log(`${ChatGroupManager.TAG}: unMuteAllMembers: `);
-    let r: any = await Native._callMethod(MethodTypeunMuteAllMembers, {
-      [MethodTypeunMuteAllMembers]: {
+    let r: any = await Native._callMethod(MTunMuteAllMembers, {
+      [MTunMuteAllMembers]: {
         groupId,
       },
     });
-    ChatGroupManager.hasErrorFromResult(r);
+    ChatGroupManager.checkErrorFromResult(r);
   }
 
   public async addWhiteList(
@@ -699,13 +676,13 @@ export class ChatGroupManager extends Native {
     members: Array<string>
   ): Promise<void> {
     console.log(`${ChatGroupManager.TAG}: addWhiteList: `);
-    let r: any = await Native._callMethod(MethodTypeaddWhiteList, {
-      [MethodTypeaddWhiteList]: {
+    let r: any = await Native._callMethod(MTaddWhiteList, {
+      [MTaddWhiteList]: {
         groupId,
         members,
       },
     });
-    ChatGroupManager.hasErrorFromResult(r);
+    ChatGroupManager.checkErrorFromResult(r);
   }
 
   public async removeWhiteList(
@@ -713,13 +690,13 @@ export class ChatGroupManager extends Native {
     members: Array<string>
   ): Promise<void> {
     console.log(`${ChatGroupManager.TAG}: removeWhiteList: `);
-    let r: any = await Native._callMethod(MethodTyperemoveWhiteList, {
-      [MethodTyperemoveWhiteList]: {
+    let r: any = await Native._callMethod(MTremoveWhiteList, {
+      [MTremoveWhiteList]: {
         groupId,
         members,
       },
     });
-    ChatGroupManager.hasErrorFromResult(r);
+    ChatGroupManager.checkErrorFromResult(r);
   }
 
   public async uploadGroupSharedFile(
@@ -727,13 +704,13 @@ export class ChatGroupManager extends Native {
     filePath: string
   ): Promise<void> {
     console.log(`${ChatGroupManager.TAG}: uploadGroupSharedFile: `);
-    let r: any = await Native._callMethod(MethodTypeuploadGroupSharedFile, {
-      [MethodTypeuploadGroupSharedFile]: {
+    let r: any = await Native._callMethod(MTuploadGroupSharedFile, {
+      [MTuploadGroupSharedFile]: {
         groupId,
         filePath,
       },
     });
-    ChatGroupManager.hasErrorFromResult(r);
+    ChatGroupManager.checkErrorFromResult(r);
   }
 
   public async downloadGroupSharedFile(
@@ -742,14 +719,14 @@ export class ChatGroupManager extends Native {
     savePath: string
   ): Promise<void> {
     console.log(`${ChatGroupManager.TAG}: downloadGroupSharedFile: `);
-    let r: any = await Native._callMethod(MethodTypedownloadGroupSharedFile, {
-      [MethodTypedownloadGroupSharedFile]: {
+    let r: any = await Native._callMethod(MTdownloadGroupSharedFile, {
+      [MTdownloadGroupSharedFile]: {
         groupId,
         fileId,
         savePath,
       },
     });
-    ChatGroupManager.hasErrorFromResult(r);
+    ChatGroupManager.checkErrorFromResult(r);
   }
 
   public async removeGroupSharedFile(
@@ -757,13 +734,13 @@ export class ChatGroupManager extends Native {
     fileId: string
   ): Promise<void> {
     console.log(`${ChatGroupManager.TAG}: removeGroupSharedFile: `);
-    let r: any = await Native._callMethod(MethodTyperemoveGroupSharedFile, {
-      [MethodTyperemoveGroupSharedFile]: {
+    let r: any = await Native._callMethod(MTremoveGroupSharedFile, {
+      [MTremoveGroupSharedFile]: {
         groupId,
         fileId,
       },
     });
-    ChatGroupManager.hasErrorFromResult(r);
+    ChatGroupManager.checkErrorFromResult(r);
   }
 
   public async updateGroupAnnouncement(
@@ -771,13 +748,13 @@ export class ChatGroupManager extends Native {
     announcement: string
   ): Promise<void> {
     console.log(`${ChatGroupManager.TAG}: updateGroupAnnouncement: `);
-    let r: any = await Native._callMethod(MethodTypeupdateGroupAnnouncement, {
-      [MethodTypeupdateGroupAnnouncement]: {
+    let r: any = await Native._callMethod(MTupdateGroupAnnouncement, {
+      [MTupdateGroupAnnouncement]: {
         groupId,
         announcement,
       },
     });
-    ChatGroupManager.hasErrorFromResult(r);
+    ChatGroupManager.checkErrorFromResult(r);
   }
 
   public async updateGroupExtension(
@@ -785,23 +762,23 @@ export class ChatGroupManager extends Native {
     extension: string
   ): Promise<void> {
     console.log(`${ChatGroupManager.TAG}: updateGroupExtension: `);
-    let r: any = await Native._callMethod(MethodTypeupdateGroupExt, {
-      [MethodTypeupdateGroupExt]: {
+    let r: any = await Native._callMethod(MTupdateGroupExt, {
+      [MTupdateGroupExt]: {
         groupId,
         extension,
       },
     });
-    ChatGroupManager.hasErrorFromResult(r);
+    ChatGroupManager.checkErrorFromResult(r);
   }
 
   public async joinPublicGroup(groupId: string): Promise<void> {
     console.log(`${ChatGroupManager.TAG}: joinPublicGroup: `);
-    let r: any = await Native._callMethod(MethodTypejoinPublicGroup, {
-      [MethodTypejoinPublicGroup]: {
+    let r: any = await Native._callMethod(MTjoinPublicGroup, {
+      [MTjoinPublicGroup]: {
         groupId,
       },
     });
-    ChatGroupManager.hasErrorFromResult(r);
+    ChatGroupManager.checkErrorFromResult(r);
   }
 
   public async requestToJoinPublicGroup(
@@ -809,13 +786,13 @@ export class ChatGroupManager extends Native {
     reason?: string
   ): Promise<void> {
     console.log(`${ChatGroupManager.TAG}: requestToJoinPublicGroup: `);
-    let r: any = await Native._callMethod(MethodTyperequestToJoinPublicGroup, {
-      [MethodTyperequestToJoinPublicGroup]: {
+    let r: any = await Native._callMethod(MTrequestToJoinPublicGroup, {
+      [MTrequestToJoinPublicGroup]: {
         groupId,
         reason,
       },
     });
-    ChatGroupManager.hasErrorFromResult(r);
+    ChatGroupManager.checkErrorFromResult(r);
   }
 
   public async acceptJoinApplication(
@@ -823,13 +800,13 @@ export class ChatGroupManager extends Native {
     username: string
   ): Promise<void> {
     console.log(`${ChatGroupManager.TAG}: acceptJoinApplication: `);
-    let r: any = await Native._callMethod(MethodTypeacceptJoinApplication, {
-      [MethodTypeacceptJoinApplication]: {
+    let r: any = await Native._callMethod(MTacceptJoinApplication, {
+      [MTacceptJoinApplication]: {
         groupId,
         username,
       },
     });
-    ChatGroupManager.hasErrorFromResult(r);
+    ChatGroupManager.checkErrorFromResult(r);
   }
 
   public async declineJoinApplication(
@@ -838,14 +815,14 @@ export class ChatGroupManager extends Native {
     reason?: string
   ): Promise<void> {
     console.log(`${ChatGroupManager.TAG}: declineJoinApplication: `);
-    let r: any = await Native._callMethod(MethodTypedeclineJoinApplication, {
-      [MethodTypedeclineJoinApplication]: {
+    let r: any = await Native._callMethod(MTdeclineJoinApplication, {
+      [MTdeclineJoinApplication]: {
         groupId,
         username,
         reason,
       },
     });
-    ChatGroupManager.hasErrorFromResult(r);
+    ChatGroupManager.checkErrorFromResult(r);
   }
 
   public async acceptInvitation(
@@ -853,13 +830,13 @@ export class ChatGroupManager extends Native {
     inviter: string
   ): Promise<void> {
     console.log(`${ChatGroupManager.TAG}: acceptInvitation: `);
-    let r: any = await Native._callMethod(MethodTypeacceptInvitationFromGroup, {
-      [MethodTypedeclineJoinApplication]: {
+    let r: any = await Native._callMethod(MTacceptInvitationFromGroup, {
+      [MTdeclineJoinApplication]: {
         groupId,
         inviter,
       },
     });
-    ChatGroupManager.hasErrorFromResult(r);
+    ChatGroupManager.checkErrorFromResult(r);
   }
 
   public async declineInvitation(
@@ -868,17 +845,14 @@ export class ChatGroupManager extends Native {
     reason?: string
   ): Promise<void> {
     console.log(`${ChatGroupManager.TAG}: declineInvitation: `);
-    let r: any = await Native._callMethod(
-      MethodTypedeclineInvitationFromGroup,
-      {
-        [MethodTypedeclineInvitationFromGroup]: {
-          groupId,
-          inviter,
-          reason,
-        },
-      }
-    );
-    ChatGroupManager.hasErrorFromResult(r);
+    let r: any = await Native._callMethod(MTdeclineInvitationFromGroup, {
+      [MTdeclineInvitationFromGroup]: {
+        groupId,
+        inviter,
+        reason,
+      },
+    });
+    ChatGroupManager.checkErrorFromResult(r);
   }
 
   addGroupListener(listener: ChatGroupEventListener): void {

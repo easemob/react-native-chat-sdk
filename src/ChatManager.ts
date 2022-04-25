@@ -10,40 +10,55 @@ import {
   ChatMessage,
   ChatMessageStatus,
   ChatMessageStatusCallback,
+  ChatMessageType,
 } from './common/ChatMessage';
 import {
-  MethodTypeackConversationRead,
-  MethodTypeackGroupMessageRead,
-  MethodTypeackMessageRead,
-  MethodTypeasyncFetchGroupAcks,
-  MethodTypedeleteConversation,
-  MethodTypedeleteRemoteConversation,
-  MethodTypedownloadAttachment,
-  MethodTypedownloadThumbnail,
-  MethodTypefetchHistoryMessages,
-  MethodTypegetConversation,
-  MethodTypegetConversationsFromServer,
-  MethodTypegetMessage,
-  MethodTypegetUnreadMessageCount,
-  MethodTypeimportMessages,
-  MethodTypeloadAllConversations,
-  MethodTypemarkAllChatMsgAsRead,
-  MethodTypeonCmdMessagesReceived,
-  MethodTypeonConversationHasRead,
-  MethodTypeonConversationUpdate,
-  MethodTypeonGroupMessageRead,
-  MethodTypeonMessageError,
-  MethodTypeonMessageProgressUpdate,
-  MethodTypeonMessagesDelivered,
-  MethodTypeonMessagesRead,
-  MethodTypeonMessagesRecalled,
-  MethodTypeonMessagesReceived,
-  MethodTypeonMessageSuccess,
-  MethodTyperecallMessage,
-  MethodTyperesendMessage,
-  MethodTypesearchChatMsgFromDB,
-  MethodTypesendMessage,
-  MethodTypeupdateChatMessage,
+  MTackConversationRead,
+  MTackGroupMessageRead,
+  MTackMessageRead,
+  MTasyncFetchGroupAcks,
+  MTdeleteRemoteConversation,
+  MTdownloadAttachment,
+  MTdownloadThumbnail,
+  MTfetchHistoryMessages,
+  MTgetMessage,
+  MTgetUnreadMessageCount,
+  MTimportMessages,
+  MTmarkAllChatMsgAsRead,
+  MTonCmdMessagesReceived,
+  MTonConversationHasRead,
+  MTonConversationUpdate,
+  MTonGroupMessageRead,
+  MTonMessageError,
+  MTonMessageProgressUpdate,
+  MTonMessagesDelivered,
+  MTonMessagesRead,
+  MTonMessagesRecalled,
+  MTonMessagesReceived,
+  MTonMessageSuccess,
+  MTrecallMessage,
+  MTresendMessage,
+  MTsearchChatMsgFromDB,
+  MTsendMessage,
+  MTupdateChatMessage,
+  MTappendMessage,
+  MTclearAllMessages,
+  MTgetLatestMessage,
+  MTgetLatestMessageFromOthers,
+  MTgetUnreadMsgCount,
+  MTinsertMessage,
+  MTloadMsgWithId,
+  MTloadMsgWithKeywords,
+  MTloadMsgWithMsgType,
+  MTloadMsgWithStartId,
+  MTmarkAllMessagesAsRead,
+  MTmarkMessageAsRead,
+  MTremoveMessage,
+  MTupdateConversationMessage,
+  MTdeleteConversation,
+  MTgetConversation,
+  MTgetConversationsFromServer,
+  MTloadAllConversations,
 } from './_internal/Consts';
 import { Native } from './_internal/Native';
 
@@ -225,44 +240,41 @@ export class ChatManager extends Native {
 
   public setNativeListener(eventEmitter: NativeEventEmitter) {
     this._eventEmitter = eventEmitter;
-    eventEmitter.removeAllListeners(MethodTypeonMessagesReceived);
+    eventEmitter.removeAllListeners(MTonMessagesReceived);
     eventEmitter.addListener(
-      MethodTypeonMessagesReceived,
+      MTonMessagesReceived,
       this.onMessagesReceived.bind(this)
     );
-    eventEmitter.removeAllListeners(MethodTypeonCmdMessagesReceived);
+    eventEmitter.removeAllListeners(MTonCmdMessagesReceived);
     eventEmitter.addListener(
-      MethodTypeonCmdMessagesReceived,
+      MTonCmdMessagesReceived,
       this.onCmdMessagesReceived.bind(this)
     );
-    eventEmitter.removeAllListeners(MethodTypeonMessagesRead);
+    eventEmitter.removeAllListeners(MTonMessagesRead);
+    eventEmitter.addListener(MTonMessagesRead, this.onMessagesRead.bind(this));
+    eventEmitter.removeAllListeners(MTonGroupMessageRead);
     eventEmitter.addListener(
-      MethodTypeonMessagesRead,
-      this.onMessagesRead.bind(this)
-    );
-    eventEmitter.removeAllListeners(MethodTypeonGroupMessageRead);
-    eventEmitter.addListener(
-      MethodTypeonGroupMessageRead,
+      MTonGroupMessageRead,
       this.onGroupMessageRead.bind(this)
     );
-    eventEmitter.removeAllListeners(MethodTypeonMessagesDelivered);
+    eventEmitter.removeAllListeners(MTonMessagesDelivered);
     eventEmitter.addListener(
-      MethodTypeonMessagesDelivered,
+      MTonMessagesDelivered,
       this.onMessagesDelivered.bind(this)
     );
-    eventEmitter.removeAllListeners(MethodTypeonMessagesRecalled);
+    eventEmitter.removeAllListeners(MTonMessagesRecalled);
     eventEmitter.addListener(
-      MethodTypeonMessagesRecalled,
+      MTonMessagesRecalled,
       this.onMessagesRecalled.bind(this)
     );
-    eventEmitter.removeAllListeners(MethodTypeonConversationUpdate);
+    eventEmitter.removeAllListeners(MTonConversationUpdate);
     eventEmitter.addListener(
-      MethodTypeonConversationUpdate,
+      MTonConversationUpdate,
       this.onConversationsUpdate.bind(this)
     );
-    eventEmitter.removeAllListeners(MethodTypeonConversationHasRead);
+    eventEmitter.removeAllListeners(MTonConversationHasRead);
     eventEmitter.addListener(
-      MethodTypeonConversationHasRead,
+      MTonConversationHasRead,
       this.onConversationHasRead.bind(this)
     );
   }
@@ -355,20 +367,20 @@ export class ChatManager extends Native {
   ): void {
     if (callback && self._eventEmitter) {
       const subscription = self._eventEmitter.addListener(
-        MethodTypesendMessage,
+        MTsendMessage,
         (params: any) => {
           const localMsgId: string = params.localTime.toString();
           if (message.localMsgId === localMsgId) {
             const callbackType: String = params.callbackType;
-            if (callbackType === MethodTypeonMessageSuccess) {
+            if (callbackType === MTonMessageSuccess) {
               const m = params.message;
               callback.onSuccess(new ChatMessage(m));
               subscription.remove();
-            } else if (callbackType === MethodTypeonMessageError) {
+            } else if (callbackType === MTonMessageError) {
               const e = params.error;
               callback.onError(localMsgId, new ChatError(e));
               subscription.remove();
-            } else if (callbackType === MethodTypeonMessageProgressUpdate) {
+            } else if (callbackType === MTonMessageProgressUpdate) {
               const progress: number = params.progress;
               callback.onProgress(localMsgId, progress);
             }
@@ -421,10 +433,10 @@ export class ChatManager extends Native {
     );
     message.status = ChatMessageStatus.PROGRESS;
     ChatManager.handleSendMessageCallback(this, message, callback);
-    let r: any = await Native._callMethod(MethodTypesendMessage, {
-      [MethodTypesendMessage]: message,
+    let r: any = await Native._callMethod(MTsendMessage, {
+      [MTsendMessage]: message,
     });
-    Native.hasErrorFromResult(r);
+    Native.checkErrorFromResult(r);
   }
 
   /**
@@ -453,10 +465,10 @@ export class ChatManager extends Native {
     }
     message.status = ChatMessageStatus.PROGRESS;
     ChatManager.handleSendMessageCallback(this, message, callback);
-    let r: any = await Native._callMethod(MethodTyperesendMessage, {
-      [MethodTypesendMessage]: message,
+    let r: any = await Native._callMethod(MTresendMessage, {
+      [MTsendMessage]: message,
     });
-    Native.hasErrorFromResult(r);
+    Native.checkErrorFromResult(r);
   }
 
   /**
@@ -480,13 +492,13 @@ export class ChatManager extends Native {
     console.log(
       `${ChatManager.TAG}: sendMessageReadAck: ${message.msgId}, ${message.localTime}`
     );
-    let r: any = await Native._callMethod(MethodTypeackMessageRead, {
-      [MethodTypeackMessageRead]: {
+    let r: any = await Native._callMethod(MTackMessageRead, {
+      [MTackMessageRead]: {
         to: message.from,
         msg_id: message.msgId,
       },
     });
-    Native.hasErrorFromResult(r);
+    Native.checkErrorFromResult(r);
   }
 
   /**
@@ -522,10 +534,10 @@ export class ChatManager extends Native {
           msg_id: msgId,
           group_id: groupId,
         };
-    let r: any = await Native._callMethod(MethodTypeackGroupMessageRead, {
-      [MethodTypeackGroupMessageRead]: s,
+    let r: any = await Native._callMethod(MTackGroupMessageRead, {
+      [MTackGroupMessageRead]: s,
     });
-    Native.hasErrorFromResult(r);
+    Native.checkErrorFromResult(r);
   }
 
   /**
@@ -538,12 +550,12 @@ export class ChatManager extends Native {
    */
   public async sendConversationReadAck(convId: string): Promise<void> {
     console.log(`${ChatManager.TAG}: sendConversationReadAck: ${convId}`);
-    let r: any = await Native._callMethod(MethodTypeackConversationRead, {
-      [MethodTypeackConversationRead]: {
+    let r: any = await Native._callMethod(MTackConversationRead, {
+      [MTackConversationRead]: {
         convId: convId,
       },
     });
-    Native.hasErrorFromResult(r);
+    Native.checkErrorFromResult(r);
   }
 
   /**
@@ -555,12 +567,12 @@ export class ChatManager extends Native {
    */
   public async recallMessage(msgId: string): Promise<void> {
     console.log(`${ChatManager.TAG}: recallMessage: ${msgId}`);
-    let r: any = await Native._callMethod(MethodTyperecallMessage, {
-      [MethodTyperecallMessage]: {
+    let r: any = await Native._callMethod(MTrecallMessage, {
+      [MTrecallMessage]: {
         msg_id: msgId,
       },
     });
-    Native.hasErrorFromResult(r);
+    Native.checkErrorFromResult(r);
   }
 
   /**
@@ -573,45 +585,13 @@ export class ChatManager extends Native {
    */
   public async getMessage(msgId: string): Promise<ChatMessage> {
     console.log(`${ChatManager.TAG}: getMessage: ${msgId}`);
-    let r: any = await Native._callMethod(MethodTypegetMessage, {
-      [MethodTypegetMessage]: {
+    let r: any = await Native._callMethod(MTgetMessage, {
+      [MTgetMessage]: {
         msg_id: msgId,
       },
     });
-    Native.hasErrorFromResult(r);
-    return new ChatMessage(r?.[MethodTypegetMessage]);
-  }
-
-  /**
-   * Gets the conversation by conversation ID and conversation type.
-   *
-   * @param convId The conversation ID.
-   * @param convType The conversation type: {@link ChatConversationType}.
-   * @param createIfNeed Whether to create a conversation if the specified conversation is not found:
-   * - `true`: Yes.
-   * - `false`: No.
-   *
-   * @returns The conversation object found according to the conversation ID and type. Returns null if the conversation is not found.
-   *
-   * @throws A description of the exception. See {@link ChatError}.
-   */
-  public async getConversation(
-    convId: string,
-    convType: ChatConversationType,
-    createIfNeed: boolean = true
-  ): Promise<ChatConversation> {
-    console.log(
-      `${ChatManager.TAG}: getConversation: ${convId}, ${convType}, ${createIfNeed}`
-    );
-    let r: any = await Native._callMethod(MethodTypegetConversation, {
-      [MethodTypegetConversation]: {
-        con_id: convId,
-        type: convType as number,
-        createIfNeed: createIfNeed,
-      },
-    });
-    Native.hasErrorFromResult(r);
-    return new ChatConversation(r?.[MethodTypegetConversation]);
+    Native.checkErrorFromResult(r);
+    return new ChatMessage(r?.[MTgetMessage]);
   }
 
   /**
@@ -623,8 +603,8 @@ export class ChatManager extends Native {
    */
   public async markAllConversationsAsRead(): Promise<void> {
     console.log(`${ChatManager.TAG}: markAllConversationsAsRead: `);
-    let r: any = await Native._callMethod(MethodTypemarkAllChatMsgAsRead);
-    Native.hasErrorFromResult(r);
+    let r: any = await Native._callMethod(MTmarkAllChatMsgAsRead);
+    Native.checkErrorFromResult(r);
   }
 
   /**
@@ -636,9 +616,9 @@ export class ChatManager extends Native {
    */
   public async getUnreadMessageCount(): Promise<number> {
     console.log(`${ChatManager.TAG}: getUnreadMessageCount: `);
-    let r: any = await Native._callMethod(MethodTypegetUnreadMessageCount);
-    Native.hasErrorFromResult(r);
-    return r?.[MethodTypegetUnreadMessageCount] as number;
+    let r: any = await Native._callMethod(MTgetUnreadMessageCount);
+    Native.checkErrorFromResult(r);
+    return r?.[MTgetUnreadMessageCount] as number;
   }
 
   /**
@@ -652,12 +632,12 @@ export class ChatManager extends Native {
     console.log(
       `${ChatManager.TAG}: updateMessage: ${message.msgId}, ${message.localTime}`
     );
-    let r: any = await Native._callMethod(MethodTypeupdateChatMessage, {
-      [MethodTypeupdateChatMessage]: {
+    let r: any = await Native._callMethod(MTupdateChatMessage, {
+      [MTupdateChatMessage]: {
         message: message,
       },
     });
-    Native.hasErrorFromResult(r);
+    Native.checkErrorFromResult(r);
   }
 
   /**
@@ -671,12 +651,12 @@ export class ChatManager extends Native {
    */
   public async importMessages(messages: Array<ChatMessage>): Promise<void> {
     console.log(`${ChatManager.TAG}: importMessages: ${messages.length}`);
-    let r: any = await Native._callMethod(MethodTypeimportMessages, {
-      [MethodTypeimportMessages]: {
+    let r: any = await Native._callMethod(MTimportMessages, {
+      [MTimportMessages]: {
         messages: messages,
       },
     });
-    Native.hasErrorFromResult(r);
+    Native.checkErrorFromResult(r);
   }
 
   /**
@@ -697,12 +677,12 @@ export class ChatManager extends Native {
       `${ChatManager.TAG}: downloadAttachment: ${message.msgId}, ${message.localTime}`
     );
     ChatManager.handleSendMessageCallback(this, message, callback);
-    let r: any = await Native._callMethod(MethodTypedownloadAttachment, {
-      [MethodTypedownloadAttachment]: {
+    let r: any = await Native._callMethod(MTdownloadAttachment, {
+      [MTdownloadAttachment]: {
         message: message,
       },
     });
-    Native.hasErrorFromResult(r);
+    Native.checkErrorFromResult(r);
   }
 
   /**
@@ -720,87 +700,12 @@ export class ChatManager extends Native {
       `${ChatManager.TAG}: downloadThumbnail: ${message.msgId}, ${message.localTime}`
     );
     ChatManager.handleSendMessageCallback(this, message, callback);
-    let r: any = await Native._callMethod(MethodTypedownloadThumbnail, {
-      [MethodTypedownloadThumbnail]: {
+    let r: any = await Native._callMethod(MTdownloadThumbnail, {
+      [MTdownloadThumbnail]: {
         message: message,
       },
     });
-    Native.hasErrorFromResult(r);
-  }
-
-  /**
-   * Gets all conversations from the local database.
-   *
-   * Conversations will be first loaded from the memory. If no conversation is found, the SDK loads from the local database.
-   *
-   * @returns All the conversations from the the local memory or local database.
-   *
-   * @throws A description of the exception. See {@link ChatError}.
-   */
-  public async loadAllConversations(): Promise<Array<ChatConversation>> {
-    console.log(`${ChatManager.TAG}: loadAllConversations:`);
-    let r: any = await Native._callMethod(MethodTypeloadAllConversations);
-    Native.hasErrorFromResult(r);
-    let ret = new Array<ChatConversation>(10);
-    (r?.[MethodTypeloadAllConversations] as Array<any>).forEach((element) => {
-      ret.push(new ChatConversation(element));
-    });
-    return ret;
-  }
-
-  /**
-   * Gets the conversation list from the server.
-   *
-   * To use this function, you need to contact our business manager to activate it.
-   * After this function is activated, users can pull 10 conversations within 7 days by default (each conversation contains the latest historical message).
-   * If you want to adjust the number of conversations or time limit, please contact our business manager.
-   *
-   * @returns The conversation list of the current user.
-   *
-   * @throws A description of the exception. See {@link ChatError}.
-   */
-  public async getConversationsFromServer(): Promise<Array<ChatConversation>> {
-    console.log(`${ChatManager.TAG}: getConversationsFromServer:`);
-    let r: any = await Native._callMethod(MethodTypegetConversationsFromServer);
-    Native.hasErrorFromResult(r);
-    let ret = new Array<ChatConversation>(10);
-    (r?.[MethodTypegetConversationsFromServer] as Array<any>).forEach(
-      (element) => {
-        ret.push(new ChatConversation(element));
-      }
-    );
-    return ret;
-  }
-
-  /**
-   * Deletes a conversation and its related messages from the local database.
-   *
-   * If you set `deleteMessages` to `true`, the local historical messages are deleted with the conversation.
-   *
-   * @param convId The conversation ID.
-   * @param withMessage Whether to delete the historical messages with the conversation.
-   * - (Default) `true`: Yes.
-   * - `false`: No.
-   * @returns Whether the conversation is successfully deleted.
-   * - `true`: Yes.
-   * - `false`: No.
-   *
-   * @throws A description of the exception. See {@link ChatError}.
-   */
-  public async deleteConversation(
-    convId: string,
-    withMessage: boolean = true
-  ): Promise<void> {
-    console.log(
-      `${ChatManager.TAG}: deleteConversation: ${convId}, ${withMessage}`
-    );
-    let r: any = await Native._callMethod(MethodTypedeleteConversation, {
-      [MethodTypedeleteConversation]: {
-        con_id: convId,
-        deleteMessages: withMessage,
-      },
-    });
-    Native.hasErrorFromResult(r);
+    Native.checkErrorFromResult(r);
   }
 
   /**
@@ -823,18 +728,18 @@ export class ChatManager extends Native {
     console.log(
       `${ChatManager.TAG}: fetchHistoryMessages: ${convId}, ${chatType}, ${pageSize}, ${startMsgId}`
     );
-    let r: any = await Native._callMethod(MethodTypefetchHistoryMessages, {
-      [MethodTypefetchHistoryMessages]: {
+    let r: any = await Native._callMethod(MTfetchHistoryMessages, {
+      [MTfetchHistoryMessages]: {
         con_id: convId,
         type: chatType as number,
         pageSize: pageSize,
         startMsgId: startMsgId,
       },
     });
-    Native.hasErrorFromResult(r);
+    Native.checkErrorFromResult(r);
     let ret = new ChatCursorResult<ChatMessage>({
-      cursor: r?.[MethodTypefetchHistoryMessages].cursor,
-      list: r?.[MethodTypefetchHistoryMessages].list,
+      cursor: r?.[MTfetchHistoryMessages].cursor,
+      list: r?.[MTfetchHistoryMessages].list,
       opt: {
         map: (param: any) => {
           return new ChatMessage(param);
@@ -868,8 +773,8 @@ export class ChatManager extends Native {
     console.log(
       `${ChatManager.TAG}: searchMsgFromDB: ${keywords}, ${timestamp}, ${maxCount}, ${from}`
     );
-    let r: any = await Native._callMethod(MethodTypesearchChatMsgFromDB, {
-      [MethodTypesearchChatMsgFromDB]: {
+    let r: any = await Native._callMethod(MTsearchChatMsgFromDB, {
+      [MTsearchChatMsgFromDB]: {
         keywords: keywords,
         timestamp: timestamp,
         maxCount: maxCount,
@@ -877,9 +782,9 @@ export class ChatManager extends Native {
         direction: direction === ChatSearchDirection.UP ? 'up' : 'down',
       },
     });
-    Native.hasErrorFromResult(r);
+    Native.checkErrorFromResult(r);
     let ret = new Array<ChatMessage>(10);
-    (r?.[MethodTypesearchChatMsgFromDB] as Array<any>).forEach((element) => {
+    (r?.[MTsearchChatMsgFromDB] as Array<any>).forEach((element) => {
       ret.push(new ChatMessage(element));
     });
     return ret;
@@ -905,17 +810,17 @@ export class ChatManager extends Native {
     console.log(
       `${ChatManager.TAG}: asyncFetchGroupAcks: ${msgId}, ${startAckId}, ${pageSize}`
     );
-    let r: any = await Native._callMethod(MethodTypeasyncFetchGroupAcks, {
-      [MethodTypeasyncFetchGroupAcks]: {
+    let r: any = await Native._callMethod(MTasyncFetchGroupAcks, {
+      [MTasyncFetchGroupAcks]: {
         msg_id: msgId,
         ack_id: startAckId,
         pageSize: pageSize,
       },
     });
-    Native.hasErrorFromResult(r);
+    Native.checkErrorFromResult(r);
     let ret = new ChatCursorResult<ChatGroupMessageAck>({
-      cursor: r?.[MethodTypeasyncFetchGroupAcks].cursor,
-      list: r?.[MethodTypeasyncFetchGroupAcks].list,
+      cursor: r?.[MTasyncFetchGroupAcks].cursor,
+      list: r?.[MTasyncFetchGroupAcks].list,
       opt: {
         map: (param: any) => {
           return new ChatGroupMessageAck(param);
@@ -959,13 +864,404 @@ export class ChatManager extends Native {
         throw new Error('no have this type');
     }
 
-    let r = await Native._callMethod(MethodTypedeleteRemoteConversation, {
-      [MethodTypedeleteRemoteConversation]: {
+    let r = await Native._callMethod(MTdeleteRemoteConversation, {
+      [MTdeleteRemoteConversation]: {
         conversationId: convId,
         conversationType: ct,
         isDeleteRemoteMessage: isDeleteMessage,
       },
     });
-    Native.hasErrorFromResult(r);
+    Native.checkErrorFromResult(r);
+  }
+
+  /**
+   * Gets the conversation by conversation ID and conversation type.
+   *
+   * @param convId The conversation ID.
+   * @param convType The conversation type: {@link ChatConversationType}.
+   * @param createIfNeed Whether to create a conversation if the specified conversation is not found:
+   * - `true`: Yes.
+   * - `false`: No.
+   *
+   * @returns The conversation object found according to the conversation ID and type. Returns null if the conversation is not found.
+   *
+   * @throws A description of the exception. See {@link ChatError}.
+   */
+  public async getConversation(
+    convId: string,
+    convType: ChatConversationType,
+    createIfNeed: boolean = true
+  ): Promise<ChatConversation> {
+    console.log(
+      `${ChatManager.TAG}: getConversation: ${convId}, ${convType}, ${createIfNeed}`
+    );
+    let r: any = await Native._callMethod(MTgetConversation, {
+      [MTgetConversation]: {
+        con_id: convId,
+        type: convType as number,
+        createIfNeed: createIfNeed,
+      },
+    });
+    Native.checkErrorFromResult(r);
+    return new ChatConversation(r?.[MTgetConversation]);
+  }
+
+  /**
+   * Gets all conversations from the local database.
+   *
+   * Conversations will be first loaded from the memory. If no conversation is found, the SDK loads from the local database.
+   *
+   * @returns All the conversations from the the local memory or local database.
+   *
+   * @throws A description of the exception. See {@link ChatError}.
+   */
+  public async loadAllConversations(): Promise<Array<ChatConversation>> {
+    console.log(`${ChatManager.TAG}: loadAllConversations:`);
+    let r: any = await Native._callMethod(MTloadAllConversations);
+    Native.checkErrorFromResult(r);
+    let ret = new Array<ChatConversation>(10);
+    (r?.[MTloadAllConversations] as Array<any>).forEach((element) => {
+      ret.push(new ChatConversation(element));
+    });
+    return ret;
+  }
+
+  /**
+   * Gets the conversation list from the server.
+   *
+   * To use this function, you need to contact our business manager to activate it.
+   * After this function is activated, users can pull 10 conversations within 7 days by default (each conversation contains the latest historical message).
+   * If you want to adjust the number of conversations or time limit, please contact our business manager.
+   *
+   * @returns The conversation list of the current user.
+   *
+   * @throws A description of the exception. See {@link ChatError}.
+   */
+  public async getConversationsFromServer(): Promise<Array<ChatConversation>> {
+    console.log(`${ChatManager.TAG}: getConversationsFromServer:`);
+    let r: any = await Native._callMethod(MTgetConversationsFromServer);
+    Native.checkErrorFromResult(r);
+    let ret = new Array<ChatConversation>(10);
+    (r?.[MTgetConversationsFromServer] as Array<any>).forEach((element) => {
+      ret.push(new ChatConversation(element));
+    });
+    return ret;
+  }
+
+  /**
+   * Deletes a conversation and its related messages from the local database.
+   *
+   * If you set `deleteMessages` to `true`, the local historical messages are deleted with the conversation.
+   *
+   * @param convId The conversation ID.
+   * @param withMessage Whether to delete the historical messages with the conversation.
+   * - (Default) `true`: Yes.
+   * - `false`: No.
+   * @returns Whether the conversation is successfully deleted.
+   * - `true`: Yes.
+   * - `false`: No.
+   *
+   * @throws A description of the exception. See {@link ChatError}.
+   */
+  public async deleteConversation(
+    convId: string,
+    withMessage: boolean = true
+  ): Promise<void> {
+    console.log(
+      `${ChatManager.TAG}: deleteConversation: ${convId}, ${withMessage}`
+    );
+    let r: any = await Native._callMethod(MTdeleteConversation, {
+      [MTdeleteConversation]: {
+        con_id: convId,
+        deleteMessages: withMessage,
+      },
+    });
+    Native.checkErrorFromResult(r);
+  }
+
+  public async getLatestMessage(
+    convId: string,
+    convType: ChatConversationType
+  ): Promise<ChatMessage> {
+    console.log(`${ChatManager.TAG}: latestMessage: `);
+    let r: any = await Native._callMethod(MTgetLatestMessage, {
+      [MTgetLatestMessage]: {
+        con_id: convId,
+        type: convType,
+      },
+    });
+    ChatManager.checkErrorFromResult(r);
+    const ret: ChatMessage = r?.[MTgetLatestMessage];
+    return ret;
+  }
+
+  public async getLastReceivedMessage(
+    convId: string,
+    convType: ChatConversationType
+  ): Promise<ChatMessage> {
+    console.log(`${ChatManager.TAG}: lastReceivedMessage: `);
+    let r: any = await Native._callMethod(MTgetLatestMessageFromOthers, {
+      [MTgetLatestMessageFromOthers]: {
+        con_id: convId,
+        type: convType,
+      },
+    });
+    ChatManager.checkErrorFromResult(r);
+    const ret: ChatMessage = r?.[MTgetLatestMessageFromOthers];
+    return ret;
+  }
+
+  public async unreadCount(
+    convId: string,
+    convType: ChatConversationType
+  ): Promise<number> {
+    console.log(`${ChatManager.TAG}: unreadCount: `);
+    let r: any = await Native._callMethod(MTgetUnreadMsgCount, {
+      [MTgetUnreadMsgCount]: {
+        con_id: convId,
+        type: convType,
+      },
+    });
+    ChatManager.checkErrorFromResult(r);
+    const ret: number = r?.[MTgetUnreadMsgCount];
+    return ret;
+  }
+
+  public async markMessageAsRead(
+    convId: string,
+    convType: ChatConversationType,
+    msgId: string
+  ): Promise<void> {
+    console.log(`${ChatManager.TAG}: markMessageAsRead: `);
+    let r: any = await Native._callMethod(MTmarkMessageAsRead, {
+      [MTmarkMessageAsRead]: {
+        con_id: convId,
+        type: convType,
+        msg_id: msgId,
+      },
+    });
+    ChatManager.checkErrorFromResult(r);
+  }
+
+  public async markAllMessagesAsRead(
+    convId: string,
+    convType: ChatConversationType
+  ): Promise<void> {
+    console.log(`${ChatManager.TAG}: markAllMessagesAsRead: `);
+    let r: any = await Native._callMethod(MTmarkAllMessagesAsRead, {
+      [MTmarkAllMessagesAsRead]: {
+        con_id: convId,
+        type: convType,
+      },
+    });
+    ChatManager.checkErrorFromResult(r);
+  }
+
+  public async insertMessage(
+    convId: string,
+    convType: ChatConversationType,
+    msg: ChatMessage
+  ): Promise<void> {
+    console.log(`${ChatManager.TAG}: insertMessage: `);
+    let r: any = await Native._callMethod(MTinsertMessage, {
+      [MTinsertMessage]: {
+        con_id: convId,
+        type: convType,
+        msg: msg,
+      },
+    });
+    ChatManager.checkErrorFromResult(r);
+  }
+
+  public async appendMessage(
+    convId: string,
+    convType: ChatConversationType,
+    msg: ChatMessage
+  ): Promise<void> {
+    console.log(`${ChatManager.TAG}: appendMessage: `);
+    let r: any = await Native._callMethod(MTappendMessage, {
+      [MTappendMessage]: {
+        con_id: convId,
+        type: convType,
+        msg: msg,
+      },
+    });
+    ChatManager.checkErrorFromResult(r);
+  }
+
+  public async updateConversationMessage(
+    convId: string,
+    convType: ChatConversationType,
+    msg: ChatMessage
+  ): Promise<void> {
+    console.log(`${ChatManager.TAG}: updateConversationMessage: `);
+    let r: any = await Native._callMethod(MTupdateConversationMessage, {
+      [MTupdateConversationMessage]: {
+        con_id: convId,
+        type: convType,
+        msg: msg,
+      },
+    });
+    ChatManager.checkErrorFromResult(r);
+  }
+
+  public async deleteMessage(
+    convId: string,
+    convType: ChatConversationType,
+    msgId: string
+  ): Promise<void> {
+    console.log(`${ChatManager.TAG}: deleteMessage: `);
+    let r: any = await Native._callMethod(MTremoveMessage, {
+      [MTremoveMessage]: {
+        con_id: convId,
+        type: convType,
+        msg_id: msgId,
+      },
+    });
+    ChatManager.checkErrorFromResult(r);
+  }
+
+  public async deleteAllMessages(
+    convId: string,
+    convType: ChatConversationType
+  ): Promise<void> {
+    console.log(`${ChatManager.TAG}: deleteAllMessages: `);
+    let r: any = await Native._callMethod(MTclearAllMessages, {
+      [MTclearAllMessages]: {
+        con_id: convId,
+        type: convType,
+      },
+    });
+    ChatManager.checkErrorFromResult(r);
+  }
+
+  public async getMessageById(
+    convId: string,
+    convType: ChatConversationType,
+    msgId: string
+  ): Promise<void> {
+    console.log(`${ChatManager.TAG}: getMessageById: `);
+    let r: any = await Native._callMethod(MTloadMsgWithId, {
+      [MTloadMsgWithId]: {
+        con_id: convId,
+        type: convType,
+        msg_id: msgId,
+      },
+    });
+    ChatManager.checkErrorFromResult(r);
+  }
+
+  public async getMessagesWithMsgType(
+    convId: string,
+    convType: ChatConversationType,
+    msgType: ChatMessageType,
+    direction: ChatSearchDirection = ChatSearchDirection.UP,
+    timestamp: number = -1,
+    count: number = 20,
+    sender?: string
+  ): Promise<Array<ChatMessage>> {
+    console.log(`${ChatManager.TAG}: getMessagesWithMsgType: `);
+    let r: any = await Native._callMethod(MTloadMsgWithMsgType, {
+      [MTloadMsgWithMsgType]: {
+        con_id: convId,
+        type: convType,
+        msg_type: msgType,
+        direction: direction === ChatSearchDirection.UP ? 'up' : 'down',
+        timestamp: timestamp,
+        count: count,
+        sender: sender,
+      },
+    });
+    ChatManager.checkErrorFromResult(r);
+    const rr = r?.[MTloadMsgWithMsgType] as Map<string, ChatMessage>;
+    const ret: ChatMessage[] = [];
+    rr.forEach((value: ChatMessage) => {
+      ret.push(value);
+    });
+    return ret;
+  }
+
+  public async getMessages(
+    convId: string,
+    convType: ChatConversationType,
+    direction: ChatSearchDirection = ChatSearchDirection.UP,
+    startMsgId: string = '',
+    loadCount: number = 20
+  ): Promise<Array<ChatMessage>> {
+    console.log(`${ChatManager.TAG}: getMessages: `);
+    let r: any = await Native._callMethod(MTloadMsgWithStartId, {
+      [MTloadMsgWithStartId]: {
+        con_id: convId,
+        type: convType,
+        direction: direction === ChatSearchDirection.UP ? 'up' : 'down',
+        startMsgId: startMsgId,
+        loadCount: loadCount,
+      },
+    });
+    ChatManager.checkErrorFromResult(r);
+    const rr = r?.[MTloadMsgWithStartId] as Map<string, ChatMessage>;
+    const ret: ChatMessage[] = [];
+    rr.forEach((value: ChatMessage) => {
+      ret.push(value);
+    });
+    return ret;
+  }
+
+  public async getMessagesWithKeyword(
+    convId: string,
+    convType: ChatConversationType,
+    keywords: string,
+    direction: ChatSearchDirection = ChatSearchDirection.UP,
+    timestamp: number = -1,
+    count: number = 20,
+    sender?: string
+  ): Promise<Array<ChatMessage>> {
+    console.log(`${ChatManager.TAG}: getMessagesWithKeyword: `);
+    let r: any = await Native._callMethod(MTloadMsgWithKeywords, {
+      [MTloadMsgWithKeywords]: {
+        con_id: convId,
+        type: convType,
+        keywords: keywords,
+        direction: direction === ChatSearchDirection.UP ? 'up' : 'down',
+        timestamp: timestamp,
+        count: count,
+        sender: sender,
+      },
+    });
+    ChatManager.checkErrorFromResult(r);
+    const rr = r?.[MTloadMsgWithKeywords] as Map<string, ChatMessage>;
+    const ret: ChatMessage[] = [];
+    rr.forEach((value: ChatMessage) => {
+      ret.push(value);
+    });
+    return ret;
+  }
+
+  public async getMessagesFromTime(
+    convId: string,
+    convType: ChatConversationType,
+    startTime: number,
+    endTime: number,
+    direction: ChatSearchDirection = ChatSearchDirection.UP,
+    count: number = 20
+  ): Promise<Array<ChatMessage>> {
+    console.log(`${ChatManager.TAG}: getMessagesFromTime: `);
+    let r: any = await Native._callMethod(MTloadMsgWithKeywords, {
+      [MTloadMsgWithKeywords]: {
+        con_id: convId,
+        type: convType,
+        startTime: startTime,
+        endTime: endTime,
+        direction: direction === ChatSearchDirection.UP ? 'up' : 'down',
+        count: count,
+      },
+    });
+    ChatManager.checkErrorFromResult(r);
+    const rr = r?.[MTloadMsgWithKeywords] as Map<string, ChatMessage>;
+    const ret: ChatMessage[] = [];
+    rr.forEach((value: ChatMessage) => {
+      ret.push(value);
+    });
+    return ret;
   }
 }

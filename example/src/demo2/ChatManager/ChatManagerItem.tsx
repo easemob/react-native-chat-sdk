@@ -8,7 +8,7 @@ import {
   ChatMessage,
   ChatMessageStatus,
   ChatMessageStatusCallback,
-  ChatMessageBodyType,
+  ChatMessageType,
   ChatMessageChatType,
   ChatDownloadStatus,
 } from 'react-native-chat-sdk';
@@ -35,7 +35,7 @@ export interface StateChatMessage extends StateBase {
     targetId: string;
     targetType: ChatMessageChatType;
     content?: Object; // multi use
-    messageType: ChatMessageBodyType;
+    messageType: ChatMessageType;
     messageResult?: string;
   };
   sendGroupMessageReadAck: {
@@ -73,12 +73,12 @@ export class ChatManagerLeafScreen extends LeafScreenBase<StateChatMessage> {
     this.state = stateData;
     this.statelessData = statelessData;
   }
-  private getContentDefault(bodyType: ChatMessageBodyType): Object {
-    if (bodyType === ChatMessageBodyType.TXT) {
+  private getContentDefault(bodyType: ChatMessageType): Object {
+    if (bodyType === ChatMessageType.TXT) {
       return Date.now().toString();
-    } else if (bodyType === ChatMessageBodyType.CMD) {
+    } else if (bodyType === ChatMessageType.CMD) {
       return { action: 'drop' };
-    } else if (bodyType === ChatMessageBodyType.IMAGE) {
+    } else if (bodyType === ChatMessageType.IMAGE) {
       return {
         localPath: '',
         secret: '',
@@ -94,7 +94,7 @@ export class ChatManagerLeafScreen extends LeafScreenBase<StateChatMessage> {
         width: 100,
         height: 100,
       };
-    } else if (bodyType === ChatMessageBodyType.VOICE) {
+    } else if (bodyType === ChatMessageType.VOICE) {
       return {
         localPath: '',
         secret: '',
@@ -104,7 +104,7 @@ export class ChatManagerLeafScreen extends LeafScreenBase<StateChatMessage> {
         displayName: '',
         duration: 5,
       };
-    } else if (bodyType === ChatMessageBodyType.VIDEO) {
+    } else if (bodyType === ChatMessageType.VIDEO) {
       return {
         localPath: '',
         secret: '',
@@ -119,7 +119,7 @@ export class ChatManagerLeafScreen extends LeafScreenBase<StateChatMessage> {
         width: 100,
         height: 100,
       };
-    } else if (bodyType === ChatMessageBodyType.FILE) {
+    } else if (bodyType === ChatMessageType.FILE) {
       return {
         localPath: '',
         secret: '',
@@ -128,13 +128,13 @@ export class ChatManagerLeafScreen extends LeafScreenBase<StateChatMessage> {
         fileSize: 0,
         displayName: '',
       };
-    } else if (bodyType === ChatMessageBodyType.LOCATION) {
+    } else if (bodyType === ChatMessageType.LOCATION) {
       return {
         address: 'beijing',
         latitude: '116.323263',
         longitude: '39.965772',
       };
-    } else if (bodyType === ChatMessageBodyType.CUSTOM) {
+    } else if (bodyType === ChatMessageType.CUSTOM) {
       return { event: 'alert', params: { key: 'value' } };
     } else {
       throw new Error('error: ' + bodyType);
@@ -325,14 +325,14 @@ export class ChatManagerLeafScreen extends LeafScreenBase<StateChatMessage> {
     // content
     const c =
       content === undefined
-        ? (this.getContentDefault(ChatMessageBodyType.TXT) as string)
+        ? (this.getContentDefault(ChatMessageType.TXT) as string)
         : (content as string);
 
     const msg = ChatMessage.createTextMessage(targetId, c, targetType);
     this.statelessData.sendMessage.message = msg;
 
     return [
-      this.renderParamWithInput(ChatMessageBodyType.TXT, c, (text: string) => {
+      this.renderParamWithInput(ChatMessageType.TXT, c, (text: string) => {
         this.setState({
           sendMessage: {
             targetId,
@@ -351,7 +351,7 @@ export class ChatManagerLeafScreen extends LeafScreenBase<StateChatMessage> {
 
     const c =
       content === undefined
-        ? this.getContentDefault(ChatMessageBodyType.CMD)
+        ? this.getContentDefault(ChatMessageType.CMD)
         : content;
 
     const action = (c as any).action;
@@ -361,7 +361,7 @@ export class ChatManagerLeafScreen extends LeafScreenBase<StateChatMessage> {
 
     return [
       this.renderParamWithInput(
-        ChatMessageBodyType.CMD,
+        ChatMessageType.CMD,
         JSON.stringify(c),
         (text: string) => {
           this.setState({
@@ -384,7 +384,7 @@ export class ChatManagerLeafScreen extends LeafScreenBase<StateChatMessage> {
     // content
     const c =
       content === undefined
-        ? this.getContentDefault(ChatMessageBodyType.LOCATION)
+        ? this.getContentDefault(ChatMessageType.LOCATION)
         : content;
 
     const lat = (c as any).latitude;
@@ -402,7 +402,7 @@ export class ChatManagerLeafScreen extends LeafScreenBase<StateChatMessage> {
 
     return [
       this.renderParamWithInput(
-        ChatMessageBodyType.LOCATION,
+        ChatMessageType.LOCATION,
         JSON.stringify(c),
         (text: string) => {
           this.setState({
@@ -426,7 +426,7 @@ export class ChatManagerLeafScreen extends LeafScreenBase<StateChatMessage> {
     // content
     const c =
       content === undefined
-        ? this.getContentDefault(ChatMessageBodyType.CUSTOM)
+        ? this.getContentDefault(ChatMessageType.CUSTOM)
         : content;
 
     const event = (c as any).event;
@@ -439,7 +439,7 @@ export class ChatManagerLeafScreen extends LeafScreenBase<StateChatMessage> {
 
     return [
       this.renderParamWithInput(
-        ChatMessageBodyType.CUSTOM,
+        ChatMessageType.CUSTOM,
         JSON.stringify(c),
         (text: string) => {
           this.setState({
@@ -462,7 +462,7 @@ export class ChatManagerLeafScreen extends LeafScreenBase<StateChatMessage> {
     // content
     const c =
       content === undefined
-        ? this.getContentDefault(ChatMessageBodyType.FILE)
+        ? this.getContentDefault(ChatMessageType.FILE)
         : content;
 
     const localPath = (c as any).localPath;
@@ -478,7 +478,7 @@ export class ChatManagerLeafScreen extends LeafScreenBase<StateChatMessage> {
 
     return [
       this.renderParamWithInput(
-        ChatMessageBodyType.FILE,
+        ChatMessageType.FILE,
         JSON.stringify(c),
         (text: string) => {
           this.setState({
@@ -493,7 +493,7 @@ export class ChatManagerLeafScreen extends LeafScreenBase<StateChatMessage> {
         }
       ),
       this.renderParamWithSelectFile('path', path, (json: string) => {
-        let cc = this.getContentDefault(ChatMessageBodyType.FILE);
+        let cc = this.getContentDefault(ChatMessageType.FILE);
         const j = JSON.parse(json);
         (cc as any).localPath = j.localPath ?? '';
         (cc as any).displayName = j.name ?? '';
@@ -517,7 +517,7 @@ export class ChatManagerLeafScreen extends LeafScreenBase<StateChatMessage> {
     // content
     const c =
       content === undefined
-        ? this.getContentDefault(ChatMessageBodyType.VOICE)
+        ? this.getContentDefault(ChatMessageType.VOICE)
         : content;
 
     const filePath = (c as any).localPath;
@@ -535,7 +535,7 @@ export class ChatManagerLeafScreen extends LeafScreenBase<StateChatMessage> {
 
     return [
       this.renderParamWithInput(
-        ChatMessageBodyType.VOICE,
+        ChatMessageType.VOICE,
         JSON.stringify(c),
         (text: string) => {
           this.setState({
@@ -550,7 +550,7 @@ export class ChatManagerLeafScreen extends LeafScreenBase<StateChatMessage> {
         }
       ),
       this.renderParamWithSelectFile('path', path, (json: string) => {
-        let cc = this.getContentDefault(ChatMessageBodyType.VOICE);
+        let cc = this.getContentDefault(ChatMessageType.VOICE);
         const j = JSON.parse(json);
         (cc as any).localPath = j.localPath ?? '';
         (cc as any).displayName = j.name ?? '';
@@ -574,7 +574,7 @@ export class ChatManagerLeafScreen extends LeafScreenBase<StateChatMessage> {
     // content
     const c =
       content === undefined
-        ? this.getContentDefault(ChatMessageBodyType.IMAGE)
+        ? this.getContentDefault(ChatMessageType.IMAGE)
         : content;
 
     const filePath = (c as any).localPath;
@@ -598,7 +598,7 @@ export class ChatManagerLeafScreen extends LeafScreenBase<StateChatMessage> {
 
     return [
       this.renderParamWithInput(
-        ChatMessageBodyType.IMAGE,
+        ChatMessageType.IMAGE,
         JSON.stringify(c),
         (text: string) => {
           this.setState({
@@ -617,7 +617,7 @@ export class ChatManagerLeafScreen extends LeafScreenBase<StateChatMessage> {
         'path',
         path,
         (json: string) => {
-          let cc = this.getContentDefault(ChatMessageBodyType.IMAGE);
+          let cc = this.getContentDefault(ChatMessageType.IMAGE);
           const j = JSON.parse(json);
           (cc as any).localPath = j.localPath ?? '';
           (cc as any).displayName = j.name ?? '';
@@ -643,7 +643,7 @@ export class ChatManagerLeafScreen extends LeafScreenBase<StateChatMessage> {
     // content
     const c =
       content === undefined
-        ? this.getContentDefault(ChatMessageBodyType.VIDEO)
+        ? this.getContentDefault(ChatMessageType.VIDEO)
         : content;
 
     const filePath = (c as any).localPath;
@@ -664,7 +664,7 @@ export class ChatManagerLeafScreen extends LeafScreenBase<StateChatMessage> {
 
     return [
       this.renderParamWithInput(
-        ChatMessageBodyType.VIDEO,
+        ChatMessageType.VIDEO,
         JSON.stringify(c),
         (text: string) => {
           this.setState({
@@ -683,7 +683,7 @@ export class ChatManagerLeafScreen extends LeafScreenBase<StateChatMessage> {
         'path',
         filePath,
         (json: string) => {
-          let cc = this.getContentDefault(ChatMessageBodyType.VIDEO);
+          let cc = this.getContentDefault(ChatMessageType.VIDEO);
           const j = JSON.parse(json);
           (cc as any).localPath = j.localPath ?? '';
           (cc as any).displayName = j.name ?? '';
@@ -704,7 +704,7 @@ export class ChatManagerLeafScreen extends LeafScreenBase<StateChatMessage> {
         'path',
         thumbnailLocalPath,
         (json: string) => {
-          let cc = this.getContentDefault(ChatMessageBodyType.VIDEO);
+          let cc = this.getContentDefault(ChatMessageType.VIDEO);
           const j = JSON.parse(json);
           (cc as any).thumbnailLocalPath = j.localPath ?? '';
           this.setState({
@@ -721,22 +721,22 @@ export class ChatManagerLeafScreen extends LeafScreenBase<StateChatMessage> {
     ];
   }
 
-  protected renderSendMessageBody(bodyType: ChatMessageBodyType): ReactNode[] {
-    if (bodyType === ChatMessageBodyType.TXT) {
+  protected renderSendMessageBody(bodyType: ChatMessageType): ReactNode[] {
+    if (bodyType === ChatMessageType.TXT) {
       return this.renderSendMessageBodyText();
-    } else if (bodyType === ChatMessageBodyType.CMD) {
+    } else if (bodyType === ChatMessageType.CMD) {
       return this.renderSendMessageBodyCmd();
-    } else if (bodyType === ChatMessageBodyType.IMAGE) {
+    } else if (bodyType === ChatMessageType.IMAGE) {
       return this.renderSendMessageBodyImage();
-    } else if (bodyType === ChatMessageBodyType.VOICE) {
+    } else if (bodyType === ChatMessageType.VOICE) {
       return this.renderSendMessageBodyVoice();
-    } else if (bodyType === ChatMessageBodyType.VIDEO) {
+    } else if (bodyType === ChatMessageType.VIDEO) {
       return this.renderSendMessageBodyVideo();
-    } else if (bodyType === ChatMessageBodyType.FILE) {
+    } else if (bodyType === ChatMessageType.FILE) {
       return this.renderSendMessageBodyFile();
-    } else if (bodyType === ChatMessageBodyType.LOCATION) {
+    } else if (bodyType === ChatMessageType.LOCATION) {
       return this.renderSendMessageBodyLocation();
-    } else if (bodyType === ChatMessageBodyType.CUSTOM) {
+    } else if (bodyType === ChatMessageType.CUSTOM) {
       return this.renderSendMessageBodyCustom();
     } else {
       throw new Error('error: ' + bodyType);
@@ -791,34 +791,34 @@ export class ChatManagerLeafScreen extends LeafScreenBase<StateChatMessage> {
       this.renderParamWithEnum(
         data.params[3].paramName,
         [
-          ChatMessageBodyType.TXT,
-          ChatMessageBodyType.CMD,
-          ChatMessageBodyType.IMAGE,
-          ChatMessageBodyType.VOICE,
-          ChatMessageBodyType.VIDEO,
-          ChatMessageBodyType.FILE,
-          ChatMessageBodyType.LOCATION,
-          ChatMessageBodyType.CUSTOM,
+          ChatMessageType.TXT,
+          ChatMessageType.CMD,
+          ChatMessageType.IMAGE,
+          ChatMessageType.VOICE,
+          ChatMessageType.VIDEO,
+          ChatMessageType.FILE,
+          ChatMessageType.LOCATION,
+          ChatMessageType.CUSTOM,
         ],
         messageType,
         (index: string, option: any) => {
-          let bt = ChatMessageBodyType.TXT;
-          if (option === ChatMessageBodyType.TXT) {
-            bt = ChatMessageBodyType.TXT;
-          } else if (option === ChatMessageBodyType.CMD) {
-            bt = ChatMessageBodyType.CMD;
-          } else if (option === ChatMessageBodyType.IMAGE) {
-            bt = ChatMessageBodyType.IMAGE;
-          } else if (option === ChatMessageBodyType.VOICE) {
-            bt = ChatMessageBodyType.VOICE;
-          } else if (option === ChatMessageBodyType.VIDEO) {
-            bt = ChatMessageBodyType.VIDEO;
-          } else if (option === ChatMessageBodyType.FILE) {
-            bt = ChatMessageBodyType.FILE;
-          } else if (option === ChatMessageBodyType.LOCATION) {
-            bt = ChatMessageBodyType.LOCATION;
-          } else if (option === ChatMessageBodyType.CUSTOM) {
-            bt = ChatMessageBodyType.CUSTOM;
+          let bt = ChatMessageType.TXT;
+          if (option === ChatMessageType.TXT) {
+            bt = ChatMessageType.TXT;
+          } else if (option === ChatMessageType.CMD) {
+            bt = ChatMessageType.CMD;
+          } else if (option === ChatMessageType.IMAGE) {
+            bt = ChatMessageType.IMAGE;
+          } else if (option === ChatMessageType.VOICE) {
+            bt = ChatMessageType.VOICE;
+          } else if (option === ChatMessageType.VIDEO) {
+            bt = ChatMessageType.VIDEO;
+          } else if (option === ChatMessageType.FILE) {
+            bt = ChatMessageType.FILE;
+          } else if (option === ChatMessageType.LOCATION) {
+            bt = ChatMessageType.LOCATION;
+          } else if (option === ChatMessageType.CUSTOM) {
+            bt = ChatMessageType.CUSTOM;
           } else {
             throw new Error('error: ' + option);
           }

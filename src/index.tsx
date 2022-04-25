@@ -24,10 +24,10 @@ import {
   ChatMessageDirection,
   ChatMessageStatus,
   ChatDownloadStatus,
-  ChatMessageBodyType,
+  ChatMessageType,
   ChatMessageStatusCallback,
   ChatMessage,
-  ChatMessageBodyTypeFromString,
+  ChatMessageTypeFromString,
   ChatMessageChatTypeFromNumber,
 } from './common/ChatMessage';
 import { ChatOptions } from './common/ChatOptions';
@@ -52,7 +52,7 @@ export {
   ChatMessageDirection,
   ChatMessageStatus,
   ChatDownloadStatus,
-  ChatMessageBodyType,
+  ChatMessageType,
   ChatRoomPermissionType,
   ChatUserInfoType,
   ChatSearchDirection,
@@ -79,4 +79,4 @@ export {
   ChatConnectionListener,
 };
 
-export { ChatMessageBodyTypeFromString, ChatMessageChatTypeFromNumber };
+export { ChatMessageTypeFromString, ChatMessageChatTypeFromNumber };

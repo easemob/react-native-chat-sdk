@@ -14,7 +14,7 @@ import {
   ChatGroupMessageAck,
   ChatManagerListener,
   ChatMessage,
-  ChatMessageBodyType,
+  ChatMessageType,
   ChatMessageChatType,
   ChatMessageStatusCallback,
   ChatConversationType,
@@ -31,7 +31,7 @@ import {
 } from '../__internal__/LeafComponentBase';
 
 interface State extends StateBase {
-  messageType: ChatMessageBodyType;
+  messageType: ChatMessageType;
 
   targetId: string;
   chatType: ChatMessageChatType;
@@ -84,14 +84,14 @@ export class SendMessageScreen extends LeafComponentBaseScreen<State> {
   public static route = 'SendMessageScreen';
   protected static TAG = 'SendMessageScreen';
   private static messageType = [
-    ChatMessageBodyType.TXT,
-    ChatMessageBodyType.IMAGE,
-    ChatMessageBodyType.CMD,
-    ChatMessageBodyType.CUSTOM,
-    ChatMessageBodyType.FILE,
-    ChatMessageBodyType.LOCATION,
-    ChatMessageBodyType.VIDEO,
-    ChatMessageBodyType.VOICE,
+    ChatMessageType.TXT,
+    ChatMessageType.IMAGE,
+    ChatMessageType.CMD,
+    ChatMessageType.CUSTOM,
+    ChatMessageType.FILE,
+    ChatMessageType.LOCATION,
+    ChatMessageType.VIDEO,
+    ChatMessageType.VOICE,
   ];
   private static messageChatType = [
     'ChatMessageChatType.PeerChat',
@@ -104,7 +104,7 @@ export class SendMessageScreen extends LeafComponentBaseScreen<State> {
     this.state = {
       sendResult: '',
       recvResult: '',
-      messageType: ChatMessageBodyType.TXT,
+      messageType: ChatMessageType.TXT,
       targetId: 'asteriskhx2',
       chatType: ChatMessageChatType.PeerChat,
       convType: ChatConversationType.PeerChat,
@@ -253,31 +253,31 @@ export class SendMessageScreen extends LeafComponentBaseScreen<State> {
     console.log(`${SendMessageScreen.TAG}: sendMessage: `);
     const { messageType, targetId, chatType } = this.state;
     let msg: ChatMessage;
-    if (messageType === ChatMessageBodyType.TXT) {
+    if (messageType === ChatMessageType.TXT) {
       const { content } = this.state;
       msg = ChatMessage.createTextMessage(targetId, content, chatType);
-    } else if (messageType === ChatMessageBodyType.IMAGE) {
+    } else if (messageType === ChatMessageType.IMAGE) {
       const { filePath, width, height, displayName } = this.state;
       msg = ChatMessage.createImageMessage(targetId, filePath, chatType, {
         displayName,
         width,
         height,
       });
-    } else if (messageType === ChatMessageBodyType.CMD) {
+    } else if (messageType === ChatMessageType.CMD) {
       const { action } = this.state;
       msg = ChatMessage.createCmdMessage(targetId, action, chatType);
-    } else if (messageType === ChatMessageBodyType.CUSTOM) {
+    } else if (messageType === ChatMessageType.CUSTOM) {
       const { event, ext } = this.state;
       console.log(ext);
       msg = ChatMessage.createCustomMessage(targetId, event, chatType, {
         params: JSON.parse(ext),
       });
-    } else if (messageType === ChatMessageBodyType.FILE) {
+    } else if (messageType === ChatMessageType.FILE) {
       const { filePath, displayName } = this.state;
       msg = ChatMessage.createFileMessage(targetId, filePath, chatType, {
         displayName,
       });
-    } else if (messageType === ChatMessageBodyType.LOCATION) {
+    } else if (messageType === ChatMessageType.LOCATION) {
       const { latitude, longitude, address } = this.state;
       msg = ChatMessage.createLocationMessage(
         targetId,
@@ -286,7 +286,7 @@ export class SendMessageScreen extends LeafComponentBaseScreen<State> {
         chatType,
         { address }
       );
-    } else if (messageType === ChatMessageBodyType.VIDEO) {
+    } else if (messageType === ChatMessageType.VIDEO) {
       const {
         filePath,
         width,
@@ -302,7 +302,7 @@ export class SendMessageScreen extends LeafComponentBaseScreen<State> {
         width,
         height,
       });
-    } else if (messageType === ChatMessageBodyType.VOICE) {
+    } else if (messageType === ChatMessageType.VOICE) {
       const { filePath, displayName, duration } = this.state;
       msg = ChatMessage.createVoiceMessage(targetId, filePath, chatType, {
         displayName,
@@ -404,24 +404,6 @@ export class SendMessageScreen extends LeafComponentBaseScreen<State> {
     );
   }
 
-  private getConversation(): void {
-    if (
-      this.state.createIfNeed === undefined ||
-      this.state.lastMessage === undefined
-    ) {
-      return;
-    }
-    this.tryCatch(
-      ChatClient.getInstance().chatManager.getConversation(
-        this.state.targetId,
-        this.state.convType,
-        this.state.createIfNeed
-      ),
-      SendMessageScreen.TAG,
-      'getConversation'
-    );
-  }
-
   private markAllConversationsAsRead(): void {
     this.tryCatch(
       ChatClient.getInstance().chatManager.markAllConversationsAsRead(),
@@ -467,10 +449,10 @@ export class SendMessageScreen extends LeafComponentBaseScreen<State> {
   private downloadAttachment(): void {
     if (
       this.state.lastMessage === undefined ||
-      this.state.lastMessage.body.type === ChatMessageBodyType.CMD ||
-      this.state.lastMessage.body.type === ChatMessageBodyType.CUSTOM ||
-      this.state.lastMessage.body.type === ChatMessageBodyType.LOCATION ||
-      this.state.lastMessage.body.type === ChatMessageBodyType.TXT
+      this.state.lastMessage.body.type === ChatMessageType.CMD ||
+      this.state.lastMessage.body.type === ChatMessageType.CUSTOM ||
+      this.state.lastMessage.body.type === ChatMessageType.LOCATION ||
+      this.state.lastMessage.body.type === ChatMessageType.TXT
     ) {
       return;
     }
@@ -487,10 +469,10 @@ export class SendMessageScreen extends LeafComponentBaseScreen<State> {
   private downloadThumbnail(): void {
     if (
       this.state.lastMessage === undefined ||
-      this.state.lastMessage.body.type === ChatMessageBodyType.CMD ||
-      this.state.lastMessage.body.type === ChatMessageBodyType.CUSTOM ||
-      this.state.lastMessage.body.type === ChatMessageBodyType.LOCATION ||
-      this.state.lastMessage.body.type === ChatMessageBodyType.TXT
+      this.state.lastMessage.body.type === ChatMessageType.CMD ||
+      this.state.lastMessage.body.type === ChatMessageType.CUSTOM ||
+      this.state.lastMessage.body.type === ChatMessageType.LOCATION ||
+      this.state.lastMessage.body.type === ChatMessageType.TXT
     ) {
       return;
     }
@@ -501,36 +483,6 @@ export class SendMessageScreen extends LeafComponentBaseScreen<State> {
       ),
       SendMessageScreen.TAG,
       'downloadThumbnail'
-    );
-  }
-
-  private loadAllConversations(): void {
-    this.tryCatch(
-      ChatClient.getInstance().chatManager.loadAllConversations(),
-      SendMessageScreen.TAG,
-      'loadAllConversations'
-    );
-  }
-
-  private getConversationsFromServer(): void {
-    this.tryCatch(
-      ChatClient.getInstance().chatManager.getConversationsFromServer(),
-      SendMessageScreen.TAG,
-      'getConversationsFromServer'
-    );
-  }
-
-  private deleteConversation(): void {
-    if (this.state.withMessage === undefined) {
-      return;
-    }
-    this.tryCatch(
-      ChatClient.getInstance().chatManager.deleteConversation(
-        this.state.targetId,
-        this.state.withMessage
-      ),
-      SendMessageScreen.TAG,
-      'deleteConversation'
     );
   }
 
@@ -594,31 +546,31 @@ export class SendMessageScreen extends LeafComponentBaseScreen<State> {
     );
   }
 
-  private renderMessage(messageType: ChatMessageBodyType): ReactNode {
+  private renderMessage(messageType: ChatMessageType): ReactNode {
     let ret: ReactNode;
     switch (messageType) {
-      case ChatMessageBodyType.TXT:
+      case ChatMessageType.TXT:
         ret = this.renderTextMessage();
         break;
-      case ChatMessageBodyType.IMAGE:
+      case ChatMessageType.IMAGE:
         ret = this.renderImageMessage();
         break;
-      case ChatMessageBodyType.CMD:
+      case ChatMessageType.CMD:
         ret = this.renderCmdMessage();
         break;
-      case ChatMessageBodyType.CUSTOM:
+      case ChatMessageType.CUSTOM:
         ret = this.renderCustomMessage();
         break;
-      case ChatMessageBodyType.FILE:
+      case ChatMessageType.FILE:
         ret = this.renderFileMessage();
         break;
-      case ChatMessageBodyType.LOCATION:
+      case ChatMessageType.LOCATION:
         ret = this.renderLocationMessage();
         break;
-      case ChatMessageBodyType.VIDEO:
+      case ChatMessageType.VIDEO:
         ret = this.renderVideoMessage();
         break;
-      case ChatMessageBodyType.VOICE:
+      case ChatMessageType.VOICE:
         ret = this.renderVoiceMessage();
         break;
       default:
@@ -1292,7 +1244,7 @@ export class SendMessageScreen extends LeafComponentBaseScreen<State> {
           <Text style={styleValues.textStyle}>Message type: </Text>
           <ModalDropdown
             style={styleValues.dropDownStyle}
-            defaultValue={ChatMessageBodyType.TXT}
+            defaultValue={ChatMessageType.TXT}
             options={SendMessageScreen.messageType}
             onSelect={(index: string, option: any) => {
               console.log(`${SendMessageScreen.TAG}: `, index, option);

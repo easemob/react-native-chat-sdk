@@ -5,7 +5,7 @@ import {
   ChatClient,
   ChatManagerListener,
   ChatMessage,
-  ChatMessageBodyType,
+  ChatMessageType,
 } from 'react-native-chat-sdk';
 import type { ChatTextMessageBody } from 'src/common/ChatMessage'; // local for test
 import { styleValues } from '../__internal__/Css';
@@ -45,7 +45,7 @@ export class QuickTestScreen extends LeafScreenBase<State> {
         console.log(`${QuickTestScreen.TAG}: onMessagesReceived: `, messages);
         if (
           messages.length <= 0 ||
-          messages[0].body.type !== ChatMessageBodyType.TXT
+          messages[0].body.type !== ChatMessageType.TXT
         ) {
           return;
         }

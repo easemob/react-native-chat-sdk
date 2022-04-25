@@ -186,66 +186,6 @@ export interface ChatConversationListener {
   onConversationUpdate(): void;
 }
 
-export interface ChatRoomEventListener {
-  /// id是[roomId],名称是[roomName]的聊天室被销毁
-  onChatRoomDestroyed(roomId: string, roomName?: string): void;
-
-  /// 有用户[participant]加入id是[roomId]的聊天室
-  onMemberJoinedFromChatRoom(roomId: string, participant: string): void;
-
-  /// 有用户[participant]离开id是[roomId]，名字是[roomName]的聊天室
-  onMemberExitedFromChatRoom(
-    roomId: string,
-    roomName?: string,
-    participant?: string
-  ): void;
-
-  /// 用户[participant]被id是[roomId],名称[roomName]的聊天室删除
-  onRemovedFromChatRoom(
-    roomId: string,
-    roomName?: string,
-    participant?: string
-  ): void;
-
-  /// @nodoc id是[roomId]的聊天室禁言列表[mutes]有增加
-  onMuteListAddedFromChatRoom(
-    roomId: string,
-    mutes: Array<string>,
-    expireTime?: string
-  ): void;
-
-  /// @nodoc id是[roomId]的聊天室禁言列表[mutes]有减少
-  onMuteListRemovedFromChatRoom(roomId: string, mutes: Array<string>): void;
-
-  /// @nodoc id是[roomId]的聊天室增加id是[admin]管理员
-  onAdminAddedFromChatRoom(roomId: string, admin: string): void;
-
-  /// @nodoc id是[roomId]的聊天室移除id是[admin]管理员
-  onAdminRemovedFromChatRoom(roomId: string, admin: string): void;
-
-  /// @nodoc id是[roomId]的聊天室所有者由[oldOwner]变更为[newOwner]
-  onOwnerChangedFromChatRoom(
-    roomId: string,
-    newOwner: string,
-    oldOwner: string
-  ): void;
-
-  /// @nodoc id是[roomId]的聊天室公告变为[announcement]
-  onAnnouncementChangedFromChatRoom(roomId: string, announcement: string): void;
-
-  /// 有用户被添加到聊天室白名单
-  onWhiteListAddedFromChatRoom(roomId: string, members: Array<string>): void;
-
-  /// 有用户从聊天室白名单被移除
-  onWhiteListRemovedFromChatRoom(roomId: string, members: Array<string>): void;
-
-  /// 聊天室禁言状态发生变化
-  onAllChatRoomMemberMuteStateChanged(
-    roomId: string,
-    isAllMuted: boolean
-  ): void;
-}
-
 export interface ChatGroupEventListener {
   onInvitationReceived(params: {
     groupId: string;
@@ -312,6 +252,49 @@ export interface ChatGroupEventListener {
   onWhiteListRemoved(params: { groupId: string; members: Array<string> }): void;
   onAllGroupMemberMuteStateChanged(params: {
     groupId: string;
+    isAllMuted: boolean;
+  }): void;
+}
+
+export interface ChatContactEventListener {
+  onContactAdded(userName: string): void;
+  onContactDeleted(userName: string): void;
+  onContactInvited(userName: string, reason?: string): void;
+  onFriendRequestAccepted(userName: string): void;
+  onFriendRequestDeclined(userName: string): void;
+}
+
+export interface ChatRoomEventListener {
+  onChatRoomDestroyed(params: { roomId: string; roomName?: string }): void;
+  onMemberJoined(params: { roomId: string; participant: string }): void;
+  onMemberExited(params: {
+    roomId: string;
+    participant: string;
+    roomName?: string;
+  }): void;
+  onRemoved(params: {
+    roomId: string;
+    participant?: string;
+    roomName?: string;
+  }): void;
+  onMuteListAdded(params: {
+    roomId: string;
+    mutes: Array<string>;
+    expireTime?: string;
+  }): void;
+  onMuteListRemoved(params: { roomId: string; mutes: Array<string> }): void;
+  onAdminAdded(params: { roomId: string; admin: string }): void;
+  onAdminRemoved(params: { roomId: string; admin: string }): void;
+  onOwnerChanged(params: {
+    roomId: string;
+    newOwner: string;
+    oldOwner: string;
+  }): void;
+  onAnnouncementChanged(params: { roomId: string; announcement: string }): void;
+  onWhiteListAdded(params: { roomId: string; members: Array<string> }): void;
+  onWhiteListRemoved(params: { roomId: string; members: Array<string> }): void;
+  onAllChatRoomMemberMuteStateChanged(params: {
+    roomId: string;
     isAllMuted: boolean;
   }): void;
 }
