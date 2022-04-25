@@ -1,5 +1,6 @@
 import { ChatManagerScreen, ChatManagerRoute } from '../ChatManager';
 import { SendMessageScreen } from '../ChatManager/SendMessage';
+import { ChatManagerLeafScreen } from '../ChatManager/ChatManagerItem';
 import { ClientScreen, ClientRoute } from '../Client';
 import { ClientOthersScreen } from '../Client/ClientOthers';
 import { CreateAccountScreen } from '../Client/CreateAccount';
@@ -62,4 +63,10 @@ export const screenComponents: ScreenComponent[] = [
   //   isNavigation: false,
   //   parentScreen: ClientRoute,
   // },
+  {
+    route: ChatManagerLeafScreen.route,
+    screen: ChatManagerLeafScreen,
+    isNavigation: false,
+    parentScreen: ChatManagerRoute,
+  },
 ];
