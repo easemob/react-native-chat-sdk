@@ -11,6 +11,7 @@ import {
   ChatCustomListener,
   ChatMultiDeviceListener,
 } from './ChatEvents';
+import { ChatGroupManager } from './ChatGroupManager';
 import { ChatManager } from './ChatManager';
 import { ChatDeviceInfo } from './common/ChatDeviceInfo';
 import type { ChatOptions } from './common/ChatOptions';
@@ -74,6 +75,7 @@ export class ChatClient extends Native {
     console.log(`${ChatClient.TAG}: setEventEmitter: `);
     this.setNativeListener(this.getEventEmitter());
     this._chatManager.setNativeListener(this.getEventEmitter());
+    this._groupManager.setNativeListener(this.getEventEmitter());
     console.log('eventEmitter has finished.');
   }
 
@@ -84,10 +86,10 @@ export class ChatClient extends Native {
   // private _eventEmitter: NativeEventEmitter;
 
   private _chatManager: ChatManager;
+  private _groupManager: ChatGroupManager;
   // todo: no implement
   // private _contactManager: ChatContactManager;
   // private _chatRoomManager: ChatChatRoomManager;
-  // private _groupManager: ChatGroupManager;`
   // private _pushManager: ChatPushManager;
   // private _userInfoManager: ChatUserInfoManager;
   // private _conversationManager: ChatConversationManager;
@@ -107,10 +109,10 @@ export class ChatClient extends Native {
     super();
 
     this._chatManager = new ChatManager();
+    this._groupManager = new ChatGroupManager();
     // todo: no implement
     // this._contactManager = new ChatContactManager();
     // this._chatRoomManager = new ChatChatRoomManager();
-    // this._groupManager = new ChatGroupManager();
     // this._pushManager = new ChatPushManager();
     // this._userInfoManager = new ChatUserInfoManager();
     // this._conversationManager = new ChatConversationManager();

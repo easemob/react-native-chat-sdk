@@ -263,6 +263,10 @@ export class ChatManagerLeafScreen extends LeafScreenBase<StateChatMessage> {
       </View>
     );
   }
+  /**
+   * Too many components, poor performance.
+   * @returns ReactNode
+   */
   protected renderBody(): ReactNode {
     console.log(`${ChatManagerLeafScreen.TAG}: renderBody: `);
     return (
@@ -271,45 +275,6 @@ export class ChatManagerLeafScreen extends LeafScreenBase<StateChatMessage> {
         {this.loginWithAgoraToken()}
         {this.sendMessage(false)}
         {this.resendMessage(false)}
-        {this.sendMessageReadAck()}
-        {this.sendMessageReadAck()}
-        {this.sendMessageReadAck()}
-        {this.sendMessageReadAck()}
-        {this.sendMessageReadAck()}
-        {this.sendMessageReadAck()}
-        {this.sendMessageReadAck()}
-        {this.sendMessageReadAck()}
-        {this.sendMessageReadAck()}
-        {this.sendMessageReadAck()}
-        {this.sendMessageReadAck()}
-        {this.sendMessageReadAck()}
-        {this.sendMessageReadAck()}
-        {this.sendMessageReadAck()}
-        {this.sendMessageReadAck()}
-        {this.sendMessageReadAck()}
-        {this.sendMessageReadAck()}
-        {this.sendMessageReadAck()}
-        {this.sendMessageReadAck()}
-        {this.sendMessageReadAck()}
-        {this.sendMessageReadAck()}
-        {this.sendMessageReadAck()}
-        {this.sendMessageReadAck()}
-        {this.sendMessageReadAck()}
-        {this.sendMessageReadAck()}
-        {this.sendMessageReadAck()}
-        {this.sendMessageReadAck()}
-        {this.sendMessageReadAck()}
-        {this.sendMessageReadAck()}
-        {this.sendMessageReadAck()}
-        {this.sendMessageReadAck()}
-        {this.sendMessageReadAck()}
-        {this.sendMessageReadAck()}
-        {this.sendMessageReadAck()}
-        {this.sendMessageReadAck()}
-        {this.sendMessageReadAck()}
-        {this.sendMessageReadAck()}
-        {this.sendMessageReadAck()}
-        {this.sendMessageReadAck()}
         {this.sendMessageReadAck()}
 
         {this.addSpaces()}

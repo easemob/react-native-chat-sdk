@@ -245,3 +245,73 @@ export interface ChatRoomEventListener {
     isAllMuted: boolean
   ): void;
 }
+
+export interface ChatGroupEventListener {
+  onInvitationReceived(params: {
+    groupId: string;
+    inviter: string;
+    groupName?: string;
+    reason?: string;
+  }): void;
+  onRequestToJoinReceived(params: {
+    groupId: string;
+    applicant: string;
+    groupName?: string;
+    reason?: string;
+  }): void;
+  onRequestToJoinAccepted(params: {
+    groupId: string;
+    accepter: string;
+    groupName?: string;
+  }): void;
+  onRequestToJoinDeclined(params: {
+    groupId: string;
+    decliner: string;
+    groupName?: string;
+    reason?: string;
+  }): void;
+  onInvitationAccepted(params: {
+    groupId: string;
+    invitee: string;
+    reason?: string;
+  }): void;
+  onInvitationDeclined(params: {
+    groupId: string;
+    invitee: string;
+    reason?: string;
+  }): void;
+  onUserRemoved(params: { groupId: string; groupName?: string }): void;
+  onGroupDestroyed(params: { groupId: string; groupName?: string }): void;
+  onAutoAcceptInvitation(params: {
+    groupId: string;
+    inviter: string;
+    inviteMessage?: string;
+  }): void;
+  onMuteListAdded(params: {
+    groupId: string;
+    mutes: Array<string>;
+    muteExpire?: number;
+  }): void;
+  onMuteListRemoved(params: { groupId: string; mutes: Array<string> }): void;
+  onAdminAdded(params: { groupId: string; admin: string }): void;
+  onAdminRemoved(params: { groupId: string; admin: string }): void;
+  onOwnerChanged(params: {
+    groupId: string;
+    newOwner: string;
+    oldOwner: string;
+  }): void;
+  onMemberJoined(params: { groupId: string; member: string }): void;
+  onMemberExited(params: { groupId: string; member: string }): void;
+  onAnnouncementChanged(params: {
+    groupId: string;
+    announcement: string;
+  }): void;
+  onSharedFileAdded(params: { groupId: string; sharedFile: string }): void;
+  onSharedFileDeleted(params: { groupId: string; fileId: string }): void;
+  onWhiteListAdded(params: { groupId: string; members: Array<string> }): void;
+  onWhiteListRemoved(params: { groupId: string; members: Array<string> }): void;
+  onAllGroupMemberMuteStateChanged(params: {
+    groupId: string;
+    isAllMuted: boolean;
+  }): void;
+}

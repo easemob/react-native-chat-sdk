@@ -504,7 +504,7 @@ export class ChatManager extends Native {
    *
    * @throws A description of the exception. See {@link ChatError}.
    */
-  public async msgId(
+  public async sendGroupMessageReadAck(
     msgId: string,
     groupId: string,
     opt?: { content: string }
