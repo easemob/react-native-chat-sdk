@@ -10,6 +10,7 @@ git clone --recurse-submodules git@github.com:easemob/react-native-chat-sdk.git
 
 # Initialize subprojects (if the Clone main project does not include subprojects).
 git submodule update --init --recursive
+git submodule foreach "git checkout dev"
 ```
 
 ## npm repository
@@ -116,10 +117,19 @@ $ npm install -g react-devtools
 ## 参考资料
 
 [react native website](https:#reactnative.dev/)  
-[react native website cn](https:#reactnative.cn/)
+[react native website cn](https:#reactnative.cn/)  
 
 ---
 
 ## Q & A
 
 [others references](https:#note.youdao.com/s/5eHWCnPb)
+
+
+# install depends
+
+```sh
+brew install node
+npm install -g yarn
+npm install -g react-native-cli
+```

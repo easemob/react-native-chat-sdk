@@ -36,6 +36,7 @@ export abstract class LeafScreenBase<
   public static route = 'LeafScreenBase';
   protected static TAG = 'LeafScreenBase';
   protected navigation: any;
+  protected keyPrefix: string;
 
   constructor(props: { navigation: any; route?: string }) {
     super(props);
@@ -44,6 +45,15 @@ export abstract class LeafScreenBase<
     //   LeafScreenBase.TAG = LeafScreenBase.route;
     // }
     this.navigation = props.navigation;
+    this.keyPrefix = '';
+  }
+
+  protected setKeyPrefix(prefix: string): void {
+    this.keyPrefix = prefix;
+  }
+
+  protected generateKey(type: string, name: string): string {
+    return this.keyPrefix + '_' + type + '_' + name;
   }
 
   protected tryCatch(
@@ -129,7 +139,10 @@ export abstract class LeafScreenBase<
    */
   protected renderDivider(): ReactNode {
     return (
-      <View key={seq()} style={styleValues.dividerContainer}>
+      <View
+        key={this.generateKey('', seq().toString())}
+        style={styleValues.dividerContainer}
+      >
         <View
           style={[
             styleValues.dividerContent,
@@ -151,7 +164,10 @@ export abstract class LeafScreenBase<
   protected renderSendResult(): ReactNode[] {
     const { sendResult } = this.state;
     return [
-      <View key={seq()} style={styleValues.containerRow}>
+      <View
+        key={this.generateKey('renderSendResult', 'send')}
+        style={styleValues.containerRow}
+      >
         <Text selectable={true} style={styleValues.textTipStyle}>
           send_result: {sendResult}
         </Text>
@@ -162,7 +178,10 @@ export abstract class LeafScreenBase<
   protected renderRecvResult(): ReactNode[] {
     const { recvResult } = this.state;
     return [
-      <View key={seq()} style={styleValues.containerRow}>
+      <View
+        key={this.generateKey('renderRecvResult', 'recv')}
+        style={styleValues.containerRow}
+      >
         <Text selectable={true} style={styleValues.textTipStyle}>
           recv_result: {recvResult}
         </Text>
@@ -170,9 +189,26 @@ export abstract class LeafScreenBase<
     ];
   }
 
+  protected renderExceptionResult(): ReactNode[] {
+    const { exceptResult } = this.state;
+    return [
+      <View
+        key={this.generateKey('renderExceptionResult', 'exp')}
+        style={styleValues.containerRow}
+      >
+        <Text selectable={true} style={styleValues.textTipStyle}>
+          exp_result: {exceptResult}
+        </Text>
+      </View>,
+    ];
+  }
+
   protected renderParamWithText(name: string): ReactNode {
     return (
-      <View key={seq()} style={styleValues.containerRow}>
+      <View
+        key={this.generateKey('renderParamWithText', name)}
+        style={styleValues.containerRow}
+      >
         <Text style={styleValues.textTipStyle}>{name}</Text>
       </View>
     );
@@ -184,7 +220,10 @@ export abstract class LeafScreenBase<
     oct?: (text: string) => void
   ): ReactNode {
     return (
-      <View key={seq()} style={styleValues.containerRow}>
+      <View
+        key={this.generateKey('renderParamWithInput', name)}
+        style={styleValues.containerRow}
+      >
         <Text style={styleValues.textTipStyle}>{name}:</Text>
         <TextInput
           style={styleValues.textInputStyle}
@@ -210,7 +249,10 @@ export abstract class LeafScreenBase<
       throw new Error(`keys is error: ` + keys);
     }
     return (
-      <View key={seq()} style={styleValues.containerRow}>
+      <View
+        key={this.generateKey('renderParamWithEnum', name)}
+        style={styleValues.containerRow}
+      >
         <Text style={styleValues.textTipStyle}>{name}:</Text>
         <ModalDropdown
           style={styleValues.dropDownStyle}
@@ -232,7 +274,10 @@ export abstract class LeafScreenBase<
     oct?: (json: string) => void
   ): ReactNode {
     return (
-      <View key={seq()} style={styleValues.containerRow}>
+      <View
+        key={this.generateKey('renderParamWithSelectFile', name)}
+        style={styleValues.containerRow}
+      >
         <Text style={styleValues.textTipStyle}>{name}:</Text>
         <TextInput
           style={styleValues.textInputStyle}
@@ -313,7 +358,10 @@ export abstract class LeafScreenBase<
     oct?: (json: string) => void
   ): ReactNode {
     return (
-      <View key={seq()} style={styleValues.containerRow}>
+      <View
+        key={this.generateKey('renderParamWithSelectMediaFile', name)}
+        style={styleValues.containerRow}
+      >
         <Text style={styleValues.textTipStyle}>{name}:</Text>
         <TextInput
           style={styleValues.textInputStyle}
@@ -384,7 +432,10 @@ export abstract class LeafScreenBase<
 
   protected renderButton(name: string, op?: () => void): ReactNode {
     return (
-      <View key={seq()} style={styleValues.containerRow}>
+      <View
+        key={this.generateKey('renderButton', name)}
+        style={styleValues.containerRow}
+      >
         <Button
           title={name}
           onPress={() => {

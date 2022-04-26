@@ -6,7 +6,9 @@ import {
   ChatManagerListener,
   ChatMessage,
   ChatMessageType,
+  ChatOptions,
 } from 'react-native-chat-sdk';
+import { ChatGroupManager } from 'src/ChatGroupManager';
 import type { ChatTextMessageBody } from 'src/common/ChatMessage'; // local for test
 import { styleValues } from '../__internal__/Css';
 import { ApiParams, LeafScreenBase, StateBase } from './Test1';
@@ -126,6 +128,21 @@ export class QuickTestScreen extends LeafScreenBase<State> {
           iniData.methodName
         );
         break;
+      case api_name_loginWithAgoraToken:
+        break;
+      case api_name_createGroup:
+        this.tryCatch(
+          new ChatGroupManager().createGroup(
+            ApiParamsMap.get(api_name_createGroup)?.params[0].paramDefaultValue,
+            ApiParamsMap.get(api_name_createGroup)?.params[1].paramDefaultValue,
+            ApiParamsMap.get(api_name_createGroup)?.params[2].paramDefaultValue,
+            ApiParamsMap.get(api_name_createGroup)?.params[3].paramDefaultValue,
+            ApiParamsMap.get(api_name_createGroup)?.params[4].paramDefaultValue
+          ),
+          '',
+          ''
+        );
+        break;
       default:
         break;
     }
@@ -139,6 +156,9 @@ export class QuickTestScreen extends LeafScreenBase<State> {
       case api_name_loginWithAgoraToken:
         this.callApi(ApiParamsMap.get(api_name_loginWithAgoraToken)!);
         break;
+      case api_name_createGroup:
+        this.callApi(ApiParamsMap.get(api_name_createGroup)!);
+        break;
       default:
         break;
     }
@@ -147,7 +167,12 @@ export class QuickTestScreen extends LeafScreenBase<State> {
 
 const api_name_login = 'login';
 const api_name_loginWithAgoraToken = 'loginWithAgoraToken';
-const ApiNameList: string[] = [api_name_login, api_name_loginWithAgoraToken];
+const api_name_createGroup = 'createGroup';
+const ApiNameList: string[] = [
+  api_name_login,
+  api_name_loginWithAgoraToken,
+  api_name_createGroup,
+];
 console.log('quick test list:\n', ApiNameList);
 
 const ApiParamsList: ApiParams[] = [
@@ -183,6 +208,39 @@ const ApiParamsList: ApiParams[] = [
         paramName: 'agoraToken',
         paramType: 'string',
         paramDefaultValue: 'qwer',
+      },
+    ],
+  },
+  {
+    methodName: 'createGroup',
+    params: [
+      {
+        paramName: 'options',
+        paramType: 'object',
+        paramDefaultValue: new ChatOptions({
+          appKey: 'appKey',
+          autoLogin: false,
+        }),
+      },
+      {
+        paramName: 'groupName',
+        paramType: 'string',
+        paramDefaultValue: 'name',
+      },
+      {
+        paramName: 'desc',
+        paramType: 'string',
+        paramDefaultValue: 'desc',
+      },
+      {
+        paramName: 'inviteMembers',
+        paramType: 'object',
+        paramDefaultValue: ['zhangsan'],
+      },
+      {
+        paramName: 'inviteReason',
+        paramType: 'string',
+        paramDefaultValue: 'el',
       },
     ],
   },

@@ -65,7 +65,7 @@ export interface StatelessChatMessage extends StatelessBase {
 export class ChatManagerLeafScreen extends LeafScreenBase<StateChatMessage> {
   protected static TAG = 'ChatManagerLeafScreen';
   public static route = 'ChatManagerLeafScreen';
-  metaData: ApiParams[];
+  metaData: Map<string, ApiParams>;
   statelessData: StatelessChatMessage;
   constructor(props: { navigation: any }) {
     super(props);
@@ -260,6 +260,7 @@ export class ChatManagerLeafScreen extends LeafScreenBase<StateChatMessage> {
       <View style={styleValues.containerColumn}>
         {this.renderSendResult()}
         {this.renderRecvResult()}
+        {this.renderExceptionResult()}
       </View>
     );
   }
@@ -271,8 +272,6 @@ export class ChatManagerLeafScreen extends LeafScreenBase<StateChatMessage> {
     console.log(`${ChatManagerLeafScreen.TAG}: renderBody: `);
     return (
       <View style={styleValues.containerColumn}>
-        {this.login()}
-        {this.loginWithAgoraToken()}
         {this.sendMessage(false)}
         {this.resendMessage(false)}
         {this.sendMessageReadAck()}
@@ -744,7 +743,10 @@ export class ChatManagerLeafScreen extends LeafScreenBase<StateChatMessage> {
   }
 
   protected sendMessage(isResend: boolean): ReactNode[] {
-    const data = isResend ? this.metaData[3] : this.metaData[2];
+    this.setKeyPrefix(MN.sendMessage);
+    const data = isResend
+      ? this.metaData.get(MN.resendMessage)!
+      : this.metaData.get(MN.sendMessage)!;
     const { content, targetId, targetType, messageType, messageResult } =
       this.state.sendMessage;
 
@@ -841,7 +843,8 @@ export class ChatManagerLeafScreen extends LeafScreenBase<StateChatMessage> {
     ];
   }
   protected resendMessage(isNewMessage: boolean): ReactNode[] {
-    const data = this.metaData[3];
+    this.setKeyPrefix(MN.resendMessage);
+    const data = this.metaData.get(MN.resendMessage)!;
     const { message } = this.statelessData.sendMessage;
     const msg = isNewMessage
       ? message === undefined
@@ -866,7 +869,8 @@ export class ChatManagerLeafScreen extends LeafScreenBase<StateChatMessage> {
     ];
   }
   protected sendMessageReadAck(): ReactNode[] {
-    const data = this.metaData[4];
+    this.setKeyPrefix(MN.sendMessageReadAck);
+    const data = this.metaData.get(MN.sendGroupMessageReadAck)!;
     const { lastMessage } = this.statelessData.sendMessage;
     return [
       this.renderParamWithText(data.methodName),
@@ -881,100 +885,10 @@ export class ChatManagerLeafScreen extends LeafScreenBase<StateChatMessage> {
       this.renderDivider(),
     ];
   }
-  protected login(): ReactNode[] {
-    const data = this.metaData;
-    const {
-      login: { userName, pwdOrToken, isPassword },
-    } = this.state;
-    return [
-      this.renderParamWithText(data[0].methodName),
-      this.renderParamWithInput(
-        data[0].params[0].paramName,
-        userName,
-        (text: string) => {
-          this.setState({ login: { userName: text, pwdOrToken, isPassword } });
-        }
-      ),
-      this.renderParamWithInput(
-        data[0].params[1].paramName,
-        pwdOrToken,
-        (text: string) => {
-          this.setState({ login: { userName, pwdOrToken: text, isPassword } });
-        }
-      ),
-      this.renderParamWithEnum(
-        data[0].params[2].paramName,
-        ['true', 'false'],
-        isPassword ? 'true' : 'false',
-        (index: string, option: any) => {
-          this.setState({
-            login: {
-              userName,
-              pwdOrToken,
-              isPassword: option === 'true' ? true : false,
-            },
-          });
-        }
-      ),
-      this.renderButton(data[0].methodName, () => {
-        this.callApi(data[0].methodName);
-      }),
-      this.renderDivider(),
-    ];
-  }
-  protected loginWithAgoraToken(): ReactNode[] {
-    const data = this.metaData;
-    const {
-      loginWithAgoraToken: { userName, agoraToken },
-    } = this.state;
-    return [
-      this.renderParamWithText(data[1].methodName),
-      this.renderParamWithInput(
-        data[1].params[0].paramName,
-        userName,
-        (text: string) => {
-          this.setState({
-            loginWithAgoraToken: { userName: text, agoraToken },
-          });
-        }
-      ),
-      this.renderParamWithInput(
-        data[1].params[1].paramName,
-        agoraToken,
-        (text: string) => {
-          this.setState({
-            loginWithAgoraToken: { userName, agoraToken: text },
-          });
-        }
-      ),
-      this.renderButton(data[1].methodName, () => {
-        this.callApi(data[1].methodName);
-      }),
-      this.renderDivider(),
-    ];
-  }
+
   private callApi(name: string): void {
     console.log(`${ChatManagerLeafScreen.TAG}: callApi: `);
-    if (name === MN.login) {
-      this.tryCatch(
-        ChatClient.getInstance().login(
-          this.state.login.userName,
-          this.state.login.pwdOrToken,
-          this.state.login.isPassword
-        ),
-        ChatManagerLeafScreen.TAG,
-        this.metaData[0].methodName
-      );
-    } else if (name === MN.loginWithAgoraToken) {
-      this.tryCatch(
-        ChatClient.getInstance().loginWithAgoraToken(
-          this.state.loginWithAgoraToken.userName,
-          this.state.loginWithAgoraToken.agoraToken
-        ),
-        ChatManagerLeafScreen.TAG,
-        this.metaData[1].methodName
-      );
-    } else if (name === MN.sendMessage) {
+    if (name === MN.sendMessage) {
       const { message } = this.statelessData.sendMessage;
       if (message) {
         this.tryCatch(
@@ -983,7 +897,7 @@ export class ChatManagerLeafScreen extends LeafScreenBase<StateChatMessage> {
             this.createCallback()
           ),
           ChatManagerLeafScreen.TAG,
-          this.metaData[2].methodName,
+          this.metaData.get(MN.sendMessage)!.methodName,
           (_value: any) => {
             this.statelessData.sendMessage.lastMessage = message;
           }
@@ -998,7 +912,7 @@ export class ChatManagerLeafScreen extends LeafScreenBase<StateChatMessage> {
             this.createCallback()
           ),
           ChatManagerLeafScreen.TAG,
-          this.metaData[3].methodName
+          this.metaData.get(MN.resendMessage)!.methodName
         );
       }
     } else if (name === MN.sendMessageReadAck) {
@@ -1007,9 +921,20 @@ export class ChatManagerLeafScreen extends LeafScreenBase<StateChatMessage> {
         this.tryCatch(
           ChatClient.getInstance().chatManager.sendMessageReadAck(lastMessage),
           ChatManagerLeafScreen.TAG,
-          this.metaData[4].methodName
+          this.metaData.get(MN.sendMessageReadAck)!.methodName
         );
       }
+    } else if (name === MN.sendGroupMessageReadAck) {
+      const { msgId, groupId, opt } = this.state.sendGroupMessageReadAck;
+      this.tryCatch(
+        ChatClient.getInstance().chatManager.sendGroupMessageReadAck(
+          msgId,
+          groupId,
+          opt
+        ),
+        ChatManagerLeafScreen.TAG,
+        this.metaData.get(MN.sendGroupMessageReadAck)!.methodName
+      );
     }
   }
 }
