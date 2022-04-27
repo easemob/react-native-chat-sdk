@@ -14,6 +14,9 @@ import {
   QuickTestManagerScreen,
 } from '../QuickTestManager';
 import { QuickTestScreenChat } from '../Test/QuickTestChat';
+import { QuickTestScreenContact } from '../Test/QuickTestContact';
+import { QuickTestScreenGroup } from '../Test/QuickTestGroup';
+import { QuickTestScreenRoom } from '../Test/QuickTestRoom';
 
 export const screenComponents: ScreenComponent[] = [
   { route: GroupManagerRoute, screen: GroupManagerScreen, isNavigation: true },
@@ -69,6 +72,24 @@ export const screenComponents: ScreenComponent[] = [
   {
     route: QuickTestScreenChat.route,
     screen: QuickTestScreenChat,
+    isNavigation: false,
+    parentScreen: QuickTestManagerRoute,
+  },
+  {
+    route: QuickTestScreenContact.route,
+    screen: QuickTestScreenContact,
+    isNavigation: false,
+    parentScreen: QuickTestManagerRoute,
+  },
+  {
+    route: QuickTestScreenGroup.route,
+    screen: QuickTestScreenGroup,
+    isNavigation: false,
+    parentScreen: QuickTestManagerRoute,
+  },
+  {
+    route: QuickTestScreenRoom.route,
+    screen: QuickTestScreenRoom,
     isNavigation: false,
     parentScreen: QuickTestManagerRoute,
   },
