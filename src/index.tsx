@@ -1,9 +1,5 @@
 import { ChatClient } from './ChatClient';
-import {
-  ChatSearchDirection,
-  ChatManagerListener,
-  ChatManager,
-} from './ChatManager';
+import { ChatSearchDirection, ChatManager } from './ChatManager';
 
 import {
   ChatConversationType,
@@ -34,7 +30,16 @@ import { ChatOptions } from './common/ChatOptions';
 import { ChatPageResult } from './common/ChatPageResult';
 import { ChatRoomPermissionType, ChatRoom } from './common/ChatRoom';
 import { ChatUserInfoType, ChatUserInfo } from './common/ChatUserInfo';
-import type { ChatConnectionListener } from './ChatEvents';
+import type {
+  ChatConnectEventListener,
+  ChatMultiDeviceEventListener,
+  ChatCustomEventListener,
+  ChatContactEventListener,
+  ChatConversationEventListener,
+  ChatGroupEventListener,
+  ChatRoomEventListener,
+  ChatMessageEventListener,
+} from './ChatEvents';
 
 /**
  * export Objects
@@ -75,8 +80,14 @@ export {
   ChatPageResult,
   ChatRoom,
   ChatUserInfo,
-  ChatManagerListener,
-  ChatConnectionListener,
+  ChatMessageEventListener,
+  ChatConnectEventListener,
+  ChatMultiDeviceEventListener,
+  ChatCustomEventListener,
+  ChatContactEventListener,
+  ChatConversationEventListener,
+  ChatGroupEventListener,
+  ChatRoomEventListener,
 };
 
 export { ChatMessageTypeFromString, ChatMessageChatTypeFromNumber };

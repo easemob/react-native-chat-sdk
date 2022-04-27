@@ -8,7 +8,7 @@ import {
   NativeSyntheticEvent,
   ScrollView,
 } from 'react-native';
-import { ChatClient, ChatConnectionListener } from 'react-native-chat-sdk';
+import { ChatClient, ChatConnectEventListener } from 'react-native-chat-sdk';
 import { styleValues } from '../__internal__/Css';
 
 interface State {
@@ -87,7 +87,7 @@ export class LoginAndLogoutScreen extends Component<
 
   componentDidMount?(): void {
     console.log(`${LoginAndLogoutScreen.TAG}: componentDidMount: `);
-    let listener = new (class s implements ChatConnectionListener {
+    let listener = new (class s implements ChatConnectEventListener {
       that: LoginAndLogoutScreen;
       constructor(parent: any) {
         this.that = parent as LoginAndLogoutScreen;

@@ -4,7 +4,7 @@ import {
   ChatClient,
   ChatError,
   ChatGroupMessageAck,
-  ChatManagerListener,
+  ChatMessageEventListener,
   ChatMessage,
   ChatMessageStatus,
   ChatMessageStatusCallback,
@@ -150,7 +150,7 @@ export class ChatManagerLeafScreen extends LeafScreenBase<StateChatMessage> {
     return ret;
   }
   protected addListener?(): void {
-    let msgListener = new (class implements ChatManagerListener {
+    let msgListener = new (class implements ChatMessageEventListener {
       that: ChatManagerLeafScreen;
       constructor(parent: any) {
         this.that = parent as ChatManagerLeafScreen;
@@ -247,12 +247,12 @@ export class ChatManagerLeafScreen extends LeafScreenBase<StateChatMessage> {
       }
     })(this);
 
-    ChatClient.getInstance().chatManager.removeAllListener();
-    ChatClient.getInstance().chatManager.addListener(msgListener);
+    ChatClient.getInstance().chatManager.removeAllMessageListener();
+    ChatClient.getInstance().chatManager.addMessageListener(msgListener);
   }
 
   protected removeListener?(): void {
-    ChatClient.getInstance().chatManager.removeAllListener();
+    ChatClient.getInstance().chatManager.removeAllMessageListener();
   }
 
   protected renderResult(): ReactNode {

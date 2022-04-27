@@ -21,7 +21,7 @@ import {
   launchImageLibrary,
 } from 'react-native-image-picker';
 import type { MediaType } from '../__internal__/Types';
-import { ChatClient, ChatConnectionListener } from 'react-native-chat-sdk';
+import { ChatClient, ChatConnectEventListener } from 'react-native-chat-sdk';
 
 export interface StateBase {
   sendResult: string;
@@ -737,7 +737,7 @@ export class LeafScreenClient extends LeafScreenBase<StateClient> {
     };
   }
   protected addListener?(): void {
-    let listener = new (class s implements ChatConnectionListener {
+    let listener = new (class s implements ChatConnectEventListener {
       that: LeafScreenClient;
       constructor(parent: any) {
         this.that = parent as LeafScreenClient;

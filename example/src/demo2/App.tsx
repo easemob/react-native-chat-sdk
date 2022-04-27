@@ -29,12 +29,6 @@ function HomeScreen(params: { navigation: any }) {
             </View>
           );
         })}
-      <View key="ReactComponent2" style={styleValues.scrollView}>
-        <Button
-          title="ReactComponent2"
-          onPress={() => params.navigation?.navigate('ReactComponent2')}
-        />
-      </View>
     </ScrollView>
   );
 }

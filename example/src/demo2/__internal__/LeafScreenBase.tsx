@@ -214,6 +214,18 @@ export abstract class LeafScreenBase<
     );
   }
 
+  protected renderParamWithTextKV(name: string, value: string): ReactNode {
+    return (
+      <View
+        key={this.generateKey('renderParamWithTextKV', name)}
+        style={styleValues.containerRow}
+      >
+        <Text style={styleValues.textTipStyle}>{name}</Text>
+        <Text style={styleValues.textTipStyle}>{value}</Text>
+      </View>
+    );
+  }
+
   protected renderParamWithInput(
     name: string,
     value: string,

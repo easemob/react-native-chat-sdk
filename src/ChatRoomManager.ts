@@ -154,13 +154,13 @@ export class ChatRoomManager extends Native {
     });
   }
 
-  public addContactListener(listener: ChatRoomEventListener): void {
+  public addRoomListener(listener: ChatRoomEventListener): void {
     this._roomListeners.add(listener);
   }
-  public removeContactListener(listener: ChatRoomEventListener): void {
+  public removeRoomListener(listener: ChatRoomEventListener): void {
     this._roomListeners.delete(listener);
   }
-  public removeAllContactListener(): void {
+  public removeAllRoomListener(): void {
     this._roomListeners.clear();
   }
 

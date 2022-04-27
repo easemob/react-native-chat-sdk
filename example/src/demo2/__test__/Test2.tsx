@@ -3,7 +3,7 @@ import React from 'react';
 import { View } from 'react-native';
 import {
   ChatClient,
-  ChatManagerListener,
+  ChatMessageEventListener,
   ChatMessage,
   ChatMessageType,
   ChatOptions,
@@ -38,7 +38,7 @@ export class QuickTestScreen extends LeafScreenBase<State> {
     };
   }
   protected addListener?(): void {
-    let msgListener = new (class implements ChatManagerListener {
+    let msgListener = new (class implements ChatMessageEventListener {
       that: QuickTestScreen;
       constructor(parent: any) {
         this.that = parent as QuickTestScreen;
@@ -90,11 +90,11 @@ export class QuickTestScreen extends LeafScreenBase<State> {
       }
     })(this);
 
-    ChatClient.getInstance().chatManager.removeAllListener();
-    ChatClient.getInstance().chatManager.addListener(msgListener);
+    ChatClient.getInstance().chatManager.removeAllMessageListener();
+    ChatClient.getInstance().chatManager.addMessageListener(msgListener);
   }
   protected removeListener?(): void {
-    ChatClient.getInstance().chatManager.removeAllListener();
+    ChatClient.getInstance().chatManager.removeAllMessageListener();
   }
   protected renderResult(): ReactNode {
     return (

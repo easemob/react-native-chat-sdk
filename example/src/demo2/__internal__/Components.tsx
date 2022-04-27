@@ -8,13 +8,22 @@ import { GetStateScreen } from '../Client/GetState';
 import { KickScreen } from '../Client/Kick';
 import { LoginAndLogoutScreen as LoginLogoutScreen } from '../Client/LoginAndLogout';
 import { GroupManagerRoute, GroupManagerScreen } from '../GroupManager';
-// import { LeafScreenClient, LeafScreenTest } from '../__test__/Test1';
 import type { ScreenComponent } from './Utils';
+import {
+  QuickTestManagerRoute,
+  QuickTestManagerScreen,
+} from '../QuickTestManager';
+import { QuickTestScreenChat } from '../Test/QuickTestChat';
 
 export const screenComponents: ScreenComponent[] = [
   { route: GroupManagerRoute, screen: GroupManagerScreen, isNavigation: true },
   { route: ChatManagerRoute, screen: ChatManagerScreen, isNavigation: true },
   { route: ClientRoute, screen: ClientScreen, isNavigation: true },
+  {
+    route: QuickTestManagerRoute,
+    screen: QuickTestManagerScreen,
+    isNavigation: true,
+  },
   {
     route: SendMessageScreen.route,
     screen: SendMessageScreen,
@@ -51,22 +60,16 @@ export const screenComponents: ScreenComponent[] = [
     isNavigation: false,
     parentScreen: ClientRoute,
   },
-  // {
-  //   route: LeafScreenTest.route,
-  //   screen: LeafScreenTest,
-  //   isNavigation: false,
-  //   parentScreen: ClientRoute,
-  // },
-  // {
-  //   route: LeafScreenClient.route,
-  //   screen: LeafScreenClient,
-  //   isNavigation: false,
-  //   parentScreen: ClientRoute,
-  // },
   {
     route: ChatManagerLeafScreen.route,
     screen: ChatManagerLeafScreen,
     isNavigation: false,
     parentScreen: ChatManagerRoute,
+  },
+  {
+    route: QuickTestScreenChat.route,
+    screen: QuickTestScreenChat,
+    isNavigation: false,
+    parentScreen: QuickTestManagerRoute,
   },
 ];

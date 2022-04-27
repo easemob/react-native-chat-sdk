@@ -7,13 +7,16 @@ import {
 } from 'react-native';
 import { ChatContactManager } from './ChatContactManager';
 import {
-  ChatConnectionListener,
+  ChatConnectEventListener,
   ChatContactGroupEventFromNumber,
-  ChatCustomListener,
-  ChatMultiDeviceListener,
+  ChatCustomEventListener,
+  ChatMultiDeviceEventListener,
 } from './ChatEvents';
 import { ChatGroupManager } from './ChatGroupManager';
 import { ChatManager } from './ChatManager';
+import { ChatPushManager } from './ChatPushManager';
+import { ChatRoomManager } from './ChatRoomManager';
+import { ChatUserInfoManager } from './ChatUserInfoManager';
 import { ChatDeviceInfo } from './common/ChatDeviceInfo';
 import type { ChatOptions } from './common/ChatOptions';
 import {
@@ -78,6 +81,9 @@ export class ChatClient extends Native {
     this._chatManager.setNativeListener(this.getEventEmitter());
     this._groupManager.setNativeListener(this.getEventEmitter());
     this._contactManager.setNativeListener(this.getEventEmitter());
+    this._chatManager.setNativeListener(this.getEventEmitter());
+    this._pushManager.setNativeListener(this.getEventEmitter());
+    this._chatRoomManager.setNativeListener(this.getEventEmitter());
     console.log('eventEmitter has finished.');
   }
 
@@ -85,23 +91,18 @@ export class ChatClient extends Native {
     return eventEmitter;
   }
 
-  // private _eventEmitter: NativeEventEmitter;
-
   private _chatManager: ChatManager;
   private _groupManager: ChatGroupManager;
   private _contactManager: ChatContactManager;
-  // todo: no implement
-  // private _chatRoomManager: ChatChatRoomManager;
-  // private _pushManager: ChatPushManager;
-  // private _userInfoManager: ChatUserInfoManager;
-  // private _conversationManager: ChatConversationManager;
+  private _chatRoomManager: ChatRoomManager;
+  private _pushManager: ChatPushManager;
+  private _userInfoManager: ChatUserInfoManager;
 
-  private _connectionListeners: Set<ChatConnectionListener>;
+  private _connectionListeners: Set<ChatConnectEventListener>;
   // todo: no implement
-  private _multiDeviceListeners: Set<ChatMultiDeviceListener>;
-  private _customListeners: Set<ChatCustomListener>;
+  private _multiDeviceListeners: Set<ChatMultiDeviceEventListener>;
+  private _customListeners: Set<ChatCustomEventListener>;
 
-  // 1.主动登录 2.主动退出 3.被动退出
   private _options?: ChatOptions;
   private _sdkVersion: string = '1.0.0';
   private _isInit: boolean = false;
@@ -113,17 +114,15 @@ export class ChatClient extends Native {
     this._chatManager = new ChatManager();
     this._groupManager = new ChatGroupManager();
     this._contactManager = new ChatContactManager();
-    // todo: no implement
-    // this._chatRoomManager = new ChatChatRoomManager();
-    // this._pushManager = new ChatPushManager();
-    // this._userInfoManager = new ChatUserInfoManager();
-    // this._conversationManager = new ChatConversationManager();
+    this._chatRoomManager = new ChatRoomManager();
+    this._pushManager = new ChatPushManager();
+    this._userInfoManager = new ChatUserInfoManager();
 
-    this._connectionListeners = new Set<ChatConnectionListener>();
+    this._connectionListeners = new Set<ChatConnectEventListener>();
     this._connectionSubscriptions = new Map<string, EmitterSubscription>();
 
-    this._multiDeviceListeners = new Set<ChatMultiDeviceListener>();
-    this._customListeners = new Set<ChatCustomListener>();
+    this._multiDeviceListeners = new Set<ChatMultiDeviceEventListener>();
+    this._customListeners = new Set<ChatCustomEventListener>();
 
     this.setEventEmitter();
   }
@@ -143,19 +142,6 @@ export class ChatClient extends Native {
       }
     );
     this._connectionSubscriptions.clear();
-
-    // let s: EmitterSubscription[] | undefined = eventEmitter?.listeners(
-    //   MTonConnected
-    // );
-    // console.log(`${s?.length}`);
-
-    // let s: EmitterSubscription = event.addListener(
-    //   MTonConnected,
-    //   (params: any[]): any => {
-    //     console.log('etst', params);
-    //     s.remove();
-    //   }
-    // );
 
     this._connectionSubscriptions.set(
       MTonConnected,
@@ -484,7 +470,7 @@ export class ChatClient extends Native {
   /**
    * Renews the Agora token.
    *
-   * If you log in with an Agora token and are notified by a callback method {@link ChatConnectionListener} that the token is to be expired, you can call this method to update the token to avoid unknown issues caused by an invalid token.
+   * If you log in with an Agora token and are notified by a callback method {@link ChatConnectEventListener} that the token is to be expired, you can call this method to update the token to avoid unknown issues caused by an invalid token.
    *
    * @param agoraToken The new Agora token.
    *
@@ -646,7 +632,7 @@ export class ChatClient extends Native {
    *
    *  @param listener The chat server connection listener to be added.
    */
-  public addConnectionListener(listener: ChatConnectionListener): void {
+  public addConnectionListener(listener: ChatConnectEventListener): void {
     console.log(`${ChatClient.TAG}: addConnectionListener: `);
     this._connectionListeners.add(listener);
   }
@@ -656,7 +642,7 @@ export class ChatClient extends Native {
    *
    *  @param listener The chat server connection listener to be removed.
    */
-  public removeConnectionListener(listener: ChatConnectionListener): void {
+  public removeConnectionListener(listener: ChatConnectEventListener): void {
     console.log(`${ChatClient.TAG}: removeConnectionListener: `);
     this._connectionListeners.delete(listener);
   }
@@ -674,7 +660,7 @@ export class ChatClient extends Native {
    *
    *  @param listener The multi-device listener to be added.
    */
-  public addMultiDeviceListener(listener: ChatMultiDeviceListener): void {
+  public addMultiDeviceListener(listener: ChatMultiDeviceEventListener): void {
     this._multiDeviceListeners.add(listener);
   }
 
@@ -683,7 +669,9 @@ export class ChatClient extends Native {
    *
    *  @param listener The multi-device listener to be removed.
    */
-  public removeMultiDeviceListener(listener: ChatMultiDeviceListener): void {
+  public removeMultiDeviceListener(
+    listener: ChatMultiDeviceEventListener
+  ): void {
     this._multiDeviceListeners.delete(listener);
   }
 
@@ -699,7 +687,7 @@ export class ChatClient extends Native {
    *
    *  @param listener The custom listener to be added.
    */
-  public addCustomListener(listener: ChatCustomListener): void {
+  public addCustomListener(listener: ChatCustomEventListener): void {
     this._customListeners.add(listener);
   }
 
@@ -708,7 +696,7 @@ export class ChatClient extends Native {
    *
    *  @param listener The custom listener to be removed.
    */
-  public removeCustomListener(listener: ChatCustomListener): void {
+  public removeCustomListener(listener: ChatCustomEventListener): void {
     this._customListeners.delete(listener);
   }
 
@@ -726,5 +714,25 @@ export class ChatClient extends Native {
    */
   public get chatManager(): ChatManager {
     return this._chatManager;
+  }
+
+  public get groupManager(): ChatGroupManager {
+    return this._groupManager;
+  }
+
+  public get contactManager(): ChatContactManager {
+    return this._contactManager;
+  }
+
+  public get pushManager(): ChatPushManager {
+    return this._pushManager;
+  }
+
+  public get userManager(): ChatUserInfoManager {
+    return this._userInfoManager;
+  }
+
+  public get roomManager(): ChatRoomManager {
+    return this._chatRoomManager;
   }
 }

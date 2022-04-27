@@ -12,7 +12,7 @@ import {
   ChatClient,
   ChatError,
   ChatGroupMessageAck,
-  ChatManagerListener,
+  ChatMessageEventListener,
   ChatMessage,
   ChatMessageType,
   ChatMessageChatType,
@@ -131,7 +131,7 @@ export class SendMessageScreen extends LeafComponentBaseScreen<State> {
   componentDidMount(): void {
     super.componentDidMount();
     console.log(`${SendMessageScreen.TAG}: componentDidMount: `);
-    let msgListener = new (class implements ChatManagerListener {
+    let msgListener = new (class implements ChatMessageEventListener {
       that: SendMessageScreen;
       constructor(parent: any) {
         this.that = parent as SendMessageScreen;
@@ -200,8 +200,8 @@ export class SendMessageScreen extends LeafComponentBaseScreen<State> {
       }
     })(this);
 
-    ChatClient.getInstance().chatManager.removeAllListener();
-    ChatClient.getInstance().chatManager.addListener(msgListener);
+    ChatClient.getInstance().chatManager.removeAllMessageListener();
+    ChatClient.getInstance().chatManager.addMessageListener(msgListener);
   }
 
   componentWillUnmount(): void {
