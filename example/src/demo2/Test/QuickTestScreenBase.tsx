@@ -22,7 +22,7 @@ import {
 } from '../__internal__/LeafScreenBase';
 import type { ApiParams } from '../__internal__/DataTypes';
 import type { ChatContactGroupEvent } from 'src/ChatEvents';
-import type { ChatTextMessageBody } from 'src/common/ChatMessage';
+import type { ChatCmdMessageBody } from 'src/common/ChatMessage';
 
 export const metaData = new Map<string, ApiParams>();
 export function registerStateData(params: ApiParams): void {
@@ -160,16 +160,6 @@ export abstract class QuickTestScreenBase<
         this.that.setState({
           recvResult: `onMessagesReceived: ${messages.length}: ` + messages,
         });
-        if (
-          messages.length <= 0 ||
-          messages[0].body.type !== ChatMessageType.TXT
-        ) {
-          return;
-        }
-        let r = messages[0].body;
-        let rr = (r as ChatTextMessageBody).content;
-        console.log(`${QuickTestScreenBase.TAG}: onMessagesReceived: cmd:`, rr);
-        this.that.parseCmd(rr);
       }
       onCmdMessagesReceived(messages: ChatMessage[]): void {
         console.log(
@@ -179,6 +169,16 @@ export abstract class QuickTestScreenBase<
         this.that.setState({
           recvResult: `onCmdMessagesReceived: ${messages.length}: ` + messages,
         });
+        if (
+          messages.length <= 0 ||
+          messages[0].body.type !== ChatMessageType.CMD
+        ) {
+          return;
+        }
+        let r = messages[0].body;
+        let rr = (r as ChatCmdMessageBody).action;
+        console.log(`${QuickTestScreenBase.TAG}: onMessagesReceived: cmd:`, rr);
+        this.that.parseCmd(rr);
       }
       onMessagesRead(messages: ChatMessage[]): void {
         console.log(`${QuickTestScreenBase.TAG}: onMessagesRead: `, messages);

@@ -51,7 +51,7 @@ export const metaDataList = new Map<string, ApiParams>([
       methodName: MN.resendMessage,
       params: [
         {
-          paramName: 'message',
+          paramName: 'message', // 使用发送成功或者失败的数据测试，依赖sendMessage
           paramType: 'object',
           paramDefaultValue: {},
         },
@@ -64,7 +64,7 @@ export const metaDataList = new Map<string, ApiParams>([
       methodName: MN.sendMessageReadAck,
       params: [
         {
-          paramName: 'message',
+          paramName: 'message', // 使用发送成功或者失败的数据测试，依赖sendMessage
           paramType: 'object',
           paramDefaultValue: {},
         },
