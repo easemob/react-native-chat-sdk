@@ -62,7 +62,7 @@ export class ChatUserInfoManager extends Native {
     return ret;
   }
 
-  public clear(): void {
+  public clearUserInfo(): void {
     this._effectiveUserInfo.clear();
   }
 
