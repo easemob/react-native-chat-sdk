@@ -9,6 +9,7 @@ import {
   ScrollView,
 } from 'react-native';
 import { ChatClient, ChatConnectEventListener } from 'react-native-chat-sdk';
+import { datasheet } from '../__default__/Datasheet';
 import { styleValues } from '../__internal__/Css';
 
 interface State {
@@ -33,8 +34,8 @@ export class LoginAndLogoutScreen extends Component<
     this.state = {
       connectStatus: '...',
       listenerStatus: '...',
-      useName: 'asteriskhx1',
-      password: 'qwer',
+      useName: datasheet.accounts[0].id,
+      password: datasheet.accounts[0].mm,
     };
   }
 

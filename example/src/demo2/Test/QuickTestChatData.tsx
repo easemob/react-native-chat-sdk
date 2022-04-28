@@ -1,4 +1,5 @@
 import { ChatMessageType, ChatMessageChatType } from 'react-native-chat-sdk';
+import { datasheet } from '../__default__/Datasheet';
 import type { ApiParams } from '../__internal__/DataTypes';
 
 const sendMessage = 'sendMessage';
@@ -89,7 +90,7 @@ export const metaDataList = new Map<string, ApiParams>([
         {
           paramName: 'targetId',
           paramType: 'string',
-          paramDefaultValue: 'asteriskhx2',
+          paramDefaultValue: datasheet.accounts[1].id,
         },
         {
           paramName: 'targetType',
@@ -166,7 +167,7 @@ export const metaDataList = new Map<string, ApiParams>([
         {
           paramName: 'convId',
           paramType: 'string',
-          paramDefaultValue: 'asteriskhx2',
+          paramDefaultValue: datasheet.accounts[1].id,
         },
       ],
     },
@@ -179,7 +180,7 @@ export const metaDataList = new Map<string, ApiParams>([
         {
           paramName: 'msgId',
           paramType: 'string',
-          paramDefaultValue: 'asteriskhx2',
+          paramDefaultValue: datasheet.accounts[1].id,
         },
       ],
     },
@@ -192,7 +193,7 @@ export const metaDataList = new Map<string, ApiParams>([
         {
           paramName: 'msgId',
           paramType: 'string',
-          paramDefaultValue: 'asteriskhx2',
+          paramDefaultValue: datasheet.accounts[1].id,
         },
       ],
     },
@@ -281,7 +282,7 @@ export const metaDataList = new Map<string, ApiParams>([
         {
           paramName: 'convId', // 使用发送成功或者失败的数据测试，依赖sendMessage
           paramType: 'string',
-          paramDefaultValue: 'asteriskhx2',
+          paramDefaultValue: datasheet.accounts[1].id,
         },
         {
           paramName: 'chatType',
@@ -324,7 +325,7 @@ export const metaDataList = new Map<string, ApiParams>([
         {
           paramName: 'from',
           paramType: 'string',
-          paramDefaultValue: 'asteriskhx2',
+          paramDefaultValue: datasheet.accounts[1].id,
         },
         {
           paramName: 'direction',
@@ -365,7 +366,7 @@ export const metaDataList = new Map<string, ApiParams>([
         {
           paramName: 'convId', // 使用发送成功或者失败的数据测试，依赖sendMessage
           paramType: 'string',
-          paramDefaultValue: 'asteriskhx2',
+          paramDefaultValue: datasheet.accounts[1].id,
         },
         {
           paramName: 'convType',
@@ -388,7 +389,7 @@ export const metaDataList = new Map<string, ApiParams>([
         {
           paramName: 'convId', // 使用发送成功或者失败的数据测试，依赖sendMessage
           paramType: 'string',
-          paramDefaultValue: 'asteriskhx2',
+          paramDefaultValue: datasheet.accounts[1].id,
         },
         {
           paramName: 'convType',
@@ -425,7 +426,7 @@ export const metaDataList = new Map<string, ApiParams>([
         {
           paramName: 'convId', // 使用发送成功或者失败的数据测试，依赖sendMessage
           paramType: 'string',
-          paramDefaultValue: 'asteriskhx2',
+          paramDefaultValue: datasheet.accounts[1].id,
         },
         {
           paramName: 'withMessage',
@@ -443,7 +444,7 @@ export const metaDataList = new Map<string, ApiParams>([
         {
           paramName: 'convId', // 使用发送成功或者失败的数据测试，依赖sendMessage
           paramType: 'string',
-          paramDefaultValue: 'asteriskhx2',
+          paramDefaultValue: datasheet.accounts[1].id,
         },
         {
           paramName: 'convType',
@@ -461,7 +462,7 @@ export const metaDataList = new Map<string, ApiParams>([
         {
           paramName: 'convId', // 使用发送成功或者失败的数据测试，依赖sendMessage
           paramType: 'string',
-          paramDefaultValue: 'asteriskhx2',
+          paramDefaultValue: datasheet.accounts[1].id,
         },
         {
           paramName: 'convType',
@@ -479,7 +480,7 @@ export const metaDataList = new Map<string, ApiParams>([
         {
           paramName: 'convId', // 使用发送成功或者失败的数据测试，依赖sendMessage
           paramType: 'string',
-          paramDefaultValue: 'asteriskhx2',
+          paramDefaultValue: datasheet.accounts[1].id,
         },
         {
           paramName: 'convType',
@@ -497,7 +498,7 @@ export const metaDataList = new Map<string, ApiParams>([
         {
           paramName: 'convId', // 使用发送成功或者失败的数据测试，依赖sendMessage
           paramType: 'string',
-          paramDefaultValue: 'asteriskhx2',
+          paramDefaultValue: datasheet.accounts[1].id,
         },
         {
           paramName: 'convType',
@@ -520,7 +521,7 @@ export const metaDataList = new Map<string, ApiParams>([
         {
           paramName: 'convId', // 使用发送成功或者失败的数据测试，依赖sendMessage
           paramType: 'string',
-          paramDefaultValue: 'asteriskhx2',
+          paramDefaultValue: datasheet.accounts[1].id,
         },
         {
           paramName: 'convType',
@@ -538,7 +539,7 @@ export const metaDataList = new Map<string, ApiParams>([
         {
           paramName: 'convId', // 使用发送成功或者失败的数据测试，依赖sendMessage
           paramType: 'string',
-          paramDefaultValue: 'asteriskhx2',
+          paramDefaultValue: datasheet.accounts[1].id,
         },
         {
           paramName: 'convType',
@@ -561,7 +562,7 @@ export const metaDataList = new Map<string, ApiParams>([
         {
           paramName: 'convId', // 使用发送成功或者失败的数据测试，依赖sendMessage
           paramType: 'string',
-          paramDefaultValue: 'asteriskhx2',
+          paramDefaultValue: datasheet.accounts[1].id,
         },
         {
           paramName: 'convType',
@@ -584,7 +585,7 @@ export const metaDataList = new Map<string, ApiParams>([
         {
           paramName: 'convId', // 使用发送成功或者失败的数据测试，依赖sendMessage
           paramType: 'string',
-          paramDefaultValue: 'asteriskhx2',
+          paramDefaultValue: datasheet.accounts[1].id,
         },
         {
           paramName: 'convType',
@@ -607,7 +608,7 @@ export const metaDataList = new Map<string, ApiParams>([
         {
           paramName: 'convId', // 使用发送成功或者失败的数据测试，依赖sendMessage
           paramType: 'string',
-          paramDefaultValue: 'asteriskhx2',
+          paramDefaultValue: datasheet.accounts[1].id,
         },
         {
           paramName: 'convType',
@@ -630,7 +631,7 @@ export const metaDataList = new Map<string, ApiParams>([
         {
           paramName: 'convId', // 使用发送成功或者失败的数据测试，依赖sendMessage
           paramType: 'string',
-          paramDefaultValue: 'asteriskhx2',
+          paramDefaultValue: datasheet.accounts[1].id,
         },
         {
           paramName: 'convType',
@@ -648,7 +649,7 @@ export const metaDataList = new Map<string, ApiParams>([
         {
           paramName: 'convId', // 使用发送成功或者失败的数据测试，依赖sendMessage
           paramType: 'string',
-          paramDefaultValue: 'asteriskhx2',
+          paramDefaultValue: datasheet.accounts[1].id,
         },
         {
           paramName: 'convType',
@@ -671,7 +672,7 @@ export const metaDataList = new Map<string, ApiParams>([
         {
           paramName: 'convId', // 使用发送成功或者失败的数据测试，依赖sendMessage
           paramType: 'string',
-          paramDefaultValue: 'asteriskhx2',
+          paramDefaultValue: datasheet.accounts[1].id,
         },
         {
           paramName: 'convType',
@@ -701,7 +702,7 @@ export const metaDataList = new Map<string, ApiParams>([
         {
           paramName: 'sender',
           paramType: 'string',
-          paramDefaultValue: 'asteriskhx1',
+          paramDefaultValue: datasheet.accounts[0].id,
         },
       ],
     },
@@ -714,7 +715,7 @@ export const metaDataList = new Map<string, ApiParams>([
         {
           paramName: 'convId', // 使用发送成功或者失败的数据测试，依赖sendMessage
           paramType: 'string',
-          paramDefaultValue: 'asteriskhx2',
+          paramDefaultValue: datasheet.accounts[1].id,
         },
         {
           paramName: 'convType',
@@ -747,7 +748,7 @@ export const metaDataList = new Map<string, ApiParams>([
         {
           paramName: 'convId', // 使用发送成功或者失败的数据测试，依赖sendMessage
           paramType: 'string',
-          paramDefaultValue: 'asteriskhx2',
+          paramDefaultValue: datasheet.accounts[1].id,
         },
         {
           paramName: 'convType',
@@ -777,7 +778,7 @@ export const metaDataList = new Map<string, ApiParams>([
         {
           paramName: 'sender',
           paramType: 'string',
-          paramDefaultValue: 'asteriskhx1',
+          paramDefaultValue: datasheet.accounts[0].id,
         },
       ],
     },
@@ -790,7 +791,7 @@ export const metaDataList = new Map<string, ApiParams>([
         {
           paramName: 'convId', // 使用发送成功或者失败的数据测试，依赖sendMessage
           paramType: 'string',
-          paramDefaultValue: 'asteriskhx2',
+          paramDefaultValue: datasheet.accounts[1].id,
         },
         {
           paramName: 'convType',

@@ -170,13 +170,10 @@ export class ChatClient extends Native {
       MTonSendDataToFlutter,
       event.addListener(MTonSendDataToFlutter, this.onCustomEvent.bind(this))
     );
-    console.log(`${ChatClient.TAG}: setConnectNativeListener: `, event);
   }
 
   private setNativeListener(event: NativeEventEmitter): void {
-    console.log(
-      `${ChatClient.TAG}: setNativeListener: ${ChatClient.eventType}`
-    );
+    console.log(`${ChatClient.TAG}: setNativeListener: `);
     if (ChatClient.eventType === 1) {
       event.removeAllListeners(MTonConnected);
       event.addListener(MTonConnected, this.onConnected.bind(this));

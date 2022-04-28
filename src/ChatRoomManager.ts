@@ -48,7 +48,7 @@ export class ChatRoomManager extends Native {
   private _roomSubscriptions: Map<string, EmitterSubscription>;
 
   public setNativeListener(event: NativeEventEmitter): void {
-    console.log(`${ChatRoomManager.TAG}: setNativeListener: `, event);
+    console.log(`${ChatRoomManager.TAG}: setNativeListener: `);
     this._roomSubscriptions.forEach((value: EmitterSubscription) => {
       value.remove();
     });
