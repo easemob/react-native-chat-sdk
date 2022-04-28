@@ -34,13 +34,15 @@ export function registerStateDataList(map: Map<string, ApiParams>): void {
 }
 
 export interface QuickTestState extends StateBase {
-  connect_result: string;
-  multiDevice_result: string;
-  custom_result: string;
-  contact_result: string;
-  conversation_result: string;
-  groupEvent_result: string;
-  roomEvent_result: string;
+  cmd: string;
+  connect_listener: string;
+  multi_listener: string;
+  custom_listener: string;
+  chat_result: string;
+  contact_listener: string;
+  conv_listener: string;
+  group_listener: string;
+  room_listener: string;
 }
 
 export interface QuickTestStateless extends StatelessBase {}
@@ -73,19 +75,19 @@ export abstract class QuickTestScreenBase<
       }
       onTokenWillExpire(): void {
         console.log('QuickTestScreenBase.onTokenWillExpire');
-        this.that.setState({ connect_result: 'onTokenWillExpire' });
+        this.that.setState({ connect_listener: 'onTokenWillExpire' });
       }
       onTokenDidExpire(): void {
         console.log('QuickTestScreenBase.onTokenDidExpire');
-        this.that.setState({ connect_result: 'onTokenDidExpire' });
+        this.that.setState({ connect_listener: 'onTokenDidExpire' });
       }
       onConnected(): void {
         console.log('QuickTestScreenBase.onConnected');
-        this.that.setState({ connect_result: 'onConnected' });
+        this.that.setState({ connect_listener: 'onConnected' });
       }
       onDisconnected(errorCode?: number): void {
         console.log('QuickTestScreenBase.onDisconnected: ', errorCode);
-        this.that.setState({ connect_result: 'onDisconnected' });
+        this.that.setState({ connect_listener: 'onDisconnected' });
       }
     })(this);
     ChatClient.getInstance().removeAllConnectionListener();
@@ -105,7 +107,7 @@ export abstract class QuickTestScreenBase<
       ): void {
         console.log('QuickTestScreenBase.onContactEvent: ', event, target, ext);
         this.that.setState({
-          multiDevice_result:
+          multi_listener:
             'QuickTestScreenBase.onContactEvent: ' + event + target + ext,
         });
       }
@@ -121,7 +123,7 @@ export abstract class QuickTestScreenBase<
           usernames
         );
         this.that.setState({
-          multiDevice_result:
+          multi_listener:
             'QuickTestScreenBase.onGroupEvent: ' + event + target + usernames,
         });
       }
@@ -139,7 +141,8 @@ export abstract class QuickTestScreenBase<
       onDataReceived(map: Map<string, any>): void {
         console.log('QuickTestScreenBase.onDataReceived: ', map);
         this.that.setState({
-          custom_result: 'QuickTestScreenBase.onDataReceived: ' + map,
+          custom_listener:
+            'QuickTestScreenBase.onDataReceived: ' + JSON.stringify(map),
         });
       }
     })(this);
@@ -157,7 +160,9 @@ export abstract class QuickTestScreenBase<
           messages
         );
         this.that.setState({
-          recvResult: `onMessagesReceived: ${messages.length}: ` + messages,
+          chat_result:
+            `onMessagesReceived: ${messages.length}: ` +
+            JSON.stringify(messages),
         });
       }
       onCmdMessagesReceived(messages: ChatMessage[]): void {
@@ -165,9 +170,11 @@ export abstract class QuickTestScreenBase<
           `${QuickTestScreenBase.TAG}: onCmdMessagesReceived: `,
           messages
         );
-        this.that.setState({
-          recvResult: `onCmdMessagesReceived: ${messages.length}: ` + messages,
-        });
+        // this.that.setState({
+        //   chat_result:
+        //     `onCmdMessagesReceived: ${messages.length}: ` +
+        //     JSON.stringify(messages),
+        // });
         if (
           messages.length <= 0 ||
           messages[0].body.type !== ChatMessageType.CMD
@@ -177,12 +184,14 @@ export abstract class QuickTestScreenBase<
         let r = messages[0].body;
         let rr = (r as ChatCmdMessageBody).action;
         console.log(`${QuickTestScreenBase.TAG}: onMessagesReceived: cmd:`, rr);
+        this.that.setState({ cmd: rr });
         this.that.parseCmd(rr);
       }
       onMessagesRead(messages: ChatMessage[]): void {
         console.log(`${QuickTestScreenBase.TAG}: onMessagesRead: `, messages);
         this.that.setState({
-          recvResult: `onMessagesRead: ${messages.length}: ` + messages,
+          chat_result:
+            `onMessagesRead: ${messages.length}: ` + JSON.stringify(messages),
         });
       }
       onGroupMessageRead(groupMessageAcks: ChatGroupMessageAck[]): void {
@@ -191,9 +200,9 @@ export abstract class QuickTestScreenBase<
           groupMessageAcks
         );
         this.that.setState({
-          recvResult:
+          chat_result:
             `onGroupMessageRead: ${groupMessageAcks.length}: ` +
-            groupMessageAcks,
+            JSON.stringify(groupMessageAcks),
         });
       }
       onMessagesDelivered(messages: ChatMessage[]): void {
@@ -203,7 +212,9 @@ export abstract class QuickTestScreenBase<
           messages
         );
         this.that.setState({
-          recvResult: `onMessagesDelivered: ${messages.length}: ` + messages,
+          chat_result:
+            `onMessagesDelivered: ${messages.length}: ` +
+            JSON.stringify(messages),
         });
       }
       onMessagesRecalled(messages: ChatMessage[]): void {
@@ -212,12 +223,14 @@ export abstract class QuickTestScreenBase<
           messages
         );
         this.that.setState({
-          recvResult: `onMessagesRecalled: ${messages.length}: ` + messages,
+          chat_result:
+            `onMessagesRecalled: ${messages.length}: ` +
+            JSON.stringify(messages),
         });
       }
       onConversationsUpdate(): void {
         console.log(`${QuickTestScreenBase.TAG}: onConversationsUpdate: `);
-        this.that.setState({ recvResult: 'onConversationsUpdate' });
+        this.that.setState({ conv_listener: 'onConversationsUpdate' });
       }
       onConversationRead(from: string, to?: string): void {
         console.log(
@@ -226,7 +239,7 @@ export abstract class QuickTestScreenBase<
           to
         );
         this.that.setState({
-          recvResult: `onConversationRead: ${from}, ${to}`,
+          conv_listener: `onConversationRead: ${from}, ${to}`,
         });
       }
     })(this);
@@ -244,7 +257,7 @@ export abstract class QuickTestScreenBase<
           `${QuickTestScreenBase.TAG}: onContactAdded: ${userName}: `
         );
         this.that.setState({
-          connect_result: `onContactAdded: ${userName}: `,
+          contact_listener: `onContactAdded: ${userName}: `,
         });
       }
       onContactDeleted(userName: string): void {
@@ -252,7 +265,7 @@ export abstract class QuickTestScreenBase<
           `${QuickTestScreenBase.TAG}: onContactDeleted: ${userName}: `
         );
         this.that.setState({
-          connect_result: `onContactDeleted: ${userName}: `,
+          contact_listener: `onContactDeleted: ${userName}: `,
         });
       }
       onContactInvited(userName: string, reason?: string): void {
@@ -260,7 +273,7 @@ export abstract class QuickTestScreenBase<
           `${QuickTestScreenBase.TAG}: onContactInvited: ${userName}, ${reason}: `
         );
         this.that.setState({
-          connect_result: `onContactInvited: ${userName}, ${reason}: `,
+          contact_listener: `onContactInvited: ${userName}, ${reason}: `,
         });
       }
       onFriendRequestAccepted(userName: string): void {
@@ -268,7 +281,7 @@ export abstract class QuickTestScreenBase<
           `${QuickTestScreenBase.TAG}: onFriendRequestAccepted: ${userName}: `
         );
         this.that.setState({
-          connect_result: `onFriendRequestAccepted: ${userName}: `,
+          contact_listener: `onFriendRequestAccepted: ${userName}: `,
         });
       }
       onFriendRequestDeclined(userName: string): void {
@@ -276,7 +289,7 @@ export abstract class QuickTestScreenBase<
           `${QuickTestScreenBase.TAG}: onFriendRequestDeclined: ${userName}: `
         );
         this.that.setState({
-          connect_result: `onFriendRequestDeclined: ${userName}: `,
+          contact_listener: `onFriendRequestDeclined: ${userName}: `,
         });
       }
     })(this);
@@ -306,7 +319,7 @@ export abstract class QuickTestScreenBase<
           params.reason
         );
         this.that.setState({
-          groupEvent_result:
+          group_listener:
             `onInvitationReceived: ` +
             params.groupId +
             params.inviter +
@@ -328,7 +341,7 @@ export abstract class QuickTestScreenBase<
           params.reason
         );
         this.that.setState({
-          groupEvent_result:
+          group_listener:
             `onRequestToJoinReceived: ` +
             params.groupId +
             params.applicant +
@@ -348,7 +361,7 @@ export abstract class QuickTestScreenBase<
           params.groupName
         );
         this.that.setState({
-          groupEvent_result:
+          group_listener:
             `onRequestToJoinAccepted: ` +
             params.groupId +
             params.accepter +
@@ -369,7 +382,7 @@ export abstract class QuickTestScreenBase<
           params.reason
         );
         this.that.setState({
-          groupEvent_result:
+          group_listener:
             `onRequestToJoinDeclined: ` +
             params.groupId +
             params.decliner +
@@ -389,7 +402,7 @@ export abstract class QuickTestScreenBase<
           params.reason
         );
         this.that.setState({
-          groupEvent_result:
+          group_listener:
             `onInvitationAccepted: ` +
             params.groupId +
             params.invitee +
@@ -408,7 +421,7 @@ export abstract class QuickTestScreenBase<
           params.reason
         );
         this.that.setState({
-          groupEvent_result:
+          group_listener:
             `onInvitationDeclined: ` +
             params.groupId +
             params.invitee +
@@ -425,8 +438,7 @@ export abstract class QuickTestScreenBase<
           params.groupName
         );
         this.that.setState({
-          groupEvent_result:
-            `onUserRemoved: ` + params.groupId + params.groupName,
+          group_listener: `onUserRemoved: ` + params.groupId + params.groupName,
         });
       }
       onGroupDestroyed(params: {
@@ -439,7 +451,7 @@ export abstract class QuickTestScreenBase<
           params.groupName
         );
         this.that.setState({
-          groupEvent_result:
+          group_listener:
             `onGroupDestroyed: ` + params.groupId + params.groupName,
         });
       }
@@ -455,7 +467,7 @@ export abstract class QuickTestScreenBase<
           params.inviteMessage
         );
         this.that.setState({
-          groupEvent_result:
+          group_listener:
             `onGroupDestroyed: ` +
             params.groupId +
             params.inviter +
@@ -474,7 +486,7 @@ export abstract class QuickTestScreenBase<
           params.muteExpire?.toString
         );
         this.that.setState({
-          groupEvent_result:
+          group_listener:
             `onMuteListAdded: ` +
             params.groupId +
             params.mutes +
@@ -488,8 +500,7 @@ export abstract class QuickTestScreenBase<
           params.mutes
         );
         this.that.setState({
-          groupEvent_result:
-            `onMuteListRemoved: ` + params.groupId + params.mutes,
+          group_listener: `onMuteListRemoved: ` + params.groupId + params.mutes,
         });
       }
       onAdminAdded(params: { groupId: string; admin: string }): void {
@@ -499,7 +510,7 @@ export abstract class QuickTestScreenBase<
           params.admin
         );
         this.that.setState({
-          groupEvent_result: `onAdminAdded: ` + params.groupId + params.admin,
+          group_listener: `onAdminAdded: ` + params.groupId + params.admin,
         });
       }
       onAdminRemoved(params: { groupId: string; admin: string }): void {
@@ -509,7 +520,7 @@ export abstract class QuickTestScreenBase<
           params.admin
         );
         this.that.setState({
-          groupEvent_result: `onAdminRemoved: ` + params.groupId + params.admin,
+          group_listener: `onAdminRemoved: ` + params.groupId + params.admin,
         });
       }
       onOwnerChanged(params: {
@@ -524,7 +535,7 @@ export abstract class QuickTestScreenBase<
           params.oldOwner
         );
         this.that.setState({
-          groupEvent_result:
+          group_listener:
             `onOwnerChanged: ` +
             params.groupId +
             params.newOwner +
@@ -538,8 +549,7 @@ export abstract class QuickTestScreenBase<
           params.member
         );
         this.that.setState({
-          groupEvent_result:
-            `onMemberJoined: ` + params.groupId + params.member,
+          group_listener: `onMemberJoined: ` + params.groupId + params.member,
         });
       }
       onMemberExited(params: { groupId: string; member: string }): void {
@@ -549,8 +559,7 @@ export abstract class QuickTestScreenBase<
           params.member
         );
         this.that.setState({
-          groupEvent_result:
-            `onMemberExited: ` + params.groupId + params.member,
+          group_listener: `onMemberExited: ` + params.groupId + params.member,
         });
       }
       onAnnouncementChanged(params: {
@@ -563,7 +572,7 @@ export abstract class QuickTestScreenBase<
           params.announcement
         );
         this.that.setState({
-          groupEvent_result:
+          group_listener:
             `onAnnouncementChanged: ` + params.groupId + params.announcement,
         });
       }
@@ -574,7 +583,7 @@ export abstract class QuickTestScreenBase<
           params.sharedFile
         );
         this.that.setState({
-          groupEvent_result:
+          group_listener:
             `onSharedFileAdded: ` + params.groupId + params.sharedFile,
         });
       }
@@ -585,7 +594,7 @@ export abstract class QuickTestScreenBase<
           params.fileId
         );
         this.that.setState({
-          groupEvent_result:
+          group_listener:
             `onSharedFileDeleted: ` + params.groupId + params.fileId,
         });
       }
@@ -596,7 +605,7 @@ export abstract class QuickTestScreenBase<
           params.members
         );
         this.that.setState({
-          groupEvent_result:
+          group_listener:
             `onWhiteListAdded: ` + params.groupId + params.members,
         });
       }
@@ -607,7 +616,7 @@ export abstract class QuickTestScreenBase<
           params.members
         );
         this.that.setState({
-          groupEvent_result:
+          group_listener:
             `onWhiteListRemoved: ` + params.groupId + params.members,
         });
       }
@@ -621,7 +630,7 @@ export abstract class QuickTestScreenBase<
           params.isAllMuted
         );
         this.that.setState({
-          groupEvent_result:
+          group_listener:
             `onAllGroupMemberMuteStateChanged: ` +
             params.groupId +
             params.isAllMuted,
@@ -648,7 +657,7 @@ export abstract class QuickTestScreenBase<
           params.roomName
         );
         this.that.setState({
-          groupEvent_result:
+          room_listener:
             `onChatRoomDestroyed: ` + params.roomId + params.roomName,
         });
       }
@@ -659,7 +668,7 @@ export abstract class QuickTestScreenBase<
           params.participant
         );
         this.that.setState({
-          groupEvent_result:
+          room_listener:
             `onMemberJoined: ` + params.roomId + params.participant,
         });
       }
@@ -675,7 +684,7 @@ export abstract class QuickTestScreenBase<
           params.roomName
         );
         this.that.setState({
-          groupEvent_result:
+          room_listener:
             `onMemberJoined: ` +
             params.roomId +
             params.participant +
@@ -694,7 +703,7 @@ export abstract class QuickTestScreenBase<
           params.roomName
         );
         this.that.setState({
-          groupEvent_result:
+          room_listener:
             `onRemoved: ` +
             params.roomId +
             params.participant +
@@ -713,7 +722,7 @@ export abstract class QuickTestScreenBase<
           params.expireTime
         );
         this.that.setState({
-          groupEvent_result:
+          room_listener:
             `onMuteListAdded: ` +
             params.roomId +
             params.mutes +
@@ -727,8 +736,7 @@ export abstract class QuickTestScreenBase<
           params.mutes
         );
         this.that.setState({
-          groupEvent_result:
-            `onMuteListRemoved: ` + params.roomId + params.mutes,
+          room_listener: `onMuteListRemoved: ` + params.roomId + params.mutes,
         });
       }
       onAdminAdded(params: { roomId: string; admin: string }): void {
@@ -738,7 +746,7 @@ export abstract class QuickTestScreenBase<
           params.admin
         );
         this.that.setState({
-          groupEvent_result: `onAdminAdded: ` + params.roomId + params.admin,
+          room_listener: `onAdminAdded: ` + params.roomId + params.admin,
         });
       }
       onAdminRemoved(params: { roomId: string; admin: string }): void {
@@ -748,7 +756,7 @@ export abstract class QuickTestScreenBase<
           params.admin
         );
         this.that.setState({
-          groupEvent_result: `onAdminRemoved: ` + params.roomId + params.admin,
+          room_listener: `onAdminRemoved: ` + params.roomId + params.admin,
         });
       }
       onOwnerChanged(params: {
@@ -763,7 +771,7 @@ export abstract class QuickTestScreenBase<
           params.oldOwner
         );
         this.that.setState({
-          groupEvent_result:
+          room_listener:
             `onOwnerChanged: ` +
             params.roomId +
             params.newOwner +
@@ -780,7 +788,7 @@ export abstract class QuickTestScreenBase<
           params.announcement
         );
         this.that.setState({
-          groupEvent_result:
+          room_listener:
             `onAnnouncementChanged: ` + params.roomId + params.announcement,
         });
       }
@@ -791,8 +799,7 @@ export abstract class QuickTestScreenBase<
           params.members
         );
         this.that.setState({
-          groupEvent_result:
-            `onWhiteListAdded: ` + params.roomId + params.members,
+          room_listener: `onWhiteListAdded: ` + params.roomId + params.members,
         });
       }
       onWhiteListRemoved(params: { roomId: string; members: string[] }): void {
@@ -802,7 +809,7 @@ export abstract class QuickTestScreenBase<
           params.members
         );
         this.that.setState({
-          groupEvent_result:
+          room_listener:
             `onWhiteListRemoved: ` + params.roomId + params.members,
         });
       }
@@ -816,7 +823,7 @@ export abstract class QuickTestScreenBase<
           params.isAllMuted ? 'true' : 'false'
         );
         this.that.setState({
-          groupEvent_result:
+          room_listener:
             `onAllChatRoomMemberMuteStateChanged: ` +
             params.roomId +
             params.isAllMuted
@@ -841,8 +848,11 @@ export abstract class QuickTestScreenBase<
   }
 
   protected renderResult(): ReactNode {
+    const { cmd } = this.state;
+    const title = 'cmd: ' + cmd;
     return (
       <View style={styleValues.containerColumn}>
+        {this.renderParamWithText(title)}
         {this.renderSendResult()}
         {this.renderRecvResult()}
         {this.renderExceptionResult()}
@@ -856,34 +866,24 @@ export abstract class QuickTestScreenBase<
   protected renderBody(): ReactNode {
     return (
       <View style={styleValues.containerColumn}>
-        {this.renderParamWithTextKV(
-          'connect_result: ',
-          this.state.connect_result
+        {this.renderParamWithText(
+          'connect_listener: ' + this.state.connect_listener
         )}
-        {this.renderParamWithTextKV(
-          'multiDevice_result: ',
-          this.state.multiDevice_result
+        {this.renderParamWithText(
+          'multi_listener: ' + this.state.multi_listener
         )}
-        {this.renderParamWithTextKV(
-          'custom_result: ',
-          this.state.custom_result
+        {this.renderParamWithText(
+          'custom_listener: ' + this.state.custom_listener
         )}
-        {this.renderParamWithTextKV(
-          'contact_result: ',
-          this.state.contact_result
+        {this.renderParamWithText('chat_result: ' + this.state.chat_result)}
+        {this.renderParamWithText(
+          'contact_listener: ' + this.state.contact_listener
         )}
-        {this.renderParamWithTextKV(
-          'conversation_result: ',
-          this.state.conversation_result
+        {this.renderParamWithText('conv_listener: ' + this.state.conv_listener)}
+        {this.renderParamWithText(
+          'group_listener: ' + this.state.group_listener
         )}
-        {this.renderParamWithTextKV(
-          'groupEvent_result: ',
-          this.state.groupEvent_result
-        )}
-        {this.renderParamWithTextKV(
-          'roomEvent_result: ',
-          this.state.roomEvent_result
-        )}
+        {this.renderParamWithText('room_listener: ' + this.state.room_listener)}
       </View>
     );
   }

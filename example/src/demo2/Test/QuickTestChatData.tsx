@@ -100,7 +100,7 @@ export const metaDataList = new Map<string, ApiParams>([
         {
           paramName: 'content',
           paramType: 'object',
-          paramDefaultValue: {},
+          paramDefaultValue: Date.now().toString(),
         },
         {
           paramName: 'messageType',
