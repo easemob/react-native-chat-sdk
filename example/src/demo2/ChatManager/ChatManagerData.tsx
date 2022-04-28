@@ -27,7 +27,7 @@ export const metaData = new Map<string, ApiParams>([
         {
           paramName: 'userName',
           paramType: 'string',
-          paramDefaultValue: 'asterisk003',
+          paramDefaultValue: 'asteriskhx1',
         },
         {
           paramName: 'pwdOrToken',
