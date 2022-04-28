@@ -41,8 +41,8 @@ import {
   MTonTokenDidExpire,
   MTonTokenWillExpire,
   MTrenewToken,
-} from './_internal/Consts';
-import { Native } from './_internal/Native';
+} from './__internal__/Consts';
+import { Native } from './__internal__/Native';
 
 const LINKING_ERROR =
   `The package 'react-native-chat-sdk' doesn't seem to be linked. Make sure: \n\n` +

@@ -1,7 +1,10 @@
 import { ChatClient } from './ChatClient';
 import type { ChatUserInfo } from './common/ChatUserInfo';
-import { MTfetchUserInfoById, MTupdateOwnUserInfo } from './_internal/Consts';
-import { Native } from './_internal/Native';
+import {
+  MTfetchUserInfoById,
+  MTupdateOwnUserInfo,
+} from './__internal__/Consts';
+import { Native } from './__internal__/Native';
 
 export class ChatUserInfoManager extends Native {
   private static TAG = 'ChatUserInfoManager';

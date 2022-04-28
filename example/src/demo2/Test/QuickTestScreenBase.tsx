@@ -9,7 +9,6 @@ import {
   ChatMultiDeviceEventListener,
   ChatCustomEventListener,
   ChatContactEventListener,
-  ChatConversationEventListener,
   ChatGroupEventListener,
   ChatRoomEventListener,
   ChatMessageType,
@@ -284,25 +283,6 @@ export abstract class QuickTestScreenBase<
     ChatClient.getInstance().contactManager.removeAllContactListener();
     ChatClient.getInstance().contactManager.addContactListener(
       contactEventListener
-    );
-
-    const converstaionListener: ChatConversationEventListener = new (class
-      implements ChatConversationEventListener
-    {
-      that: QuickTestScreenBase<S, SL>;
-      constructor(parent: QuickTestScreenBase<S, SL>) {
-        this.that = parent;
-      }
-      onConversationUpdate(): void {
-        console.log(`${QuickTestScreenBase.TAG}: onConversationUpdate: `);
-        this.that.setState({
-          connect_result: `onConversationUpdate: `,
-        });
-      }
-    })(this);
-    ChatClient.getInstance().chatManager.removeAllConversationListener();
-    ChatClient.getInstance().chatManager.addConversationListener(
-      converstaionListener
     );
 
     const groupListener: ChatGroupEventListener = new (class
@@ -855,7 +835,6 @@ export abstract class QuickTestScreenBase<
     ChatClient.getInstance().removeAllCustomListener();
     ChatClient.getInstance().removeAllMultiDeviceListener();
     ChatClient.getInstance().chatManager.removeAllMessageListener();
-    ChatClient.getInstance().chatManager.removeAllConversationListener();
     ChatClient.getInstance().contactManager.removeAllContactListener();
     ChatClient.getInstance().groupManager.removeAllGroupListener();
     ChatClient.getInstance().roomManager.removeAllRoomListener();

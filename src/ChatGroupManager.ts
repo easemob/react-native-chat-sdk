@@ -52,8 +52,8 @@ import {
   MTupdateGroupOwner,
   MTupdateGroupSubject,
   MTuploadGroupSharedFile,
-} from './_internal/Consts';
-import { Native } from './_internal/Native';
+} from './__internal__/Consts';
+import { Native } from './__internal__/Native';
 
 export class ChatGroupManager extends Native {
   private static TAG = 'ChatGroupManager';

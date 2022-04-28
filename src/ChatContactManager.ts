@@ -13,8 +13,8 @@ import {
   MTgetSelfIdsOnOtherPlatform,
   MTonContactChanged,
   MTremoveUserFromBlockList,
-} from './_internal/Consts';
-import { Native } from './_internal/Native';
+} from './__internal__/Consts';
+import { Native } from './__internal__/Native';
 
 export class ChatContactManager extends Native {
   private static TAG = 'ChatContactManager';

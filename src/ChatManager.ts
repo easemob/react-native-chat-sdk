@@ -1,8 +1,5 @@
 import type { NativeEventEmitter } from 'react-native';
-import type {
-  ChatConversationEventListener,
-  ChatMessageEventListener,
-} from './ChatEvents';
+import type { ChatMessageEventListener } from './ChatEvents';
 import {
   ChatConversation,
   ChatConversationType,
@@ -63,8 +60,8 @@ import {
   MTgetConversation,
   MTgetConversationsFromServer,
   MTloadAllConversations,
-} from './_internal/Consts';
-import { Native } from './_internal/Native';
+} from './__internal__/Consts';
+import { Native } from './__internal__/Native';
 
 /**
  * The message search directions.
@@ -123,13 +120,11 @@ export class ChatManager extends Native {
   static TAG = 'ChatManager';
 
   private _messageListeners: Set<ChatMessageEventListener>;
-  private _conversationListeners: Set<ChatConversationEventListener>;
   private _eventEmitter?: NativeEventEmitter;
 
   constructor() {
     super();
     this._messageListeners = new Set<ChatMessageEventListener>();
-    this._conversationListeners = new Set<ChatConversationEventListener>();
   }
 
   public setNativeListener(eventEmitter: NativeEventEmitter) {
@@ -305,33 +300,6 @@ export class ChatManager extends Native {
    */
   public removeAllMessageListener(): void {
     this._messageListeners.clear();
-  }
-
-  /**
-   * Adds a conversation listener.
-   * @param listener The conversation listener.
-   */
-  public addConversationListener(
-    listener: ChatConversationEventListener
-  ): void {
-    this._conversationListeners.add(listener);
-  }
-
-  /**
-   * Removes the conversation listener.
-   * @param listener The conversation listener.
-   */
-  public removeConversationListener(
-    listener: ChatConversationEventListener
-  ): void {
-    this._conversationListeners.delete(listener);
-  }
-
-  /**
-   * Removes all conversation listeners.
-   */
-  public removeAllConversationListener(): void {
-    this._conversationListeners.clear();
   }
 
   /**

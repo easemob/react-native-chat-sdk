@@ -280,11 +280,6 @@ export interface ChatMessageEventListener {
   onConversationRead(from: string, to?: string): void;
 }
 
-/// todo: !!!
-export interface ChatConversationEventListener {
-  onConversationUpdate(): void;
-}
-
 export interface ChatGroupEventListener {
   onInvitationReceived(params: {
     groupId: string;

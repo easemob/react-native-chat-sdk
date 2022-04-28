@@ -31,8 +31,8 @@ import {
   MTunMuteAllChatRoomMembers,
   MTunMuteChatRoomMembers,
   MTupdateChatRoomAnnouncement,
-} from './_internal/Consts';
-import { Native } from './_internal/Native';
+} from './__internal__/Consts';
+import { Native } from './__internal__/Native';
 import { ChatPageResult } from './common/ChatPageResult';
 import { ChatRoom } from './common/ChatRoom';
 
