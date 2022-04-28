@@ -26,7 +26,7 @@ export class QuickTestScreenUser extends QuickTestScreenBase<
       connect_listener: '',
       multi_listener: '',
       custom_listener: '',
-      chat_result: '',
+      chat_listener: '',
       contact_listener: '',
       conv_listener: '',
       group_listener: '',

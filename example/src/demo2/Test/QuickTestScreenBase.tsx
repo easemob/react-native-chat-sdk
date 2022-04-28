@@ -38,7 +38,7 @@ export interface QuickTestState extends StateBase {
   connect_listener: string;
   multi_listener: string;
   custom_listener: string;
-  chat_result: string;
+  chat_listener: string;
   contact_listener: string;
   conv_listener: string;
   group_listener: string;
@@ -160,7 +160,7 @@ export abstract class QuickTestScreenBase<
           messages
         );
         this.that.setState({
-          chat_result:
+          chat_listener:
             `onMessagesReceived: ${messages.length}: ` +
             JSON.stringify(messages),
         });
@@ -190,7 +190,7 @@ export abstract class QuickTestScreenBase<
       onMessagesRead(messages: ChatMessage[]): void {
         console.log(`${QuickTestScreenBase.TAG}: onMessagesRead: `, messages);
         this.that.setState({
-          chat_result:
+          chat_listener:
             `onMessagesRead: ${messages.length}: ` + JSON.stringify(messages),
         });
       }
@@ -200,7 +200,7 @@ export abstract class QuickTestScreenBase<
           groupMessageAcks
         );
         this.that.setState({
-          chat_result:
+          chat_listener:
             `onGroupMessageRead: ${groupMessageAcks.length}: ` +
             JSON.stringify(groupMessageAcks),
         });
@@ -212,7 +212,7 @@ export abstract class QuickTestScreenBase<
           messages
         );
         this.that.setState({
-          chat_result:
+          chat_listener:
             `onMessagesDelivered: ${messages.length}: ` +
             JSON.stringify(messages),
         });
@@ -223,7 +223,7 @@ export abstract class QuickTestScreenBase<
           messages
         );
         this.that.setState({
-          chat_result:
+          chat_listener:
             `onMessagesRecalled: ${messages.length}: ` +
             JSON.stringify(messages),
         });
@@ -875,7 +875,7 @@ export abstract class QuickTestScreenBase<
         {this.renderParamWithText(
           'custom_listener: ' + this.state.custom_listener
         )}
-        {this.renderParamWithText('chat_result: ' + this.state.chat_result)}
+        {this.renderParamWithText('chat_listener: ' + this.state.chat_listener)}
         {this.renderParamWithText(
           'contact_listener: ' + this.state.contact_listener
         )}
