@@ -15,7 +15,12 @@ import {
 
 export interface QuickTestChatState extends QuickTestState {}
 
-export interface QuickTestChatStateless extends QuickTestStateless {}
+export interface QuickTestChatStateless extends QuickTestStateless {
+  sendMessage: {
+    success_message?: ChatMessage;
+    fail_message?: ChatMessage;
+  };
+}
 
 export class QuickTestScreenChat extends QuickTestScreenBase<
   QuickTestChatState,
@@ -39,7 +44,9 @@ export class QuickTestScreenChat extends QuickTestScreenBase<
       recvResult: '',
       exceptResult: '',
     };
-    this.statelessData = {};
+    this.statelessData = {
+      sendMessage: {},
+    };
     registerStateDataList(metaDataList);
   }
 
@@ -76,6 +83,7 @@ export class QuickTestScreenChat extends QuickTestScreenBase<
       }
       onSuccess(message: ChatMessage): void {
         console.log(`${QuickTestScreenChat.TAG}: onSuccess: `, message);
+        this.that.statelessData.sendMessage.success_message = message;
       }
     })(this);
     return ret;
@@ -100,6 +108,7 @@ export class QuickTestScreenChat extends QuickTestScreenBase<
           content,
           targetType
         );
+        this.statelessData.sendMessage.fail_message = msg;
         let cb = this.createCallback();
         this.tryCatch(
           ChatClient.getInstance().chatManager.sendMessage(msg, cb),
@@ -107,7 +116,76 @@ export class QuickTestScreenChat extends QuickTestScreenBase<
           methodName
         );
         break;
-
+      case MN.resendMessage:
+        break;
+      case MN.sendMessageReadAck:
+        break;
+      case MN.sendGroupMessageReadAck:
+        break;
+      case MN.sendConversationReadAck:
+        break;
+      case MN.recallMessage:
+        break;
+      case MN.getMessage:
+        break;
+      case MN.markAllConversationsAsRead:
+        break;
+      case MN.getUnreadMessageCount:
+        break;
+      case MN.updateMessage:
+        break;
+      case MN.importMessages:
+        break;
+      case MN.downloadAttachment:
+        break;
+      case MN.downloadThumbnail:
+        break;
+      case MN.fetchHistoryMessages:
+        break;
+      case MN.searchMsgFromDB:
+        break;
+      case MN.fetchGroupAcks:
+        break;
+      case MN.deleteRemoteConversation:
+        break;
+      case MN.getConversation:
+        break;
+      case MN.loadAllConversations:
+        break;
+      case MN.getConversationsFromServer:
+        break;
+      case MN.deleteConversation:
+        break;
+      case MN.getLatestMessage:
+        break;
+      case MN.getLastReceivedMessage:
+        break;
+      case MN.unreadCount:
+        break;
+      case MN.markMessageAsRead:
+        break;
+      case MN.markAllMessagesAsRead:
+        break;
+      case MN.insertMessage:
+        break;
+      case MN.appendMessage:
+        break;
+      case MN.updateConversationMessage:
+        break;
+      case MN.deleteMessage:
+        break;
+      case MN.deleteAllMessages:
+        break;
+      case MN.getMessageById:
+        break;
+      case MN.getMessagesWithMsgType:
+        break;
+      case MN.getMessages:
+        break;
+      case MN.getMessagesWithKeyword:
+        break;
+      case MN.getMessagesFromTime:
+        break;
       default:
         break;
     }
