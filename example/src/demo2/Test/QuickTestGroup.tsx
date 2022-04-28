@@ -4,7 +4,8 @@ import {
   QuickTestStateless,
   registerStateDataList,
 } from './QuickTestScreenBase';
-import { MN, metaDataList } from './QuickTestChatData';
+import { MN, metaDataList } from './QuickTestGroupData';
+import { ChatClient, ChatGroupOptions } from 'react-native-chat-sdk';
 
 export interface QuickTestGroupState extends QuickTestState {}
 
@@ -59,7 +60,32 @@ export class QuickTestScreenGroup extends QuickTestScreenBase<
    */
   protected callApi(name: string): void {
     switch (name) {
-      case MN.sendMessage:
+      case MN.createGroup:
+        {
+          const methodName = this.metaData.get(MN.createGroup)?.methodName!;
+          const groupName = this.metaData.get(MN.createGroup)?.params[0]
+            .paramDefaultValue;
+          const desc = this.metaData.get(MN.createGroup)?.params[1]
+            .paramDefaultValue;
+          const allMembers: Array<string> = this.metaData.get(MN.createGroup)
+            ?.params[2].paramDefaultValue;
+          const reason = this.metaData.get(MN.createGroup)?.params[3]
+            .paramDefaultValue;
+          const option: ChatGroupOptions = this.metaData.get(MN.createGroup)
+            ?.params[4].paramDefaultValue;
+
+          this.tryCatch(
+            ChatClient.getInstance().groupManager.createGroup(
+              option,
+              groupName,
+              desc,
+              allMembers,
+              reason
+            ),
+            QuickTestScreenGroup.TAG,
+            methodName
+          );
+        }
         break;
 
       default:
