@@ -250,6 +250,33 @@ export abstract class LeafScreenBase<
       </View>
     );
   }
+  protected renderGroupParamWithInput(
+    name: string,
+    type: string,
+    value: string,
+    oct?: (inputData: { [index: string]: string }) => void
+  ): ReactNode {
+    return (
+      <View
+        key={this.generateKey('renderParamWithInput', name)}
+        style={styleValues.containerRow}
+      >
+        <Text style={styleValues.textTipStyle}>{name}:</Text>
+        <TextInput
+          style={styleValues.textInputStyle}
+          onChangeText={(text: string) => {
+            if (oct) {
+              let obj: { [index: string]: string } = {};
+              obj[name] = type === 'object' ? JSON.parse(text) : text;
+              oct(obj);
+            }
+          }}
+        >
+          {value}
+        </TextInput>
+      </View>
+    );
+  }
 
   protected renderParamWithEnum(
     name: string,
