@@ -68,7 +68,7 @@ export class ChatGroupManager extends Native {
   }
 
   public setNativeListener(event: NativeEventEmitter): void {
-    console.log(`${ChatGroupManager.TAG}: setNativeListener: `, event);
+    console.log(`${ChatGroupManager.TAG}: setNativeListener: `);
     this._groupSubscriptions.forEach((value: EmitterSubscription) => {
       value.remove();
     });

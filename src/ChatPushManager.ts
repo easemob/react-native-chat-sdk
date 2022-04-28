@@ -12,8 +12,8 @@ export class ChatPushManager extends Native {
   //   private _contactListeners: Set<ChatContactEventListener>;
   //   private _contactSubscriptions: Map<string, EmitterSubscription>;
 
-  public setNativeListener(event: NativeEventEmitter): void {
-    console.log(`${ChatPushManager.TAG}: setNativeListener: `, event);
+  public setNativeListener(_event: NativeEventEmitter): void {
+    console.log(`${ChatPushManager.TAG}: setNativeListener: `);
     //   this._contactSubscriptions.forEach((value: EmitterSubscription) => {
     //     value.remove();
     //   });

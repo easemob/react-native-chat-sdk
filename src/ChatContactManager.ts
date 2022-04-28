@@ -28,7 +28,7 @@ export class ChatContactManager extends Native {
   private _contactSubscriptions: Map<string, EmitterSubscription>;
 
   public setNativeListener(event: NativeEventEmitter): void {
-    console.log(`${ChatContactManager.TAG}: setNativeListener: `, event);
+    console.log(`${ChatContactManager.TAG}: setNativeListener: `);
     this._contactSubscriptions.forEach((value: EmitterSubscription) => {
       value.remove();
     });
