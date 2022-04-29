@@ -93,7 +93,12 @@ export abstract class LeafScreenBase<
           } else {
             result = 'undefined';
           }
-          console.log(`${tag}: ${name}: onrejected: `, result);
+          console.log(
+            `${tag}: ${name}: onrejected: `,
+            result,
+            'reason: ',
+            reason
+          );
           this.setState({ sendResult: 'onfulfilled: ' + result });
           if (reject) {
             reject(reason);

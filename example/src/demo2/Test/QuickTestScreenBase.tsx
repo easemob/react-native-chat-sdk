@@ -884,11 +884,12 @@ export abstract class QuickTestScreenBase<
           'group_listener: ' + this.state.group_listener
         )}
         {this.renderParamWithText('room_listener: ' + this.state.room_listener)}
+        {this.addSpaces()}
       </View>
     );
   }
 
-  private parseCmd(json: string): void {
+  protected parseCmd(json: string): void {
     this.callApi(JSON.parse(json).methodName);
   }
 
