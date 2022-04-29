@@ -43,7 +43,7 @@ export const metaDataList = new Map<string, ApiParams>([
         {
           paramName: 'userIds',
           paramType: 'object',
-          paramDefaultValue: [datasheet.accounts[1].id],
+          paramDefaultValue: [datasheet.accounts[2].id],
         },
         {
           paramName: 'expireTime',

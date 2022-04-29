@@ -2,83 +2,46 @@ import { ChatMessageType, ChatMessageChatType } from 'react-native-chat-sdk';
 import { datasheet } from '../__default__/Datasheet';
 import type { ApiParams } from '../__internal__/DataTypes';
 
-const sendMessage = 'sendMessage';
-const resendMessage = 'resendMessage';
-const sendMessageReadAck = 'sendMessageReadAck';
-const sendGroupMessageReadAck = 'sendGroupMessageReadAck';
-const sendConversationReadAck = 'sendConversationReadAck';
-const recallMessage = 'recallMessage';
-const getMessage = 'getMessage';
-const markAllConversationsAsRead = 'markAllConversationsAsRead';
-const getUnreadMessageCount = 'getUnreadMessageCount';
-const updateMessage = 'updateMessage';
-const importMessages = 'importMessages';
-const downloadAttachment = 'downloadAttachment';
-const downloadThumbnail = 'downloadThumbnail';
-const fetchHistoryMessages = 'fetchHistoryMessages';
-const searchMsgFromDB = 'searchMsgFromDB';
-const fetchGroupAcks = 'fetchGroupAcks';
-const deleteRemoteConversation = 'deleteRemoteConversation';
-const getConversation = 'getConversation';
-const loadAllConversations = 'loadAllConversations';
-const getConversationsFromServer = 'getConversationsFromServer';
-const deleteConversation = 'deleteConversation';
-const getLatestMessage = 'getLatestMessage';
-const getLastReceivedMessage = 'getLastReceivedMessage';
-const unreadCount = 'unreadCount';
-const markMessageAsRead = 'markMessageAsRead';
-const markAllMessagesAsRead = 'markAllMessagesAsRead';
-const insertMessage = 'insertMessage';
-const appendMessage = 'appendMessage';
-const updateConversationMessage = 'updateConversationMessage';
-const deleteMessage = 'deleteMessage';
-const deleteAllMessages = 'deleteAllMessages';
-const getMessageById = 'getMessageById';
-const getMessagesWithMsgType = 'getMessagesWithMsgType';
-const getMessages = 'getMessages';
-const getMessagesWithKeyword = 'getMessagesWithKeyword';
-const getMessagesFromTime = 'getMessagesFromTime';
-
 /**
  * 本地使用不导出
  */
 export const MN = {
-  sendMessage,
-  resendMessage,
-  sendMessageReadAck,
-  sendGroupMessageReadAck,
-  sendConversationReadAck,
-  recallMessage,
-  getMessage,
-  markAllConversationsAsRead,
-  getUnreadMessageCount,
-  updateMessage,
-  importMessages,
-  downloadAttachment,
-  downloadThumbnail,
-  fetchHistoryMessages,
-  searchMsgFromDB,
-  fetchGroupAcks,
-  deleteRemoteConversation,
-  getConversation,
-  loadAllConversations,
-  getConversationsFromServer,
-  deleteConversation,
-  getLatestMessage,
-  getLastReceivedMessage,
-  unreadCount,
-  markMessageAsRead,
-  markAllMessagesAsRead,
-  insertMessage,
-  appendMessage,
-  updateConversationMessage,
-  deleteMessage,
-  deleteAllMessages,
-  getMessageById,
-  getMessagesWithMsgType,
-  getMessages,
-  getMessagesWithKeyword,
-  getMessagesFromTime,
+  sendMessage: 'sendMessage',
+  resendMessage: 'resendMessage',
+  sendMessageReadAck: 'sendMessageReadAck',
+  sendGroupMessageReadAck: 'sendGroupMessageReadAck',
+  sendConversationReadAck: 'sendConversationReadAck',
+  recallMessage: 'recallMessage',
+  getMessage: 'getMessage',
+  markAllConversationsAsRead: 'markAllConversationsAsRead',
+  getUnreadMessageCount: 'getUnreadMessageCount',
+  updateMessage: 'updateMessage',
+  importMessages: 'importMessages',
+  downloadAttachment: 'downloadAttachment',
+  downloadThumbnail: 'downloadThumbnail',
+  fetchHistoryMessages: 'fetchHistoryMessages',
+  searchMsgFromDB: 'searchMsgFromDB',
+  fetchGroupAcks: 'fetchGroupAcks',
+  deleteRemoteConversation: 'deleteRemoteConversation',
+  getConversation: 'getConversation',
+  loadAllConversations: 'loadAllConversations',
+  getConversationsFromServer: 'getConversationsFromServer',
+  deleteConversation: 'deleteConversation',
+  getLatestMessage: 'getLatestMessage',
+  getLastReceivedMessage: 'getLastReceivedMessage',
+  unreadCount: 'unreadCount',
+  markMessageAsRead: 'markMessageAsRead',
+  markAllMessagesAsRead: 'markAllMessagesAsRead',
+  insertMessage: 'insertMessage',
+  appendMessage: 'appendMessage',
+  updateConversationMessage: 'updateConversationMessage',
+  deleteMessage: 'deleteMessage',
+  deleteAllMessages: 'deleteAllMessages',
+  getMessageById: 'getMessageById',
+  getMessagesWithMsgType: 'getMessagesWithMsgType',
+  getMessages: 'getMessages',
+  getMessagesWithKeyword: 'getMessagesWithKeyword',
+  getMessagesFromTime: 'getMessagesFromTime',
 };
 
 export const metaDataList = new Map<string, ApiParams>([
@@ -90,7 +53,7 @@ export const metaDataList = new Map<string, ApiParams>([
         {
           paramName: 'targetId',
           paramType: 'string',
-          paramDefaultValue: datasheet.accounts[1].id,
+          paramDefaultValue: datasheet.accounts[2].id,
         },
         {
           paramName: 'targetType',
@@ -144,12 +107,12 @@ export const metaDataList = new Map<string, ApiParams>([
         {
           paramName: 'msgId', // 使用发送成功或者失败的数据测试，依赖sendMessage
           paramType: 'string',
-          paramDefaultValue: '9',
+          paramDefaultValue: '1003229966910883832',
         },
         {
           paramName: 'groupId',
           paramType: 'string',
-          paramDefaultValue: '9',
+          paramDefaultValue: '179992049811458',
         },
         {
           paramName: 'opt',
@@ -167,7 +130,7 @@ export const metaDataList = new Map<string, ApiParams>([
         {
           paramName: 'convId',
           paramType: 'string',
-          paramDefaultValue: datasheet.accounts[1].id,
+          paramDefaultValue: datasheet.accounts[2].id,
         },
       ],
     },
@@ -180,7 +143,7 @@ export const metaDataList = new Map<string, ApiParams>([
         {
           paramName: 'msgId',
           paramType: 'string',
-          paramDefaultValue: datasheet.accounts[1].id,
+          paramDefaultValue: '1003235378737449004',
         },
       ],
     },
@@ -193,7 +156,7 @@ export const metaDataList = new Map<string, ApiParams>([
         {
           paramName: 'msgId',
           paramType: 'string',
-          paramDefaultValue: datasheet.accounts[1].id,
+          paramDefaultValue: '165122593166911045',
         },
       ],
     },
@@ -282,7 +245,7 @@ export const metaDataList = new Map<string, ApiParams>([
         {
           paramName: 'convId', // 使用发送成功或者失败的数据测试，依赖sendMessage
           paramType: 'string',
-          paramDefaultValue: datasheet.accounts[1].id,
+          paramDefaultValue: datasheet.accounts[2].id,
         },
         {
           paramName: 'chatType',
@@ -310,7 +273,7 @@ export const metaDataList = new Map<string, ApiParams>([
         {
           paramName: 'keywords', // 使用发送成功或者失败的数据测试，依赖sendMessage
           paramType: 'string',
-          paramDefaultValue: '666',
+          paramDefaultValue: 'r',
         },
         {
           paramName: 'timestamp',
@@ -325,12 +288,12 @@ export const metaDataList = new Map<string, ApiParams>([
         {
           paramName: 'from',
           paramType: 'string',
-          paramDefaultValue: datasheet.accounts[1].id,
+          paramDefaultValue: datasheet.accounts[2].id,
         },
         {
           paramName: 'direction',
           paramType: 'number',
-          paramDefaultValue: 0,
+          paramDefaultValue: 1,
         },
       ],
     },
@@ -343,7 +306,7 @@ export const metaDataList = new Map<string, ApiParams>([
         {
           paramName: 'msgId', // 使用发送成功或者失败的数据测试，依赖sendMessage
           paramType: 'string',
-          paramDefaultValue: '666',
+          paramDefaultValue: '1003483861398587524',
         },
         {
           paramName: 'startAckId',
@@ -353,7 +316,12 @@ export const metaDataList = new Map<string, ApiParams>([
         {
           paramName: 'pageSize',
           paramType: 'number',
-          paramDefaultValue: 0,
+          paramDefaultValue: 20,
+        },
+        {
+          paramName: 'groupId',
+          paramType: 'string',
+          paramDefaultValue: '179992049811458',
         },
       ],
     },
@@ -366,7 +334,7 @@ export const metaDataList = new Map<string, ApiParams>([
         {
           paramName: 'convId', // 使用发送成功或者失败的数据测试，依赖sendMessage
           paramType: 'string',
-          paramDefaultValue: datasheet.accounts[1].id,
+          paramDefaultValue: datasheet.accounts[2].id,
         },
         {
           paramName: 'convType',
@@ -389,7 +357,7 @@ export const metaDataList = new Map<string, ApiParams>([
         {
           paramName: 'convId', // 使用发送成功或者失败的数据测试，依赖sendMessage
           paramType: 'string',
-          paramDefaultValue: datasheet.accounts[1].id,
+          paramDefaultValue: datasheet.accounts[2].id,
         },
         {
           paramName: 'convType',
@@ -426,7 +394,7 @@ export const metaDataList = new Map<string, ApiParams>([
         {
           paramName: 'convId', // 使用发送成功或者失败的数据测试，依赖sendMessage
           paramType: 'string',
-          paramDefaultValue: datasheet.accounts[1].id,
+          paramDefaultValue: datasheet.accounts[2].id,
         },
         {
           paramName: 'withMessage',
@@ -444,7 +412,7 @@ export const metaDataList = new Map<string, ApiParams>([
         {
           paramName: 'convId', // 使用发送成功或者失败的数据测试，依赖sendMessage
           paramType: 'string',
-          paramDefaultValue: datasheet.accounts[1].id,
+          paramDefaultValue: datasheet.accounts[2].id,
         },
         {
           paramName: 'convType',
@@ -462,7 +430,7 @@ export const metaDataList = new Map<string, ApiParams>([
         {
           paramName: 'convId', // 使用发送成功或者失败的数据测试，依赖sendMessage
           paramType: 'string',
-          paramDefaultValue: datasheet.accounts[1].id,
+          paramDefaultValue: datasheet.accounts[2].id,
         },
         {
           paramName: 'convType',
@@ -480,7 +448,7 @@ export const metaDataList = new Map<string, ApiParams>([
         {
           paramName: 'convId', // 使用发送成功或者失败的数据测试，依赖sendMessage
           paramType: 'string',
-          paramDefaultValue: datasheet.accounts[1].id,
+          paramDefaultValue: datasheet.accounts[2].id,
         },
         {
           paramName: 'convType',
@@ -498,7 +466,7 @@ export const metaDataList = new Map<string, ApiParams>([
         {
           paramName: 'convId', // 使用发送成功或者失败的数据测试，依赖sendMessage
           paramType: 'string',
-          paramDefaultValue: datasheet.accounts[1].id,
+          paramDefaultValue: datasheet.accounts[2].id,
         },
         {
           paramName: 'convType',
@@ -521,7 +489,7 @@ export const metaDataList = new Map<string, ApiParams>([
         {
           paramName: 'convId', // 使用发送成功或者失败的数据测试，依赖sendMessage
           paramType: 'string',
-          paramDefaultValue: datasheet.accounts[1].id,
+          paramDefaultValue: datasheet.accounts[2].id,
         },
         {
           paramName: 'convType',
@@ -539,7 +507,7 @@ export const metaDataList = new Map<string, ApiParams>([
         {
           paramName: 'convId', // 使用发送成功或者失败的数据测试，依赖sendMessage
           paramType: 'string',
-          paramDefaultValue: datasheet.accounts[1].id,
+          paramDefaultValue: datasheet.accounts[2].id,
         },
         {
           paramName: 'convType',
@@ -562,7 +530,7 @@ export const metaDataList = new Map<string, ApiParams>([
         {
           paramName: 'convId', // 使用发送成功或者失败的数据测试，依赖sendMessage
           paramType: 'string',
-          paramDefaultValue: datasheet.accounts[1].id,
+          paramDefaultValue: datasheet.accounts[2].id,
         },
         {
           paramName: 'convType',
@@ -585,7 +553,7 @@ export const metaDataList = new Map<string, ApiParams>([
         {
           paramName: 'convId', // 使用发送成功或者失败的数据测试，依赖sendMessage
           paramType: 'string',
-          paramDefaultValue: datasheet.accounts[1].id,
+          paramDefaultValue: datasheet.accounts[2].id,
         },
         {
           paramName: 'convType',
@@ -608,7 +576,7 @@ export const metaDataList = new Map<string, ApiParams>([
         {
           paramName: 'convId', // 使用发送成功或者失败的数据测试，依赖sendMessage
           paramType: 'string',
-          paramDefaultValue: datasheet.accounts[1].id,
+          paramDefaultValue: datasheet.accounts[2].id,
         },
         {
           paramName: 'convType',
@@ -618,7 +586,7 @@ export const metaDataList = new Map<string, ApiParams>([
         {
           paramName: 'msgId',
           paramType: 'object',
-          paramDefaultValue: '0',
+          paramDefaultValue: '1003458059298670640',
         },
       ],
     },
@@ -631,7 +599,7 @@ export const metaDataList = new Map<string, ApiParams>([
         {
           paramName: 'convId', // 使用发送成功或者失败的数据测试，依赖sendMessage
           paramType: 'string',
-          paramDefaultValue: datasheet.accounts[1].id,
+          paramDefaultValue: datasheet.accounts[2].id,
         },
         {
           paramName: 'convType',
@@ -649,7 +617,7 @@ export const metaDataList = new Map<string, ApiParams>([
         {
           paramName: 'convId', // 使用发送成功或者失败的数据测试，依赖sendMessage
           paramType: 'string',
-          paramDefaultValue: datasheet.accounts[1].id,
+          paramDefaultValue: datasheet.accounts[2].id,
         },
         {
           paramName: 'convType',
@@ -659,7 +627,7 @@ export const metaDataList = new Map<string, ApiParams>([
         {
           paramName: 'msgId',
           paramType: 'string',
-          paramDefaultValue: '0',
+          paramDefaultValue: '1003458059298670640',
         },
       ],
     },
@@ -672,7 +640,7 @@ export const metaDataList = new Map<string, ApiParams>([
         {
           paramName: 'convId', // 使用发送成功或者失败的数据测试，依赖sendMessage
           paramType: 'string',
-          paramDefaultValue: datasheet.accounts[1].id,
+          paramDefaultValue: datasheet.accounts[2].id,
         },
         {
           paramName: 'convType',
@@ -687,7 +655,7 @@ export const metaDataList = new Map<string, ApiParams>([
         {
           paramName: 'direction',
           paramType: 'number',
-          paramDefaultValue: 0,
+          paramDefaultValue: 1,
         },
         {
           paramName: 'timestamp',
@@ -697,7 +665,7 @@ export const metaDataList = new Map<string, ApiParams>([
         {
           paramName: 'count',
           paramType: 'number',
-          paramDefaultValue: 0,
+          paramDefaultValue: 20,
         },
         {
           paramName: 'sender',
@@ -715,7 +683,7 @@ export const metaDataList = new Map<string, ApiParams>([
         {
           paramName: 'convId', // 使用发送成功或者失败的数据测试，依赖sendMessage
           paramType: 'string',
-          paramDefaultValue: datasheet.accounts[1].id,
+          paramDefaultValue: datasheet.accounts[2].id,
         },
         {
           paramName: 'convType',
@@ -730,7 +698,7 @@ export const metaDataList = new Map<string, ApiParams>([
         {
           paramName: 'startMsgId',
           paramType: 'string',
-          paramDefaultValue: '',
+          paramDefaultValue: '1003471757245417544',
         },
         {
           paramName: 'loadCount',
@@ -748,7 +716,7 @@ export const metaDataList = new Map<string, ApiParams>([
         {
           paramName: 'convId', // 使用发送成功或者失败的数据测试，依赖sendMessage
           paramType: 'string',
-          paramDefaultValue: datasheet.accounts[1].id,
+          paramDefaultValue: datasheet.accounts[2].id,
         },
         {
           paramName: 'convType',
@@ -791,7 +759,7 @@ export const metaDataList = new Map<string, ApiParams>([
         {
           paramName: 'convId', // 使用发送成功或者失败的数据测试，依赖sendMessage
           paramType: 'string',
-          paramDefaultValue: datasheet.accounts[1].id,
+          paramDefaultValue: datasheet.accounts[2].id,
         },
         {
           paramName: 'convType',
@@ -801,12 +769,12 @@ export const metaDataList = new Map<string, ApiParams>([
         {
           paramName: 'startTime',
           paramType: 'number',
-          paramDefaultValue: 100,
+          paramDefaultValue: 1651150000035,
         },
         {
           paramName: 'endTime',
           paramType: 'number',
-          paramDefaultValue: 200,
+          paramDefaultValue: 1651156671079,
         },
         {
           paramName: 'direction',

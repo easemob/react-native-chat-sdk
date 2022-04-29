@@ -93,7 +93,12 @@ export abstract class LeafScreenBase<
           } else {
             result = 'undefined';
           }
-          console.log(`${tag}: ${name}: onrejected: `, result);
+          console.log(
+            `${tag}: ${name}: onrejected: `,
+            result,
+            'reason: ',
+            reason
+          );
           this.setState({ sendResult: 'onfulfilled: ' + result });
           if (reject) {
             reject(reason);
@@ -250,6 +255,33 @@ export abstract class LeafScreenBase<
       </View>
     );
   }
+  protected renderGroupParamWithInput(
+    name: string,
+    type: string,
+    value: string,
+    oct?: (inputData: { [index: string]: string }) => void
+  ): ReactNode {
+    return (
+      <View
+        key={this.generateKey('renderGroupParamWithInput', name)}
+        style={styleValues.containerRow}
+      >
+        <Text style={styleValues.textTipStyle}>{name}:</Text>
+        <TextInput
+          style={styleValues.textInputStyle}
+          onChangeText={(text: string) => {
+            if (oct) {
+              let obj: { [index: string]: string } = {};
+              obj[name] = type === 'object' ? JSON.parse(text) : text;
+              oct(obj);
+            }
+          }}
+        >
+          {value}
+        </TextInput>
+      </View>
+    );
+  }
 
   protected renderParamWithEnum(
     name: string,
@@ -276,6 +308,85 @@ export abstract class LeafScreenBase<
             }
           }}
         />
+      </View>
+    );
+  }
+
+  protected renderGroupParamWithSelectFile(
+    name: string,
+    value: string,
+    oct?: (inputData: { [index: string]: string }) => void
+  ): ReactNode {
+    return (
+      <View
+        key={this.generateKey('renderGroupParamWithSelectFile', name)}
+        style={styleValues.containerRow}
+      >
+        <Text style={styleValues.textTipStyle}>{name}:</Text>
+        <TextInput
+          style={styleValues.textInputStyle}
+          onChangeText={(text: string) => {
+            if (oct) {
+              let obj: { [index: string]: string } = {};
+              obj[name] = text;
+              oct(obj);
+            }
+          }}
+        >
+          {value}
+        </TextInput>
+        <Button
+          title="selectFile"
+          onPress={() => {
+            DocumentPicker.pick({ type: [DocumentPicker.types.allFiles] })
+              .then((values: DocumentPickerResponse[]) => {
+                if (values.length < 1) {
+                  return;
+                }
+                if (Platform.OS === 'ios') {
+                  let s = values[0].uri;
+                  if (s.startsWith('file://')) {
+                    s = s.substring('file://'.length);
+                  }
+                  if (oct) {
+                    let obj: { [index: string]: string } = {};
+                    obj[name] = s;
+                    oct(obj);
+                  }
+                } else {
+                  // todo: android有问题
+                  let s =
+                    RNFS.ExternalStorageDirectoryPath +
+                    '/Recorder/' +
+                    values[0].name;
+                  if (oct) {
+                    if (oct) {
+                      let obj: { [index: string]: string } = {};
+                      obj[name] = s;
+                      oct(obj);
+                    }
+                  }
+                }
+              })
+              .catch((reason: any) => {
+                if (oct) {
+                  let obj: { [index: string]: string } = {};
+                  if (reason === undefined) {
+                    obj[name] = '';
+                  } else {
+                    if (reason instanceof Object) {
+                      obj[name] = JSON.stringify(reason);
+                    } else {
+                      obj[name] = reason;
+                    }
+                  }
+                  oct(obj);
+                }
+              });
+          }}
+        >
+          SF
+        </Button>
       </View>
     );
   }

@@ -520,15 +520,6 @@ export class SendMessageScreen extends LeafComponentBaseScreen<State> {
     if (this.state.lastMessage === undefined) {
       return;
     }
-    this.tryCatch(
-      ChatClient.getInstance().chatManager.fetchGroupAcks(
-        this.state.lastMessage.msgId,
-        this.state.startAckId,
-        this.state.pageSize
-      ),
-      SendMessageScreen.TAG,
-      'fetchGroupAcks'
-    );
   }
 
   private deleteRemoteConversation(): void {

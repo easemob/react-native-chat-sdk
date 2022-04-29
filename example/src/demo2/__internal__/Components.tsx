@@ -8,6 +8,8 @@ import { GetStateScreen } from '../Client/GetState';
 import { KickScreen } from '../Client/Kick';
 import { LoginAndLogoutScreen as LoginLogoutScreen } from '../Client/LoginAndLogout';
 import { GroupManagerRoute, GroupManagerScreen } from '../GroupManager';
+import { GroupManagerLeafScreen } from '../GroupManager/GroupManagerItem';
+// import { LeafScreenClient, LeafScreenTest } from '../__test__/Test1';
 import type { ScreenComponent } from './Utils';
 import {
   QuickTestManagerRoute,
@@ -93,6 +95,12 @@ export const screenComponents: ScreenComponent[] = [
     screen: QuickTestScreenRoom,
     isNavigation: false,
     parentScreen: QuickTestManagerRoute,
+  },
+  {
+    route: GroupManagerLeafScreen.route,
+    screen: GroupManagerLeafScreen,
+    isNavigation: false,
+    parentScreen: GroupManagerRoute,
   },
   {
     route: QuickTestScreenUser.route,

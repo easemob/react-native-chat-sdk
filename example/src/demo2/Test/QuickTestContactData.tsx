@@ -14,6 +14,7 @@ const declineInvitation = 'declineInvitation';
 const getSelfIdsOnOtherPlatform = 'getSelfIdsOnOtherPlatform';
 /**
  * 本地使用不导出
+ * 这种赋值方式在firefox下有问题
  */
 export const MN = {
   addContact,
@@ -38,7 +39,7 @@ export const metaDataList = new Map<string, ApiParams>([
         {
           paramName: 'username',
           paramType: 'string',
-          paramDefaultValue: datasheet.accounts[2].id,
+          paramDefaultValue: datasheet.accounts[1].id,
         },
         {
           paramName: 'reason',

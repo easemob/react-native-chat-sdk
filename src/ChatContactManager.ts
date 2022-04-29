@@ -42,23 +42,24 @@ export class ChatContactManager extends Native {
   }
 
   private invokeContactListener(params: any): void {
+    // console.log(`${ChatContactManager.TAG}: invokeContactListener: `, params);
     this._contactListeners.forEach((listener: ChatContactEventListener) => {
       const contactEventType = params.type;
       switch (contactEventType) {
         case 'onContactAdded':
-          listener.onContactAdded(params.userName);
+          listener.onContactAdded(params.username);
           break;
         case 'onContactDeleted':
-          listener.onContactDeleted(params.userName);
+          listener.onContactDeleted(params.username);
           break;
         case 'onContactInvited':
-          listener.onContactInvited(params.userName, params.reason);
+          listener.onContactInvited(params.username, params.reason);
           break;
         case 'onFriendRequestAccepted':
-          listener.onFriendRequestAccepted(params.userName);
+          listener.onFriendRequestAccepted(params.username);
           break;
         case 'onFriendRequestDeclined':
-          listener.onFriendRequestDeclined(params.userName);
+          listener.onFriendRequestDeclined(params.username);
           break;
 
         default:
@@ -99,7 +100,7 @@ export class ChatContactManager extends Native {
     let r: any = await Native._callMethod(MTdeleteContact, {
       [MTdeleteContact]: {
         username: username,
-        reason: keepConversation,
+        keepConversation: keepConversation,
       },
     });
     ChatContactManager.checkErrorFromResult(r);

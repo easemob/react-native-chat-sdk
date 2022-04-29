@@ -141,7 +141,7 @@ export const MTisMemberInChatRoomWhiteListFromServer =
   'isMemberInChatRoomWhiteListFromServer';
 
 export const MTmuteAllChatRoomMembers = 'muteAllChatRoomMembers';
-export const MTunMuteAllChatRoomMembers = 'umMuteAllChatRoomMembers';
+export const MTunMuteAllChatRoomMembers = 'unMuteAllChatRoomMembers';
 
 // ChatRoomManager listener
 export const MTchatRoomChange = 'onChatRoomChanged';

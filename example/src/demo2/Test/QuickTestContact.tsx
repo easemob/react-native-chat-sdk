@@ -5,7 +5,7 @@ import {
   registerStateDataList,
 } from './QuickTestScreenBase';
 import { MN, metaDataList } from './QuickTestContactData';
-import { ChatClient } from 'react-native-chat-sdk';
+import { ChatClient, ChatContactEventListener } from 'react-native-chat-sdk';
 
 export interface QuickTestContactState extends QuickTestState {}
 
@@ -26,7 +26,7 @@ export class QuickTestScreenContact extends QuickTestScreenBase<
       connect_listener: '',
       multi_listener: '',
       custom_listener: '',
-      chat_result: '',
+      chat_listener: '',
       contact_listener: '',
       conv_listener: '',
       group_listener: '',
@@ -45,6 +45,58 @@ export class QuickTestScreenContact extends QuickTestScreenBase<
   protected addListener?(): void {
     if (super.addListener) {
       super.addListener();
+      const contactEventListener = new (class
+        implements ChatContactEventListener
+      {
+        that: QuickTestScreenContact;
+        constructor(parent: QuickTestScreenContact) {
+          this.that = parent;
+        }
+        onContactAdded(userName: string): void {
+          console.log(
+            `${QuickTestScreenContact.TAG}: onContactAdded: ${userName}: `
+          );
+          this.that.setState({
+            contact_listener: `onContactAdded: ${userName}: `,
+          });
+        }
+        onContactDeleted(userName: string): void {
+          console.log(
+            `${QuickTestScreenContact.TAG}: onContactDeleted: ${userName}: `
+          );
+          this.that.setState({
+            contact_listener: `onContactDeleted: ${userName}: `,
+          });
+        }
+        onContactInvited(userName: string, reason?: string): void {
+          console.log(
+            `${QuickTestScreenContact.TAG}: onContactInvited: ${userName}, ${reason}: `
+          );
+          this.that.setState({
+            contact_listener: `onContactInvited: ${userName}, ${reason}: `,
+          });
+        }
+        onFriendRequestAccepted(userName: string): void {
+          console.log(
+            `${QuickTestScreenContact.TAG}: onFriendRequestAccepted: ${userName}: `
+          );
+          this.that.setState({
+            contact_listener: `onFriendRequestAccepted: ${userName}: `,
+          });
+        }
+        onFriendRequestDeclined(userName: string): void {
+          console.log(
+            `${QuickTestScreenContact.TAG}: onFriendRequestDeclined: ${userName}: `
+          );
+          this.that.setState({
+            contact_listener: `onFriendRequestDeclined: ${userName}: `,
+          });
+        }
+      })(this);
+      ChatClient.getInstance().contactManager.removeAllContactListener();
+      ChatClient.getInstance().contactManager.addContactListener(
+        contactEventListener
+      );
     }
   }
 
