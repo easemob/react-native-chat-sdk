@@ -888,8 +888,8 @@ export abstract class QuickTestScreenBase<
       </View>
     );
   }
-
-  protected parseCmd(json: string): void {
+  
+  private parseCmd(json: string): void {
     this.callApi(JSON.parse(json).methodName);
   }
 
