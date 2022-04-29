@@ -168,7 +168,7 @@ export class ChatRoomManager extends Native {
     console.log(`${ChatRoomManager.TAG}: joinChatRoom: ${roomId}`);
     let r: any = await Native._callMethod(MTjoinChatRoom, {
       [MTjoinChatRoom]: {
-        username: roomId,
+        roomId: roomId,
       },
     });
     ChatRoomManager.checkErrorFromResult(r);
@@ -250,6 +250,7 @@ export class ChatRoomManager extends Native {
     members?: Array<string>,
     maxCount: number = 300
   ): Promise<ChatRoom> {
+    console.log('createChatRoom action');
     console.log(`${ChatRoomManager.TAG}: createChatRoom: `);
     let r: any = await Native._callMethod(MTcreateChatRoom, {
       [MTcreateChatRoom]: {

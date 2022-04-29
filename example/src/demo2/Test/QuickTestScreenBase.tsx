@@ -889,6 +889,7 @@ export abstract class QuickTestScreenBase<
   }
 
   private parseCmd(json: string): void {
+    console.log("parse cmd , json : ", json);
     this.callApi(JSON.parse(json).methodName);
   }
 
