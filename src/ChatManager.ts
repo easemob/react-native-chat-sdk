@@ -60,6 +60,7 @@ import {
   MTgetConversation,
   MTgetConversationsFromServer,
   MTloadAllConversations,
+  MTloadMsgWithTime,
 } from './__internal__/Consts';
 import { Native } from './__internal__/Native';
 
@@ -717,7 +718,7 @@ export class ChatManager extends Native {
     let r: any = await Native._callMethod(MTsearchChatMsgFromDB, {
       [MTsearchChatMsgFromDB]: {
         keywords: keywords,
-        timestamp: timestamp,
+        timeStamp: timestamp,
         maxCount: maxCount,
         from: from,
         direction: direction === ChatSearchDirection.UP ? 'up' : 'down',
@@ -1137,7 +1138,7 @@ export class ChatManager extends Native {
         con_id: convId,
         type: convType,
         direction: direction === ChatSearchDirection.UP ? 'up' : 'down',
-        startMsgId: startMsgId,
+        startId: startMsgId,
         count: loadCount,
       },
     });
@@ -1189,8 +1190,8 @@ export class ChatManager extends Native {
     count: number = 20
   ): Promise<Array<ChatMessage>> {
     console.log(`${ChatManager.TAG}: getMessagesFromTime: `);
-    let r: any = await Native._callMethod(MTloadMsgWithKeywords, {
-      [MTloadMsgWithKeywords]: {
+    let r: any = await Native._callMethod(MTloadMsgWithTime, {
+      [MTloadMsgWithTime]: {
         con_id: convId,
         type: convType,
         startTime: startTime,
@@ -1200,7 +1201,7 @@ export class ChatManager extends Native {
       },
     });
     ChatManager.checkErrorFromResult(r);
-    const rr = r?.[MTloadMsgWithKeywords] as Map<string, ChatMessage>;
+    const rr = r?.[MTloadMsgWithTime] as Map<string, ChatMessage>;
     const ret: ChatMessage[] = [];
     rr.forEach((value: ChatMessage) => {
       ret.push(value);
