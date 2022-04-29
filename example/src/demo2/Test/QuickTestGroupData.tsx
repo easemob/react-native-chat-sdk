@@ -1,204 +1,153 @@
 import type { ApiParams } from '../__internal__/DataTypes';
 
-const getAllGroups = 'getAllGroups';
-const getGroup = 'getGroup';
+const getGroupWithId = 'getGroupWithId';
+const getJoinedGroups = 'getJoinedGroups';
+const fetchJoinedGroupsFromServer = 'fetchJoinedGroupsFromServer';
+const fetchPublicGroupsFromServer = 'fetchPublicGroupsFromServer';
 const createGroup = 'createGroup';
-const asyncCreateGroup = 'asyncCreateGroup';
-const loadAllGroups = 'loadAllGroups';
-const destroyGroup = 'destroyGroup';
-const asyncDestroyGroup = 'asyncDestroyGroup';
-const addUsersToGroup = 'addUsersToGroup';
-const asyncAddUsersToGroup = 'asyncAddUsersToGroup';
-const removeUserFromGroup = 'removeUserFromGroup';
-const asyncRemoveUserFromGroup = 'asyncRemoveUserFromGroup';
-const removeUsersFromGroup = 'removeUsersFromGroup';
-const asyncRemoveUsersFromGroup = 'asyncRemoveUsersFromGroup';
-const leaveGroup = 'leaveGroup';
-const asyncLeaveGroup = 'asyncLeaveGroup';
-const getGroupFromServer = 'getGroupFromServer';
-const asyncGetGroupFromServer = 'asyncGetGroupFromServer';
-const getJoinedGroupsFromServer = 'getJoinedGroupsFromServer';
-const asyncGetJoinedGroupsFromServer = 'asyncGetJoinedGroupsFromServer';
-const getPublicGroupsFromServer = 'getPublicGroupsFromServer';
-const asyncGetPublicGroupsFromServer = 'asyncGetPublicGroupsFromServer';
-const joinGroup = 'joinGroup';
-const asyncJoinGroup = 'asyncJoinGroup';
+const fetchGroupInfoFromServer = 'fetchGroupInfoFromServer';
+const fetchMemberListFromServer = 'fetchMemberListFromServer';
+const fetchBlockListFromServer = 'fetchBlockListFromServer';
+const fetchMuteListFromServer = 'fetchMuteListFromServer';
+const fetchWhiteListFromServer = 'fetchWhiteListFromServer';
+const isMemberInWhiteListFromServer = 'isMemberInWhiteListFromServer';
+const fetchGroupFileListFromServer = 'fetchGroupFileListFromServer';
+const fetchAnnouncementFromServer = 'fetchAnnouncementFromServer';
+const addMembers = 'addMembers';
+const inviterUser = 'inviterUser';
+const removeMembers = 'removeMembers';
+const blockMembers = 'blockMembers';
+const unblockMembers = 'unblockMembers';
 const changeGroupName = 'changeGroupName';
-const asyncChangeGroupName = 'asyncChangeGroupName';
 const changeGroupDescription = 'changeGroupDescription';
-const asyncChangeGroupDescription = 'asyncChangeGroupDescription';
-const acceptInvitation = 'acceptInvitation';
-const asyncAcceptInvitation = 'asyncAcceptInvitation';
-const declineInvitation = 'declineInvitation';
-const asyncDeclineInvitation = 'asyncDeclineInvitation';
-const acceptApplication = 'acceptApplication';
-const asyncAcceptApplication = 'asyncAcceptApplication';
-const declineApplication = 'declineApplication';
-const asyncDeclineApplication = 'asyncDeclineApplication';
-const inviteUser = 'inviteUser';
-const asyncInviteUser = 'asyncInviteUser';
-const applyJoinToGroup = 'applyJoinToGroup';
-const asyncApplyJoinToGroup = 'asyncApplyJoinToGroup';
-const blockGroupMessage = 'blockGroupMessage';
-const asyncBlockGroupMessage = 'asyncBlockGroupMessage';
-const unblockGroupMessage = 'unblockGroupMessage';
-const asyncUnblockGroupMessage = 'asyncUnblockGroupMessage';
-const blockUser = 'blockUser';
-const asyncBlockUser = 'asyncBlockUser';
-const blockUsers = 'blockUsers';
-const asyncBlockUsers = 'asyncBlockUsers';
-const unblockUser = 'unblockUser';
-const asyncUnblockUser = 'asyncUnblockUser';
-const unblockUsers = 'unblockUsers';
-const asyncUnblockUsers = 'asyncUnblockUsers';
-const getBlockedUsers = 'getBlockedUsers';
-const asyncGetBlockedUsers = 'asyncGetBlockedUsers';
-const fetchGroupMembers = 'fetchGroupMembers';
-const asyncFetchGroupMembers = 'asyncFetchGroupMembers';
+const leaveGroup = 'leaveGroup';
+const destroyGroup = 'destroyGroup';
+const blockGroup = 'blockGroup';
+const unblockGroup = 'unblockGroup';
 const changeOwner = 'changeOwner';
-const asyncChangeOwner = 'asyncChangeOwner';
-const addGroupAdmin = 'addGroupAdmin';
-const asyncAddGroupAdmin = 'asyncAddGroupAdmin';
-const removeGroupAdmin = 'removeGroupAdmin';
-const asyncRemoveGroupAdmin = 'asyncRemoveGroupAdmin';
-const muteGroupMembers = 'muteGroupMembers';
-const asyncMuteGroupMembers = 'asyncMuteGroupMembers';
-const unMuteGroupMembers = 'unMuteGroupMembers';
-const asyncUnMuteGroupMembers = 'asyncUnMuteGroupMembers';
-const fetchGroupMuteList = 'fetchGroupMuteList';
-const asyncFetchGroupMuteList = 'asyncFetchGroupMuteList';
-const fetchGroupBlackList = 'fetchGroupBlackList';
-const asyncFetchGroupBlackList = 'asyncFetchGroupBlackList';
-const addToGroupWhiteList = 'addToGroupWhiteList';
-const removeFromGroupWhiteList = 'removeFromGroupWhiteList';
-const checkIfInGroupWhiteList = 'checkIfInGroupWhiteList';
-const fetchGroupWhiteList = 'fetchGroupWhiteList';
+const addAdmin = 'addAdmin';
+const removeAdmin = 'removeAdmin';
+const muteMembers = 'muteMembers';
+const unMuteMembers = 'unMuteMembers';
 const muteAllMembers = 'muteAllMembers';
-const unmuteAllMembers = 'unmuteAllMembers';
-const updateGroupAnnouncement = 'updateGroupAnnouncement';
-const asyncUpdateGroupAnnouncement = 'asyncUpdateGroupAnnouncement';
-const fetchGroupAnnouncement = 'fetchGroupAnnouncement';
-const asyncFetchGroupAnnouncement = 'asyncFetchGroupAnnouncement';
+const unMuteAllMembers = 'unMuteAllMembers';
+const addWhiteList = 'addWhiteList';
+const removeWhiteList = 'removeWhiteList';
 const uploadGroupSharedFile = 'uploadGroupSharedFile';
-const asyncUploadGroupSharedFile = 'asyncUploadGroupSharedFile';
-const fetchGroupSharedFileList = 'fetchGroupSharedFileList';
-const asyncFetchGroupSharedFileList = 'asyncFetchGroupSharedFileList';
-const deleteGroupSharedFile = 'deleteGroupSharedFile';
-const asyncDeleteGroupSharedFile = 'asyncDeleteGroupSharedFile';
 const downloadGroupSharedFile = 'downloadGroupSharedFile';
-const asyncDownloadGroupSharedFile = 'asyncDownloadGroupSharedFile';
+const removeGroupSharedFile = 'removeGroupSharedFile';
+const updateGroupAnnouncement = 'updateGroupAnnouncement';
 const updateGroupExtension = 'updateGroupExtension';
+const joinPublicGroup = 'joinPublicGroup';
+const requestToJoinPublicGroup = 'requestToJoinPublicGroup';
+const acceptJoinApplication = 'acceptJoinApplication';
+const declineJoinApplication = 'declineJoinApplication';
+const acceptInvitation = 'acceptInvitation';
+const declineInvitation = 'declineInvitation';
+
 /**
  * 本地使用不导出
  */
 export const MN = {
-  getAllGroups,
-  getGroup,
+  getGroupWithId,
+  getJoinedGroups,
+  fetchJoinedGroupsFromServer,
+  fetchPublicGroupsFromServer,
   createGroup,
-  asyncCreateGroup,
-  loadAllGroups,
-  destroyGroup,
-  asyncDestroyGroup,
-  addUsersToGroup,
-  asyncAddUsersToGroup,
-  removeUserFromGroup,
-  asyncRemoveUserFromGroup,
-  removeUsersFromGroup,
-  asyncRemoveUsersFromGroup,
-  leaveGroup,
-  asyncLeaveGroup,
-  getGroupFromServer,
-  asyncGetGroupFromServer,
-  getJoinedGroupsFromServer,
-  asyncGetJoinedGroupsFromServer,
-  getPublicGroupsFromServer,
-  asyncGetPublicGroupsFromServer,
-  joinGroup,
-  asyncJoinGroup,
+  fetchGroupInfoFromServer,
+  fetchMemberListFromServer,
+  fetchBlockListFromServer,
+  fetchMuteListFromServer,
+  fetchWhiteListFromServer,
+  isMemberInWhiteListFromServer,
+  fetchGroupFileListFromServer,
+  fetchAnnouncementFromServer,
+  addMembers,
+  inviterUser,
+  removeMembers,
+  blockMembers,
+  unblockMembers,
   changeGroupName,
-  asyncChangeGroupName,
   changeGroupDescription,
-  asyncChangeGroupDescription,
-  acceptInvitation,
-  asyncAcceptInvitation,
-  declineInvitation,
-  asyncDeclineInvitation,
-  acceptApplication,
-  asyncAcceptApplication,
-  declineApplication,
-  asyncDeclineApplication,
-  inviteUser,
-  asyncInviteUser,
-  applyJoinToGroup,
-  asyncApplyJoinToGroup,
-  blockGroupMessage,
-  asyncBlockGroupMessage,
-  unblockGroupMessage,
-  asyncUnblockGroupMessage,
-  blockUser,
-  asyncBlockUser,
-  blockUsers,
-  asyncBlockUsers,
-  unblockUser,
-  asyncUnblockUser,
-  unblockUsers,
-  asyncUnblockUsers,
-  getBlockedUsers,
-  asyncGetBlockedUsers,
-  fetchGroupMembers,
-  asyncFetchGroupMembers,
+  leaveGroup,
+  destroyGroup,
+  blockGroup,
+  unblockGroup,
   changeOwner,
-  asyncChangeOwner,
-  addGroupAdmin,
-  asyncAddGroupAdmin,
-  removeGroupAdmin,
-  asyncRemoveGroupAdmin,
-  muteGroupMembers,
-  asyncMuteGroupMembers,
-  unMuteGroupMembers,
-  asyncUnMuteGroupMembers,
-  fetchGroupMuteList,
-  asyncFetchGroupMuteList,
-  fetchGroupBlackList,
-  asyncFetchGroupBlackList,
-  addToGroupWhiteList,
-  removeFromGroupWhiteList,
-  checkIfInGroupWhiteList,
-  fetchGroupWhiteList,
+  addAdmin,
+  removeAdmin,
+  muteMembers,
+  unMuteMembers,
   muteAllMembers,
-  unmuteAllMembers,
-  updateGroupAnnouncement,
-  asyncUpdateGroupAnnouncement,
-  fetchGroupAnnouncement,
-  asyncFetchGroupAnnouncement,
+  unMuteAllMembers,
+  addWhiteList,
+  removeWhiteList,
   uploadGroupSharedFile,
-  asyncUploadGroupSharedFile,
-  fetchGroupSharedFileList,
-  asyncFetchGroupSharedFileList,
-  deleteGroupSharedFile,
-  asyncDeleteGroupSharedFile,
   downloadGroupSharedFile,
-  asyncDownloadGroupSharedFile,
+  removeGroupSharedFile,
+  updateGroupAnnouncement,
   updateGroupExtension,
+  joinPublicGroup,
+  requestToJoinPublicGroup,
+  acceptJoinApplication,
+  declineJoinApplication,
+  acceptInvitation,
+  declineInvitation,
 };
 
 export const metaDataList = new Map<string, ApiParams>([
   [
-    MN.getAllGroups,
+    MN.getGroupWithId,
     {
-      methodName: MN.getAllGroups,
-      params: [],
-    },
-  ],
-  [
-    MN.getGroup,
-    {
-      methodName: MN.getGroup,
+      methodName: MN.getGroupWithId,
       params: [
         {
           paramName: 'groupId',
           paramType: 'string',
           paramDefaultValue: '180001518452737',
+        },
+      ],
+    },
+  ],
+  [
+    MN.getJoinedGroups,
+    {
+      methodName: MN.getJoinedGroups,
+      params: [],
+    },
+  ],
+  [
+    MN.fetchJoinedGroupsFromServer,
+    {
+      methodName: MN.fetchJoinedGroupsFromServer,
+      params: [
+        {
+          paramName: 'pageSize',
+          paramType: 'number',
+          paramDefaultValue: 1,
+        },
+        {
+          paramName: 'pageNum',
+          paramType: 'number',
+          paramDefaultValue: 10,
+        },
+      ],
+    },
+  ],
+  [
+    MN.fetchPublicGroupsFromServer,
+    {
+      methodName: MN.fetchPublicGroupsFromServer,
+      params: [
+        {
+          paramName: 'pageSize',
+          paramType: 'number',
+          paramDefaultValue: 1,
+        },
+        {
+          paramName: 'cursor',
+          paramType: 'string',
+          paramDefaultValue: '',
         },
       ],
     },
@@ -229,59 +178,296 @@ export const metaDataList = new Map<string, ApiParams>([
           paramDefaultValue: 'hello',
         },
         {
-          paramName: 'option',
+          paramName: 'options',
           paramType: 'object',
           paramDefaultValue: {
             style: 0,
-            maxUsers: 200,
+            maxCount: 200,
             inviteNeedConfirm: false,
+            ext: '',
           },
         },
       ],
     },
   ],
   [
-    MN.asyncCreateGroup,
+    MN.fetchGroupInfoFromServer,
     {
-      methodName: MN.asyncCreateGroup,
+      methodName: MN.fetchGroupInfoFromServer,
       params: [
         {
-          paramName: 'groupName',
+          paramName: 'groupId',
           paramType: 'string',
-          paramDefaultValue: '测试-110',
+          paramDefaultValue: '180089992052737',
+        },
+      ],
+    },
+  ],
+  [
+    MN.fetchMemberListFromServer,
+    {
+      methodName: MN.fetchMemberListFromServer,
+      params: [
+        {
+          paramName: 'groupId',
+          paramType: 'string',
+          paramDefaultValue: '180001518452737',
         },
         {
-          paramName: 'desc',
-          paramType: 'string',
-          paramDefaultValue: 'This is a test group',
+          paramName: 'pageSize',
+          paramType: 'number',
+          paramDefaultValue: 1,
         },
         {
-          paramName: 'allMembers',
+          paramName: 'cursor',
+          paramType: 'string',
+          paramDefaultValue: '',
+        },
+      ],
+    },
+  ],
+  [
+    MN.fetchBlockListFromServer,
+    {
+      methodName: MN.fetchBlockListFromServer,
+      params: [
+        {
+          paramName: 'groupId',
+          paramType: 'string',
+          paramDefaultValue: '180001518452737',
+        },
+        {
+          paramName: 'pageSize',
+          paramType: 'number',
+          paramDefaultValue: 10,
+        },
+        {
+          paramName: 'pageNum',
+          paramType: 'number',
+          paramDefaultValue: 1,
+        },
+      ],
+    },
+  ],
+  [
+    MN.fetchMuteListFromServer,
+    {
+      methodName: MN.fetchMuteListFromServer,
+      params: [
+        {
+          paramName: 'groupId',
+          paramType: 'string',
+          paramDefaultValue: '180001518452737',
+        },
+        {
+          paramName: 'pageSize',
+          paramType: 'number',
+          paramDefaultValue: 10,
+        },
+        {
+          paramName: 'pageNum',
+          paramType: 'number',
+          paramDefaultValue: 1,
+        },
+      ],
+    },
+  ],
+  [
+    MN.fetchWhiteListFromServer,
+    {
+      methodName: MN.fetchWhiteListFromServer,
+      params: [
+        {
+          paramName: 'groupId',
+          paramType: 'string',
+          paramDefaultValue: '180001518452737',
+        },
+      ],
+    },
+  ],
+  [
+    MN.isMemberInWhiteListFromServer,
+    {
+      methodName: MN.isMemberInWhiteListFromServer,
+      params: [
+        {
+          paramName: 'groupId',
+          paramType: 'string',
+          paramDefaultValue: '180001518452737',
+        },
+      ],
+    },
+  ],
+  [
+    MN.fetchGroupFileListFromServer,
+    {
+      methodName: MN.fetchGroupFileListFromServer,
+      params: [
+        {
+          paramName: 'groupId',
+          paramType: 'string',
+          paramDefaultValue: '180001518452737',
+        },
+        {
+          paramName: 'pageSize',
+          paramType: 'number',
+          paramDefaultValue: 10,
+        },
+        {
+          paramName: 'pageNum',
+          paramType: 'number',
+          paramDefaultValue: 1,
+        },
+      ],
+    },
+  ],
+  [
+    MN.addMembers,
+    {
+      methodName: MN.addMembers,
+      params: [
+        {
+          paramName: 'groupId',
+          paramType: 'string',
+          paramDefaultValue: '180001518452737',
+        },
+        {
+          paramName: 'members',
           paramType: 'object',
-          paramDefaultValue: ['test', 'som', 'ljn'],
+          paramDefaultValue: ['som'],
+        },
+        {
+          paramName: 'welcome',
+          paramType: 'string',
+          paramDefaultValue: 'welcome',
+        },
+      ],
+    },
+  ],
+  [
+    MN.inviterUser,
+    {
+      methodName: MN.inviterUser,
+      params: [
+        {
+          paramName: 'groupId',
+          paramType: 'string',
+          paramDefaultValue: '180001518452737',
+        },
+        {
+          paramName: 'members',
+          paramType: 'object',
+          paramDefaultValue: ['som'],
         },
         {
           paramName: 'reason',
           paramType: 'string',
-          paramDefaultValue: 'hello',
-        },
-        {
-          paramName: 'option',
-          paramType: 'object',
-          paramDefaultValue: {
-            style: 0,
-            maxUsers: 200,
-            inviteNeedConfirm: false,
-          },
+          paramDefaultValue: 'welcome',
         },
       ],
     },
   ],
   [
-    MN.loadAllGroups,
+    MN.removeMembers,
     {
-      methodName: MN.loadAllGroups,
-      params: [],
+      methodName: MN.removeMembers,
+      params: [
+        {
+          paramName: 'groupId',
+          paramType: 'string',
+          paramDefaultValue: '180001518452737',
+        },
+        {
+          paramName: 'members',
+          paramType: 'object',
+          paramDefaultValue: ['som', 'ljn'],
+        },
+      ],
+    },
+  ],
+  [
+    MN.blockMembers,
+    {
+      methodName: MN.blockMembers,
+      params: [
+        {
+          paramName: 'groupId',
+          paramType: 'string',
+          paramDefaultValue: '180001518452737',
+        },
+        {
+          paramName: 'members',
+          paramType: 'object',
+          paramDefaultValue: ['som'],
+        },
+      ],
+    },
+  ],
+  [
+    MN.unblockMembers,
+    {
+      methodName: MN.unblockMembers,
+      params: [
+        {
+          paramName: 'groupId',
+          paramType: 'string',
+          paramDefaultValue: '180001518452737',
+        },
+        {
+          paramName: 'members',
+          paramType: 'object',
+          paramDefaultValue: ['som'],
+        },
+      ],
+    },
+  ],
+  [
+    MN.changeGroupName,
+    {
+      methodName: MN.changeGroupName,
+      params: [
+        {
+          paramName: 'groupId',
+          paramType: 'string',
+          paramDefaultValue: '180001518452737',
+        },
+        {
+          paramName: 'name',
+          paramType: 'string',
+          paramDefaultValue: 'newName',
+        },
+      ],
+    },
+  ],
+  [
+    MN.changeGroupDescription,
+    {
+      methodName: MN.changeGroupDescription,
+      params: [
+        {
+          paramName: 'groupId',
+          paramType: 'string',
+          paramDefaultValue: '180001518452737',
+        },
+        {
+          paramName: 'desc',
+          paramType: 'string',
+          paramDefaultValue: 'new description',
+        },
+      ],
+    },
+  ],
+  [
+    MN.leaveGroup,
+    {
+      methodName: MN.leaveGroup,
+      params: [
+        {
+          paramName: 'groupId',
+          paramType: 'string',
+          paramDefaultValue: '180001518452737',
+        },
+      ],
     },
   ],
   [
@@ -298,9 +484,9 @@ export const metaDataList = new Map<string, ApiParams>([
     },
   ],
   [
-    MN.asyncDestroyGroup,
+    MN.blockGroup,
     {
-      methodName: MN.asyncDestroyGroup,
+      methodName: MN.blockGroup,
       params: [
         {
           paramName: 'groupId',
@@ -311,9 +497,22 @@ export const metaDataList = new Map<string, ApiParams>([
     },
   ],
   [
-    MN.addUsersToGroup,
+    MN.unblockGroup,
     {
-      methodName: MN.addUsersToGroup,
+      methodName: MN.unblockGroup,
+      params: [
+        {
+          paramName: 'groupId',
+          paramType: 'string',
+          paramDefaultValue: '180001518452737',
+        },
+      ],
+    },
+  ],
+  [
+    MN.changeOwner,
+    {
+      methodName: MN.changeOwner,
       params: [
         {
           paramName: 'groupId',
@@ -321,10 +520,357 @@ export const metaDataList = new Map<string, ApiParams>([
           paramDefaultValue: '180001518452737',
         },
         {
-            paramName: 'newmembers',
-            paramType: 'object',
-            paramDefaultValue: ['som', 'ljn'],
-          },
+          paramName: 'newOwner',
+          paramType: 'string',
+          paramDefaultValue: 'asterisk005',
+        },
+      ],
+    },
+  ],
+  [
+    MN.addAdmin,
+    {
+      methodName: MN.addAdmin,
+      params: [
+        {
+          paramName: 'groupId',
+          paramType: 'string',
+          paramDefaultValue: '180001518452737',
+        },
+        {
+          paramName: 'memberId',
+          paramType: 'string',
+          paramDefaultValue: 'asterisk005',
+        },
+      ],
+    },
+  ],
+  [
+    MN.removeAdmin,
+    {
+      methodName: MN.removeAdmin,
+      params: [
+        {
+          paramName: 'groupId',
+          paramType: 'string',
+          paramDefaultValue: '180001518452737',
+        },
+        {
+          paramName: 'memberId',
+          paramType: 'string',
+          paramDefaultValue: 'asterisk005',
+        },
+      ],
+    },
+  ],
+  [
+    MN.muteMembers,
+    {
+      methodName: MN.muteMembers,
+      params: [
+        {
+          paramName: 'groupId',
+          paramType: 'string',
+          paramDefaultValue: '180001518452737',
+        },
+        {
+          paramName: 'members',
+          paramType: 'object',
+          paramDefaultValue: ['asterisk005'],
+        },
+        {
+          paramName: 'duration',
+          paramType: 'number',
+          paramDefaultValue: 1000,
+        },
+      ],
+    },
+  ],
+  [
+    MN.unMuteMembers,
+    {
+      methodName: MN.unMuteMembers,
+      params: [
+        {
+          paramName: 'groupId',
+          paramType: 'string',
+          paramDefaultValue: '180001518452737',
+        },
+        {
+          paramName: 'members',
+          paramType: 'object',
+          paramDefaultValue: ['asterisk005'],
+        },
+      ],
+    },
+  ],
+  [
+    MN.muteAllMembers,
+    {
+      methodName: MN.muteAllMembers,
+      params: [
+        {
+          paramName: 'groupId',
+          paramType: 'string',
+          paramDefaultValue: '180001518452737',
+        },
+      ],
+    },
+  ],
+  [
+    MN.unMuteAllMembers,
+    {
+      methodName: MN.unMuteAllMembers,
+      params: [
+        {
+          paramName: 'groupId',
+          paramType: 'string',
+          paramDefaultValue: '180001518452737',
+        },
+      ],
+    },
+  ],
+  [
+    MN.addWhiteList,
+    {
+      methodName: MN.addWhiteList,
+      params: [
+        {
+          paramName: 'groupId',
+          paramType: 'string',
+          paramDefaultValue: '180001518452737',
+        },
+        {
+          paramName: 'members',
+          paramType: 'object',
+          paramDefaultValue: ['asterisk005'],
+        },
+      ],
+    },
+  ],
+  [
+    MN.removeWhiteList,
+    {
+      methodName: MN.removeWhiteList,
+      params: [
+        {
+          paramName: 'groupId',
+          paramType: 'string',
+          paramDefaultValue: '180001518452737',
+        },
+        {
+          paramName: 'members',
+          paramType: 'object',
+          paramDefaultValue: ['asterisk005'],
+        },
+      ],
+    },
+  ],
+  [
+    MN.uploadGroupSharedFile,
+    {
+      methodName: MN.uploadGroupSharedFile,
+      params: [
+        {
+          paramName: 'groupId',
+          paramType: 'string',
+          paramDefaultValue: '180001518452737',
+        },
+        {
+          paramName: 'filePath',
+          paramType: 'string',
+          paramDefaultValue: '',
+        },
+      ],
+    },
+  ],
+  [
+    MN.downloadGroupSharedFile,
+    {
+      methodName: MN.downloadGroupSharedFile,
+      params: [
+        {
+          paramName: 'groupId',
+          paramType: 'string',
+          paramDefaultValue: '180001518452737',
+        },
+        {
+          paramName: 'fileId',
+          paramType: 'string',
+          paramDefaultValue: '',
+        },
+        {
+          paramName: 'savePath',
+          paramType: 'string',
+          paramDefaultValue: '',
+        },
+      ],
+    },
+  ],
+  [
+    MN.removeGroupSharedFile,
+    {
+      methodName: MN.removeGroupSharedFile,
+      params: [
+        {
+          paramName: 'groupId',
+          paramType: 'string',
+          paramDefaultValue: '180001518452737',
+        },
+        {
+          paramName: 'fileId',
+          paramType: 'string',
+          paramDefaultValue: '',
+        },
+      ],
+    },
+  ],
+  [
+    MN.updateGroupAnnouncement,
+    {
+      methodName: MN.updateGroupAnnouncement,
+      params: [
+        {
+          paramName: 'groupId',
+          paramType: 'string',
+          paramDefaultValue: '180001518452737',
+        },
+        {
+          paramName: 'announcement',
+          paramType: 'string',
+          paramDefaultValue: 'new announcement',
+        },
+      ],
+    },
+  ],
+  [
+    MN.updateGroupExtension,
+    {
+      methodName: MN.updateGroupExtension,
+      params: [
+        {
+          paramName: 'groupId',
+          paramType: 'string',
+          paramDefaultValue: '180001518452737',
+        },
+        {
+          paramName: 'extension',
+          paramType: 'string',
+          paramDefaultValue: 'new extension',
+        },
+      ],
+    },
+  ],
+  [
+    MN.joinPublicGroup,
+    {
+      methodName: MN.joinPublicGroup,
+      params: [
+        {
+          paramName: 'groupId',
+          paramType: 'string',
+          paramDefaultValue: '180001518452737',
+        },
+      ],
+    },
+  ],
+  [
+    MN.requestToJoinPublicGroup,
+    {
+      methodName: MN.requestToJoinPublicGroup,
+      params: [
+        {
+          paramName: 'groupId',
+          paramType: 'string',
+          paramDefaultValue: '180001518452737',
+        },
+        {
+          paramName: 'reason',
+          paramType: 'string',
+          paramDefaultValue: 'join in',
+        },
+      ],
+    },
+  ],
+  [
+    MN.acceptJoinApplication,
+    {
+      methodName: MN.acceptJoinApplication,
+      params: [
+        {
+          paramName: 'groupId',
+          paramType: 'string',
+          paramDefaultValue: '180001518452737',
+        },
+        {
+          paramName: 'username',
+          paramType: 'string',
+          paramDefaultValue: '',
+        },
+      ],
+    },
+  ],
+  [
+    MN.declineJoinApplication,
+    {
+      methodName: MN.declineJoinApplication,
+      params: [
+        {
+          paramName: 'groupId',
+          paramType: 'string',
+          paramDefaultValue: '180001518452737',
+        },
+        {
+          paramName: 'username',
+          paramType: 'string',
+          paramDefaultValue: '',
+        },
+        {
+          paramName: 'reason',
+          paramType: 'string',
+          paramDefaultValue: 'reason',
+        },
+      ],
+    },
+  ],
+  [
+    MN.acceptInvitation,
+    {
+      methodName: MN.acceptInvitation,
+      params: [
+        {
+          paramName: 'groupId',
+          paramType: 'string',
+          paramDefaultValue: '180001518452737',
+        },
+        {
+          paramName: 'inviter',
+          paramType: 'string',
+          paramDefaultValue: '',
+        },
+      ],
+    },
+  ],
+  [
+    MN.declineInvitation,
+    {
+      methodName: MN.declineInvitation,
+      params: [
+        {
+          paramName: 'groupId',
+          paramType: 'string',
+          paramDefaultValue: '180001518452737',
+        },
+        {
+          paramName: 'inviter',
+          paramType: 'string',
+          paramDefaultValue: '',
+        },
+        {
+          paramName: 'reason',
+          paramType: 'string',
+          paramDefaultValue: 'reason',
+        },
       ],
     },
   ],
