@@ -518,7 +518,7 @@ export class ChatManager extends Native {
    *
    * @throws A description of the exception. See {@link ChatError}.
    */
-  public async getMessage(msgId: string): Promise<ChatMessage> {
+  public async getMessage(msgId: string): Promise<ChatMessage | null> {
     console.log(`${ChatManager.TAG}: getMessage: ${msgId}`);
     let r: any = await Native._callMethod(MTgetMessage, {
       [MTgetMessage]: {
@@ -526,7 +526,13 @@ export class ChatManager extends Native {
       },
     });
     Native.checkErrorFromResult(r);
-    return new ChatMessage(r?.[MTgetMessage]);
+    console.log('r: ', r);
+    r = r?.[MTgetMessage];
+    if (r) {
+      return new ChatMessage(r);
+    } else {
+      return null;
+    }
   }
 
   /**

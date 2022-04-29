@@ -227,7 +227,7 @@ export class QuickTestScreenChat extends QuickTestScreenBase<
           let cb = this.createCallback();
           this.tryCatch(
             ChatClient.getInstance().chatManager.sendMessage(
-              this.createGroupTextMessage(),
+              this.createTextMessage(),
               cb
             ),
             QuickTestScreenChat.TAG,

@@ -1,5 +1,5 @@
 import { ChatClient } from './ChatClient';
-import type { ChatUserInfo } from './common/ChatUserInfo';
+import { ChatUserInfo } from './common/ChatUserInfo';
 import {
   MTfetchUserInfoById,
   MTupdateOwnUserInfo,
@@ -57,10 +57,9 @@ export class ChatUserInfoManager extends Native {
         userIds: needReqIds,
       },
     });
-    ChatUserInfoManager.checkErrorFromResult(r);
-    const rr = r?.[MTfetchUserInfoById] as Map<string, ChatUserInfo>;
-    rr.forEach((info: ChatUserInfo) => {
-      ret.set(info.userId, info);
+    Object.entries(r?.[MTfetchUserInfoById]).forEach((value: [string, any]) => {
+      console.log(value[0], value[1]);
+      ret.set(value[0], new ChatUserInfo(value[1]));
     });
     return ret;
   }
