@@ -132,16 +132,18 @@ export class ChatGroupOptions {
   style: ChatGroupStyle;
   maxCount: number;
   inviteNeedConfirm: boolean;
-  ext: string;
+  ext?: string;
   constructor(params: {
-    style: number;
-    maxCount: number;
-    inviteNeedConfirm: boolean;
-    ext: string;
+    style?: number;
+    maxCount?: number;
+    inviteNeedConfirm?: boolean;
+    ext?: string;
   }) {
-    this.style = ChatGroupStyleFromNumber(params.style);
-    this.maxCount = params.maxCount;
-    this.inviteNeedConfirm = params.inviteNeedConfirm;
+    this.style = params.style
+      ? ChatGroupStyleFromNumber(params.style)
+      : ChatGroupStyle.PublicJoinNeedApproval;
+    this.maxCount = params.maxCount ?? 200;
+    this.inviteNeedConfirm = params.inviteNeedConfirm ?? false;
     this.ext = params.ext;
   }
 }
