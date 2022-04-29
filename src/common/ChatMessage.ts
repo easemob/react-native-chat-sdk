@@ -1,4 +1,4 @@
-import { generateMessageId, getNowTimestamp } from '../_internal/Utils';
+import { generateMessageId, getNowTimestamp } from '../__internal__/Utils';
 import { ChatClient } from '../ChatClient';
 import type { ChatError } from './ChatError';
 

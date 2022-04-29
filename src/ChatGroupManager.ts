@@ -52,8 +52,8 @@ import {
   MTupdateGroupOwner,
   MTupdateGroupSubject,
   MTuploadGroupSharedFile,
-} from './_internal/Consts';
-import { Native } from './_internal/Native';
+} from './__internal__/Consts';
+import { Native } from './__internal__/Native';
 
 export class ChatGroupManager extends Native {
   private static TAG = 'ChatGroupManager';
@@ -599,23 +599,23 @@ export class ChatGroupManager extends Native {
     ChatGroupManager.checkErrorFromResult(r);
   }
 
-  public async addAdmin(groupId: string, memberId: string): Promise<void> {
+  public async addAdmin(groupId: string, admin: string): Promise<void> {
     console.log(`${ChatGroupManager.TAG}: addAdmin: `);
     let r: any = await Native._callMethod(MTaddAdmin, {
       [MTaddAdmin]: {
         groupId,
-        memberId,
+        admin,
       },
     });
     ChatGroupManager.checkErrorFromResult(r);
   }
 
-  public async removeAdmin(groupId: string, memberId: string): Promise<void> {
+  public async removeAdmin(groupId: string, admin: string): Promise<void> {
     console.log(`${ChatGroupManager.TAG}: removeAdmin: `);
     let r: any = await Native._callMethod(MTremoveAdmin, {
       [MTremoveAdmin]: {
         groupId,
-        memberId,
+        admin,
       },
     });
     ChatGroupManager.checkErrorFromResult(r);

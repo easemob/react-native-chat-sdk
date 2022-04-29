@@ -14,6 +14,7 @@ const declineInvitation = 'declineInvitation';
 const getSelfIdsOnOtherPlatform = 'getSelfIdsOnOtherPlatform';
 /**
  * 本地使用不导出
+ * 这种赋值方式在firefox下有问题
  */
 export const MN = {
   addContact,

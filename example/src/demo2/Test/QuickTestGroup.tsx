@@ -21,13 +21,15 @@ export class QuickTestScreenGroup extends QuickTestScreenBase<
   constructor(props: { navigation: any }) {
     super(props);
     this.state = {
-      connect_result: '',
-      multiDevice_result: '',
-      custom_result: '',
-      contact_result: '',
-      conversation_result: '',
-      groupEvent_result: '',
-      roomEvent_result: '',
+      cmd: '',
+      connect_listener: '',
+      multi_listener: '',
+      custom_listener: '',
+      chat_listener: '',
+      contact_listener: '',
+      conv_listener: '',
+      group_listener: '',
+      room_listener: '',
       sendResult: '',
       recvResult: '',
       exceptResult: '',

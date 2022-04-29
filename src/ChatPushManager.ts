@@ -1,5 +1,5 @@
 import type { NativeEventEmitter } from 'react-native';
-import { Native } from './_internal/Native';
+import { Native } from './__internal__/Native';
 
 export class ChatPushManager extends Native {
   private static TAG = 'ChatPushManager';

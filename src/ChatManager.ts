@@ -1,8 +1,5 @@
 import type { NativeEventEmitter } from 'react-native';
-import type {
-  ChatConversationEventListener,
-  ChatMessageEventListener,
-} from './ChatEvents';
+import type { ChatMessageEventListener } from './ChatEvents';
 import {
   ChatConversation,
   ChatConversationType,
@@ -63,8 +60,8 @@ import {
   MTgetConversation,
   MTgetConversationsFromServer,
   MTloadAllConversations,
-} from './_internal/Consts';
-import { Native } from './_internal/Native';
+} from './__internal__/Consts';
+import { Native } from './__internal__/Native';
 
 /**
  * The message search directions.
@@ -123,13 +120,11 @@ export class ChatManager extends Native {
   static TAG = 'ChatManager';
 
   private _messageListeners: Set<ChatMessageEventListener>;
-  private _conversationListeners: Set<ChatConversationEventListener>;
   private _eventEmitter?: NativeEventEmitter;
 
   constructor() {
     super();
     this._messageListeners = new Set<ChatMessageEventListener>();
-    this._conversationListeners = new Set<ChatConversationEventListener>();
   }
 
   public setNativeListener(eventEmitter: NativeEventEmitter) {
@@ -259,11 +254,57 @@ export class ChatManager extends Native {
     message: ChatMessage,
     callback?: ChatMessageStatusCallback
   ): void {
+    ChatManager.handleMessageCallback(MTsendMessage, self, message, callback);
+  }
+
+  private static handleResendMessageCallback(
+    self: ChatManager,
+    message: ChatMessage,
+    callback?: ChatMessageStatusCallback
+  ): void {
+    ChatManager.handleMessageCallback(MTresendMessage, self, message, callback);
+  }
+
+  private static handleDownloadAttachmentCallback(
+    self: ChatManager,
+    message: ChatMessage,
+    callback?: ChatMessageStatusCallback
+  ): void {
+    ChatManager.handleMessageCallback(
+      MTdownloadAttachment,
+      self,
+      message,
+      callback
+    );
+  }
+
+  private static handleDownloadThumbnailCallback(
+    self: ChatManager,
+    message: ChatMessage,
+    callback?: ChatMessageStatusCallback
+  ): void {
+    ChatManager.handleMessageCallback(
+      MTdownloadThumbnail,
+      self,
+      message,
+      callback
+    );
+  }
+
+  private static handleMessageCallback(
+    methodName: string,
+    self: ChatManager,
+    message: ChatMessage,
+    callback?: ChatMessageStatusCallback
+  ): void {
     if (callback && self._eventEmitter) {
       const subscription = self._eventEmitter.addListener(
-        MTsendMessage,
+        methodName,
         (params: any) => {
           const localMsgId: string = params.localTime.toString();
+          console.log(
+            `${ChatManager.TAG}: handleMessageCallback: ${methodName}: ${localMsgId}`
+          );
           if (message.localMsgId === localMsgId) {
             const callbackType: String = params.callbackType;
             if (callbackType === MTonMessageSuccess) {
@@ -305,33 +346,6 @@ export class ChatManager extends Native {
    */
   public removeAllMessageListener(): void {
     this._messageListeners.clear();
-  }
-
-  /**
-   * Adds a conversation listener.
-   * @param listener The conversation listener.
-   */
-  public addConversationListener(
-    listener: ChatConversationEventListener
-  ): void {
-    this._conversationListeners.add(listener);
-  }
-
-  /**
-   * Removes the conversation listener.
-   * @param listener The conversation listener.
-   */
-  public removeConversationListener(
-    listener: ChatConversationEventListener
-  ): void {
-    this._conversationListeners.delete(listener);
-  }
-
-  /**
-   * Removes all conversation listeners.
-   */
-  public removeAllConversationListener(): void {
-    this._conversationListeners.clear();
   }
 
   /**
@@ -385,7 +399,7 @@ export class ChatManager extends Native {
       );
     }
     message.status = ChatMessageStatus.PROGRESS;
-    ChatManager.handleSendMessageCallback(this, message, callback);
+    ChatManager.handleResendMessageCallback(this, message, callback);
     let r: any = await Native._callMethod(MTresendMessage, {
       [MTsendMessage]: message,
     });
@@ -473,7 +487,7 @@ export class ChatManager extends Native {
     console.log(`${ChatManager.TAG}: sendConversationReadAck: ${convId}`);
     let r: any = await Native._callMethod(MTackConversationRead, {
       [MTackConversationRead]: {
-        convId: convId,
+        con_id: convId,
       },
     });
     Native.checkErrorFromResult(r);
@@ -597,7 +611,7 @@ export class ChatManager extends Native {
     console.log(
       `${ChatManager.TAG}: downloadAttachment: ${message.msgId}, ${message.localTime}`
     );
-    ChatManager.handleSendMessageCallback(this, message, callback);
+    ChatManager.handleDownloadAttachmentCallback(this, message, callback);
     let r: any = await Native._callMethod(MTdownloadAttachment, {
       [MTdownloadAttachment]: {
         message: message,
@@ -620,7 +634,7 @@ export class ChatManager extends Native {
     console.log(
       `${ChatManager.TAG}: downloadThumbnail: ${message.msgId}, ${message.localTime}`
     );
-    ChatManager.handleSendMessageCallback(this, message, callback);
+    ChatManager.handleDownloadThumbnailCallback(this, message, callback);
     let r: any = await Native._callMethod(MTdownloadThumbnail, {
       [MTdownloadThumbnail]: {
         message: message,
@@ -704,7 +718,7 @@ export class ChatManager extends Native {
       },
     });
     Native.checkErrorFromResult(r);
-    let ret = new Array<ChatMessage>(10);
+    let ret = new Array<ChatMessage>(0);
     (r?.[MTsearchChatMsgFromDB] as Array<any>).forEach((element) => {
       ret.push(new ChatMessage(element));
     });
@@ -725,7 +739,8 @@ export class ChatManager extends Native {
    */
   public async fetchGroupAcks(
     msgId: string,
-    startAckId?: string,
+    groupId: string,
+    startAckId: string,
     pageSize: number = 0
   ): Promise<ChatCursorResult<ChatGroupMessageAck>> {
     console.log(
@@ -736,6 +751,7 @@ export class ChatManager extends Native {
         msg_id: msgId,
         ack_id: startAckId,
         pageSize: pageSize,
+        group_id: groupId,
       },
     });
     Native.checkErrorFromResult(r);
@@ -840,7 +856,7 @@ export class ChatManager extends Native {
     console.log(`${ChatManager.TAG}: loadAllConversations:`);
     let r: any = await Native._callMethod(MTloadAllConversations);
     Native.checkErrorFromResult(r);
-    let ret = new Array<ChatConversation>(10);
+    let ret = new Array<ChatConversation>(0);
     (r?.[MTloadAllConversations] as Array<any>).forEach((element) => {
       ret.push(new ChatConversation(element));
     });
@@ -862,7 +878,7 @@ export class ChatManager extends Native {
     console.log(`${ChatManager.TAG}: getConversationsFromServer:`);
     let r: any = await Native._callMethod(MTgetConversationsFromServer);
     Native.checkErrorFromResult(r);
-    let ret = new Array<ChatConversation>(10);
+    let ret = new Array<ChatConversation>(0);
     (r?.[MTgetConversationsFromServer] as Array<any>).forEach((element) => {
       ret.push(new ChatConversation(element));
     });
@@ -1031,7 +1047,7 @@ export class ChatManager extends Native {
     convType: ChatConversationType,
     msgId: string
   ): Promise<void> {
-    console.log(`${ChatManager.TAG}: deleteMessage: `);
+    console.log(`${ChatManager.TAG}: deleteMessage: ${convId}, ${convType}`);
     let r: any = await Native._callMethod(MTremoveMessage, {
       [MTremoveMessage]: {
         con_id: convId,
@@ -1105,8 +1121,8 @@ export class ChatManager extends Native {
   public async getMessages(
     convId: string,
     convType: ChatConversationType,
+    startMsgId: string,
     direction: ChatSearchDirection = ChatSearchDirection.UP,
-    startMsgId: string = '',
     loadCount: number = 20
   ): Promise<Array<ChatMessage>> {
     console.log(`${ChatManager.TAG}: getMessages: `);
@@ -1116,7 +1132,7 @@ export class ChatManager extends Native {
         type: convType,
         direction: direction === ChatSearchDirection.UP ? 'up' : 'down',
         startMsgId: startMsgId,
-        loadCount: loadCount,
+        count: loadCount,
       },
     });
     ChatManager.checkErrorFromResult(r);

@@ -35,7 +35,6 @@ import type {
   ChatMultiDeviceEventListener,
   ChatCustomEventListener,
   ChatContactEventListener,
-  ChatConversationEventListener,
   ChatGroupEventListener,
   ChatRoomEventListener,
   ChatMessageEventListener,
@@ -85,7 +84,6 @@ export {
   ChatMultiDeviceEventListener,
   ChatCustomEventListener,
   ChatContactEventListener,
-  ChatConversationEventListener,
   ChatGroupEventListener,
   ChatRoomEventListener,
 };
