@@ -83,13 +83,8 @@ export class QuickTestScreenUser extends QuickTestScreenBase<
           console.log(`${MN.fetchUserInfoById} === ${methodName}`);
           const userIds = this.metaData.get(MN.fetchUserInfoById)!.params[0]
             .paramDefaultValue;
-          const expireTime = this.metaData.get(MN.fetchUserInfoById)!.params[1]
-            .paramDefaultValue;
           this.tryCatch(
-            ChatClient.getInstance().userManager.fetchUserInfoById(
-              userIds,
-              expireTime
-            ),
+            ChatClient.getInstance().userManager.fetchUserInfoById(userIds),
             QuickTestScreenUser.TAG,
             MN.fetchUserInfoById
           );
@@ -99,10 +94,8 @@ export class QuickTestScreenUser extends QuickTestScreenBase<
         {
           const methodName = this.metaData.get(MN.fetchOwnInfo)!.methodName;
           console.log(`${MN.fetchOwnInfo} === ${methodName}`);
-          const expireTime = this.metaData.get(MN.fetchUserInfoById)!.params[0]
-            .paramDefaultValue;
           this.tryCatch(
-            ChatClient.getInstance().userManager.fetchOwnInfo(expireTime),
+            ChatClient.getInstance().userManager.fetchOwnInfo(),
             QuickTestScreenUser.TAG,
             MN.fetchOwnInfo
           );
@@ -112,7 +105,7 @@ export class QuickTestScreenUser extends QuickTestScreenBase<
         {
           const methodName = this.metaData.get(MN.clearUserInfo)!.methodName;
           console.log(`${MN.clearUserInfo} === ${methodName}`);
-          ChatClient.getInstance().userManager.clearUserInfo();
+          // ChatClient.getInstance().userManager.clearUserInfo();
         }
         break;
       default:

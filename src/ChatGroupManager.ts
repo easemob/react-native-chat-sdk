@@ -243,7 +243,7 @@ export class ChatGroupManager extends Native {
       },
     });
     ChatGroupManager.checkErrorFromResult(r);
-    let group: ChatGroup = r?.[MTgetGroupWithId];
+    let group = new ChatGroup(r?.[MTgetGroupWithId]);
     return group;
   }
 
@@ -251,8 +251,11 @@ export class ChatGroupManager extends Native {
     console.log(`${ChatGroupManager.TAG}: getJoinedGroups: `);
     let r: any = await Native._callMethod(MTgetJoinedGroups);
     ChatGroupManager.checkErrorFromResult(r);
-    let groups: ChatGroup[] = r?.[MTgetJoinedGroups];
-    return groups;
+    const ret: ChatGroup[] = [];
+    Object.entries(r?.[MTgetJoinedGroups]).forEach((value: [string, any]) => {
+      ret.push(new ChatGroup(value[1]));
+    });
+    return ret;
   }
 
   public async fetchJoinedGroupsFromServer(
@@ -267,8 +270,14 @@ export class ChatGroupManager extends Native {
       },
     });
     ChatGroupManager.checkErrorFromResult(r);
-    let groups: ChatGroup[] = r?.[MTgetJoinedGroupsFromServer];
-    return groups;
+    console.log('r: ', r);
+    const ret: ChatGroup[] = [];
+    Object.entries(r?.[MTgetJoinedGroupsFromServer]).forEach(
+      (value: [string, any]) => {
+        ret.push(new ChatGroup(value[1]));
+      }
+    );
+    return ret;
   }
 
   public async fetchPublicGroupsFromServer(
@@ -283,6 +292,7 @@ export class ChatGroupManager extends Native {
       },
     });
     ChatGroupManager.checkErrorFromResult(r);
+    console.log('r: ', r);
     let ret = new ChatCursorResult<ChatGroup>({
       cursor: r?.[MTgetPublicGroupsFromServer].cursor,
       list: r?.[MTgetPublicGroupsFromServer].list,
@@ -313,8 +323,8 @@ export class ChatGroupManager extends Native {
       },
     });
     ChatGroupManager.checkErrorFromResult(r);
-    let groups: ChatGroup = r?.[MTcreateGroup];
-    return groups;
+    console.log('r: ', r);
+    return new ChatGroup(r?.[MTcreateGroup]);
   }
 
   public async fetchGroupInfoFromServer(groupId: string): Promise<ChatGroup> {
@@ -325,8 +335,7 @@ export class ChatGroupManager extends Native {
       },
     });
     ChatGroupManager.checkErrorFromResult(r);
-    let groups: ChatGroup = r?.[MTgetGroupSpecificationFromServer];
-    return groups;
+    return new ChatGroup(r?.[MTgetGroupSpecificationFromServer]);
   }
 
   public async fetchMemberListFromServer(
@@ -369,7 +378,7 @@ export class ChatGroupManager extends Native {
       },
     });
     ChatGroupManager.checkErrorFromResult(r);
-    let ret = r?.[MTgetGroupBlockListFromServer];
+    let ret: Array<string> = r?.[MTgetGroupBlockListFromServer];
     return ret;
   }
 
@@ -387,7 +396,7 @@ export class ChatGroupManager extends Native {
       },
     });
     ChatGroupManager.checkErrorFromResult(r);
-    let ret = r?.[MTgetGroupMuteListFromServer];
+    let ret: string[] = r?.[MTgetGroupMuteListFromServer];
     return ret;
   }
 
@@ -401,7 +410,7 @@ export class ChatGroupManager extends Native {
       },
     });
     ChatGroupManager.checkErrorFromResult(r);
-    let ret = r?.[MTgetGroupWhiteListFromServer];
+    let ret: string[] = r?.[MTgetGroupWhiteListFromServer];
     return ret;
   }
 
@@ -433,7 +442,12 @@ export class ChatGroupManager extends Native {
       },
     });
     ChatGroupManager.checkErrorFromResult(r);
-    let ret: ChatGroupSharedFile[] = r?.[MTgetGroupFileListFromServer];
+    const ret: ChatGroupSharedFile[] = [];
+    Object.entries(r?.[MTgetGroupFileListFromServer]).forEach(
+      (value: [string, any]) => {
+        ret.push(new ChatGroupSharedFile(value[1]));
+      }
+    );
     return ret;
   }
 
@@ -592,8 +606,8 @@ export class ChatGroupManager extends Native {
     console.log(`${ChatGroupManager.TAG}: changeOwner: `);
     let r: any = await Native._callMethod(MTupdateGroupOwner, {
       [MTupdateGroupOwner]: {
-        groupId,
-        newOwner,
+        groupId: groupId,
+        owner: newOwner,
       },
     });
     ChatGroupManager.checkErrorFromResult(r);
@@ -764,8 +778,8 @@ export class ChatGroupManager extends Native {
     console.log(`${ChatGroupManager.TAG}: updateGroupExtension: `);
     let r: any = await Native._callMethod(MTupdateGroupExt, {
       [MTupdateGroupExt]: {
-        groupId,
-        extension,
+        groupId: groupId,
+        ext: extension,
       },
     });
     ChatGroupManager.checkErrorFromResult(r);

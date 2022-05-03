@@ -6,7 +6,7 @@ import {
 } from './QuickTestScreenBase';
 //import { MN, metaDataList } from './QuickTestChatData';
 import { MN, metaDataList } from './QuickTestRoomData';
-import { ChatClient, ChatRoom } from 'react-native-chat-sdk';
+import { ChatClient } from 'react-native-chat-sdk';
 
 export interface QuickTestRoomState extends QuickTestState {}
 
@@ -35,7 +35,7 @@ export class QuickTestScreenRoom extends QuickTestScreenBase<
       sendResult: '',
       recvResult: '',
       exceptResult: '',
-    }; 
+    };
     this.statelessData = {};
     registerStateDataList(metaDataList);
   }
@@ -63,17 +63,12 @@ export class QuickTestScreenRoom extends QuickTestScreenBase<
     switch (name) {
       case MN.joinChatRoom:
         {
-          const methodName = this.metaData.get(
-            MN.joinChatRoom
-          )!.methodName;
+          const methodName = this.metaData.get(MN.joinChatRoom)!.methodName;
           console.log(`${MN.joinChatRoom} === ${methodName}`);
-          const chatroomId = this.metaData.get(MN.joinChatRoom)!.params[0]
+          const roomId = this.metaData.get(MN.joinChatRoom)!.params[0]
             .paramDefaultValue;
-          console.log(`chatroomid : ` + chatroomId);
           this.tryCatch(
-            ChatClient.getInstance().roomManager.joinChatRoom(
-              chatroomId
-            ),
+            ChatClient.getInstance().roomManager.joinChatRoom(roomId),
             QuickTestScreenRoom.TAG,
             MN.joinChatRoom
           );
@@ -81,16 +76,12 @@ export class QuickTestScreenRoom extends QuickTestScreenBase<
         break;
       case MN.leaveChatRoom:
         {
-          const methodName = this.metaData.get(
-            MN.leaveChatRoom
-          )!.methodName;
+          const methodName = this.metaData.get(MN.leaveChatRoom)!.methodName;
           console.log(`${MN.leaveChatRoom} === ${methodName}`);
-          const chatroomId = this.metaData.get(MN.leaveChatRoom)!.params[0]
+          const roomId = this.metaData.get(MN.leaveChatRoom)!.params[0]
             .paramDefaultValue;
           this.tryCatch(
-            ChatClient.getInstance().roomManager.leaveChatRoom(
-              chatroomId
-            ),
+            ChatClient.getInstance().roomManager.leaveChatRoom(roomId),
             QuickTestScreenRoom.TAG,
             MN.leaveChatRoom
           );
@@ -98,15 +89,17 @@ export class QuickTestScreenRoom extends QuickTestScreenBase<
         break;
       case MN.fetchPublicChatRoomsFromServer:
         {
-          const methodName = this.metaData.get(MN.fetchPublicChatRoomsFromServer)!.methodName;
+          const methodName = this.metaData.get(
+            MN.fetchPublicChatRoomsFromServer
+          )!.methodName;
           console.log(`${MN.fetchPublicChatRoomsFromServer} === ${methodName}`);
-          const pageNum = this.metaData.get(MN.fetchPublicChatRoomsFromServer)!.params[0]
-            .paramDefaultValue;
-          const pageSize = this.metaData.get(MN.fetchPublicChatRoomsFromServer)!.params[1]
-            .paramDefaultValue;
+          const pageNum = this.metaData.get(MN.fetchPublicChatRoomsFromServer)!
+            .params[0].paramDefaultValue;
+          const pageSize = this.metaData.get(MN.fetchPublicChatRoomsFromServer)!
+            .params[1].paramDefaultValue;
           this.tryCatch(
             ChatClient.getInstance().roomManager.fetchPublicChatRoomsFromServer(
-              pageNum, 
+              pageNum,
               pageSize
             ),
             QuickTestScreenRoom.TAG,
@@ -116,12 +109,16 @@ export class QuickTestScreenRoom extends QuickTestScreenBase<
         break;
       case MN.fetchChatRoomInfoFromServer:
         {
-          const methodName = this.metaData.get(MN.fetchChatRoomInfoFromServer)!.methodName;
+          const methodName = this.metaData.get(
+            MN.fetchChatRoomInfoFromServer
+          )!.methodName;
           console.log(`${MN.fetchChatRoomInfoFromServer} === ${methodName}`);
-          const chatroomId = this.metaData.get(MN.fetchChatRoomInfoFromServer)!.params[0]
-            .paramDefaultValue;
+          const roomId = this.metaData.get(MN.fetchChatRoomInfoFromServer)!
+            .params[0].paramDefaultValue;
           this.tryCatch(
-            ChatClient.getInstance().roomManager.fetchChatRoomInfoFromServer(chatroomId),
+            ChatClient.getInstance().roomManager.fetchChatRoomInfoFromServer(
+              roomId
+            ),
             QuickTestScreenRoom.TAG,
             MN.fetchChatRoomInfoFromServer
           );
@@ -132,11 +129,11 @@ export class QuickTestScreenRoom extends QuickTestScreenBase<
           const methodName = this.metaData.get(
             MN.getChatRoomWithId
           )!.methodName;
-          const chatroomId = this.metaData.get(MN.getChatRoomWithId)!.params[0]
+          const roomId = this.metaData.get(MN.getChatRoomWithId)!.params[0]
             .paramDefaultValue;
           console.log(`${MN.getChatRoomWithId} === ${methodName}`);
           this.tryCatch(
-            ChatClient.getInstance().roomManager.getChatRoomWithId(chatroomId),
+            ChatClient.getInstance().roomManager.getChatRoomWithId(roomId),
             QuickTestScreenRoom.TAG,
             MN.getChatRoomWithId
           );
@@ -144,15 +141,13 @@ export class QuickTestScreenRoom extends QuickTestScreenBase<
         break;
       case MN.getAllChatRooms:
         {
-          const methodName = this.metaData.get(
-            MN.getAllChatRooms
-          )!.methodName;
+          const methodName = this.metaData.get(MN.getAllChatRooms)!.methodName;
           console.log(`${MN.getAllChatRooms} === ${methodName}`);
-          this.tryCatch(
-            ChatClient.getInstance().roomManager.getAllChatRooms(),
-            QuickTestScreenRoom.TAG,
-            MN.getAllChatRooms
-          );
+          // this.tryCatch(
+          //   ChatClient.getInstance().roomManager.getAllChatRooms(),
+          //   QuickTestScreenRoom.TAG,
+          //   MN.getAllChatRooms
+          // );
         }
         break;
       case MN.createChatRoom:
@@ -163,15 +158,21 @@ export class QuickTestScreenRoom extends QuickTestScreenBase<
           const subject = this.metaData.get(MN.createChatRoom)!.params[0]
             .paramDefaultValue;
           const desc = this.metaData.get(MN.createChatRoom)!.params[1]
-          .paramDefaultValue;
+            .paramDefaultValue;
           const welcomeMsg = this.metaData.get(MN.createChatRoom)!.params[2]
-          .paramDefaultValue;
+            .paramDefaultValue;
           const members = this.metaData.get(MN.createChatRoom)!.params[3]
-          .paramDefaultValue;
+            .paramDefaultValue;
           const maxCount = this.metaData.get(MN.createChatRoom)!.params[4]
             .paramDefaultValue;
           this.tryCatch(
-            ChatClient.getInstance().roomManager.createChatRoom(subject, desc, welcomeMsg, members, maxCount),
+            ChatClient.getInstance().roomManager.createChatRoom(
+              subject,
+              desc,
+              welcomeMsg,
+              members,
+              maxCount
+            ),
             QuickTestScreenRoom.TAG,
             MN.createChatRoom
           );
@@ -181,10 +182,10 @@ export class QuickTestScreenRoom extends QuickTestScreenBase<
         {
           const methodName = this.metaData.get(MN.destroyChatRoom)!.methodName;
           console.log(`${MN.destroyChatRoom} === ${methodName}`);
-          const chatroomId = this.metaData.get(MN.destroyChatRoom)!.params[0]
+          const roomId = this.metaData.get(MN.destroyChatRoom)!.params[0]
             .paramDefaultValue;
           this.tryCatch(
-            ChatClient.getInstance().roomManager.destroyChatRoom(chatroomId),
+            ChatClient.getInstance().roomManager.destroyChatRoom(roomId),
             QuickTestScreenRoom.TAG,
             MN.destroyChatRoom
           );
@@ -196,12 +197,15 @@ export class QuickTestScreenRoom extends QuickTestScreenBase<
             MN.changeChatRoomSubject
           )!.methodName;
           console.log(`${MN.changeChatRoomSubject} === ${methodName}`);
-          const chatroomId = this.metaData.get(MN.changeChatRoomSubject)!.params[0]
+          const roomId = this.metaData.get(MN.changeChatRoomSubject)!.params[0]
             .paramDefaultValue;
           const subject = this.metaData.get(MN.changeChatRoomSubject)!.params[1]
             .paramDefaultValue;
           this.tryCatch(
-            ChatClient.getInstance().roomManager.changeChatRoomSubject(chatroomId, subject),
+            ChatClient.getInstance().roomManager.changeChatRoomSubject(
+              roomId,
+              subject
+            ),
             QuickTestScreenRoom.TAG,
             MN.changeChatRoomSubject
           );
@@ -213,12 +217,15 @@ export class QuickTestScreenRoom extends QuickTestScreenBase<
             MN.changeChatRoomDescription
           )!.methodName;
           console.log(`${MN.changeChatRoomDescription} === ${methodName}`);
-          const chatroomId = this.metaData.get(MN.changeChatRoomDescription)!.params[0]
-            .paramDefaultValue;
-          const desc = this.metaData.get(MN.changeChatRoomDescription)!.params[1]
-            .paramDefaultValue;
+          const roomId = this.metaData.get(MN.changeChatRoomDescription)!
+            .params[0].paramDefaultValue;
+          const desc = this.metaData.get(MN.changeChatRoomDescription)!
+            .params[1].paramDefaultValue;
           this.tryCatch(
-            ChatClient.getInstance().roomManager.changeChatRoomDescription(chatroomId, desc),
+            ChatClient.getInstance().roomManager.changeChatRoomDescription(
+              roomId,
+              desc
+            ),
             QuickTestScreenRoom.TAG,
             MN.changeChatRoomDescription
           );
@@ -230,7 +237,7 @@ export class QuickTestScreenRoom extends QuickTestScreenBase<
             MN.fetchChatRoomMembers
           )!.methodName;
           console.log(`${MN.fetchChatRoomMembers} === ${methodName}`);
-          const chatroomId = this.metaData.get(MN.fetchChatRoomMembers)!.params[0]
+          const roomId = this.metaData.get(MN.fetchChatRoomMembers)!.params[0]
             .paramDefaultValue;
           const cursor = this.metaData.get(MN.fetchChatRoomMembers)!.params[1]
             .paramDefaultValue;
@@ -238,7 +245,7 @@ export class QuickTestScreenRoom extends QuickTestScreenBase<
             .paramDefaultValue;
           this.tryCatch(
             ChatClient.getInstance().roomManager.fetchChatRoomMembers(
-              chatroomId,
+              roomId,
               cursor,
               pageSize
             ),
@@ -249,17 +256,19 @@ export class QuickTestScreenRoom extends QuickTestScreenBase<
         break;
       case MN.muteChatRoomMembers:
         {
-          const methodName = this.metaData.get(MN.muteChatRoomMembers)!.methodName;
+          const methodName = this.metaData.get(
+            MN.muteChatRoomMembers
+          )!.methodName;
           console.log(`${MN.muteChatRoomMembers} === ${methodName}`);
-          const chatroomId = this.metaData.get(MN.muteChatRoomMembers)!.params[0]
+          const roomId = this.metaData.get(MN.muteChatRoomMembers)!.params[0]
             .paramDefaultValue;
-          const muteMembers = this.metaData.get(MN.muteChatRoomMembers)!.params[1]
-            .paramDefaultValue;
+          const muteMembers = this.metaData.get(MN.muteChatRoomMembers)!
+            .params[1].paramDefaultValue;
           const duration = this.metaData.get(MN.muteChatRoomMembers)!.params[2]
             .paramDefaultValue;
           this.tryCatch(
             ChatClient.getInstance().roomManager.muteChatRoomMembers(
-              chatroomId,
+              roomId,
               muteMembers,
               duration
             ),
@@ -270,15 +279,17 @@ export class QuickTestScreenRoom extends QuickTestScreenBase<
         break;
       case MN.unMuteChatRoomMembers:
         {
-          const methodName = this.metaData.get(MN.unMuteChatRoomMembers)!.methodName;
+          const methodName = this.metaData.get(
+            MN.unMuteChatRoomMembers
+          )!.methodName;
           console.log(`${MN.unMuteChatRoomMembers} === ${methodName}`);
-          const chatroomId = this.metaData.get(MN.unMuteChatRoomMembers)!.params[0]
+          const roomId = this.metaData.get(MN.unMuteChatRoomMembers)!.params[0]
             .paramDefaultValue;
-          const unmuteMembers = this.metaData.get(MN.unMuteChatRoomMembers)!.params[1]
-            .paramDefaultValue;
+          const unmuteMembers = this.metaData.get(MN.unMuteChatRoomMembers)!
+            .params[1].paramDefaultValue;
           this.tryCatch(
             ChatClient.getInstance().roomManager.unMuteChatRoomMembers(
-              chatroomId,
+              roomId,
               unmuteMembers
             ),
             QuickTestScreenRoom.TAG,
@@ -288,18 +299,14 @@ export class QuickTestScreenRoom extends QuickTestScreenBase<
         break;
       case MN.changeOwner:
         {
-          const methodName = this.metaData.get(
-            MN.changeOwner
-          )!.methodName;
+          const methodName = this.metaData.get(MN.changeOwner)!.methodName;
           console.log(`${MN.changeOwner} === ${methodName}`);
-          const chatroomId = this.metaData.get(MN.changeOwner)!.params[0]
+          const roomId = this.metaData.get(MN.changeOwner)!.params[0]
             .paramDefaultValue;
-          const newOwner = this.metaData.get(MN.changeOwner)!.params[1].paramDefaultValue;
+          const newOwner = this.metaData.get(MN.changeOwner)!.params[1]
+            .paramDefaultValue;
           this.tryCatch(
-            ChatClient.getInstance().roomManager.changeOwner(
-              chatroomId,
-              newOwner
-            ),
+            ChatClient.getInstance().roomManager.changeOwner(roomId, newOwner),
             QuickTestScreenRoom.TAG,
             MN.changeOwner
           );
@@ -309,12 +316,13 @@ export class QuickTestScreenRoom extends QuickTestScreenBase<
         {
           const methodName = this.metaData.get(MN.addChatRoomAdmin)!.methodName;
           console.log(`${MN.addChatRoomAdmin} === ${methodName}`);
-          const chatroomId = this.metaData.get(MN.addChatRoomAdmin)!.params[0]
+          const roomId = this.metaData.get(MN.addChatRoomAdmin)!.params[0]
             .paramDefaultValue;
-          const admin = this.metaData.get(MN.addChatRoomAdmin)!.params[1].paramDefaultValue;
+          const admin = this.metaData.get(MN.addChatRoomAdmin)!.params[1]
+            .paramDefaultValue;
           this.tryCatch(
             ChatClient.getInstance().roomManager.addChatRoomAdmin(
-              chatroomId,
+              roomId,
               admin
             ),
             QuickTestScreenRoom.TAG,
@@ -328,11 +336,15 @@ export class QuickTestScreenRoom extends QuickTestScreenBase<
             MN.removeChatRoomAdmin
           )!.methodName;
           console.log(`${MN.removeChatRoomAdmin} === ${methodName}`);
-          const chatroomId = this.metaData.get(MN.removeChatRoomAdmin)!.params[0]
+          const roomId = this.metaData.get(MN.removeChatRoomAdmin)!.params[0]
             .paramDefaultValue;
-          const admin = this.metaData.get(MN.removeChatRoomAdmin)!.params[1].paramDefaultValue;
+          const admin = this.metaData.get(MN.removeChatRoomAdmin)!.params[1]
+            .paramDefaultValue;
           this.tryCatch(
-            ChatClient.getInstance().roomManager.removeChatRoomAdmin(chatroomId, admin),
+            ChatClient.getInstance().roomManager.removeChatRoomAdmin(
+              roomId,
+              admin
+            ),
             QuickTestScreenRoom.TAG,
             MN.removeChatRoomAdmin
           );
@@ -344,12 +356,18 @@ export class QuickTestScreenRoom extends QuickTestScreenBase<
             MN.fetchChatRoomMuteList
           )!.methodName;
           console.log(`${MN.fetchChatRoomMuteList} === ${methodName}`);
-          const chatroomId = this.metaData.get(MN.fetchChatRoomMuteList)!.params[0]
+          const roomId = this.metaData.get(MN.fetchChatRoomMuteList)!.params[0]
             .paramDefaultValue;
-          const pageNum = this.metaData.get(MN.fetchChatRoomMuteList)!.params[1].paramDefaultValue;
-          const pageSize = this.metaData.get(MN.fetchChatRoomMuteList)!.params[2].paramDefaultValue;
+          const pageNum = this.metaData.get(MN.fetchChatRoomMuteList)!.params[1]
+            .paramDefaultValue;
+          const pageSize = this.metaData.get(MN.fetchChatRoomMuteList)!
+            .params[2].paramDefaultValue;
           this.tryCatch(
-            ChatClient.getInstance().roomManager.fetchChatRoomMuteList(chatroomId, pageNum, pageSize),
+            ChatClient.getInstance().roomManager.fetchChatRoomMuteList(
+              roomId,
+              pageNum,
+              pageSize
+            ),
             QuickTestScreenRoom.TAG,
             MN.fetchChatRoomMuteList
           );
@@ -361,12 +379,13 @@ export class QuickTestScreenRoom extends QuickTestScreenBase<
             MN.removeChatRoomMembers
           )!.methodName;
           console.log(`${MN.removeChatRoomMembers} === ${methodName}`);
-          const chatroomId = this.metaData.get(MN.removeChatRoomMembers)!.params[0]
+          const roomId = this.metaData.get(MN.removeChatRoomMembers)!.params[0]
             .paramDefaultValue;
-          const members = this.metaData.get(MN.removeChatRoomMembers)!.params[1].paramDefaultValue;
+          const members = this.metaData.get(MN.removeChatRoomMembers)!.params[1]
+            .paramDefaultValue;
           this.tryCatch(
             ChatClient.getInstance().roomManager.removeChatRoomMembers(
-              chatroomId,
+              roomId,
               members
             ),
             QuickTestScreenRoom.TAG,
@@ -376,14 +395,17 @@ export class QuickTestScreenRoom extends QuickTestScreenBase<
         break;
       case MN.blockChatRoomMembers:
         {
-          const methodName = this.metaData.get(MN.blockChatRoomMembers)!.methodName;
+          const methodName = this.metaData.get(
+            MN.blockChatRoomMembers
+          )!.methodName;
           console.log(`${MN.blockChatRoomMembers} === ${methodName}`);
-          const chatroomId = this.metaData.get(MN.blockChatRoomMembers)!.params[0]
+          const roomId = this.metaData.get(MN.blockChatRoomMembers)!.params[0]
             .paramDefaultValue;
-          const members = this.metaData.get(MN.blockChatRoomMembers)!.params[1].paramDefaultValue;
+          const members = this.metaData.get(MN.blockChatRoomMembers)!.params[1]
+            .paramDefaultValue;
           this.tryCatch(
             ChatClient.getInstance().roomManager.blockChatRoomMembers(
-              chatroomId,
+              roomId,
               members
             ),
             QuickTestScreenRoom.TAG,
@@ -397,12 +419,13 @@ export class QuickTestScreenRoom extends QuickTestScreenBase<
             MN.unBlockChatRoomMembers
           )!.methodName;
           console.log(`${MN.unBlockChatRoomMembers} === ${methodName}`);
-          const chatroomId = this.metaData.get(MN.unBlockChatRoomMembers)!.params[0]
+          const roomId = this.metaData.get(MN.unBlockChatRoomMembers)!.params[0]
             .paramDefaultValue;
-          const members = this.metaData.get(MN.unBlockChatRoomMembers)!.params[1].paramDefaultValue;
+          const members = this.metaData.get(MN.unBlockChatRoomMembers)!
+            .params[1].paramDefaultValue;
           this.tryCatch(
             ChatClient.getInstance().roomManager.unBlockChatRoomMembers(
-              chatroomId,
+              roomId,
               members
             ),
             QuickTestScreenRoom.TAG,
@@ -412,15 +435,22 @@ export class QuickTestScreenRoom extends QuickTestScreenBase<
         break;
       case MN.fetchChatRoomBlockList:
         {
-          const methodName = this.metaData.get(MN.fetchChatRoomBlockList)!.methodName;
+          const methodName = this.metaData.get(
+            MN.fetchChatRoomBlockList
+          )!.methodName;
           console.log(`${MN.fetchChatRoomBlockList} === ${methodName}`);
-          const chatroomId = this.metaData.get(MN.fetchChatRoomBlockList)!.params[0]
+          const roomId = this.metaData.get(MN.fetchChatRoomBlockList)!.params[0]
             .paramDefaultValue;
-          const pageNum = this.metaData.get(MN.fetchChatRoomBlockList)!.params[1].paramDefaultValue;
-          const pageSize = this.metaData.get(MN.fetchChatRoomBlockList)!.params[2].paramDefaultValue;
+          const pageNum = this.metaData.get(MN.fetchChatRoomBlockList)!
+            .params[1].paramDefaultValue;
+          const pageSize = this.metaData.get(MN.fetchChatRoomBlockList)!
+            .params[2].paramDefaultValue;
           this.tryCatch(
             ChatClient.getInstance().roomManager.fetchChatRoomBlockList(
-              chatroomId, pageNum, pageSize),
+              roomId,
+              pageNum,
+              pageSize
+            ),
             QuickTestScreenRoom.TAG,
             MN.fetchChatRoomBlockList
           );
@@ -432,12 +462,13 @@ export class QuickTestScreenRoom extends QuickTestScreenBase<
             MN.updateChatRoomAnnouncement
           )!.methodName;
           console.log(`${MN.updateChatRoomAnnouncement} === ${methodName}`);
-          const chatroomId = this.metaData.get(MN.updateChatRoomAnnouncement)!.params[0]
-            .paramDefaultValue;
-          const announcement = this.metaData.get(MN.updateChatRoomAnnouncement)!.params[1].paramDefaultValue;
+          const roomId = this.metaData.get(MN.updateChatRoomAnnouncement)!
+            .params[0].paramDefaultValue;
+          const announcement = this.metaData.get(MN.updateChatRoomAnnouncement)!
+            .params[1].paramDefaultValue;
           this.tryCatch(
             ChatClient.getInstance().roomManager.updateChatRoomAnnouncement(
-              chatroomId,
+              roomId,
               announcement
             ),
             QuickTestScreenRoom.TAG,
@@ -451,11 +482,11 @@ export class QuickTestScreenRoom extends QuickTestScreenBase<
             MN.fetchChatRoomAnnouncement
           )!.methodName;
           console.log(`${MN.fetchChatRoomAnnouncement} === ${methodName}`);
-          const chatroomId = this.metaData.get(MN.fetchChatRoomAnnouncement)!.params[0]
-            .paramDefaultValue;
+          const roomId = this.metaData.get(MN.fetchChatRoomAnnouncement)!
+            .params[0].paramDefaultValue;
           this.tryCatch(
             ChatClient.getInstance().roomManager.fetchChatRoomAnnouncement(
-              chatroomId
+              roomId
             ),
             QuickTestScreenRoom.TAG,
             MN.fetchChatRoomAnnouncement
@@ -464,13 +495,17 @@ export class QuickTestScreenRoom extends QuickTestScreenBase<
         break;
       case MN.fetchChatRoomWhiteListFromServer:
         {
-          const methodName = this.metaData.get(MN.fetchChatRoomWhiteListFromServer)!.methodName;
-          console.log(`${MN.fetchChatRoomWhiteListFromServer} === ${methodName}`);
-          const chatroomId = this.metaData.get(MN.fetchChatRoomWhiteListFromServer)!.params[0]
-            .paramDefaultValue;
+          const methodName = this.metaData.get(
+            MN.fetchChatRoomWhiteListFromServer
+          )!.methodName;
+          console.log(
+            `${MN.fetchChatRoomWhiteListFromServer} === ${methodName}`
+          );
+          const roomId = this.metaData.get(MN.fetchChatRoomWhiteListFromServer)!
+            .params[0].paramDefaultValue;
           this.tryCatch(
             ChatClient.getInstance().roomManager.fetchChatRoomWhiteListFromServer(
-              chatroomId
+              roomId
             ),
             QuickTestScreenRoom.TAG,
             MN.fetchChatRoomWhiteListFromServer
@@ -479,13 +514,15 @@ export class QuickTestScreenRoom extends QuickTestScreenBase<
         break;
       case MN.isMemberInChatRoomWhiteList:
         {
-          const methodName = this.metaData.get(MN.isMemberInChatRoomWhiteList)!.methodName;
+          const methodName = this.metaData.get(
+            MN.isMemberInChatRoomWhiteList
+          )!.methodName;
           console.log(`${MN.isMemberInChatRoomWhiteList} === ${methodName}`);
-          const chatroomId = this.metaData.get(MN.isMemberInChatRoomWhiteList)!.params[0]
-            .paramDefaultValue;
+          const roomId = this.metaData.get(MN.isMemberInChatRoomWhiteList)!
+            .params[0].paramDefaultValue;
           this.tryCatch(
             ChatClient.getInstance().roomManager.isMemberInChatRoomWhiteList(
-              chatroomId
+              roomId
             ),
             QuickTestScreenRoom.TAG,
             MN.isMemberInChatRoomWhiteList
@@ -498,13 +535,13 @@ export class QuickTestScreenRoom extends QuickTestScreenBase<
             MN.addMembersToChatRoomWhiteList
           )!.methodName;
           console.log(`${MN.addMembersToChatRoomWhiteList} === ${methodName}`);
-          const chatroomId = this.metaData.get(MN.addMembersToChatRoomWhiteList)!.params[0]
-            .paramDefaultValue;
-          const members = this.metaData.get(MN.addMembersToChatRoomWhiteList)!.params[1]
-            .paramDefaultValue;
+          const roomId = this.metaData.get(MN.addMembersToChatRoomWhiteList)!
+            .params[0].paramDefaultValue;
+          const members = this.metaData.get(MN.addMembersToChatRoomWhiteList)!
+            .params[1].paramDefaultValue;
           this.tryCatch(
             ChatClient.getInstance().roomManager.addMembersToChatRoomWhiteList(
-              chatroomId,
+              roomId,
               members
             ),
             QuickTestScreenRoom.TAG,
@@ -514,15 +551,21 @@ export class QuickTestScreenRoom extends QuickTestScreenBase<
         break;
       case MN.removeMembersFromChatRoomWhiteList:
         {
-          const methodName = this.metaData.get(MN.removeMembersFromChatRoomWhiteList)!.methodName;
-          console.log(`${MN.removeMembersFromChatRoomWhiteList} === ${methodName}`);
-          const chatroomId = this.metaData.get(MN.removeMembersFromChatRoomWhiteList)!.params[0]
-            .paramDefaultValue;
-          const members = this.metaData.get(MN.removeMembersFromChatRoomWhiteList)!.params[1]
-            .paramDefaultValue;
+          const methodName = this.metaData.get(
+            MN.removeMembersFromChatRoomWhiteList
+          )!.methodName;
+          console.log(
+            `${MN.removeMembersFromChatRoomWhiteList} === ${methodName}`
+          );
+          const roomId = this.metaData.get(
+            MN.removeMembersFromChatRoomWhiteList
+          )!.params[0].paramDefaultValue;
+          const members = this.metaData.get(
+            MN.removeMembersFromChatRoomWhiteList
+          )!.params[1].paramDefaultValue;
           this.tryCatch(
             ChatClient.getInstance().roomManager.removeMembersFromChatRoomWhiteList(
-              chatroomId,
+              roomId,
               members
             ),
             QuickTestScreenRoom.TAG,
@@ -536,12 +579,10 @@ export class QuickTestScreenRoom extends QuickTestScreenBase<
             MN.muteAllChatRoomMembers
           )!.methodName;
           console.log(`${MN.muteAllChatRoomMembers} === ${methodName}`);
-          const chatroomId = this.metaData.get(MN.muteAllChatRoomMembers)!.params[0]
+          const roomId = this.metaData.get(MN.muteAllChatRoomMembers)!.params[0]
             .paramDefaultValue;
           this.tryCatch(
-            ChatClient.getInstance().roomManager.muteAllChatRoomMembers(
-              chatroomId
-            ),
+            ChatClient.getInstance().roomManager.muteAllChatRoomMembers(roomId),
             QuickTestScreenRoom.TAG,
             MN.muteAllChatRoomMembers
           );
@@ -549,13 +590,15 @@ export class QuickTestScreenRoom extends QuickTestScreenBase<
         break;
       case MN.unMuteAllChatRoomMembers:
         {
-          const methodName = this.metaData.get(MN.unMuteAllChatRoomMembers)!.methodName;
+          const methodName = this.metaData.get(
+            MN.unMuteAllChatRoomMembers
+          )!.methodName;
           console.log(`${MN.unMuteAllChatRoomMembers} === ${methodName}`);
-          const chatroomId = this.metaData.get(MN.unMuteAllChatRoomMembers)!.params[0]
-            .paramDefaultValue;
+          const roomId = this.metaData.get(MN.unMuteAllChatRoomMembers)!
+            .params[0].paramDefaultValue;
           this.tryCatch(
             ChatClient.getInstance().roomManager.unMuteAllChatRoomMembers(
-              chatroomId
+              roomId
             ),
             QuickTestScreenRoom.TAG,
             MN.unMuteAllChatRoomMembers

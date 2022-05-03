@@ -567,10 +567,11 @@ export class ChatManager extends Native {
    * Updates the local message.
    *
    * @param message The message will be updated both in the cache and local database.
+   * @return The updated message.
    *
    * @throws A description of the exception. See {@link ChatError}.
    */
-  public async updateMessage(message: ChatMessage): Promise<void> {
+  public async updateMessage(message: ChatMessage): Promise<ChatMessage> {
     console.log(
       `${ChatManager.TAG}: updateMessage: ${message.msgId}, ${message.localTime}`
     );
@@ -580,6 +581,8 @@ export class ChatManager extends Native {
       },
     });
     Native.checkErrorFromResult(r);
+    const rr = r?.[MTupdateChatMessage];
+    return new ChatMessage(rr);
   }
 
   /**
@@ -935,8 +938,8 @@ export class ChatManager extends Native {
       },
     });
     ChatManager.checkErrorFromResult(r);
-    const ret: ChatMessage = r?.[MTgetLatestMessage];
-    return ret;
+    const rr = r?.[MTgetLatestMessage];
+    return new ChatMessage(rr);
   }
 
   public async getLastReceivedMessage(
@@ -1117,11 +1120,12 @@ export class ChatManager extends Native {
       },
     });
     ChatManager.checkErrorFromResult(r);
-    const rr = r?.[MTloadMsgWithMsgType] as Map<string, ChatMessage>;
     const ret: ChatMessage[] = [];
-    rr.forEach((value: ChatMessage) => {
-      ret.push(value);
-    });
+    Object.entries(r?.[MTloadMsgWithMsgType]).forEach(
+      (value: [string, any]) => {
+        ret.push(new ChatMessage(value[1]));
+      }
+    );
     return ret;
   }
 
@@ -1145,8 +1149,8 @@ export class ChatManager extends Native {
     ChatManager.checkErrorFromResult(r);
     const rr = r?.[MTloadMsgWithStartId] as Map<string, ChatMessage>;
     const ret: ChatMessage[] = [];
-    rr.forEach((value: ChatMessage) => {
-      ret.push(value);
+    rr.forEach((value: any) => {
+      ret.push(new ChatMessage(value));
     });
     return ret;
   }
@@ -1173,11 +1177,12 @@ export class ChatManager extends Native {
       },
     });
     ChatManager.checkErrorFromResult(r);
-    const rr = r?.[MTloadMsgWithKeywords] as Map<string, ChatMessage>;
     const ret: ChatMessage[] = [];
-    rr.forEach((value: ChatMessage) => {
-      ret.push(value);
-    });
+    Object.entries(r?.[MTloadMsgWithKeywords]).forEach(
+      (value: [string, any]) => {
+        ret.push(new ChatMessage(value[1]));
+      }
+    );
     return ret;
   }
 
@@ -1201,10 +1206,9 @@ export class ChatManager extends Native {
       },
     });
     ChatManager.checkErrorFromResult(r);
-    const rr = r?.[MTloadMsgWithTime] as Map<string, ChatMessage>;
     const ret: ChatMessage[] = [];
-    rr.forEach((value: ChatMessage) => {
-      ret.push(value);
+    Object.entries(r?.[MTloadMsgWithTime]).forEach((value: [string, any]) => {
+      ret.push(new ChatMessage(value[1]));
     });
     return ret;
   }

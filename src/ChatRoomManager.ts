@@ -17,7 +17,6 @@ import {
   MTfetchChatRoomMuteList,
   MTfetchChatRoomWhiteListFromServer,
   MTfetchPublicChatRoomsFromServer,
-  MTgetAllChatRooms,
   MTgetChatRoom,
   MTisMemberInChatRoomWhiteListFromServer,
   MTjoinChatRoom,
@@ -35,6 +34,7 @@ import {
 import { Native } from './__internal__/Native';
 import { ChatPageResult } from './common/ChatPageResult';
 import { ChatRoom } from './common/ChatRoom';
+import { ChatCursorResult } from './common/ChatCursorResult';
 
 export class ChatRoomManager extends Native {
   private static TAG = 'ChatRoomManager';
@@ -218,7 +218,7 @@ export class ChatRoomManager extends Native {
       },
     });
     ChatRoomManager.checkErrorFromResult(r);
-    let ret: ChatRoom = r?.[MTfetchChatRoomInfoFromServer];
+    let ret: ChatRoom = new ChatRoom(r?.[MTfetchChatRoomInfoFromServer]);
     return ret;
   }
 
@@ -231,15 +231,7 @@ export class ChatRoomManager extends Native {
       },
     });
     ChatRoomManager.checkErrorFromResult(r);
-    let ret: ChatRoom = r?.[MTgetChatRoom];
-    return ret;
-  }
-
-  public async getAllChatRooms(): Promise<Array<ChatRoom>> {
-    console.log(`${ChatRoomManager.TAG}: getAllChatRooms: `);
-    let r: any = await Native._callMethod(MTgetAllChatRooms);
-    ChatRoomManager.checkErrorFromResult(r);
-    let ret: ChatRoom[] = r?.[MTgetAllChatRooms];
+    let ret: ChatRoom = new ChatRoom(r?.[MTgetChatRoom]);
     return ret;
   }
 
@@ -262,7 +254,7 @@ export class ChatRoomManager extends Native {
       },
     });
     ChatRoomManager.checkErrorFromResult(r);
-    let ret: ChatRoom = r?.[MTcreateChatRoom];
+    let ret: ChatRoom = new ChatRoom(r?.[MTcreateChatRoom]);
     return ret;
   }
 
@@ -280,7 +272,9 @@ export class ChatRoomManager extends Native {
     roomId: string,
     subject: string
   ): Promise<void> {
-    console.log(`${ChatRoomManager.TAG}: changeChatRoomSubject: `);
+    console.log(
+      `${ChatRoomManager.TAG}: changeChatRoomSubject: ${roomId}, ${subject}`
+    );
     let r: any = await Native._callMethod(MTchangeChatRoomSubject, {
       [MTchangeChatRoomSubject]: {
         roomId,
@@ -308,7 +302,7 @@ export class ChatRoomManager extends Native {
     roomId: string,
     cursor: string = '',
     pageSize: number = 200
-  ): Promise<void> {
+  ): Promise<ChatCursorResult<string>> {
     console.log(`${ChatRoomManager.TAG}: fetchChatRoomMembers: `);
     let r: any = await Native._callMethod(MTfetchChatRoomMembers, {
       [MTfetchChatRoomMembers]: {
@@ -318,6 +312,17 @@ export class ChatRoomManager extends Native {
       },
     });
     ChatRoomManager.checkErrorFromResult(r);
+    console.log('r: ', r);
+    let ret = new ChatCursorResult<string>({
+      cursor: r?.[MTfetchChatRoomMembers].cursor,
+      list: r?.[MTfetchChatRoomMembers].list,
+      opt: {
+        map: (param: any) => {
+          return param as string;
+        },
+      },
+    });
+    return ret;
   }
 
   public async muteChatRoomMembers(
@@ -513,7 +518,8 @@ export class ChatRoomManager extends Native {
       }
     );
     ChatRoomManager.checkErrorFromResult(r);
-    let ret: boolean = r?.[MTfetchChatRoomWhiteListFromServer];
+    console.log('r: ', r);
+    let ret: boolean = r?.[MTisMemberInChatRoomWhiteListFromServer];
     return ret;
   }
 
