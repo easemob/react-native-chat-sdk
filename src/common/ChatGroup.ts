@@ -77,7 +77,7 @@ export class ChatGroupMessageAck {
 
 export class ChatGroup {
   groupId: string;
-  name: string;
+  groupName: string;
   desc: string;
   owner: string;
   announcement: string;
@@ -93,7 +93,7 @@ export class ChatGroup {
   permissionType: ChatGroupPermissionType;
   constructor(params: {
     groupId: string;
-    name: string;
+    groupName: string;
     desc: string;
     owner: string;
     announcement: string;
@@ -109,7 +109,7 @@ export class ChatGroup {
     permissionType: number;
   }) {
     this.groupId = params.groupId;
-    this.name = params.name;
+    this.groupName = params.groupName;
     this.desc = params.desc ?? '';
     this.owner = params.owner ?? '';
     this.announcement = params.announcement ?? '';
@@ -166,5 +166,14 @@ export class ChatGroupSharedFile {
     this.owner = params.owner;
     this.createTime = params.createTime;
     this.fileSize = params.fileSize;
+  }
+}
+
+export class ChatGroupInfo {
+  groupId: string;
+  groupName: string;
+  constructor(params: { groupId: string; groupName: string }) {
+    this.groupId = params.groupId;
+    this.groupName = params.groupName;
   }
 }

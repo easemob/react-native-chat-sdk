@@ -4,6 +4,7 @@ import {
   ChatGroupSharedFile,
   ChatGroup,
   ChatGroupOptions,
+  ChatGroupInfo,
 } from './common/ChatGroup';
 import { ChatCursorResult } from './common/ChatCursorResult';
 import {
@@ -282,7 +283,7 @@ export class ChatGroupManager extends Native {
   public async fetchPublicGroupsFromServer(
     pageSize: number,
     cursor?: string
-  ): Promise<ChatCursorResult<ChatGroup>> {
+  ): Promise<ChatCursorResult<ChatGroupInfo>> {
     console.log(`${ChatGroupManager.TAG}: fetchPublicGroupsFromServer: `);
     let r: any = await Native._callMethod(MTgetPublicGroupsFromServer, {
       [MTgetPublicGroupsFromServer]: {
@@ -291,12 +292,12 @@ export class ChatGroupManager extends Native {
       },
     });
     ChatGroupManager.checkErrorFromResult(r);
-    let ret = new ChatCursorResult<ChatGroup>({
+    let ret = new ChatCursorResult<ChatGroupInfo>({
       cursor: r?.[MTgetPublicGroupsFromServer].cursor,
       list: r?.[MTgetPublicGroupsFromServer].list,
       opt: {
         map: (param: any) => {
-          return new ChatGroup(param);
+          return new ChatGroupInfo(param);
         },
       },
     });
