@@ -115,6 +115,7 @@ export class ChatClient extends Native {
   private _options?: ChatOptions;
   private _sdkVersion: string = '1.0.0';
   private _isInit: boolean = false;
+  private _currentUsername: string = '';
 
   private constructor() {
     super();
@@ -324,7 +325,9 @@ export class ChatClient extends Native {
     });
   }
 
-  private reset(): void {}
+  private reset(): void {
+    this._currentUsername = '';
+  }
 
   /**
    * Gets the configurations. Make sure to set the param, see {@link EMOptions}.
@@ -333,6 +336,16 @@ export class ChatClient extends Native {
    */
   public get options(): ChatOptions | undefined {
     return this._options;
+  }
+
+  /**
+   * Gets the current logged-in user ID.
+   *
+   * The value is valid after successful login.
+   * @returns The current logged-in user ID.
+   */
+  public get currentUserName(): string {
+    return this._currentUsername;
   }
 
   /**
@@ -382,16 +395,21 @@ export class ChatClient extends Native {
 
   /**
    * Gets the current logged-in user ID from the server. To get it from the memory, see {@link currentUserName}.
-   * @returns The logged-in user ID or not exist.
+   * @returns The logged-in user ID.
    *
    * @throws A description of the exception. See {@link ChatError}.
    */
-  public async getCurrentUsername(): Promise<string | undefined> {
+  public async getCurrentUsername(): Promise<string> {
     console.log(`${ChatClient.TAG}: getCurrentUsername: `);
     let result: any = await Native._callMethod(MTgetCurrentUser);
     ChatClient.checkErrorFromResult(result);
     let userName = result?.[MTgetCurrentUser] as string;
-    return userName;
+    if (userName && userName.length !== 0) {
+      if (userName !== this._currentUsername) {
+        this._currentUsername = userName;
+      }
+    }
+    return this._currentUsername;
   }
 
   /**
@@ -480,6 +498,7 @@ export class ChatClient extends Native {
     });
     ChatClient.checkErrorFromResult(result);
     result = result?.[MTlogin];
+    this._currentUsername = result?.username;
     console.log(
       `${ChatClient.TAG}: login: ${result?.username}, ${result?.token}`
     );
@@ -508,6 +527,7 @@ export class ChatClient extends Native {
       },
     });
     ChatClient.checkErrorFromResult(result);
+    this._currentUsername = result?.username;
   }
 
   /**
