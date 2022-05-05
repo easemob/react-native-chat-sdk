@@ -248,11 +248,11 @@ export class GroupManagerLeafScreen extends LeafScreenBase<StateGroupMessage> {
   }
   protected renderApiDom(): ReactNode[] {
     const apiList = [
-      // 'createGroup',
+      'createGroup',
       'uploadGroupSharedFile',
       'fetchGroupFileListFromServer',
-      // 'downloadGroupSharedFile',
-      // 'removeGroupSharedFile',
+      'downloadGroupSharedFile',
+      'removeGroupSharedFile',
       'requestToJoinPublicGroup',
       'joinPublicGroup',
       'leaveGroup',
