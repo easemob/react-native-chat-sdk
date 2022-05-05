@@ -270,7 +270,6 @@ export class ChatGroupManager extends Native {
       },
     });
     ChatGroupManager.checkErrorFromResult(r);
-    console.log('r: ', r);
     const ret: ChatGroup[] = [];
     Object.entries(r?.[MTgetJoinedGroupsFromServer]).forEach(
       (value: [string, any]) => {
@@ -292,7 +291,6 @@ export class ChatGroupManager extends Native {
       },
     });
     ChatGroupManager.checkErrorFromResult(r);
-    console.log('r: ', r);
     let ret = new ChatCursorResult<ChatGroup>({
       cursor: r?.[MTgetPublicGroupsFromServer].cursor,
       list: r?.[MTgetPublicGroupsFromServer].list,
@@ -323,7 +321,6 @@ export class ChatGroupManager extends Native {
       },
     });
     ChatGroupManager.checkErrorFromResult(r);
-    console.log('r: ', r);
     return new ChatGroup(r?.[MTcreateGroup]);
   }
 
