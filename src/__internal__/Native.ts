@@ -9,7 +9,7 @@ const { ExtSdkApiRN } = NativeModules;
 console.log('ExtSdkApiRN: ', ExtSdkApiRN);
 
 export class Native {
-  protected static hasErrorFromResult(result: any): void {
+  protected static checkErrorFromResult(result: any): void {
     if (result?.error) {
       throw new ChatError(result.error);
     }

@@ -110,21 +110,21 @@ export class ChatGroup {
   }) {
     this.groupId = params.groupId;
     this.name = params.name;
-    this.desc = params.desc;
-    this.owner = params.owner;
-    this.announcement = params.announcement;
-    this.memberCount = params.memberCount;
-    this.memberList = params.memberList;
-    this.adminList = params.adminList;
-    this.blockList = params.blockList;
-    this.muteList = params.muteList;
-    this.noticeEnable = params.noticeEnable;
-    this.messageBlocked = params.messageBlocked;
-    this.isAllMemberMuted = params.isAllMemberMuted;
-    this.options = params.options;
-    this.permissionType = ChatGroupPermissionTypeFromNumber(
-      params.permissionType
-    );
+    this.desc = params.desc ?? '';
+    this.owner = params.owner ?? '';
+    this.announcement = params.announcement ?? '';
+    this.memberCount = params.memberCount ?? 0;
+    this.memberList = params.memberList ?? [];
+    this.adminList = params.adminList ?? [];
+    this.blockList = params.blockList ?? [];
+    this.muteList = params.muteList ?? [];
+    this.noticeEnable = params.noticeEnable ?? false;
+    this.messageBlocked = params.messageBlocked ?? false;
+    this.isAllMemberMuted = params.isAllMemberMuted ?? false;
+    this.options = params.options ?? new ChatGroupOptions({});
+    this.permissionType = params.permissionType
+      ? ChatGroupPermissionTypeFromNumber(params.permissionType)
+      : ChatGroupPermissionType.None;
   }
 }
 
@@ -132,16 +132,18 @@ export class ChatGroupOptions {
   style: ChatGroupStyle;
   maxCount: number;
   inviteNeedConfirm: boolean;
-  ext: string;
+  ext?: string;
   constructor(params: {
-    style: number;
-    maxCount: number;
-    inviteNeedConfirm: boolean;
-    ext: string;
+    style?: number;
+    maxCount?: number;
+    inviteNeedConfirm?: boolean;
+    ext?: string;
   }) {
-    this.style = ChatGroupStyleFromNumber(params.style);
-    this.maxCount = params.maxCount;
-    this.inviteNeedConfirm = params.inviteNeedConfirm;
+    this.style = params.style
+      ? ChatGroupStyleFromNumber(params.style)
+      : ChatGroupStyle.PublicJoinNeedApproval;
+    this.maxCount = params.maxCount ?? 200;
+    this.inviteNeedConfirm = params.inviteNeedConfirm ?? false;
     this.ext = params.ext;
   }
 }
@@ -152,17 +154,17 @@ export class ChatGroupSharedFile {
   owner: string;
   createTime: number;
   fileSize: number;
-  constructor(
-    fileId: string,
-    name: string,
-    owner: string,
-    createTime: number,
-    fileSize: number
-  ) {
-    this.fileId = fileId;
-    this.name = name;
-    this.owner = owner;
-    this.createTime = createTime;
-    this.fileSize = fileSize;
+  constructor(params: {
+    fileId: string;
+    name: string;
+    owner: string;
+    createTime: number;
+    fileSize: number;
+  }) {
+    this.fileId = params.fileId;
+    this.name = params.name;
+    this.owner = params.owner;
+    this.createTime = params.createTime;
+    this.fileSize = params.fileSize;
   }
 }

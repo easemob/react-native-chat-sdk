@@ -1,32 +1,33 @@
-# 环信即时通讯 IM React-Native 快速入门
 
-更新时间：2022-04-14
+_English | [中文](README.zh.md)_
+# Getting Started with the Chat Service Built upon React Native
 
-本文介绍如何快速集成环信即时通讯 IM React-Native SDK 实现单聊。
+This page describes how to integrate the chat service built with React Native to implement peer-to-peer messaging. 
 
-## 环境要求
+## Environment Requirements
 
-- MacOS 10.15.7 或以上版本
-- Xcode 12.4 或以上版本，包括命令行工具
-- Android Studio 4.0 或以上版本，包括 JDK1.8 以上版本
-- NodeJs 16 或以上版本，包含 npm 包管理工具
-- Cocoapods 包管理工具
-- Yarn 编译运行工具
-- Watchman 调试工具
-- react-native-cli 命令行工具
-- ios-deploy 非Xcode编译react-native工具（可选）
-- react 版本不低于16.13.1
-- react-native 版本不低于0.63.4
+- MacOS 10.15.7 or later
+- Xcode 12.4 or later, including CLI tools.
+- Android Studio 4.0 or later, including JDK 1.8 or later
+- NodeJs 16 or later, including npm
+- CocoaPods
+- Yarn
+- Watchman
+- React Native CLI
+- (Optional) ios-deploy, a compilation tool for the iOS platform
+- react 16.13.1 or later
+- react-native 0.63.4 or later
 
-### 配置环境
+### Configuration Environment
 
-[配置开发或者运行环境如果遇到问题，请参考这里](./docs/developer.md)
+If you have any problems when configuring the development environment or operating environment, see (./docs/developer.md).
 
-## 注册开发者账号
+## Register a developer account
 
-注册开发者账号，以及获取`appkey`获取，[传送门](https://console.easemob.com/user/login)。
+Register a developer account and get an App Key. See [Log into Console](https://console.easemob.com/user/login).
 
-## 创建`react-native app`项目
+
+## Create the `react-native app` project
 
 ```sh
 npx react-native init rn_demo
@@ -34,20 +35,21 @@ cd rn_demo
 yarn
 ```
 
-## 集成`IM react-native SDK`
+## Integrate the Chat React Native SDK
 
 ```sh
 yarn add react-native-chat-sdk
 ```
-如果是第一次运行`yarn`则还是额外执行一下命令:   
+If you run `yarn` for the first time, you also need to run the following command:
+
 ```sh
 cd node_modules/react-native-chat-sdk/native_src/cpp 
 sh generate.sh --type rn
 ```
 
-## API实现样例
+## Implement APIs    
 
-1. 初始化
+1. Initialize the chat React Native SDK.
 
 ```typescript
 ChatClient.getInstance().init(
@@ -55,7 +57,7 @@ ChatClient.getInstance().init(
 );
 ```
 
-2. 用户登录
+2. Log into the chat app.
 
 ```typescript
 ChatClient.getInstance()
@@ -68,7 +70,7 @@ ChatClient.getInstance()
   });
 ```
 
-3. 接收消息（可选）
+3. (Optional) Receive a message.
 
 ```typescript
 let msgListener = new (class ss implements ChatManagerListener {
@@ -106,7 +108,7 @@ let msgListener = new (class ss implements ChatManagerListener {
 ChatClient.getInstance().chatManager.addListener(msgListener);
 ```
 
-4. 发送文本消息
+4. Send a text message.
 
 ```typescript
 let msg = ChatMessage.createTextMessage(
@@ -153,7 +155,7 @@ ChatClient.getInstance()
   .catch(() => console.log('send failed'));
 ```
 
-5. 退出登录
+5. Log out of the chat app.
 
 ```typescript
 ChatClient.getInstance()
@@ -166,89 +168,248 @@ ChatClient.getInstance()
   });
 ```
 
-## demo代码样例
+## Implement the demo
 
-1. 添加依赖导入
+1. Delete all source code from the `App.js` file.
+   
+2. Import dependencies. 
 ```typescript
-import {ChatClient, ChatOptions} from 'react-native-chat-sdk';
+import {
+  SafeAreaView,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TextInput,
+  View,
+} from 'react-native';
+import {
+  ChatClient,
+  ChatOptions,
+  ChatMessageChatType,
+  ChatMessage,
+} from 'react-native-chat-sdk';
 ```
 
-2. 可以点击登录的按钮
+3. Add the app.
 ```typescript
-<Button
-  title="test"
-  onPress={() => {
-    let o = new ChatOptions({
-      autoLogin: false,
-      appKey: 'easemob-demo#easeim',
-    });
+const App = () => {
+  // TODO: Add private data.
+  const title = 'AgoraChatQuickstart';
+  const [username, setUsername] = React.useState('');
+  const [password, setPassword] = React.useState('');
+  const [userId, setUserId] = React.useState('');
+  const [content, setContent] = React.useState('');
+  const [logText, setWarnText] = React.useState('Show log area');
+
+  // TODO: Add methods.
+
+  // TODO: Add the UI code.
+
+}
+```
+
+4. Add the UI code to the `App` object.
+```typescript
+  return (
+    <SafeAreaView>
+      <View style={styles.titleContainer}>
+        <Text style={styles.title}>{title}</Text>
+      </View>
+      <ScrollView>
+        <View style={styles.inputCon}>
+          <TextInput
+            multiline
+            style={styles.inputBox}
+            placeholder="Enter username"
+            onChangeText={text => setUsername(text)}
+            value={username}
+          />
+        </View>
+        <View style={styles.inputCon}>
+          <TextInput
+            multiline
+            style={styles.inputBox}
+            placeholder="Enter password"
+            onChangeText={text => setPassword(text)}
+            value={password}
+          />
+        </View>
+        <View style={styles.buttonCon}>
+          <Text style={styles.eachBtn} onPress={registerAccount}>
+            SIGN UP
+          </Text>
+          <Text style={styles.eachBtn} onPress={login}>
+            SIGN IN
+          </Text>
+          <Text style={styles.eachBtn} onPress={logout}>
+            SIGN OUT
+          </Text>
+        </View>
+        <View style={styles.inputCon}>
+          <TextInput
+            multiline
+            style={styles.inputBox}
+            placeholder="Enter the username you want to send"
+            onChangeText={text => setUserId(text)}
+            value={userId}
+          />
+        </View>
+        <View style={styles.inputCon}>
+          <TextInput
+            multiline
+            style={styles.inputBox}
+            placeholder="Enter content"
+            onChangeText={text => setContent(text)}
+            value={content}
+          />
+        </View>
+        <View style={styles.buttonCon}>
+          <Text style={styles.btn2} onPress={sendmsg}>
+            SEND TEXT
+          </Text>
+        </View>
+        <View>
+          <Text style={styles.logText}>{logText}</Text>
+        </View>
+      </ScrollView>
+    </SafeAreaView>
+  );
+```
+
+3. Add methods to the `App` object.
+```typescript
+  const registerAccount = () => {
     ChatClient.getInstance()
-      .init(o)
+      .createAccount(username, password)
       .then(() => {
-        console.log('success');
-        let listener = {
-          onTokenWillExpire() {
-            console.log('ClientScreen.onTokenWillExpire');
-          },
-          onTokenDidExpire() {
-            console.log('ClientScreen.onTokenDidExpire');
-          },
-          onConnected() {
-            console.log('ClientScreen.onConnected');
-          },
-          onDisconnected(errorCode) {
-            console.log('ClientScreen.onDisconnected: ', errorCode);
-          },
-        };
-        ChatClient.getInstance().removeAllConnectionListener();
-        ChatClient.getInstance().addConnectionListener(listener);
-        ChatClient.getInstance()
-          .login('asteriskhx1', 'qwer')
-          .then(() => {
-            console.log('ClientScreen.login: success');
-          })
-          .catch(reason => {
-            console.log('ClientScreen.login: fail', reason);
-          });
+        console.log('register: success');
+        setWarnText('register: success');
       })
-      .catch(() => {
-        console.log('error');
+      .catch(reason => {
+        console.log('register: fail', reason);
+        setWarnText('register: fail' + reason);
       });
-  }}
-/>
+  };
+
+  const login = () => {
+    setWarnText(`username:${username},password:${password}`);
+    let listener = {
+      onTokenWillExpire() {
+        console.log('onTokenWillExpire');
+        setWarnText('onTokenWillExpire');
+      },
+      onTokenDidExpire() {
+        console.log('onTokenDidExpire');
+        setWarnText('onTokenDidExpire');
+      },
+      onConnected() {
+        console.log('onConnected');
+        setWarnText('onConnected');
+      },
+      onDisconnected(errorCode) {
+        console.log('onDisconnected: ', errorCode);
+        setWarnText('onDisconnected' + errorCode);
+      },
+    };
+    ChatClient.getInstance().removeAllConnectionListener();
+    ChatClient.getInstance().addConnectionListener(listener);
+    ChatClient.getInstance()
+      .login('asteriskhx1', 'qwer')
+      .then(() => {
+        console.log('login: success');
+        setWarnText('login: success');
+      })
+      .catch(reason => {
+        console.log('login: fail', reason);
+        setWarnText('login: fail' + JSON.stringify(reason));
+      });
+  };
+
+  const logout = () => {
+    ChatClient.getInstance()
+      .logout()
+      .then(() => {
+        console.log('logout: success');
+        setWarnText('logout: success');
+      })
+      .catch(reason => {
+        console.log('logout: fail', reason);
+        setWarnText('logout: fail' + reason);
+      });
+  };
+
+  const sendmsg = () => {
+    let msg = ChatMessage.createTextMessage(
+      userId,
+      content,
+      ChatMessageChatType.PeerChat,
+    );
+    const callback = new (class {
+      onProgress(locaMsgId, progress) {
+        console.log('onProgress ', locaMsgId, progress);
+        setWarnText('onProgress: ' + locaMsgId + progress);
+      }
+      onError(locaMsgId, error) {
+        console.log('onError ', locaMsgId, error);
+        setWarnText('onError: ' + locaMsgId + error);
+      }
+      onSuccess(message) {
+        console.log('onSuccess', message.localMsgId);
+        setWarnText('onError: ' + message.localMsgId);
+      }
+    })();
+    ChatClient.getInstance()
+      .chatManager.sendMessage(msg, callback)
+      .then(() => {
+        console.log('send success');
+        setWarnText('send success: ' + msg.localMsgId);
+      })
+      .catch(reason => {
+        console.log('send failed');
+        setWarnText('send fail: ' + reason);
+      });
+  };
 ```
 
-3. 编译构建和运行
-  * android设备: 6.0或以上的真机
-    1. 设置真机为开发者的可调式模式
-    2. 连接android真机设备到Mac系统
-    3. 启动`android studio app`，打开`android`文件夹的`rn_demo`项目，等待sync完成
-    4. 在`android/app/src/main/AndroidManifest.xml`文件中，设置权限: 包括网络权限、文件读写、录音、相册等。
-    5. 在`terminal`命令行执行`adb reverse tcp:8081 tcp:8081`，开启数据转发
-    6. 手动启动服务(android项目构建一般会不自动启动服务) 所以执行命令 `yarn start`
-    7. 使用android studio app 构建并运行`rn_demo`。
-  * ios设备: 11.0版本或以上的真机
-    1. iphone真机设置为开发者模式，
-    2. 连接ios真机设备到Mac系统，选择信任该Mac系统
-    3. 第一次或者更新项目之后，需要执行`cd ios && pod install --repo-update`
-    4. 启动`xcode app`，打开`ios`文件夹下的`rn_demo`项目
-    5. 在`info`中添加相应权限: 包括网络权限、文件读写、录音、相册等。
-    6. 由于是真机，需要设置app签名
-    7. 在`general`中设置`iphone`开发目标平台`12.0`
-    8. 在`xcode app`中，构建并运行`rn_demo`项目。
-  * 使用vscode app进行构建和运行，上面的需求条件也必须满足，不然也无法正常构建和运行。
-    1. 在命令行执行`yarn start`启动服务
-    2. 构建并运行android: 设置数据转发，然后在`terminal`执行`yarn android`命令。(android自动选择已连接的真机)
-    3. 构建并运行ios: 在`terminal`执行`npx react-native run-ios --device ${iphone-name}`命令。(ios默认不会选择已连接的真机，所以不能使用命令`yarn ios`)
+4. Compile, build, and run the chat service.
 
-## 快速 demo 体验
+* Android: **Real devices** with Android **6.0** or later
+    1. Enable the developer mode for the device.
+    2. Connect the Android device to the Mac system.
+    3. Start `android studio app` and open the `rn_demo` project in the `android` folder. Wait for the sync server ti 
+    4. Set permissions in the `android/app/src/main/AndroidManifest.xml` file, including network permissions, file read/write permissions, and recording and album permissions.
+    5. On Terminal, run `adb reverse tcp:8081 tcp:8081` to enable data forwarding.   
+    6. Run the `yarn start` command to start the service. Generally, the service does not start automatically upon the creation of an Android project.
+    7. Build and run `rn_demo` with the Android Studio app.
+    
+* iOS: **Real devices** with iOS **11.0** or later
+    1. Enable the developer mode mode for a real iPhone device.
+    2. Connect the iOS device to the Mac system and choose to trust the system. 
+    3. Run the `cd ios && pod install --repo-update` command for when you create or update the `rn_demo` project for the first time.
+    4. Start `xcode app` and open the `rn_demo` project in the `ios` folder.
+    5. Set permissions in `info`, including network permissions, file read/write permissions, and recording and album permissions.
+    6. Set the app signature. This is required for real devices.
+    7. Set the target `iphone` version to `11.0` in `general`.
+    8. Build and run the `rn_demo` project on the `xcode app`.
 
-可以下载源码运行 example 下的 demo，进行体验。 [传送门](https://github.com/easemob/react-native-chat-sdk)。
-可以下载 单独运行的 demo，进行体验。[传送门](https://github.com/AsteriskZuo/test_chat_sdk)。    
+*  Create and build the `rn_demo` project with Visual Studio Code. In this case, some operations still need to be done in Xcode or Android Studio.
+   1. On Terminal, run the `yarn start` command to start the service.
+   2. Build and run `rn_demo` on an Android device: Enable data forwarding and run the `yarn android` command on Terminal. The connected real device is selected automatically.
+   3. Build and run `rn_demo` on an iOS device: Run the `npx react-native run-ios --device ${iphone-name}` on Terminal. As the connected real device is not selected automatically, you cannot use the `yarn ios` command.
+
+
+## Run the demo
+
+You can [download the source code](https://github.com/easemob/react-native-chat-sdk) to run the demo in the `example` folder and experience **`api references`**.
+You can [download a separate demo](https://github.com/AsteriskZuo/test_chat_sdk) and integrate it.
 
 ## Contributing
 
-See the [contributing guide](../CONTRIBUTING.md) to learn how to contribute to the repository and the development workflow.
+For how to contribute to the repository and the development workflow, see [contributing guide](./CONTRIBUTING.md).
+
+## Changelog
+
+See the [change log](./CHANGELOG.md).  
 
 ## License
 
@@ -256,4 +417,4 @@ MIT
 
 ## Q&A
 
-[如果遇到问题可以参考这里](./docs/others.md)
+For any problems, see (./docs/others.md).
