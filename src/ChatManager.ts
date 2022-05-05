@@ -13,6 +13,7 @@ import {
   ChatMessageStatusCallback,
   ChatMessageType,
 } from './common/ChatMessage';
+import { ChatTranslateLanguage } from './common/ChatTranslateLanguage';
 import {
   MTackConversationRead,
   MTackGroupMessageRead,
@@ -61,6 +62,8 @@ import {
   MTgetConversationsFromServer,
   MTloadAllConversations,
   MTloadMsgWithTime,
+  MTtranslateMessage,
+  MTfetchSupportLanguages,
 } from './__internal__/Consts';
 import { Native } from './__internal__/Native';
 
@@ -519,7 +522,7 @@ export class ChatManager extends Native {
    *
    * @throws A description of the exception. See {@link ChatError}.
    */
-  public async getMessage(msgId: string): Promise<ChatMessage | null> {
+  public async getMessage(msgId: string): Promise<ChatMessage | undefined> {
     console.log(`${ChatManager.TAG}: getMessage: ${msgId}`);
     let r: any = await Native._callMethod(MTgetMessage, {
       [MTgetMessage]: {
@@ -527,12 +530,11 @@ export class ChatManager extends Native {
       },
     });
     Native.checkErrorFromResult(r);
-    console.log('r: ', r);
     r = r?.[MTgetMessage];
     if (r) {
       return new ChatMessage(r);
     } else {
-      return null;
+      return undefined;
     }
   }
 
@@ -838,7 +840,7 @@ export class ChatManager extends Native {
     convId: string,
     convType: ChatConversationType,
     createIfNeed: boolean = true
-  ): Promise<ChatConversation> {
+  ): Promise<ChatConversation | undefined> {
     console.log(
       `${ChatManager.TAG}: getConversation: ${convId}, ${convType}, ${createIfNeed}`
     );
@@ -929,7 +931,7 @@ export class ChatManager extends Native {
   public async getLatestMessage(
     convId: string,
     convType: ChatConversationType
-  ): Promise<ChatMessage> {
+  ): Promise<ChatMessage | undefined> {
     console.log(`${ChatManager.TAG}: latestMessage: `);
     let r: any = await Native._callMethod(MTgetLatestMessage, {
       [MTgetLatestMessage]: {
@@ -945,7 +947,7 @@ export class ChatManager extends Native {
   public async getLastReceivedMessage(
     convId: string,
     convType: ChatConversationType
-  ): Promise<ChatMessage> {
+  ): Promise<ChatMessage | undefined> {
     console.log(`${ChatManager.TAG}: lastReceivedMessage: `);
     let r: any = await Native._callMethod(MTgetLatestMessageFromOthers, {
       [MTgetLatestMessageFromOthers]: {
@@ -1086,7 +1088,7 @@ export class ChatManager extends Native {
     convId: string,
     convType: ChatConversationType,
     msgId: string
-  ): Promise<void> {
+  ): Promise<ChatMessage | undefined> {
     console.log(`${ChatManager.TAG}: getMessageById: `);
     let r: any = await Native._callMethod(MTloadMsgWithId, {
       [MTloadMsgWithId]: {
@@ -1096,6 +1098,7 @@ export class ChatManager extends Native {
       },
     });
     ChatManager.checkErrorFromResult(r);
+    return new ChatMessage(r?.[MTloadMsgWithId]);
   }
 
   public async getMessagesWithMsgType(
@@ -1209,6 +1212,36 @@ export class ChatManager extends Native {
     const ret: ChatMessage[] = [];
     Object.entries(r?.[MTloadMsgWithTime]).forEach((value: [string, any]) => {
       ret.push(new ChatMessage(value[1]));
+    });
+    return ret;
+  }
+
+  public async translateMessage(
+    msg: ChatMessage,
+    languages: Array<string>
+  ): Promise<ChatMessage> {
+    console.log(`${ChatManager.TAG}: translateMessage: `);
+    let r: any = await Native._callMethod(MTtranslateMessage, {
+      [MTtranslateMessage]: {
+        message: msg,
+        languages: languages,
+      },
+    });
+    ChatManager.checkErrorFromResult(r);
+    const rr = r?.[MTtranslateMessage];
+    return new ChatMessage(rr?.message);
+  }
+
+  public async fetchSupportedLanguages(): Promise<
+    Array<ChatTranslateLanguage>
+  > {
+    console.log(`${ChatManager.TAG}: fetchSupportedLanguages: `);
+    let r: any = await Native._callMethod(MTfetchSupportLanguages);
+    ChatManager.checkErrorFromResult(r);
+    const rr: Array<any> = r?.[MTfetchSupportLanguages];
+    const ret: Array<ChatTranslateLanguage> = [];
+    rr.forEach((value: any) => {
+      ret.push(new ChatTranslateLanguage(value));
     });
     return ret;
   }

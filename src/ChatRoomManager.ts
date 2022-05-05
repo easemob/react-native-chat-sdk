@@ -222,7 +222,9 @@ export class ChatRoomManager extends Native {
     return ret;
   }
 
-  public async getChatRoomWithId(roomId: string): Promise<ChatRoom> {
+  public async getChatRoomWithId(
+    roomId: string
+  ): Promise<ChatRoom | undefined> {
     console.log(`${ChatRoomManager.TAG}: getChatRoomWithId: ${roomId}`);
     // todo: !!!
     let r: any = await Native._callMethod(MTgetChatRoom, {
@@ -312,7 +314,6 @@ export class ChatRoomManager extends Native {
       },
     });
     ChatRoomManager.checkErrorFromResult(r);
-    console.log('r: ', r);
     let ret = new ChatCursorResult<string>({
       cursor: r?.[MTfetchChatRoomMembers].cursor,
       list: r?.[MTfetchChatRoomMembers].list,
@@ -455,7 +456,7 @@ export class ChatRoomManager extends Native {
     roomId: string,
     pageNum: number = 1,
     pageSize: number = 200
-  ): Promise<void> {
+  ): Promise<Array<string>> {
     console.log(`${ChatRoomManager.TAG}: fetchChatRoomBlockList: `);
     let r: any = await Native._callMethod(MTfetchChatRoomBlockList, {
       [MTfetchChatRoomBlockList]: {
@@ -465,6 +466,8 @@ export class ChatRoomManager extends Native {
       },
     });
     ChatRoomManager.checkErrorFromResult(r);
+    const ret: Array<string> = r?.[MTfetchChatRoomBlockList];
+    return ret;
   }
 
   public async updateChatRoomAnnouncement(
@@ -481,7 +484,9 @@ export class ChatRoomManager extends Native {
     ChatRoomManager.checkErrorFromResult(r);
   }
 
-  public async fetchChatRoomAnnouncement(roomId: string): Promise<string> {
+  public async fetchChatRoomAnnouncement(
+    roomId: string
+  ): Promise<string | undefined> {
     console.log(`${ChatRoomManager.TAG}: fetchChatRoomAnnouncement: `);
     let r: any = await Native._callMethod(MTfetchChatRoomAnnouncement, {
       [MTfetchChatRoomAnnouncement]: {
@@ -518,7 +523,6 @@ export class ChatRoomManager extends Native {
       }
     );
     ChatRoomManager.checkErrorFromResult(r);
-    console.log('r: ', r);
     let ret: boolean = r?.[MTisMemberInChatRoomWhiteListFromServer];
     return ret;
   }

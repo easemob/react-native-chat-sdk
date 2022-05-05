@@ -1,5 +1,6 @@
 import type { ChatGroupMessageAck } from './common/ChatGroup';
 import type { ChatMessage } from './common/ChatMessage';
+import type { ChatPresence } from './common/ChatPresence';
 
 export enum ChatContactGroupEvent {
   CONTACT_REMOVE,
@@ -391,4 +392,8 @@ export interface ChatRoomEventListener {
     roomId: string;
     isAllMuted: boolean;
   }): void;
+}
+
+export interface ChatPresenceManagerListener {
+  onPresenceStatusChanged(list: Array<ChatPresence>): void;
 }
