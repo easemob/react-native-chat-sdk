@@ -26,6 +26,7 @@ import {
   ChatMessageTypeFromString,
   ChatMessageChatTypeFromNumber,
 } from './common/ChatMessage';
+import { ChatConversationTypeFromNumber } from './common/ChatConversation';
 import { ChatOptions } from './common/ChatOptions';
 import { ChatPageResult } from './common/ChatPageResult';
 import { ChatRoomPermissionType, ChatRoom } from './common/ChatRoom';
@@ -88,4 +89,8 @@ export {
   ChatRoomEventListener,
 };
 
-export { ChatMessageTypeFromString, ChatMessageChatTypeFromNumber };
+export {
+  ChatMessageTypeFromString,
+  ChatMessageChatTypeFromNumber,
+  ChatConversationTypeFromNumber,
+};
