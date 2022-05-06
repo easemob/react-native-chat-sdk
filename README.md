@@ -403,6 +403,9 @@ const App = () => {
 You can [download the source code](https://github.com/easemob/react-native-chat-sdk) to run the demo in the `example` folder and experience **`api references`**.
 You can [download a separate demo](https://github.com/AsteriskZuo/test_chat_sdk) and integrate it.
 
+## Windows developer
+Windows developer, see [here](./docs/windows.md).  
+
 ## Contributing
 
 For how to contribute to the repository and the development workflow, see [contributing guide](./CONTRIBUTING.md).

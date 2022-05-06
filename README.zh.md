@@ -415,6 +415,9 @@ const App = () => {
 可以下载源码运行 example 下的 demo，进行 **`api references`** 体验。 [传送门](https://github.com/easemob/react-native-chat-sdk)。  
 可以下载单独运行的 demo，进行 **集成** 体验。[传送门](https://github.com/AsteriskZuo/test_chat_sdk)。    
 
+## Windows 开发者
+windows平台的配置以及开发流程请看这里。[传送门](/docs/windows.md)。  
+
 ## Contributing
 
 See the [contributing guide](./CONTRIBUTING.md) to learn how to contribute to the repository and the development workflow.
