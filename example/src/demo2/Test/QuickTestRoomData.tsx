@@ -126,7 +126,7 @@ export const metaDataList = new Map<string, ApiParams>([
   [
     MN.getChatRoomWithId,
     {
-      methodName: MN.joinChatRoom,
+      methodName: MN.getChatRoomWithId,
       params: [
         {
           paramName: 'roomId',
@@ -302,7 +302,7 @@ export const metaDataList = new Map<string, ApiParams>([
         {
           paramName: 'newOwner',
           paramType: 'string',
-          paramDefaultValue: 'bye',
+          paramDefaultValue: 'asterisk003',
         },
       ],
     },

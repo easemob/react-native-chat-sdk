@@ -105,7 +105,7 @@ export const metaDataList = new Map<string, ApiParams>([
         {
           paramName: 'groupId',
           paramType: 'string',
-          paramDefaultValue: '180339907559425',
+          paramDefaultValue: '180804431970306',
         },
       ],
     },
@@ -187,7 +187,7 @@ export const metaDataList = new Map<string, ApiParams>([
           paramName: 'options',
           paramType: 'object',
           paramDefaultValue: {
-            style: 0,
+            style: 2,
             maxCount: 200,
             inviteNeedConfirm: false,
             ext: '',
@@ -204,7 +204,7 @@ export const metaDataList = new Map<string, ApiParams>([
         {
           paramName: 'groupId',
           paramType: 'string',
-          paramDefaultValue: '180339907559425',
+          paramDefaultValue: '180804431970306',
         },
       ],
     },
@@ -217,7 +217,7 @@ export const metaDataList = new Map<string, ApiParams>([
         {
           paramName: 'groupId',
           paramType: 'string',
-          paramDefaultValue: '180339907559425',
+          paramDefaultValue: '180804431970306',
         },
         {
           paramName: 'pageSize',
@@ -240,7 +240,7 @@ export const metaDataList = new Map<string, ApiParams>([
         {
           paramName: 'groupId',
           paramType: 'string',
-          paramDefaultValue: '180339907559425',
+          paramDefaultValue: '180804431970306',
         },
         {
           paramName: 'pageSize',
@@ -263,7 +263,7 @@ export const metaDataList = new Map<string, ApiParams>([
         {
           paramName: 'groupId',
           paramType: 'string',
-          paramDefaultValue: '180339907559425',
+          paramDefaultValue: '180804431970306',
         },
         {
           paramName: 'pageSize',
@@ -286,7 +286,7 @@ export const metaDataList = new Map<string, ApiParams>([
         {
           paramName: 'groupId',
           paramType: 'string',
-          paramDefaultValue: '180339907559425',
+          paramDefaultValue: '180804431970306',
         },
       ],
     },
@@ -299,7 +299,7 @@ export const metaDataList = new Map<string, ApiParams>([
         {
           paramName: 'groupId',
           paramType: 'string',
-          paramDefaultValue: '180339907559425',
+          paramDefaultValue: '180804431970306',
         },
       ],
     },
@@ -312,7 +312,7 @@ export const metaDataList = new Map<string, ApiParams>([
         {
           paramName: 'groupId',
           paramType: 'string',
-          paramDefaultValue: '180339907559425',
+          paramDefaultValue: '180804431970306',
         },
         {
           paramName: 'pageSize',
@@ -335,7 +335,7 @@ export const metaDataList = new Map<string, ApiParams>([
         {
           paramName: 'groupId',
           paramType: 'string',
-          paramDefaultValue: '180339907559425',
+          paramDefaultValue: '180804431970306',
         },
         {
           paramName: 'members',
@@ -358,7 +358,7 @@ export const metaDataList = new Map<string, ApiParams>([
         {
           paramName: 'groupId',
           paramType: 'string',
-          paramDefaultValue: '180339907559425',
+          paramDefaultValue: '180804431970306',
         },
         {
           paramName: 'members',
@@ -381,7 +381,7 @@ export const metaDataList = new Map<string, ApiParams>([
         {
           paramName: 'groupId',
           paramType: 'string',
-          paramDefaultValue: '180339907559425',
+          paramDefaultValue: '180804431970306',
         },
         {
           paramName: 'members',
@@ -399,7 +399,7 @@ export const metaDataList = new Map<string, ApiParams>([
         {
           paramName: 'groupId',
           paramType: 'string',
-          paramDefaultValue: '180339907559425',
+          paramDefaultValue: '180804431970306',
         },
         {
           paramName: 'members',
@@ -417,7 +417,7 @@ export const metaDataList = new Map<string, ApiParams>([
         {
           paramName: 'groupId',
           paramType: 'string',
-          paramDefaultValue: '180339907559425',
+          paramDefaultValue: '180804431970306',
         },
         {
           paramName: 'members',
@@ -435,7 +435,7 @@ export const metaDataList = new Map<string, ApiParams>([
         {
           paramName: 'groupId',
           paramType: 'string',
-          paramDefaultValue: '180339907559425',
+          paramDefaultValue: '180804431970306',
         },
         {
           paramName: 'name',
@@ -453,7 +453,7 @@ export const metaDataList = new Map<string, ApiParams>([
         {
           paramName: 'groupId',
           paramType: 'string',
-          paramDefaultValue: '180339907559425',
+          paramDefaultValue: '180804431970306',
         },
         {
           paramName: 'desc',
@@ -471,7 +471,7 @@ export const metaDataList = new Map<string, ApiParams>([
         {
           paramName: 'groupId',
           paramType: 'string',
-          paramDefaultValue: '180339907559425',
+          paramDefaultValue: '180804431970306',
         },
       ],
     },
@@ -484,7 +484,7 @@ export const metaDataList = new Map<string, ApiParams>([
         {
           paramName: 'groupId',
           paramType: 'string',
-          paramDefaultValue: '180339907559425',
+          paramDefaultValue: '180804431970306',
         },
       ],
     },
@@ -497,7 +497,7 @@ export const metaDataList = new Map<string, ApiParams>([
         {
           paramName: 'groupId',
           paramType: 'string',
-          paramDefaultValue: '180339907559425',
+          paramDefaultValue: '180804431970306',
         },
       ],
     },
@@ -510,7 +510,7 @@ export const metaDataList = new Map<string, ApiParams>([
         {
           paramName: 'groupId',
           paramType: 'string',
-          paramDefaultValue: '180339907559425',
+          paramDefaultValue: '180804431970306',
         },
       ],
     },
@@ -523,7 +523,7 @@ export const metaDataList = new Map<string, ApiParams>([
         {
           paramName: 'groupId',
           paramType: 'string',
-          paramDefaultValue: '180339907559425',
+          paramDefaultValue: '180804431970306',
         },
         {
           paramName: 'newOwner',
@@ -541,7 +541,7 @@ export const metaDataList = new Map<string, ApiParams>([
         {
           paramName: 'groupId',
           paramType: 'string',
-          paramDefaultValue: '180339907559425',
+          paramDefaultValue: '180804431970306',
         },
         {
           paramName: 'memberId',
@@ -559,7 +559,7 @@ export const metaDataList = new Map<string, ApiParams>([
         {
           paramName: 'groupId',
           paramType: 'string',
-          paramDefaultValue: '180339907559425',
+          paramDefaultValue: '180804431970306',
         },
         {
           paramName: 'memberId',
@@ -577,7 +577,7 @@ export const metaDataList = new Map<string, ApiParams>([
         {
           paramName: 'groupId',
           paramType: 'string',
-          paramDefaultValue: '180339907559425',
+          paramDefaultValue: '180804431970306',
         },
         {
           paramName: 'members',
@@ -600,7 +600,7 @@ export const metaDataList = new Map<string, ApiParams>([
         {
           paramName: 'groupId',
           paramType: 'string',
-          paramDefaultValue: '180339907559425',
+          paramDefaultValue: '180804431970306',
         },
         {
           paramName: 'members',
@@ -618,7 +618,7 @@ export const metaDataList = new Map<string, ApiParams>([
         {
           paramName: 'groupId',
           paramType: 'string',
-          paramDefaultValue: '180339907559425',
+          paramDefaultValue: '180804431970306',
         },
       ],
     },
@@ -631,7 +631,7 @@ export const metaDataList = new Map<string, ApiParams>([
         {
           paramName: 'groupId',
           paramType: 'string',
-          paramDefaultValue: '180339907559425',
+          paramDefaultValue: '180804431970306',
         },
       ],
     },
@@ -644,7 +644,7 @@ export const metaDataList = new Map<string, ApiParams>([
         {
           paramName: 'groupId',
           paramType: 'string',
-          paramDefaultValue: '180339907559425',
+          paramDefaultValue: '180804431970306',
         },
         {
           paramName: 'members',
@@ -662,7 +662,7 @@ export const metaDataList = new Map<string, ApiParams>([
         {
           paramName: 'groupId',
           paramType: 'string',
-          paramDefaultValue: '180339907559425',
+          paramDefaultValue: '180804431970306',
         },
         {
           paramName: 'members',
@@ -680,7 +680,7 @@ export const metaDataList = new Map<string, ApiParams>([
         {
           paramName: 'groupId',
           paramType: 'string',
-          paramDefaultValue: '180339907559425',
+          paramDefaultValue: '180804431970306',
         },
         {
           paramName: 'filePath',
@@ -698,7 +698,7 @@ export const metaDataList = new Map<string, ApiParams>([
         {
           paramName: 'groupId',
           paramType: 'string',
-          paramDefaultValue: '180339907559425',
+          paramDefaultValue: '180804431970306',
         },
         {
           paramName: 'fileId',
@@ -721,7 +721,7 @@ export const metaDataList = new Map<string, ApiParams>([
         {
           paramName: 'groupId',
           paramType: 'string',
-          paramDefaultValue: '180339907559425',
+          paramDefaultValue: '180804431970306',
         },
         {
           paramName: 'fileId',
@@ -739,7 +739,7 @@ export const metaDataList = new Map<string, ApiParams>([
         {
           paramName: 'groupId',
           paramType: 'string',
-          paramDefaultValue: '180339907559425',
+          paramDefaultValue: '180804431970306',
         },
         {
           paramName: 'announcement',
@@ -757,7 +757,7 @@ export const metaDataList = new Map<string, ApiParams>([
         {
           paramName: 'groupId',
           paramType: 'string',
-          paramDefaultValue: '180339907559425',
+          paramDefaultValue: '180804431970306',
         },
         {
           paramName: 'extension',
@@ -775,7 +775,7 @@ export const metaDataList = new Map<string, ApiParams>([
         {
           paramName: 'groupId',
           paramType: 'string',
-          paramDefaultValue: '180339907559425',
+          paramDefaultValue: '180804431970306',
         },
       ],
     },
@@ -788,7 +788,7 @@ export const metaDataList = new Map<string, ApiParams>([
         {
           paramName: 'groupId',
           paramType: 'string',
-          paramDefaultValue: '180339907559425',
+          paramDefaultValue: '180804431970306',
         },
         {
           paramName: 'reason',
@@ -806,7 +806,7 @@ export const metaDataList = new Map<string, ApiParams>([
         {
           paramName: 'groupId',
           paramType: 'string',
-          paramDefaultValue: '180339907559425',
+          paramDefaultValue: '180804431970306',
         },
         {
           paramName: 'username',
@@ -824,7 +824,7 @@ export const metaDataList = new Map<string, ApiParams>([
         {
           paramName: 'groupId',
           paramType: 'string',
-          paramDefaultValue: '180339907559425',
+          paramDefaultValue: '180804431970306',
         },
         {
           paramName: 'username',
@@ -847,7 +847,7 @@ export const metaDataList = new Map<string, ApiParams>([
         {
           paramName: 'groupId',
           paramType: 'string',
-          paramDefaultValue: '180339907559425',
+          paramDefaultValue: '180804431970306',
         },
         {
           paramName: 'inviter',
@@ -865,7 +865,7 @@ export const metaDataList = new Map<string, ApiParams>([
         {
           paramName: 'groupId',
           paramType: 'string',
-          paramDefaultValue: '180339907559425',
+          paramDefaultValue: '180804431970306',
         },
         {
           paramName: 'inviter',
