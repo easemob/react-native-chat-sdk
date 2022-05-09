@@ -5,7 +5,12 @@ import {
   registerStateDataList,
 } from './QuickTestScreenBase';
 import { MN, metaDataList } from './QuickTestGroupData';
-import { ChatClient, ChatGroupOptions } from 'react-native-chat-sdk';
+import {
+  ChatClient,
+  ChatError,
+  ChatGroupOptions,
+  ChatGroupFileStatusCallback,
+} from 'react-native-chat-sdk';
 
 export interface QuickTestGroupState extends QuickTestState {}
 
@@ -52,6 +57,39 @@ export class QuickTestScreenGroup extends QuickTestScreenBase<
     if (super.removeListener) {
       super.removeListener();
     }
+  }
+
+  private createCallback(): ChatGroupFileStatusCallback {
+    const ret = new (class implements ChatGroupFileStatusCallback {
+      that: QuickTestScreenGroup;
+      constructor(t: QuickTestScreenGroup) {
+        this.that = t;
+      }
+      onProgress(groupId: string, filePath: string, progress: number): void {
+        console.log(
+          `${QuickTestScreenGroup.TAG}: onProgress: `,
+          groupId,
+          filePath,
+          progress
+        );
+      }
+      onError(groupId: string, filePath: string, error: ChatError): void {
+        console.log(
+          `${QuickTestScreenGroup.TAG}: onError: `,
+          groupId,
+          filePath,
+          error
+        );
+      }
+      onSuccess(groupId: string, filePath: string): void {
+        console.log(
+          `${QuickTestScreenGroup.TAG}: onSuccess: `,
+          groupId,
+          filePath
+        );
+      }
+    })(this);
+    return ret;
   }
 
   /**
@@ -663,11 +701,13 @@ export class QuickTestScreenGroup extends QuickTestScreenBase<
             .paramDefaultValue;
           const filePath = this.metaData.get(MN.uploadGroupSharedFile)
             ?.params[1].paramDefaultValue;
+          let cb = this.createCallback();
 
           this.tryCatch(
             ChatClient.getInstance().groupManager.uploadGroupSharedFile(
               groupId,
-              filePath
+              filePath,
+              cb
             ),
             QuickTestScreenGroup.TAG,
             methodName
@@ -685,12 +725,14 @@ export class QuickTestScreenGroup extends QuickTestScreenBase<
             ?.params[1].paramDefaultValue;
           const savePath = this.metaData.get(MN.downloadGroupSharedFile)
             ?.params[2].paramDefaultValue;
+          let cb = this.createCallback();
 
           this.tryCatch(
             ChatClient.getInstance().groupManager.downloadGroupSharedFile(
               groupId,
               fileId,
-              savePath
+              savePath,
+              cb
             ),
             QuickTestScreenGroup.TAG,
             methodName

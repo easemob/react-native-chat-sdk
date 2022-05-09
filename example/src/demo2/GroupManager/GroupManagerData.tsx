@@ -719,6 +719,11 @@ export const metaData = new Map<string, ApiParams>([
           paramType: 'string',
           paramDefaultValue: '',
         },
+        {
+          paramName: 'callback',
+          paramType: 'object',
+          paramDefaultValue: {},
+        },
       ],
     },
   ],
@@ -818,6 +823,11 @@ export const metaData = new Map<string, ApiParams>([
           paramName: 'savePath',
           paramType: 'string',
           paramDefaultValue: '',
+        },
+        {
+          paramName: 'callback',
+          paramType: 'object',
+          paramDefaultValue: {},
         },
       ],
     },

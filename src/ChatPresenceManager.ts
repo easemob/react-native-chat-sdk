@@ -47,16 +47,38 @@ export class ChatPresenceManager extends Native {
     });
   }
 
+  /**
+   * Add group listener.
+   *
+   * @param listener The listener to be added.
+   */
   addGroupListener(listener: ChatPresenceManagerListener): void {
     this._presenceListeners.add(listener);
   }
+
+  /**
+   * Remove group listener.
+   *
+   * @param listener The listener to be deleted.
+   */
   removeGroupListener(listener: ChatPresenceManagerListener): void {
     this._presenceListeners.delete(listener);
   }
+
+  /**
+   * Clear all group listener.
+   */
   removeAllGroupListener(): void {
     this._presenceListeners.clear();
   }
 
+  /**
+   * Publishes a custom presence state.
+   *
+   * @param description The extension information of the presence state. It can be set as nil.
+   *
+   * @throws A description of the exception. See {@link ChatError}.
+   */
   public async publishPresenceWithDescription(
     description?: string
   ): Promise<void> {
@@ -69,6 +91,15 @@ export class ChatPresenceManager extends Native {
     ChatPresenceManager.checkErrorFromResult(r);
   }
 
+  /**
+   * Subscribes to a user's presence states. If the subscription succeeds, the subscriber will receive the callback when the user's presence state changes.
+   *
+   * @param members The list of IDs of users whose presence states you want to subscribe to.
+   * @param expiry The expiration time of the presence subscription.
+   * @returns Which contains IDs of users whose presence states you have subscribed to.
+   *
+   * @throws A description of the exception. See {@link ChatError}.
+   */
   public async subscribe(
     members: Array<string>,
     expiry: number
@@ -88,6 +119,13 @@ export class ChatPresenceManager extends Native {
     return ret;
   }
 
+  /**
+   * Unsubscribes from a user's presence states.
+   *
+   * @param members The array of IDs of users whose presence states you want to unsubscribe from.
+   *
+   * @throws A description of the exception. See {@link ChatError}.
+   */
   public async unSubscribe(members: Array<string>): Promise<void> {
     console.log(`${ChatPresenceManager.TAG}: unSubscribe: `);
     let r: any = await Native._callMethod(MTpresenceUnsubscribe, {
@@ -98,6 +136,15 @@ export class ChatPresenceManager extends Native {
     ChatPresenceManager.checkErrorFromResult(r);
   }
 
+  /**
+   * Uses pagination to get a list of users whose presence states you have subscribed to.
+   *
+   * @param pageNum The current page number, starting from 1.
+   * @param pageSize The number of subscribed users on each page.
+   * @returns Which contains IDs of users whose presence states you have subscribed to. Returns null if you subscribe to no user's presence state.
+   *
+   * @throws A description of the exception. See {@link ChatError}.
+   */
   public async fetchSubscribedMembers(
     pageNum: number = 1,
     pageSize: number = 20
@@ -113,6 +160,14 @@ export class ChatPresenceManager extends Native {
     return r?.[MTfetchSubscribedMembersWithPageNum] as Array<string>;
   }
 
+  /**
+   * Gets the current presence state of users.
+   *
+   * @param members The array of IDs of users whose current presence state you want to check.
+   * @returns Which contains the users whose presence state you have subscribed to.
+   *
+   * @throws A description of the exception. See {@link ChatError}.
+   */
   public async fetchPresenceStatus(
     members: Array<string>
   ): Promise<Array<ChatPresence>> {

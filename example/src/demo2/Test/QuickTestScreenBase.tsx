@@ -20,7 +20,7 @@ import {
   StatelessBase,
 } from '../__internal__/LeafScreenBase';
 import type { ApiParams } from '../__internal__/DataTypes';
-import type { ChatContactGroupEvent } from 'src/ChatEvents';
+import type { ChatMultiDeviceEvent } from 'src/ChatEvents';
 import type { ChatCmdMessageBody } from 'src/common/ChatMessage';
 
 export const metaData = new Map<string, ApiParams>();
@@ -101,7 +101,7 @@ export abstract class QuickTestScreenBase<
         this.that = parent;
       }
       onContactEvent(
-        event?: ChatContactGroupEvent,
+        event?: ChatMultiDeviceEvent,
         target?: string,
         ext?: string
       ): void {
@@ -112,7 +112,7 @@ export abstract class QuickTestScreenBase<
         });
       }
       onGroupEvent(
-        event?: ChatContactGroupEvent,
+        event?: ChatMultiDeviceEvent,
         target?: string,
         usernames?: string[]
       ): void {

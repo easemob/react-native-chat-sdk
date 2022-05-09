@@ -687,6 +687,11 @@ export const metaDataList = new Map<string, ApiParams>([
           paramType: 'string',
           paramDefaultValue: '/storage/emulated/0/Recorder/test.mp3',
         },
+        {
+          paramName: 'callback',
+          paramType: 'object',
+          paramDefaultValue: {},
+        },
       ],
     },
   ],
@@ -709,6 +714,11 @@ export const metaDataList = new Map<string, ApiParams>([
           paramName: 'savePath',
           paramType: 'string',
           paramDefaultValue: '/storage/emulated/0/Recorder/test2.mp3',
+        },
+        {
+          paramName: 'callback',
+          paramType: 'object',
+          paramDefaultValue: {},
         },
       ],
     },

@@ -2,7 +2,7 @@ import type { ChatGroupMessageAck } from './common/ChatGroup';
 import type { ChatMessage } from './common/ChatMessage';
 import type { ChatPresence } from './common/ChatPresence';
 
-export enum ChatContactGroupEvent {
+export enum ChatMultiDeviceEvent {
   CONTACT_REMOVE,
   CONTACT_ACCEPT,
   CONTACT_DECLINE,
@@ -32,58 +32,58 @@ export enum ChatContactGroupEvent {
 
 export function ChatContactGroupEventFromNumber(
   params: number
-): ChatContactGroupEvent {
+): ChatMultiDeviceEvent {
   switch (params) {
     case 2:
-      return ChatContactGroupEvent.CONTACT_REMOVE;
+      return ChatMultiDeviceEvent.CONTACT_REMOVE;
     case 3:
-      return ChatContactGroupEvent.CONTACT_ACCEPT;
+      return ChatMultiDeviceEvent.CONTACT_ACCEPT;
     case 4:
-      return ChatContactGroupEvent.CONTACT_DECLINE;
+      return ChatMultiDeviceEvent.CONTACT_DECLINE;
     case 5:
-      return ChatContactGroupEvent.CONTACT_BAN;
+      return ChatMultiDeviceEvent.CONTACT_BAN;
     case 6:
-      return ChatContactGroupEvent.CONTACT_ALLOW;
+      return ChatMultiDeviceEvent.CONTACT_ALLOW;
     case 10:
-      return ChatContactGroupEvent.GROUP_CREATE;
+      return ChatMultiDeviceEvent.GROUP_CREATE;
     case 11:
-      return ChatContactGroupEvent.GROUP_DESTROY;
+      return ChatMultiDeviceEvent.GROUP_DESTROY;
     case 12:
-      return ChatContactGroupEvent.GROUP_JOIN;
+      return ChatMultiDeviceEvent.GROUP_JOIN;
     case 13:
-      return ChatContactGroupEvent.GROUP_LEAVE;
+      return ChatMultiDeviceEvent.GROUP_LEAVE;
     case 14:
-      return ChatContactGroupEvent.GROUP_APPLY;
+      return ChatMultiDeviceEvent.GROUP_APPLY;
     case 15:
-      return ChatContactGroupEvent.GROUP_APPLY_ACCEPT;
+      return ChatMultiDeviceEvent.GROUP_APPLY_ACCEPT;
     case 16:
-      return ChatContactGroupEvent.GROUP_APPLY_DECLINE;
+      return ChatMultiDeviceEvent.GROUP_APPLY_DECLINE;
     case 17:
-      return ChatContactGroupEvent.GROUP_INVITE;
+      return ChatMultiDeviceEvent.GROUP_INVITE;
     case 18:
-      return ChatContactGroupEvent.GROUP_INVITE_ACCEPT;
+      return ChatMultiDeviceEvent.GROUP_INVITE_ACCEPT;
     case 19:
-      return ChatContactGroupEvent.GROUP_INVITE_DECLINE;
+      return ChatMultiDeviceEvent.GROUP_INVITE_DECLINE;
     case 20:
-      return ChatContactGroupEvent.GROUP_KICK;
+      return ChatMultiDeviceEvent.GROUP_KICK;
     case 21:
-      return ChatContactGroupEvent.GROUP_BAN;
+      return ChatMultiDeviceEvent.GROUP_BAN;
     case 22:
-      return ChatContactGroupEvent.GROUP_ALLOW;
+      return ChatMultiDeviceEvent.GROUP_ALLOW;
     case 23:
-      return ChatContactGroupEvent.GROUP_BLOCK;
+      return ChatMultiDeviceEvent.GROUP_BLOCK;
     case 24:
-      return ChatContactGroupEvent.GROUP_UNBLOCK;
+      return ChatMultiDeviceEvent.GROUP_UNBLOCK;
     case 25:
-      return ChatContactGroupEvent.GROUP_ASSIGN_OWNER;
+      return ChatMultiDeviceEvent.GROUP_ASSIGN_OWNER;
     case 26:
-      return ChatContactGroupEvent.GROUP_ADD_ADMIN;
+      return ChatMultiDeviceEvent.GROUP_ADD_ADMIN;
     case 27:
-      return ChatContactGroupEvent.GROUP_REMOVE_ADMIN;
+      return ChatMultiDeviceEvent.GROUP_REMOVE_ADMIN;
     case 28:
-      return ChatContactGroupEvent.GROUP_ADD_MUTE;
+      return ChatMultiDeviceEvent.GROUP_ADD_MUTE;
     case 29:
-      return ChatContactGroupEvent.GROUP_REMOVE_MUTE;
+      return ChatMultiDeviceEvent.GROUP_REMOVE_MUTE;
     default:
       throw new Error(`not exist this type: ${params}`);
   }
@@ -153,13 +153,13 @@ export interface ChatConnectEventListener {
 
 export interface ChatMultiDeviceEventListener {
   onContactEvent(
-    event?: ChatContactGroupEvent,
+    event?: ChatMultiDeviceEvent,
     target?: string,
     ext?: string
   ): void;
 
   onGroupEvent(
-    event?: ChatContactGroupEvent,
+    event?: ChatMultiDeviceEvent,
     target?: string,
     usernames?: Array<string>
   ): void;

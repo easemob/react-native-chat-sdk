@@ -1253,7 +1253,7 @@ export class ChatManagerLeafScreen extends LeafScreenBase<StateChatMessage> {
     } else if (name === MN.getLatestMessage) {
       const { convId, convType } = this.state.getLatestMessage;
       this.tryCatch(
-        ChatClient.getInstance().chatManager.getLatestMessage(
+        ChatClient.getInstance().chatManager.fetchLatestMessage(
           convId,
           ChatConversationTypeFromNumber(convType)
         ),
@@ -1263,7 +1263,7 @@ export class ChatManagerLeafScreen extends LeafScreenBase<StateChatMessage> {
     } else if (name === MN.getLastReceivedMessage) {
       const { convId, convType } = this.state.getLastReceivedMessage;
       this.tryCatch(
-        ChatClient.getInstance().chatManager.getLastReceivedMessage(
+        ChatClient.getInstance().chatManager.fetchLastReceivedMessage(
           convId,
           ChatConversationTypeFromNumber(convType)
         ),

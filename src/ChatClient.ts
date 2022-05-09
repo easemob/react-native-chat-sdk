@@ -20,6 +20,7 @@ import { ChatRoomManager } from './ChatRoomManager';
 import { ChatUserInfoManager } from './ChatUserInfoManager';
 import { ChatDeviceInfo } from './common/ChatDeviceInfo';
 import type { ChatOptions } from './common/ChatOptions';
+import { BaseManager } from './__internal__/Base';
 import {
   MTchangeAppKey,
   MTcompressLogs,
@@ -71,9 +72,9 @@ const ExtSdkApiRN = NativeModules.ExtSdkApiRN
 const eventEmitter = new NativeEventEmitter(ExtSdkApiRN);
 console.log('eventEmitter: ', eventEmitter);
 
-export class ChatClient extends Native {
+export class ChatClient extends BaseManager {
   public static eventType = 2; // 1.remove 2.subscription(suggested)
-  private static TAG = 'ChatClient';
+  protected static TAG = 'ChatClient';
   private static _instance: ChatClient;
   private _connectionSubscriptions: Map<string, EmitterSubscription>;
   public static getInstance(): ChatClient {
@@ -137,7 +138,7 @@ export class ChatClient extends Native {
     this.setEventEmitter();
   }
 
-  private setNativeListener(event: NativeEventEmitter): void {
+  public setNativeListener(event: NativeEventEmitter): void {
     console.log(`${ChatClient.TAG}: setNativeListener: `);
     this._connectionSubscriptions.forEach(
       (
@@ -332,6 +333,8 @@ export class ChatClient extends Native {
   /**
    * Gets the configurations. Make sure to set the param, see {@link EMOptions}.
    *
+   * This value is set during initialization.
+   *
    * @returns The configurations.
    */
   public get options(): ChatOptions | undefined {
@@ -342,6 +345,9 @@ export class ChatClient extends Native {
    * Gets the current logged-in user ID.
    *
    * The value is valid after successful login.
+   *
+   * The value is cached locally and is updated on login, logout, disconnect, etc. Use {@link getCurrentUsername} if you need a more accurate value.
+   *
    * @returns The current logged-in user ID.
    */
   public get currentUserName(): string {
@@ -414,6 +420,10 @@ export class ChatClient extends Native {
 
   /**
    * Checks whether the user is logged into the app.
+   *
+   * **Note**
+   *
+   * This state is after initialization and before login.
    *
    * @returns
    * - `true`: In automatic login mode, the value is true before successful login and false otherwise.
@@ -523,7 +533,7 @@ export class ChatClient extends Native {
     let result: any = await Native._callMethod(MTloginWithAgoraToken, {
       [MTloginWithAgoraToken]: {
         username: userName,
-        agoraToken: agoraToken,
+        agoratoken: agoraToken,
       },
     });
     ChatClient.checkErrorFromResult(result);
@@ -779,26 +789,56 @@ export class ChatClient extends Native {
     return this._chatManager;
   }
 
+  /**
+   *  Gets the `ChatGroupManager` class. Make sure to call it after ChatClient has been initialized.
+   *
+   *  @returns The `ChatGroupManager` class.
+   */
   public get groupManager(): ChatGroupManager {
     return this._groupManager;
   }
 
+  /**
+   *  Gets the `ChatContactManager` class. Make sure to call it after ChatClient has been initialized.
+   *
+   *  @returns The `ChatContactManager` class.
+   */
   public get contactManager(): ChatContactManager {
     return this._contactManager;
   }
 
+  /**
+   *  Gets the `ChatPushManager` class. Make sure to call it after ChatClient has been initialized.
+   *
+   *  @returns The `ChatPushManager` class.
+   */
   public get pushManager(): ChatPushManager {
     return this._pushManager;
   }
 
+  /**
+   *  Gets the `ChatUserInfoManager` class. Make sure to call it after ChatClient has been initialized.
+   *
+   *  @returns The `ChatUserInfoManager` class.
+   */
   public get userManager(): ChatUserInfoManager {
     return this._userInfoManager;
   }
 
+  /**
+   *  Gets the `ChatRoomManager` class. Make sure to call it after ChatClient has been initialized.
+   *
+   *  @returns The `ChatRoomManager` class.
+   */
   public get roomManager(): ChatRoomManager {
     return this._chatRoomManager;
   }
 
+  /**
+   *  Gets the `ChatPresenceManager` class. Make sure to call it after ChatClient has been initialized.
+   *
+   *  @returns The `ChatPresenceManager` class.
+   */
   public get presenceManager(): ChatPresenceManager {
     return this._presenceManager;
   }

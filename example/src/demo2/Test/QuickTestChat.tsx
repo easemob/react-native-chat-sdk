@@ -586,7 +586,7 @@ export class QuickTestScreenChat extends QuickTestScreenBase<
           const convType = this.metaData.get(MN.getLatestMessage)?.params[1]
             .paramDefaultValue;
           this.tryCatch(
-            ChatClient.getInstance().chatManager.getLatestMessage(
+            ChatClient.getInstance().chatManager.fetchLatestMessage(
               convId,
               convType
             ),
@@ -606,7 +606,7 @@ export class QuickTestScreenChat extends QuickTestScreenBase<
           const convType = this.metaData.get(MN.getLastReceivedMessage)
             ?.params[1].paramDefaultValue;
           this.tryCatch(
-            ChatClient.getInstance().chatManager.getLastReceivedMessage(
+            ChatClient.getInstance().chatManager.fetchLastReceivedMessage(
               convId,
               convType
             ),
