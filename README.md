@@ -39,7 +39,7 @@ git clone --recurse-submodules git@github.com:easemob/react-native-chat-sdk.git
 
 ## Compile and run conditions
 
-See here for specific requirements. [Portal](./docs/quick-start.zh.md)
+See here for specific requirements. [Portal](./docs/quick-start.md)
 
 ## project compilation
 
@@ -64,7 +64,7 @@ Open a terminal and run `yarn` or `yarn install` command
 
 ## quick start
 
-Please check the specific documentation. [Portal](./docs/quick-start.zh.md)
+Please check the specific documentation. [Portal](./docs/quick-start.md)
 
 ## demo experience
 
