@@ -47,19 +47,20 @@ Open a terminal and run `yarn` or `yarn install` command
 
 ## build ios platform
 
-> use `xcode` to open the file `example/ios/ChatSdkExample.xcworkspace`;
-> Connect an ios device, or choose an emulator;
-> Set the signature (if it is a real machine);
-> Execute build, install and run demo.
-> **Note** The `pod install` command has been executed when running the `yarn` command, otherwise, it needs to be run manually.
+> use `xcode` to open the file `example/ios/ChatSdkExample.xcworkspace`;  
+> Connect an ios device, or choose an emulator;  
+> Set the signature (if it is a real machine);  
+> Execute build, install and run demo.  
+> **Note** The `pod install` command has been executed when running the `yarn` command, otherwise, it needs to be run manually.  
 
 ## build android platform
 
-> use `android studio` to open the folder `example/android`;
-> If it is the first time, please run the `sync` command first;
-> Execute build, install and run demo;
-> Before running the demo, start the service: `cd example && yarn start`.
-> **NOTE** Make sure to execute the following command before building: `cd native_src/cpp && sh generate.sh --type rn` > **Note** android5.0 or above requires data forwarding: `adb reverse tcp:8081 tcp:8081`
+> use `android studio` to open the folder `example/android`;  
+> If it is the first time, please run the `sync` command first;  
+> Execute build, install and run demo;  
+> Before running the demo, start the service: `cd example && yarn start`.  
+> **NOTE** Make sure to execute the following command before building: `cd native_src/cpp && sh generate.sh --type rn`   
+> **Note** android5.0 or above requires data forwarding: `adb reverse tcp:8081 tcp:8081`  
 
 ## quick start
 
