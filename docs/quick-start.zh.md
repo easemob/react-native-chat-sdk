@@ -111,7 +111,28 @@ const App = () => {
     let msgListener = {
       onMessagesReceived(messages) {
         console.log('onMessagesReceived: ', messages);
-        setWarnText('onMessagesReceived: ', messages);
+        setWarnText('onMessagesReceived: ' + JSON.stringify(messages));
+      },
+      onCmdMessagesReceived: messages => {
+        console.log('onCmdMessagesReceived: ', messages);
+      },
+      onMessagesRead: messages => {
+        console.log('onMessagesRead: ', messages);
+      },
+      onGroupMessageRead: groupMessageAcks => {
+        console.log('onGroupMessageRead: ', groupMessageAcks);
+      },
+      onMessagesDelivered: messages => {
+        console.log(`onMessagesDelivered: ${messages.length}: `, messages);
+      },
+      onMessagesRecalled: messages => {
+        console.log('onMessagesRecalled: ', messages);
+      },
+      onConversationsUpdate: () => {
+        console.log('onConversationsUpdate: ');
+      },
+      onConversationRead: (from, to) => {
+        console.log('onConversationRead: ', from, to);
       },
     };
 
@@ -126,7 +147,7 @@ const App = () => {
         console.log('register: success');
         setWarnText('register: success');
       })
-      .catch((reason) => {
+      .catch(reason => {
         console.log('register: fail', reason);
         setWarnText('register: fail' + reason);
       });
@@ -161,7 +182,7 @@ const App = () => {
         console.log('login: success');
         setWarnText('login: success');
       })
-      .catch((reason) => {
+      .catch(reason => {
         console.log('login: fail', reason);
         setWarnText('login: fail' + JSON.stringify(reason));
       });
@@ -174,7 +195,7 @@ const App = () => {
         console.log('logout: success');
         setWarnText('logout: success');
       })
-      .catch((reason) => {
+      .catch(reason => {
         console.log('logout: fail', reason);
         setWarnText('logout: fail' + reason);
       });
@@ -184,7 +205,7 @@ const App = () => {
     let msg = ChatMessage.createTextMessage(
       userId,
       content,
-      ChatMessageChatType.PeerChat
+      ChatMessageChatType.PeerChat,
     );
     const callback = new (class {
       onProgress(locaMsgId, progress) {
@@ -197,7 +218,7 @@ const App = () => {
       }
       onSuccess(message) {
         console.log('onSuccess', message.localMsgId);
-        setWarnText('onError: ' + message.localMsgId);
+        setWarnText('onSuccess: ' + message.localMsgId);
       }
     })();
     ChatClient.getInstance()
@@ -206,7 +227,7 @@ const App = () => {
         console.log('send success');
         setWarnText('send success: ' + msg.localMsgId);
       })
-      .catch((reason) => {
+      .catch(reason => {
         console.log('send failed');
         setWarnText('send fail: ' + reason);
       });
@@ -223,7 +244,7 @@ const App = () => {
             multiline
             style={styles.inputBox}
             placeholder="Enter username"
-            onChangeText={(text) => setUsername(text)}
+            onChangeText={text => setUsername(text)}
             value={username}
           />
         </View>
@@ -232,7 +253,7 @@ const App = () => {
             multiline
             style={styles.inputBox}
             placeholder="Enter password"
-            onChangeText={(text) => setPassword(text)}
+            onChangeText={text => setPassword(text)}
             value={password}
           />
         </View>
@@ -252,7 +273,7 @@ const App = () => {
             multiline
             style={styles.inputBox}
             placeholder="Enter the username you want to send"
-            onChangeText={(text) => setUserId(text)}
+            onChangeText={text => setUserId(text)}
             value={userId}
           />
         </View>
@@ -261,7 +282,7 @@ const App = () => {
             multiline
             style={styles.inputBox}
             placeholder="Enter content"
-            onChangeText={(text) => setContent(text)}
+            onChangeText={text => setContent(text)}
             value={content}
           />
         </View>

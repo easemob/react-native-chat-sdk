@@ -34,7 +34,28 @@ const App = () => {
     let msgListener = {
       onMessagesReceived(messages) {
         console.log('onMessagesReceived: ', messages);
-        setWarnText('onMessagesReceived: ', messages);
+        setWarnText('onMessagesReceived: ' + JSON.stringify(messages));
+      },
+      onCmdMessagesReceived: messages => {
+        console.log('onCmdMessagesReceived: ', messages);
+      },
+      onMessagesRead: messages => {
+        console.log('onMessagesRead: ', messages);
+      },
+      onGroupMessageRead: groupMessageAcks => {
+        console.log('onGroupMessageRead: ', groupMessageAcks);
+      },
+      onMessagesDelivered: messages => {
+        console.log(`onMessagesDelivered: ${messages.length}: `, messages);
+      },
+      onMessagesRecalled: messages => {
+        console.log('onMessagesRecalled: ', messages);
+      },
+      onConversationsUpdate: () => {
+        console.log('onConversationsUpdate: ');
+      },
+      onConversationRead: (from, to) => {
+        console.log('onConversationRead: ', from, to);
       },
     };
 
@@ -120,7 +141,7 @@ const App = () => {
       }
       onSuccess(message) {
         console.log('onSuccess', message.localMsgId);
-        setWarnText('onError: ' + message.localMsgId);
+        setWarnText('onSuccess: ' + message.localMsgId);
       }
     })();
     ChatClient.getInstance()
