@@ -20,6 +20,7 @@ import { QuickTestScreenContact } from '../Test/QuickTestContact';
 import { QuickTestScreenGroup } from '../Test/QuickTestGroup';
 import { QuickTestScreenRoom } from '../Test/QuickTestRoom';
 import { QuickTestScreenUser } from '../Test/QuickTestUser';
+import { QuickTestScreenPresence } from '../Test/QuickTestPresence';
 
 export const screenComponents: ScreenComponent[] = [
   // root navigator
@@ -114,6 +115,12 @@ export const screenComponents: ScreenComponent[] = [
   {
     route: QuickTestScreenUser.route,
     screen: QuickTestScreenUser,
+    isNavigation: false,
+    parentScreen: QuickTestManagerRoute,
+  },
+  {
+    route: QuickTestScreenPresence.route,
+    screen: QuickTestScreenPresence,
     isNavigation: false,
     parentScreen: QuickTestManagerRoute,
   },

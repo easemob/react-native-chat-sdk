@@ -50,7 +50,7 @@ import type {
   ChatGroupEventListener,
   ChatContactEventListener,
   ChatRoomEventListener,
-  ChatPresenceManagerListener,
+  ChatPresenceEventListener,
 } from './ChatEvents';
 
 /**
@@ -109,7 +109,7 @@ export {
   ChatContactEventListener,
   ChatGroupEventListener,
   ChatRoomEventListener,
-  ChatPresenceManagerListener,
+  ChatPresenceEventListener,
   ChatMultiDeviceEvent,
 };
 

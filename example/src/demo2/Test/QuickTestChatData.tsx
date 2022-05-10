@@ -42,6 +42,8 @@ export const MN = {
   getMessages: 'getMessages',
   getMessagesWithKeyword: 'getMessagesWithKeyword',
   getMessagesFromTime: 'getMessagesFromTime',
+  translateMessage: 'translateMessage',
+  fetchSupportLanguages: 'fetchSupportLanguages',
 };
 
 export const metaDataList = new Map<string, ApiParams>([
@@ -787,6 +789,31 @@ export const metaDataList = new Map<string, ApiParams>([
           paramDefaultValue: 20,
         },
       ],
+    },
+  ],
+  [
+    MN.translateMessage,
+    {
+      methodName: MN.translateMessage,
+      params: [
+        {
+          paramName: 'msg',
+          paramType: 'object',
+          paramDefaultValue: {},
+        },
+        {
+          paramName: 'languages',
+          paramType: 'object',
+          paramDefaultValue: [],
+        },
+      ],
+    },
+  ],
+  [
+    MN.fetchSupportLanguages,
+    {
+      methodName: MN.fetchSupportLanguages,
+      params: [],
     },
   ],
 ]);

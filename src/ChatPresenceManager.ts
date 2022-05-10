@@ -1,5 +1,5 @@
 import type { EmitterSubscription, NativeEventEmitter } from 'react-native';
-import type { ChatPresenceManagerListener } from './ChatEvents';
+import type { ChatPresenceEventListener } from './ChatEvents';
 import { ChatPresence } from './common/ChatPresence';
 import {
   MTfetchPresenceStatus,
@@ -14,7 +14,7 @@ import { Native } from './__internal__/Native';
 export class ChatPresenceManager extends Native {
   private static TAG = 'ChatPresenceManager';
 
-  private _presenceListeners: Set<ChatPresenceManagerListener>;
+  private _presenceListeners: Set<ChatPresenceEventListener>;
   private _presenceSubscriptions: Map<string, EmitterSubscription>;
 
   constructor() {
@@ -37,7 +37,7 @@ export class ChatPresenceManager extends Native {
     );
   }
   private invokePresenceListener(params: any): void {
-    this._presenceListeners.forEach((listener: ChatPresenceManagerListener) => {
+    this._presenceListeners.forEach((listener: ChatPresenceEventListener) => {
       const ret: Array<ChatPresence> = [];
       const l: Array<any> = params?.[MTonPresenceStatusChanged].presences;
       l.forEach((value: any) => {
@@ -48,27 +48,27 @@ export class ChatPresenceManager extends Native {
   }
 
   /**
-   * Add group listener.
+   * Add presence listener.
    *
    * @param listener The listener to be added.
    */
-  addGroupListener(listener: ChatPresenceManagerListener): void {
+  addPresenceListener(listener: ChatPresenceEventListener): void {
     this._presenceListeners.add(listener);
   }
 
   /**
-   * Remove group listener.
+   * Remove presence listener.
    *
    * @param listener The listener to be deleted.
    */
-  removeGroupListener(listener: ChatPresenceManagerListener): void {
+  removePresenceListener(listener: ChatPresenceEventListener): void {
     this._presenceListeners.delete(listener);
   }
 
   /**
-   * Clear all group listener.
+   * Clear all presence listener.
    */
-  removeAllGroupListener(): void {
+  removeAllPresenceListener(): void {
     this._presenceListeners.clear();
   }
 

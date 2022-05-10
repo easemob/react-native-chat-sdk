@@ -20,8 +20,12 @@ import {
   StatelessBase,
 } from '../__internal__/LeafScreenBase';
 import type { ApiParams } from '../__internal__/DataTypes';
-import type { ChatMultiDeviceEvent } from 'src/ChatEvents';
+import type {
+  ChatMultiDeviceEvent,
+  ChatPresenceEventListener,
+} from 'react-native-chat-sdk';
 import type { ChatCmdMessageBody } from 'src/common/ChatMessage';
+import type { ChatPresence } from 'src/common/ChatPresence';
 
 export const metaData = new Map<string, ApiParams>();
 export function registerStateData(params: ApiParams): void {
@@ -43,6 +47,7 @@ export interface QuickTestState extends StateBase {
   conv_listener: string;
   group_listener: string;
   room_listener: string;
+  presence_listener: string;
 }
 
 export interface QuickTestStateless extends StatelessBase {}
@@ -834,6 +839,28 @@ export abstract class QuickTestScreenBase<
     })(this);
     ChatClient.getInstance().roomManager.removeAllRoomListener();
     ChatClient.getInstance().roomManager.addRoomListener(roomListener);
+
+    const presence_listener = new (class implements ChatPresenceEventListener {
+      that: QuickTestScreenBase<S, SL>;
+      constructor(parent: QuickTestScreenBase<S, SL>) {
+        this.that = parent;
+      }
+      onPresenceStatusChanged(list: ChatPresence[]): void {
+        console.log(
+          `${QuickTestScreenBase.TAG}: onPresenceStatusChanged:`,
+          list.length,
+          list
+        );
+        this.that.setState({
+          presence_listener:
+            `onPresenceStatusChanged: ` + list.length + ': ' + list,
+        });
+      }
+    })(this);
+    ChatClient.getInstance().presenceManager.removeAllPresenceListener();
+    ChatClient.getInstance().presenceManager.addPresenceListener(
+      presence_listener
+    );
   }
 
   protected removeListener?(): void {
@@ -884,6 +911,9 @@ export abstract class QuickTestScreenBase<
           'group_listener: ' + this.state.group_listener
         )}
         {this.renderParamWithText('room_listener: ' + this.state.room_listener)}
+        {this.renderParamWithText(
+          'pre_listener: ' + this.state.presence_listener
+        )}
         {this.addSpaces()}
       </View>
     );

@@ -32,6 +32,7 @@ export class QuickTestScreenRoom extends QuickTestScreenBase<
       conv_listener: '',
       group_listener: '',
       room_listener: '',
+      presence_listener: '',
       sendResult: '',
       recvResult: '',
       exceptResult: '',

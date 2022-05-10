@@ -394,6 +394,6 @@ export interface ChatRoomEventListener {
   }): void;
 }
 
-export interface ChatPresenceManagerListener {
+export interface ChatPresenceEventListener {
   onPresenceStatusChanged(list: Array<ChatPresence>): void;
 }
