@@ -817,12 +817,13 @@ export const metaData = new Map<string, ApiParams>([
         {
           paramName: 'fileId',
           paramType: 'string',
-          paramDefaultValue: 'asterisk010',
+          paramDefaultValue: '22328370-d0d5-11ec-88a6-f1a5bfc1c68f',
         },
         {
           paramName: 'savePath',
           paramType: 'string',
-          paramDefaultValue: '',
+          paramDefaultValue:
+            '/private/var/mobile/Containers/Data/Application/060955BE-1C40-4B58-B1B0-F3B5D3649565/tmp/com.example.reactnativechatsdk-Inbox',
         },
         {
           paramName: 'callback',
@@ -845,7 +846,7 @@ export const metaData = new Map<string, ApiParams>([
         {
           paramName: 'fileId',
           paramType: 'string',
-          paramDefaultValue: '',
+          paramDefaultValue: 'c3c8a200-d0d5-11ec-bb65-e747eaecfeca',
         },
       ],
     },
