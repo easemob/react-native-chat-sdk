@@ -1,6 +1,21 @@
 # Update Log
 
 ---
+## 0.2.3
+* fix bugs
+* update api references
+
+---
+## 0.2.0
+* update ChatClient
+* update ChatManager
+* add ChatContactManager
+* add ChatGroupManager
+* add ChatRoomManager
+* add ChatUserInfoManager
+* add ChatPresenceManager
+
+---
 ## 0.1.3
 * add CHANGELOG.md
 ---

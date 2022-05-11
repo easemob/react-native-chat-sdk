@@ -46,6 +46,7 @@ export class QuickTestScreenChat extends QuickTestScreenBase<
       conv_listener: '',
       group_listener: '',
       room_listener: '',
+      presence_listener: '',
       sendResult: '',
       recvResult: '',
       exceptResult: '',
@@ -586,7 +587,7 @@ export class QuickTestScreenChat extends QuickTestScreenBase<
           const convType = this.metaData.get(MN.getLatestMessage)?.params[1]
             .paramDefaultValue;
           this.tryCatch(
-            ChatClient.getInstance().chatManager.getLatestMessage(
+            ChatClient.getInstance().chatManager.fetchLatestMessage(
               convId,
               convType
             ),
@@ -606,7 +607,7 @@ export class QuickTestScreenChat extends QuickTestScreenBase<
           const convType = this.metaData.get(MN.getLastReceivedMessage)
             ?.params[1].paramDefaultValue;
           this.tryCatch(
-            ChatClient.getInstance().chatManager.getLastReceivedMessage(
+            ChatClient.getInstance().chatManager.fetchLastReceivedMessage(
               convId,
               convType
             ),
@@ -924,6 +925,37 @@ export class QuickTestScreenChat extends QuickTestScreenBase<
             ),
             QuickTestScreenChat.TAG,
             MN.getMessagesFromTime
+          );
+        }
+        break;
+      case MN.translateMessage:
+        {
+          const methodName = this.metaData.get(MN.translateMessage)!.methodName;
+          console.log(`${MN.translateMessage} === ${methodName}`);
+          const msg = this.metaData.get(MN.translateMessage)?.params[0]
+            .paramDefaultValue;
+          const languages = this.metaData.get(MN.translateMessage)?.params[1]
+            .paramDefaultValue;
+          this.tryCatch(
+            ChatClient.getInstance().chatManager.translateMessage(
+              msg,
+              languages
+            ),
+            QuickTestScreenChat.TAG,
+            MN.translateMessage
+          );
+        }
+        break;
+      case MN.fetchSupportLanguages:
+        {
+          const methodName = this.metaData.get(
+            MN.fetchSupportLanguages
+          )!.methodName;
+          console.log(`${MN.fetchSupportLanguages} === ${methodName}`);
+          this.tryCatch(
+            ChatClient.getInstance().chatManager.fetchSupportedLanguages(),
+            QuickTestScreenChat.TAG,
+            MN.fetchSupportLanguages
           );
         }
         break;

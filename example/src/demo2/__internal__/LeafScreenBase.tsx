@@ -482,7 +482,10 @@ export abstract class LeafScreenBase<
   ): ReactNode {
     return (
       <View
-        key={this.generateKey('renderParamWithSelectMediaFile', name)}
+        key={this.generateKey(
+          'renderParamWithSelectMediaFile',
+          name.concat(mediaType.toString())
+        )}
         style={styleValues.containerRow}
       >
         <Text style={styleValues.textTipStyle}>{name}:</Text>

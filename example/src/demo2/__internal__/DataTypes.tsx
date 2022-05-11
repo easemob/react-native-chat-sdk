@@ -9,7 +9,7 @@ export interface ParamPair {
     | 'undefined'
     | 'object'
     | 'function';
-  paramValue?: any;
+  paramValue?: () => any;
   paramDefaultValue: any;
 }
 export interface ApiParams {

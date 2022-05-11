@@ -3,6 +3,7 @@ import type { ChatMessageEventListener } from './ChatEvents';
 import {
   ChatConversation,
   ChatConversationType,
+  ChatSearchDirection,
 } from './common/ChatConversation';
 import { ChatCursorResult } from './common/ChatCursorResult';
 import { ChatError } from './common/ChatError';
@@ -13,6 +14,8 @@ import {
   ChatMessageStatusCallback,
   ChatMessageType,
 } from './common/ChatMessage';
+import { ChatTranslateLanguage } from './common/ChatTranslateLanguage';
+import { BaseManager } from './__internal__/Base';
 import {
   MTackConversationRead,
   MTackGroupMessageRead,
@@ -30,13 +33,10 @@ import {
   MTonConversationHasRead,
   MTonConversationUpdate,
   MTonGroupMessageRead,
-  MTonMessageError,
-  MTonMessageProgressUpdate,
   MTonMessagesDelivered,
   MTonMessagesRead,
   MTonMessagesRecalled,
   MTonMessagesReceived,
-  MTonMessageSuccess,
   MTrecallMessage,
   MTresendMessage,
   MTsearchChatMsgFromDB,
@@ -61,22 +61,11 @@ import {
   MTgetConversationsFromServer,
   MTloadAllConversations,
   MTloadMsgWithTime,
+  MTtranslateMessage,
+  MTfetchSupportLanguages,
+  MTsyncConversationName,
 } from './__internal__/Consts';
 import { Native } from './__internal__/Native';
-
-/**
- * The message search directions.
- */
-export enum ChatSearchDirection {
-  /**
-   * Messages are retrieved in the reverse chronological order of the timestamp included in them.
-   */
-  UP,
-  /**
-   * Messages are retrieved in the chronological order of the timestamp included in them.
-   */
-  DOWN,
-}
 
 /**
  * The chat manager class, responsible for sending and receiving messages, loading and deleting conversations, and downloading attachments.
@@ -117,53 +106,43 @@ export enum ChatSearchDirection {
  *    .catch();
  *  ```
  */
-export class ChatManager extends Native {
+export class ChatManager extends BaseManager {
   static TAG = 'ChatManager';
 
   private _messageListeners: Set<ChatMessageEventListener>;
-  private _eventEmitter?: NativeEventEmitter;
 
   constructor() {
     super();
     this._messageListeners = new Set<ChatMessageEventListener>();
   }
 
-  public setNativeListener(eventEmitter: NativeEventEmitter) {
-    this._eventEmitter = eventEmitter;
-    eventEmitter.removeAllListeners(MTonMessagesReceived);
-    eventEmitter.addListener(
-      MTonMessagesReceived,
-      this.onMessagesReceived.bind(this)
-    );
-    eventEmitter.removeAllListeners(MTonCmdMessagesReceived);
-    eventEmitter.addListener(
+  public setNativeListener(event: NativeEventEmitter) {
+    this._eventEmitter = event;
+    event.removeAllListeners(MTonMessagesReceived);
+    event.addListener(MTonMessagesReceived, this.onMessagesReceived.bind(this));
+    event.removeAllListeners(MTonCmdMessagesReceived);
+    event.addListener(
       MTonCmdMessagesReceived,
       this.onCmdMessagesReceived.bind(this)
     );
-    eventEmitter.removeAllListeners(MTonMessagesRead);
-    eventEmitter.addListener(MTonMessagesRead, this.onMessagesRead.bind(this));
-    eventEmitter.removeAllListeners(MTonGroupMessageRead);
-    eventEmitter.addListener(
-      MTonGroupMessageRead,
-      this.onGroupMessageRead.bind(this)
-    );
-    eventEmitter.removeAllListeners(MTonMessagesDelivered);
-    eventEmitter.addListener(
+    event.removeAllListeners(MTonMessagesRead);
+    event.addListener(MTonMessagesRead, this.onMessagesRead.bind(this));
+    event.removeAllListeners(MTonGroupMessageRead);
+    event.addListener(MTonGroupMessageRead, this.onGroupMessageRead.bind(this));
+    event.removeAllListeners(MTonMessagesDelivered);
+    event.addListener(
       MTonMessagesDelivered,
       this.onMessagesDelivered.bind(this)
     );
-    eventEmitter.removeAllListeners(MTonMessagesRecalled);
-    eventEmitter.addListener(
-      MTonMessagesRecalled,
-      this.onMessagesRecalled.bind(this)
-    );
-    eventEmitter.removeAllListeners(MTonConversationUpdate);
-    eventEmitter.addListener(
+    event.removeAllListeners(MTonMessagesRecalled);
+    event.addListener(MTonMessagesRecalled, this.onMessagesRecalled.bind(this));
+    event.removeAllListeners(MTonConversationUpdate);
+    event.addListener(
       MTonConversationUpdate,
       this.onConversationsUpdate.bind(this)
     );
-    eventEmitter.removeAllListeners(MTonConversationHasRead);
-    eventEmitter.addListener(
+    event.removeAllListeners(MTonConversationHasRead);
+    event.addListener(
       MTonConversationHasRead,
       this.onConversationHasRead.bind(this)
     );
@@ -292,43 +271,9 @@ export class ChatManager extends Native {
     );
   }
 
-  private static handleMessageCallback(
-    methodName: string,
-    self: ChatManager,
-    message: ChatMessage,
-    callback?: ChatMessageStatusCallback
-  ): void {
-    if (callback && self._eventEmitter) {
-      const subscription = self._eventEmitter.addListener(
-        methodName,
-        (params: any) => {
-          const localMsgId: string = params.localTime.toString();
-          console.log(
-            `${ChatManager.TAG}: handleMessageCallback: ${methodName}: ${localMsgId}`
-          );
-          if (message.localMsgId === localMsgId) {
-            const callbackType: String = params.callbackType;
-            if (callbackType === MTonMessageSuccess) {
-              const m = params.message;
-              callback.onSuccess(new ChatMessage(m));
-              subscription.remove();
-            } else if (callbackType === MTonMessageError) {
-              const e = params.error;
-              callback.onError(localMsgId, new ChatError(e));
-              subscription.remove();
-            } else if (callbackType === MTonMessageProgressUpdate) {
-              const progress: number = params.progress;
-              callback.onProgress(localMsgId, progress);
-            }
-          }
-        }
-      );
-    }
-  }
-
   /**
    * Adds a message listener.
-   * @param listener The message listener.
+   * @param listener The listener to be added.
    */
   public addMessageListener(listener: ChatMessageEventListener): void {
     this._messageListeners.add(listener);
@@ -336,7 +281,7 @@ export class ChatManager extends Native {
 
   /**
    * Removes the message listener.
-   * @param listener The message listener.
+   * @param listener The listener to be deleted.
    */
   public removeMessageListener(listener: ChatMessageEventListener): void {
     this._messageListeners.delete(listener);
@@ -519,7 +464,7 @@ export class ChatManager extends Native {
    *
    * @throws A description of the exception. See {@link ChatError}.
    */
-  public async getMessage(msgId: string): Promise<ChatMessage | null> {
+  public async getMessage(msgId: string): Promise<ChatMessage | undefined> {
     console.log(`${ChatManager.TAG}: getMessage: ${msgId}`);
     let r: any = await Native._callMethod(MTgetMessage, {
       [MTgetMessage]: {
@@ -527,12 +472,11 @@ export class ChatManager extends Native {
       },
     });
     Native.checkErrorFromResult(r);
-    console.log('r: ', r);
     r = r?.[MTgetMessage];
     if (r) {
       return new ChatMessage(r);
     } else {
-      return null;
+      return undefined;
     }
   }
 
@@ -838,7 +782,7 @@ export class ChatManager extends Native {
     convId: string,
     convType: ChatConversationType,
     createIfNeed: boolean = true
-  ): Promise<ChatConversation> {
+  ): Promise<ChatConversation | undefined> {
     console.log(
       `${ChatManager.TAG}: getConversation: ${convId}, ${convType}, ${createIfNeed}`
     );
@@ -926,10 +870,23 @@ export class ChatManager extends Native {
     Native.checkErrorFromResult(r);
   }
 
-  public async getLatestMessage(
+  /**
+   * Gets the lastest message from the conversation.
+   *
+   * The operation does not change the unread message count.
+   *
+   * The SDK gets the latest message from the local memory first. If no message is found, the SDK loads the message from the local database and then puts it in the memory.
+   *
+   * @param convId The conversation id.
+   * @param convType The conversation type.
+   * @returns The message instance. Returns undefined if the message does not exist.
+   *
+   * @throws A description of the exception. See {@link ChatError}.
+   */
+  public async fetchLatestMessage(
     convId: string,
     convType: ChatConversationType
-  ): Promise<ChatMessage> {
+  ): Promise<ChatMessage | undefined> {
     console.log(`${ChatManager.TAG}: latestMessage: `);
     let r: any = await Native._callMethod(MTgetLatestMessage, {
       [MTgetLatestMessage]: {
@@ -942,10 +899,19 @@ export class ChatManager extends Native {
     return new ChatMessage(rr);
   }
 
-  public async getLastReceivedMessage(
+  /**
+   * Gets the latest message from the conversation.
+   *
+   * @param convId The conversation id.
+   * @param convType The conversation type.
+   * @returns The message instance. Returns undefined if the message does not exist.
+   *
+   * @throws A description of the exception. See {@link ChatError}.
+   */
+  public async fetchLastReceivedMessage(
     convId: string,
     convType: ChatConversationType
-  ): Promise<ChatMessage> {
+  ): Promise<ChatMessage | undefined> {
     console.log(`${ChatManager.TAG}: lastReceivedMessage: `);
     let r: any = await Native._callMethod(MTgetLatestMessageFromOthers, {
       [MTgetLatestMessageFromOthers]: {
@@ -958,6 +924,15 @@ export class ChatManager extends Native {
     return ret;
   }
 
+  /**
+   * Gets the unread message count of the conversation.
+   *
+   * @param convId The conversation id.
+   * @param convType The conversation type.
+   * @returns The unread message count of the conversation.
+   *
+   * @throws A description of the exception. See {@link ChatError}.
+   */
   public async unreadCount(
     convId: string,
     convType: ChatConversationType
@@ -974,6 +949,15 @@ export class ChatManager extends Native {
     return ret;
   }
 
+  /**
+   * Marks a message as read.
+   *
+   * @param convId The conversation id.
+   * @param convType The conversation type.
+   * @param msgId The message id.
+   *
+   * @throws A description of the exception. See {@link ChatError}.
+   */
   public async markMessageAsRead(
     convId: string,
     convType: ChatConversationType,
@@ -990,6 +974,14 @@ export class ChatManager extends Native {
     ChatManager.checkErrorFromResult(r);
   }
 
+  /**
+   * Marks all messages as read.
+   *
+   * @param convId The conversation id.
+   * @param convType The conversation type.
+   *
+   * @throws A description of the exception. See {@link ChatError}.
+   */
   public async markAllMessagesAsRead(
     convId: string,
     convType: ChatConversationType
@@ -1004,6 +996,15 @@ export class ChatManager extends Native {
     ChatManager.checkErrorFromResult(r);
   }
 
+  /**
+   * Inserts a message to a conversation in the local database and the SDK will automatically update the latest message.
+   *
+   * @param convId The conversation id.
+   * @param convType The conversation type.
+   * @param msg The message instance.
+   *
+   * @throws A description of the exception. See {@link ChatError}.
+   */
   public async insertMessage(
     convId: string,
     convType: ChatConversationType,
@@ -1020,6 +1021,15 @@ export class ChatManager extends Native {
     ChatManager.checkErrorFromResult(r);
   }
 
+  /**
+   * Inserts a message to the end of a conversation in the local database.
+   *
+   * @param convId The conversation id.
+   * @param convType The conversation type.
+   * @param msg The message instance.
+   *
+   * @throws A description of the exception. See {@link ChatError}.
+   */
   public async appendMessage(
     convId: string,
     convType: ChatConversationType,
@@ -1036,6 +1046,17 @@ export class ChatManager extends Native {
     ChatManager.checkErrorFromResult(r);
   }
 
+  /**
+   * Updates a message in the local database.
+   *
+   * The latest Message of the conversation and other properties will be updated accordingly. The message ID of the message, however, remains the same.
+   *
+   * @param convId The conversation id.
+   * @param convType The conversation type.
+   * @param msg The message instance.
+   *
+   * @throws A description of the exception. See {@link ChatError}.
+   */
   public async updateConversationMessage(
     convId: string,
     convType: ChatConversationType,
@@ -1052,6 +1073,15 @@ export class ChatManager extends Native {
     ChatManager.checkErrorFromResult(r);
   }
 
+  /**
+   * Deletes a message in the local database.
+   *
+   * @param convId The conversation id.
+   * @param convType The conversation type.
+   * @param msgId The ID of message to be deleted.
+   *
+   * @throws A description of the exception. See {@link ChatError}.
+   */
   public async deleteMessage(
     convId: string,
     convType: ChatConversationType,
@@ -1068,6 +1098,14 @@ export class ChatManager extends Native {
     ChatManager.checkErrorFromResult(r);
   }
 
+  /**
+   * Deletes all the messages of the conversation from both the memory and local database.
+   *
+   * @param convId The conversation id.
+   * @param convType The conversation type.
+   *
+   * @throws A description of the exception. See {@link ChatError}.
+   */
   public async deleteAllMessages(
     convId: string,
     convType: ChatConversationType
@@ -1082,11 +1120,21 @@ export class ChatManager extends Native {
     ChatManager.checkErrorFromResult(r);
   }
 
+  /**
+   * Gets the message with a specific message ID.
+   *
+   * @param convId The conversation id.
+   * @param convType The conversation type.
+   * @param msgId The message ID.
+   * @returns The message instance. Returns undefined if the message does not exist.
+   *
+   * @throws A description of the exception. See {@link ChatError}.
+   */
   public async getMessageById(
     convId: string,
     convType: ChatConversationType,
     msgId: string
-  ): Promise<void> {
+  ): Promise<ChatMessage | undefined> {
     console.log(`${ChatManager.TAG}: getMessageById: `);
     let r: any = await Native._callMethod(MTloadMsgWithId, {
       [MTloadMsgWithId]: {
@@ -1096,8 +1144,25 @@ export class ChatManager extends Native {
       },
     });
     ChatManager.checkErrorFromResult(r);
+    return new ChatMessage(r?.[MTloadMsgWithId]);
   }
 
+  /**
+   * Retrieves messages from the database according to the following parameters: the message type, the Unix timestamp, max count, sender.
+   *
+   * @param convId The conversation id.
+   * @param convType The conversation type.
+   * @param msgType The message type, including TXT, VOICE, IMAGE, and so on.
+   * @param direction The direction in which the message is loaded: ChatSearchDirection.
+   * - `ChatSearchDirection.Up`: Messages are retrieved in the reverse chronological order of when the server received messages.
+   * - `ChatSearchDirection.Down`: Messages are retrieved in the chronological order of when the server received messages.
+   * @param timestamp The Unix timestamp for the search.
+   * @param count The max number of messages to search.
+   * @param sender The sender of the message. The param can also be used to search in group chat or chat room.
+   * @returns The message list. but, maybe is empty list.
+   *
+   * @throws A description of the exception. See {@link ChatError}.
+   */
   public async getMessagesWithMsgType(
     convId: string,
     convType: ChatConversationType,
@@ -1129,6 +1194,22 @@ export class ChatManager extends Native {
     return ret;
   }
 
+  /**
+   * Loads multiple messages from the local database.
+   *
+   * Loads messages from the local database before the specified message.
+   *
+   * The loaded messages will also join the existing messages of the conversation stored in the memory.
+   *
+   * @param convId The conversation id.
+   * @param convType The conversation type.
+   * @param startMsgId The starting message ID. Message loaded in the memory before this message ID will be loaded. If the `startMsgId` is set as "" or null, the SDK will first load the latest messages in the database.
+   * @param direction The direction in which the message is loaded: ChatSearchDirection.
+   * @param loadCount The number of messages per page.
+   * @returns The message list. but, maybe is empty list.
+   *
+   * @throws A description of the exception. See {@link ChatError}.
+   */
   public async getMessages(
     convId: string,
     convType: ChatConversationType,
@@ -1155,6 +1236,23 @@ export class ChatManager extends Native {
     return ret;
   }
 
+  /**
+   * Loads messages from the local database by the following parameters: keywords, timestamp, max count, sender, search direction.
+   *
+   * **Note**
+   * Pay attention to the memory usage when the maxCount is large.
+   *
+   * @param convId The conversation id.
+   * @param convType The conversation type.
+   * @param keywords The keywords in message.
+   * @param direction The direction in which the message is loaded: ChatSearchDirection.
+   * @param timestamp The timestamp for search.
+   * @param count The maximum number of messages to search.
+   * @param sender The message sender. The param can also be used to search in group chat.
+   * @returns The message list. but, maybe is empty list.
+   *
+   * @throws A description of the exception. See {@link ChatError}.
+   */
   public async getMessagesWithKeyword(
     convId: string,
     convType: ChatConversationType,
@@ -1186,6 +1284,22 @@ export class ChatManager extends Native {
     return ret;
   }
 
+  /**
+   * Loads messages from the local database according the following parameters: start timestamp, end timestamp, count.
+   *
+   * **Note**
+   * Pay attention to the memory usage when the maxCount is large.
+   *
+   * @param convId The conversation id.
+   * @param convType The conversation type.
+   * @param startTime The starting Unix timestamp for search.
+   * @param endTime The ending Unix timestamp for search.
+   * @param direction The direction in which the message is loaded: ChatSearchDirection.
+   * @param count The maximum number of message to retrieve.
+   * @returns The list of searched messages.
+   *
+   * @throws A description of the exception. See {@link ChatError}.
+   */
   public async getMessagesFromTime(
     convId: string,
     convType: ChatConversationType,
@@ -1211,5 +1325,74 @@ export class ChatManager extends Native {
       ret.push(new ChatMessage(value[1]));
     });
     return ret;
+  }
+
+  /**
+   * Translate a message.
+   *
+   * @param msg The message object
+   * @param languages The target languages to translate
+   * @returns Translated Message
+   *
+   * @throws A description of the exception. See {@link ChatError}.
+   */
+  public async translateMessage(
+    msg: ChatMessage,
+    languages: Array<string>
+  ): Promise<ChatMessage> {
+    console.log(`${ChatManager.TAG}: translateMessage: `);
+    let r: any = await Native._callMethod(MTtranslateMessage, {
+      [MTtranslateMessage]: {
+        message: msg,
+        languages: languages,
+      },
+    });
+    ChatManager.checkErrorFromResult(r);
+    const rr = r?.[MTtranslateMessage];
+    return new ChatMessage(rr?.message);
+  }
+
+  /**
+   * Fetch all languages what the translate service support
+   *
+   * @returns Supported languages list.
+   *
+   * @throws A description of the exception. See {@link ChatError}.
+   */
+  public async fetchSupportedLanguages(): Promise<
+    Array<ChatTranslateLanguage>
+  > {
+    console.log(`${ChatManager.TAG}: fetchSupportedLanguages: `);
+    let r: any = await Native._callMethod(MTfetchSupportLanguages);
+    ChatManager.checkErrorFromResult(r);
+    const rr: Array<any> = r?.[MTfetchSupportLanguages];
+    const ret: Array<ChatTranslateLanguage> = [];
+    rr.forEach((value: any) => {
+      ret.push(new ChatTranslateLanguage(value));
+    });
+    return ret;
+  }
+
+  /**
+   * Set custom properties for the conversation.
+   *
+   * @param convId The conversation id.
+   * @param convType The conversation type.
+   * @param ext The custom attribute.
+   */
+  public async setConversationExtension(
+    convId: string,
+    convType: ChatConversationType,
+    ext: any
+  ): Promise<void> {
+    console.log(`${ChatManager.TAG}: setConversationExtension: `);
+    let r: any = await Native._callMethod(MTsyncConversationName, {
+      [MTsyncConversationName]: {
+        con_id: convId,
+        type: convType,
+        ext: ext,
+      },
+    });
+    ChatManager.checkErrorFromResult(r);
   }
 }

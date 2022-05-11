@@ -2,7 +2,7 @@
 
 Here is a supplementary description of the relevant content, if other topics do not find relevant content, you can refer to this document.
 
-## 下载项目
+## download project
 
 ```
 # Download with subprojects.

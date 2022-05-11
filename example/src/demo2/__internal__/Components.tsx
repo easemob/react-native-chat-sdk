@@ -20,21 +20,25 @@ import { QuickTestScreenContact } from '../Test/QuickTestContact';
 import { QuickTestScreenGroup } from '../Test/QuickTestGroup';
 import { QuickTestScreenRoom } from '../Test/QuickTestRoom';
 import { QuickTestScreenUser } from '../Test/QuickTestUser';
+import { QuickTestScreenPresence } from '../Test/QuickTestPresence';
 
 export const screenComponents: ScreenComponent[] = [
-  { route: GroupManagerRoute, screen: GroupManagerScreen, isNavigation: true },
-  { route: ChatManagerRoute, screen: ChatManagerScreen, isNavigation: true },
+  // root navigator
   { route: ClientRoute, screen: ClientScreen, isNavigation: true },
+  { route: ChatManagerRoute, screen: ChatManagerScreen, isNavigation: true },
+  { route: GroupManagerRoute, screen: GroupManagerScreen, isNavigation: true },
   {
     route: QuickTestManagerRoute,
     screen: QuickTestManagerScreen,
     isNavigation: true,
   },
+
+  // ClientRoute navigator
   {
-    route: SendMessageScreen.route,
-    screen: SendMessageScreen,
+    route: LoginLogoutScreen.route,
+    screen: LoginLogoutScreen,
     isNavigation: false,
-    parentScreen: ChatManagerRoute,
+    parentScreen: ClientRoute,
   },
   {
     route: ClientOthersScreen.route,
@@ -60,11 +64,13 @@ export const screenComponents: ScreenComponent[] = [
     isNavigation: false,
     parentScreen: ClientRoute,
   },
+
+  // ChatManagerRoute navigator
   {
-    route: LoginLogoutScreen.route,
-    screen: LoginLogoutScreen,
+    route: SendMessageScreen.route,
+    screen: SendMessageScreen,
     isNavigation: false,
-    parentScreen: ClientRoute,
+    parentScreen: ChatManagerRoute,
   },
   {
     route: ChatManagerLeafScreen.route,
@@ -72,6 +78,16 @@ export const screenComponents: ScreenComponent[] = [
     isNavigation: false,
     parentScreen: ChatManagerRoute,
   },
+
+  // GroupManagerRoute navigator
+  {
+    route: GroupManagerLeafScreen.route,
+    screen: GroupManagerLeafScreen,
+    isNavigation: false,
+    parentScreen: GroupManagerRoute,
+  },
+
+  // QuickTestManagerRoute navigator
   {
     route: QuickTestScreenChat.route,
     screen: QuickTestScreenChat,
@@ -97,14 +113,14 @@ export const screenComponents: ScreenComponent[] = [
     parentScreen: QuickTestManagerRoute,
   },
   {
-    route: GroupManagerLeafScreen.route,
-    screen: GroupManagerLeafScreen,
-    isNavigation: false,
-    parentScreen: GroupManagerRoute,
-  },
-  {
     route: QuickTestScreenUser.route,
     screen: QuickTestScreenUser,
+    isNavigation: false,
+    parentScreen: QuickTestManagerRoute,
+  },
+  {
+    route: QuickTestScreenPresence.route,
+    screen: QuickTestScreenPresence,
     isNavigation: false,
     parentScreen: QuickTestManagerRoute,
   },

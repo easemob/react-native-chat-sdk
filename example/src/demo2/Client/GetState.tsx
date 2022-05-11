@@ -55,19 +55,17 @@ export class GetStateScreen extends Component<{ navigation: any }, State, any> {
 
   private getsdkVersion(): void {
     console.log(`${GetStateScreen.TAG}: getsdkVersion: `);
-    let r = ChatClient.getInstance().sdkVersion;
-    this.setState({ result: r, sdkVersion: r });
   }
 
   private getcurrentUserName(): void {
     console.log(`${GetStateScreen.TAG}: getcurrentUserName: `);
     ChatClient.getInstance()
       .getCurrentUsername()
-      .then((value: string) => {
+      .then((value: string | undefined) => {
         console.log('GetStateScreen: getcurrentUserName: success', value);
         this.setState({
           result: `getcurrentUserName: success` + value,
-          currentUserName: value,
+          currentUserName: value!,
         });
       })
       .catch((reason: any) => {

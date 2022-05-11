@@ -42,6 +42,8 @@ export const MN = {
   getMessages: 'getMessages',
   getMessagesWithKeyword: 'getMessagesWithKeyword',
   getMessagesFromTime: 'getMessagesFromTime',
+  translateMessage: 'translateMessage',
+  fetchSupportLanguages: 'fetchSupportLanguages',
 };
 
 export const metaDataList = new Map<string, ApiParams>([
@@ -655,7 +657,7 @@ export const metaDataList = new Map<string, ApiParams>([
         {
           paramName: 'direction',
           paramType: 'number',
-          paramDefaultValue: 0,
+          paramDefaultValue: 1,
         },
         {
           paramName: 'timestamp',
@@ -670,7 +672,7 @@ export const metaDataList = new Map<string, ApiParams>([
         {
           paramName: 'sender',
           paramType: 'string',
-          paramDefaultValue: datasheet.accounts[0].id,
+          paramDefaultValue: datasheet.accounts[2].id,
         },
       ],
     },
@@ -698,7 +700,7 @@ export const metaDataList = new Map<string, ApiParams>([
         {
           paramName: 'startMsgId',
           paramType: 'string',
-          paramDefaultValue: '1003607445513177152',
+          paramDefaultValue: '1003225988886169736',
         },
         {
           paramName: 'loadCount',
@@ -787,6 +789,31 @@ export const metaDataList = new Map<string, ApiParams>([
           paramDefaultValue: 20,
         },
       ],
+    },
+  ],
+  [
+    MN.translateMessage,
+    {
+      methodName: MN.translateMessage,
+      params: [
+        {
+          paramName: 'msg',
+          paramType: 'object',
+          paramDefaultValue: {},
+        },
+        {
+          paramName: 'languages',
+          paramType: 'object',
+          paramDefaultValue: [],
+        },
+      ],
+    },
+  ],
+  [
+    MN.fetchSupportLanguages,
+    {
+      methodName: MN.fetchSupportLanguages,
+      params: [],
     },
   ],
 ]);

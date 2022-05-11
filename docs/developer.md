@@ -6,55 +6,94 @@
 ## The development environment
 
 ### The operating system
-> 建议 macos: 10.15.7
-> 如果是m1芯片: 建议 macos: 最新
+> Recommendation: macOS 10.15.7 or above.
+> If it is an arm64 chip mac, it is recommended to keep the latest system.
+
 ### The environment variable
 > JAVA_HOME
 > ANDROID_HOME
+```bash
+# if bash, open ~/.bashrc
+# if zsh, open ~/.zshrc
+export JAVA_HOME="/Applications/Android Studio.app/Contents/jre/Contents/Home"
+export ANDROID_HOME="/Users/${foo}/Library/Android/sdk"
+```
+
 ### Dependencies: Xcode
-> macos10.15.7 只能安装最高12.4版本的xcode
-> 如果是m1芯片: 建议升级到最新
-> 安装完成，需要安装命令行Dependencies。
-> 建议安装完成运行一下，权限或者秘钥是需要激活或者处理的。
+> macos10.15.7 can only install xcode up to version 12.4.
+> If it is an arm64 chip mac, it is recommended to keep the latest version.
+> Please install the command line tool that matches xcode: xcode-select, if it is the first installation, you may need to activate it.
+```bash
+xcode-select --install
+```
+
 ### Dependencies: Android Studio
-> 建议使用 2020.3.1或以上版本
-> 如果是m1芯片: 建议安装arm64版本
-> 建议安装完成运行一下，最好是运行该项目，这样保证需要下载的依赖全部下载。
+> android studio recommends using 2020.3.1patch4 or above.
+> If it is a mac with an arm64 chip, it is recommended to install the arm version.
+> It is recommended to run it after the installation is complete, and it is recommended to run the project to ensure that all required dependencies are downloaded.
+[download address](https://developer.android.google.cn/studio/)  
+
 ### Dependencies: Visual Studio Code
-> 建议安装最新版本
-> 必须安装的插件: react-native-tools 微软出品。
+> visual studio code recommends installing and keeping the latest version.
+> Required plugin: react-native-tool. By Microsoft.
+[download address](https://code.visualstudio.com/)  
+
 ### Dependencies: Brew
-> 建议安装最新，或者升级到最新
-> 如果是国内用户，可以参考gitee上的安装方法[reference](https://gitee.com/cunkai/HomebrewCN)  
+> It is recommended to install or update to the latest version.
+[install instructor](https://docs.brew.sh/Installation)  
+
 ### Dependencies: Git
-> mac系统自带，建议使用brew升级到最新，或者官方安装
-> 要求是配置ssh信息，因为项目里面使用ssh进行子项目管理。
+> The git version that comes with the mac system is relatively old. It is recommended to use brew to upgrade to the latest, or the official dmg installation.
+> Please configure ssh information, because ssh is used for management in sub-projects.
+```bash
+brew install git
+```
+
 ### Dependencies: JDK
-> 建议安装java8(别名1.8)或以上版本
-> 如果是m1芯片: 建议使用arm64版本，android studio自带的也行。
+> Java recommends installing java8 (alias 1.8) or above
+> If it is an arm64 chip mac, it is recommended to install the arm64 version. You can also use the JDK that comes with android studio.
+[download address](https://www.oracle.com/java/technologies/downloads/)  
+
 ### Dependencies: NodeJs
-> 建议使用官方下载包安装，或者使用brew安装
-> 建议版本16(长期支持版本)以上
+> It is recommended to use the official download package to install, or use brew to install.
+> NodeJs recommends version 16 (Long Term Support version) or above.
+[download address](https://nodejs.org/en/)  
+```bash
+brew install node
+```
+
 ### Dependencies: Cocoapods
-> 建议使用brew安装最新版本或者升级到最新
-> 该Dependencies依赖ruby，ruby自带gem
-> 如果是国内用户，建议更换国内源，下载速度快稳定。
-> 如果是m1芯片，安装出现报错，可能是ruby2.6.x版本导致的，需要升级
+> Cocoapods recommends using brew to install the latest version or upgrade to the latest.
+> Cocoapods depends on ruby, and ruby comes with gems.
+> The ruby version of the mac system is 2.6.x, which may report an error. Therefore, it is recommended to upgrade to the latest version and set the PATH environment variable.
+```bash
+brew install cocoapods
+```
+
 ### Dependencies: Watchman
-> 这是调试Dependencies。
-> 建议使用brew安装最新，或者升级到最新。
+> Watchman is a react-native debugging tool. It is recommended to install the latest version using brew.
+```bash
+brew install watchman
+```
+
 ### Dependencies: npm
-> 这是js的包管理Dependencies。
-> 安装nodejs的使用自带安装。
+> npm is a javascript package management tool, which will be installed when installing nodejs.
+
 ### Dependencies: yarn
-> 这是项目编译构建Dependencies。
-> 使用npm进行全局安装。
+> Please use npm to install yarn tool globally.
+```bash
+npx install -g yarn
+```
+
 ### Dependencies: react-native-cli
-> 这是react-native的命令行Dependencies。
-> 使用npm进行全局安装。不建议全局安装react-native。
+> Please use npm for global installation of react-native-cli tool.
+```bash
+npx install -g react-native-cli
+```
+
 ### Dependencies: create-react-native-library
-> 这是npm包，创建react-native项目的Dependencies。
-> 使用npm进行安装，可以不用全局安装。
+> create-react-native-library is a tool for creating react-native library projects. Optional installation.
+
 
 ---
 

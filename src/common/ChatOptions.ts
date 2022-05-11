@@ -1,3 +1,5 @@
+// import { ChatPushConfig } from './ChatPushConfig';
+
 /**
  * The settings of the chat SDK.
  *
@@ -99,7 +101,10 @@ export class ChatOptions {
    * - `false`: No.
    */
   isAutoDownload: boolean;
-  // pushConfig?: //todo: not implement
+  /**
+   * The push config.
+   */
+  // pushConfig: ChatPushConfig;
   /**
    * Sets whether to disable DNS.
    *
@@ -139,7 +144,7 @@ export class ChatOptions {
     usingHttpsOnly?: boolean;
     serverTransfer?: boolean;
     isAutoDownload?: boolean;
-    // pushConfig??: //todo?: not implement
+    // pushConfig?: any;
     enableDNSConfig?: boolean;
     dnsUrl?: string;
     restServer?: string;
@@ -162,7 +167,9 @@ export class ChatOptions {
     this.usingHttpsOnly = params.usingHttpsOnly ?? false;
     this.serverTransfer = params.serverTransfer ?? true;
     this.isAutoDownload = params.isAutoDownload ?? true;
-    //todo: not implement
+    // this.pushConfig = params.pushConfig
+    //   ? new ChatPushConfig(params.pushConfig)
+    //   : new ChatPushConfig({});
     this.enableDNSConfig = params.enableDNSConfig ?? true;
     this.dnsUrl = params.dnsUrl ?? '';
     this.restServer = params.restServer ?? '';

@@ -116,6 +116,12 @@ export enum ChatMessageType {
   CUSTOM = 'custom',
 }
 
+/**
+ * The message body type convert.
+ *
+ * @param params Integer representing message body type.
+ * @returns The message body type.
+ */
 export function ChatMessageChatTypeFromNumber(
   params: number
 ): ChatMessageChatType {
@@ -128,12 +134,25 @@ export function ChatMessageChatTypeFromNumber(
       return ChatMessageChatType.PeerChat;
   }
 }
+
+/**
+ * The message body type convert.
+ *
+ * @param params The message body type.
+ * @returns String representing message body type.
+ */
 export function ChatGroupPermissionTypeToString(
   params: ChatMessageChatType
 ): string {
   return ChatMessageChatType[params];
 }
 
+/**
+ * The message send direction convert.
+ *
+ * @param params The String representing message direction.
+ * @returns The String.
+ */
 export function ChatMessageDirectionFromString(
   params: string
 ): ChatMessageDirection {
@@ -145,6 +164,12 @@ export function ChatMessageDirectionFromString(
   }
 }
 
+/**
+ * The message status type convert.
+ *
+ * @param params The Integer representing message status.
+ * @returns The message status.
+ */
 export function ChatMessageStatusFromNumber(params: number): ChatMessageStatus {
   switch (params) {
     case 3:
@@ -157,10 +182,23 @@ export function ChatMessageStatusFromNumber(params: number): ChatMessageStatus {
       return ChatMessageStatus.CREATE;
   }
 }
+
+/**
+ * The message status type convert.
+ *
+ * @param params The message status type.
+ * @returns The String representing message status type.
+ */
 export function ChatMessageStatusToString(params: ChatMessageStatus): string {
   return ChatMessageStatus[params];
 }
 
+/**
+ * The message download status type convert.
+ *
+ * @param params The integer representing message download status type.
+ * @returns The message download status type.
+ */
 export function ChatDownloadStatusFromNumber(
   params: number
 ): ChatDownloadStatus {
@@ -175,10 +213,23 @@ export function ChatDownloadStatusFromNumber(
       return ChatDownloadStatus.PENDING;
   }
 }
+
+/**
+ * The message download status type convert.
+ *
+ * @param params The download status type.
+ * @returns The String representing download status type.
+ */
 export function ChatDownloadStatusToString(params: ChatDownloadStatus): string {
   return ChatDownloadStatus[params];
 }
 
+/**
+ * The message type convert.
+ *
+ * @param params The string representing message type.
+ * @returns The message type.
+ */
 export function ChatMessageTypeFromString(params: string): ChatMessageType {
   switch (params) {
     case 'txt':

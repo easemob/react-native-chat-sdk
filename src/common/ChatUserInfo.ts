@@ -1,25 +1,49 @@
-export enum ChatUserInfoType {
-  NickName,
-  AvatarURL,
-  Phone,
-  Mail,
-  Gender,
-  Sign,
-  Birth,
-  Ext,
-}
-
+/**
+ * The ChatUserInfo class, which contains the user attributes, such as the nickname, description, and avatar.
+ */
 export class ChatUserInfo {
+  /**
+   * The user id.
+   */
   userId: string;
+  /**
+   * The user name.
+   */
   nickName?: string;
+  /**
+   * The url of user avatar.
+   */
   avatarUrl?: string;
+  /**
+   * The user email.
+   */
   mail?: string;
+  /**
+   * The user mobile phone number.
+   */
   phone?: string;
+  /**
+   * The user gender.
+   */
   gender?: number;
+  /**
+   * The user sign.
+   */
   sign?: string;
+  /**
+   * The user birthday.
+   */
   birth?: string;
+  /**
+   * The user extension information.
+   */
   ext?: string;
+  /**
+   * The time period(seconds) when the user attibutes in the cache expire.
+   * If the interval between two calles is less than or equal to the value you set in the parameter, user attributes are obtained directly from the local cache; otherwise, they are obtained from the server. For example, if you set this parameter to 120(2 minutes), once this method is called again within 2 minutes, the SDK returns the attributes obtained last time.
+   */
   expireTime: number;
+
   constructor(params: {
     userId: string;
     nickName?: string;

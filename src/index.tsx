@@ -1,6 +1,11 @@
 import { ChatClient } from './ChatClient';
-import { ChatSearchDirection, ChatManager } from './ChatManager';
-
+import { ChatManager } from './ChatManager';
+import { ChatContactManager } from './ChatContactManager';
+import { ChatGroupManager } from './ChatGroupManager';
+import { ChatPresenceManager } from './ChatPresenceManager';
+import { ChatPushManager } from './ChatPushManager';
+import { ChatRoomManager } from './ChatRoomManager';
+import { ChatUserInfoManager } from './ChatUserInfoManager';
 import {
   ChatConversationType,
   ChatConversation,
@@ -14,6 +19,8 @@ import {
   ChatGroupMessageAck,
   ChatGroupOptions,
   ChatGroup,
+  ChatGroupInfo,
+  ChatGroupFileStatusCallback,
 } from './common/ChatGroup';
 import {
   ChatMessageChatType,
@@ -26,24 +33,39 @@ import {
   ChatMessageTypeFromString,
   ChatMessageChatTypeFromNumber,
 } from './common/ChatMessage';
+import {
+  ChatConversationTypeFromNumber,
+  ChatSearchDirection,
+} from './common/ChatConversation';
 import { ChatOptions } from './common/ChatOptions';
 import { ChatPageResult } from './common/ChatPageResult';
 import { ChatRoomPermissionType, ChatRoom } from './common/ChatRoom';
-import { ChatUserInfoType, ChatUserInfo } from './common/ChatUserInfo';
+import { ChatUserInfo } from './common/ChatUserInfo';
 import type {
+  ChatMultiDeviceEvent,
   ChatConnectEventListener,
   ChatMultiDeviceEventListener,
   ChatCustomEventListener,
-  ChatContactEventListener,
-  ChatGroupEventListener,
-  ChatRoomEventListener,
   ChatMessageEventListener,
+  ChatGroupEventListener,
+  ChatContactEventListener,
+  ChatRoomEventListener,
+  ChatPresenceEventListener,
 } from './ChatEvents';
 
 /**
  * export Objects
  */
-export { ChatClient, ChatManager };
+export {
+  ChatClient,
+  ChatManager,
+  ChatContactManager,
+  ChatGroupManager,
+  ChatPresenceManager,
+  ChatPushManager,
+  ChatRoomManager,
+  ChatUserInfoManager,
+};
 
 /**
  * export enum
@@ -58,7 +80,6 @@ export {
   ChatDownloadStatus,
   ChatMessageType,
   ChatRoomPermissionType,
-  ChatUserInfoType,
   ChatSearchDirection,
 };
 
@@ -73,7 +94,9 @@ export {
   ChatGroupMessageAck,
   ChatGroupOptions,
   ChatGroup,
+  ChatGroupInfo,
   ChatMessageStatusCallback,
+  ChatGroupFileStatusCallback,
   ChatMessage,
   ChatOptions,
   ChatPageResult,
@@ -86,6 +109,12 @@ export {
   ChatContactEventListener,
   ChatGroupEventListener,
   ChatRoomEventListener,
+  ChatPresenceEventListener,
+  ChatMultiDeviceEvent,
 };
 
-export { ChatMessageTypeFromString, ChatMessageChatTypeFromNumber };
+export {
+  ChatMessageTypeFromString,
+  ChatMessageChatTypeFromNumber,
+  ChatConversationTypeFromNumber,
+};
