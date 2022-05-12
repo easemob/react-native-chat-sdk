@@ -5,14 +5,13 @@ import { LeafScreenBase, StateBase } from '../__internal__/LeafScreenBase';
 import { metaData, CHATUSERINFOMN, stateData } from './ChatUserInfoManagerData';
 import type { ApiParams } from '../__internal__/DataTypes';
 import { ChatClient } from 'react-native-chat-sdk';
-import type { ChatUserInfo } from '../../../../src/common/ChatUserInfo';
 export interface StateChatUserInfoMessage extends StateBase {
   fetchOwnInfo: {};
   fetchUserInfoById: {
     userIds: Array<string>;
   };
   updateOwnUserInfo: {
-    userInfo: ChatUserInfo;
+    userInfo: object;
   };
 }
 export class ChatUserInfoManagerLeafScreen extends LeafScreenBase<StateChatUserInfoMessage> {

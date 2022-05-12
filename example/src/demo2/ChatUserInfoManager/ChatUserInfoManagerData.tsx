@@ -35,12 +35,17 @@ export const metaData = new Map<string, ApiParams>([
       methodName: CHATUSERINFOMN.updateOwnUserInfo,
       params: [
         {
-          paramName: 'userIds',
+          paramName: 'userInfo',
           paramType: 'object',
           paramDefaultValue: {
-            userId: 'asterisk009',
             nickName: 'newNickName',
             avatarUrl: '',
+            mail: '',
+            phone: '11110009',
+            gender: 1,
+            sign: 'hey~',
+            birth: '2000-10-01',
+            ext: '{}',
           },
           domType: 'input',
         },
