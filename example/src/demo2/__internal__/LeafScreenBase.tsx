@@ -620,8 +620,10 @@ export abstract class LeafScreenBase<
    */
   public render(): ReactNode {
     return (
-      <View>
-        {this.renderResult()}
+      <View style={styleValues.bottomSpace}>
+        <ScrollView style={styleValues.resultDom}>
+          {this.renderResult()}
+        </ScrollView>
         <ScrollView>{this.renderBody()}</ScrollView>
       </View>
     );
