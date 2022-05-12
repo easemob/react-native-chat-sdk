@@ -38,7 +38,7 @@ export class ChatUserInfoManager extends Native {
     birth?: string;
     ext?: string;
   }): Promise<void> {
-    console.log(`${ChatUserInfoManager.TAG}: updateOwnUserInfo: `);
+    console.log(`${ChatUserInfoManager.TAG}: updateOwnUserInfo: `, params);
     const userId = await ChatClient.getInstance().getCurrentUsername();
     const ret = await this.fetchUserInfoById([userId]);
     if (ret.has(userId)) {
@@ -64,7 +64,7 @@ export class ChatUserInfoManager extends Native {
   public async fetchUserInfoById(
     userIds: Array<string>
   ): Promise<Map<string, ChatUserInfo>> {
-    console.log(`${ChatUserInfoManager.TAG}: fetchUserInfoById: `);
+    console.log(`${ChatUserInfoManager.TAG}: fetchUserInfoById: `, userIds);
     let r: any = await Native._callMethod(MTfetchUserInfoById, {
       [MTfetchUserInfoById]: {
         userIds: userIds,
@@ -73,7 +73,6 @@ export class ChatUserInfoManager extends Native {
     ChatUserInfoManager.checkErrorFromResult(r);
     const ret = new Map<string, ChatUserInfo>();
     Object.entries(r?.[MTfetchUserInfoById]).forEach((value: [string, any]) => {
-      console.log(value[0], value[1]);
       const userInfo = new ChatUserInfo(value[1]);
       ret.set(value[0], userInfo);
     });

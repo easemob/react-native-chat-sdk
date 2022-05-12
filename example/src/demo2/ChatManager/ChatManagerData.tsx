@@ -841,7 +841,7 @@ export class ChatManagerCache {
   private static _instance: ChatManagerCache;
   public static getInstance(): ChatManagerCache {
     if (
-      ChatManagerCache._instance == null ||
+      ChatManagerCache._instance === null ||
       ChatManagerCache._instance === undefined
     ) {
       ChatManagerCache._instance = new ChatManagerCache();

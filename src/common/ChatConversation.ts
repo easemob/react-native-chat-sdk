@@ -51,7 +51,10 @@ export function ChatConversationTypeFromNumber(
     case 2:
       return ChatConversationType.RoomChat;
     default:
-      throw new Error(`not exist this type: ${params}`);
+      throw new ChatError({
+        code: 1,
+        description: `This type is not supported. ` + params,
+      });
   }
 }
 
@@ -126,9 +129,7 @@ export class ChatConversation {
     } else {
       throw new ChatError({
         code: 1,
-        description: 'The type is unknown. '.concat(
-          (this.type as number).toString()
-        ),
+        description: `This type is not supported. ` + this.type,
       });
     }
     return undefined;
@@ -230,7 +231,8 @@ export class ChatConversation {
     if (msg.conversationId !== this.con_id) {
       throw new ChatError({
         code: 1,
-        description: 'Message id is not same as conversation id',
+        description:
+          'The Message conversation id is not same as conversation id',
       });
     }
     return ChatClient.getInstance().chatManager.insertMessage(
@@ -251,7 +253,8 @@ export class ChatConversation {
     if (msg.conversationId !== this.con_id) {
       throw new ChatError({
         code: 1,
-        description: 'Message id is not same as conversation id',
+        description:
+          'The Message conversation id is not same as conversation id',
       });
     }
     return ChatClient.getInstance().chatManager.appendMessage(
@@ -274,7 +277,8 @@ export class ChatConversation {
     if (msg.conversationId !== this.con_id) {
       throw new ChatError({
         code: 1,
-        description: 'Message id is not same as conversation id',
+        description:
+          'The Message conversation id is not same as conversation id',
       });
     }
     return ChatClient.getInstance().chatManager.updateConversationMessage(
