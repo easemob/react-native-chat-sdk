@@ -235,7 +235,7 @@ export class ChatManagerLeafScreen extends LeafScreenBase<StateChatMessage> {
     console.log(`${ChatManagerLeafScreen.TAG}: renderBody: `);
     return (
       <View style={styleValues.containerColumn}>
-        {this.sendMessage(false)}
+        {/* {this.sendMessage(false)} */}
         {this.renderApiDom()}
       </View>
     );
@@ -294,20 +294,27 @@ export class ChatManagerLeafScreen extends LeafScreenBase<StateChatMessage> {
           ];
         let value =
           item.paramType === 'object' ? JSON.stringify(itemValue) : itemValue;
+        if (item.paramValue) {
+          value = JSON.stringify({ key: 'value' });
+          const v = item.paramValue();
+          if (v instanceof ChatMessage) {
+            value = JSON.stringify(v);
+          }
+        }
         renderDomAry.push(
           this.renderGroupParamWithInput(
             item.paramName,
             item.paramType,
             value,
             (inputData: { [index: string]: string }) => {
-              let paramValue: any = {};
-              paramValue[apiItem] = Object.assign(
+              let pv: any = {};
+              pv[apiItem] = Object.assign(
                 {},
                 // eslint-disable-next-line no-undef
                 this.state[apiItem as keyof typeof this.state],
                 inputData
               );
-              return this.setState(paramValue);
+              return this.setState(pv);
             }
           )
         );
@@ -1054,19 +1061,7 @@ export class ChatManagerLeafScreen extends LeafScreenBase<StateChatMessage> {
 
   private callApi(name: string): void {
     console.log(`${ChatManagerLeafScreen.TAG}: callApi: `);
-    if (name === MN.sendMessage) {
-      const message = ChatManagerCache.getInstance().getLastSendMessage();
-      if (message) {
-        this.tryCatch(
-          ChatClient.getInstance().chatManager.sendMessage(
-            message,
-            ChatManagerCache.getInstance().createCallback()
-          ),
-          ChatManagerLeafScreen.TAG,
-          this.metaData.get(MN.sendMessage)!.methodName
-        );
-      }
-    } else if (name === MN.resendMessage) {
+    if (name === MN.resendMessage) {
       const message = ChatManagerCache.getInstance().getLastSendMessage();
       if (message) {
         this.tryCatch(

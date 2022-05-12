@@ -221,7 +221,7 @@ export const metaDataList = new Map<string, ApiParams>([
           paramName: 'message', // 使用发送成功或者失败的数据测试，依赖sendMessage
           paramType: 'object',
           paramDefaultValue: {},
-          paramValue: () => ChatManagerCache.getInstance().getLastSendMessage(),
+          paramValue: () => ChatManagerCache.getInstance().getLastRecvMessage(),
         },
         {
           paramName: 'callback', // 创建新的回调接收
@@ -241,6 +241,7 @@ export const metaDataList = new Map<string, ApiParams>([
           paramName: 'message', // 使用发送成功或者失败的数据测试，依赖sendMessage
           paramType: 'object',
           paramDefaultValue: {},
+          paramValue: () => ChatManagerCache.getInstance().getLastRecvMessage(),
         },
         {
           paramName: 'callback', // 创建新的回调接收
@@ -532,7 +533,7 @@ export const metaDataList = new Map<string, ApiParams>([
           paramName: 'msg',
           paramType: 'object',
           paramDefaultValue: {},
-          paramValue: () => ChatManagerCache.getInstance().getLastSendMessage(),
+          // paramValue: () => ChatManagerCache.getInstance().getLastSendMessage(),
         },
       ],
     },
