@@ -82,7 +82,10 @@ export class ChatPresenceManager extends Native {
   public async publishPresenceWithDescription(
     description?: string
   ): Promise<void> {
-    console.log(`${ChatPresenceManager.TAG}: publishPresenceWithDescription: `);
+    console.log(
+      `${ChatPresenceManager.TAG}: publishPresenceWithDescription: `,
+      description
+    );
     let r: any = await Native._callMethod(MTpublishPresenceWithDescription, {
       [MTpublishPresenceWithDescription]: {
         desc: description,
@@ -104,7 +107,7 @@ export class ChatPresenceManager extends Native {
     members: Array<string>,
     expiry: number
   ): Promise<Array<ChatPresence>> {
-    console.log(`${ChatPresenceManager.TAG}: subscribe: `);
+    console.log(`${ChatPresenceManager.TAG}: subscribe: `, members, expiry);
     let r: any = await Native._callMethod(MTpresenceSubscribe, {
       [MTpresenceSubscribe]: {
         members,
@@ -127,7 +130,7 @@ export class ChatPresenceManager extends Native {
    * @throws A description of the exception. See {@link ChatError}.
    */
   public async unSubscribe(members: Array<string>): Promise<void> {
-    console.log(`${ChatPresenceManager.TAG}: unSubscribe: `);
+    console.log(`${ChatPresenceManager.TAG}: unSubscribe: `, members);
     let r: any = await Native._callMethod(MTpresenceUnsubscribe, {
       [MTpresenceUnsubscribe]: {
         members,
@@ -149,7 +152,11 @@ export class ChatPresenceManager extends Native {
     pageNum: number = 1,
     pageSize: number = 20
   ): Promise<Array<string>> {
-    console.log(`${ChatPresenceManager.TAG}: fetchSubscribedMembers: `);
+    console.log(
+      `${ChatPresenceManager.TAG}: fetchSubscribedMembers: `,
+      pageNum,
+      pageSize
+    );
     let r: any = await Native._callMethod(MTfetchSubscribedMembersWithPageNum, {
       [MTfetchSubscribedMembersWithPageNum]: {
         pageNum,
@@ -171,7 +178,7 @@ export class ChatPresenceManager extends Native {
   public async fetchPresenceStatus(
     members: Array<string>
   ): Promise<Array<ChatPresence>> {
-    console.log(`${ChatPresenceManager.TAG}: fetchPresenceStatus: `);
+    console.log(`${ChatPresenceManager.TAG}: fetchPresenceStatus: `, members);
     let r: any = await Native._callMethod(MTfetchPresenceStatus, {
       [MTfetchPresenceStatus]: {
         members,
