@@ -9,7 +9,11 @@ import { KickScreen } from '../Client/Kick';
 import { LoginAndLogoutScreen as LoginLogoutScreen } from '../Client/LoginAndLogout';
 import { GroupManagerRoute, GroupManagerScreen } from '../GroupManager';
 import { GroupManagerLeafScreen } from '../GroupManager/GroupManagerItem';
-// import { LeafScreenClient, LeafScreenTest } from '../__test__/Test1';
+import {
+  ChatRoomManagerRoute,
+  ChatRoomManagerScreen,
+} from '../ChatRoomManager';
+import { ChatRoomManagerLeafScreen } from '../ChatRoomManager/ChatRoomManagerItem';
 import type { ScreenComponent } from './Utils';
 import {
   QuickTestManagerRoute,
@@ -27,6 +31,11 @@ export const screenComponents: ScreenComponent[] = [
   { route: ClientRoute, screen: ClientScreen, isNavigation: true },
   { route: ChatManagerRoute, screen: ChatManagerScreen, isNavigation: true },
   { route: GroupManagerRoute, screen: GroupManagerScreen, isNavigation: true },
+  {
+    route: ChatRoomManagerRoute,
+    screen: ChatRoomManagerScreen,
+    isNavigation: true,
+  },
   {
     route: QuickTestManagerRoute,
     screen: QuickTestManagerScreen,
@@ -85,6 +94,13 @@ export const screenComponents: ScreenComponent[] = [
     screen: GroupManagerLeafScreen,
     isNavigation: false,
     parentScreen: GroupManagerRoute,
+  },
+  // ChatRoomManagerRoute navigator
+  {
+    route: ChatRoomManagerLeafScreen.route,
+    screen: ChatRoomManagerLeafScreen,
+    isNavigation: false,
+    parentScreen: ChatRoomManagerRoute,
   },
 
   // QuickTestManagerRoute navigator
