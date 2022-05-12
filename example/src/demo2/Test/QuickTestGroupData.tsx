@@ -46,9 +46,6 @@ const declineJoinApplication = 'declineJoinApplication';
 const acceptInvitation = 'acceptInvitation';
 const declineInvitation = 'declineInvitation';
 
-/**
- * 本地使用不导出
- */
 export const MN = {
   getGroupWithId,
   getJoinedGroups,

@@ -20,6 +20,13 @@ import {
   ChatUserInfoManagerScreen,
 } from '../ChatUserInfoManager';
 import { ChatUserInfoManagerLeafScreen } from '../ChatUserInfoManager/ChatUserInfoManagerItem';
+import {
+  PresenceManagerRoute,
+  PresenceManagerScreen,
+} from '../PresenceManager';
+import { PresenceLeafScreen } from '../PresenceManager/PresenceManagerItem';
+import { ContactManagerRoute, ContactManagerScreen } from '../ContactManager';
+import { ContactLeafScreen } from '../ContactManager/ContactManagerItem';
 import type { ScreenComponent } from './Utils';
 import {
   QuickTestManagerRoute,
@@ -36,15 +43,25 @@ export const screenComponents: ScreenComponent[] = [
   // root navigator
   { route: ClientRoute, screen: ClientScreen, isNavigation: true },
   { route: ChatManagerRoute, screen: ChatManagerScreen, isNavigation: true },
-  {
-    route: ChatUserInfoManagerRoute,
-    screen: ChatUserInfoManagerScreen,
-    isNavigation: true,
-  },
   { route: GroupManagerRoute, screen: GroupManagerScreen, isNavigation: true },
   {
     route: ChatRoomManagerRoute,
     screen: ChatRoomManagerScreen,
+    isNavigation: true,
+  },
+  {
+    route: PresenceManagerRoute,
+    screen: PresenceManagerScreen,
+    isNavigation: true,
+  },
+  {
+    route: ContactManagerRoute,
+    screen: ContactManagerScreen,
+    isNavigation: true,
+  },
+  {
+    route: ChatUserInfoManagerRoute,
+    screen: ChatUserInfoManagerScreen,
     isNavigation: true,
   },
   {
@@ -112,6 +129,23 @@ export const screenComponents: ScreenComponent[] = [
     isNavigation: false,
     parentScreen: GroupManagerRoute,
   },
+
+  // PresenceManagerRoute navigator
+  {
+    route: PresenceLeafScreen.route,
+    screen: PresenceLeafScreen,
+    isNavigation: false,
+    parentScreen: PresenceManagerRoute,
+  },
+
+  // ContactManagerRoute navigator
+  {
+    route: ContactLeafScreen.route,
+    screen: ContactLeafScreen,
+    isNavigation: false,
+    parentScreen: ContactManagerRoute,
+  },
+
   // ChatRoomManagerRoute navigator
   {
     route: ChatRoomManagerLeafScreen.route,
@@ -119,6 +153,7 @@ export const screenComponents: ScreenComponent[] = [
     isNavigation: false,
     parentScreen: ChatRoomManagerRoute,
   },
+
   // ChatUserInfoManagerRoute navigator
   {
     route: ChatUserInfoManagerLeafScreen.route,
