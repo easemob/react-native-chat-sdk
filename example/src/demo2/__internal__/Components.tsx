@@ -15,6 +15,11 @@ import {
   ChatRoomManagerScreen,
 } from '../ChatRoomManager';
 import { ChatRoomManagerLeafScreen } from '../ChatRoomManager/ChatRoomManagerItem';
+import {
+  ChatUserInfoManagerRoute,
+  ChatUserInfoManagerScreen,
+} from '../ChatUserInfoManager';
+import { ChatUserInfoManagerLeafScreen } from '../ChatUserInfoManager/ChatUserInfoManagerItem';
 import type { ScreenComponent } from './Utils';
 import {
   QuickTestManagerRoute,
@@ -31,6 +36,11 @@ export const screenComponents: ScreenComponent[] = [
   // root navigator
   { route: ClientRoute, screen: ClientScreen, isNavigation: true },
   { route: ChatManagerRoute, screen: ChatManagerScreen, isNavigation: true },
+  {
+    route: ChatUserInfoManagerRoute,
+    screen: ChatUserInfoManagerScreen,
+    isNavigation: true,
+  },
   { route: GroupManagerRoute, screen: GroupManagerScreen, isNavigation: true },
   {
     route: ChatRoomManagerRoute,
@@ -108,6 +118,13 @@ export const screenComponents: ScreenComponent[] = [
     screen: ChatRoomManagerLeafScreen,
     isNavigation: false,
     parentScreen: ChatRoomManagerRoute,
+  },
+  // ChatUserInfoManagerRoute navigator
+  {
+    route: ChatUserInfoManagerLeafScreen.route,
+    screen: ChatUserInfoManagerLeafScreen,
+    isNavigation: false,
+    parentScreen: ChatUserInfoManagerRoute,
   },
 
   // QuickTestManagerRoute navigator
