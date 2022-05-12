@@ -202,6 +202,7 @@ export class ChatRoomManagerLeafScreen extends LeafScreenBase<StateChatRoomMessa
       );
       renderDomAry.push(this.renderDivider());
     });
+    renderDomAry.push(this.addSpaces());
     return renderDomAry;
   }
 
