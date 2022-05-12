@@ -16,7 +16,7 @@ export class ChatUserInfoManager extends Native {
   /**
    * Modifies the user attributes of the current user.
    *
-   * @param userInfo The user attributes to be modified.
+   * @param params The params set.
    * - [nickName] The user name.
    * - [avatarUrl] The user head image.
    * - [mail] The user email address.

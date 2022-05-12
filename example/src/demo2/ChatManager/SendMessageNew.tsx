@@ -59,9 +59,6 @@ export interface StateSendMessage extends StateBase {
 
 export interface StatelessSendMessage extends StatelessBase {}
 
-/**
- * 一个页面多个api，效率高一些
- */
 export class SendMessageLeafScreen extends LeafScreenBase<StateSendMessage> {
   protected static TAG = 'SendMessageLeafScreen';
   public static route = 'SendMessageLeafScreen';
@@ -330,6 +327,7 @@ export class SendMessageLeafScreen extends LeafScreenBase<StateSendMessage> {
     return [
       this.renderParamWithSelectFile('filePath', filePath, (json: string) => {
         const j = JSON.parse(json);
+        console.log('test: j: ', j, decodeURIComponent(j.uri));
         this.setState({
           filePath: j.localPath,
           displayName: j.name,

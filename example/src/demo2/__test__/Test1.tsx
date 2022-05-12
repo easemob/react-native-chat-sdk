@@ -666,9 +666,6 @@ interface StateClient extends StateBase {
   };
 }
 
-/**
- * 一个页面多个api，效率高一些
- */
 export class LeafScreenClient extends LeafScreenBase<StateClient> {
   protected static TAG = 'LeafScreenClient';
   public static route = 'LeafScreenClient';

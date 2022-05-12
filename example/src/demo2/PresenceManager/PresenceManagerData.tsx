@@ -17,7 +17,7 @@ export const metaDataList = new Map<string, ApiParams>([
         {
           paramName: 'description',
           paramType: 'string',
-          paramDefaultValue: 'test presence',
+          paramDefaultValue: '',
         },
       ],
     },
@@ -30,12 +30,12 @@ export const metaDataList = new Map<string, ApiParams>([
         {
           paramName: 'members',
           paramType: 'object',
-          paramDefaultValue: ['zhangsan', 'lisi'],
+          paramDefaultValue: ['001', '002'],
         },
         {
           paramName: 'expiry',
           paramType: 'number',
-          paramDefaultValue: 2000,
+          paramDefaultValue: 1000,
         },
       ],
     },
@@ -48,7 +48,7 @@ export const metaDataList = new Map<string, ApiParams>([
         {
           paramName: 'members',
           paramType: 'object',
-          paramDefaultValue: ['zhangsan', 'lisi'],
+          paramDefaultValue: ['001', '002'],
         },
       ],
     },
@@ -61,12 +61,12 @@ export const metaDataList = new Map<string, ApiParams>([
         {
           paramName: 'pageNum',
           paramType: 'number',
-          paramDefaultValue: 1,
+          paramDefaultValue: '1',
         },
         {
           paramName: 'pageSize',
           paramType: 'number',
-          paramDefaultValue: 10,
+          paramDefaultValue: '10',
         },
       ],
     },
@@ -79,7 +79,7 @@ export const metaDataList = new Map<string, ApiParams>([
         {
           paramName: 'members',
           paramType: 'object',
-          paramDefaultValue: ['zhangsan', 'lisi'],
+          paramDefaultValue: ['001', '002'],
         },
       ],
     },

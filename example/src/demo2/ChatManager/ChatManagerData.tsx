@@ -9,9 +9,6 @@ import { datasheet } from '../__default__/Datasheet';
 import type { ApiParams } from '../__internal__/DataTypes';
 import type { StateChatMessage, StatelessChatMessage } from './ChatManagerItem';
 
-/**
- * 本地使用不导出
- */
 export const MN = {
   sendMessage: 'sendMessage',
   resendMessage: 'resendMessage',
@@ -360,6 +357,7 @@ export const metaDataList = new Map<string, ApiParams>([
           paramName: 'isDeleteMessage',
           paramType: 'boolean',
           paramDefaultValue: true,
+          domType: 'select',
         },
       ],
     },
@@ -383,6 +381,7 @@ export const metaDataList = new Map<string, ApiParams>([
           paramName: 'createIfNeed',
           paramType: 'boolean',
           paramDefaultValue: true,
+          domType: 'select',
         },
       ],
     },
@@ -415,6 +414,7 @@ export const metaDataList = new Map<string, ApiParams>([
           paramName: 'withMessage',
           paramType: 'boolean',
           paramDefaultValue: true,
+          domType: 'select',
         },
       ],
     },

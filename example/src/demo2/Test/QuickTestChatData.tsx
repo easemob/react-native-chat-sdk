@@ -2,9 +2,6 @@ import { ChatMessageType, ChatMessageChatType } from 'react-native-chat-sdk';
 import { datasheet } from '../__default__/Datasheet';
 import type { ApiParams } from '../__internal__/DataTypes';
 
-/**
- * 本地使用不导出
- */
 export const MN = {
   sendMessage: 'sendMessage',
   resendMessage: 'resendMessage',
