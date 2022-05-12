@@ -25,7 +25,7 @@ export const MTrenewToken = 'renewToken';
 export const MTonConnected = 'onConnected';
 export const MTonDisconnected = 'onDisconnected';
 export const MTonMultiDeviceEvent = 'onMultiDeviceEvent';
-export const MTonSendDataToFlutter = 'onSendDataToFlutter';
+export const MTonCustomEvent = 'onSendDataToFlutter';
 export const MTonTokenWillExpire = 'onTokenWillExpire';
 export const MTonTokenDidExpire = 'onTokenDidExpire';
 

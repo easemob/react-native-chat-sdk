@@ -1,30 +1,18 @@
 import { datasheet } from '../__default__/Datasheet';
 import type { ApiParams } from '../__internal__/DataTypes';
 
-const addContact = 'addContact';
-const deleteContact = 'deleteContact';
-const getAllContactsFromServer = 'getAllContactsFromServer';
-const getAllContactsFromDB = 'getAllContactsFromDB';
-const addUserToBlockList = 'addUserToBlockList';
-const removeUserFromBlockList = 'removeUserFromBlockList';
-const getBlockListFromServer = 'getBlockListFromServer';
-const getBlockListFromDB = 'getBlockListFromDB';
-const acceptInvitation = 'acceptInvitation';
-const declineInvitation = 'declineInvitation';
-const getSelfIdsOnOtherPlatform = 'getSelfIdsOnOtherPlatform';
-
 export const MN = {
-  addContact,
-  deleteContact,
-  getAllContactsFromServer,
-  getAllContactsFromDB,
-  addUserToBlockList,
-  removeUserFromBlockList,
-  getBlockListFromServer,
-  getBlockListFromDB,
-  acceptInvitation,
-  declineInvitation,
-  getSelfIdsOnOtherPlatform,
+  addContact: 'addContact',
+  deleteContact: 'deleteContact',
+  getAllContactsFromServer: 'getAllContactsFromServer',
+  getAllContactsFromDB: 'getAllContactsFromDB',
+  addUserToBlockList: 'addUserToBlockList',
+  removeUserFromBlockList: 'removeUserFromBlockList',
+  getBlockListFromServer: 'getBlockListFromServer',
+  getBlockListFromDB: 'getBlockListFromDB',
+  acceptInvitation: 'acceptInvitation',
+  declineInvitation: 'declineInvitation',
+  getSelfIdsOnOtherPlatform: 'getSelfIdsOnOtherPlatform',
 };
 
 export const metaDataList = new Map<string, ApiParams>([

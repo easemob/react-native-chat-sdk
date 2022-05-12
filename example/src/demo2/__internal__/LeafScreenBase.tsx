@@ -234,7 +234,8 @@ export abstract class LeafScreenBase<
   protected renderParamWithInput(
     name: string,
     value: string,
-    oct?: (text: string) => void
+    oct?: (text: string) => void,
+    multiLine: boolean = true
   ): ReactNode {
     return (
       <View
@@ -243,7 +244,12 @@ export abstract class LeafScreenBase<
       >
         <Text style={styleValues.textTipStyle}>{name}:</Text>
         <TextInput
-          style={styleValues.textInputStyle}
+          style={
+            multiLine
+              ? styleValues.textInputMultiStyle
+              : styleValues.textInputStyle
+          }
+          multiline={multiLine}
           onChangeText={(text: string) => {
             if (oct) {
               oct(text);
@@ -259,7 +265,8 @@ export abstract class LeafScreenBase<
     name: string,
     type: string,
     value: string,
-    oct?: (inputData: { [index: string]: string }) => void
+    oct?: (inputData: { [index: string]: string }) => void,
+    multiLine: boolean = true
   ): ReactNode {
     return (
       <View
@@ -268,7 +275,12 @@ export abstract class LeafScreenBase<
       >
         <Text style={styleValues.textTipStyle}>{name}:</Text>
         <TextInput
-          style={styleValues.textInputStyle}
+          style={
+            multiLine
+              ? styleValues.textInputMultiStyle
+              : styleValues.textInputStyle
+          }
+          multiline={multiLine}
           onChangeText={(text: string) => {
             if (oct) {
               let obj: { [index: string]: string } = {};
@@ -394,7 +406,8 @@ export abstract class LeafScreenBase<
   protected renderParamWithSelectFile(
     name: string,
     value: string,
-    oct?: (json: string) => void
+    oct?: (json: string) => void,
+    multiLine: boolean = true
   ): ReactNode {
     return (
       <View
@@ -403,7 +416,12 @@ export abstract class LeafScreenBase<
       >
         <Text style={styleValues.textTipStyle}>{name}:</Text>
         <TextInput
-          style={styleValues.textInputStyle}
+          style={
+            multiLine
+              ? styleValues.textInputMultiStyle
+              : styleValues.textInputStyle
+          }
+          multiline={multiLine}
           onChangeText={(text: string) => {
             if (oct) {
               oct(text);
@@ -415,7 +433,10 @@ export abstract class LeafScreenBase<
         <Button
           title="SF"
           onPress={() => {
-            DocumentPicker.pick({ type: [DocumentPicker.types.allFiles] })
+            DocumentPicker.pick({
+              type: [DocumentPicker.types.allFiles],
+              copyTo: 'cachesDirectory',
+            })
               .then((values: DocumentPickerResponse[]) => {
                 if (values.length < 1) {
                   return;
@@ -427,28 +448,29 @@ export abstract class LeafScreenBase<
                   }
                   if (oct) {
                     oct(
-                      JSON.stringify(`{
-                        localPath: ${s},
-                        name: ${values[0].name},
-                        size: ${values[0].size},
-                        type: ${values[0].type},
-                      }`)
+                      JSON.stringify({
+                        localPath: s,
+                        name: values[0].name,
+                        size: values[0].size,
+                        type: values[0].type,
+                        uri: values[0].uri,
+                      })
                     );
                   }
                 } else {
-                  // todo: android有问题
-                  let s =
-                    RNFS.ExternalStorageDirectoryPath +
-                    '/Recorder/' +
-                    values[0].name;
+                  let s = values[0].fileCopyUri!;
+                  if (s.startsWith('file:')) {
+                    s = s.substring('file:'.length);
+                  }
                   if (oct) {
                     oct(
-                      JSON.stringify(`{
-                        localPath: ${s},
-                        name: ${values[0].name},
-                        size: ${values[0].size},
-                        type: ${values[0].type},
-                      }`)
+                      JSON.stringify({
+                        localPath: s,
+                        name: values[0].name,
+                        size: values[0].size,
+                        type: values[0].type,
+                        uri: values[0].uri,
+                      })
                     );
                   }
                 }

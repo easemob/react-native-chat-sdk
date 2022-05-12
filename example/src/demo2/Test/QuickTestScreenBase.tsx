@@ -143,11 +143,11 @@ export abstract class QuickTestScreenBase<
       constructor(parent: QuickTestScreenBase<S, SL>) {
         this.that = parent;
       }
-      onDataReceived(map: Map<string, any>): void {
-        console.log('QuickTestScreenBase.onDataReceived: ', map);
+      onDataReceived(params: any): void {
+        console.log('QuickTestScreenBase.onDataReceived: ', params);
         this.that.setState({
           custom_listener:
-            'QuickTestScreenBase.onDataReceived: ' + JSON.stringify(map),
+            'QuickTestScreenBase.onDataReceived: ' + JSON.stringify(params),
         });
       }
     })(this);

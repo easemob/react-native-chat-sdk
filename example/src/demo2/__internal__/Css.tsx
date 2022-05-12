@@ -49,6 +49,16 @@ export const styleValues = StyleSheet.create({
     // borderWidth: 1,
     maxHeight: 40,
   },
+  textInputMultiStyle: {
+    flex: 1,
+    margin: 5,
+    // fontSize: 20,
+    fontWeight: 'normal',
+    textAlign: 'left',
+    color: '#3a4a35',
+    backgroundColor: '#86dcfc',
+    // borderWidth: 1,
+  },
   viewStyle: {
     alignItems: 'stretch',
     justifyContent: 'center',

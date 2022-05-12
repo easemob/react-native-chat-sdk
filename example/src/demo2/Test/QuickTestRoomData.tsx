@@ -30,9 +30,6 @@ const removeMembersFromChatRoomWhiteList = 'removeMembersFromChatRoomWhiteList';
 const muteAllChatRoomMembers = 'muteAllChatRoomMembers';
 const unMuteAllChatRoomMembers = 'unMuteAllChatRoomMembers';
 
-/**
- * 本地使用不导出
- */
 export const MN = {
   joinChatRoom,
   leaveChatRoom,

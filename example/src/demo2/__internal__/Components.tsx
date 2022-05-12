@@ -1,6 +1,7 @@
 import { ChatManagerScreen, ChatManagerRoute } from '../ChatManager';
-import { SendMessageScreen } from '../ChatManager/SendMessage';
+// import { SendMessageScreen } from '../ChatManager/SendMessage';
 import { ChatManagerLeafScreen } from '../ChatManager/ChatManagerItem';
+import { SendMessageLeafScreen } from '../ChatManager/SendMessageNew';
 import { ClientScreen, ClientRoute } from '../Client';
 import { ClientOthersScreen } from '../Client/ClientOthers';
 import { CreateAccountScreen } from '../Client/CreateAccount';
@@ -9,7 +10,18 @@ import { KickScreen } from '../Client/Kick';
 import { LoginAndLogoutScreen as LoginLogoutScreen } from '../Client/LoginAndLogout';
 import { GroupManagerRoute, GroupManagerScreen } from '../GroupManager';
 import { GroupManagerLeafScreen } from '../GroupManager/GroupManagerItem';
-// import { LeafScreenClient, LeafScreenTest } from '../__test__/Test1';
+import {
+  ChatRoomManagerRoute,
+  ChatRoomManagerScreen,
+} from '../ChatRoomManager';
+import { ChatRoomManagerLeafScreen } from '../ChatRoomManager/ChatRoomManagerItem';
+import {
+  PresenceManagerRoute,
+  PresenceManagerScreen,
+} from '../PresenceManager';
+import { PresenceLeafScreen } from '../PresenceManager/PresenceManagerItem';
+import { ContactManagerRoute, ContactManagerScreen } from '../ContactManager';
+import { ContactLeafScreen } from '../ContactManager/ContactManagerItem';
 import type { ScreenComponent } from './Utils';
 import {
   QuickTestManagerRoute,
@@ -27,6 +39,21 @@ export const screenComponents: ScreenComponent[] = [
   { route: ClientRoute, screen: ClientScreen, isNavigation: true },
   { route: ChatManagerRoute, screen: ChatManagerScreen, isNavigation: true },
   { route: GroupManagerRoute, screen: GroupManagerScreen, isNavigation: true },
+  {
+    route: ChatRoomManagerRoute,
+    screen: ChatRoomManagerScreen,
+    isNavigation: true,
+  },
+  {
+    route: PresenceManagerRoute,
+    screen: PresenceManagerScreen,
+    isNavigation: true,
+  },
+  {
+    route: ContactManagerRoute,
+    screen: ContactManagerScreen,
+    isNavigation: true,
+  },
   {
     route: QuickTestManagerRoute,
     screen: QuickTestManagerScreen,
@@ -66,9 +93,15 @@ export const screenComponents: ScreenComponent[] = [
   },
 
   // ChatManagerRoute navigator
+  // {
+  //   route: SendMessageScreen.route,
+  //   screen: SendMessageScreen,
+  //   isNavigation: false,
+  //   parentScreen: ChatManagerRoute,
+  // },
   {
-    route: SendMessageScreen.route,
-    screen: SendMessageScreen,
+    route: SendMessageLeafScreen.route,
+    screen: SendMessageLeafScreen,
     isNavigation: false,
     parentScreen: ChatManagerRoute,
   },
@@ -85,6 +118,30 @@ export const screenComponents: ScreenComponent[] = [
     screen: GroupManagerLeafScreen,
     isNavigation: false,
     parentScreen: GroupManagerRoute,
+  },
+
+  // PresenceManagerRoute navigator
+  {
+    route: PresenceLeafScreen.route,
+    screen: PresenceLeafScreen,
+    isNavigation: false,
+    parentScreen: PresenceManagerRoute,
+  },
+
+  // ContactManagerRoute navigator
+  {
+    route: ContactLeafScreen.route,
+    screen: ContactLeafScreen,
+    isNavigation: false,
+    parentScreen: ContactManagerRoute,
+  },
+
+  // ChatRoomManagerRoute navigator
+  {
+    route: ChatRoomManagerLeafScreen.route,
+    screen: ChatRoomManagerLeafScreen,
+    isNavigation: false,
+    parentScreen: ChatRoomManagerRoute,
   },
 
   // QuickTestManagerRoute navigator

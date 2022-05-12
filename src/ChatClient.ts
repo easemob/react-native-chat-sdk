@@ -39,7 +39,7 @@ import {
   MTonConnected,
   MTonDisconnected,
   MTonMultiDeviceEvent,
-  MTonSendDataToFlutter,
+  MTonCustomEvent,
   MTonTokenDidExpire,
   MTonTokenWillExpire,
   MTonUserAuthenticationFailed,
@@ -178,8 +178,8 @@ export class ChatClient extends BaseManager {
       )
     );
     this._connectionSubscriptions.set(
-      MTonSendDataToFlutter,
-      event.addListener(MTonSendDataToFlutter, this.onCustomEvent.bind(this))
+      MTonCustomEvent,
+      event.addListener(MTonCustomEvent, this.onCustomEvent.bind(this))
     );
 
     this._connectionSubscriptions.set(
@@ -235,6 +235,13 @@ export class ChatClient extends BaseManager {
 
   private onConnected(): void {
     console.log(`${ChatClient.TAG}: onConnected: `);
+    if (
+      this._currentUsername === '' ||
+      this._currentUsername === null ||
+      this._currentUsername === undefined
+    ) {
+      this.getCurrentUsername();
+    }
     this._connectionListeners.forEach((element) => {
       element.onConnected();
     });
@@ -376,7 +383,7 @@ export class ChatClient extends BaseManager {
    * @throws A description of the exception. See {@link ChatError}.
    */
   public async init(options: ChatOptions): Promise<void> {
-    console.log(`${ChatClient.TAG}: init: ${options}`);
+    console.log(`${ChatClient.TAG}: init: `, options);
     this._options = options;
     await Native._callMethod(MTinit, { options });
     this._isInit = true;

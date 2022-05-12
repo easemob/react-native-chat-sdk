@@ -11,6 +11,7 @@ export interface ParamPair {
     | 'function';
   paramValue?: () => any;
   paramDefaultValue: any;
+  domType?: 'input' | 'title' | 'button' | 'select';
 }
 export interface ApiParams {
   methodName: string;

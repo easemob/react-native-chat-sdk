@@ -16,18 +16,41 @@ export class ChatUserInfoManager extends Native {
   /**
    * Modifies the user attributes of the current user.
    *
-   * @param userInfo The user attributes to be modified.
+   * @param params The params set.
+   * - [nickName] The user name.
+   * - [avatarUrl] The user head image.
+   * - [mail] The user email address.
+   * - [phone] The user mobile phone number.
+   * - [gender] The user sex.
+   * - [sign] The user signature.
+   * - [birth] The user birthday.
+   * - [ext] The user custom define attribute.
    *
    * @throws A description of the exception. See {@link ChatError}.
    */
-  public async updateOwnUserInfo(userInfo: ChatUserInfo): Promise<void> {
+  public async updateOwnUserInfo(params: {
+    nickName?: string;
+    avatarUrl?: string;
+    mail?: string;
+    phone?: string;
+    gender?: number;
+    sign?: string;
+    birth?: string;
+    ext?: string;
+  }): Promise<void> {
     console.log(`${ChatUserInfoManager.TAG}: updateOwnUserInfo: `);
-    let r: any = await Native._callMethod(MTupdateOwnUserInfo, {
-      [MTupdateOwnUserInfo]: {
-        userInfo: userInfo,
-      },
-    });
-    ChatUserInfoManager.checkErrorFromResult(r);
+    const userId = await ChatClient.getInstance().getCurrentUsername();
+    const ret = await this.fetchUserInfoById([userId]);
+    if (ret.has(userId)) {
+      let userInfo = new ChatUserInfo(ret.get(userId)!);
+      userInfo = Object.assign(userInfo, params);
+      let r: any = await Native._callMethod(MTupdateOwnUserInfo, {
+        [MTupdateOwnUserInfo]: {
+          userInfo,
+        },
+      });
+      ChatUserInfoManager.checkErrorFromResult(r);
+    }
   }
 
   /**
