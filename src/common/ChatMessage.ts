@@ -1,6 +1,6 @@
 import { generateMessageId, getNowTimestamp } from '../__internal__/Utils';
 import { ChatClient } from '../ChatClient';
-import type { ChatError } from './ChatError';
+import { ChatError } from './ChatError';
 
 /**
  * The conversation types.
@@ -249,7 +249,10 @@ export function ChatMessageTypeFromString(params: string): ChatMessageType {
     case 'voice':
       return ChatMessageType.VOICE;
     default:
-      throw new Error(`not exist this type: ${params}`);
+      throw new ChatError({
+        code: 1,
+        description: `This type is not supported. ` + params,
+      });
   }
 }
 
@@ -510,7 +513,10 @@ export class ChatMessage {
         return new ChatVoiceMessageBody(params);
 
       default:
-        throw new Error(`not exist this type: ${type}`);
+        throw new ChatError({
+          code: 1,
+          description: `This type is not supported. ` + type,
+        });
     }
   }
 

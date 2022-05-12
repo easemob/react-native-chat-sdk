@@ -1,5 +1,6 @@
 import type { EmitterSubscription, NativeEventEmitter } from 'react-native';
 import type { ChatContactEventListener } from './ChatEvents';
+import { ChatError } from './common/ChatError';
 import { BaseManager } from './__internal__/Base';
 import {
   MTacceptInvitation,
@@ -66,7 +67,10 @@ export class ChatContactManager extends BaseManager {
           break;
 
         default:
-          throw new Error('This type is not supported. ');
+          throw new ChatError({
+            code: 1,
+            description: `This type is not supported. ` + contactEventType,
+          });
       }
     });
   }
@@ -108,7 +112,7 @@ export class ChatContactManager extends BaseManager {
     username: string,
     reason: string = ''
   ): Promise<void> {
-    console.log(`${ChatContactManager.TAG}: addContact: ${username}`);
+    console.log(`${ChatContactManager.TAG}: addContact: `, username);
     let r: any = await Native._callMethod(MTaddContact, {
       [MTaddContact]: {
         username: username,
@@ -132,7 +136,7 @@ export class ChatContactManager extends BaseManager {
     username: string,
     keepConversation: boolean = false
   ): Promise<void> {
-    console.log(`${ChatContactManager.TAG}: deleteContact: ${username}`);
+    console.log(`${ChatContactManager.TAG}: deleteContact: `, username);
     let r: any = await Native._callMethod(MTdeleteContact, {
       [MTdeleteContact]: {
         username: username,
@@ -181,7 +185,7 @@ export class ChatContactManager extends BaseManager {
    * @throws A description of the exception. See {@link ChatError}.
    */
   public async addUserToBlockList(username: string): Promise<void> {
-    console.log(`${ChatContactManager.TAG}: addUserToBlockList: `);
+    console.log(`${ChatContactManager.TAG}: addUserToBlockList: `, username);
     let r: any = await Native._callMethod(MTaddUserToBlockList, {
       [MTaddUserToBlockList]: {
         username,
@@ -198,7 +202,10 @@ export class ChatContactManager extends BaseManager {
    * @throws A description of the exception. See {@link ChatError}.
    */
   public async removeUserFromBlockList(username: string): Promise<void> {
-    console.log(`${ChatContactManager.TAG}: removeUserFromBlockList: `);
+    console.log(
+      `${ChatContactManager.TAG}: removeUserFromBlockList: `,
+      username
+    );
     let r: any = await Native._callMethod(MTremoveUserFromBlockList, {
       [MTremoveUserFromBlockList]: {
         username,
@@ -260,7 +267,7 @@ export class ChatContactManager extends BaseManager {
    * @throws A description of the exception. See {@link ChatError}.
    */
   public async declineInvitation(username: string): Promise<void> {
-    console.log(`${ChatContactManager.TAG}: declineInvitation: `);
+    console.log(`${ChatContactManager.TAG}: declineInvitation: `, username);
     let r: any = await Native._callMethod(MTdeclineInvitation, {
       [MTdeclineInvitation]: { username },
     });

@@ -19,7 +19,10 @@ export class BaseManager extends Native {
     super();
   }
   public setNativeListener(_eventEmitter: NativeEventEmitter) {
-    throw new Error('Please subclass to implement.');
+    throw new ChatError({
+      code: 1,
+      description: 'Please subclass to implement.',
+    });
   }
   protected static handleMessageCallback(
     methodName: string,

@@ -149,7 +149,7 @@ export class ChatManager extends BaseManager {
   }
 
   private onMessagesReceived(messages: any[]): void {
-    console.log(`${ChatManager.TAG}: onMessagesReceived: ${messages}`);
+    console.log(`${ChatManager.TAG}: onMessagesReceived: `, messages);
     this._messageListeners.forEach((listener: ChatMessageEventListener) => {
       let list: Array<ChatMessage> = [];
       messages.forEach((message: any) => {
@@ -160,7 +160,7 @@ export class ChatManager extends BaseManager {
     });
   }
   private onCmdMessagesReceived(messages: any[]): void {
-    console.log(`${ChatManager.TAG}: onCmdMessagesReceived: ${messages}`);
+    console.log(`${ChatManager.TAG}: onCmdMessagesReceived: `, messages);
     this._messageListeners.forEach((listener: ChatMessageEventListener) => {
       let list: Array<ChatMessage> = [];
       messages.forEach((message: any) => {
@@ -171,7 +171,7 @@ export class ChatManager extends BaseManager {
     });
   }
   private onMessagesRead(messages: any[]): void {
-    console.log(`${ChatManager.TAG}: onMessagesRead: ${messages}`);
+    console.log(`${ChatManager.TAG}: onMessagesRead: `, messages);
     this._messageListeners.forEach((listener: ChatMessageEventListener) => {
       let list: Array<ChatMessage> = [];
       messages.forEach((message: any) => {
@@ -182,7 +182,7 @@ export class ChatManager extends BaseManager {
     });
   }
   private onGroupMessageRead(messages: any[]): void {
-    console.log(`${ChatManager.TAG}: onGroupMessageRead: ${messages}`);
+    console.log(`${ChatManager.TAG}: onGroupMessageRead: `, messages);
     this._messageListeners.forEach((listener: ChatMessageEventListener) => {
       let list: Array<ChatGroupMessageAck> = [];
       messages.forEach((message: any) => {
@@ -193,7 +193,7 @@ export class ChatManager extends BaseManager {
     });
   }
   private onMessagesDelivered(messages: any[]): void {
-    console.log(`${ChatManager.TAG}: onMessagesDelivered: ${messages}`);
+    console.log(`${ChatManager.TAG}: onMessagesDelivered: `, messages);
     this._messageListeners.forEach((listener: ChatMessageEventListener) => {
       let list: Array<ChatMessage> = [];
       messages.forEach((message: any) => {
@@ -204,7 +204,7 @@ export class ChatManager extends BaseManager {
     });
   }
   private onMessagesRecalled(messages: any[]): void {
-    console.log(`${ChatManager.TAG}: onMessagesRecalled: ${messages}`);
+    console.log(`${ChatManager.TAG}: onMessagesRecalled: `, messages);
     this._messageListeners.forEach((listener: ChatMessageEventListener) => {
       let list: Array<ChatMessage> = [];
       messages.forEach((message: any) => {
@@ -221,7 +221,7 @@ export class ChatManager extends BaseManager {
     });
   }
   private onConversationHasRead(params: any): void {
-    console.log(`${ChatManager.TAG}: onConversationHasRead: ${params}`);
+    console.log(`${ChatManager.TAG}: onConversationHasRead: `, params);
     this._messageListeners.forEach((listener: ChatMessageEventListener) => {
       let from = params?.from;
       let to = params?.to;
@@ -333,7 +333,8 @@ export class ChatManager extends BaseManager {
     callback: ChatMessageStatusCallback
   ): Promise<void> {
     console.log(
-      `${ChatManager.TAG}: resendMessage: ${message.msgId}, ${message.localTime}`
+      `${ChatManager.TAG}: resendMessage: ${message.msgId}, ${message.localTime}`,
+      message
     );
     if (
       message.msgId !== message.localMsgId &&
@@ -341,7 +342,7 @@ export class ChatManager extends BaseManager {
     ) {
       callback.onError(
         message.localMsgId,
-        new ChatError({ code: 1, description: 'message has send success' })
+        new ChatError({ code: 1, description: 'The message had send success' })
       );
     }
     message.status = ChatMessageStatus.PROGRESS;
@@ -371,7 +372,8 @@ export class ChatManager extends BaseManager {
    */
   public async sendMessageReadAck(message: ChatMessage): Promise<void> {
     console.log(
-      `${ChatManager.TAG}: sendMessageReadAck: ${message.msgId}, ${message.localTime}`
+      `${ChatManager.TAG}: sendMessageReadAck: ${message.msgId}, ${message.localTime}`,
+      message
     );
     let r: any = await Native._callMethod(MTackMessageRead, {
       [MTackMessageRead]: {
@@ -472,12 +474,11 @@ export class ChatManager extends BaseManager {
       },
     });
     Native.checkErrorFromResult(r);
-    r = r?.[MTgetMessage];
-    if (r) {
-      return new ChatMessage(r);
-    } else {
-      return undefined;
+    const rr = r?.[MTgetMessage];
+    if (rr) {
+      return new ChatMessage(rr);
     }
+    return undefined;
   }
 
   /**
@@ -517,7 +518,8 @@ export class ChatManager extends BaseManager {
    */
   public async updateMessage(message: ChatMessage): Promise<ChatMessage> {
     console.log(
-      `${ChatManager.TAG}: updateMessage: ${message.msgId}, ${message.localTime}`
+      `${ChatManager.TAG}: updateMessage: ${message.msgId}, ${message.localTime}`,
+      message
     );
     let r: any = await Native._callMethod(MTupdateChatMessage, {
       [MTupdateChatMessage]: {
@@ -539,7 +541,10 @@ export class ChatManager extends BaseManager {
    * @throws A description of the exception. See {@link ChatError}.
    */
   public async importMessages(messages: Array<ChatMessage>): Promise<void> {
-    console.log(`${ChatManager.TAG}: importMessages: ${messages.length}`);
+    console.log(
+      `${ChatManager.TAG}: importMessages: ${messages.length}`,
+      messages
+    );
     let r: any = await Native._callMethod(MTimportMessages, {
       [MTimportMessages]: {
         messages: messages,
@@ -563,7 +568,8 @@ export class ChatManager extends BaseManager {
     callback?: ChatMessageStatusCallback
   ): Promise<void> {
     console.log(
-      `${ChatManager.TAG}: downloadAttachment: ${message.msgId}, ${message.localTime}`
+      `${ChatManager.TAG}: downloadAttachment: ${message.msgId}, ${message.localTime}`,
+      message
     );
     ChatManager.handleDownloadAttachmentCallback(this, message, callback);
     let r: any = await Native._callMethod(MTdownloadAttachment, {
@@ -586,7 +592,8 @@ export class ChatManager extends BaseManager {
     callback?: ChatMessageStatusCallback
   ): Promise<void> {
     console.log(
-      `${ChatManager.TAG}: downloadThumbnail: ${message.msgId}, ${message.localTime}`
+      `${ChatManager.TAG}: downloadThumbnail: ${message.msgId}, ${message.localTime}`,
+      message
     );
     ChatManager.handleDownloadThumbnailCallback(this, message, callback);
     let r: any = await Native._callMethod(MTdownloadThumbnail, {
@@ -673,9 +680,12 @@ export class ChatManager extends BaseManager {
     });
     Native.checkErrorFromResult(r);
     let ret = new Array<ChatMessage>(0);
-    (r?.[MTsearchChatMsgFromDB] as Array<any>).forEach((element) => {
-      ret.push(new ChatMessage(element));
-    });
+    const rr: Array<any> = r?.[MTsearchChatMsgFromDB];
+    if (rr) {
+      rr.forEach((element) => {
+        ret.push(new ChatMessage(element));
+      });
+    }
     return ret;
   }
 
@@ -752,9 +762,11 @@ export class ChatManager extends BaseManager {
         ct = 2;
         break;
       default:
-        throw new Error('no have this type');
+        throw new ChatError({
+          code: 1,
+          description: `This type is not supported. ` + convType,
+        });
     }
-
     let r = await Native._callMethod(MTdeleteRemoteConversation, {
       [MTdeleteRemoteConversation]: {
         conversationId: convId,
@@ -794,7 +806,11 @@ export class ChatManager extends BaseManager {
       },
     });
     Native.checkErrorFromResult(r);
-    return new ChatConversation(r?.[MTgetConversation]);
+    const rr = r?.[MTgetConversation];
+    if (rr) {
+      return new ChatConversation(rr);
+    }
+    return undefined;
   }
 
   /**
@@ -811,9 +827,12 @@ export class ChatManager extends BaseManager {
     let r: any = await Native._callMethod(MTloadAllConversations);
     Native.checkErrorFromResult(r);
     let ret = new Array<ChatConversation>(0);
-    (r?.[MTloadAllConversations] as Array<any>).forEach((element) => {
-      ret.push(new ChatConversation(element));
-    });
+    const rr: Array<any> = r?.[MTloadAllConversations];
+    if (rr) {
+      rr.forEach((element) => {
+        ret.push(new ChatConversation(element));
+      });
+    }
     return ret;
   }
 
@@ -833,9 +852,12 @@ export class ChatManager extends BaseManager {
     let r: any = await Native._callMethod(MTgetConversationsFromServer);
     Native.checkErrorFromResult(r);
     let ret = new Array<ChatConversation>(0);
-    (r?.[MTgetConversationsFromServer] as Array<any>).forEach((element) => {
-      ret.push(new ChatConversation(element));
-    });
+    const rr: Array<any> = r?.[MTgetConversationsFromServer];
+    if (rr) {
+      rr.forEach((element) => {
+        ret.push(new ChatConversation(element));
+      });
+    }
     return ret;
   }
 
@@ -887,7 +909,7 @@ export class ChatManager extends BaseManager {
     convId: string,
     convType: ChatConversationType
   ): Promise<ChatMessage | undefined> {
-    console.log(`${ChatManager.TAG}: latestMessage: `);
+    console.log(`${ChatManager.TAG}: latestMessage: `, convId, convType);
     let r: any = await Native._callMethod(MTgetLatestMessage, {
       [MTgetLatestMessage]: {
         con_id: convId,
@@ -896,7 +918,10 @@ export class ChatManager extends BaseManager {
     });
     ChatManager.checkErrorFromResult(r);
     const rr = r?.[MTgetLatestMessage];
-    return new ChatMessage(rr);
+    if (rr) {
+      return new ChatMessage(rr);
+    }
+    return undefined;
   }
 
   /**
@@ -912,7 +937,7 @@ export class ChatManager extends BaseManager {
     convId: string,
     convType: ChatConversationType
   ): Promise<ChatMessage | undefined> {
-    console.log(`${ChatManager.TAG}: lastReceivedMessage: `);
+    console.log(`${ChatManager.TAG}: lastReceivedMessage: `, convId, convType);
     let r: any = await Native._callMethod(MTgetLatestMessageFromOthers, {
       [MTgetLatestMessageFromOthers]: {
         con_id: convId,
@@ -920,8 +945,11 @@ export class ChatManager extends BaseManager {
       },
     });
     ChatManager.checkErrorFromResult(r);
-    const ret: ChatMessage = r?.[MTgetLatestMessageFromOthers];
-    return ret;
+    const rr = r?.[MTgetLatestMessageFromOthers];
+    if (rr) {
+      return new ChatMessage(rr);
+    }
+    return undefined;
   }
 
   /**
@@ -937,7 +965,7 @@ export class ChatManager extends BaseManager {
     convId: string,
     convType: ChatConversationType
   ): Promise<number> {
-    console.log(`${ChatManager.TAG}: unreadCount: `);
+    console.log(`${ChatManager.TAG}: unreadCount: `, convId, convType);
     let r: any = await Native._callMethod(MTgetUnreadMsgCount, {
       [MTgetUnreadMsgCount]: {
         con_id: convId,
@@ -945,7 +973,7 @@ export class ChatManager extends BaseManager {
       },
     });
     ChatManager.checkErrorFromResult(r);
-    const ret: number = r?.[MTgetUnreadMsgCount];
+    const ret: number = r?.[MTgetUnreadMsgCount] as number;
     return ret;
   }
 
@@ -963,7 +991,12 @@ export class ChatManager extends BaseManager {
     convType: ChatConversationType,
     msgId: string
   ): Promise<void> {
-    console.log(`${ChatManager.TAG}: markMessageAsRead: `);
+    console.log(
+      `${ChatManager.TAG}: markMessageAsRead: `,
+      convId,
+      convType,
+      msgId
+    );
     let r: any = await Native._callMethod(MTmarkMessageAsRead, {
       [MTmarkMessageAsRead]: {
         con_id: convId,
@@ -986,7 +1019,11 @@ export class ChatManager extends BaseManager {
     convId: string,
     convType: ChatConversationType
   ): Promise<void> {
-    console.log(`${ChatManager.TAG}: markAllMessagesAsRead: `);
+    console.log(
+      `${ChatManager.TAG}: markAllMessagesAsRead: `,
+      convId,
+      convType
+    );
     let r: any = await Native._callMethod(MTmarkAllMessagesAsRead, {
       [MTmarkAllMessagesAsRead]: {
         con_id: convId,
@@ -1010,7 +1047,7 @@ export class ChatManager extends BaseManager {
     convType: ChatConversationType,
     msg: ChatMessage
   ): Promise<void> {
-    console.log(`${ChatManager.TAG}: insertMessage: `);
+    console.log(`${ChatManager.TAG}: insertMessage: `, convId, convType, msg);
     let r: any = await Native._callMethod(MTinsertMessage, {
       [MTinsertMessage]: {
         con_id: convId,
@@ -1035,7 +1072,7 @@ export class ChatManager extends BaseManager {
     convType: ChatConversationType,
     msg: ChatMessage
   ): Promise<void> {
-    console.log(`${ChatManager.TAG}: appendMessage: `);
+    console.log(`${ChatManager.TAG}: appendMessage: `, convId, convType, msg);
     let r: any = await Native._callMethod(MTappendMessage, {
       [MTappendMessage]: {
         con_id: convId,
@@ -1062,7 +1099,12 @@ export class ChatManager extends BaseManager {
     convType: ChatConversationType,
     msg: ChatMessage
   ): Promise<void> {
-    console.log(`${ChatManager.TAG}: updateConversationMessage: `);
+    console.log(
+      `${ChatManager.TAG}: updateConversationMessage: `,
+      convId,
+      convType,
+      msg
+    );
     let r: any = await Native._callMethod(MTupdateConversationMessage, {
       [MTupdateConversationMessage]: {
         con_id: convId,
@@ -1087,7 +1129,9 @@ export class ChatManager extends BaseManager {
     convType: ChatConversationType,
     msgId: string
   ): Promise<void> {
-    console.log(`${ChatManager.TAG}: deleteMessage: ${convId}, ${convType}`);
+    console.log(
+      `${ChatManager.TAG}: deleteMessage: ${convId}, ${convType}, ${msgId}`
+    );
     let r: any = await Native._callMethod(MTremoveMessage, {
       [MTremoveMessage]: {
         con_id: convId,
@@ -1110,7 +1154,7 @@ export class ChatManager extends BaseManager {
     convId: string,
     convType: ChatConversationType
   ): Promise<void> {
-    console.log(`${ChatManager.TAG}: deleteAllMessages: `);
+    console.log(`${ChatManager.TAG}: deleteAllMessages: `, convId, convType);
     let r: any = await Native._callMethod(MTclearAllMessages, {
       [MTclearAllMessages]: {
         con_id: convId,
@@ -1135,7 +1179,12 @@ export class ChatManager extends BaseManager {
     convType: ChatConversationType,
     msgId: string
   ): Promise<ChatMessage | undefined> {
-    console.log(`${ChatManager.TAG}: getMessageById: `);
+    console.log(
+      `${ChatManager.TAG}: getMessageById: `,
+      convId,
+      convType,
+      msgId
+    );
     let r: any = await Native._callMethod(MTloadMsgWithId, {
       [MTloadMsgWithId]: {
         con_id: convId,
@@ -1144,7 +1193,11 @@ export class ChatManager extends BaseManager {
       },
     });
     ChatManager.checkErrorFromResult(r);
-    return new ChatMessage(r?.[MTloadMsgWithId]);
+    const rr = r?.[MTloadMsgWithId];
+    if (rr) {
+      return new ChatMessage(rr);
+    }
+    return undefined;
   }
 
   /**
@@ -1172,7 +1225,16 @@ export class ChatManager extends BaseManager {
     count: number = 20,
     sender?: string
   ): Promise<Array<ChatMessage>> {
-    console.log(`${ChatManager.TAG}: getMessagesWithMsgType: `);
+    console.log(
+      `${ChatManager.TAG}: getMessagesWithMsgType: `,
+      convId,
+      convType,
+      msgType,
+      direction,
+      timestamp,
+      count,
+      sender
+    );
     let r: any = await Native._callMethod(MTloadMsgWithMsgType, {
       [MTloadMsgWithMsgType]: {
         con_id: convId,
@@ -1186,11 +1248,12 @@ export class ChatManager extends BaseManager {
     });
     ChatManager.checkErrorFromResult(r);
     const ret: ChatMessage[] = [];
-    Object.entries(r?.[MTloadMsgWithMsgType]).forEach(
-      (value: [string, any]) => {
+    const rr = r?.[MTloadMsgWithMsgType];
+    if (rr) {
+      Object.entries(rr).forEach((value: [string, any]) => {
         ret.push(new ChatMessage(value[1]));
-      }
-    );
+      });
+    }
     return ret;
   }
 
@@ -1217,7 +1280,14 @@ export class ChatManager extends BaseManager {
     direction: ChatSearchDirection = ChatSearchDirection.UP,
     loadCount: number = 20
   ): Promise<Array<ChatMessage>> {
-    console.log(`${ChatManager.TAG}: getMessages: `);
+    console.log(
+      `${ChatManager.TAG}: getMessages: `,
+      convId,
+      convType,
+      startMsgId,
+      direction,
+      loadCount
+    );
     let r: any = await Native._callMethod(MTloadMsgWithStartId, {
       [MTloadMsgWithStartId]: {
         con_id: convId,
@@ -1228,11 +1298,13 @@ export class ChatManager extends BaseManager {
       },
     });
     ChatManager.checkErrorFromResult(r);
-    const rr = r?.[MTloadMsgWithStartId] as Map<string, ChatMessage>;
     const ret: ChatMessage[] = [];
-    rr.forEach((value: any) => {
-      ret.push(new ChatMessage(value));
-    });
+    const rr = r?.[MTloadMsgWithStartId];
+    if (rr) {
+      Object.entries(rr).forEach((value: [string, any]) => {
+        ret.push(new ChatMessage(value[1]));
+      });
+    }
     return ret;
   }
 
@@ -1262,7 +1334,16 @@ export class ChatManager extends BaseManager {
     count: number = 20,
     sender?: string
   ): Promise<Array<ChatMessage>> {
-    console.log(`${ChatManager.TAG}: getMessagesWithKeyword: `);
+    console.log(
+      `${ChatManager.TAG}: getMessagesWithKeyword: `,
+      convId,
+      convType,
+      keywords,
+      direction,
+      timestamp,
+      count,
+      sender
+    );
     let r: any = await Native._callMethod(MTloadMsgWithKeywords, {
       [MTloadMsgWithKeywords]: {
         con_id: convId,
@@ -1276,11 +1357,12 @@ export class ChatManager extends BaseManager {
     });
     ChatManager.checkErrorFromResult(r);
     const ret: ChatMessage[] = [];
-    Object.entries(r?.[MTloadMsgWithKeywords]).forEach(
-      (value: [string, any]) => {
+    const rr = r?.[MTloadMsgWithKeywords];
+    if (rr) {
+      Object.entries(rr).forEach((value: [string, any]) => {
         ret.push(new ChatMessage(value[1]));
-      }
-    );
+      });
+    }
     return ret;
   }
 
@@ -1308,7 +1390,15 @@ export class ChatManager extends BaseManager {
     direction: ChatSearchDirection = ChatSearchDirection.UP,
     count: number = 20
   ): Promise<Array<ChatMessage>> {
-    console.log(`${ChatManager.TAG}: getMessagesFromTime: `);
+    console.log(
+      `${ChatManager.TAG}: getMessagesFromTime: `,
+      convId,
+      convType,
+      startTime,
+      endTime,
+      direction,
+      count
+    );
     let r: any = await Native._callMethod(MTloadMsgWithTime, {
       [MTloadMsgWithTime]: {
         con_id: convId,
@@ -1321,9 +1411,12 @@ export class ChatManager extends BaseManager {
     });
     ChatManager.checkErrorFromResult(r);
     const ret: ChatMessage[] = [];
-    Object.entries(r?.[MTloadMsgWithTime]).forEach((value: [string, any]) => {
-      ret.push(new ChatMessage(value[1]));
-    });
+    const rr = r?.[MTloadMsgWithTime];
+    if (rr) {
+      Object.entries(rr).forEach((value: [string, any]) => {
+        ret.push(new ChatMessage(value[1]));
+      });
+    }
     return ret;
   }
 
@@ -1340,7 +1433,7 @@ export class ChatManager extends BaseManager {
     msg: ChatMessage,
     languages: Array<string>
   ): Promise<ChatMessage> {
-    console.log(`${ChatManager.TAG}: translateMessage: `);
+    console.log(`${ChatManager.TAG}: translateMessage: `, msg, languages);
     let r: any = await Native._callMethod(MTtranslateMessage, {
       [MTtranslateMessage]: {
         message: msg,
@@ -1365,11 +1458,13 @@ export class ChatManager extends BaseManager {
     console.log(`${ChatManager.TAG}: fetchSupportedLanguages: `);
     let r: any = await Native._callMethod(MTfetchSupportLanguages);
     ChatManager.checkErrorFromResult(r);
-    const rr: Array<any> = r?.[MTfetchSupportLanguages];
     const ret: Array<ChatTranslateLanguage> = [];
-    rr.forEach((value: any) => {
-      ret.push(new ChatTranslateLanguage(value));
-    });
+    const rr: Array<any> = r?.[MTfetchSupportLanguages];
+    if (rr) {
+      rr.forEach((value: any) => {
+        ret.push(new ChatTranslateLanguage(value));
+      });
+    }
     return ret;
   }
 
@@ -1385,7 +1480,12 @@ export class ChatManager extends BaseManager {
     convType: ChatConversationType,
     ext: any
   ): Promise<void> {
-    console.log(`${ChatManager.TAG}: setConversationExtension: `);
+    console.log(
+      `${ChatManager.TAG}: setConversationExtension: `,
+      convId,
+      convType,
+      ext
+    );
     let r: any = await Native._callMethod(MTsyncConversationName, {
       [MTsyncConversationName]: {
         con_id: convId,

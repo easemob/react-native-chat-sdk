@@ -19,6 +19,7 @@ import { ChatPushManager } from './ChatPushManager';
 import { ChatRoomManager } from './ChatRoomManager';
 import { ChatUserInfoManager } from './ChatUserInfoManager';
 import { ChatDeviceInfo } from './common/ChatDeviceInfo';
+import { ChatError } from './common/ChatError';
 import type { ChatOptions } from './common/ChatOptions';
 import { BaseManager } from './__internal__/Base';
 import {
@@ -65,7 +66,7 @@ const ExtSdkApiRN = NativeModules.ExtSdkApiRN
       {},
       {
         get() {
-          throw new Error(LINKING_ERROR);
+          throw new ChatError({ code: 1, description: LINKING_ERROR });
         },
       }
     );
@@ -78,7 +79,7 @@ export class ChatClient extends BaseManager {
   private static _instance: ChatClient;
   private _connectionSubscriptions: Map<string, EmitterSubscription>;
   public static getInstance(): ChatClient {
-    if (ChatClient._instance == null || ChatClient._instance === undefined) {
+    if (ChatClient._instance === null || ChatClient._instance === undefined) {
       ChatClient._instance = new ChatClient();
     }
     return ChatClient._instance;
@@ -114,7 +115,8 @@ export class ChatClient extends BaseManager {
   private _customListeners: Set<ChatCustomEventListener>;
 
   private _options?: ChatOptions;
-  private _sdkVersion: string = '1.0.0';
+  private _sdkVersion: string = '3.9.1.1';
+  private _rnSdkVersion: string = '1.0.0';
   private _isInit: boolean = false;
   private _currentUsername: string = '';
 
@@ -146,9 +148,7 @@ export class ChatClient extends BaseManager {
         key: string,
         map: Map<string, EmitterSubscription>
       ) => {
-        console.log(
-          `${ChatClient.TAG}: setNativeListener: ${key}, ${value}, ${map}`
-        );
+        console.log(`${ChatClient.TAG}: setNativeListener:`, key, value, map);
         value.remove();
       }
     );
@@ -247,26 +247,26 @@ export class ChatClient extends BaseManager {
     });
   }
   private onDisconnected(params?: any): void {
-    console.log(`${ChatClient.TAG}: onDisconnected: ${params}`);
+    console.log(`${ChatClient.TAG}: onDisconnected: `, params);
     this._connectionListeners.forEach((element) => {
       let ec = params?.errorCode as number;
       element.onDisconnected(ec);
     });
   }
   private onTokenWillExpire(params?: any): void {
-    console.log(`${ChatClient.TAG}: onTokenWillExpire: ${params}`);
+    console.log(`${ChatClient.TAG}: onTokenWillExpire: `, params);
     this._connectionListeners.forEach((element) => {
       element.onTokenWillExpire();
     });
   }
   private onTokenDidExpire(params?: any): void {
-    console.log(`${ChatClient.TAG}: onTokenDidExpire: ${params}`);
+    console.log(`${ChatClient.TAG}: onTokenDidExpire: `, params);
     this._connectionListeners.forEach((element) => {
       element.onTokenDidExpire();
     });
   }
   private onMultiDeviceEvent(params?: any): void {
-    console.log(`${ChatClient.TAG}: onMultiDeviceEvent: ${params}`);
+    console.log(`${ChatClient.TAG}: onMultiDeviceEvent: `, params);
     this._multiDeviceListeners.forEach((element) => {
       let event = params?.event as number;
       if (event > 10) {
@@ -285,7 +285,7 @@ export class ChatClient extends BaseManager {
     });
   }
   private onCustomEvent(params: any): void {
-    console.log(`${ChatClient.TAG}: onCustomEvent: ${params}`);
+    console.log(`${ChatClient.TAG}: onCustomEvent: `, params);
     this._customListeners.forEach((element) => {
       element.onDataReceived(params);
     });
@@ -362,12 +362,21 @@ export class ChatClient extends BaseManager {
   }
 
   /**
+   * Gets the version of the Native SDK.
+   *
+   * @returns The version of the React Native SDK.
+   */
+  public get sdkVersion(): string {
+    return this._sdkVersion;
+  }
+
+  /**
    * Gets the version of the React Native SDK.
    *
    * @returns The version of the React Native SDK.
    */
   public get rnSdkVersion(): string {
-    return this._sdkVersion;
+    return this._rnSdkVersion;
   }
 
   /**
@@ -385,7 +394,8 @@ export class ChatClient extends BaseManager {
   public async init(options: ChatOptions): Promise<void> {
     console.log(`${ChatClient.TAG}: init: `, options);
     this._options = options;
-    await Native._callMethod(MTinit, { options });
+    const r = await Native._callMethod(MTinit, { options });
+    ChatClient.checkErrorFromResult(r);
     this._isInit = true;
   }
 
@@ -400,9 +410,9 @@ export class ChatClient extends BaseManager {
    */
   public async isConnected(): Promise<boolean> {
     console.log(`${ChatClient.TAG}: isConnected: `);
-    let result: any = await Native._callMethod(MTisConnected);
-    ChatClient.checkErrorFromResult(result);
-    let _connected = result?.[MTisConnected] as boolean;
+    const r: any = await Native._callMethod(MTisConnected);
+    ChatClient.checkErrorFromResult(r);
+    let _connected = r?.[MTisConnected] as boolean;
     return _connected;
   }
 
@@ -414,9 +424,9 @@ export class ChatClient extends BaseManager {
    */
   public async getCurrentUsername(): Promise<string> {
     console.log(`${ChatClient.TAG}: getCurrentUsername: `);
-    let result: any = await Native._callMethod(MTgetCurrentUser);
-    ChatClient.checkErrorFromResult(result);
-    let userName = result?.[MTgetCurrentUser] as string;
+    let r: any = await Native._callMethod(MTgetCurrentUser);
+    ChatClient.checkErrorFromResult(r);
+    let userName = r?.[MTgetCurrentUser] as string;
     if (userName && userName.length !== 0) {
       if (userName !== this._currentUsername) {
         this._currentUsername = userName;
@@ -440,9 +450,9 @@ export class ChatClient extends BaseManager {
    */
   public async isLoginBefore(): Promise<boolean> {
     console.log(`${ChatClient.TAG}: isLoginBefore: `);
-    let result: any = await Native._callMethod(MTisLoggedInBefore);
-    ChatClient.checkErrorFromResult(result);
-    let _isLoginBefore = result?.[MTisLoggedInBefore] as boolean;
+    let r: any = await Native._callMethod(MTisLoggedInBefore);
+    ChatClient.checkErrorFromResult(r);
+    let _isLoginBefore = r?.[MTisLoggedInBefore] as boolean;
     return _isLoginBefore;
   }
 
@@ -455,9 +465,9 @@ export class ChatClient extends BaseManager {
    */
   public async getAccessToken(): Promise<string> {
     console.log(`${ChatClient.TAG}: isLoginBefore: `);
-    let result: any = await Native._callMethod(MTgetToken);
-    ChatClient.checkErrorFromResult(result);
-    let _token = result?.[MTgetToken] as string;
+    let r: any = await Native._callMethod(MTgetToken);
+    ChatClient.checkErrorFromResult(r);
+    let _token = r?.[MTgetToken] as string;
     return _token;
   }
 
@@ -479,14 +489,14 @@ export class ChatClient extends BaseManager {
     username: string,
     password: string
   ): Promise<void> {
-    console.log(`${ChatClient.TAG}: createAccount: ${username}, ${password}`);
-    let result: any = await Native._callMethod(MTcreateAccount, {
+    console.log(`${ChatClient.TAG}: createAccount: `, username, '******');
+    let r: any = await Native._callMethod(MTcreateAccount, {
       [MTcreateAccount]: {
         username: username,
         password: password,
       },
     });
-    ChatClient.checkErrorFromResult(result);
+    ChatClient.checkErrorFromResult(r);
   }
 
   /**
@@ -505,20 +515,20 @@ export class ChatClient extends BaseManager {
     pwdOrToken: string,
     isPassword: boolean = true
   ): Promise<void> {
-    console.log(`${ChatClient.TAG}: login: ${userName} ${isPassword}`);
-    let result: any = await Native._callMethod(MTlogin, {
+    console.log(`${ChatClient.TAG}: login: `, userName, '******', isPassword);
+    let r: any = await Native._callMethod(MTlogin, {
       [MTlogin]: {
         username: userName,
         pwdOrToken: pwdOrToken,
         isPassword: isPassword,
       },
     });
-    ChatClient.checkErrorFromResult(result);
-    result = result?.[MTlogin];
-    this._currentUsername = result?.username;
-    console.log(
-      `${ChatClient.TAG}: login: ${result?.username}, ${result?.token}`
-    );
+    ChatClient.checkErrorFromResult(r);
+    const rr = r?.[MTlogin];
+    if (rr && rr.username) {
+      this._currentUsername = rr.username;
+      console.log(`${ChatClient.TAG}: login: ${rr?.username}, ${rr?.token}`);
+    }
   }
 
   /**
@@ -534,17 +544,19 @@ export class ChatClient extends BaseManager {
     userName: string,
     agoraToken: string
   ): Promise<void> {
-    console.log(
-      `${ChatClient.TAG}: loginWithAgoraToken: ${userName}, ${agoraToken}`
-    );
-    let result: any = await Native._callMethod(MTloginWithAgoraToken, {
+    console.log(`${ChatClient.TAG}: loginWithAgoraToken: `, userName, '******');
+    let r: any = await Native._callMethod(MTloginWithAgoraToken, {
       [MTloginWithAgoraToken]: {
         username: userName,
         agoratoken: agoraToken,
       },
     });
-    ChatClient.checkErrorFromResult(result);
-    this._currentUsername = result?.username;
+    ChatClient.checkErrorFromResult(r);
+    const rr = r?.[MTloginWithAgoraToken];
+    if (rr && rr.username) {
+      this._currentUsername = rr.username;
+      console.log(`${ChatClient.TAG}: loginA: ${rr?.username}, ${rr?.token}`);
+    }
   }
 
   /**
@@ -557,13 +569,13 @@ export class ChatClient extends BaseManager {
    * @throws A description of the exception. See {@link ChatError}.
    */
   public async renewAgoraToken(agoraToken: string): Promise<void> {
-    console.log(`${ChatClient.TAG}: renewAgoraToken: ${agoraToken}`);
-    let result: any = await Native._callMethod(MTrenewToken, {
+    console.log(`${ChatClient.TAG}: renewAgoraToken: `, '******');
+    let r: any = await Native._callMethod(MTrenewToken, {
       [MTrenewToken]: {
         agoraToken: agoraToken,
       },
     });
-    ChatClient.checkErrorFromResult(result);
+    ChatClient.checkErrorFromResult(r);
   }
 
   /**
@@ -575,13 +587,13 @@ export class ChatClient extends BaseManager {
    * @throws A description of the exception. See {@link ChatError}.
    */
   public async logout(unbindDeviceToken: boolean = true): Promise<void> {
-    console.log(`${ChatClient.TAG}: logout: ${unbindDeviceToken}`);
-    let result: any = await Native._callMethod(MTlogout, {
+    console.log(`${ChatClient.TAG}: logout: `, unbindDeviceToken);
+    let r: any = await Native._callMethod(MTlogout, {
       [MTlogout]: {
         unbindToken: unbindDeviceToken,
       },
     });
-    ChatClient.checkErrorFromResult(result);
+    ChatClient.checkErrorFromResult(r);
     this.reset();
   }
 
@@ -599,7 +611,7 @@ export class ChatClient extends BaseManager {
    * @throws A description of the exception. See {@link ChatError}.
    */
   public async changeAppKey(newAppKey: string): Promise<void> {
-    console.log(`${ChatClient.TAG}: changeAppKey: ${newAppKey}`);
+    console.log(`${ChatClient.TAG}: changeAppKey: `, newAppKey);
     let r: any = await Native._callMethod(MTchangeAppKey, {
       [MTchangeAppKey]: {
         appKey: newAppKey,
@@ -638,23 +650,25 @@ export class ChatClient extends BaseManager {
     password: string
   ): Promise<Array<ChatDeviceInfo>> {
     console.log(
-      `${ChatClient.TAG}: getLoggedInDevicesFromServer: ${username}, ******`
+      `${ChatClient.TAG}: getLoggedInDevicesFromServer: `,
+      username,
+      '******'
     );
-    let result: any = await Native._callMethod(MTgetLoggedInDevicesFromServer, {
+    let r: any = await Native._callMethod(MTgetLoggedInDevicesFromServer, {
       [MTgetLoggedInDevicesFromServer]: {
         username: username,
         password: password,
       },
     });
-    ChatClient.checkErrorFromResult(result);
-    let r: ChatDeviceInfo[] = [];
-    let list: Array<any> = result?.[MTgetLoggedInDevicesFromServer];
+    ChatClient.checkErrorFromResult(r);
+    let ret: ChatDeviceInfo[] = [];
+    let list: Array<any> = r?.[MTgetLoggedInDevicesFromServer];
     if (list) {
       list.forEach((element) => {
-        r.push(new ChatDeviceInfo(element));
+        ret.push(new ChatDeviceInfo(element));
       });
     }
-    return r;
+    return ret;
   }
 
   /**
@@ -673,7 +687,10 @@ export class ChatClient extends BaseManager {
     resource: string
   ): Promise<void> {
     console.log(
-      `${ChatClient.TAG}: kickDevice: ${username}, ${password}, ${resource}`
+      `${ChatClient.TAG}: kickDevice: `,
+      username,
+      '******',
+      resource
     );
     let r: any = await Native._callMethod(MTkickDevice, {
       [MTkickDevice]: {
@@ -697,7 +714,7 @@ export class ChatClient extends BaseManager {
     username: string,
     password: string
   ): Promise<void> {
-    console.log(`${ChatClient.TAG}: kickAllDevices: ${username}, ${password}`);
+    console.log(`${ChatClient.TAG}: kickAllDevices: `, username, '******');
     let r: any = await Native._callMethod(MTkickAllDevices, {
       [MTkickAllDevices]: {
         username: username,

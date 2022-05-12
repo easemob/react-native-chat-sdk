@@ -1,3 +1,4 @@
+import { ChatError } from './common/ChatError';
 import type { ChatGroupMessageAck } from './common/ChatGroup';
 import type { ChatMessage } from './common/ChatMessage';
 import type { ChatPresence } from './common/ChatPresence';
@@ -170,7 +171,10 @@ export function ChatContactGroupEventFromNumber(
     case 29:
       return ChatMultiDeviceEvent.GROUP_REMOVE_MUTE;
     default:
-      throw new Error(`not exist this type: ${params}`);
+      throw new ChatError({
+        code: 1,
+        description: `This type is not supported. ` + params,
+      });
   }
 }
 

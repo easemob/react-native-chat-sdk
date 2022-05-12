@@ -1,3 +1,5 @@
+import { ChatError } from './ChatError';
+
 /**
  * The enumeration of chat room role types.
  */
@@ -39,7 +41,10 @@ export function ChatRoomPermissionTypeFromNumber(
     case 2:
       return ChatRoomPermissionType.Owner;
     default:
-      throw new Error(`not exist this type: ${params}`);
+      throw new ChatError({
+        code: 1,
+        description: `This type is not supported. ` + params,
+      });
   }
 }
 
