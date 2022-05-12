@@ -1,4 +1,3 @@
-import { ChatUserInfo } from 'react-native-chat-sdk';
 import { datasheet } from '../__default__/Datasheet';
 import type { ApiParams } from '../__internal__/DataTypes';
 
@@ -7,9 +6,6 @@ const fetchUserInfoById = 'fetchUserInfoById';
 const fetchOwnInfo = 'fetchOwnInfo';
 const clearUserInfo = 'clearUserInfo';
 
-/**
- * 本地使用不导出
- */
 export const MN = {
   updateOwnUserInfo,
   fetchUserInfoById,
@@ -24,13 +20,44 @@ export const metaDataList = new Map<string, ApiParams>([
       methodName: MN.updateOwnUserInfo,
       params: [
         {
-          paramName: 'userInfo',
-          paramType: 'object',
-          paramDefaultValue: new ChatUserInfo({
-            userId: datasheet.accounts[0].id,
-            phone: '13426223214',
-            expireTime: Date.now(),
-          }),
+          paramName: 'nickName',
+          paramType: 'string',
+          paramDefaultValue: 'foo',
+        },
+        {
+          paramName: 'avatarUrl',
+          paramType: 'string',
+          paramDefaultValue: '',
+        },
+        {
+          paramName: 'mail',
+          paramType: 'string',
+          paramDefaultValue: 'xxx@hotmail.com',
+        },
+        {
+          paramName: 'phone',
+          paramType: 'string',
+          paramDefaultValue: '134 8888 9999',
+        },
+        {
+          paramName: 'gender',
+          paramType: 'number',
+          paramDefaultValue: 0,
+        },
+        {
+          paramName: 'sign',
+          paramType: 'string',
+          paramDefaultValue: 'I am teacher',
+        },
+        {
+          paramName: 'birth',
+          paramType: 'string',
+          paramDefaultValue: '2020.09.01',
+        },
+        {
+          paramName: 'ext',
+          paramType: 'string',
+          paramDefaultValue: JSON.stringify({ key: 'value' }),
         },
       ],
     },

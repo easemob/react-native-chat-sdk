@@ -38,11 +38,6 @@ export class ChatUserInfo {
    * The user extension information.
    */
   ext?: string;
-  /**
-   * The time period(seconds) when the user attibutes in the cache expire.
-   * If the interval between two calles is less than or equal to the value you set in the parameter, user attributes are obtained directly from the local cache; otherwise, they are obtained from the server. For example, if you set this parameter to 120(2 minutes), once this method is called again within 2 minutes, the SDK returns the attributes obtained last time.
-   */
-  expireTime: number;
 
   constructor(params: {
     userId: string;
@@ -54,7 +49,6 @@ export class ChatUserInfo {
     sign?: string;
     birth?: string;
     ext?: string;
-    expireTime: number;
   }) {
     this.userId = params.userId;
     this.nickName = params.nickName;
@@ -65,6 +59,5 @@ export class ChatUserInfo {
     this.sign = params.sign;
     this.birth = params.birth;
     this.ext = params.ext;
-    this.expireTime = params.expireTime;
   }
 }
