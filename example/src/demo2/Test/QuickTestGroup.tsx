@@ -98,6 +98,7 @@ export class QuickTestScreenGroup extends QuickTestScreenBase<
    * @param name 方法名称
    */
   protected callApi(name: string): void {
+    super.callApi(name);
     switch (name) {
       case MN.getGroupWithId:
         {
@@ -442,13 +443,13 @@ export class QuickTestScreenGroup extends QuickTestScreenBase<
           console.log(`${MN.changeGroupName} === ${methodName}`);
           const groupId = this.metaData.get(MN.changeGroupName)?.params[0]
             .paramDefaultValue;
-          const name = this.metaData.get(MN.changeGroupName)?.params[1]
+          const local_name = this.metaData.get(MN.changeGroupName)?.params[1]
             .paramDefaultValue;
 
           this.tryCatch(
             ChatClient.getInstance().groupManager.changeGroupName(
               groupId,
-              name
+              local_name
             ),
             QuickTestScreenGroup.TAG,
             methodName

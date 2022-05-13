@@ -60,6 +60,7 @@ export class QuickTestScreenUser extends QuickTestScreenBase<
    * @param name 方法名称
    */
   protected callApi(name: string): void {
+    super.callApi(name);
     switch (name) {
       case MN.updateOwnUserInfo:
         {

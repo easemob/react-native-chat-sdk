@@ -924,10 +924,11 @@ export abstract class QuickTestScreenBase<
   }
 
   /**
-   * 调用对应的SDK方法
+   * 子类需要调用该方法
+   *
    * @param name 方法名称
    */
   protected callApi(name: string): void {
-    throw new Error('Please sub class implement. ' + name);
+    this.setState({ cmd: name });
   }
 }
