@@ -30,7 +30,7 @@ export const metaDataList = new Map<string, ApiParams>([
         {
           paramName: 'members',
           paramType: 'object',
-          paramDefaultValue: ['zhangsan', 'lisi'],
+          paramDefaultValue: ['asterisk003'],
         },
         {
           paramName: 'expiry',

@@ -17,7 +17,7 @@ export class ChatPresence {
   /**
    * The expiration time of the presence subscription.
    */
-  expireTime: string;
+  expiryTime: string;
   /**
    * The details of the current presence state.
    */
@@ -27,13 +27,16 @@ export class ChatPresence {
     publisher: string;
     statusDescription: string;
     lastTime: string;
-    expireTime: string;
-    statusDetails: Map<string, number>;
+    expiryTime: string;
+    statusDetails: any;
   }) {
     this.publisher = params.publisher;
     this.statusDescription = params.statusDescription;
     this.lastTime = params.lastTime;
-    this.expireTime = params.expireTime;
-    this.statusDetails = params.statusDetails;
+    this.expiryTime = params.expiryTime;
+    this.statusDetails = new Map();
+    Object.entries(params.statusDetails).forEach((value: [string, any]) => {
+      this.statusDetails.set(value[0], value[1]);
+    });
   }
 }

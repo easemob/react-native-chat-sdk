@@ -37,10 +37,12 @@ export class ChatPresenceManager extends Native {
     );
   }
   private invokePresenceListener(params: any): void {
+    console.log('test: ', params);
     this._presenceListeners.forEach((listener: ChatPresenceEventListener) => {
       const ret: Array<ChatPresence> = [];
-      const l: Array<any> = params?.[MTonPresenceStatusChanged].presences;
+      const l: Array<any> = params?.presences;
       l.forEach((value: any) => {
+        console.log('test: ', value);
         ret.push(new ChatPresence(value));
       });
       listener.onPresenceStatusChanged(ret);
