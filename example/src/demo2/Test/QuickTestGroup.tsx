@@ -319,9 +319,9 @@ export class QuickTestScreenGroup extends QuickTestScreenBase<
           console.log(`${MN.fetchGroupFileListFromServer} === ${methodName}`);
           const groupId = this.metaData.get(MN.fetchGroupFileListFromServer)
             ?.params[0].paramDefaultValue;
-          const pageSize = this.metaData.get(MN.fetchMuteListFromServer)
+          const pageSize = this.metaData.get(MN.fetchGroupFileListFromServer)
             ?.params[1].paramDefaultValue;
-          const pageNum = this.metaData.get(MN.fetchMuteListFromServer)
+          const pageNum = this.metaData.get(MN.fetchGroupFileListFromServer)
             ?.params[2].paramDefaultValue;
 
           this.tryCatch(
@@ -661,7 +661,7 @@ export class QuickTestScreenGroup extends QuickTestScreenBase<
           console.log(`${MN.addWhiteList} === ${methodName}`);
           const groupId = this.metaData.get(MN.addWhiteList)?.params[0]
             .paramDefaultValue;
-          const members = this.metaData.get(MN.unMuteMembers)?.params[1]
+          const members = this.metaData.get(MN.addWhiteList)?.params[1]
             .paramDefaultValue;
 
           this.tryCatch(
