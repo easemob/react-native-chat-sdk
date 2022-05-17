@@ -1,5 +1,5 @@
 import React, { ReactNode } from 'react';
-import { View } from 'react-native';
+import { Text, View } from 'react-native';
 import {
   ChatClient,
   ChatGroupMessageAck,
@@ -55,6 +55,8 @@ export interface StateSendMessage extends StateBase {
   // custom message body
   event: string;
   ext: string;
+
+  cb_result: string;
 }
 
 export interface StatelessSendMessage extends StatelessBase {}
@@ -100,6 +102,7 @@ export class SendMessageLeafScreen extends LeafScreenBase<StateSendMessage> {
       sendResult: '',
       recvResult: '',
       exceptResult: '',
+      cb_result: '',
       messageType: ChatMessageType.TXT,
 
       targetId: datasheet.accounts[2].id,
@@ -133,10 +136,25 @@ export class SendMessageLeafScreen extends LeafScreenBase<StateSendMessage> {
     this.statelessData = {};
   }
 
+  protected renderCallBackResult(): ReactNode[] {
+    const { cb_result } = this.state;
+    return [
+      <View
+        key={this.generateKey('cb_result', 'callback')}
+        style={styleValues.containerRow}
+      >
+        <Text selectable={true} style={styleValues.textTipStyle}>
+          cb_result: {cb_result}
+        </Text>
+      </View>,
+    ];
+  }
+
   protected renderResult(): ReactNode {
     return (
       <View style={styleValues.containerColumn}>
         {this.renderSendResult()}
+        {this.renderCallBackResult()}
         {this.renderRecvResult()}
         {this.renderExceptionResult()}
       </View>
@@ -242,15 +260,18 @@ export class SendMessageLeafScreen extends LeafScreenBase<StateSendMessage> {
         console.log(
           `${SendMessageLeafScreen.TAG}: onProgress: ${localMsgId}, ${progress}`
         );
+        this.that.setState({ cb_result: `${localMsgId}, ${progress}` });
       }
       onError(localMsgId: string, error: ChatError): void {
         console.log(
           `${SendMessageLeafScreen.TAG}: onError: ${localMsgId}, ${error}`
         );
+        this.that.setState({ cb_result: JSON.stringify(error) });
       }
       onSuccess(message: ChatMessage): void {
         console.log(`${SendMessageLeafScreen.TAG}: onSuccess: ${message}`);
         ChatManagerCache.getInstance().addSendMessage(message);
+        this.that.setState({ cb_result: JSON.stringify(message) });
       }
     })(this);
 

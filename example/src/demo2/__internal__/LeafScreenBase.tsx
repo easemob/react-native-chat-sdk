@@ -76,8 +76,8 @@ export abstract class LeafScreenBase<
           } else {
             result = 'undefined';
           }
-          console.log(`${tag}: ${name}: onfulfilled: `, result);
-          this.setState({ sendResult: 'onfulfilled: ' + result });
+          console.log(`${tag}: ${name}: success: `, result);
+          this.setState({ sendResult: 'success: ' + result });
           if (accept) {
             accept(result);
           }
@@ -99,7 +99,7 @@ export abstract class LeafScreenBase<
             'reason: ',
             reason
           );
-          this.setState({ sendResult: 'onfulfilled: ' + result });
+          this.setState({ sendResult: 'fail: ' + result });
           if (reject) {
             reject(reason);
           }
@@ -116,8 +116,8 @@ export abstract class LeafScreenBase<
         } else {
           result = 'undefined';
         }
-        console.log(`${tag}: ${name}: onException: `, result);
-        this.setState({ exceptResult: 'onException: ' + result });
+        console.log(`${tag}: ${name}: except: `, result);
+        this.setState({ exceptResult: 'except: ' + result });
         if (reject) {
           reject(result);
         }

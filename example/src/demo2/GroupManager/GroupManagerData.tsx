@@ -1,5 +1,6 @@
 import type { StateGroupMessage } from './GroupManagerItem';
 import type { ApiParams } from '../__internal__/DataTypes';
+import RNFS from 'react-native-fs';
 
 export const GROUPMN = {
   createGroup: 'createGroup',
@@ -328,7 +329,7 @@ export const metaData = new Map<string, ApiParams>([
         {
           paramName: 'groupId',
           paramType: 'string',
-          paramDefaultValue: '180073968762881',
+          paramDefaultValue: '181816204001281',
         },
         {
           paramName: 'pageSize',
@@ -712,7 +713,7 @@ export const metaData = new Map<string, ApiParams>([
         {
           paramName: 'groupId',
           paramType: 'string',
-          paramDefaultValue: '180073968762881',
+          paramDefaultValue: '181816204001281',
         },
         {
           paramName: 'filePath',
@@ -812,18 +813,18 @@ export const metaData = new Map<string, ApiParams>([
         {
           paramName: 'groupId',
           paramType: 'string',
-          paramDefaultValue: '180073968762881',
+          paramDefaultValue: '181816204001281',
         },
         {
           paramName: 'fileId',
           paramType: 'string',
-          paramDefaultValue: '22328370-d0d5-11ec-88a6-f1a5bfc1c68f',
+          paramDefaultValue: '7f3e6970-d5e0-11ec-9419-65ea58d8b217',
         },
         {
           paramName: 'savePath',
           paramType: 'string',
           paramDefaultValue:
-            '/private/var/mobile/Containers/Data/Application/060955BE-1C40-4B58-B1B0-F3B5D3649565/tmp/com.example.reactnativechatsdk-Inbox',
+            RNFS.TemporaryDirectoryPath + '/easemob/easemob.file',
         },
         {
           paramName: 'callback',
@@ -863,6 +864,7 @@ for (let key of metaData.keys()) {
 }
 export const stateData: StateGroupMessage = Object.assign({}, formatData, {
   sendResult: '',
+  cbResult: '',
   recvResult: '',
   exceptResult: '',
 });
