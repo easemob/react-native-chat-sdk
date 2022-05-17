@@ -325,6 +325,19 @@ export const metaDataList = new Map<string, ApiParams>([
     },
   ],
   [
+    MN.fetchAnnouncementFromServer,
+    {
+      methodName: MN.fetchAnnouncementFromServer,
+      params: [
+        {
+          paramName: 'groupId',
+          paramType: 'string',
+          paramDefaultValue: '180804431970306',
+        },
+      ],
+    },
+  ],
+  [
     MN.addMembers,
     {
       methodName: MN.addMembers,

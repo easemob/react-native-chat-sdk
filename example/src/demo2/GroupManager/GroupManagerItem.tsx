@@ -1,12 +1,18 @@
 import React, { ReactNode } from 'react';
-import { View } from 'react-native';
+import { Text, View } from 'react-native';
 import { styleValues } from '../__internal__/Css';
 import { LeafScreenBase, StateBase } from '../__internal__/LeafScreenBase';
 import { metaData, GROUPMN, stateData } from './GroupManagerData';
 import type { ApiParams } from '../__internal__/DataTypes';
 import type { ChatGroupOptions } from '../../../../src/common/ChatGroup';
-import { ChatClient } from 'react-native-chat-sdk';
+import {
+  ChatClient,
+  ChatError,
+  ChatGroupEventListener,
+  ChatGroupFileStatusCallback,
+} from 'react-native-chat-sdk';
 export interface StateGroupMessage extends StateBase {
+  cbResult: string;
   createGroup: {
     groupName: string;
     desc: string;
@@ -797,7 +803,8 @@ export class GroupManagerLeafScreen extends LeafScreenBase<StateGroupMessage> {
         this.tryCatch(
           ChatClient.getInstance().groupManager.uploadGroupSharedFile(
             groupId,
-            filePath
+            filePath,
+            this.createCallback()
           ),
           GroupManagerLeafScreen.TAG,
           'GROUPMN.uploadGroupSharedFile'
@@ -860,7 +867,8 @@ export class GroupManagerLeafScreen extends LeafScreenBase<StateGroupMessage> {
           ChatClient.getInstance().groupManager.downloadGroupSharedFile(
             groupId,
             fileId,
-            savePath
+            savePath,
+            this.createCallback()
           ),
           GroupManagerLeafScreen.TAG,
           'GROUPMN.downloadGroupSharedFile'
@@ -884,19 +892,415 @@ export class GroupManagerLeafScreen extends LeafScreenBase<StateGroupMessage> {
         break;
     }
   }
+
+  protected renderCallbackResult(): ReactNode[] {
+    const { cbResult } = this.state;
+    return [
+      <View
+        key={this.generateKey('cbResult', 'callback')}
+        style={styleValues.containerRow}
+      >
+        <Text selectable={true} style={styleValues.textTipStyle}>
+          cbResult: {cbResult}
+        </Text>
+      </View>,
+    ];
+  }
+
   protected renderResult(): ReactNode {
     return (
       <View style={styleValues.containerColumn}>
         {this.renderSendResult()}
+        {this.renderCallbackResult()}
         {this.renderRecvResult()}
       </View>
     );
   }
+
   protected addListener?(): void {
     console.log('addListener');
+    const groupListener: ChatGroupEventListener = new (class
+      implements ChatGroupEventListener
+    {
+      that: GroupManagerLeafScreen;
+      constructor(parent: GroupManagerLeafScreen) {
+        this.that = parent;
+      }
+      onInvitationReceived(params: {
+        groupId: string;
+        inviter: string;
+        groupName?: string | undefined;
+        reason?: string | undefined;
+      }): void {
+        console.log(
+          `${GroupManagerLeafScreen.TAG}: onInvitationReceived:`,
+          params.groupId,
+          params.inviter,
+          params.groupName,
+          params.reason
+        );
+        this.that.setState({
+          recvResult:
+            `onInvitationReceived: ` +
+            params.groupId +
+            params.inviter +
+            params.groupName +
+            params.reason,
+        });
+      }
+      onRequestToJoinReceived(params: {
+        groupId: string;
+        applicant: string;
+        groupName?: string | undefined;
+        reason?: string | undefined;
+      }): void {
+        console.log(
+          `${GroupManagerLeafScreen.TAG}: onRequestToJoinReceived:`,
+          params.groupId,
+          params.applicant,
+          params.groupName,
+          params.reason
+        );
+        this.that.setState({
+          recvResult:
+            `onRequestToJoinReceived: ` +
+            params.groupId +
+            params.applicant +
+            params.groupName +
+            params.reason,
+        });
+      }
+      onRequestToJoinAccepted(params: {
+        groupId: string;
+        accepter: string;
+        groupName?: string | undefined;
+      }): void {
+        console.log(
+          `${GroupManagerLeafScreen.TAG}: onRequestToJoinAccepted:`,
+          params.groupId,
+          params.accepter,
+          params.groupName
+        );
+        this.that.setState({
+          recvResult:
+            `onRequestToJoinAccepted: ` +
+            params.groupId +
+            params.accepter +
+            params.groupName,
+        });
+      }
+      onRequestToJoinDeclined(params: {
+        groupId: string;
+        decliner: string;
+        groupName?: string | undefined;
+        reason?: string | undefined;
+      }): void {
+        console.log(
+          `${GroupManagerLeafScreen.TAG}: onRequestToJoinDeclined:`,
+          params.groupId,
+          params.decliner,
+          params.groupName,
+          params.reason
+        );
+        this.that.setState({
+          recvResult:
+            `onRequestToJoinDeclined: ` +
+            params.groupId +
+            params.decliner +
+            params.groupName +
+            params.reason,
+        });
+      }
+      onInvitationAccepted(params: {
+        groupId: string;
+        invitee: string;
+        reason?: string | undefined;
+      }): void {
+        console.log(
+          `${GroupManagerLeafScreen.TAG}: onInvitationAccepted:`,
+          params.groupId,
+          params.invitee,
+          params.reason
+        );
+        this.that.setState({
+          recvResult:
+            `onInvitationAccepted: ` +
+            params.groupId +
+            params.invitee +
+            params.reason,
+        });
+      }
+      onInvitationDeclined(params: {
+        groupId: string;
+        invitee: string;
+        reason?: string | undefined;
+      }): void {
+        console.log(
+          `${GroupManagerLeafScreen.TAG}: onInvitationDeclined:`,
+          params.groupId,
+          params.invitee,
+          params.reason
+        );
+        this.that.setState({
+          recvResult:
+            `onInvitationDeclined: ` +
+            params.groupId +
+            params.invitee +
+            params.reason,
+        });
+      }
+      onUserRemoved(params: {
+        groupId: string;
+        groupName?: string | undefined;
+      }): void {
+        console.log(
+          `${GroupManagerLeafScreen.TAG}: onUserRemoved:`,
+          params.groupId,
+          params.groupName
+        );
+        this.that.setState({
+          recvResult: `onUserRemoved: ` + params.groupId + params.groupName,
+        });
+      }
+      onGroupDestroyed(params: {
+        groupId: string;
+        groupName?: string | undefined;
+      }): void {
+        console.log(
+          `${GroupManagerLeafScreen.TAG}: onGroupDestroyed:`,
+          params.groupId,
+          params.groupName
+        );
+        this.that.setState({
+          recvResult: `onGroupDestroyed: ` + params.groupId + params.groupName,
+        });
+      }
+      onAutoAcceptInvitation(params: {
+        groupId: string;
+        inviter: string;
+        inviteMessage?: string | undefined;
+      }): void {
+        console.log(
+          `${GroupManagerLeafScreen.TAG}: onGroupDestroyed:`,
+          params.groupId,
+          params.inviter,
+          params.inviteMessage
+        );
+        this.that.setState({
+          recvResult:
+            `onGroupDestroyed: ` +
+            params.groupId +
+            params.inviter +
+            params.inviteMessage,
+        });
+      }
+      onMuteListAdded(params: {
+        groupId: string;
+        mutes: string[];
+        muteExpire?: number | undefined;
+      }): void {
+        console.log(
+          `${GroupManagerLeafScreen.TAG}: onMuteListAdded:`,
+          params.groupId,
+          params.mutes,
+          params.muteExpire?.toString
+        );
+        this.that.setState({
+          recvResult:
+            `onMuteListAdded: ` +
+            params.groupId +
+            params.mutes +
+            params.muteExpire?.toString,
+        });
+      }
+      onMuteListRemoved(params: { groupId: string; mutes: string[] }): void {
+        console.log(
+          `${GroupManagerLeafScreen.TAG}: onMuteListRemoved:`,
+          params.groupId,
+          params.mutes
+        );
+        this.that.setState({
+          recvResult: `onMuteListRemoved: ` + params.groupId + params.mutes,
+        });
+      }
+      onAdminAdded(params: { groupId: string; admin: string }): void {
+        console.log(
+          `${GroupManagerLeafScreen.TAG}: onAdminAdded:`,
+          params.groupId,
+          params.admin
+        );
+        this.that.setState({
+          recvResult: `onAdminAdded: ` + params.groupId + params.admin,
+        });
+      }
+      onAdminRemoved(params: { groupId: string; admin: string }): void {
+        console.log(
+          `${GroupManagerLeafScreen.TAG}: onAdminRemoved:`,
+          params.groupId,
+          params.admin
+        );
+        this.that.setState({
+          recvResult: `onAdminRemoved: ` + params.groupId + params.admin,
+        });
+      }
+      onOwnerChanged(params: {
+        groupId: string;
+        newOwner: string;
+        oldOwner: string;
+      }): void {
+        console.log(
+          `${GroupManagerLeafScreen.TAG}: onOwnerChanged:`,
+          params.groupId,
+          params.newOwner,
+          params.oldOwner
+        );
+        this.that.setState({
+          recvResult:
+            `onOwnerChanged: ` +
+            params.groupId +
+            params.newOwner +
+            params.oldOwner,
+        });
+      }
+      onMemberJoined(params: { groupId: string; member: string }): void {
+        console.log(
+          `${GroupManagerLeafScreen.TAG}: onMemberJoined:`,
+          params.groupId,
+          params.member
+        );
+        this.that.setState({
+          recvResult: `onMemberJoined: ` + params.groupId + params.member,
+        });
+      }
+      onMemberExited(params: { groupId: string; member: string }): void {
+        console.log(
+          `${GroupManagerLeafScreen.TAG}: onMemberExited:`,
+          params.groupId,
+          params.member
+        );
+        this.that.setState({
+          recvResult: `onMemberExited: ` + params.groupId + params.member,
+        });
+      }
+      onAnnouncementChanged(params: {
+        groupId: string;
+        announcement: string;
+      }): void {
+        console.log(
+          `${GroupManagerLeafScreen.TAG}: onAnnouncementChanged:`,
+          params.groupId,
+          params.announcement
+        );
+        this.that.setState({
+          recvResult:
+            `onAnnouncementChanged: ` + params.groupId + params.announcement,
+        });
+      }
+      onSharedFileAdded(params: { groupId: string; sharedFile: string }): void {
+        console.log(
+          `${GroupManagerLeafScreen.TAG}: onSharedFileAdded:`,
+          params.groupId,
+          params.sharedFile
+        );
+        this.that.setState({
+          recvResult:
+            `onSharedFileAdded: ` + params.groupId + params.sharedFile,
+        });
+      }
+      onSharedFileDeleted(params: { groupId: string; fileId: string }): void {
+        console.log(
+          `${GroupManagerLeafScreen.TAG}: onSharedFileDeleted:`,
+          params.groupId,
+          params.fileId
+        );
+        this.that.setState({
+          recvResult: `onSharedFileDeleted: ` + params.groupId + params.fileId,
+        });
+      }
+      onWhiteListAdded(params: { groupId: string; members: string[] }): void {
+        console.log(
+          `${GroupManagerLeafScreen.TAG}: onWhiteListAdded:`,
+          params.groupId,
+          params.members
+        );
+        this.that.setState({
+          recvResult: `onWhiteListAdded: ` + params.groupId + params.members,
+        });
+      }
+      onWhiteListRemoved(params: { groupId: string; members: string[] }): void {
+        console.log(
+          `${GroupManagerLeafScreen.TAG}: onWhiteListRemoved:`,
+          params.groupId,
+          params.members
+        );
+        this.that.setState({
+          recvResult: `onWhiteListRemoved: ` + params.groupId + params.members,
+        });
+      }
+      onAllGroupMemberMuteStateChanged(params: {
+        groupId: string;
+        isAllMuted: boolean;
+      }): void {
+        console.log(
+          `${GroupManagerLeafScreen.TAG}: onAllGroupMemberMuteStateChanged:`,
+          params.groupId,
+          params.isAllMuted
+        );
+        this.that.setState({
+          recvResult:
+            `onAllGroupMemberMuteStateChanged: ` +
+            params.groupId +
+            params.isAllMuted,
+        });
+      }
+    })(this);
+    ChatClient.getInstance().groupManager.removeAllGroupListener();
+    ChatClient.getInstance().groupManager.addGroupListener(groupListener);
   }
 
   protected removeListener?(): void {
     console.log('addListener');
+  }
+
+  private createCallback(): ChatGroupFileStatusCallback {
+    const ret = new (class implements ChatGroupFileStatusCallback {
+      that: GroupManagerLeafScreen;
+      constructor(t: GroupManagerLeafScreen) {
+        this.that = t;
+      }
+      onProgress(groupId: string, filePath: string, progress: number): void {
+        console.log(
+          `${GroupManagerLeafScreen.TAG}: onProgress: `,
+          groupId,
+          filePath,
+          progress
+        );
+        this.that.setState({
+          cbResult: `onProgress: ${groupId}, ${filePath}, ${progress}`,
+        });
+      }
+      onError(groupId: string, filePath: string, error: ChatError): void {
+        console.log(
+          `${GroupManagerLeafScreen.TAG}: onError: `,
+          groupId,
+          filePath,
+          error
+        );
+        this.that.setState({
+          cbResult: `onError: ${groupId}, ${filePath}` + JSON.stringify(error),
+        });
+      }
+      onSuccess(groupId: string, filePath: string): void {
+        console.log(
+          `${GroupManagerLeafScreen.TAG}: onSuccess: `,
+          groupId,
+          filePath
+        );
+        this.that.setState({
+          cbResult: `onSuccess: ${groupId}, ${filePath}`,
+        });
+      }
+    })(this);
+    return ret;
   }
 }

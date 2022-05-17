@@ -4,7 +4,7 @@ import { styleValues } from '../__internal__/Css';
 import { LeafScreenBase, StateBase } from '../__internal__/LeafScreenBase';
 import { metaData, CHATROOMMN, stateData } from './ChatRoomManagerData';
 import type { ApiParams } from '../__internal__/DataTypes';
-import { ChatClient } from 'react-native-chat-sdk';
+import { ChatClient, ChatRoomEventListener } from 'react-native-chat-sdk';
 export interface StateChatRoomMessage extends StateBase {
   createChatRoom: {
     subject: string;
@@ -534,6 +534,197 @@ export class ChatRoomManagerLeafScreen extends LeafScreenBase<StateChatRoomMessa
   }
   protected addListener?(): void {
     console.log('addListener');
+    const roomListener: ChatRoomEventListener = new (class
+      implements ChatRoomEventListener
+    {
+      that: ChatRoomManagerLeafScreen;
+      constructor(parent: ChatRoomManagerLeafScreen) {
+        this.that = parent;
+      }
+      onChatRoomDestroyed(params: {
+        roomId: string;
+        roomName?: string | undefined;
+      }): void {
+        console.log(
+          `${ChatRoomManagerLeafScreen.TAG}: onChatRoomDestroyed:`,
+          params.roomId,
+          params.roomName
+        );
+        this.that.setState({
+          recvResult: `onChatRoomDestroyed: ` + params.roomId + params.roomName,
+        });
+      }
+      onMemberJoined(params: { roomId: string; participant: string }): void {
+        console.log(
+          `${ChatRoomManagerLeafScreen.TAG}: onMemberJoined:`,
+          params.roomId,
+          params.participant
+        );
+        this.that.setState({
+          recvResult: `onMemberJoined: ` + params.roomId + params.participant,
+        });
+      }
+      onMemberExited(params: {
+        roomId: string;
+        participant: string;
+        roomName?: string | undefined;
+      }): void {
+        console.log(
+          `${ChatRoomManagerLeafScreen.TAG}: onMemberJoined:`,
+          params.roomId,
+          params.participant,
+          params.roomName
+        );
+        this.that.setState({
+          recvResult:
+            `onMemberJoined: ` +
+            params.roomId +
+            params.participant +
+            params.roomName,
+        });
+      }
+      onRemoved(params: {
+        roomId: string;
+        participant?: string | undefined;
+        roomName?: string | undefined;
+      }): void {
+        console.log(
+          `${ChatRoomManagerLeafScreen.TAG}: onRemoved:`,
+          params.roomId,
+          params.participant,
+          params.roomName
+        );
+        this.that.setState({
+          recvResult:
+            `onRemoved: ` +
+            params.roomId +
+            params.participant +
+            params.roomName,
+        });
+      }
+      onMuteListAdded(params: {
+        roomId: string;
+        mutes: string[];
+        expireTime?: string | undefined;
+      }): void {
+        console.log(
+          `${ChatRoomManagerLeafScreen.TAG}: onMuteListAdded:`,
+          params.roomId,
+          params.mutes,
+          params.expireTime
+        );
+        this.that.setState({
+          recvResult:
+            `onMuteListAdded: ` +
+            params.roomId +
+            params.mutes +
+            params.expireTime,
+        });
+      }
+      onMuteListRemoved(params: { roomId: string; mutes: string[] }): void {
+        console.log(
+          `${ChatRoomManagerLeafScreen.TAG}: onMuteListRemoved:`,
+          params.roomId,
+          params.mutes
+        );
+        this.that.setState({
+          recvResult: `onMuteListRemoved: ` + params.roomId + params.mutes,
+        });
+      }
+      onAdminAdded(params: { roomId: string; admin: string }): void {
+        console.log(
+          `${ChatRoomManagerLeafScreen.TAG}: onAdminAdded:`,
+          params.roomId,
+          params.admin
+        );
+        this.that.setState({
+          recvResult: `onAdminAdded: ` + params.roomId + params.admin,
+        });
+      }
+      onAdminRemoved(params: { roomId: string; admin: string }): void {
+        console.log(
+          `${ChatRoomManagerLeafScreen.TAG}: onAdminRemoved:`,
+          params.roomId,
+          params.admin
+        );
+        this.that.setState({
+          recvResult: `onAdminRemoved: ` + params.roomId + params.admin,
+        });
+      }
+      onOwnerChanged(params: {
+        roomId: string;
+        newOwner: string;
+        oldOwner: string;
+      }): void {
+        console.log(
+          `${ChatRoomManagerLeafScreen.TAG}: onOwnerChanged:`,
+          params.roomId,
+          params.newOwner,
+          params.oldOwner
+        );
+        this.that.setState({
+          recvResult:
+            `onOwnerChanged: ` +
+            params.roomId +
+            params.newOwner +
+            params.oldOwner,
+        });
+      }
+      onAnnouncementChanged(params: {
+        roomId: string;
+        announcement: string;
+      }): void {
+        console.log(
+          `${ChatRoomManagerLeafScreen.TAG}: onAnnouncementChanged:`,
+          params.roomId,
+          params.announcement
+        );
+        this.that.setState({
+          recvResult:
+            `onAnnouncementChanged: ` + params.roomId + params.announcement,
+        });
+      }
+      onWhiteListAdded(params: { roomId: string; members: string[] }): void {
+        console.log(
+          `${ChatRoomManagerLeafScreen.TAG}: onWhiteListAdded:`,
+          params.roomId,
+          params.members
+        );
+        this.that.setState({
+          recvResult: `onWhiteListAdded: ` + params.roomId + params.members,
+        });
+      }
+      onWhiteListRemoved(params: { roomId: string; members: string[] }): void {
+        console.log(
+          `${ChatRoomManagerLeafScreen.TAG}: onWhiteListRemoved:`,
+          params.roomId,
+          params.members
+        );
+        this.that.setState({
+          recvResult: `onWhiteListRemoved: ` + params.roomId + params.members,
+        });
+      }
+      onAllChatRoomMemberMuteStateChanged(params: {
+        roomId: string;
+        isAllMuted: boolean;
+      }): void {
+        console.log(
+          `${ChatRoomManagerLeafScreen.TAG}: onAllChatRoomMemberMuteStateChanged:`,
+          params.roomId,
+          params.isAllMuted ? 'true' : 'false'
+        );
+        this.that.setState({
+          recvResult:
+            `onAllChatRoomMemberMuteStateChanged: ` +
+            params.roomId +
+            params.isAllMuted
+              ? 'true'
+              : 'false',
+        });
+      }
+    })(this);
+    ChatClient.getInstance().roomManager.removeAllRoomListener();
+    ChatClient.getInstance().roomManager.addRoomListener(roomListener);
   }
 
   protected removeListener?(): void {

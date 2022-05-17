@@ -13,7 +13,7 @@ export class ChatOptions {
   /**
    * Whether to enable automatic login.
    *
-   * - (Default) `true`: Enables automatic login.
+   * - `true`: (Default) Enables automatic login.
    * - `false`: Disables automatic login.
    */
   autoLogin: boolean;
@@ -27,77 +27,77 @@ export class ChatOptions {
   /**
    * Whether to accept friend invitations from other users automatically.
    *
-   * - (Default) `true`: Yes.
+   * - `true`: (Default) Yes.
    * - `false`: No.
    */
   acceptInvitationAlways: boolean;
   /**
    * Whether to accept group invitations automatically.
    *
-   * - (Default) `true`: Yes.
+   * - `true`: (Default) Yes.
    * - `false`: No.
    */
   autoAcceptGroupInvitation: boolean;
   /**
    * Whether the read receipt is required.
    *
-   * - (Default) `true`: Yes.
+   * - `true`: (Default) Yes.
    * - `false`: No.
    */
   requireAck: boolean;
   /**
    * Whether the delivery receipt is required.
    *
-   * - (Default) `true`: Yes.
-   * - `false`: No.
+   * - `true`: Yes.
+   * - `false`: (Default) No.
    */
   requireDeliveryAck: boolean;
   /**
    * Whether to delete the group message records when leaving a group.
    *
-   * - (Default) `true`: Yes.
+   * - `true`: (Default) Yes.
    * - `false`: No.
    */
   deleteMessagesAsExitGroup: boolean;
   /**
    * Whether to delete the chat room message records when leaving the chat room.
    *
-   * - (Default) `true`: Yes.
+   * - `true`: (Default) Yes.
    * - `false`: No.
    */
   deleteMessagesAsExitChatRoom: boolean;
   /**
    * Whether to allow the chat room owner to leave the chat room.
    *
-   * - (Default) `true`: Yes.
+   * - `true`: (Default) Yes.
    * - `false`: No.
    */
   isChatRoomOwnerLeaveAllowed: boolean;
   /**
    * Whether to sort messages by the time when the message is received on the server.
    *
-   * - (Default) `true`: Yes.
+   * - `true`: (Default) Yes.
    * - `false`: No.
    */
   sortMessageByServerTime: boolean;
   /**
    * Whether only HTTPS is used for REST operations.
    *
-   * - (Default) `true`: Yes. Only HTTPS is used.
+   * - `true`: (Default) Yes. Only HTTPS is used.
    * - `false`: No. Both HTTP and HTTPS are allowed.
    */
   usingHttpsOnly: boolean;
   /**
    * Whether to upload the message attachments automatically to the chat server.
    *
-   * - (Default) `true`: Yes.
+   * - `true`: (Default) Yes.
    * - `false`: No. A custom path is used.
    */
   serverTransfer: boolean;
   /**
    * Whether to auto download the thumbnail.
    *
-   * - (Default) `true`: Yes.
+   * - `true`: (Default) Yes.
    * - `false`: No.
    */
   isAutoDownload: boolean;
@@ -108,7 +108,7 @@ export class ChatOptions {
   /**
    * Sets whether to disable DNS.
    *
-   * - (Default) `true`: Yes.
+   * - `true`: (Default) Yes.
    * - `false`: No.
    */
   enableDNSConfig: boolean;

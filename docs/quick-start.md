@@ -9,7 +9,7 @@ Through this article, a simple app that integrates the chat SDK can be implement
 ## Implementation principle
 
 The following diagram shows the workflow for sending and receiving one-to-one text messages on the client side.
-![Workflow diagram](https://web-cdn.agora.io/docs-files/1644379153389)
+![Workflow diagram](https://web-cdn.agora.io/docs-files/1643335864426)
 
 ## Conditional requirements for compilation and running
 

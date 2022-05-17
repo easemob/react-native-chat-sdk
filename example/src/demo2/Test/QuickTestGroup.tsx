@@ -761,6 +761,23 @@ export class QuickTestScreenGroup extends QuickTestScreenBase<
           );
         }
         break;
+      case MN.fetchAnnouncementFromServer:
+        {
+          const methodName = this.metaData.get(MN.fetchAnnouncementFromServer)
+            ?.methodName!;
+          console.log(`${MN.fetchAnnouncementFromServer} === ${methodName}`);
+          const groupId = this.metaData.get(MN.fetchAnnouncementFromServer)
+            ?.params[0].paramDefaultValue;
+
+          this.tryCatch(
+            ChatClient.getInstance().groupManager.fetchAnnouncementFromServer(
+              groupId
+            ),
+            QuickTestScreenGroup.TAG,
+            methodName
+          );
+        }
+        break;
       case MN.updateGroupAnnouncement:
         {
           const methodName = this.metaData.get(MN.updateGroupAnnouncement)
