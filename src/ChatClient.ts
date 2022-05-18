@@ -366,18 +366,18 @@ export class ChatClient extends BaseManager {
    *
    * @returns The version of the React Native SDK.
    */
-  public get sdkVersion(): string {
-    return this._sdkVersion;
-  }
+  // public get sdkVersion(): string {
+  //   return this._sdkVersion;
+  // }
 
   /**
    * Gets the version of the React Native SDK.
    *
    * @returns The version of the React Native SDK.
    */
-  public get rnSdkVersion(): string {
-    return this._rnSdkVersion;
-  }
+  // public get rnSdkVersion(): string {
+  //   return this._rnSdkVersion;
+  // }
 
   /**
    * Initializes the SDK.

@@ -78,8 +78,8 @@ export class GetStateScreen extends Component<{ navigation: any }, State, any> {
 
   private rnSdkVersion(): void {
     console.log(`${GetStateScreen.TAG}: rnSdkVersion: `);
-    let r = ChatClient.getInstance().rnSdkVersion;
-    this.setState({ result: r, rnSdkVersion: r });
+    // let r = ChatClient.getInstance().rnSdkVersion;
+    // this.setState({ result: r, rnSdkVersion: r });
   }
 
   private isConnected(): void {

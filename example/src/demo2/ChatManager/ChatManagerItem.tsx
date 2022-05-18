@@ -1,11 +1,14 @@
 import React, { ReactNode } from 'react';
-import { View } from 'react-native';
+import { Text, View } from 'react-native';
 import {
   ChatClient,
   ChatMessage,
   ChatMessageStatusCallback,
   ChatMessageTypeFromString,
   ChatConversationTypeFromNumber,
+  ChatMessageEventListener,
+  ChatGroupMessageAck,
+  ChatError,
 } from 'react-native-chat-sdk';
 import { styleValues } from '../__internal__/Css';
 import {
@@ -23,6 +26,7 @@ import {
 import type { ApiParams } from '../__internal__/DataTypes';
 
 export interface StateChatMessage extends StateBase {
+  cb_result: string;
   resendMessage: {
     message: ChatMessage;
   };
@@ -210,17 +214,143 @@ export class ChatManagerLeafScreen extends LeafScreenBase<StateChatMessage> {
       <View style={styleValues.containerColumn}>
         {this.renderSendResult()}
         {this.renderRecvResult()}
+        {this.renderCallBackResult()}
         {this.renderExceptionResult()}
       </View>
     );
   }
 
   protected addListener?(): void {
-    console.log(`${ChatManagerLeafScreen.TAG}: addListener`);
+    let msgListener = new (class implements ChatMessageEventListener {
+      that: ChatManagerLeafScreen;
+      constructor(parent: any) {
+        this.that = parent as ChatManagerLeafScreen;
+      }
+      onMessagesReceived(messages: ChatMessage[]): void {
+        console.log(
+          `${ChatManagerLeafScreen.TAG}: onMessagesReceived: `,
+          messages
+        );
+        if (messages.length > 0) {
+          ChatManagerCache.getInstance().addRecvMessage(
+            messages[messages.length - 1]
+          );
+        }
+      }
+      onCmdMessagesReceived(messages: ChatMessage[]): void {
+        console.log(
+          `${ChatManagerLeafScreen.TAG}: onCmdMessagesReceived: `,
+          messages
+        );
+        if (messages.length > 0) {
+          ChatManagerCache.getInstance().addRecvMessage(
+            messages[messages.length - 1]
+          );
+        }
+      }
+      onMessagesRead(messages: ChatMessage[]): void {
+        console.log(`${ChatManagerLeafScreen.TAG}: onMessagesRead: `, messages);
+        this.that.setState({
+          recvResult: `onMessagesRead: ${messages.length}: ` + messages,
+        });
+      }
+      onGroupMessageRead(groupMessageAcks: ChatGroupMessageAck[]): void {
+        console.log(
+          `${ChatManagerLeafScreen.TAG}: onGroupMessageRead: `,
+          groupMessageAcks
+        );
+        this.that.setState({
+          recvResult:
+            `onGroupMessageRead: ${groupMessageAcks.length}: ` +
+            groupMessageAcks,
+        });
+      }
+      onMessagesDelivered(messages: ChatMessage[]): void {
+        console.log(
+          `${ChatManagerLeafScreen.TAG}: onMessagesDelivered: ${messages.length}: `,
+          messages,
+          messages
+        );
+        this.that.setState({
+          recvResult: `onMessagesDelivered: ${messages.length}: ` + messages,
+        });
+      }
+      onMessagesRecalled(messages: ChatMessage[]): void {
+        console.log(
+          `${ChatManagerLeafScreen.TAG}: onMessagesRecalled: `,
+          messages
+        );
+        this.that.setState({
+          recvResult: `onMessagesRecalled: ${messages.length}: ` + messages,
+        });
+      }
+      onConversationsUpdate(): void {
+        console.log(`${ChatManagerLeafScreen.TAG}: onConversationsUpdate: `);
+        this.that.setState({ recvResult: 'onConversationsUpdate' });
+      }
+      onConversationRead(from: string, to?: string): void {
+        console.log(
+          `${ChatManagerLeafScreen.TAG}: onConversationRead: `,
+          from,
+          to
+        );
+        this.that.setState({
+          recvResult: `onConversationRead: ${from}, ${to}`,
+        });
+      }
+    })(this);
+
+    ChatClient.getInstance().chatManager.removeAllMessageListener();
+    ChatClient.getInstance().chatManager.addMessageListener(msgListener);
+
+    const msgCallback = new (class implements ChatMessageStatusCallback {
+      that: ChatManagerLeafScreen;
+      constructor(parent: ChatManagerLeafScreen) {
+        this.that = parent;
+      }
+      onProgress(localMsgId: string, progress: number): void {
+        console.log(
+          `${ChatManagerLeafScreen.TAG}: onProgress: ${localMsgId}, ${progress}`
+        );
+        this.that.setState({
+          cb_result: `onProgress: ${localMsgId}, ${progress}`,
+        });
+      }
+      onError(localMsgId: string, error: ChatError): void {
+        console.log(
+          `${ChatManagerLeafScreen.TAG}: onError: ${localMsgId}, ${error}`
+        );
+        this.that.setState({ cb_result: `onError:` + JSON.stringify(error) });
+      }
+      onSuccess(message: ChatMessage): void {
+        console.log(`${ChatManagerLeafScreen.TAG}: onSuccess: ${message}`);
+        ChatManagerCache.getInstance().addSendMessage(message);
+        this.that.setState({
+          cb_result: `onSuccess:` + JSON.stringify(message),
+        });
+      }
+    })(this);
+
+    ChatManagerCache.getInstance().removeAllListener();
+    ChatManagerCache.getInstance().addListener(msgCallback);
   }
 
   protected removeListener?(): void {
-    console.log(`${ChatManagerLeafScreen.TAG}: removeListener`);
+    ChatClient.getInstance().chatManager.removeAllMessageListener();
+  }
+
+  protected renderCallBackResult(): ReactNode[] {
+    const { cb_result } = this.state;
+    return [
+      <View
+        key={this.generateKey('cb_result', 'callback')}
+        style={styleValues.containerRow}
+      >
+        <Text selectable={true} style={styleValues.textTipStyle}>
+          cb_result: {cb_result}
+        </Text>
+      </View>,
+    ];
   }
 
   protected renderBody(): ReactNode {
@@ -309,6 +439,11 @@ export class ChatManagerLeafScreen extends LeafScreenBase<StateChatMessage> {
             value = JSON.stringify({ key: 'value' });
             const v = item.paramValue();
             if (v instanceof ChatMessage) {
+              console.log(
+                'test: renderDomAry:',
+                currentData?.methodName,
+                item.paramName
+              );
               value = JSON.stringify(v);
             }
           }
@@ -411,6 +546,7 @@ export class ChatManagerLeafScreen extends LeafScreenBase<StateChatMessage> {
       );
     } else if (name === MN.updateMessage) {
       const { message } = this.state.updateMessage;
+      console.log('test: updateMessage:', message);
       this.tryCatch(
         ChatClient.getInstance().chatManager.updateMessage(message),
         ChatManagerLeafScreen.TAG,
@@ -418,6 +554,7 @@ export class ChatManagerLeafScreen extends LeafScreenBase<StateChatMessage> {
       );
     } else if (name === MN.importMessages) {
       const { message } = this.state.importMessages;
+      console.log('test: importMessages:', message);
       this.tryCatch(
         ChatClient.getInstance().chatManager.importMessages([message]),
         ChatManagerLeafScreen.TAG,

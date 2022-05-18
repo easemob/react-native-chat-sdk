@@ -8,7 +8,12 @@ import {
   NativeSyntheticEvent,
   ScrollView,
 } from 'react-native';
-import { ChatClient, ChatConnectEventListener } from 'react-native-chat-sdk';
+import {
+  ChatClient,
+  ChatConnectEventListener,
+  ChatMultiDeviceEvent,
+  ChatMultiDeviceEventListener,
+} from 'react-native-chat-sdk';
 import { datasheet } from '../__default__/Datasheet';
 import { styleValues } from '../__internal__/Css';
 
@@ -112,6 +117,49 @@ export class LoginAndLogoutScreen extends Component<
     })(this);
     ChatClient.getInstance().removeAllConnectionListener();
     ChatClient.getInstance().addConnectionListener(listener);
+
+    const multiDeviceListener = new (class
+      implements ChatMultiDeviceEventListener
+    {
+      that: LoginAndLogoutScreen;
+      constructor(parent: LoginAndLogoutScreen) {
+        this.that = parent;
+      }
+      onContactEvent(
+        event?: ChatMultiDeviceEvent,
+        target?: string,
+        ext?: string
+      ): void {
+        console.log(
+          'LoginAndLogoutScreen.onContactEvent: ',
+          event,
+          target,
+          ext
+        );
+        this.that.setState({
+          listenerStatus:
+            'LoginAndLogoutScreen.onContactEvent: ' + event + target + ext,
+        });
+      }
+      onGroupEvent(
+        event?: ChatMultiDeviceEvent,
+        target?: string,
+        usernames?: string[]
+      ): void {
+        console.log(
+          'LoginAndLogoutScreen.onGroupEvent: ',
+          event,
+          target,
+          usernames
+        );
+        this.that.setState({
+          listenerStatus:
+            'LoginAndLogoutScreen.onGroupEvent: ' + event + target + usernames,
+        });
+      }
+    })(this);
+    ChatClient.getInstance().removeAllMultiDeviceListener();
+    ChatClient.getInstance().addMultiDeviceListener(multiDeviceListener);
   }
 
   componentWillUnmount?(): void {

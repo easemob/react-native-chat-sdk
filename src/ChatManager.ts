@@ -344,6 +344,7 @@ export class ChatManager extends BaseManager {
         message.localMsgId,
         new ChatError({ code: 1, description: 'The message had send success' })
       );
+      return;
     }
     message.status = ChatMessageStatus.PROGRESS;
     ChatManager.handleResendMessageCallback(this, message, callback);

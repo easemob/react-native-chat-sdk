@@ -357,6 +357,7 @@ export class GroupManagerLeafScreen extends LeafScreenBase<StateGroupMessage> {
       );
       renderDomAry.push(this.renderDivider());
     });
+    renderDomAry.push(this.addSpaces());
     return renderDomAry;
   }
   protected createGroup(): ReactNode[] {
@@ -693,7 +694,7 @@ export class GroupManagerLeafScreen extends LeafScreenBase<StateGroupMessage> {
         break;
       }
       case GROUPMN.blockGroup: {
-        const { groupId } = this.state.destroyGroup;
+        const { groupId } = this.state.blockGroup;
         this.tryCatch(
           ChatClient.getInstance().groupManager.blockGroup(groupId),
           GroupManagerLeafScreen.TAG,
@@ -702,7 +703,7 @@ export class GroupManagerLeafScreen extends LeafScreenBase<StateGroupMessage> {
         break;
       }
       case GROUPMN.unblockGroup: {
-        const { groupId } = this.state.destroyGroup;
+        const { groupId } = this.state.unblockGroup;
         this.tryCatch(
           ChatClient.getInstance().groupManager.unblockGroup(groupId),
           GroupManagerLeafScreen.TAG,

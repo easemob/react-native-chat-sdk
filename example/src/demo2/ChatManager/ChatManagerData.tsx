@@ -822,6 +822,7 @@ export const stateDataValue: StateChatMessage = Object.assign({}, formatData, {
   sendResult: '',
   recvResult: '',
   exceptResult: '',
+  cb_result: '',
 });
 
 export const statelessDataValue: StatelessChatMessage = {
@@ -894,14 +895,17 @@ export class ChatManagerCache {
   public getLastSendMessage(
     type: ChatMessageChatType = ChatMessageChatType.PeerChat
   ): ChatMessage {
+    let ret: ChatMessage;
     if (this.sendMessageList.length > 0) {
-      return this.sendMessageList[this.sendMessageList.length - 1];
+      ret = this.sendMessageList[this.sendMessageList.length - 1];
     }
     if (type === ChatMessageChatType.PeerChat) {
-      return this.createTextMessage();
+      ret = this.createTextMessage();
     } else {
-      return this.createGroupTextMessage();
+      ret = this.createGroupTextMessage();
     }
+    console.log('test: getLastSendMessage:', ret);
+    return ret;
   }
   public addSendMessage(msg: ChatMessage): void {
     this.sendMessageList.push(msg);
@@ -910,7 +914,13 @@ export class ChatManagerCache {
     type: ChatMessageChatType = ChatMessageChatType.PeerChat
   ): ChatMessage {
     if (this.recvMessageList.length > 0) {
-      return this.recvMessageList[this.recvMessageList.length - 1];
+      const msg = this.recvMessageList[this.recvMessageList.length - 1];
+      console.log(
+        'test: getLastRecvMessage:',
+        this.recvMessageList.length,
+        msg
+      );
+      return msg;
     }
     if (type === ChatMessageChatType.PeerChat) {
       return this.createTextMessage();
@@ -919,6 +929,7 @@ export class ChatManagerCache {
     }
   }
   public addRecvMessage(msg: ChatMessage): void {
+    console.log('test: addRecvMessage:', msg);
     this.recvMessageList.push(msg);
   }
 
