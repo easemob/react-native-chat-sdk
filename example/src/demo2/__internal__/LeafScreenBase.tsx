@@ -11,7 +11,6 @@ import {
 import ModalDropdown from 'react-native-modal-dropdown';
 import { styleValues } from './Css';
 import { seq } from './Utils';
-import RNFS from 'react-native-fs';
 import DocumentPicker, {
   DocumentPickerResponse,
 } from 'react-native-document-picker';
@@ -350,7 +349,10 @@ export abstract class LeafScreenBase<
         <Button
           title="selectFile"
           onPress={() => {
-            DocumentPicker.pick({ type: [DocumentPicker.types.allFiles] })
+            DocumentPicker.pick({
+              type: [DocumentPicker.types.allFiles],
+              copyTo: 'cachesDirectory',
+            })
               .then((values: DocumentPickerResponse[]) => {
                 if (values.length < 1) {
                   return;
@@ -366,17 +368,14 @@ export abstract class LeafScreenBase<
                     oct(obj);
                   }
                 } else {
-                  // todo: android有问题
-                  let s =
-                    RNFS.ExternalStorageDirectoryPath +
-                    '/Recorder/' +
-                    values[0].name;
+                  let s = values[0].fileCopyUri!;
+                  if (s.startsWith('file:')) {
+                    s = s.substring('file:'.length);
+                  }
                   if (oct) {
-                    if (oct) {
-                      let obj: { [index: string]: string } = {};
-                      obj[name] = s;
-                      oct(obj);
-                    }
+                    let obj: { [index: string]: string } = {};
+                    obj[name] = s;
+                    oct(obj);
                   }
                 }
               })

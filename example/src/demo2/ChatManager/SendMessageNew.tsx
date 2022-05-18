@@ -179,7 +179,7 @@ export class SendMessageLeafScreen extends LeafScreenBase<StateSendMessage> {
           `${SendMessageLeafScreen.TAG}: onMessagesReceived: `,
           messages
         );
-        if (messages.length > 1) {
+        if (messages.length > 0) {
           ChatManagerCache.getInstance().addRecvMessage(
             messages[messages.length - 1]
           );
@@ -190,7 +190,7 @@ export class SendMessageLeafScreen extends LeafScreenBase<StateSendMessage> {
           `${SendMessageLeafScreen.TAG}: onCmdMessagesReceived: `,
           messages
         );
-        if (messages.length > 1) {
+        if (messages.length > 0) {
           ChatManagerCache.getInstance().addRecvMessage(
             messages[messages.length - 1]
           );

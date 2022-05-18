@@ -60,7 +60,11 @@ function App() {
 }
 
 ChatClient.getInstance().init(
-  new ChatOptions({ appKey: datasheet.AppKey[0], autoLogin: false })
+  new ChatOptions({
+    appKey: datasheet.AppKey[0],
+    autoLogin: false,
+    debugModel: true,
+  })
 );
 
 unregisterComponents();

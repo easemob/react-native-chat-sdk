@@ -114,7 +114,7 @@ export const metaData = new Map<string, ApiParams>([
         {
           paramName: 'roomId',
           paramType: 'string',
-          paramDefaultValue: '180456077197313',
+          paramDefaultValue: '181871406284801',
           domType: 'input',
         },
       ],
@@ -128,7 +128,7 @@ export const metaData = new Map<string, ApiParams>([
         {
           paramName: 'roomId',
           paramType: 'string',
-          paramDefaultValue: '180456077197313',
+          paramDefaultValue: '181871406284801',
           domType: 'input',
         },
       ],
@@ -470,13 +470,13 @@ export const metaData = new Map<string, ApiParams>([
         {
           paramName: 'roomId',
           paramType: 'string',
-          paramDefaultValue: '180456077197313',
+          paramDefaultValue: '181871406284801',
           domType: 'input',
         },
         {
           paramName: 'muteMembers',
           paramType: 'object',
-          paramDefaultValue: ['asterisk008'],
+          paramDefaultValue: ['asterisk004'],
           domType: 'input',
         },
         {
@@ -516,7 +516,7 @@ export const metaData = new Map<string, ApiParams>([
         {
           paramName: 'roomId',
           paramType: 'string',
-          paramDefaultValue: '180456077197313',
+          paramDefaultValue: '181871406284801',
           domType: 'input',
         },
       ],
@@ -530,7 +530,7 @@ export const metaData = new Map<string, ApiParams>([
         {
           paramName: 'roomId',
           paramType: 'string',
-          paramDefaultValue: '180456077197313',
+          paramDefaultValue: '181871406284801',
           domType: 'input',
         },
       ],
@@ -544,7 +544,7 @@ export const metaData = new Map<string, ApiParams>([
         {
           paramName: 'roomId',
           paramType: 'string',
-          paramDefaultValue: '180456077197313',
+          paramDefaultValue: '181871406284801',
           domType: 'input',
         },
         {

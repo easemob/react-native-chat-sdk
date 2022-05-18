@@ -107,6 +107,8 @@ export interface StateChatRoomMessage extends StateBase {
   };
   fetchChatRoomMuteList: {
     roomId: string;
+    pageNum: number;
+    pageSize: number;
   };
   destroyChatRoom: {
     roomId: string;
@@ -502,9 +504,13 @@ export class ChatRoomManagerLeafScreen extends LeafScreenBase<StateChatRoomMessa
         break;
       }
       case CHATROOMMN.fetchChatRoomMuteList: {
-        const { roomId } = this.state.fetchChatRoomMuteList;
+        const { roomId, pageNum, pageSize } = this.state.fetchChatRoomMuteList;
         this.tryCatch(
-          ChatClient.getInstance().roomManager.fetchChatRoomMuteList(roomId),
+          ChatClient.getInstance().roomManager.fetchChatRoomMuteList(
+            roomId,
+            pageNum,
+            pageSize
+          ),
           ChatRoomManagerLeafScreen.TAG,
           'CHATROOMMN.fetchChatRoomMuteList'
         );
