@@ -1,6 +1,10 @@
 # Update Log
 
 ---
+## 0.4.1
+* fix bugs
+
+---
 ## 0.2.3
 * fix bugs
 * update api references
@@ -13,7 +17,6 @@
 * add ChatGroupManager
 * add ChatRoomManager
 * add ChatUserInfoManager
-* add ChatPresenceManager
 
 ---
 ## 0.1.3

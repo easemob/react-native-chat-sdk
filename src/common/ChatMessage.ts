@@ -605,7 +605,7 @@ export class ChatMessage {
    *   @{#thumbnailLocalPath} The image thumbnail path.
    *   @{#sendOriginalImage} Whether to send the original image.
    *     - `true`: Sends the original image.
-   *     - (Default) `false`: Sends the thumbnail. For an image greater than 100 KB, the SDK will first compress it.
+   *     - `false`: (Default) Sends the thumbnail. For an image greater than 100 KB, the SDK will first compress it.
    *   @{#width} The image width in pixels.
    *   @{#height} The image height in pixels.
    * @returns The message instance.
@@ -926,7 +926,7 @@ export class ChatImageMessageBody extends ChatFileMessageBody {
   /**
    * Sets whether to send the original image when sending an image.
    *
-   * - (Default) `false`: Sends the thumbnail. For an image larger than 100 KB, the SDK will first compress it.
+   * - `false`: (Default) Sends the thumbnail. For an image larger than 100 KB, the SDK will first compress it.
    * - `true`: Sends the original image.
    */
   sendOriginalImage: boolean;

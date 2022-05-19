@@ -21,7 +21,7 @@ export class ChatOptions {
    * Whether to output the debug information. Make sure to call the method after initializing the EMClient using {@link #init(Context, EMOptions)}.
    *
    * - `true`: Yes.
-   * - (Default) `false`: No.
+   * - `false`: (Default) No.
    */
   debugModel: boolean;
   /**

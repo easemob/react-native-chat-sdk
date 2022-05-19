@@ -230,12 +230,12 @@ export interface ChatConnectEventListener {
   onDisconnected(errorCode?: number): void;
 
   /**
-   * Occurs when the token has expired.
+   * Occurs when the agora token has expired.
    */
   onTokenWillExpire(): void;
 
   /**
-   * Occurs when the token is about to expire.
+   * Occurs when the agora token is about to expire.
    */
   onTokenDidExpire(): void;
 }
