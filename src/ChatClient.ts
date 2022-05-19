@@ -474,6 +474,10 @@ export class ChatClient extends BaseManager {
   /**
    * Creates a new user.
    *
+   * There are two registration modes, open registration and authorized registration. The client can register only when the registration is open, otherwise an error message will be returned.
+   * Open registration is for testing use, and it is not recommended to use this method to register a Huanxin account in a formal environment;
+   * The process of authorization registration should be that your server registers through the REST API provided by RingSign, and then saves it to your server or returns it to the client.
+   *
    * @param username The user ID.
    *                 This parameter is required. The user ID can be a maximum of 64 characters of the following types:
    *                 - 26 English letters (a-z)
@@ -500,13 +504,18 @@ export class ChatClient extends BaseManager {
   }
 
   /**
-   * Logs into the chat server with a password or a token.
+   * Login into the chat server with a password or a token.
+   *
+   * If you use a token to log in to the server, there are two ways to obtain the token. The first is obtained through the SDK interface, See {@link createAccount} or {@link getAccessToken}, and the second is obtained through the console, {@link https://console.easemob.com/app/applicationOverview/userManagement}.
+   *
+   * The token expiration reminder is notified by the listener {@link ChatConnectEventListener#onTokenWillExpire} and  {@link ChatConnectEventListener#onTokenDidExpire}. If necessary, please pay attention to the listener event.
    *
    * @param userName The user ID. See {@link createAccount}.
-   * @param pwdOrToken The password or token. See {@link createAccount} or {@link getAccessToken}
+   * @param pwdOrToken The password or token.
+   *
    * @param isPassword  Whether to log in with a password or a token.
    *  - `true`: A token is used.
-   *  - (Default) `false`: A password is used.
+   *  - `false`: (Default) A password is used.
    *
    * @throws A description of the exception. See {@link ChatError}.
    */
@@ -534,6 +543,8 @@ export class ChatClient extends BaseManager {
   /**
    * Logs into the chat server with the user ID and an Agora token.
    * This method supports automatic login.
+   *
+   * Agora token is different from token {@link login#token}. Agora is obtained through agora server.
    *
    * @param userName The user ID. See {@link createAccount}.
    * @param agoraToken The Agora token.
@@ -582,7 +593,7 @@ export class ChatClient extends BaseManager {
    * Logs out of the chat app.
    *
    * @param unbindDeviceToken Whether to unbind the token upon logout.
-   * - (Default) `true`: Yes.
+   * - `true`: (Default) Yes.
    * - `false`: No.
    * @throws A description of the exception. See {@link ChatError}.
    */

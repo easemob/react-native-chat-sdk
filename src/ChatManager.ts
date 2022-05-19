@@ -738,7 +738,7 @@ export class ChatManager extends BaseManager {
    * @param convId The conversation ID.
    * @param convType The conversation type. See {@link ChatConversationType}.
    * @param isDeleteMessage Whether to delete the historical messages with the conversation.
-   * - (Default) `true`: Yes.
+   * - `true`: (Default) Yes.
    * - `false`: No.
    *
    * @throws A description of the exception. See {@link ChatError}.
@@ -869,7 +869,7 @@ export class ChatManager extends BaseManager {
    *
    * @param convId The conversation ID.
    * @param withMessage Whether to delete the historical messages with the conversation.
-   * - (Default) `true`: Yes.
+   * - `true`: (Default) Yes.
    * - `false`: No.
    * @returns Whether the conversation is successfully deleted.
    * - `true`: Yes.
