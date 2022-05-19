@@ -439,11 +439,6 @@ export class ChatManagerLeafScreen extends LeafScreenBase<StateChatMessage> {
             value = JSON.stringify({ key: 'value' });
             const v = item.paramValue();
             if (v instanceof ChatMessage) {
-              console.log(
-                'test: renderDomAry:',
-                currentData?.methodName,
-                item.paramName
-              );
               value = JSON.stringify(v);
             }
           }
@@ -492,7 +487,7 @@ export class ChatManagerLeafScreen extends LeafScreenBase<StateChatMessage> {
         );
       }
     } else if (name === MN.sendMessageReadAck) {
-      const lastMessage = ChatManagerCache.getInstance().getLastSendMessage();
+      const lastMessage = ChatManagerCache.getInstance().getLastRecvMessage();
       if (lastMessage) {
         this.tryCatch(
           ChatClient.getInstance().chatManager.sendMessageReadAck(lastMessage),
@@ -546,7 +541,6 @@ export class ChatManagerLeafScreen extends LeafScreenBase<StateChatMessage> {
       );
     } else if (name === MN.updateMessage) {
       const { message } = this.state.updateMessage;
-      console.log('test: updateMessage:', message);
       this.tryCatch(
         ChatClient.getInstance().chatManager.updateMessage(message),
         ChatManagerLeafScreen.TAG,
@@ -554,7 +548,6 @@ export class ChatManagerLeafScreen extends LeafScreenBase<StateChatMessage> {
       );
     } else if (name === MN.importMessages) {
       const { message } = this.state.importMessages;
-      console.log('test: importMessages:', message);
       this.tryCatch(
         ChatClient.getInstance().chatManager.importMessages([message]),
         ChatManagerLeafScreen.TAG,
