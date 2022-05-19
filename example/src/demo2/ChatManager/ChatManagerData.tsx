@@ -904,7 +904,6 @@ export class ChatManagerCache {
     } else {
       ret = this.createGroupTextMessage();
     }
-    console.log('test: getLastSendMessage:', ret);
     return ret;
   }
   public addSendMessage(msg: ChatMessage): void {
@@ -915,11 +914,6 @@ export class ChatManagerCache {
   ): ChatMessage {
     if (this.recvMessageList.length > 0) {
       const msg = this.recvMessageList[this.recvMessageList.length - 1];
-      console.log(
-        'test: getLastRecvMessage:',
-        this.recvMessageList.length,
-        msg
-      );
       return msg;
     }
     if (type === ChatMessageChatType.PeerChat) {
@@ -929,7 +923,6 @@ export class ChatManagerCache {
     }
   }
   public addRecvMessage(msg: ChatMessage): void {
-    console.log('test: addRecvMessage:', msg);
     this.recvMessageList.push(msg);
   }
 
