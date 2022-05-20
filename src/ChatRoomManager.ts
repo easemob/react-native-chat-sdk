@@ -1,5 +1,6 @@
 import type { EmitterSubscription, NativeEventEmitter } from 'react-native';
 import type { ChatRoomEventListener } from './ChatEvents';
+import { chatlog } from './common/ChatLog';
 import {
   MTaddChatRoomAdmin,
   MTaddMembersToChatRoomWhiteList,
@@ -52,7 +53,7 @@ export class ChatRoomManager extends Native {
   private _roomSubscriptions: Map<string, EmitterSubscription>;
 
   public setNativeListener(event: NativeEventEmitter): void {
-    console.log(`${ChatRoomManager.TAG}: setNativeListener: `);
+    chatlog.log(`${ChatRoomManager.TAG}: setNativeListener: `);
     this._roomSubscriptions.forEach((value: EmitterSubscription) => {
       value.remove();
     });
@@ -167,6 +168,7 @@ export class ChatRoomManager extends Native {
    * @param listener The listener to be added.
    */
   public addRoomListener(listener: ChatRoomEventListener): void {
+    chatlog.log(`${ChatRoomManager.TAG}: addRoomListener: `);
     this._roomListeners.add(listener);
   }
 
@@ -176,6 +178,7 @@ export class ChatRoomManager extends Native {
    * @param listener The listener to be deleted.
    */
   public removeRoomListener(listener: ChatRoomEventListener): void {
+    chatlog.log(`${ChatRoomManager.TAG}: removeRoomListener: `);
     this._roomListeners.delete(listener);
   }
 
@@ -183,6 +186,7 @@ export class ChatRoomManager extends Native {
    * Clear all room event listener
    */
   public removeAllRoomListener(): void {
+    chatlog.log(`${ChatRoomManager.TAG}: removeAllRoomListener: `);
     this._roomListeners.clear();
   }
 
@@ -196,7 +200,7 @@ export class ChatRoomManager extends Native {
    * @throws A description of the exception. See {@link ChatError}.
    */
   public async joinChatRoom(roomId: string): Promise<void> {
-    console.log(`${ChatRoomManager.TAG}: joinChatRoom: ${roomId}`);
+    chatlog.log(`${ChatRoomManager.TAG}: joinChatRoom: ${roomId}`);
     let r: any = await Native._callMethod(MTjoinChatRoom, {
       [MTjoinChatRoom]: {
         roomId: roomId,
@@ -213,7 +217,7 @@ export class ChatRoomManager extends Native {
    * @throws A description of the exception. See {@link ChatError}.
    */
   public async leaveChatRoom(roomId: string): Promise<void> {
-    console.log(`${ChatRoomManager.TAG}: leaveChatRoom: ${roomId}`);
+    chatlog.log(`${ChatRoomManager.TAG}: leaveChatRoom: ${roomId}`);
     let r: any = await Native._callMethod(MTleaveChatRoom, {
       [MTleaveChatRoom]: {
         roomId,
@@ -235,7 +239,7 @@ export class ChatRoomManager extends Native {
     pageNum: number = 1,
     pageSize: number = 200
   ): Promise<ChatPageResult<ChatRoom>> {
-    console.log(
+    chatlog.log(
       `${ChatRoomManager.TAG}: fetchPublicChatRoomsFromServer: `,
       pageNum,
       pageSize
@@ -271,7 +275,7 @@ export class ChatRoomManager extends Native {
   public async fetchChatRoomInfoFromServer(
     roomId: string
   ): Promise<ChatRoom | undefined> {
-    console.log(
+    chatlog.log(
       `${ChatRoomManager.TAG}: fetchChatRoomInfoFromServer: ${roomId}`
     );
     let r: any = await Native._callMethod(MTfetchChatRoomInfoFromServer, {
@@ -298,7 +302,7 @@ export class ChatRoomManager extends Native {
   public async getChatRoomWithId(
     roomId: string
   ): Promise<ChatRoom | undefined> {
-    console.log(`${ChatRoomManager.TAG}: getChatRoomWithId: ${roomId}`);
+    chatlog.log(`${ChatRoomManager.TAG}: getChatRoomWithId: ${roomId}`);
     let r: any = await Native._callMethod(MTgetChatRoom, {
       [MTgetChatRoom]: {
         roomId,
@@ -331,8 +335,7 @@ export class ChatRoomManager extends Native {
     members?: Array<string>,
     maxCount: number = 300
   ): Promise<ChatRoom> {
-    console.log('createChatRoom action');
-    console.log(
+    chatlog.log(
       `${ChatRoomManager.TAG}: createChatRoom: `,
       subject,
       description,
@@ -364,7 +367,7 @@ export class ChatRoomManager extends Native {
    * @throws A description of the exception. See {@link ChatError}.
    */
   public async destroyChatRoom(roomId: string): Promise<void> {
-    console.log(`${ChatRoomManager.TAG}: destroyChatRoom: `, roomId);
+    chatlog.log(`${ChatRoomManager.TAG}: destroyChatRoom: `, roomId);
     let r: any = await Native._callMethod(MTdestroyChatRoom, {
       [MTdestroyChatRoom]: {
         roomId,
@@ -387,7 +390,7 @@ export class ChatRoomManager extends Native {
     roomId: string,
     subject: string
   ): Promise<void> {
-    console.log(
+    chatlog.log(
       `${ChatRoomManager.TAG}: changeChatRoomSubject: ${roomId}, ${subject}`
     );
     let r: any = await Native._callMethod(MTchangeChatRoomSubject, {
@@ -413,7 +416,7 @@ export class ChatRoomManager extends Native {
     roomId: string,
     description: string
   ): Promise<void> {
-    console.log(
+    chatlog.log(
       `${ChatRoomManager.TAG}: changeChatRoomSubject: `,
       roomId,
       description
@@ -442,7 +445,7 @@ export class ChatRoomManager extends Native {
     cursor: string = '',
     pageSize: number = 200
   ): Promise<ChatCursorResult<string>> {
-    console.log(
+    chatlog.log(
       `${ChatRoomManager.TAG}: fetchChatRoomMembers: `,
       roomId,
       cursor,
@@ -484,7 +487,7 @@ export class ChatRoomManager extends Native {
     muteMembers: Array<string>,
     duration: number = -1
   ): Promise<void> {
-    console.log(
+    chatlog.log(
       `${ChatRoomManager.TAG}: muteChatRoomMembers: `,
       roomId,
       muteMembers,
@@ -514,7 +517,7 @@ export class ChatRoomManager extends Native {
     roomId: string,
     unMuteMembers: Array<string>
   ): Promise<void> {
-    console.log(
+    chatlog.log(
       `${ChatRoomManager.TAG}: unMuteChatRoomMembers: `,
       roomId,
       unMuteMembers
@@ -539,7 +542,7 @@ export class ChatRoomManager extends Native {
    * @throws A description of the exception. See {@link ChatError}.
    */
   public async changeOwner(roomId: string, newOwner: string): Promise<void> {
-    console.log(`${ChatRoomManager.TAG}: changeOwner: `, roomId, newOwner);
+    chatlog.log(`${ChatRoomManager.TAG}: changeOwner: `, roomId, newOwner);
     let r: any = await Native._callMethod(MTchangeChatRoomOwner, {
       [MTchangeChatRoomOwner]: {
         roomId,
@@ -560,7 +563,7 @@ export class ChatRoomManager extends Native {
    * @throws A description of the exception. See {@link ChatError}.
    */
   public async addChatRoomAdmin(roomId: string, admin: string): Promise<void> {
-    console.log(`${ChatRoomManager.TAG}: addChatRoomAdmin: `, roomId, admin);
+    chatlog.log(`${ChatRoomManager.TAG}: addChatRoomAdmin: `, roomId, admin);
     let r: any = await Native._callMethod(MTaddChatRoomAdmin, {
       [MTaddChatRoomAdmin]: {
         roomId,
@@ -582,7 +585,7 @@ export class ChatRoomManager extends Native {
     roomId: string,
     admin: string
   ): Promise<void> {
-    console.log(`${ChatRoomManager.TAG}: removeChatRoomAdmin: `, roomId, admin);
+    chatlog.log(`${ChatRoomManager.TAG}: removeChatRoomAdmin: `, roomId, admin);
     let r: any = await Native._callMethod(MTremoveChatRoomAdmin, {
       [MTremoveChatRoomAdmin]: {
         roomId,
@@ -609,7 +612,7 @@ export class ChatRoomManager extends Native {
     pageNum: number = 1,
     pageSize: number = 200
   ): Promise<Array<string>> {
-    console.log(
+    chatlog.log(
       `${ChatRoomManager.TAG}: fetchChatRoomMuteList: `,
       roomId,
       pageNum,
@@ -641,7 +644,7 @@ export class ChatRoomManager extends Native {
     roomId: string,
     members: Array<string>
   ): Promise<void> {
-    console.log(
+    chatlog.log(
       `${ChatRoomManager.TAG}: removeChatRoomMembers: `,
       roomId,
       members
@@ -669,7 +672,7 @@ export class ChatRoomManager extends Native {
     roomId: string,
     members: Array<string>
   ): Promise<void> {
-    console.log(
+    chatlog.log(
       `${ChatRoomManager.TAG}: blockChatRoomMembers: `,
       roomId,
       members
@@ -697,7 +700,7 @@ export class ChatRoomManager extends Native {
     roomId: string,
     members: Array<string>
   ): Promise<void> {
-    console.log(
+    chatlog.log(
       `${ChatRoomManager.TAG}: unBlockChatRoomMembers: `,
       roomId,
       members
@@ -728,7 +731,7 @@ export class ChatRoomManager extends Native {
     pageNum: number = 1,
     pageSize: number = 200
   ): Promise<Array<string>> {
-    console.log(
+    chatlog.log(
       `${ChatRoomManager.TAG}: fetchChatRoomBlockList: `,
       roomId,
       pageNum,
@@ -760,7 +763,7 @@ export class ChatRoomManager extends Native {
     roomId: string,
     announcement: string
   ): Promise<void> {
-    console.log(
+    chatlog.log(
       `${ChatRoomManager.TAG}: updateChatRoomAnnouncement: `,
       roomId,
       announcement
@@ -785,7 +788,7 @@ export class ChatRoomManager extends Native {
   public async fetchChatRoomAnnouncement(
     roomId: string
   ): Promise<string | undefined> {
-    console.log(`${ChatRoomManager.TAG}: fetchChatRoomAnnouncement: `, roomId);
+    chatlog.log(`${ChatRoomManager.TAG}: fetchChatRoomAnnouncement: `, roomId);
     let r: any = await Native._callMethod(MTfetchChatRoomAnnouncement, {
       [MTfetchChatRoomAnnouncement]: {
         roomId,
@@ -808,7 +811,7 @@ export class ChatRoomManager extends Native {
   public async fetchChatRoomWhiteListFromServer(
     roomId: string
   ): Promise<Array<string>> {
-    console.log(
+    chatlog.log(
       `${ChatRoomManager.TAG}: fetchChatRoomWhiteListFromServer: `,
       roomId
     );
@@ -831,7 +834,7 @@ export class ChatRoomManager extends Native {
    * @throws A description of the exception. See {@link ChatError}.
    */
   public async isMemberInChatRoomWhiteList(roomId: string): Promise<boolean> {
-    console.log(
+    chatlog.log(
       `${ChatRoomManager.TAG}: isMemberInChatRoomWhiteList: `,
       roomId
     );
@@ -862,7 +865,7 @@ export class ChatRoomManager extends Native {
     roomId: string,
     members: Array<string>
   ): Promise<void> {
-    console.log(
+    chatlog.log(
       `${ChatRoomManager.TAG}: addMembersToChatRoomWhiteList: `,
       roomId,
       members
@@ -890,7 +893,7 @@ export class ChatRoomManager extends Native {
     roomId: string,
     members: Array<string>
   ): Promise<void> {
-    console.log(
+    chatlog.log(
       `${ChatRoomManager.TAG}: removeMembersFromChatRoomWhiteList: `,
       roomId,
       members
@@ -919,7 +922,7 @@ export class ChatRoomManager extends Native {
    * @throws A description of the exception. See {@link ChatError}.
    */
   public async muteAllChatRoomMembers(roomId: string): Promise<void> {
-    console.log(`${ChatRoomManager.TAG}: muteAllChatRoomMembers: `, roomId);
+    chatlog.log(`${ChatRoomManager.TAG}: muteAllChatRoomMembers: `, roomId);
     let r: any = await Native._callMethod(MTmuteAllChatRoomMembers, {
       [MTmuteAllChatRoomMembers]: {
         roomId,
@@ -938,7 +941,7 @@ export class ChatRoomManager extends Native {
    * @throws A description of the exception. See {@link ChatError}.
    */
   public async unMuteAllChatRoomMembers(roomId: string): Promise<void> {
-    console.log(`${ChatRoomManager.TAG}: unMuteAllChatRoomMembers: `, roomId);
+    chatlog.log(`${ChatRoomManager.TAG}: unMuteAllChatRoomMembers: `, roomId);
     let r: any = await Native._callMethod(MTunMuteAllChatRoomMembers, {
       [MTunMuteAllChatRoomMembers]: {
         roomId,

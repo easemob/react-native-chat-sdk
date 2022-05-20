@@ -1,5 +1,6 @@
 import type { EmitterSubscription, NativeEventEmitter } from 'react-native';
 import type { ChatPresenceEventListener } from './ChatEvents';
+import { chatlog } from './common/ChatLog';
 import { ChatPresence } from './common/ChatPresence';
 import {
   MTfetchPresenceStatus,
@@ -24,7 +25,7 @@ export class ChatPresenceManager extends Native {
   }
 
   public setNativeListener(event: NativeEventEmitter): void {
-    console.log(`${ChatPresenceManager.TAG}: setNativeListener: `);
+    chatlog.log(`${ChatPresenceManager.TAG}: setNativeListener: `);
     this._presenceSubscriptions.forEach((value: EmitterSubscription) => {
       value.remove();
     });
@@ -37,12 +38,10 @@ export class ChatPresenceManager extends Native {
     );
   }
   private invokePresenceListener(params: any): void {
-    console.log('test: ', params);
     this._presenceListeners.forEach((listener: ChatPresenceEventListener) => {
       const ret: Array<ChatPresence> = [];
       const l: Array<any> = params?.presences;
       l.forEach((value: any) => {
-        console.log('test: ', value);
         ret.push(new ChatPresence(value));
       });
       listener.onPresenceStatusChanged(ret);
@@ -84,7 +83,7 @@ export class ChatPresenceManager extends Native {
   public async publishPresenceWithDescription(
     description?: string
   ): Promise<void> {
-    console.log(
+    chatlog.log(
       `${ChatPresenceManager.TAG}: publishPresenceWithDescription: `,
       description
     );
@@ -109,7 +108,7 @@ export class ChatPresenceManager extends Native {
     members: Array<string>,
     expiry: number
   ): Promise<Array<ChatPresence>> {
-    console.log(`${ChatPresenceManager.TAG}: subscribe: `, members, expiry);
+    chatlog.log(`${ChatPresenceManager.TAG}: subscribe: `, members, expiry);
     let r: any = await Native._callMethod(MTpresenceSubscribe, {
       [MTpresenceSubscribe]: {
         members,
@@ -132,7 +131,7 @@ export class ChatPresenceManager extends Native {
    * @throws A description of the exception. See {@link ChatError}.
    */
   public async unSubscribe(members: Array<string>): Promise<void> {
-    console.log(`${ChatPresenceManager.TAG}: unSubscribe: `, members);
+    chatlog.log(`${ChatPresenceManager.TAG}: unSubscribe: `, members);
     let r: any = await Native._callMethod(MTpresenceUnsubscribe, {
       [MTpresenceUnsubscribe]: {
         members,
@@ -154,7 +153,7 @@ export class ChatPresenceManager extends Native {
     pageNum: number = 1,
     pageSize: number = 20
   ): Promise<Array<string>> {
-    console.log(
+    chatlog.log(
       `${ChatPresenceManager.TAG}: fetchSubscribedMembers: `,
       pageNum,
       pageSize
@@ -180,7 +179,7 @@ export class ChatPresenceManager extends Native {
   public async fetchPresenceStatus(
     members: Array<string>
   ): Promise<Array<ChatPresence>> {
-    console.log(`${ChatPresenceManager.TAG}: fetchPresenceStatus: `, members);
+    chatlog.log(`${ChatPresenceManager.TAG}: fetchPresenceStatus: `, members);
     let r: any = await Native._callMethod(MTfetchPresenceStatus, {
       [MTfetchPresenceStatus]: {
         members,

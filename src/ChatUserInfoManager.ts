@@ -1,5 +1,6 @@
 import { ChatClient } from './ChatClient';
 import { ChatUserInfo } from './common/ChatUserInfo';
+import { chatlog } from './common/ChatLog';
 import {
   MTfetchUserInfoById,
   MTupdateOwnUserInfo,
@@ -38,7 +39,7 @@ export class ChatUserInfoManager extends Native {
     birth?: string;
     ext?: string;
   }): Promise<void> {
-    console.log(`${ChatUserInfoManager.TAG}: updateOwnUserInfo: `, params);
+    chatlog.log(`${ChatUserInfoManager.TAG}: updateOwnUserInfo: `, params);
     const userId = await ChatClient.getInstance().getCurrentUsername();
     const ret = await this.fetchUserInfoById([userId]);
     if (ret.has(userId)) {
@@ -64,7 +65,7 @@ export class ChatUserInfoManager extends Native {
   public async fetchUserInfoById(
     userIds: Array<string>
   ): Promise<Map<string, ChatUserInfo>> {
-    console.log(`${ChatUserInfoManager.TAG}: fetchUserInfoById: `, userIds);
+    chatlog.log(`${ChatUserInfoManager.TAG}: fetchUserInfoById: `, userIds);
     let r: any = await Native._callMethod(MTfetchUserInfoById, {
       [MTfetchUserInfoById]: {
         userIds: userIds,
@@ -87,7 +88,7 @@ export class ChatUserInfoManager extends Native {
    * @throws A description of the exception. See {@link ChatError}.
    */
   public async fetchOwnInfo(): Promise<ChatUserInfo | undefined> {
-    console.log(`${ChatUserInfoManager.TAG}: fetchOwnInfo: `);
+    chatlog.log(`${ChatUserInfoManager.TAG}: fetchOwnInfo: `);
     const id = await ChatClient.getInstance().getCurrentUsername();
     if (id) {
       const ret = await this.fetchUserInfoById([id]);

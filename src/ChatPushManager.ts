@@ -1,4 +1,5 @@
 import type { NativeEventEmitter } from 'react-native';
+import { chatlog } from './common/ChatLog';
 import { ChatPushConfig, PushDisplayStyle } from './common/ChatPushConfig';
 import {
   MTdisableOfflinePush,
@@ -27,7 +28,7 @@ export class ChatPushManager extends Native {
   }
 
   public setNativeListener(_event: NativeEventEmitter): void {
-    console.log(`${ChatPushManager.TAG}: setNativeListener: `);
+    chatlog.log(`${ChatPushManager.TAG}: setNativeListener: `);
   }
 
   /**
@@ -38,7 +39,7 @@ export class ChatPushManager extends Native {
    * @throws A description of the exception. See {@link ChatError}.
    */
   public async getPushConfigsFromCache(): Promise<ChatPushConfig | undefined> {
-    console.log(`${ChatPushManager.TAG}: getPushConfigsFromCache: `);
+    chatlog.log(`${ChatPushManager.TAG}: getPushConfigsFromCache: `);
     let r: any = await Native._callMethod(MTgetImPushConfig);
     ChatPushManager.checkErrorFromResult(r);
     const p = r?.[MTgetImPushConfig];
@@ -56,7 +57,7 @@ export class ChatPushManager extends Native {
    * @throws A description of the exception. See {@link ChatError}.
    */
   public async fetchPushConfigsFromServer(): Promise<ChatPushConfig> {
-    console.log(`${ChatPushManager.TAG}: fetchPushConfigsFromServer: `);
+    chatlog.log(`${ChatPushManager.TAG}: fetchPushConfigsFromServer: `);
     let r: any = await Native._callMethod(MTgetImPushConfigFromServer);
     ChatPushManager.checkErrorFromResult(r);
     return new ChatPushConfig(r?.[MTgetImPushConfigFromServer]);
@@ -68,7 +69,7 @@ export class ChatPushManager extends Native {
    * @throws A description of the exception. See {@link ChatError}.
    */
   public async enableOfflinePush(): Promise<void> {
-    console.log(`${ChatPushManager.TAG}: enableOfflinePush: `);
+    chatlog.log(`${ChatPushManager.TAG}: enableOfflinePush: `);
     let r: any = await Native._callMethod(MTenableOfflinePush);
     ChatPushManager.checkErrorFromResult(r);
   }
@@ -82,7 +83,7 @@ export class ChatPushManager extends Native {
    * @throws A description of the exception. See {@link ChatError}.
    */
   public async disableOfflinePush(start: number, end: number): Promise<void> {
-    console.log(`${ChatPushManager.TAG}: disableOfflinePush: `);
+    chatlog.log(`${ChatPushManager.TAG}: disableOfflinePush: `);
     let r: any = await Native._callMethod(MTdisableOfflinePush, {
       [MTdisableOfflinePush]: {
         start,
@@ -104,7 +105,7 @@ export class ChatPushManager extends Native {
     groupIds: Array<string>,
     enablePush: boolean
   ): Promise<void> {
-    console.log(`${ChatPushManager.TAG}: updatePushServiceForGroup: `);
+    chatlog.log(`${ChatPushManager.TAG}: updatePushServiceForGroup: `);
     let r: any = await Native._callMethod(MTupdateGroupPushService, {
       [MTupdateGroupPushService]: {
         noPush: enablePush,
@@ -126,7 +127,7 @@ export class ChatPushManager extends Native {
     userIds: Array<string>,
     enablePush: boolean
   ): Promise<void> {
-    console.log(`${ChatPushManager.TAG}: updatePushServiceFroUsers: `);
+    chatlog.log(`${ChatPushManager.TAG}: updatePushServiceFroUsers: `);
     let r: any = await Native._callMethod(MTupdateUserPushService, {
       [MTupdateUserPushService]: {
         noPush: enablePush,
@@ -144,7 +145,7 @@ export class ChatPushManager extends Native {
    * @throws A description of the exception. See {@link ChatError}.
    */
   public async getNoPushGroupsFromCache(): Promise<Array<string>> {
-    console.log(`${ChatPushManager.TAG}: getNoPushGroupsFromCache: `);
+    chatlog.log(`${ChatPushManager.TAG}: getNoPushGroupsFromCache: `);
     let r: any = await Native._callMethod(MTgetNoPushGroups);
     ChatPushManager.checkErrorFromResult(r);
     return r?.[MTgetNoPushGroups] as Array<string>;
@@ -158,7 +159,7 @@ export class ChatPushManager extends Native {
    * @throws A description of the exception. See {@link ChatError}.
    */
   public async getNoPushUsersFromCache(): Promise<Array<string>> {
-    console.log(`${ChatPushManager.TAG}: getNoPushUsersFromCache: `);
+    chatlog.log(`${ChatPushManager.TAG}: getNoPushUsersFromCache: `);
     let r: any = await Native._callMethod(MTgetNoPushUsers);
     ChatPushManager.checkErrorFromResult(r);
     return r?.[MTgetNoPushUsers] as Array<string>;
@@ -174,7 +175,7 @@ export class ChatPushManager extends Native {
    * @throws A description of the exception. See {@link ChatError}.
    */
   public async updatePushNickname(nickname: string): Promise<void> {
-    console.log(`${ChatPushManager.TAG}: updatePushNickname: `);
+    chatlog.log(`${ChatPushManager.TAG}: updatePushNickname: `);
     let r: any = await Native._callMethod(MTupdatePushNickname, {
       [MTupdatePushNickname]: {
         nickname,
@@ -193,7 +194,7 @@ export class ChatPushManager extends Native {
   public async updatePushDisplayStyle(
     displayStyle: PushDisplayStyle
   ): Promise<void> {
-    console.log(`${ChatPushManager.TAG}: updatePushDisplayStyle: `);
+    chatlog.log(`${ChatPushManager.TAG}: updatePushDisplayStyle: `);
     let r: any = await Native._callMethod(MTupdateImPushStyle, {
       [MTupdateImPushStyle]: {
         pushStyle: displayStyle,
@@ -210,7 +211,7 @@ export class ChatPushManager extends Native {
    * @throws A description of the exception. See {@link ChatError}.
    */
   public async updateHMSPushToken(token: string): Promise<void> {
-    console.log(`${ChatPushManager.TAG}: updateHMSPushToken: `);
+    chatlog.log(`${ChatPushManager.TAG}: updateHMSPushToken: `);
     let r: any = await Native._callMethod(MTupdateHMSPushToken, {
       [MTupdateHMSPushToken]: {
         token: token,
@@ -227,7 +228,7 @@ export class ChatPushManager extends Native {
    * @throws A description of the exception. See {@link ChatError}.
    */
   public async updateFCMPushToken(token: string): Promise<void> {
-    console.log(`${ChatPushManager.TAG}: updateFCMPushToken: `);
+    chatlog.log(`${ChatPushManager.TAG}: updateFCMPushToken: `);
     let r: any = await Native._callMethod(MTupdateFCMPushToken, {
       [MTupdateFCMPushToken]: {
         token: token,
@@ -244,7 +245,7 @@ export class ChatPushManager extends Native {
    * @throws A description of the exception. See {@link ChatError}.
    */
   public async updateAPNsDeviceToken(token: string): Promise<void> {
-    console.log(`${ChatPushManager.TAG}: updateAPNsDeviceToken: `);
+    chatlog.log(`${ChatPushManager.TAG}: updateAPNsDeviceToken: `);
     let r: any = await Native._callMethod(MTupdateAPNsPushToken, {
       [MTupdateAPNsPushToken]: {
         token: token,
