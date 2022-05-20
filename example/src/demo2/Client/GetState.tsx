@@ -53,9 +53,9 @@ export class GetStateScreen extends Component<{ navigation: any }, State, any> {
     }
   }
 
-  private getsdkVersion(): void {
-    console.log(`${GetStateScreen.TAG}: getsdkVersion: `);
-  }
+  // private getsdkVersion(): void {
+  //   console.log(`${GetStateScreen.TAG}: getsdkVersion: `);
+  // }
 
   private getcurrentUserName(): void {
     console.log(`${GetStateScreen.TAG}: getcurrentUserName: `);
@@ -76,11 +76,11 @@ export class GetStateScreen extends Component<{ navigation: any }, State, any> {
       });
   }
 
-  private rnSdkVersion(): void {
-    console.log(`${GetStateScreen.TAG}: rnSdkVersion: `);
-    // let r = ChatClient.getInstance().rnSdkVersion;
-    // this.setState({ result: r, rnSdkVersion: r });
-  }
+  // private rnSdkVersion(): void {
+  //   console.log(`${GetStateScreen.TAG}: rnSdkVersion: `);
+  //   // let r = ChatClient.getInstance().rnSdkVersion;
+  //   // this.setState({ result: r, rnSdkVersion: r });
+  // }
 
   private isConnected(): void {
     console.log(`${GetStateScreen.TAG}: isConnected: `);
@@ -155,7 +155,7 @@ export class GetStateScreen extends Component<{ navigation: any }, State, any> {
               options
             </Button>
           </View>
-          <View style={styleValues.containerRow}>
+          {/* <View style={styleValues.containerRow}>
             <Text style={styleValues.textStyle}>sdkVersion: </Text>
             <Button
               title="sdkVersion"
@@ -165,7 +165,7 @@ export class GetStateScreen extends Component<{ navigation: any }, State, any> {
             >
               sdkVersion
             </Button>
-          </View>
+          </View> */}
           <View style={styleValues.containerRow}>
             <Text style={styleValues.textStyle}>currentUserName: </Text>
             <Button
@@ -177,7 +177,7 @@ export class GetStateScreen extends Component<{ navigation: any }, State, any> {
               currentUserName
             </Button>
           </View>
-          <View style={styleValues.containerRow}>
+          {/* <View style={styleValues.containerRow}>
             <Text style={styleValues.textStyle}>rnSdkVersion: </Text>
             <Button
               title="rnSdkVersion"
@@ -187,7 +187,7 @@ export class GetStateScreen extends Component<{ navigation: any }, State, any> {
             >
               rnSdkVersion
             </Button>
-          </View>
+          </View> */}
           <View style={styleValues.containerRow}>
             <Text style={styleValues.textStyle}>isConnected: </Text>
             <Button

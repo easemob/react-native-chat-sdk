@@ -360,7 +360,7 @@ export class QuickTestScreenChat extends QuickTestScreenBase<
         {
           const methodName = this.metaData.get(MN.updateMessage)!.methodName;
           console.log(`${MN.updateMessage} === ${methodName}`);
-          const msg = this.statelessData.sendMessage.fail_message!;
+          const msg = this.statelessData.sendMessage.success_message!;
           const newMsg = new ChatMessage(msg);
           newMsg.localMsgId = '1';
           this.tryCatch(
@@ -500,7 +500,7 @@ export class QuickTestScreenChat extends QuickTestScreenBase<
           const convType = this.metaData.get(MN.deleteRemoteConversation)
             ?.params[1].paramDefaultValue;
           const isDeleteMessage = this.metaData.get(MN.deleteRemoteConversation)
-            ?.params[1].paramDefaultValue;
+            ?.params[2].paramDefaultValue;
           this.tryCatch(
             ChatClient.getInstance().chatManager.deleteRemoteConversation(
               convId,
@@ -520,7 +520,7 @@ export class QuickTestScreenChat extends QuickTestScreenBase<
             .paramDefaultValue;
           const convType = this.metaData.get(MN.getConversation)?.params[1]
             .paramDefaultValue;
-          const createIfNeed = this.metaData.get(MN.getConversation)?.params[1]
+          const createIfNeed = this.metaData.get(MN.getConversation)?.params[2]
             .paramDefaultValue;
           this.tryCatch(
             ChatClient.getInstance().chatManager.getConversation(

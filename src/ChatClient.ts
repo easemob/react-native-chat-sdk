@@ -361,7 +361,7 @@ export class ChatClient extends BaseManager {
    * @returns The current logged-in user ID.
    */
   public get currentUserName(): string {
-    chatlog.log(`${ChatClient.TAG}: currentUserName: `);
+    chatlog.log(`${ChatClient.TAG}: currentUserName: `, this._currentUsername);
     return this._currentUsername;
   }
 
@@ -427,7 +427,6 @@ export class ChatClient extends BaseManager {
    * @throws A description of the exception. See {@link ChatError}.
    */
   public async getCurrentUsername(): Promise<string> {
-    chatlog.log(`${ChatClient.TAG}: getCurrentUsername: `);
     let r: any = await Native._callMethod(MTgetCurrentUser);
     ChatClient.checkErrorFromResult(r);
     let userName = r?.[MTgetCurrentUser] as string;
@@ -436,6 +435,10 @@ export class ChatClient extends BaseManager {
         this._currentUsername = userName;
       }
     }
+    chatlog.log(
+      `${ChatClient.TAG}: getCurrentUsername: `,
+      this._currentUsername
+    );
     return this._currentUsername;
   }
 
