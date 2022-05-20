@@ -1,6 +1,13 @@
 # Update Log
 
 ---
+## 0.4.2
+* fix bugs for sdk
+* update demo2
+* update simple_demo
+* update quick test
+
+---
 ## 0.4.1
 * fix bugs
 
