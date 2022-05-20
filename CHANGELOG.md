@@ -1,6 +1,10 @@
 # Update Log
 
 ---
+## 0.4.4
+* Implement log control.
+
+---
 ## 0.4.3
 * Unimportant updates.
 
