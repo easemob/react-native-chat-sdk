@@ -398,6 +398,7 @@ export class ChatClient extends BaseManager {
   public async init(options: ChatOptions): Promise<void> {
     chatlog.log(`${ChatClient.TAG}: init: `, options);
     this._options = options;
+    chatlog.enableLog = options.debugModel ?? false;
     const r = await Native._callMethod(MTinit, { options });
     ChatClient.checkErrorFromResult(r);
     this._isInit = true;
