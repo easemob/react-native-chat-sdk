@@ -343,7 +343,7 @@ export const metaDataList = new Map<string, ApiParams>([
         {
           paramName: 'isDeleteMessage',
           paramType: 'boolean',
-          paramDefaultValue: true,
+          paramDefaultValue: false,
         },
       ],
     },
@@ -361,7 +361,7 @@ export const metaDataList = new Map<string, ApiParams>([
         {
           paramName: 'convType',
           paramType: 'number',
-          paramDefaultValue: 0,
+          paramDefaultValue: 1,
         },
         {
           paramName: 'createIfNeed',
@@ -398,7 +398,7 @@ export const metaDataList = new Map<string, ApiParams>([
         {
           paramName: 'withMessage',
           paramType: 'boolean',
-          paramDefaultValue: true,
+          paramDefaultValue: false,
         },
       ],
     },
