@@ -7,7 +7,7 @@
  */
 export class ChatOptions {
   /**
-   * The app key you get from the console when creating a chat app. It is the unique identifier of your app.
+   * The app key you get from the website console when creating a chat app. It is the unique identifier of your app.
    */
   appKey: string;
   /**

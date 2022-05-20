@@ -1,10 +1,8 @@
 import type { NativeEventEmitter } from 'react-native';
-import {
-  ChatMessage,
-  ChatMessageStatusCallback,
-  ChatGroupFileStatusCallback,
-  ChatError,
-} from 'react-native-chat-sdk';
+import { ChatError } from '../common/ChatError';
+import { ChatMessage, ChatMessageStatusCallback } from '../common/ChatMessage';
+import type { ChatGroupFileStatusCallback } from '../common/ChatGroup';
+import { chatlog } from '../common/ChatLog';
 import {
   MTonMessageError,
   MTonMessageProgressUpdate,
@@ -35,7 +33,7 @@ export class BaseManager extends Native {
         methodName,
         (params: any) => {
           const localMsgId: string = params.localTime.toString();
-          console.log(
+          chatlog.log(
             `${BaseManager.TAG}: handleMessageCallback: ${methodName}: ${localMsgId}`
           );
           if (message.localMsgId === localMsgId) {
@@ -71,7 +69,7 @@ export class BaseManager extends Native {
         (params: any) => {
           const gid = params.groupId;
           const fp = params.filePath;
-          console.log(
+          chatlog.log(
             `${BaseManager.TAG}: handleGroupFileCallback: ${gid}: ${fp}`
           );
           if (gid === groupId && fp === filePath) {

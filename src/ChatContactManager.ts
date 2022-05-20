@@ -1,6 +1,7 @@
 import type { EmitterSubscription, NativeEventEmitter } from 'react-native';
 import type { ChatContactEventListener } from './ChatEvents';
 import { ChatError } from './common/ChatError';
+import { chatlog } from './common/ChatLog';
 import { BaseManager } from './__internal__/Base';
 import {
   MTacceptInvitation,
@@ -33,7 +34,7 @@ export class ChatContactManager extends BaseManager {
   private _contactSubscriptions: Map<string, EmitterSubscription>;
 
   public setNativeListener(event: NativeEventEmitter): void {
-    console.log(`${ChatContactManager.TAG}: setNativeListener: `);
+    chatlog.log(`${ChatContactManager.TAG}: setNativeListener: `);
     this._contactSubscriptions.forEach((value: EmitterSubscription) => {
       value.remove();
     });
@@ -81,6 +82,7 @@ export class ChatContactManager extends BaseManager {
    * @param listener The listener to be added.
    */
   public addContactListener(listener: ChatContactEventListener): void {
+    chatlog.log(`${ChatContactManager.TAG}: addContactListener: `);
     this._contactListeners.add(listener);
   }
 
@@ -90,6 +92,7 @@ export class ChatContactManager extends BaseManager {
    * @param listener The listener to be deleted.
    */
   public removeContactListener(listener: ChatContactEventListener): void {
+    chatlog.log(`${ChatContactManager.TAG}: removeContactListener: `);
     this._contactListeners.delete(listener);
   }
 
@@ -97,6 +100,7 @@ export class ChatContactManager extends BaseManager {
    * Clear contact listener
    */
   public removeAllContactListener(): void {
+    chatlog.log(`${ChatContactManager.TAG}: removeAllContactListener: `);
     this._contactListeners.clear();
   }
 
@@ -112,7 +116,7 @@ export class ChatContactManager extends BaseManager {
     username: string,
     reason: string = ''
   ): Promise<void> {
-    console.log(`${ChatContactManager.TAG}: addContact: `, username);
+    chatlog.log(`${ChatContactManager.TAG}: addContact: `, username);
     let r: any = await Native._callMethod(MTaddContact, {
       [MTaddContact]: {
         username: username,
@@ -136,7 +140,7 @@ export class ChatContactManager extends BaseManager {
     username: string,
     keepConversation: boolean = false
   ): Promise<void> {
-    console.log(`${ChatContactManager.TAG}: deleteContact: `, username);
+    chatlog.log(`${ChatContactManager.TAG}: deleteContact: `, username);
     let r: any = await Native._callMethod(MTdeleteContact, {
       [MTdeleteContact]: {
         username: username,
@@ -154,7 +158,7 @@ export class ChatContactManager extends BaseManager {
    * @throws A description of the exception. See {@link ChatError}.
    */
   public async getAllContactsFromServer(): Promise<Array<string>> {
-    console.log(`${ChatContactManager.TAG}: getAllContactsFromServer: `);
+    chatlog.log(`${ChatContactManager.TAG}: getAllContactsFromServer: `);
     let r: any = await Native._callMethod(MTgetAllContactsFromServer);
     ChatContactManager.checkErrorFromResult(r);
     const ret: string[] = r?.[MTgetAllContactsFromServer];
@@ -169,7 +173,7 @@ export class ChatContactManager extends BaseManager {
    * @throws A description of the exception. See {@link ChatError}.
    */
   public async getAllContactsFromDB(): Promise<Array<string>> {
-    console.log(`${ChatContactManager.TAG}: getAllContactsFromDB: `);
+    chatlog.log(`${ChatContactManager.TAG}: getAllContactsFromDB: `);
     let r: any = await Native._callMethod(MTgetAllContactsFromDB);
     ChatContactManager.checkErrorFromResult(r);
     const ret: string[] = r?.[MTgetAllContactsFromDB];
@@ -185,7 +189,7 @@ export class ChatContactManager extends BaseManager {
    * @throws A description of the exception. See {@link ChatError}.
    */
   public async addUserToBlockList(username: string): Promise<void> {
-    console.log(`${ChatContactManager.TAG}: addUserToBlockList: `, username);
+    chatlog.log(`${ChatContactManager.TAG}: addUserToBlockList: `, username);
     let r: any = await Native._callMethod(MTaddUserToBlockList, {
       [MTaddUserToBlockList]: {
         username,
@@ -202,7 +206,7 @@ export class ChatContactManager extends BaseManager {
    * @throws A description of the exception. See {@link ChatError}.
    */
   public async removeUserFromBlockList(username: string): Promise<void> {
-    console.log(
+    chatlog.log(
       `${ChatContactManager.TAG}: removeUserFromBlockList: `,
       username
     );
@@ -222,7 +226,7 @@ export class ChatContactManager extends BaseManager {
    * @throws A description of the exception. See {@link ChatError}.
    */
   public async getBlockListFromServer(): Promise<Array<string>> {
-    console.log(`${ChatContactManager.TAG}: getBlockListFromServer: `);
+    chatlog.log(`${ChatContactManager.TAG}: getBlockListFromServer: `);
     let r: any = await Native._callMethod(MTgetBlockListFromServer);
     ChatContactManager.checkErrorFromResult(r);
     const ret: string[] = r?.[MTgetBlockListFromServer];
@@ -237,7 +241,7 @@ export class ChatContactManager extends BaseManager {
    * @throws A description of the exception. See {@link ChatError}.
    */
   public async getBlockListFromDB(): Promise<Array<string>> {
-    console.log(`${ChatContactManager.TAG}: getBlockListFromDB: `);
+    chatlog.log(`${ChatContactManager.TAG}: getBlockListFromDB: `);
     let r: any = await Native._callMethod(MTgetBlockListFromDB);
     ChatContactManager.checkErrorFromResult(r);
     const ret: string[] = r?.[MTgetBlockListFromDB];
@@ -252,7 +256,7 @@ export class ChatContactManager extends BaseManager {
    * @throws A description of the exception. See {@link ChatError}.
    */
   public async acceptInvitation(username: string): Promise<void> {
-    console.log(`${ChatContactManager.TAG}: acceptInvitation: `);
+    chatlog.log(`${ChatContactManager.TAG}: acceptInvitation: `);
     let r: any = await Native._callMethod(MTacceptInvitation, {
       [MTacceptInvitation]: { username },
     });
@@ -267,7 +271,7 @@ export class ChatContactManager extends BaseManager {
    * @throws A description of the exception. See {@link ChatError}.
    */
   public async declineInvitation(username: string): Promise<void> {
-    console.log(`${ChatContactManager.TAG}: declineInvitation: `, username);
+    chatlog.log(`${ChatContactManager.TAG}: declineInvitation: `, username);
     let r: any = await Native._callMethod(MTdeclineInvitation, {
       [MTdeclineInvitation]: { username },
     });
@@ -282,7 +286,7 @@ export class ChatContactManager extends BaseManager {
    * @throws A description of the exception. See {@link ChatError}.
    */
   public async getSelfIdsOnOtherPlatform(): Promise<Array<string>> {
-    console.log(`${ChatContactManager.TAG}: getSelfIdsOnOtherPlatform: `);
+    chatlog.log(`${ChatContactManager.TAG}: getSelfIdsOnOtherPlatform: `);
     let r: any = await Native._callMethod(MTgetSelfIdsOnOtherPlatform);
     ChatContactManager.checkErrorFromResult(r);
     const ret: string[] = r?.[MTgetSelfIdsOnOtherPlatform];

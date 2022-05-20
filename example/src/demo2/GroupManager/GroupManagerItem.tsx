@@ -4,7 +4,7 @@ import { styleValues } from '../__internal__/Css';
 import { LeafScreenBase, StateBase } from '../__internal__/LeafScreenBase';
 import { metaData, GROUPMN, stateData } from './GroupManagerData';
 import type { ApiParams } from '../__internal__/DataTypes';
-import type { ChatGroupOptions } from '../../../../src/common/ChatGroup';
+import type { ChatGroupOptions } from 'react-native-chat-sdk';
 import {
   ChatClient,
   ChatError,

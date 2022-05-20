@@ -195,16 +195,16 @@ export function ChatContactGroupEventFromNumber(
  *  ```typescript
  *  let listener = new (class s implements ChatConnectEventListener {
  *    onTokenWillExpire(): void {
- *      console.log('ConnectScreen.onTokenWillExpire');
+ *      chatlog.log('ConnectScreen.onTokenWillExpire');
  *    }
  *    onTokenDidExpire(): void {
- *      console.log('ConnectScreen.onTokenDidExpire');
+ *      chatlog.log('ConnectScreen.onTokenDidExpire');
  *    }
  *    onConnected(): void {
- *      console.log('ConnectScreen.onConnected');
+ *      chatlog.log('ConnectScreen.onConnected');
  *    }
  *    onDisconnected(errorCode?: number): void {
- *      console.log('ConnectScreen.onDisconnected', errorCode);
+ *      chatlog.log('ConnectScreen.onDisconnected', errorCode);
  *    }
  *  })();
  *  ChatClient.getInstance().addConnectionListener(listener);
@@ -293,28 +293,28 @@ export interface ChatCustomEventListener {
  *   ```typescript
  *   let msgListener = new (class ss implements ChatMessageEventListener {
  *     onMessagesReceived(messages: ChatMessage[]): void {
- *       console.log('ConnectScreen.onMessagesReceived', messages);
+ *       chatlog.log('ConnectScreen.onMessagesReceived', messages);
  *     }
  *     onCmdMessagesReceived(messages: ChatMessage[]): void {
- *       console.log('ConnectScreen.onCmdMessagesReceived', messages);
+ *       chatlog.log('ConnectScreen.onCmdMessagesReceived', messages);
  *     }
  *     onMessagesRead(messages: ChatMessage[]): void {
- *       console.log('ConnectScreen.onMessagesRead', messages);
+ *       chatlog.log('ConnectScreen.onMessagesRead', messages);
  *     }
  *     onGroupMessageRead(groupMessageAcks: ChatGroupMessageAck[]): void {
- *       console.log('ConnectScreen.onGroupMessageRead', groupMessageAcks);
+ *       chatlog.log('ConnectScreen.onGroupMessageRead', groupMessageAcks);
  *     }
  *     onMessagesDelivered(messages: ChatMessage[]): void {
- *       console.log('ConnectScreen.onMessagesDelivered', messages);
+ *       chatlog.log('ConnectScreen.onMessagesDelivered', messages);
  *     }
  *     onMessagesRecalled(messages: ChatMessage[]): void {
- *       console.log('ConnectScreen.onMessagesRecalled', messages);
+ *       chatlog.log('ConnectScreen.onMessagesRecalled', messages);
  *     }
  *     onConversationsUpdate(): void {
- *       console.log('ConnectScreen.onConversationsUpdate');
+ *       chatlog.log('ConnectScreen.onConversationsUpdate');
  *     }
  *     onConversationRead(from: string, to?: string): void {
- *       console.log('ConnectScreen.onConversationRead', from, to);
+ *       chatlog.log('ConnectScreen.onConversationRead', from, to);
  *     }
  *   })();
  *   ChatClient.getInstance().chatManager.addListener(msgListener);

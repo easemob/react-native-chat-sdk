@@ -20,6 +20,7 @@ import { ChatRoomManager } from './ChatRoomManager';
 import { ChatUserInfoManager } from './ChatUserInfoManager';
 import { ChatDeviceInfo } from './common/ChatDeviceInfo';
 import { ChatError } from './common/ChatError';
+import { chatlog } from './common/ChatLog';
 import type { ChatOptions } from './common/ChatOptions';
 import { BaseManager } from './__internal__/Base';
 import {
@@ -71,7 +72,7 @@ const ExtSdkApiRN = NativeModules.ExtSdkApiRN
       }
     );
 const eventEmitter = new NativeEventEmitter(ExtSdkApiRN);
-console.log('eventEmitter: ', eventEmitter);
+chatlog.log('eventEmitter: ', eventEmitter);
 
 export class ChatClient extends BaseManager {
   public static eventType = 2; // 1.remove 2.subscription(suggested)
@@ -86,7 +87,7 @@ export class ChatClient extends BaseManager {
   }
 
   private setEventEmitter(): void {
-    console.log(`${ChatClient.TAG}: setEventEmitter: `);
+    chatlog.log(`${ChatClient.TAG}: setEventEmitter: `);
     this.setNativeListener(this.getEventEmitter());
     this._chatManager.setNativeListener(this.getEventEmitter());
     this._groupManager.setNativeListener(this.getEventEmitter());
@@ -95,7 +96,7 @@ export class ChatClient extends BaseManager {
     this._pushManager.setNativeListener(this.getEventEmitter());
     this._chatRoomManager.setNativeListener(this.getEventEmitter());
     this._presenceManager.setNativeListener(this.getEventEmitter());
-    console.log('eventEmitter has finished.');
+    chatlog.log('eventEmitter has finished.');
   }
 
   public getEventEmitter(): EventEmitter {
@@ -141,14 +142,14 @@ export class ChatClient extends BaseManager {
   }
 
   public setNativeListener(event: NativeEventEmitter): void {
-    console.log(`${ChatClient.TAG}: setNativeListener: `);
+    chatlog.log(`${ChatClient.TAG}: setNativeListener: `);
     this._connectionSubscriptions.forEach(
       (
         value: EmitterSubscription,
         key: string,
         map: Map<string, EmitterSubscription>
       ) => {
-        console.log(`${ChatClient.TAG}: setNativeListener:`, key, value, map);
+        chatlog.log(`${ChatClient.TAG}: setNativeListener:`, key, value, map);
         value.remove();
       }
     );
@@ -234,7 +235,7 @@ export class ChatClient extends BaseManager {
   }
 
   private onConnected(): void {
-    console.log(`${ChatClient.TAG}: onConnected: `);
+    chatlog.log(`${ChatClient.TAG}: onConnected: `);
     if (
       this._currentUsername === '' ||
       this._currentUsername === null ||
@@ -247,26 +248,26 @@ export class ChatClient extends BaseManager {
     });
   }
   private onDisconnected(params?: any): void {
-    console.log(`${ChatClient.TAG}: onDisconnected: `, params);
+    chatlog.log(`${ChatClient.TAG}: onDisconnected: `, params);
     this._connectionListeners.forEach((element) => {
       let ec = params?.errorCode as number;
       element.onDisconnected(ec);
     });
   }
   private onTokenWillExpire(params?: any): void {
-    console.log(`${ChatClient.TAG}: onTokenWillExpire: `, params);
+    chatlog.log(`${ChatClient.TAG}: onTokenWillExpire: `, params);
     this._connectionListeners.forEach((element) => {
       element.onTokenWillExpire();
     });
   }
   private onTokenDidExpire(params?: any): void {
-    console.log(`${ChatClient.TAG}: onTokenDidExpire: `, params);
+    chatlog.log(`${ChatClient.TAG}: onTokenDidExpire: `, params);
     this._connectionListeners.forEach((element) => {
       element.onTokenDidExpire();
     });
   }
   private onMultiDeviceEvent(params?: any): void {
-    console.log(`${ChatClient.TAG}: onMultiDeviceEvent: `, params);
+    chatlog.log(`${ChatClient.TAG}: onMultiDeviceEvent: `, params);
     this._multiDeviceListeners.forEach((element) => {
       let event = params?.event as number;
       if (event > 10) {
@@ -285,55 +286,56 @@ export class ChatClient extends BaseManager {
     });
   }
   private onCustomEvent(params: any): void {
-    console.log(`${ChatClient.TAG}: onCustomEvent: `, params);
+    chatlog.log(`${ChatClient.TAG}: onCustomEvent: `, params);
     this._customListeners.forEach((element) => {
       element.onDataReceived(params);
     });
   }
   private onUserDidLoginFromOtherDevice(): void {
-    console.log(`${ChatClient.TAG}: onUserDidLoginFromOtherDevice: `);
+    chatlog.log(`${ChatClient.TAG}: onUserDidLoginFromOtherDevice: `);
     this._connectionListeners.forEach((element) => {
       element.onDisconnected(206);
     });
   }
   private onUserDidRemoveFromServer(): void {
-    console.log(`${ChatClient.TAG}: onUserDidRemoveFromServer: `);
+    chatlog.log(`${ChatClient.TAG}: onUserDidRemoveFromServer: `);
     this._connectionListeners.forEach((element) => {
       element.onDisconnected(207);
     });
   }
   private onUserDidForbidByServer(): void {
-    console.log(`${ChatClient.TAG}: onUserDidForbidByServer: `);
+    chatlog.log(`${ChatClient.TAG}: onUserDidForbidByServer: `);
     this._connectionListeners.forEach((element) => {
       element.onDisconnected(305);
     });
   }
   private onUserDidChangePassword(): void {
-    console.log(`${ChatClient.TAG}: onUserDidChangePassword: `);
+    chatlog.log(`${ChatClient.TAG}: onUserDidChangePassword: `);
     this._connectionListeners.forEach((element) => {
       element.onDisconnected(216);
     });
   }
   private onUserDidLoginTooManyDevice(): void {
-    console.log(`${ChatClient.TAG}: onUserDidLoginTooManyDevice: `);
+    chatlog.log(`${ChatClient.TAG}: onUserDidLoginTooManyDevice: `);
     this._connectionListeners.forEach((element) => {
       element.onDisconnected(214);
     });
   }
   private onUserKickedByOtherDevice(): void {
-    console.log(`${ChatClient.TAG}: onUserKickedByOtherDevice: `);
+    chatlog.log(`${ChatClient.TAG}: onUserKickedByOtherDevice: `);
     this._connectionListeners.forEach((element) => {
       element.onDisconnected(217);
     });
   }
   private onUserAuthenticationFailed(): void {
-    console.log(`${ChatClient.TAG}: onUserAuthenticationFailed: `);
+    chatlog.log(`${ChatClient.TAG}: onUserAuthenticationFailed: `);
     this._connectionListeners.forEach((element) => {
       element.onDisconnected(202);
     });
   }
 
   private reset(): void {
+    chatlog.log(`${ChatClient.TAG}: reset: `);
     this._currentUsername = '';
   }
 
@@ -345,6 +347,7 @@ export class ChatClient extends BaseManager {
    * @returns The configurations.
    */
   public get options(): ChatOptions | undefined {
+    chatlog.log(`${ChatClient.TAG}: options: `);
     return this._options;
   }
 
@@ -358,6 +361,7 @@ export class ChatClient extends BaseManager {
    * @returns The current logged-in user ID.
    */
   public get currentUserName(): string {
+    chatlog.log(`${ChatClient.TAG}: currentUserName: `);
     return this._currentUsername;
   }
 
@@ -392,7 +396,7 @@ export class ChatClient extends BaseManager {
    * @throws A description of the exception. See {@link ChatError}.
    */
   public async init(options: ChatOptions): Promise<void> {
-    console.log(`${ChatClient.TAG}: init: `, options);
+    chatlog.log(`${ChatClient.TAG}: init: `, options);
     this._options = options;
     const r = await Native._callMethod(MTinit, { options });
     ChatClient.checkErrorFromResult(r);
@@ -409,7 +413,7 @@ export class ChatClient extends BaseManager {
    * @throws A description of the exception. See {@link ChatError}.
    */
   public async isConnected(): Promise<boolean> {
-    console.log(`${ChatClient.TAG}: isConnected: `);
+    chatlog.log(`${ChatClient.TAG}: isConnected: `);
     const r: any = await Native._callMethod(MTisConnected);
     ChatClient.checkErrorFromResult(r);
     let _connected = r?.[MTisConnected] as boolean;
@@ -423,7 +427,7 @@ export class ChatClient extends BaseManager {
    * @throws A description of the exception. See {@link ChatError}.
    */
   public async getCurrentUsername(): Promise<string> {
-    console.log(`${ChatClient.TAG}: getCurrentUsername: `);
+    chatlog.log(`${ChatClient.TAG}: getCurrentUsername: `);
     let r: any = await Native._callMethod(MTgetCurrentUser);
     ChatClient.checkErrorFromResult(r);
     let userName = r?.[MTgetCurrentUser] as string;
@@ -449,7 +453,7 @@ export class ChatClient extends BaseManager {
    * @throws A description of the exception. See {@link ChatError}.
    */
   public async isLoginBefore(): Promise<boolean> {
-    console.log(`${ChatClient.TAG}: isLoginBefore: `);
+    chatlog.log(`${ChatClient.TAG}: isLoginBefore: `);
     let r: any = await Native._callMethod(MTisLoggedInBefore);
     ChatClient.checkErrorFromResult(r);
     let _isLoginBefore = r?.[MTisLoggedInBefore] as boolean;
@@ -464,7 +468,7 @@ export class ChatClient extends BaseManager {
    * @throws A description of the exception. See {@link ChatError}.
    */
   public async getAccessToken(): Promise<string> {
-    console.log(`${ChatClient.TAG}: isLoginBefore: `);
+    chatlog.log(`${ChatClient.TAG}: isLoginBefore: `);
     let r: any = await Native._callMethod(MTgetToken);
     ChatClient.checkErrorFromResult(r);
     let _token = r?.[MTgetToken] as string;
@@ -493,7 +497,7 @@ export class ChatClient extends BaseManager {
     username: string,
     password: string
   ): Promise<void> {
-    console.log(`${ChatClient.TAG}: createAccount: `, username, '******');
+    chatlog.log(`${ChatClient.TAG}: createAccount: `, username, '******');
     let r: any = await Native._callMethod(MTcreateAccount, {
       [MTcreateAccount]: {
         username: username,
@@ -506,7 +510,7 @@ export class ChatClient extends BaseManager {
   /**
    * Login into the chat server with a password or a token.
    *
-   * If you use a token to log in to the server, there are two ways to obtain the token. The first is obtained through the SDK interface, See {@link createAccount} or {@link getAccessToken}, and the second is obtained through the console, {@link https://console.easemob.com/app/applicationOverview/userManagement}.
+   * If you use a token to log in to the server, there are two ways to obtain the token. The first is obtained through the SDK interface, See {@link createAccount} or {@link getAccessToken}, and the second is obtained through the chatlog, {@link https://chatlog.easemob.com/app/applicationOverview/userManagement}.
    *
    * The token expiration reminder is notified by the listener {@link ChatConnectEventListener#onTokenWillExpire} and  {@link ChatConnectEventListener#onTokenDidExpire}. If necessary, please pay attention to the listener event.
    *
@@ -524,7 +528,7 @@ export class ChatClient extends BaseManager {
     pwdOrToken: string,
     isPassword: boolean = true
   ): Promise<void> {
-    console.log(`${ChatClient.TAG}: login: `, userName, '******', isPassword);
+    chatlog.log(`${ChatClient.TAG}: login: `, userName, '******', isPassword);
     let r: any = await Native._callMethod(MTlogin, {
       [MTlogin]: {
         username: userName,
@@ -536,7 +540,7 @@ export class ChatClient extends BaseManager {
     const rr = r?.[MTlogin];
     if (rr && rr.username) {
       this._currentUsername = rr.username;
-      console.log(`${ChatClient.TAG}: login: ${rr?.username}, ${rr?.token}`);
+      chatlog.log(`${ChatClient.TAG}: login: ${rr?.username}, ${rr?.token}`);
     }
   }
 
@@ -555,7 +559,7 @@ export class ChatClient extends BaseManager {
     userName: string,
     agoraToken: string
   ): Promise<void> {
-    console.log(`${ChatClient.TAG}: loginWithAgoraToken: `, userName, '******');
+    chatlog.log(`${ChatClient.TAG}: loginWithAgoraToken: `, userName, '******');
     let r: any = await Native._callMethod(MTloginWithAgoraToken, {
       [MTloginWithAgoraToken]: {
         username: userName,
@@ -566,7 +570,7 @@ export class ChatClient extends BaseManager {
     const rr = r?.[MTloginWithAgoraToken];
     if (rr && rr.username) {
       this._currentUsername = rr.username;
-      console.log(`${ChatClient.TAG}: loginA: ${rr?.username}, ${rr?.token}`);
+      chatlog.log(`${ChatClient.TAG}: loginA: ${rr?.username}, ${rr?.token}`);
     }
   }
 
@@ -580,7 +584,7 @@ export class ChatClient extends BaseManager {
    * @throws A description of the exception. See {@link ChatError}.
    */
   public async renewAgoraToken(agoraToken: string): Promise<void> {
-    console.log(`${ChatClient.TAG}: renewAgoraToken: `, '******');
+    chatlog.log(`${ChatClient.TAG}: renewAgoraToken: `, '******');
     let r: any = await Native._callMethod(MTrenewToken, {
       [MTrenewToken]: {
         agoraToken: agoraToken,
@@ -598,7 +602,7 @@ export class ChatClient extends BaseManager {
    * @throws A description of the exception. See {@link ChatError}.
    */
   public async logout(unbindDeviceToken: boolean = true): Promise<void> {
-    console.log(`${ChatClient.TAG}: logout: `, unbindDeviceToken);
+    chatlog.log(`${ChatClient.TAG}: logout: `, unbindDeviceToken);
     let r: any = await Native._callMethod(MTlogout, {
       [MTlogout]: {
         unbindToken: unbindDeviceToken,
@@ -622,7 +626,7 @@ export class ChatClient extends BaseManager {
    * @throws A description of the exception. See {@link ChatError}.
    */
   public async changeAppKey(newAppKey: string): Promise<void> {
-    console.log(`${ChatClient.TAG}: changeAppKey: `, newAppKey);
+    chatlog.log(`${ChatClient.TAG}: changeAppKey: `, newAppKey);
     let r: any = await Native._callMethod(MTchangeAppKey, {
       [MTchangeAppKey]: {
         appKey: newAppKey,
@@ -641,7 +645,7 @@ export class ChatClient extends BaseManager {
    * @throws A description of the exception. See {@link ChatError}.
    */
   public async compressLogs(): Promise<string | undefined> {
-    console.log(`${ChatClient.TAG}: compressLogs:`);
+    chatlog.log(`${ChatClient.TAG}: compressLogs:`);
     let r: any = await Native._callMethod(MTcompressLogs);
     ChatClient.checkErrorFromResult(r);
     return r?.[MTcompressLogs];
@@ -660,7 +664,7 @@ export class ChatClient extends BaseManager {
     username: string,
     password: string
   ): Promise<Array<ChatDeviceInfo>> {
-    console.log(
+    chatlog.log(
       `${ChatClient.TAG}: getLoggedInDevicesFromServer: `,
       username,
       '******'
@@ -697,7 +701,7 @@ export class ChatClient extends BaseManager {
     password: string,
     resource: string
   ): Promise<void> {
-    console.log(
+    chatlog.log(
       `${ChatClient.TAG}: kickDevice: `,
       username,
       '******',
@@ -725,7 +729,7 @@ export class ChatClient extends BaseManager {
     username: string,
     password: string
   ): Promise<void> {
-    console.log(`${ChatClient.TAG}: kickAllDevices: `, username, '******');
+    chatlog.log(`${ChatClient.TAG}: kickAllDevices: `, username, '******');
     let r: any = await Native._callMethod(MTkickAllDevices, {
       [MTkickAllDevices]: {
         username: username,
@@ -741,7 +745,7 @@ export class ChatClient extends BaseManager {
    *  @param listener The chat server connection listener to be added.
    */
   public addConnectionListener(listener: ChatConnectEventListener): void {
-    console.log(`${ChatClient.TAG}: addConnectionListener: `);
+    chatlog.log(`${ChatClient.TAG}: addConnectionListener: `);
     this._connectionListeners.add(listener);
   }
 
@@ -751,7 +755,7 @@ export class ChatClient extends BaseManager {
    *  @param listener The chat server connection listener to be removed.
    */
   public removeConnectionListener(listener: ChatConnectEventListener): void {
-    console.log(`${ChatClient.TAG}: removeConnectionListener: `);
+    chatlog.log(`${ChatClient.TAG}: removeConnectionListener: `);
     this._connectionListeners.delete(listener);
   }
 
@@ -759,7 +763,7 @@ export class ChatClient extends BaseManager {
    *  Removes all the connection listeners for the chat server.
    */
   public removeAllConnectionListener(): void {
-    console.log(`${ChatClient.TAG}: removeAllConnectionListener: `);
+    chatlog.log(`${ChatClient.TAG}: removeAllConnectionListener: `);
     this._connectionListeners.clear();
   }
 
@@ -769,6 +773,7 @@ export class ChatClient extends BaseManager {
    *  @param listener The multi-device listener to be added.
    */
   public addMultiDeviceListener(listener: ChatMultiDeviceEventListener): void {
+    chatlog.log(`${ChatClient.TAG}: addMultiDeviceListener: `);
     this._multiDeviceListeners.add(listener);
   }
 
@@ -780,6 +785,7 @@ export class ChatClient extends BaseManager {
   public removeMultiDeviceListener(
     listener: ChatMultiDeviceEventListener
   ): void {
+    chatlog.log(`${ChatClient.TAG}: removeMultiDeviceListener: `);
     this._multiDeviceListeners.delete(listener);
   }
 
@@ -787,6 +793,7 @@ export class ChatClient extends BaseManager {
    *  Removes all the multi-device listeners.
    */
   public removeAllMultiDeviceListener(): void {
+    chatlog.log(`${ChatClient.TAG}: removeAllMultiDeviceListener: `);
     this._multiDeviceListeners.clear();
   }
 
@@ -796,6 +803,7 @@ export class ChatClient extends BaseManager {
    *  @param listener The custom listener to be added.
    */
   public addCustomListener(listener: ChatCustomEventListener): void {
+    chatlog.log(`${ChatClient.TAG}: addCustomListener: `);
     this._customListeners.add(listener);
   }
 
@@ -805,6 +813,7 @@ export class ChatClient extends BaseManager {
    *  @param listener The custom listener to be removed.
    */
   public removeCustomListener(listener: ChatCustomEventListener): void {
+    chatlog.log(`${ChatClient.TAG}: removeCustomListener: `);
     this._customListeners.delete(listener);
   }
 
@@ -812,6 +821,7 @@ export class ChatClient extends BaseManager {
    *  Removes all the custom listeners.
    */
   public removeAllCustomListener(): void {
+    chatlog.log(`${ChatClient.TAG}: removeAllCustomListener: `);
     this._customListeners.clear();
   }
 
