@@ -466,14 +466,14 @@ export abstract class QuickTestScreenBase<
         inviteMessage?: string | undefined;
       }): void {
         console.log(
-          `${QuickTestScreenBase.TAG}: onGroupDestroyed:`,
+          `${QuickTestScreenBase.TAG}: onAutoAcceptInvitation:`,
           params.groupId,
           params.inviter,
           params.inviteMessage
         );
         this.that.setState({
           group_listener:
-            `onGroupDestroyed: ` +
+            `onAutoAcceptInvitation: ` +
             params.groupId +
             params.inviter +
             params.inviteMessage,
