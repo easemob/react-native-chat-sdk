@@ -179,7 +179,7 @@ export class ChatGroup {
   /**
    * The group description.
    */
-  desc: string;
+  description: string;
   /**
    * The user ID of the group owner.
    */
@@ -234,7 +234,7 @@ export class ChatGroup {
   constructor(params: {
     groupId: string;
     groupName?: string;
-    desc?: string;
+    description?: string;
     owner: string;
     announcement?: string;
     memberCount?: number;
@@ -249,7 +249,7 @@ export class ChatGroup {
   }) {
     this.groupId = params.groupId;
     this.groupName = params.groupName ?? '';
-    this.desc = params.desc ?? '';
+    this.description = params.description ?? '';
     this.owner = params.owner ?? '';
     this.announcement = params.announcement ?? '';
     this.memberCount = params.memberCount ?? 0;

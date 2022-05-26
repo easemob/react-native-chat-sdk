@@ -72,7 +72,7 @@ export class ChatRoom {
   /**
    * The chat room name from the memory.
    */
-  name?: string;
+  roomName?: string;
   /**
    * The chat room description from the memory.
    */
@@ -119,7 +119,7 @@ export class ChatRoom {
   permissionType: ChatRoomPermissionType;
   constructor(params: {
     roomId: string;
-    name?: string;
+    roomName?: string;
     description?: string;
     owner: string;
     announcement?: string;
@@ -133,7 +133,7 @@ export class ChatRoom {
     permissionType: number;
   }) {
     this.roomId = params.roomId;
-    this.name = params.name;
+    this.roomName = params.roomName;
     this.description = params.description;
     this.owner = params.owner;
     this.announcement = params.announcement;
