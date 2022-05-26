@@ -107,19 +107,16 @@ export class ChatContactManager extends BaseManager {
   /**
    * Adds a new contact.
    *
-   * @param username The user to be added.
+   * @param userId The user to be added.
    * @param reason (optional) The invitation message.
    *
    * @throws A description of the exception. See {@link ChatError}.
    */
-  public async addContact(
-    username: string,
-    reason: string = ''
-  ): Promise<void> {
-    chatlog.log(`${ChatContactManager.TAG}: addContact: `, username);
+  public async addContact(userId: string, reason: string = ''): Promise<void> {
+    chatlog.log(`${ChatContactManager.TAG}: addContact: `, userId);
     let r: any = await Native._callMethod(MTaddContact, {
       [MTaddContact]: {
-        username: username,
+        username: userId,
         reason: reason,
       },
     });
@@ -129,7 +126,7 @@ export class ChatContactManager extends BaseManager {
   /**
    * Deletes a contact and all the related conversations.
    *
-   * @param username The contact to be deleted.
+   * @param userId The contact to be deleted.
    * @param keepConversation Whether to retain conversations of the deleted contact.
    * - `true`: Yes.
    * - `false`: (default) No.
@@ -137,13 +134,13 @@ export class ChatContactManager extends BaseManager {
    * @throws A description of the exception. See {@link ChatError}.
    */
   public async deleteContact(
-    username: string,
+    userId: string,
     keepConversation: boolean = false
   ): Promise<void> {
-    chatlog.log(`${ChatContactManager.TAG}: deleteContact: `, username);
+    chatlog.log(`${ChatContactManager.TAG}: deleteContact: `, userId);
     let r: any = await Native._callMethod(MTdeleteContact, {
       [MTdeleteContact]: {
-        username: username,
+        username: userId,
         keepConversation: keepConversation,
       },
     });
@@ -184,15 +181,15 @@ export class ChatContactManager extends BaseManager {
    * Adds a user to the block list.
    * You can send messages to the users on the block list, but cannot receive messages from them.
    *
-   * @param username The user to be added to the block list.
+   * @param userId The user to be added to the block list.
    *
    * @throws A description of the exception. See {@link ChatError}.
    */
-  public async addUserToBlockList(username: string): Promise<void> {
-    chatlog.log(`${ChatContactManager.TAG}: addUserToBlockList: `, username);
+  public async addUserToBlockList(userId: string): Promise<void> {
+    chatlog.log(`${ChatContactManager.TAG}: addUserToBlockList: `, userId);
     let r: any = await Native._callMethod(MTaddUserToBlockList, {
       [MTaddUserToBlockList]: {
-        username,
+        username: userId,
       },
     });
     ChatContactManager.checkErrorFromResult(r);
@@ -201,18 +198,15 @@ export class ChatContactManager extends BaseManager {
   /**
    * Removes the contact from the block list.
    *
-   * @param username The contact to be removed from the block list.
+   * @param userId The contact to be removed from the block list.
    *
    * @throws A description of the exception. See {@link ChatError}.
    */
-  public async removeUserFromBlockList(username: string): Promise<void> {
-    chatlog.log(
-      `${ChatContactManager.TAG}: removeUserFromBlockList: `,
-      username
-    );
+  public async removeUserFromBlockList(userId: string): Promise<void> {
+    chatlog.log(`${ChatContactManager.TAG}: removeUserFromBlockList: `, userId);
     let r: any = await Native._callMethod(MTremoveUserFromBlockList, {
       [MTremoveUserFromBlockList]: {
-        username,
+        username: userId,
       },
     });
     ChatContactManager.checkErrorFromResult(r);
@@ -251,14 +245,14 @@ export class ChatContactManager extends BaseManager {
   /**
    * Accepts a friend invitation。
    *
-   * @param username The user who sends the friend invitation.
+   * @param userId The user who sends the friend invitation.
    *
    * @throws A description of the exception. See {@link ChatError}.
    */
-  public async acceptInvitation(username: string): Promise<void> {
-    chatlog.log(`${ChatContactManager.TAG}: acceptInvitation: `);
+  public async acceptInvitation(userId: string): Promise<void> {
+    chatlog.log(`${ChatContactManager.TAG}: acceptInvitation: `, userId);
     let r: any = await Native._callMethod(MTacceptInvitation, {
-      [MTacceptInvitation]: { username },
+      [MTacceptInvitation]: { username: userId },
     });
     ChatContactManager.checkErrorFromResult(r);
   }
@@ -266,14 +260,14 @@ export class ChatContactManager extends BaseManager {
   /**
    * Declines a friend invitation.
    *
-   * @param username The user who sends the friend invitation.
+   * @param userId The user who sends the friend invitation.
    *
    * @throws A description of the exception. See {@link ChatError}.
    */
-  public async declineInvitation(username: string): Promise<void> {
-    chatlog.log(`${ChatContactManager.TAG}: declineInvitation: `, username);
+  public async declineInvitation(userId: string): Promise<void> {
+    chatlog.log(`${ChatContactManager.TAG}: declineInvitation: `, userId);
     let r: any = await Native._callMethod(MTdeclineInvitation, {
-      [MTdeclineInvitation]: { username },
+      [MTdeclineInvitation]: { username: userId },
     });
     ChatContactManager.checkErrorFromResult(r);
   }
