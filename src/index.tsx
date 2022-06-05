@@ -15,7 +15,7 @@ import { ChatDeviceInfo } from './common/ChatDeviceInfo';
 import { ChatError } from './common/ChatError';
 import {
   ChatGroupStyle,
-  ChatGroupPermissionType,
+  ChatGroupType,
   ChatGroupMessageAck,
   ChatGroupOptions,
   ChatGroup,
@@ -52,6 +52,14 @@ import type {
   ChatRoomEventListener,
   ChatPresenceEventListener,
 } from './ChatEvents';
+import type {
+  ChatMessageReaction,
+  ChatMessageReactionEvent,
+} from './common/ChatMessageReaction';
+import type {
+  ChatMessageThread,
+  ChatMessageThreadEvent,
+} from './common/ChatMessageThread';
 
 /**
  * export Objects
@@ -73,7 +81,7 @@ export {
 export {
   ChatConversationType,
   ChatGroupStyle,
-  ChatGroupPermissionType,
+  ChatGroupType,
   ChatMessageChatType,
   ChatMessageDirection,
   ChatMessageStatus,
@@ -111,6 +119,10 @@ export {
   ChatRoomEventListener,
   ChatPresenceEventListener,
   ChatMultiDeviceEvent,
+  ChatMessageReaction,
+  ChatMessageThread,
+  ChatMessageThreadEvent,
+  ChatMessageReactionEvent,
 };
 
 export {

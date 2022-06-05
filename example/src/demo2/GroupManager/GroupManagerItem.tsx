@@ -2,7 +2,7 @@ import React, { ReactNode } from 'react';
 import { Text, View } from 'react-native';
 import { styleValues } from '../__internal__/Css';
 import { LeafScreenBase, StateBase } from '../__internal__/LeafScreenBase';
-import { metaData, GROUPMN, stateData } from './GroupManagerData';
+import { metaDataList, MN } from './GroupManagerData';
 import type { ApiParams } from '../__internal__/DataTypes';
 import type { ChatGroupOptions } from 'react-native-chat-sdk';
 import {
@@ -11,6 +11,7 @@ import {
   ChatGroupEventListener,
   ChatGroupFileStatusCallback,
 } from 'react-native-chat-sdk';
+import { generateData } from '../__internal__/Utils';
 export interface StateGroupMessage extends StateBase {
   cbResult: string;
   createGroup: {
@@ -191,12 +192,17 @@ export interface StateGroupMessage extends StateBase {
 export class GroupManagerLeafScreen extends LeafScreenBase<StateGroupMessage> {
   protected static TAG = 'GroupManagerLeafScreen';
   public static route = 'GroupManagerLeafScreen';
-  metaData: Map<string, ApiParams>;
+  metaDataList: Map<string, ApiParams>;
   state: StateGroupMessage;
   constructor(props: { navigation: any }) {
     super(props);
-    this.metaData = metaData;
-    this.state = stateData;
+    this.metaDataList = metaDataList;
+    this.state = Object.assign({}, generateData(metaDataList), {
+      sendResult: '',
+      cbResult: '',
+      recvResult: '',
+      exceptResult: '',
+    });
   }
   protected renderBody(): ReactNode {
     console.log(`${GroupManagerLeafScreen.TAG}: renderBody: `);
@@ -300,7 +306,7 @@ export class GroupManagerLeafScreen extends LeafScreenBase<StateGroupMessage> {
       'destroyGroup',
     ];
     let renderDomAry: ({} | null | undefined)[] = [];
-    const data = this.metaData;
+    const data = this.metaDataList;
     apiList.forEach((apiItem) => {
       this.setKeyPrefix(apiItem);
       renderDomAry.push(
@@ -361,7 +367,7 @@ export class GroupManagerLeafScreen extends LeafScreenBase<StateGroupMessage> {
     return renderDomAry;
   }
   protected createGroup(): ReactNode[] {
-    const data = this.metaData;
+    const data = this.metaDataList;
     let domAry = [];
     domAry.push(this.renderParamWithText(data.get('createGroup')!.methodName));
     data.get('createGroup')?.params.forEach((item) => {
@@ -395,7 +401,7 @@ export class GroupManagerLeafScreen extends LeafScreenBase<StateGroupMessage> {
   private callApi(name: string): void {
     console.log(`${GroupManagerLeafScreen.TAG}: callApi: `);
     switch (name) {
-      case GROUPMN.createGroup: {
+      case MN.createGroup: {
         const { groupName, desc, inviteMembers, inviteReason, options } =
           this.state.createGroup;
         this.tryCatch(
@@ -407,11 +413,11 @@ export class GroupManagerLeafScreen extends LeafScreenBase<StateGroupMessage> {
             inviteReason
           ),
           GroupManagerLeafScreen.TAG,
-          'GROUPMN.createGroup'
+          name
         );
         break;
       }
-      case GROUPMN.addMembers: {
+      case MN.addMembers: {
         const { groupId, members, welcome } = this.state.addMembers;
         this.tryCatch(
           ChatClient.getInstance().groupManager.addMembers(
@@ -420,20 +426,20 @@ export class GroupManagerLeafScreen extends LeafScreenBase<StateGroupMessage> {
             welcome
           ),
           GroupManagerLeafScreen.TAG,
-          'GROUPMN.addMembers'
+          name
         );
         break;
       }
-      case GROUPMN.removeMembers: {
+      case MN.removeMembers: {
         const { groupId, members } = this.state.removeMembers;
         this.tryCatch(
           ChatClient.getInstance().groupManager.removeMembers(groupId, members),
           GroupManagerLeafScreen.TAG,
-          'GROUPMN.removeMembers'
+          name
         );
         break;
       }
-      case GROUPMN.inviterUser: {
+      case MN.inviterUser: {
         const { groupId, members, reason } = this.state.inviterUser;
         this.tryCatch(
           ChatClient.getInstance().groupManager.inviterUser(
@@ -442,11 +448,11 @@ export class GroupManagerLeafScreen extends LeafScreenBase<StateGroupMessage> {
             reason
           ),
           GroupManagerLeafScreen.TAG,
-          'GROUPMN.inviterUser'
+          name
         );
         break;
       }
-      case GROUPMN.acceptInvitation: {
+      case MN.acceptInvitation: {
         const { groupId, inviter } = this.state.acceptInvitation;
         this.tryCatch(
           ChatClient.getInstance().groupManager.acceptInvitation(
@@ -454,11 +460,11 @@ export class GroupManagerLeafScreen extends LeafScreenBase<StateGroupMessage> {
             inviter
           ),
           GroupManagerLeafScreen.TAG,
-          'GROUPMN.acceptInvitation'
+          name
         );
         break;
       }
-      case GROUPMN.declineInvitation: {
+      case MN.declineInvitation: {
         const { groupId, inviter } = this.state.declineInvitation;
         this.tryCatch(
           ChatClient.getInstance().groupManager.declineInvitation(
@@ -466,28 +472,28 @@ export class GroupManagerLeafScreen extends LeafScreenBase<StateGroupMessage> {
             inviter
           ),
           GroupManagerLeafScreen.TAG,
-          'GROUPMN.declineInvitation'
+          name
         );
         break;
       }
-      case GROUPMN.getGroupWithId: {
+      case MN.getGroupWithId: {
         const { groupId } = this.state.getGroupWithId;
         this.tryCatch(
           ChatClient.getInstance().groupManager.getGroupWithId(groupId),
           GroupManagerLeafScreen.TAG,
-          'GROUPMN.getGroupWithId'
+          name
         );
         break;
       }
-      case GROUPMN.getJoinedGroups: {
+      case MN.getJoinedGroups: {
         this.tryCatch(
           ChatClient.getInstance().groupManager.getJoinedGroups(),
           GroupManagerLeafScreen.TAG,
-          'GROUPMN.getJoinedGroups'
+          name
         );
         break;
       }
-      case GROUPMN.fetchJoinedGroupsFromServer: {
+      case MN.fetchJoinedGroupsFromServer: {
         const { pageSize, pageNum } = this.state.fetchJoinedGroupsFromServer;
         this.tryCatch(
           ChatClient.getInstance().groupManager.fetchJoinedGroupsFromServer(
@@ -495,11 +501,11 @@ export class GroupManagerLeafScreen extends LeafScreenBase<StateGroupMessage> {
             pageNum
           ),
           GroupManagerLeafScreen.TAG,
-          'GROUPMN.fetchJoinedGroupsFromServer'
+          name
         );
         break;
       }
-      case GROUPMN.fetchPublicGroupsFromServer: {
+      case MN.fetchPublicGroupsFromServer: {
         const { pageSize, cursor } = this.state.fetchPublicGroupsFromServer;
         this.tryCatch(
           ChatClient.getInstance().groupManager.fetchPublicGroupsFromServer(
@@ -507,22 +513,22 @@ export class GroupManagerLeafScreen extends LeafScreenBase<StateGroupMessage> {
             cursor
           ),
           GroupManagerLeafScreen.TAG,
-          'GROUPMN.fetchPublicGroupsFromServer'
+          name
         );
         break;
       }
-      case GROUPMN.fetchGroupInfoFromServer: {
+      case MN.fetchGroupInfoFromServer: {
         const { groupId } = this.state.fetchGroupInfoFromServer;
         this.tryCatch(
           ChatClient.getInstance().groupManager.fetchGroupInfoFromServer(
             groupId
           ),
           GroupManagerLeafScreen.TAG,
-          'GROUPMN.fetchGroupInfoFromServer'
+          name
         );
         break;
       }
-      case GROUPMN.fetchMemberListFromServer: {
+      case MN.fetchMemberListFromServer: {
         const { groupId, pageSize, cursor } =
           this.state.fetchMemberListFromServer;
         this.tryCatch(
@@ -532,11 +538,11 @@ export class GroupManagerLeafScreen extends LeafScreenBase<StateGroupMessage> {
             cursor
           ),
           GroupManagerLeafScreen.TAG,
-          'GROUPMN.fetchMemberListFromServer'
+          name
         );
         break;
       }
-      case GROUPMN.fetchBlockListFromServer: {
+      case MN.fetchBlockListFromServer: {
         const { groupId, pageSize, pageNum } =
           this.state.fetchBlockListFromServer;
         this.tryCatch(
@@ -546,11 +552,11 @@ export class GroupManagerLeafScreen extends LeafScreenBase<StateGroupMessage> {
             pageNum
           ),
           GroupManagerLeafScreen.TAG,
-          'GROUPMN.fetchBlockListFromServer'
+          name
         );
         break;
       }
-      case GROUPMN.fetchMuteListFromServer: {
+      case MN.fetchMuteListFromServer: {
         const { groupId, pageSize, pageNum } =
           this.state.fetchMuteListFromServer;
         this.tryCatch(
@@ -560,22 +566,22 @@ export class GroupManagerLeafScreen extends LeafScreenBase<StateGroupMessage> {
             pageNum
           ),
           GroupManagerLeafScreen.TAG,
-          'GROUPMN.fetchMuteListFromServer'
+          name
         );
         break;
       }
-      case GROUPMN.fetchWhiteListFromServer: {
+      case MN.fetchWhiteListFromServer: {
         const { groupId } = this.state.fetchWhiteListFromServer;
         this.tryCatch(
           ChatClient.getInstance().groupManager.fetchWhiteListFromServer(
             groupId
           ),
           GroupManagerLeafScreen.TAG,
-          'GROUPMN.fetchWhiteListFromServer'
+          name
         );
         break;
       }
-      case GROUPMN.fetchGroupFileListFromServer: {
+      case MN.fetchGroupFileListFromServer: {
         const { groupId, pageSize, pageNum } =
           this.state.fetchGroupFileListFromServer;
         this.tryCatch(
@@ -585,42 +591,42 @@ export class GroupManagerLeafScreen extends LeafScreenBase<StateGroupMessage> {
             pageNum
           ),
           GroupManagerLeafScreen.TAG,
-          'GROUPMN.fetchGroupFileListFromServer'
+          name
         );
         break;
       }
-      case GROUPMN.isMemberInWhiteListFromServer: {
+      case MN.isMemberInWhiteListFromServer: {
         const { groupId } = this.state.isMemberInWhiteListFromServer;
         this.tryCatch(
           ChatClient.getInstance().groupManager.isMemberInWhiteListFromServer(
             groupId
           ),
           GroupManagerLeafScreen.TAG,
-          'GROUPMN.fetchGroupFileListFromServer'
+          name
         );
         break;
       }
-      case GROUPMN.fetchAnnouncementFromServer: {
+      case MN.fetchAnnouncementFromServer: {
         const { groupId } = this.state.fetchAnnouncementFromServer;
         this.tryCatch(
           ChatClient.getInstance().groupManager.fetchAnnouncementFromServer(
             groupId
           ),
           GroupManagerLeafScreen.TAG,
-          'GROUPMN.fetchGroupFileListFromServer'
+          name
         );
         break;
       }
-      case GROUPMN.blockMembers: {
+      case MN.blockMembers: {
         const { groupId, members } = this.state.blockMembers;
         this.tryCatch(
           ChatClient.getInstance().groupManager.blockMembers(groupId, members),
           GroupManagerLeafScreen.TAG,
-          'GROUPMN.blockMembers'
+          name
         );
         break;
       }
-      case GROUPMN.unblockMembers: {
+      case MN.unblockMembers: {
         const { groupId, members } = this.state.unblockMembers;
         this.tryCatch(
           ChatClient.getInstance().groupManager.unblockMembers(
@@ -628,21 +634,21 @@ export class GroupManagerLeafScreen extends LeafScreenBase<StateGroupMessage> {
             members
           ),
           GroupManagerLeafScreen.TAG,
-          'GROUPMN.unblockMembers'
+          name
         );
         break;
       }
-      case GROUPMN.changeGroupName: {
+      case MN.changeGroupName: {
         // eslint-disable-next-line no-shadow
         const { groupId, name } = this.state.changeGroupName;
         this.tryCatch(
           ChatClient.getInstance().groupManager.changeGroupName(groupId, name),
           GroupManagerLeafScreen.TAG,
-          'GROUPMN.changeGroupName'
+          name
         );
         break;
       }
-      case GROUPMN.changeGroupDescription: {
+      case MN.changeGroupDescription: {
         const { groupId, desc } = this.state.changeGroupDescription;
         this.tryCatch(
           ChatClient.getInstance().groupManager.changeGroupDescription(
@@ -650,29 +656,29 @@ export class GroupManagerLeafScreen extends LeafScreenBase<StateGroupMessage> {
             desc
           ),
           GroupManagerLeafScreen.TAG,
-          'GROUPMN.changeGroupDescription'
+          name
         );
         break;
       }
-      case GROUPMN.joinPublicGroup: {
+      case MN.joinPublicGroup: {
         const { groupId } = this.state.joinPublicGroup;
         this.tryCatch(
           ChatClient.getInstance().groupManager.joinPublicGroup(groupId),
           GroupManagerLeafScreen.TAG,
-          'GROUPMN.joinPublicGroup'
+          name
         );
         break;
       }
-      case GROUPMN.leaveGroup: {
+      case MN.leaveGroup: {
         const { groupId } = this.state.leaveGroup;
         this.tryCatch(
           ChatClient.getInstance().groupManager.leaveGroup(groupId),
           GroupManagerLeafScreen.TAG,
-          'GROUPMN.leaveGroup'
+          name
         );
         break;
       }
-      case GROUPMN.requestToJoinPublicGroup: {
+      case MN.requestToJoinPublicGroup: {
         const { groupId, reason } = this.state.requestToJoinPublicGroup;
         this.tryCatch(
           ChatClient.getInstance().groupManager.requestToJoinPublicGroup(
@@ -680,65 +686,65 @@ export class GroupManagerLeafScreen extends LeafScreenBase<StateGroupMessage> {
             reason
           ),
           GroupManagerLeafScreen.TAG,
-          'GROUPMN.requestToJoinPublicGroup'
+          name
         );
         break;
       }
-      case GROUPMN.destroyGroup: {
+      case MN.destroyGroup: {
         const { groupId } = this.state.destroyGroup;
         this.tryCatch(
           ChatClient.getInstance().groupManager.destroyGroup(groupId),
           GroupManagerLeafScreen.TAG,
-          'GROUPMN.destroyGroup'
+          name
         );
         break;
       }
-      case GROUPMN.blockGroup: {
+      case MN.blockGroup: {
         const { groupId } = this.state.blockGroup;
         this.tryCatch(
           ChatClient.getInstance().groupManager.blockGroup(groupId),
           GroupManagerLeafScreen.TAG,
-          'GROUPMN.blockGroup'
+          name
         );
         break;
       }
-      case GROUPMN.unblockGroup: {
+      case MN.unblockGroup: {
         const { groupId } = this.state.unblockGroup;
         this.tryCatch(
           ChatClient.getInstance().groupManager.unblockGroup(groupId),
           GroupManagerLeafScreen.TAG,
-          'GROUPMN.unblockGroup'
+          name
         );
         break;
       }
-      case GROUPMN.changeOwner: {
+      case MN.changeOwner: {
         const { groupId, newOwner } = this.state.changeOwner;
         this.tryCatch(
           ChatClient.getInstance().groupManager.changeOwner(groupId, newOwner),
           GroupManagerLeafScreen.TAG,
-          'GROUPMN.changeOwner'
+          name
         );
         break;
       }
-      case GROUPMN.addAdmin: {
+      case MN.addAdmin: {
         const { groupId, memberId } = this.state.addAdmin;
         this.tryCatch(
           ChatClient.getInstance().groupManager.addAdmin(groupId, memberId),
           GroupManagerLeafScreen.TAG,
-          'GROUPMN.addAdmin'
+          name
         );
         break;
       }
-      case GROUPMN.removeAdmin: {
+      case MN.removeAdmin: {
         const { groupId, memberId } = this.state.removeAdmin;
         this.tryCatch(
           ChatClient.getInstance().groupManager.removeAdmin(groupId, memberId),
           GroupManagerLeafScreen.TAG,
-          'GROUPMN.removeAdmin'
+          name
         );
         break;
       }
-      case GROUPMN.muteMembers: {
+      case MN.muteMembers: {
         const { groupId, members, duration } = this.state.muteMembers;
         this.tryCatch(
           ChatClient.getInstance().groupManager.muteMembers(
@@ -747,47 +753,47 @@ export class GroupManagerLeafScreen extends LeafScreenBase<StateGroupMessage> {
             duration
           ),
           GroupManagerLeafScreen.TAG,
-          'GROUPMN.muteMembers'
+          name
         );
         break;
       }
-      case GROUPMN.unMuteMembers: {
+      case MN.unMuteMembers: {
         const { groupId, members } = this.state.unMuteMembers;
         this.tryCatch(
           ChatClient.getInstance().groupManager.unMuteMembers(groupId, members),
           GroupManagerLeafScreen.TAG,
-          'GROUPMN.unMuteMembers'
+          name
         );
         break;
       }
-      case GROUPMN.muteAllMembers: {
+      case MN.muteAllMembers: {
         const { groupId } = this.state.muteAllMembers;
         this.tryCatch(
           ChatClient.getInstance().groupManager.muteAllMembers(groupId),
           GroupManagerLeafScreen.TAG,
-          'GROUPMN.muteAllMembers'
+          name
         );
         break;
       }
-      case GROUPMN.unMuteAllMembers: {
+      case MN.unMuteAllMembers: {
         const { groupId } = this.state.unMuteAllMembers;
         this.tryCatch(
           ChatClient.getInstance().groupManager.unMuteAllMembers(groupId),
           GroupManagerLeafScreen.TAG,
-          'GROUPMN.unMuteAllMembers'
+          name
         );
         break;
       }
-      case GROUPMN.addWhiteList: {
+      case MN.addWhiteList: {
         const { groupId, members } = this.state.addWhiteList;
         this.tryCatch(
           ChatClient.getInstance().groupManager.addWhiteList(groupId, members),
           GroupManagerLeafScreen.TAG,
-          'GROUPMN.addWhiteList'
+          name
         );
         break;
       }
-      case GROUPMN.removeWhiteList: {
+      case MN.removeWhiteList: {
         const { groupId, members } = this.state.removeWhiteList;
         this.tryCatch(
           ChatClient.getInstance().groupManager.removeWhiteList(
@@ -795,11 +801,11 @@ export class GroupManagerLeafScreen extends LeafScreenBase<StateGroupMessage> {
             members
           ),
           GroupManagerLeafScreen.TAG,
-          'GROUPMN.removeWhiteList'
+          name
         );
         break;
       }
-      case GROUPMN.uploadGroupSharedFile: {
+      case MN.uploadGroupSharedFile: {
         const { groupId, filePath } = this.state.uploadGroupSharedFile;
         this.tryCatch(
           ChatClient.getInstance().groupManager.uploadGroupSharedFile(
@@ -808,11 +814,11 @@ export class GroupManagerLeafScreen extends LeafScreenBase<StateGroupMessage> {
             this.createCallback()
           ),
           GroupManagerLeafScreen.TAG,
-          'GROUPMN.uploadGroupSharedFile'
+          name
         );
         break;
       }
-      case GROUPMN.updateGroupAnnouncement: {
+      case MN.updateGroupAnnouncement: {
         const { groupId, announcement } = this.state.updateGroupAnnouncement;
         this.tryCatch(
           ChatClient.getInstance().groupManager.updateGroupAnnouncement(
@@ -820,11 +826,11 @@ export class GroupManagerLeafScreen extends LeafScreenBase<StateGroupMessage> {
             announcement
           ),
           GroupManagerLeafScreen.TAG,
-          'GROUPMN.updateGroupAnnouncement'
+          name
         );
         break;
       }
-      case GROUPMN.updateGroupExtension: {
+      case MN.updateGroupExtension: {
         const { groupId, extension } = this.state.updateGroupExtension;
         this.tryCatch(
           ChatClient.getInstance().groupManager.updateGroupExtension(
@@ -832,11 +838,11 @@ export class GroupManagerLeafScreen extends LeafScreenBase<StateGroupMessage> {
             extension
           ),
           GroupManagerLeafScreen.TAG,
-          'GROUPMN.updateGroupExtension'
+          name
         );
         break;
       }
-      case GROUPMN.acceptJoinApplication: {
+      case MN.acceptJoinApplication: {
         const { groupId, username } = this.state.acceptJoinApplication;
         this.tryCatch(
           ChatClient.getInstance().groupManager.acceptJoinApplication(
@@ -844,11 +850,11 @@ export class GroupManagerLeafScreen extends LeafScreenBase<StateGroupMessage> {
             username
           ),
           GroupManagerLeafScreen.TAG,
-          'GROUPMN.acceptJoinApplication'
+          name
         );
         break;
       }
-      case GROUPMN.declineJoinApplication: {
+      case MN.declineJoinApplication: {
         const { groupId, username, reason } = this.state.declineJoinApplication;
         this.tryCatch(
           ChatClient.getInstance().groupManager.declineJoinApplication(
@@ -857,11 +863,11 @@ export class GroupManagerLeafScreen extends LeafScreenBase<StateGroupMessage> {
             reason
           ),
           GroupManagerLeafScreen.TAG,
-          'GROUPMN.acceptJoinApplication'
+          name
         );
         break;
       }
-      case GROUPMN.downloadGroupSharedFile: {
+      case MN.downloadGroupSharedFile: {
         const { groupId, fileId, savePath } =
           this.state.downloadGroupSharedFile;
         this.tryCatch(
@@ -872,11 +878,11 @@ export class GroupManagerLeafScreen extends LeafScreenBase<StateGroupMessage> {
             this.createCallback()
           ),
           GroupManagerLeafScreen.TAG,
-          'GROUPMN.downloadGroupSharedFile'
+          name
         );
         break;
       }
-      case GROUPMN.removeGroupSharedFile: {
+      case MN.removeGroupSharedFile: {
         const { groupId, fileId } = this.state.removeGroupSharedFile;
         this.tryCatch(
           ChatClient.getInstance().groupManager.removeGroupSharedFile(
@@ -884,7 +890,7 @@ export class GroupManagerLeafScreen extends LeafScreenBase<StateGroupMessage> {
             fileId
           ),
           GroupManagerLeafScreen.TAG,
-          'GROUPMN.removeGroupSharedFile'
+          name
         );
         break;
       }

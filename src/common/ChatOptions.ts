@@ -1,131 +1,143 @@
 // import { ChatPushConfig } from './ChatPushConfig';
 
 /**
- * The settings of the chat SDK.
- *
  * The chat setting class that defines parameters and options of the SDK, including whether to encrypt the messages before sending them and whether to automatically accept the friend invitations.
  */
 export class ChatOptions {
   /**
-   * The app key you get from the website console when creating a chat app. It is the unique identifier of your app.
+   * The App Key you get from the console when creating a chat app. It is the unique identifier of your app.
    */
   appKey: string;
   /**
    * Whether to enable automatic login.
    *
-   * - `true`: (Default) Enables automatic login.
+   * - (Default) `true`: Enables automatic login.
    * - `false`: Disables automatic login.
    */
   autoLogin: boolean;
   /**
-   * Whether to output the debug information. Make sure to call the method after initializing the EMClient using {@link #init(Context, EMOptions)}.
-   *
+   * Whether to output the debug information.
    * - `true`: Yes.
-   * - `false`: (Default) No.
+   * - (Default) `false`: No.
+   *
+   * **Note**
+   * You can call {@link #init(Context, ChatOptions)} to set this attribute after `ChatClient` is initialized.
    */
   debugModel: boolean;
   /**
    * Whether to accept friend invitations from other users automatically.
    *
-   * - `true`: (Default) Yes.
+   * - (Default) `true`: Yes.
    * - `false`: No.
    */
   acceptInvitationAlways: boolean;
   /**
    * Whether to accept group invitations automatically.
    *
-   * - `true`: (Default) Yes.
+   * - (Default) `true`: Yes.
    * - `false`: No.
    */
   autoAcceptGroupInvitation: boolean;
   /**
-   * Whether the read receipt is required.
+   * Whether to require the read receipt.
    *
-   * - `true`: (Default) Yes.
+   * - (Default) `true`: Yes.
    * - `false`: No.
    */
   requireAck: boolean;
   /**
-   * Whether the delivery receipt is required.
+   * Whether to require the delivery receipt.
    *
-   * - `true`: Yes.
-   * - `false`: (Default) No.
+   * - (Default) `true`: Yes.
+   * - `false`: No.
    */
   requireDeliveryAck: boolean;
   /**
-   * Whether to delete the group message records when leaving a group.
+   * Whether to delete the historical messages of the group and local database when leaving a group (either voluntarily or passively).
    *
-   * - `true`: (Default) Yes.
+   * - (Default) `true`: Yes.
    * - `false`: No.
    */
   deleteMessagesAsExitGroup: boolean;
   /**
-   * Whether to delete the chat room message records when leaving the chat room.
+   * Whether to delete the historical messages of the chat room in the memory and local database when leaving the chat room (either voluntarily or passively).
    *
-   * - `true`: (Default) Yes.
+   * - (Default) `true`: Yes.
    * - `false`: No.
    */
   deleteMessagesAsExitChatRoom: boolean;
   /**
    * Whether to allow the chat room owner to leave the chat room.
    *
-   * - `true`: (Default) Yes.
+   * - (Default) `true`: Yes. When leaving the chat room, the chat room owner still has all privileges, except for receive messages in the chat room.
    * - `false`: No.
    */
   isChatRoomOwnerLeaveAllowed: boolean;
   /**
-   * Whether to sort messages by the time when the message is received on the server.
+   * Whether to sort the messages in the reverse chronological order of the time when they are received by the server.
    *
-   * - `true`: (Default) Yes.
-   * - `false`: No.
+   * - (Default) `true`: Yes;
+   * - `false`: No. Messages are sorted in the reverse chronological order of the time when they are created.
    */
   sortMessageByServerTime: boolean;
   /**
    * Whether only HTTPS is used for REST operations.
    *
-   * - `true`: (Default) Yes. Only HTTPS is used.
-   * - `false`: No. Both HTTP and HTTPS are allowed.
+   * - (Default) `true`: Only HTTPS is supported.
+   * - `false`: Both HTTP and HTTPS are allowed.
    */
   usingHttpsOnly: boolean;
   /**
    * Whether to upload the message attachments automatically to the chat server.
    *
-   * - `true`: (Default) Yes.
+   * - (Default) `true`: Yes.
    * - `false`: No. A custom path is used.
    */
   serverTransfer: boolean;
   /**
-   * Whether to auto download the thumbnail.
+   * Whether to automatically download the thumbnail.
    *
-   * - `true`: (Default) Yes.
+   * - (Default) `true`: Yes.
    * - `false`: No.
    */
   isAutoDownload: boolean;
   /**
-   * The push config.
+   * The push configuration.
    */
-  // pushConfig: ChatPushConfig;
+  //pushConfig: ChatPushConfig;
   /**
-   * Sets whether to disable DNS.
+   * Whether to disable DNS.
    *
-   * - `true`: (Default) Yes.
-   * - `false`: No.
+   * - (Default) `true`: Yes.
+   * - `false`: No. DNS needs to be disabled for private deployment.
    */
   enableDNSConfig: boolean;
   /**
-   * The DNS url.
+   * The URL of the DNS server..
    */
   dnsUrl: string;
   /**
-   * The custom REST server.
+   * The custom address of the REST server.
+   *
+   * This address is used when you implement data isolation and data security during private deployment.
+   *
+   * If you need the address, contact our business manager.
    */
   restServer: string;
   /**
-   * The custom IM message server URL.
+   * The custom address of the IM message server.
+   *
+   * This address is used when you implement data isolation and data security during private deployment.
+   *
+   * If you need the address, contact our business manager.
    */
   imServer: string;
   /**
-   * The custom IM server port.
+   * The custom port of the IM server.
+   *
+   * The custom port is used when you implement data isolation and data security during private deployment.
+   *
+   * If you need the port, contact our business manager.
    */
   imPort: number;
 

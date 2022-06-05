@@ -79,6 +79,12 @@ export const MTdeleteRemoteConversation = 'deleteRemoteConversation';
 export const MTtranslateMessage = 'translateMessage';
 export const MTfetchSupportLanguages = 'fetchSupportLanguages';
 
+export const MTaddReaction = 'addReaction';
+export const MTremoveReaction = 'removeReaction';
+export const MTfetchReactionList = 'fetchReactionList';
+export const MTfetchReactionDetail = 'fetchReactionDetail';
+export const MTreportMessage = 'reportMessage';
+
 /// ChatManager listener
 export const MTonMessagesReceived = 'onMessagesReceived';
 export const MTonCmdMessagesReceived = 'onCmdMessagesReceived';
@@ -90,12 +96,21 @@ export const MTonMessagesRecalled = 'onMessagesRecalled';
 export const MTonConversationUpdate = 'onConversationUpdate';
 export const MTonConversationHasRead = 'onConversationHasRead';
 
+export const MTonReadAckForGroupMessageUpdated =
+  'onReadAckForGroupMessageUpdated';
+export const MTmessageReactionDidChange = 'messageReactionDidChange';
+
 export const MTonMessageProgressUpdate = 'onMessageProgressUpdate';
 export const MTonMessageError = 'onMessageError';
 export const MTonMessageSuccess = 'onMessageSuccess';
 export const MTonMessageReadAck = 'onMessageReadAck';
 export const MTonMessageDeliveryAck = 'onMessageDeliveryAck';
 export const MTonMessageStatusChanged = 'onMessageStatusChanged'; // deprecated 2022.05.05
+
+export const MTonChatThreadCreated = 'onChatThreadCreated';
+export const MTonChatThreadUpdated = 'onChatThreadUpdated';
+export const MTonChatThreadDestroyed = 'onChatThreadDestroyed';
+export const MTonChatThreadUserRemoved = 'onChatThreadUserRemoved';
 
 /// ChatConversionManager methods
 export const MTgetUnreadMsgCount = 'getUnreadMsgCount';
@@ -116,6 +131,10 @@ export const MTloadMsgWithStartId = 'loadMsgWithStartId';
 export const MTloadMsgWithKeywords = 'loadMsgWithKeywords';
 export const MTloadMsgWithMsgType = 'loadMsgWithMsgType';
 export const MTloadMsgWithTime = 'loadMsgWithTime';
+
+// ChatMessage methods
+export const MTgetReactionList = 'getReactionList';
+export const MTgroupAckCount = 'groupAckCount';
 
 // ChatRoomManager methods
 export const MTjoinChatRoom = 'joinChatRoom';
@@ -206,7 +225,6 @@ export const MTacceptJoinApplication = 'acceptJoinApplication';
 export const MTdeclineJoinApplication = 'declineJoinApplication';
 export const MTacceptInvitationFromGroup = 'acceptInvitationFromGroup';
 export const MTdeclineInvitationFromGroup = 'declineInvitationFromGroup';
-export const MTignoreGroupPush = 'ignoreGroupPush';
 
 /// ChatGroupManager listener
 export const MTonGroupChanged = 'onGroupChanged';
@@ -249,6 +267,23 @@ export const MTfetchPresenceStatus = 'fetchPresenceStatus';
 
 /// PresenceManager listener
 export const MTonPresenceStatusChanged = 'onPresenceStatusChanged';
+
+/// ChatThreadManager methods
+export const MTfetchChatThreadDetail = 'fetchChatThreadDetail';
+export const MTfetchJoinedChatThreads = 'fetchJoinedChatThreads';
+export const MTfetchChatThreadsWithParentId = 'fetchChatThreadsWithParentId';
+export const MTfetchJoinedChatThreadsWithParentId =
+  'fetchJoinedChatThreadsWithParentId';
+export const MTfetchChatThreadMember = 'fetchChatThreadMember';
+export const MTfetchLastMessageWithChatThreads =
+  'fetchLastMessageWithChatThreads';
+export const MTremoveMemberFromChatThread = 'removeMemberFromChatThread';
+export const MTupdateChatThreadSubject = 'updateChatThreadSubject';
+export const MTcreateChatThread = 'createChatThread';
+export const MTjoinChatThread = 'joinChatThread';
+export const MTleaveChatThread = 'leaveChatThread';
+export const MTdestroyChatThread = 'destroyChatThread';
+export const MTgetMessageThread = 'getMessageThread';
 
 export const CHAT_ROOM_EVENT_ON_CHAT_ROOM_DESTROYED = 'onChatRoomDestroyed';
 export const CHAT_ROOM_EVENT_ON_MEMBER_JOINED = 'onMemberJoined';

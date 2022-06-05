@@ -48,7 +48,7 @@ export const metaDataList = new Map<string, ApiParams>([
         {
           paramName: 'members',
           paramType: 'object',
-          paramDefaultValue: ['zhangsan', 'lisi'],
+          paramDefaultValue: ['zhangsan', 'lisi', 'asterisk003'],
         },
       ],
     },
@@ -79,7 +79,7 @@ export const metaDataList = new Map<string, ApiParams>([
         {
           paramName: 'members',
           paramType: 'object',
-          paramDefaultValue: ['zhangsan', 'lisi'],
+          paramDefaultValue: ['asterisk003', 'lisi'],
         },
       ],
     },

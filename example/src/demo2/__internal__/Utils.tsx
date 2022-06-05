@@ -1,4 +1,5 @@
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import type { ApiParams } from './DataTypes';
 
 export const Stack = createNativeStackNavigator();
 
@@ -76,4 +77,16 @@ export function unregisterComponents(): void {
 let _seq = 0;
 export function seq(): number {
   return ++_seq;
+}
+
+export function generateData(kv: Map<string, ApiParams>): any {
+  let ret: any = {};
+  for (let key of kv.keys()) {
+    let eachMethodParams: any = {};
+    kv.get(key)?.params.forEach((item) => {
+      eachMethodParams[item.paramName] = item.paramDefaultValue;
+    });
+    ret[key] = eachMethodParams;
+  }
+  return ret;
 }

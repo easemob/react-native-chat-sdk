@@ -49,25 +49,25 @@ export class ChatPresenceManager extends Native {
   }
 
   /**
-   * Add presence listener.
+   * Adds a presence listener.
    *
-   * @param listener The listener to be added.
+   * @param listener The presence listener to add.
    */
   addPresenceListener(listener: ChatPresenceEventListener): void {
     this._presenceListeners.add(listener);
   }
 
   /**
-   * Remove presence listener.
+   * Removes a presence listener.
    *
-   * @param listener The listener to be deleted.
+   * @param listener The presence listener to remove.
    */
   removePresenceListener(listener: ChatPresenceEventListener): void {
     this._presenceListeners.delete(listener);
   }
 
   /**
-   * Clear all presence listener.
+   * Clears all presence listeners.
    */
   removeAllPresenceListener(): void {
     this._presenceListeners.clear();
@@ -96,11 +96,13 @@ export class ChatPresenceManager extends Native {
   }
 
   /**
-   * Subscribes to a user's presence states. If the subscription succeeds, the subscriber will receive the callback when the user's presence state changes.
+   * Subscribes to the presence state of a user.
    *
-   * @param members The list of IDs of users whose presence states you want to subscribe to.
-   * @param expiry The expiration time of the presence subscription.
-   * @returns Which contains IDs of users whose presence states you have subscribed to.
+   * If the subscription succeeds, the subscriber will receive the callback when the presence state of the user changes.
+   *
+   * @param members The array of user IDs users whose presence state you want to subscribe to.
+   * @param expiry The subscription duration in seconds. The duration cannot exceed 2,592,000 (30×24×3600) seconds, i.e., 30 days.
+   * @returns The current presence state of user IDs users whose presence state you have subscribed to.
    *
    * @throws A description of the exception. See {@link ChatError}.
    */
@@ -124,9 +126,9 @@ export class ChatPresenceManager extends Native {
   }
 
   /**
-   * Unsubscribes from a user's presence states.
+   * Unsubscribes from the presence state of the unspecified users.
    *
-   * @param members The array of IDs of users whose presence states you want to unsubscribe from.
+   * @param members The array of user IDs whose presence state you want to unsubscribe from.
    *
    * @throws A description of the exception. See {@link ChatError}.
    */
@@ -141,11 +143,11 @@ export class ChatPresenceManager extends Native {
   }
 
   /**
-   * Uses pagination to get a list of users whose presence states you have subscribed to.
+   * Uses the pagination to get a list of users whose presence states you have subscribed to.
    *
    * @param pageNum The current page number, starting from 1.
-   * @param pageSize The number of subscribed users on each page.
-   * @returns Which contains IDs of users whose presence states you have subscribed to. Returns null if you subscribe to no user's presence state.
+   * @param pageSize The number of subscribed users that you expect to get on each page.
+   * @returns The user IDs whose presence state you have subscribed to. The SDK returns `null` if you does not subscribe to the presence state of any users.
    *
    * @throws A description of the exception. See {@link ChatError}.
    */
@@ -171,8 +173,8 @@ export class ChatPresenceManager extends Native {
   /**
    * Gets the current presence state of users.
    *
-   * @param members The array of IDs of users whose current presence state you want to check.
-   * @returns Which contains the users whose presence state you have subscribed to.
+   * @param members The array of user IDs whose current presence state you want to check.
+   * @returns The current presence state of subscribed users.
    *
    * @throws A description of the exception. See {@link ChatError}.
    */

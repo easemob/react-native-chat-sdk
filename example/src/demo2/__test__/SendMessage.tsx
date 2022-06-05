@@ -19,6 +19,8 @@ import {
   ChatMessageStatusCallback,
   ChatConversationType,
   ChatSearchDirection,
+  ChatMessageThreadEvent,
+  ChatMessageReactionEvent,
 } from 'react-native-chat-sdk';
 import DocumentPicker, {
   DocumentPickerResponse,
@@ -29,6 +31,7 @@ import {
   LeafComponentBaseScreen,
   StateBase,
 } from '../__internal__/LeafComponentBase';
+import { ChatManagerCache } from '../Test/ChatManagerCache';
 
 interface State extends StateBase {
   messageType: ChatMessageType;
@@ -135,6 +138,36 @@ export class SendMessageScreen extends LeafComponentBaseScreen<State> {
       that: SendMessageScreen;
       constructor(parent: any) {
         this.that = parent as SendMessageScreen;
+      }
+      onMessageReactionDidChange(list: Array<ChatMessageReactionEvent>): void {
+        console.log(
+          `${SendMessageScreen.TAG}: onMessageReactionDidChange: `,
+          list
+        );
+      }
+      onChatMessageThreadCreated(msgThread: ChatMessageThreadEvent): void {
+        console.log(
+          `${SendMessageScreen.TAG}: onChatMessageThreadCreated: `,
+          msgThread
+        );
+      }
+      onChatMessageThreadUpdated(msgThread: ChatMessageThreadEvent): void {
+        console.log(
+          `${SendMessageScreen.TAG}: onChatMessageThreadUpdated: `,
+          msgThread
+        );
+      }
+      onChatMessageThreadDestroyed(msgThread: ChatMessageThreadEvent): void {
+        console.log(
+          `${SendMessageScreen.TAG}: onChatMessageThreadDestroyed: `,
+          msgThread
+        );
+      }
+      onChatMessageThreadUserRemoved(msgThread: ChatMessageThreadEvent): void {
+        console.log(
+          `${SendMessageScreen.TAG}: onChatMessageThreadUserRemoved: `,
+          msgThread
+        );
       }
       onMessagesReceived(messages: ChatMessage[]): void {
         console.log(`${SendMessageScreen.TAG}: onMessagesReceived: `, messages);
@@ -255,7 +288,11 @@ export class SendMessageScreen extends LeafComponentBaseScreen<State> {
     let msg: ChatMessage;
     if (messageType === ChatMessageType.TXT) {
       const { content } = this.state;
-      msg = ChatMessage.createTextMessage(targetId, content, chatType);
+      msg = ChatManagerCache.getInstance().createTextMessageWithParams(
+        targetId,
+        content,
+        chatType
+      );
     } else if (messageType === ChatMessageType.IMAGE) {
       const { filePath, width, height, displayName } = this.state;
       msg = ChatMessage.createImageMessage(targetId, filePath, chatType, {

@@ -7,6 +7,7 @@ import { ClientOthersScreen } from '../Client/ClientOthers';
 import { CreateAccountScreen } from '../Client/CreateAccount';
 import { GetStateScreen } from '../Client/GetState';
 import { KickScreen } from '../Client/Kick';
+import { AppKeyScreen } from '../Client/AppKey';
 import { LoginAndLogoutScreen as LoginLogoutScreen } from '../Client/LoginAndLogout';
 import { GroupManagerRoute, GroupManagerScreen } from '../GroupManager';
 import { GroupManagerLeafScreen } from '../GroupManager/GroupManagerItem';
@@ -16,17 +17,17 @@ import {
 } from '../ChatRoomManager';
 import { ChatRoomManagerLeafScreen } from '../ChatRoomManager/ChatRoomManagerItem';
 import {
+  ChatUserInfoManagerRoute,
+  ChatUserInfoManagerScreen,
+} from '../ChatUserInfoManager';
+import { ChatUserInfoManagerLeafScreen } from '../ChatUserInfoManager/ChatUserInfoManagerItem';
+import {
   PresenceManagerRoute,
   PresenceManagerScreen,
 } from '../PresenceManager';
 import { PresenceLeafScreen } from '../PresenceManager/PresenceManagerItem';
 import { ContactManagerRoute, ContactManagerScreen } from '../ContactManager';
 import { ContactLeafScreen } from '../ContactManager/ContactManagerItem';
-import {
-  ChatUserInfoManagerRoute,
-  ChatUserInfoManagerScreen,
-} from '../ChatUserInfoManager';
-import { ChatUserInfoManagerLeafScreen } from '../ChatUserInfoManager/ChatUserInfoManagerItem';
 import type { ScreenComponent } from './Utils';
 import {
   QuickTestManagerRoute,
@@ -71,6 +72,12 @@ export const screenComponents: ScreenComponent[] = [
   },
 
   // ClientRoute navigator
+  {
+    route: AppKeyScreen.route,
+    screen: AppKeyScreen,
+    isNavigation: false,
+    parentScreen: ClientRoute,
+  },
   {
     route: LoginLogoutScreen.route,
     screen: LoginLogoutScreen,

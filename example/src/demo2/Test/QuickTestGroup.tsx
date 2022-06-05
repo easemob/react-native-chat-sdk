@@ -40,6 +40,7 @@ export class QuickTestScreenGroup extends QuickTestScreenBase<
       sendResult: '',
       recvResult: '',
       exceptResult: '',
+      cb_result: '',
     };
     this.statelessData = {};
     registerStateDataList(metaDataList);

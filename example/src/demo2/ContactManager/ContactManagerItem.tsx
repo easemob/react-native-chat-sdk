@@ -9,6 +9,7 @@ import {
 } from '../__internal__/LeafScreenBase';
 import { metaDataList, MN } from './ContactManagerData';
 import type { ApiParams } from '../__internal__/DataTypes';
+import { generateData } from '../__internal__/Utils';
 
 export interface StateChatContact extends StateBase {
   addContact: {
@@ -40,21 +41,6 @@ export interface StateChatContact extends StateBase {
 
 export interface StatelessChatContact extends StatelessBase {}
 
-let formatData: any = {};
-for (let key of metaDataList.keys()) {
-  let eachMethodParams: any = {};
-  metaDataList.get(key)?.params.forEach((item) => {
-    eachMethodParams[item.paramName] = item.paramDefaultValue;
-  });
-  formatData[key] = eachMethodParams;
-}
-
-const stateDataValue: StateChatContact = Object.assign({}, formatData, {
-  sendResult: '',
-  recvResult: '',
-  exceptResult: '',
-});
-
 const statelessDataValue: StatelessChatContact = {};
 
 export class ContactLeafScreen extends LeafScreenBase<StateChatContact> {
@@ -65,7 +51,11 @@ export class ContactLeafScreen extends LeafScreenBase<StateChatContact> {
   constructor(props: { navigation: any }) {
     super(props);
     this.metaData = metaDataList;
-    this.state = stateDataValue;
+    this.state = Object.assign({}, generateData(metaDataList), {
+      sendResult: '',
+      recvResult: '',
+      exceptResult: '',
+    });
     this.statelessData = statelessDataValue;
   }
 

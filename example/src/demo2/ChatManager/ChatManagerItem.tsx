@@ -9,6 +9,9 @@ import {
   ChatMessageEventListener,
   ChatGroupMessageAck,
   ChatError,
+  ChatMessageThreadEvent,
+  ChatMessageReactionEvent,
+  ChatMessageChatTypeFromNumber,
 } from 'react-native-chat-sdk';
 import { styleValues } from '../__internal__/Css';
 import {
@@ -16,14 +19,9 @@ import {
   StateBase,
   StatelessBase,
 } from '../__internal__/LeafScreenBase';
-import {
-  ChatManagerCache,
-  metaDataList,
-  MN,
-  stateDataValue,
-  statelessDataValue,
-} from './ChatManagerData';
+import { ChatManagerCache, metaDataList, MN } from './ChatManagerData';
 import type { ApiParams } from '../__internal__/DataTypes';
+import { generateData } from '../__internal__/Utils';
 
 export interface StateChatMessage extends StateBase {
   cb_result: string;
@@ -181,6 +179,46 @@ export interface StateChatMessage extends StateBase {
     direction: number;
     count: number;
   };
+  translateMessage: {
+    msg: ChatMessage;
+    languages: string[];
+  };
+  fetchSupportLanguages: {};
+  // setConversationExtension: {
+  //   convId: string;
+  //   convType: number;
+  //   ext: any;
+  // };
+  addReaction: {
+    reaction: string;
+    msgId: string;
+  };
+  removeReaction: {
+    reaction: string;
+    msgId: string;
+  };
+  fetchReactionList: {
+    msgIds: string[];
+    groupId: string;
+    chatType: number;
+  };
+  fetchReactionDetail: {
+    msgId: string;
+    reaction: string;
+    cursor: string;
+    pageSize: number;
+  };
+  reportMessage: {
+    msgId: string;
+    tag: string;
+    reason: string;
+  };
+  getReactionList: {
+    msgId: string;
+  };
+  groupAckCount: {
+    msgId: string;
+  };
 }
 
 export interface StatelessChatMessage extends StatelessBase {
@@ -202,11 +240,22 @@ export class ChatManagerLeafScreen extends LeafScreenBase<StateChatMessage> {
   public static route = 'ChatManagerLeafScreen';
   metaData: Map<string, ApiParams>;
   statelessData: StatelessChatMessage;
+  stateTemp: any;
   constructor(props: { navigation: any }) {
     super(props);
     this.metaData = metaDataList;
-    this.state = stateDataValue;
-    this.statelessData = statelessDataValue;
+    this.state = Object.assign({}, generateData(metaDataList), {
+      sendResult: '',
+      recvResult: '',
+      exceptResult: '',
+      cb_result: '',
+    });
+    this.statelessData = {
+      sendMessage: {},
+      resendMessage: {},
+      sendMessageReadAck: {},
+    };
+    this.stateTemp = Object.assign({}, this.state);
   }
 
   protected renderResult(): ReactNode {
@@ -225,6 +274,36 @@ export class ChatManagerLeafScreen extends LeafScreenBase<StateChatMessage> {
       that: ChatManagerLeafScreen;
       constructor(parent: any) {
         this.that = parent as ChatManagerLeafScreen;
+      }
+      onMessageReactionDidChange(list: Array<ChatMessageReactionEvent>): void {
+        console.log(
+          `${ChatManagerLeafScreen.TAG}: onMessageReactionDidChange: `,
+          list
+        );
+      }
+      onChatMessageThreadCreated(msgThread: ChatMessageThreadEvent): void {
+        console.log(
+          `${ChatManagerLeafScreen.TAG}: onChatMessageThreadCreated: `,
+          msgThread
+        );
+      }
+      onChatMessageThreadUpdated(msgThread: ChatMessageThreadEvent): void {
+        console.log(
+          `${ChatManagerLeafScreen.TAG}: onChatMessageThreadUpdated: `,
+          msgThread
+        );
+      }
+      onChatMessageThreadDestroyed(msgThread: ChatMessageThreadEvent): void {
+        console.log(
+          `${ChatManagerLeafScreen.TAG}: onChatMessageThreadDestroyed: `,
+          msgThread
+        );
+      }
+      onChatMessageThreadUserRemoved(msgThread: ChatMessageThreadEvent): void {
+        console.log(
+          `${ChatManagerLeafScreen.TAG}: onChatMessageThreadUserRemoved: `,
+          msgThread
+        );
       }
       onMessagesReceived(messages: ChatMessage[]): void {
         console.log(
@@ -353,6 +432,166 @@ export class ChatManagerLeafScreen extends LeafScreenBase<StateChatMessage> {
     ];
   }
 
+  protected renderApiDom2(): ReactNode[] {
+    console.log('test: ', 'renderApiDom');
+    const apiList = [
+      'resendMessage',
+      'sendMessageReadAck',
+      'sendGroupMessageReadAck',
+      'sendConversationReadAck',
+      'recallMessage',
+      'getMessage',
+      'markAllConversationsAsRead',
+      'getUnreadMessageCount',
+      'updateMessage',
+      'importMessages',
+      'downloadAttachment',
+      'downloadThumbnail',
+      'fetchHistoryMessages',
+      'searchMsgFromDB',
+      'fetchGroupAcks',
+      'deleteRemoteConversation',
+      'getConversation',
+      'loadAllConversations',
+      'getConversationsFromServer',
+      'deleteConversation',
+      'getLatestMessage',
+      'getLastReceivedMessage',
+      'unreadCount',
+      'markMessageAsRead',
+      'markAllMessagesAsRead',
+      'insertMessage',
+      'appendMessage',
+      'updateConversationMessage',
+      'deleteMessage',
+      'deleteAllMessages',
+      'getMessageById',
+      'getMessagesWithMsgType',
+      'getMessages',
+      'getMessagesWithKeyword',
+      'getMessagesFromTime',
+      'translateMessage',
+      'fetchSupportLanguages',
+      // 'setConversationExtension',
+      'addReaction',
+      'removeReaction',
+      'fetchReactionList',
+      'fetchReactionDetail',
+      'reportMessage',
+      'getReactionList',
+      'groupAckCount',
+    ];
+    let renderDomAry: ({} | null | undefined)[] = [];
+    // const data2: any = this.state;
+    // apiList.forEach((apiItem) => {
+    //   const apiItemObject: any = data2?.[apiItem];
+    //   console.log('test: apiItemObject: ', JSON.stringify(apiItemObject));
+    //   if (apiItemObject !== undefined) {
+    //     console.log('test: ----------------------------');
+    //     console.log('test: title: ', apiItem);
+    //     console.log('test: entries: ', Object.entries(apiItemObject));
+    //     console.log('test: names: ', Object.getOwnPropertyNames(apiItemObject));
+    //     console.log('test: keys: ', Object.keys(apiItemObject));
+    //     console.log('test: values: ', Object.values(apiItemObject));
+    //     console.log('test: ----------------------------');
+    //   }
+    // });
+    const data = this.metaData;
+    const stateData: any = this.stateTemp;
+    apiList.forEach((apiItem) => {
+      this.setKeyPrefix(apiItem);
+      renderDomAry.push(
+        this.renderParamWithText(data.get(apiItem)!.methodName)
+      );
+      data.get(apiItem)?.params.forEach((item) => {
+        let currentData = data.get(apiItem);
+        let itemValue =
+          // eslint-disable-next-line no-undef
+          this.state[apiItem as keyof typeof this.state][
+            item.paramName as keyof typeof currentData
+          ];
+        const apiItemObject: any = stateData?.[apiItem];
+        const itemValue2 = apiItemObject?.[item.paramName];
+        // console.log(
+        //   'test: itemValue: ',
+        //   data.get(apiItem)!.methodName,
+        //   itemValue
+        // );
+        // console.log(
+        //   'test: itemValue2: ',
+        //   data.get(apiItem)!.methodName,
+        //   itemValue2
+        // );
+        if (item.domType && item.domType === 'select') {
+          if (item.paramType === 'boolean') {
+            renderDomAry.push(
+              this.renderParamWithEnum(
+                item.paramName,
+                ['true', 'false'],
+                itemValue ? 'true' : 'false',
+                (index: string, option: any) => {
+                  let inputData = option === 'true' ? true : false;
+                  let pv: any = {};
+                  pv[apiItem] = Object.assign(
+                    {},
+                    // eslint-disable-next-line no-undef
+                    this.state[apiItem as keyof typeof this.state],
+                    inputData
+                  );
+                  return this.setState(pv);
+                }
+              )
+            );
+          }
+        } else {
+          let value =
+            item.paramType === 'object'
+              ? JSON.stringify(itemValue2)
+              : itemValue2;
+          if (item.paramValue) {
+            value = JSON.stringify({ key: 'value' });
+            const v = item.paramValue();
+            if (v instanceof ChatMessage) {
+              value = JSON.stringify(v);
+            }
+          }
+          // console.log('test: name: ', item.paramName, 'value: ', value);
+          renderDomAry.push(
+            this.renderGroupParamWithInput(
+              item.paramName,
+              item.paramType,
+              value,
+              (inputData: { [index: string]: string }) => {
+                let pv: any = {};
+                pv[apiItem] = Object.assign(
+                  {},
+                  // eslint-disable-next-line no-undef
+                  this.state[apiItem as keyof typeof this.state],
+                  inputData
+                );
+                console.log('test: pv: ', JSON.stringify(pv));
+                this.stateTemp = Object.assign(this.stateTemp, pv);
+                console.log('test: stateTemp: ', this.stateTemp);
+                this.state = Object.assign(this.state, pv);
+                return this.setState(pv, () => {
+                  console.log('test: 111111');
+                });
+              }
+            )
+          );
+        }
+      });
+      renderDomAry.push(
+        this.renderButton(data.get(apiItem)!.methodName, () => {
+          this.callApi(data.get(apiItem)!.methodName);
+        })
+      );
+      renderDomAry.push(this.renderDivider());
+    });
+    renderDomAry.push(this.addSpaces());
+    return renderDomAry;
+  }
+
   protected renderBody(): ReactNode {
     console.log(`${ChatManagerLeafScreen.TAG}: renderBody: `);
     return (
@@ -396,6 +635,16 @@ export class ChatManagerLeafScreen extends LeafScreenBase<StateChatMessage> {
       'getMessages',
       'getMessagesWithKeyword',
       'getMessagesFromTime',
+      'translateMessage',
+      'fetchSupportLanguages',
+      // 'setConversationExtension',
+      'addReaction',
+      'removeReaction',
+      'fetchReactionList',
+      'fetchReactionDetail',
+      'reportMessage',
+      'getReactionList',
+      'groupAckCount',
     ];
     let renderDomAry: ({} | null | undefined)[] = [];
     const data = this.metaData;
@@ -442,6 +691,7 @@ export class ChatManagerLeafScreen extends LeafScreenBase<StateChatMessage> {
               value = JSON.stringify(v);
             }
           }
+          // console.log('test: name: ', item.paramName, 'value: ', value);
           renderDomAry.push(
             this.renderGroupParamWithInput(
               item.paramName,
@@ -841,6 +1091,89 @@ export class ChatManagerLeafScreen extends LeafScreenBase<StateChatMessage> {
         ),
         ChatManagerLeafScreen.TAG,
         this.metaData.get(MN.getMessagesFromTime)!.methodName
+      );
+    } else if (name === MN.translateMessage) {
+      const { msg, languages } = this.state.translateMessage;
+      this.tryCatch(
+        ChatClient.getInstance().chatManager.translateMessage(msg, languages),
+        ChatManagerLeafScreen.TAG,
+        name
+      );
+    } else if (name === MN.fetchSupportLanguages) {
+      this.tryCatch(
+        ChatClient.getInstance().chatManager.fetchSupportedLanguages(),
+        ChatManagerLeafScreen.TAG,
+        name
+      );
+      // } else if (name === MN.setConversationExtension) {
+      //   const { convId, convType, ext } = this.state.setConversationExtension;
+      //   this.tryCatch(
+      //     ChatClient.getInstance().chatManager.setConversationExtension(
+      //       convId,
+      //       ChatConversationTypeFromNumber(convType),
+      //       ext
+      //     ),
+      //     ChatManagerLeafScreen.TAG,
+      //     name
+      //   );
+    } else if (name === MN.addReaction) {
+      const { reaction, msgId } = this.state.addReaction;
+      this.tryCatch(
+        ChatClient.getInstance().chatManager.addReaction(reaction, msgId),
+        ChatManagerLeafScreen.TAG,
+        name
+      );
+    } else if (name === MN.removeReaction) {
+      const { reaction, msgId } = this.state.removeReaction;
+      this.tryCatch(
+        ChatClient.getInstance().chatManager.removeReaction(reaction, msgId),
+        ChatManagerLeafScreen.TAG,
+        name
+      );
+    } else if (name === MN.fetchReactionList) {
+      const { msgIds, groupId, chatType } = this.state.fetchReactionList;
+      this.tryCatch(
+        ChatClient.getInstance().chatManager.fetchReactionList(
+          msgIds,
+          groupId,
+          ChatMessageChatTypeFromNumber(chatType)
+        ),
+        ChatManagerLeafScreen.TAG,
+        name
+      );
+    } else if (name === MN.fetchReactionDetail) {
+      const { msgId, reaction, cursor, pageSize } =
+        this.state.fetchReactionDetail;
+      this.tryCatch(
+        ChatClient.getInstance().chatManager.fetchReactionDetail(
+          msgId,
+          reaction,
+          cursor,
+          pageSize
+        ),
+        ChatManagerLeafScreen.TAG,
+        name
+      );
+    } else if (name === MN.reportMessage) {
+      const { msgId, tag, reason } = this.state.reportMessage;
+      this.tryCatch(
+        ChatClient.getInstance().chatManager.reportMessage(msgId, tag, reason),
+        ChatManagerLeafScreen.TAG,
+        name
+      );
+    } else if (name === MN.getReactionList) {
+      const { msgId } = this.state.getReactionList;
+      this.tryCatch(
+        ChatClient.getInstance().chatManager.getReactionList(msgId),
+        ChatManagerLeafScreen.TAG,
+        name
+      );
+    } else if (name === MN.groupAckCount) {
+      const { msgId } = this.state.groupAckCount;
+      this.tryCatch(
+        ChatClient.getInstance().chatManager.groupAckCount(msgId),
+        ChatManagerLeafScreen.TAG,
+        name
       );
     }
   }

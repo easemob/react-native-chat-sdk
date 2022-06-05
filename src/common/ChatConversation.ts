@@ -35,10 +35,10 @@ export enum ChatConversationType {
 }
 
 /**
- * Conversation type convert from number.
+ * Converts the conversation type from int to enum.
  *
- * @param params An integer representing the conversation type.
- * @returns The conversation type.
+ * @param params The conversation type of the int type.
+ * @returns The conversation type of the enum type.
  */
 export function ChatConversationTypeFromNumber(
   params: number
@@ -59,10 +59,10 @@ export function ChatConversationTypeFromNumber(
 }
 
 /**
- * Conversation type from number.
+ * Converts the conversation type from enum to string.
  *
- * @param params A string representing the session type.
- * @returns The string representing the conversation type.
+ * @param params The conversation type of the enum type.
+ * @returns The conversation type of the string type.
  */
 export function ChatConversationTypeToString(
   params: ChatConversationType
@@ -71,139 +71,145 @@ export function ChatConversationTypeToString(
 }
 
 /**
- * The conversation class, indicating a one-to-one chat, a group chat, or a conversation chat. It contains the messages that are sent and received within the conversation.
+ * The conversation class, which defines one-to-one conversations, group conversations, and chat room conversations.
  *
- * About the conversation name. Please get the name according to different types.
- * If peer chat type, see {@link ChatUserInfoManager#fetchUserInfoById}.
- * If group chat type, see {@link ChatGroup#getGroupWithId}.
- * If room chat type, see {@link ChatRoom#fetchChatRoomInfoFromServer}.
+ * Each type of conversation involves messages that are sent and received.
+ *
+ * You can get the conversation name by conversation type:
+ * One-to-one chat: See {@link ChatUserInfoManager#fetchUserInfoById}.
+ * Group chat: See {@link ChatGroup#getGroupWithId}.
+ * Chat room: See {@link ChatRoom#fetchChatRoomInfoFromServer}.
  */
 export class ChatConversation {
-  con_id: string;
-  type: ChatConversationType;
-  // unreadCount: number;
-  // con_name?: string;
-  // lastMessage?: ChatMessage;
-  // lastReceivedMessage?: ChatMessage;
+  /**
+   * The conversation id.
+   */
+  convId: string;
+  /**
+   * The conversation type.
+   */
+  convType: ChatConversationType;
+  /**
+   * The conversation extension.
+   */
   ext?: any;
-
   constructor(params: {
-    con_id: string;
-    type: ChatConversationType;
+    convId: string;
+    convType: ChatConversationType;
     ext?: any;
   }) {
-    this.con_id = params.con_id;
-    this.type = params.type;
+    this.convId = params.convId;
+    this.convType = params.convType;
     this.ext = params.ext;
   }
 
   /**
-   * Get conversation name.
+   * Gets the conversation ID.
    *
-   * @returns The conversation name.
+   * @returns The conversation ID.
    */
   public async name(): Promise<string | undefined> {
-    if (this.type === ChatConversationType.PeerChat) {
+    if (this.convType === ChatConversationType.PeerChat) {
       const ret = await ChatClient.getInstance().userManager.fetchUserInfoById([
-        this.con_id,
+        this.convId,
       ]);
       if (ret.size > 0) {
         return ret.values().next().value.nickName;
       }
-    } else if (this.type === ChatConversationType.GroupChat) {
+    } else if (this.convType === ChatConversationType.GroupChat) {
       const ret =
         await ChatClient.getInstance().groupManager.fetchGroupInfoFromServer(
-          this.con_id
+          this.convId
         );
       if (ret) {
         return ret.groupName;
       }
-    } else if (this.type === ChatConversationType.RoomChat) {
+    } else if (this.convType === ChatConversationType.RoomChat) {
       const ret =
         await ChatClient.getInstance().roomManager.fetchChatRoomInfoFromServer(
-          this.con_id
+          this.convId
         );
       if (ret) {
-        return ret.name;
+        return ret.roomName;
       }
     } else {
       throw new ChatError({
         code: 1,
-        description: `This type is not supported. ` + this.type,
+        description: `This type is not supported. ` + this.convType,
       });
     }
     return undefined;
   }
 
   /**
-   * Gets the unread message count of the conversation.
+   * Gets the count of unread messages in the conversation.
    *
-   * @returns The unread message count of the conversation.
+   * @returns The count of unread messages.
    *
    * @throws A description of the exception. See {@link ChatError}.
    */
   public async fetchUnreadCount(): Promise<number> {
     return ChatClient.getInstance().chatManager.unreadCount(
-      this.con_id,
-      this.type
-    );
-  }
-
-  /**
-   * Gets the lastest message from the conversation.
-   *
-   * @returns The message instance. Returns undefined if the message does not
-   *
-   * @throws A description of the exception. See {@link ChatError}.
-   */
-  public async fetchLatestMessage(): Promise<ChatMessage | undefined> {
-    return ChatClient.getInstance().chatManager.fetchLatestMessage(
-      this.con_id,
-      this.type
+      this.convId,
+      this.convType
     );
   }
 
   /**
    * Gets the latest message from the conversation.
    *
-   * @returns The message instance. Returns undefined if the message does not exist.
+   * @returns The message instance. The SDK returns `undefined` if the message does not exist.
+   *
+   * @throws A description of the exception. See {@link ChatError}.
+   */
+  public async fetchLatestMessage(): Promise<ChatMessage | undefined> {
+    return ChatClient.getInstance().chatManager.fetchLatestMessage(
+      this.convId,
+      this.convType
+    );
+  }
+
+  /**
+   * Gets the latest message received in the conversation.
+   *
+   * @returns The message instance. The SDK returns `undefined` if the message does not exist.
    *
    * @throws A description of the exception. See {@link ChatError}.
    */
   public async fetchLatestReceivedMessage(): Promise<ChatMessage | undefined> {
     return ChatClient.getInstance().chatManager.fetchLastReceivedMessage(
-      this.con_id,
-      this.type
+      this.convId,
+      this.convType
     );
   }
 
   /**
-   * Set custom properties for the conversation.
+   * Gets the extension information of the conversation.
    *
-   * @param ext The custom attribute.
+   * @param ext The extension information of the conversation.
    *
    * @throws A description of the exception. See {@link ChatError}.
    */
-  public async setConversationExtension(ext: any): Promise<void> {
-    this.ext = ext;
-    return ChatClient.getInstance().chatManager.setConversationExtension(
-      this.con_id,
-      this.type,
-      this.ext
-    );
-  }
+  // public async setConversationExtension(ext: any): Promise<void> {
+  //   this.ext = ext;
+  //   return ChatClient.getInstance().chatManager.setConversationExtension(
+  //     this.convId,
+  //     this.convType,
+  //     this.ext
+  //   );
+  // }
 
   /**
    * Marks a message as read.
    *
-   * @param msgId The message id.
+   * @param msgId The message ID.
    *
    * @throws A description of the exception. See {@link ChatError}.
    */
   public async markMessageAsRead(msgId: string): Promise<void> {
     return ChatClient.getInstance().chatManager.markMessageAsRead(
-      this.con_id,
-      this.type,
+      this.convId,
+      this.convType,
       msgId
     );
   }
@@ -215,20 +221,24 @@ export class ChatConversation {
    */
   public async markAllMessagesAsRead(): Promise<void> {
     return ChatClient.getInstance().chatManager.markAllMessagesAsRead(
-      this.con_id,
-      this.type
+      this.convId,
+      this.convType
     );
   }
 
   /**
-   * Inserts a message to a conversation in the local database and the SDK will automatically update the latest message.
+   * Inserts a message to a conversation in the local database。
+   *
+   * To insert the message correctly, ensure that the conversation ID of the message is the same as that of the conversation.
+   *
+   * The message will be inserted based on the Unix timestamp included in it. Upon message insertion, the SDK will automatically update attributes of the conversation, including `latestMessage`.
    *
    * @param msg The message instance.
    *
    * @throws A description of the exception. See {@link ChatError}.
    */
   public async insertMessage(msg: ChatMessage): Promise<void> {
-    if (msg.conversationId !== this.con_id) {
+    if (msg.conversationId !== this.convId) {
       throw new ChatError({
         code: 1,
         description:
@@ -236,8 +246,8 @@ export class ChatConversation {
       });
     }
     return ChatClient.getInstance().chatManager.insertMessage(
-      this.con_id,
-      this.type,
+      this.convId,
+      this.convType,
       msg
     );
   }
@@ -245,12 +255,16 @@ export class ChatConversation {
   /**
    * Inserts a message to the end of a conversation in the local database.
    *
+   * To insert the message correctly, ensure that the conversation ID of the message is the same as that of the conversation.
+   *
+   * After a message is inserted, the SDK will automatically update attributes of the conversation, including `latestMessage`.
+   *
    * @param msg The message instance.
    *
    * @throws A description of the exception. See {@link ChatError}.
    */
   public async appendMessage(msg: ChatMessage): Promise<void> {
-    if (msg.conversationId !== this.con_id) {
+    if (msg.conversationId !== this.convId) {
       throw new ChatError({
         code: 1,
         description:
@@ -258,8 +272,8 @@ export class ChatConversation {
       });
     }
     return ChatClient.getInstance().chatManager.appendMessage(
-      this.con_id,
-      this.type,
+      this.convId,
+      this.convType,
       msg
     );
   }
@@ -267,14 +281,14 @@ export class ChatConversation {
   /**
    * Updates a message in the local database.
    *
-   * The latest Message of the conversation and other properties will be updated accordingly. The message ID of the message, however, remains the same.
+   * After you modify a message, the message ID remains unchanged and the SDK automatically updates attributes of the conversation, like `latestMessage`.
    *
    * @param msg The message instance.
    *
    * @throws A description of the exception. See {@link ChatError}.
    */
   public async updateMessage(msg: ChatMessage): Promise<void> {
-    if (msg.conversationId !== this.con_id) {
+    if (msg.conversationId !== this.convId) {
       throw new ChatError({
         code: 1,
         description:
@@ -282,16 +296,16 @@ export class ChatConversation {
       });
     }
     return ChatClient.getInstance().chatManager.updateConversationMessage(
-      this.con_id,
-      this.type,
+      this.convId,
+      this.convType,
       msg
     );
   }
 
   /**
-   * Deletes a message in the local database.
+   * Deletes a message from the local database.
    *
-   * @param msgId The ID of message to be deleted.
+   * @param msgId The ID of message to delete.
    *
    * @throws A description of the exception. See {@link ChatError}.
    */
@@ -301,51 +315,53 @@ export class ChatConversation {
     msgId: string
   ): Promise<void> {
     return ChatClient.getInstance().chatManager.deleteMessage(
-      this.con_id,
-      this.type,
+      this.convId,
+      this.convType,
       msgId
     );
   }
 
   /**
-   * Deletes all the messages of the conversation from both the memory and local database.
+   * Deletes all the messages of the conversation.
+   *
+   * This method deletes all the messages of the conversation from both the memory and local database.
    *
    * @throws A description of the exception. See {@link ChatError}.
    */
   public async deleteAllMessages(): Promise<void> {
     return ChatClient.getInstance().chatManager.deleteAllMessages(
-      this.con_id,
-      this.type
+      this.convId,
+      this.convType
     );
   }
 
   /**
-   * Gets the message with a specific message ID.
+   * Gets the specified message.
    *
    * @param msgId The message ID.
-   * @returns The message instance. Returns undefined if the message does not exist.
+   * @returns The message instance. The SDK returns `undefined` if the message does not exist.
    *
    * @throws A description of the exception. See {@link ChatError}.
    */
   public async getMessageById(msgId: string): Promise<ChatMessage | undefined> {
     return ChatClient.getInstance().chatManager.getMessageById(
-      this.con_id,
-      this.type,
+      this.convId,
+      this.convType,
       msgId
     );
   }
 
   /**
-   * Retrieves messages from the database according to the following parameters: the message type, the Unix timestamp, max count, sender.
+   * Gets messages of certain types that a specified user sends in a conversation.
    *
-   * @param msgType The message type, including TXT, VOICE, IMAGE, and so on.
-   * @param direction The direction in which the message is loaded: ChatSearchDirection.
-   * - `ChatSearchDirection.Up`: Messages are retrieved in the reverse chronological order of when the server received messages.
-   * - `ChatSearchDirection.Down`: Messages are retrieved in the chronological order of when the server received messages.
-   * @param timestamp The Unix timestamp for the search.
-   * @param count The max number of messages to search.
-   * @param sender The sender of the message. The param can also be used to search in group chat or chat room.
-   * @returns The message list. but, maybe is empty list.
+   * @param msgType The message type. See {@link ChatMessageType}.
+   * @param direction The message search direction. See {@link ChatSearchDirection}.
+   * - (Default) `ChatSearchDirection.Up`: Messages are retrieved in the reverse chronological order of the Unix timestamp ({@link SortMessageByServerTime}) included in them.
+   * - `ChatSearchDirection.Down`: Messages are retrieved in the chronological order of the Unix timestamp ({@link SortMessageByServerTime}) included in them.
+   * @param timestamp The starting Unix timestamp for search. The unit is millisecond.
+   * @param count The maximum number of messages to retrieve. The value range is [1,50].
+   * @param sender The message sender. This parameter can also be used for search among group messages or chat room messages.
+   * @returns The message list. If no message is obtained, an empty list is returned.
    *
    * @throws A description of the exception. See {@link ChatError}.
    */
@@ -357,8 +373,8 @@ export class ChatConversation {
     sender?: string
   ): Promise<Array<ChatMessage>> {
     return ChatClient.getInstance().chatManager.getMessagesWithMsgType(
-      this.con_id,
-      this.type,
+      this.convId,
+      this.convType,
       msgType,
       direction,
       timestamp,
@@ -368,16 +384,18 @@ export class ChatConversation {
   }
 
   /**
-   * Loads multiple messages from the local database.
+   * Gets messages of a certain quantity in a conversation from the local database.
    *
-   * Loads messages from the local database before the specified message.
+   * **Note**
    *
-   * The loaded messages will also join the existing messages of the conversation stored in the memory.
+   * The obtained messages will also join the existing messages of the conversation stored in the memory.
    *
-   * @param startMsgId The starting message ID. Message loaded in the memory before this message ID will be loaded. If the `startMsgId` is set as "" or null, the SDK will first load the latest messages in the database.
-   * @param direction The direction in which the message is loaded: ChatSearchDirection.
-   * @param loadCount The number of messages per page.
-   * @returns The message list. but, maybe is empty list.
+   * @param startMsgId The starting message ID. If this parameter is set as "" or `null`, the SDK loads messages in the reverse chronological order of when the server receives them.
+   * @param direction The message search direction. See {@link ChatSearchDirection}.
+   * - (Default) `ChatSearchDirection.Up`: Messages are retrieved in the reverse chronological order of the Unix timestamp ({@link SortMessageByServerTime}) included in them.
+   * - `ChatSearchDirection.Down`: Messages are retrieved in the chronological order of the Unix timestamp ({@link SortMessageByServerTime}) included in them.
+   * @param loadCount The maximum number of messages to retrieve. The value range is [1,50].
+   * @returns The message list. If no message is obtained, an empty list is returned.
    *
    * @throws A description of the exception. See {@link ChatError}.
    */
@@ -387,8 +405,8 @@ export class ChatConversation {
     loadCount: number = 20
   ): Promise<Array<ChatMessage>> {
     return ChatClient.getInstance().chatManager.getMessages(
-      this.con_id,
-      this.type,
+      this.convId,
+      this.convType,
       startMsgId,
       direction,
       loadCount
@@ -396,17 +414,18 @@ export class ChatConversation {
   }
 
   /**
-   * Loads messages from the local database by the following parameters: keywords, timestamp, max count, sender, search direction.
+   * Gets messages that the specified user sends in a conversation in a certain period.
    *
-   * **Note**
-   * Pay attention to the memory usage when the maxCount is large.
+   * This method gets data from the local database.
    *
-   * @param keywords The keywords in message.
-   * @param direction The direction in which the message is loaded: ChatSearchDirection.
-   * @param timestamp The timestamp for search.
-   * @param count The maximum number of messages to search.
-   * @param sender The message sender. The param can also be used to search in group chat.
-   * @returns The message list. but, maybe is empty list.
+   * @param keywords The keywords for query.
+   * @param direction The message search direction. See {@link ChatSearchDirection}.
+   * - (Default) `ChatSearchDirection.Up`: Messages are retrieved in the reverse chronological order of the Unix timestamp ({@link SortMessageByServerTime}) included in them.
+   * - `ChatSearchDirection.Down`: Messages are retrieved in the chronological order of the Unix timestamp ({@link SortMessageByServerTime}) included in them.
+   * @param timestamp The starting Unix timestamp for search. The unit is millisecond.
+   * @param count The maximum number of messages to retrieve. The value range is [1,50].
+   * @param sender The message sender. The parameter can also be used to search among group chat messages.
+   * @returns The message list. If no message is obtained, an empty list is returned.
    *
    * @throws A description of the exception. See {@link ChatError}.
    */
@@ -418,8 +437,8 @@ export class ChatConversation {
     sender?: string
   ): Promise<Array<ChatMessage>> {
     return ChatClient.getInstance().chatManager.getMessagesWithKeyword(
-      this.con_id,
-      this.type,
+      this.convId,
+      this.convType,
       keywords,
       direction,
       timestamp,
@@ -429,16 +448,17 @@ export class ChatConversation {
   }
 
   /**
-   * Loads messages from the local database according the following parameters: start timestamp, end timestamp, count.
+   * Gets messages that are sent or received in a certain period in a conversation.
    *
-   * **Note**
-   * Pay attention to the memory usage when the maxCount is large.
+   * This method gets data from the local database.
    *
-   * @param startTime The starting Unix timestamp for search.
-   * @param endTime The ending Unix timestamp for search.
-   * @param direction The direction in which the message is loaded: ChatSearchDirection.
-   * @param count The maximum number of message to retrieve.
-   * @returns The list of searched messages.
+   * @param startTime The starting Unix timestamp for search. The unit is millisecond.
+   * @param endTime The ending Unix timestamp for search. The unit is millisecond.
+   * @param direction The message search direction. See {@link ChatSearchDirection}.
+   * - (Default) `ChatSearchDirection.Up`: Messages are retrieved in the reverse chronological order of the Unix timestamp ({@link SortMessageByServerTime}) included in them.
+   * - `ChatSearchDirection.Down`: Messages are retrieved in the chronological order of the Unix timestamp ({@link SortMessageByServerTime}) included in them.
+   * @param count The maximum number of message to retrieve. The value range is [1,50].
+   * @returns The message list. If no message is obtained, an empty list is returned.
    *
    * @throws A description of the exception. See {@link ChatError}.
    */
@@ -449,8 +469,8 @@ export class ChatConversation {
     count: number = 20
   ): Promise<Array<ChatMessage>> {
     return ChatClient.getInstance().chatManager.getMessagesFromTime(
-      this.con_id,
-      this.type,
+      this.convId,
+      this.convType,
       startTime,
       endTime,
       direction,

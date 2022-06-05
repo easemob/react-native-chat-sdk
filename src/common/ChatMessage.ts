@@ -1,6 +1,10 @@
 import { generateMessageId, getNowTimestamp } from '../__internal__/Utils';
 import { ChatClient } from '../ChatClient';
 import { ChatError } from './ChatError';
+import type {
+  ChatMessageThreadEvent,
+  ChatMessageReaction,
+} from 'react-native-chat-sdk';
 
 /**
  * The conversation types.
@@ -35,7 +39,7 @@ export enum ChatMessageDirection {
 }
 
 /**
- * The message sending status.
+ * The message sending states.
  */
 export enum ChatMessageStatus {
   /**
@@ -57,7 +61,7 @@ export enum ChatMessageStatus {
 }
 
 /**
- * The download status of the attachment file.
+ * The attachment file download states.
  */
 export enum ChatDownloadStatus {
   /**
@@ -111,16 +115,16 @@ export enum ChatMessageType {
    */
   CMD = 'cmd',
   /**
-   * Customized message.
+   * Custom message.
    */
   CUSTOM = 'custom',
 }
 
 /**
- * The message body type convert.
+ * Converts the conversation type from int to string.
  *
- * @param params Integer representing message body type.
- * @returns The message body type.
+ * @param params The conversation type of the int type.
+ * @returns The conversation type of the string type.
  */
 export function ChatMessageChatTypeFromNumber(
   params: number
@@ -136,22 +140,10 @@ export function ChatMessageChatTypeFromNumber(
 }
 
 /**
- * The message body type convert.
+ * Converts the message direction from string to enum.
  *
- * @param params The message body type.
- * @returns String representing message body type.
- */
-export function ChatGroupPermissionTypeToString(
-  params: ChatMessageChatType
-): string {
-  return ChatMessageChatType[params];
-}
-
-/**
- * The message send direction convert.
- *
- * @param params The String representing message direction.
- * @returns The String.
+ * @param params The message direction of the string type.
+ * @returns The message direction of the enum type.
  */
 export function ChatMessageDirectionFromString(
   params: string
@@ -165,10 +157,10 @@ export function ChatMessageDirectionFromString(
 }
 
 /**
- * The message status type convert.
+ * Converts the message status from int to enum.
  *
- * @param params The Integer representing message status.
- * @returns The message status.
+ * @param params The message status of the int type.
+ * @returns The message status of the enum type.
  */
 export function ChatMessageStatusFromNumber(params: number): ChatMessageStatus {
   switch (params) {
@@ -184,20 +176,20 @@ export function ChatMessageStatusFromNumber(params: number): ChatMessageStatus {
 }
 
 /**
- * The message status type convert.
+ * Converts the message status from enum to string.
  *
- * @param params The message status type.
- * @returns The String representing message status type.
+ * @param params The message status of the enum type.
+ * @returns The message status of the string type.
  */
 export function ChatMessageStatusToString(params: ChatMessageStatus): string {
   return ChatMessageStatus[params];
 }
 
 /**
- * The message download status type convert.
+ * Converts the message download status from int to string.
  *
- * @param params The integer representing message download status type.
- * @returns The message download status type.
+ * @param params The message download status of the int type.
+ * @returns The message download status of the string type.
  */
 export function ChatDownloadStatusFromNumber(
   params: number
@@ -215,20 +207,20 @@ export function ChatDownloadStatusFromNumber(
 }
 
 /**
- * The message download status type convert.
+ * Converts the message download status from int to string.
  *
- * @param params The download status type.
- * @returns The String representing download status type.
+ * @param params The message download status of the int type.
+ * @returns The message download status of the string type.
  */
 export function ChatDownloadStatusToString(params: ChatDownloadStatus): string {
   return ChatDownloadStatus[params];
 }
 
 /**
- * The message type convert.
+ * Converts the message type from string to enum.
  *
- * @param params The string representing message type.
- * @returns The message type.
+ * @param params The message type of the string type.
+ * @returns The message type of the enum type.
  */
 export function ChatMessageTypeFromString(params: string): ChatMessageType {
   switch (params) {
@@ -257,32 +249,33 @@ export function ChatMessageTypeFromString(params: string): ChatMessageType {
 }
 
 /**
- * The message status change listener interface.
+ * The message status change listener.
  */
 export interface ChatMessageStatusCallback {
   /**
-   * The progress of sending or receiving messages.
+   * Occurs when a message is uploaded or downloaded.
    *
-   * @param progress The progress value.
+   * @param progress The message upload/download progress value. The value range is 0 to 100 in percentage.
    */
   onProgress(localMsgId: string, progress: number): void;
 
   /**
-   * Error message sending or receiving.
+   * Occurs when a message error occurs.
    *
    * @param error A description of the error. See {@link ChatError}.
    */
   onError(localMsgId: string, error: ChatError): void;
 
   /**
-   * The message is sent or received.
-   * @param message The message.
+   * Occurs when a message is successfully delivered.
+   *
+   * @param message The message that is successfully delivered.
    */
   onSuccess(message: ChatMessage): void;
 }
 
 /**
- * The message instance class, which represents a sent/received message.
+ * The message class that defines a message that is to be sent or received.
  *
  * For example:
  *
@@ -299,7 +292,7 @@ export interface ChatMessageStatusCallback {
 export class ChatMessage {
   static TAG = 'ChatMessage';
   /**
-   * The server message ID.
+   * The message ID generated on the server.
    */
   msgId: string = generateMessageId();
   /**
@@ -319,11 +312,11 @@ export class ChatMessage {
    */
   to: string = '';
   /**
-   * The local timestamp of the message.
+   * The Unix timestamp when the message is created locally. The unit is millisecond.
    */
   localTime: number = getNowTimestamp();
   /**
-   * The server timestamp of the message.
+   * The Unix timestamp when the server receives the message. The unit is millisecond.
    */
   serverTime: number = getNowTimestamp();
   /**
@@ -359,9 +352,7 @@ export class ChatMessage {
    */
   hasRead: boolean = false;
   /**
-   * The chat types.
-   *
-   * There are three chat types: one-to-one chat, group chat, and chat room.
+   * The conversation type. See {@link ChatType}.
    */
   chatType: ChatMessageChatType = ChatMessageChatType.ChatRoom;
   /**
@@ -369,7 +360,7 @@ export class ChatMessage {
    */
   direction: ChatMessageDirection = ChatMessageDirection.SEND;
   /**
-   * The message sending/reception status. See {@link ChatMessageStatus}
+   * The message sending status. See {@link ChatMessageStatus}.
    */
   status: ChatMessageStatus = ChatMessageStatus.CREATE;
   /**
@@ -384,87 +375,30 @@ export class ChatMessage {
   /**
    * Constructs a message.
    */
+  isChatThread: boolean;
+
+  /**
+   * Constructs a message.
+   */
   public constructor(params: {
-    /**
-     * Sets the server message ID.
-     */
     msgId?: string;
-    /**
-     * Sets the local message ID.
-     */
     localMsgId?: string;
-    /**
-     * Sets the conversation ID.
-     */
     conversationId?: string;
-    /**
-     * Sets the message sender.
-     */
     from?: string;
-    /**
-     * Sets the message recipient.
-     */
     to?: string;
-    /**
-     * Sets the local timestamp of the message.
-     */
     localTime?: number;
-    /**
-     * Sets the server timestamp of the message.
-     */
     serverTime?: number;
-    /**
-     * Sets whether the message delivery receipt is required.
-     *
-     * - `true`: Yes.
-     * - `false`: No.
-     */
     hasDeliverAck?: boolean;
-    /**
-     * Sets whether the message read receipt is required.
-     *
-     * - `true`: Yes.
-     * - `false`: No.
-     */
     hasReadAck?: boolean;
-    /**
-     * Sets whether the read receipt is required for a group message.
-     *
-     * - `true`: Yes.
-     * - `false`: No.
-     */
     needGroupAck?: boolean;
-    /**
-     * Sets the number of members that have read the group message.
-     */
     groupAckCount?: number;
-    /**
-     * Sets whether the message is read.
-     *
-     * - `true`: Yes.
-     * - `false`: No.
-     */
     hasRead?: boolean;
-    /**
-     * Sets the chat type. See {@link ChatType}.
-     */
     chatType?: number;
-    /**
-     * Sets the message direction. See {@link ChatMessageDirectionFromString}.
-     */
     direction?: string;
-    /**
-     * Sets the message status. See {@link ChatMessageStatusFromNumber}.
-     */
     status?: number;
-    /**
-     * Sets the extension attributes of the message.
-     */
-    attributes?: Object;
-    /**
-     * Sets the message body.
-     */
-    body: Object;
+    attributes?: any;
+    body: any;
+    isChatThread?: boolean;
   }) {
     this.msgId = params.msgId ?? generateMessageId();
     this.conversationId = params.conversationId ?? '';
@@ -483,6 +417,7 @@ export class ChatMessage {
     this.attributes = params.attributes ?? {};
     this.body = ChatMessage.getBody(params.body);
     this.localMsgId = this.localTime.toString();
+    this.isChatThread = params.isChatThread ?? false;
   }
 
   private static getBody(params: any): ChatMessageBody {
@@ -520,18 +455,20 @@ export class ChatMessage {
     }
   }
 
-  private static createSendMessage(
-    body: ChatMessageBody,
-    targetId: string,
-    chatType: ChatMessageChatType
-  ): ChatMessage {
+  private static createSendMessage(params: {
+    body: ChatMessageBody;
+    targetId: string;
+    chatType: ChatMessageChatType;
+    isChatThread?: boolean;
+  }): ChatMessage {
     let r = new ChatMessage({
       from: ChatClient.getInstance().currentUserName ?? '',
-      body: body,
+      body: params.body,
       direction: 'send',
-      to: targetId,
+      to: params.targetId,
       hasRead: true,
-      chatType: chatType,
+      chatType: params.chatType,
+      isChatThread: params.isChatThread,
     });
     return r;
   }
@@ -539,36 +476,45 @@ export class ChatMessage {
   /**
    * Creates a text message for sending.
    *
-   * @param targetId The ID of the message recipient.
+   * @param targetId The user ID of the message recipient.
    * - For a one-to-one chat, it is the user ID of the peer user.
    * - For a group chat, it is the group ID.
    * - For a chat room, it is the chat room ID.
    * @param content The text content.
-   * @param chatType The conversation type.
+   * @param chatType The conversation type. See {@link ChatType}.
    * @returns The message instance.
    */
   public static createTextMessage(
     targetId: string,
     content: string,
-    chatType: ChatMessageChatType = ChatMessageChatType.PeerChat
+    chatType: ChatMessageChatType = ChatMessageChatType.PeerChat,
+    opt?: {
+      isChatThread?: boolean;
+      targetLanguages?: Array<string>;
+    }
   ): ChatMessage {
     let s = ChatMessageType.TXT.valueOf();
-    return ChatMessage.createSendMessage(
-      new ChatTextMessageBody({ type: s, content: content }),
-      targetId,
-      chatType
-    );
+    return ChatMessage.createSendMessage({
+      body: new ChatTextMessageBody({
+        type: s,
+        content: content,
+        targetLanguages: opt?.targetLanguages,
+      }),
+      targetId: targetId,
+      chatType: chatType,
+      isChatThread: opt?.isChatThread,
+    });
   }
 
   /**
-   * Creates a message with file attachment for sending.
+   * Creates a message with a file attachment for sending.
    *
-   * @param targetId The ID of the message recipient.
+   * @param targetId The user ID of the message recipient.
    * - For a one-to-one chat, it is the user ID of the peer user.
    * - For a group chat, it is the group ID.
    * - For a chat room, it is the chat room ID.
    * @param filePath The file path.
-   * @param chatType The conversation type.
+   * @param chatType The conversation type. See {@link ChatType}.
    * @param opt The file name.
    * @returns The message instance.
    */
@@ -578,34 +524,36 @@ export class ChatMessage {
     chatType: ChatMessageChatType = ChatMessageChatType.PeerChat,
     opt?: {
       displayName: string;
+      isChatThread?: boolean;
     }
   ): ChatMessage {
-    return ChatMessage.createSendMessage(
-      new ChatFileMessageBody({
+    return ChatMessage.createSendMessage({
+      body: new ChatFileMessageBody({
         type: ChatMessageType.FILE.valueOf(),
         localPath: filePath,
         displayName: opt?.displayName ?? '',
       }),
-      targetId,
-      chatType
-    );
+      targetId: targetId,
+      chatType: chatType,
+      isChatThread: opt?.isChatThread,
+    });
   }
 
   /**
    * Creates an image message for sending.
    *
-   * @param targetId The ID of the message recipient.
+   * @param targetId The user ID of the message recipient.
    * - For a one-to-one chat, it is the user ID of the peer user.
    * - For a group chat, it is the group ID.
    * - For a chat room, it is the chat room ID.
    * @param filePath The image path.
-   * @param chatType The conversation type.
+   * @param chatType The conversation type. See {@link ChatType}.
    * @param opt
    *   @{#displayName} The image name.
    *   @{#thumbnailLocalPath} The image thumbnail path.
    *   @{#sendOriginalImage} Whether to send the original image.
-   *     - `true`: Sends the original image.
-   *     - `false`: (Default) Sends the thumbnail. For an image greater than 100 KB, the SDK will first compress it.
+   *     - `true`: The SDK sends the original image and its thumbnail.
+   *     - (Default) `false`: If the image is smaller than 100 KB, the SDK sends the original image and its thumbnail. If the image is equal to or greater than 100 KB, the SDK will compress it before sending the compressed image and the thumbnail of the compressed image.
    *   @{#width} The image width in pixels.
    *   @{#height} The image height in pixels.
    * @returns The message instance.
@@ -620,10 +568,11 @@ export class ChatMessage {
       sendOriginalImage?: boolean;
       width: number;
       height: number;
+      isChatThread?: boolean;
     }
   ): ChatMessage {
-    return ChatMessage.createSendMessage(
-      new ChatImageMessageBody({
+    return ChatMessage.createSendMessage({
+      body: new ChatImageMessageBody({
         type: ChatMessageType.IMAGE.valueOf(),
         localPath: filePath,
         displayName: opt?.displayName ?? filePath,
@@ -632,20 +581,21 @@ export class ChatMessage {
         width: opt?.width,
         height: opt?.height,
       }),
-      targetId,
-      chatType
-    );
+      targetId: targetId,
+      chatType: chatType,
+      isChatThread: opt?.isChatThread,
+    });
   }
 
   /**
    * Creates a video message for sending.
    *
-   * @param targetId The ID of the message recipient.
+   * @param targetId The user ID of the message recipient.
    * - For a one-to-one chat, it is the user ID of the peer user.
    * - For a group chat, it is the group ID.
    * - For a chat room, it is the chat room ID.
    * @param filePath The path of the video file.
-   * @param chatType The conversation type.
+   * @param chatType The conversation type. See {@link ChatType}.
    * @param opt
    *   @{#displayName} The video name.
    *   @{#thumbnailLocalPath} The path of the thumbnail of the first frame of video.
@@ -664,10 +614,11 @@ export class ChatMessage {
       duration: number;
       width: number;
       height: number;
+      isChatThread?: boolean;
     }
   ): ChatMessage {
-    return ChatMessage.createSendMessage(
-      new ChatVideoMessageBody({
+    return ChatMessage.createSendMessage({
+      body: new ChatVideoMessageBody({
         type: ChatMessageType.VIDEO.valueOf(),
         localPath: filePath,
         displayName: opt?.displayName ?? '',
@@ -676,22 +627,23 @@ export class ChatMessage {
         width: opt?.width,
         height: opt?.height,
       }),
-      targetId,
-      chatType
-    );
+      targetId: targetId,
+      chatType: chatType,
+      isChatThread: opt?.isChatThread,
+    });
   }
 
   /**
-   * Creates a video message for sending.
+   * Creates a voice message for sending.
    *
-   * @param targetId The ID of the message recipient.
+   * @param targetId The user ID of the message recipient.
    * - For a one-to-one chat, it is the user ID of the peer user.
    * - For a group chat, it is the group ID.
    * - For a chat room, it is the chat room ID.
    * @param filePath The path of the voice file.
-   * @param chatType The conversation type.
+   * @param chatType The conversation type. See {@link ChatType}.
    * @param opt
-   *   @{#displayName} The voice name.
+   *   @{#displayName} The voice file name.
    *   @{#duration} The voice duration in seconds.
    * @returns The message instance.
    */
@@ -702,30 +654,32 @@ export class ChatMessage {
     opt?: {
       displayName: string;
       duration: number;
+      isChatThread?: boolean;
     }
   ): ChatMessage {
-    return ChatMessage.createSendMessage(
-      new ChatVoiceMessageBody({
+    return ChatMessage.createSendMessage({
+      body: new ChatVoiceMessageBody({
         type: ChatMessageType.VOICE.valueOf(),
         localPath: filePath,
         displayName: opt?.displayName ?? '',
         duration: opt?.duration,
       }),
-      targetId,
-      chatType
-    );
+      targetId: targetId,
+      chatType: chatType,
+      isChatThread: opt?.isChatThread,
+    });
   }
 
   /**
    * Creates a location message for sending.
    *
-   * @param targetId The ID of the message recipient.
+   * @param targetId The user ID of the message recipient.
    * - For a one-to-one chat, it is the user ID of the peer user.
    * - For a group chat, it is the group ID.
    * - For a chat room, it is the chat room ID.
    * @param latitude The latitude.
    * @param longitude The longitude.
-   * @param chatType The conversation type.
+   * @param chatType The conversation type. See {@link ChatType}.
    * @param opt
    *   @{#address} The address.
    * @returns The message instance.
@@ -737,56 +691,62 @@ export class ChatMessage {
     chatType: ChatMessageChatType = ChatMessageChatType.PeerChat,
     opt?: {
       address: string;
+      isChatThread?: boolean;
     }
   ): ChatMessage {
-    return ChatMessage.createSendMessage(
-      new ChatLocationMessageBody({
+    return ChatMessage.createSendMessage({
+      body: new ChatLocationMessageBody({
         type: ChatMessageType.LOCATION.valueOf(),
         latitude: latitude,
         longitude: longitude,
         address: opt?.address ?? '',
       }),
-      targetId,
-      chatType
-    );
+      targetId: targetId,
+      chatType: chatType,
+      isChatThread: opt?.isChatThread,
+    });
   }
 
   /**
    * Creates a command message for sending.
    *
-   * @param targetId The ID of the message recipient.
+   * @param targetId The user ID of the message recipient.
    * - For a one-to-one chat, it is the user ID of the peer user.
    * - For a group chat, it is the group ID.
    * - For a chat room, it is the chat room ID.
    * @param action The command action.
-   * @param chatType The conversation type.
+   * @param chatType The conversation type. See {@link ChatType}.
    * @returns The message instance.
    */
   public static createCmdMessage(
     targetId: string,
     action: string,
-    chatType: ChatMessageChatType = ChatMessageChatType.PeerChat
+    chatType: ChatMessageChatType = ChatMessageChatType.PeerChat,
+    opt?: {
+      isChatThread?: boolean;
+    }
   ): ChatMessage {
-    return ChatMessage.createSendMessage(
-      new ChatCmdMessageBody({
+    return ChatMessage.createSendMessage({
+      body: new ChatCmdMessageBody({
         action: action,
       }),
-      targetId,
-      chatType
-    );
+      targetId: targetId,
+      chatType: chatType,
+      isChatThread: opt?.isChatThread,
+    });
   }
 
   /**
    * Creates a custom message for sending.
    *
-   * @param targetId The ID of the message recipient.
+   * @param targetId The user ID of the message recipient.
    * - For a one-to-one chat, it is the user ID of the peer user.
    * - For a group chat, it is the group ID.
    * - For a chat room, it is the chat room ID.
-   * @param event
-   * @param chatType The conversation type.
+   * @param event The custom event.
+   * @param chatType The conversation type. See {@link ChatType}.
    * @param opt
-   *   @{#params} Custom parameters. Key/value pair. It can be nested.
+   *   @{#params} The dictionary of custom parameters.
    * @returns The message instance.
    */
   public static createCustomMessage(
@@ -795,27 +755,57 @@ export class ChatMessage {
     chatType: ChatMessageChatType = ChatMessageChatType.PeerChat,
     opt?: {
       params: any;
+      isChatThread?: boolean;
     }
   ): ChatMessage {
-    return ChatMessage.createSendMessage(
-      new ChatCustomMessageBody({
+    return ChatMessage.createSendMessage({
+      body: new ChatCustomMessageBody({
         event: event,
         params: opt?.params,
       }),
-      targetId,
-      chatType
-    );
+      targetId: targetId,
+      chatType: chatType,
+      isChatThread: opt?.isChatThread,
+    });
   }
 
+  /**
+   * Create a message from the server.
+   *
+   * @param params message in json format.
+   * @returns message object.
+   */
   public static createReceiveMessage(params: any): ChatMessage {
     return new ChatMessage(params);
+  }
+
+  /**
+   * Gets the list of Reactions.
+   */
+  public get reactionList(): Promise<Array<ChatMessageReaction>> {
+    return ChatClient.getInstance().chatManager.getReactionList(this.msgId);
+  }
+
+  /**
+   * Get message read count.
+   *
+   * **Note**
+   * This parameter is valid only when it is a group type. see{@link ChatMessageChatType#GroupChat}
+   */
+  public get groupReadCount(): Promise<number> {
+    return ChatClient.getInstance().chatManager.groupAckCount(this.msgId);
+  }
+
+  /**
+   * Asynchronously returns the chat thread object.
+   */
+  public get threadInfo(): Promise<ChatMessageThreadEvent | undefined> {
+    return ChatClient.getInstance().chatManager.getMessageThread(this.msgId);
   }
 }
 
 /**
- * The content part of the message.
- *
- * The base class for the concrete message type.
+ * The message body base class.
  */
 export class ChatMessageBody {
   /**
@@ -829,21 +819,37 @@ export class ChatMessageBody {
 }
 
 /**
- * The text message body.
+ * The text message body class.
  */
 export class ChatTextMessageBody extends ChatMessageBody {
   /**
    * The text message content.
    */
   content: string;
-  constructor(params: { type: string; content: string }) {
+  /**
+   * Specifies a list of languages to translate. {@link https://docs.microsoft.com/en-us/azure/cognitive-services/translator/language-support}
+   */
+  targetLanguages?: Array<string>;
+  /**
+   * The translated results are placed here.
+   * It is Map Object, key is target language, value is translated content.
+   */
+  translations?: any;
+  constructor(params: {
+    type: string;
+    content: string;
+    targetLanguages?: Array<string>;
+    translations?: any;
+  }) {
     super(params.type);
     this.content = params.content;
+    this.targetLanguages = params.targetLanguages;
+    this.translations = params.translations;
   }
 }
 
 /**
- * The location message body.
+ * The location message body class.
  */
 export class ChatLocationMessageBody extends ChatMessageBody {
   /**
@@ -872,11 +878,11 @@ export class ChatLocationMessageBody extends ChatMessageBody {
 }
 
 /**
- * The file message body.
+ * The file message body class.
  */
 export class ChatFileMessageBody extends ChatMessageBody {
   /**
-   * The local path of the image file.
+   * The local path of the file.
    */
   localPath: string = '';
   /**
@@ -888,7 +894,7 @@ export class ChatFileMessageBody extends ChatMessageBody {
    */
   remotePath: string;
   /**
-   * The download status of the attachment file. See {@link ChatDownloadStatus}
+   * The download status of the attachment file. See {@link ChatDownloadStatus}.
    */
   fileStatus: ChatDownloadStatus;
   /**
@@ -924,10 +930,10 @@ export class ChatFileMessageBody extends ChatMessageBody {
  */
 export class ChatImageMessageBody extends ChatFileMessageBody {
   /**
-   * Sets whether to send the original image when sending an image.
+   * Whether to send the original image when sending an image.
    *
-   * - `false`: (Default) Sends the thumbnail. For an image larger than 100 KB, the SDK will first compress it.
-   * - `true`: Sends the original image.
+   * - `true`: Yes.
+   * - (Default) `false`: No. The thumbnail is sent. For an image greater than 100 KB, the SDK will compress it before sending its thumbnail.
    */
   sendOriginalImage: boolean;
   /**
@@ -939,7 +945,7 @@ export class ChatImageMessageBody extends ChatFileMessageBody {
    */
   thumbnailRemotePath: string;
   /**
-   * The secret to access the thumbnail. A secret is required for verification for thumbnail download.
+   * The token to access the thumbnail. A token is required for verification for thumbnail download.
    */
   thumbnailSecret: string;
   /**
@@ -992,7 +998,7 @@ export class ChatImageMessageBody extends ChatFileMessageBody {
 }
 
 /**
- * The video message body.
+ * The video message body class.
  */
 export class ChatVideoMessageBody extends ChatFileMessageBody {
   /**
@@ -1008,7 +1014,7 @@ export class ChatVideoMessageBody extends ChatFileMessageBody {
    */
   thumbnailRemotePath: string;
   /**
-   * The secret key of the video thumbnail.
+   * The token to download the video thumbnail.
    */
   thumbnailSecret: string;
   /**
@@ -1100,8 +1106,8 @@ export class ChatCmdMessageBody extends ChatMessageBody {
    */
   action: string;
   /**
-   * Checks whether to deliver to online users only.
-   * - (Default)`false`: The command message is delivered users, regardless of their online or offline status.
+   * Whether this command message is delivered only to online users.
+   * - (Default)`false`: The command message is delivered to users, regardless of their online or offline status.
    * - `true`: The message is delivered to the online users only, so the offline users won't receive the message when they log in later.
    */
   deliverOnlineOnly: boolean;

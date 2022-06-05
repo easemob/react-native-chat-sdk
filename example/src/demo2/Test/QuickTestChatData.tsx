@@ -1,6 +1,7 @@
 import { ChatMessageType, ChatMessageChatType } from 'react-native-chat-sdk';
 import { datasheet } from '../__default__/Datasheet';
 import type { ApiParams } from '../__internal__/DataTypes';
+import { ChatManagerCache } from './ChatManagerCache';
 
 export const MN = {
   sendMessage: 'sendMessage',
@@ -41,6 +42,29 @@ export const MN = {
   getMessagesFromTime: 'getMessagesFromTime',
   translateMessage: 'translateMessage',
   fetchSupportLanguages: 'fetchSupportLanguages',
+  setConversationExtension: 'setConversationExtension',
+  addReaction: 'addReaction',
+  removeReaction: 'removeReaction',
+  fetchReactionList: 'fetchReactionList',
+  fetchReactionDetail: 'fetchReactionDetail',
+  reportMessage: 'reportMessage',
+  getReactionList: 'getReactionList',
+  groupAckCount: 'groupAckCount',
+  createChatThread: 'createChatThread',
+  joinChatThread: 'joinChatThread',
+  leaveChatThread: 'leaveChatThread',
+  destroyChatThread: 'destroyChatThread',
+  updateChatThreadName: 'updateChatThreadName',
+  removeMemberWithChatThread: 'removeMemberWithChatThread',
+  fetchMembersWithChatThreadFromServer: 'fetchMembersWithChatThreadFromServer',
+  fetchJoinedChatThreadFromServer: 'fetchJoinedChatThreadFromServer',
+  fetchJoinedChatThreadWithParentFromServer:
+    'fetchJoinedChatThreadWithParentFromServer',
+  fetchChatThreadWithParentFromServer: 'fetchChatThreadWithParentFromServer',
+  fetchLastMessageWithChatThread: 'fetchLastMessageWithChatThread',
+  fetchChatThread: 'fetchChatThread',
+  fetchChatThreadFromServer: 'fetchChatThreadFromServer',
+  getMessageThread: 'getMessageThread',
 };
 
 export const metaDataList = new Map<string, ApiParams>([
@@ -81,6 +105,7 @@ export const metaDataList = new Map<string, ApiParams>([
           paramName: 'message', // 使用发送成功或者失败的数据测试，依赖sendMessage
           paramType: 'object',
           paramDefaultValue: {},
+          paramValue: () => ChatManagerCache.getInstance().createTextMessage(),
         },
       ],
     },
@@ -94,6 +119,7 @@ export const metaDataList = new Map<string, ApiParams>([
           paramName: 'message', // 使用发送成功或者失败的数据测试，依赖sendMessage
           paramType: 'object',
           paramDefaultValue: {},
+          paramValue: () => ChatManagerCache.getInstance().getLastRecvMessage(),
         },
       ],
     },
@@ -183,6 +209,7 @@ export const metaDataList = new Map<string, ApiParams>([
           paramName: 'message', // 使用发送成功或者失败的数据测试，依赖sendMessage
           paramType: 'object',
           paramDefaultValue: {},
+          paramValue: () => ChatManagerCache.getInstance().getLastSendMessage(),
         },
       ],
     },
@@ -196,6 +223,7 @@ export const metaDataList = new Map<string, ApiParams>([
           paramName: 'message', // 使用发送成功或者失败的数据测试，依赖sendMessage
           paramType: 'object',
           paramDefaultValue: {},
+          paramValue: () => ChatManagerCache.getInstance().getLastSendMessage(),
         },
       ],
     },
@@ -209,11 +237,13 @@ export const metaDataList = new Map<string, ApiParams>([
           paramName: 'message', // 使用发送成功或者失败的数据测试，依赖sendMessage
           paramType: 'object',
           paramDefaultValue: {},
+          paramValue: () => ChatManagerCache.getInstance().getLastRecvMessage(),
         },
         {
           paramName: 'callback', // 创建新的回调接收
           paramType: 'object',
           paramDefaultValue: {},
+          paramValue: () => ChatManagerCache.getInstance().createCallback(),
         },
       ],
     },
@@ -227,11 +257,13 @@ export const metaDataList = new Map<string, ApiParams>([
           paramName: 'message', // 使用发送成功或者失败的数据测试，依赖sendMessage
           paramType: 'object',
           paramDefaultValue: {},
+          paramValue: () => ChatManagerCache.getInstance().getLastRecvMessage(),
         },
         {
           paramName: 'callback', // 创建新的回调接收
           paramType: 'object',
           paramDefaultValue: {},
+          paramValue: () => ChatManagerCache.getInstance().createCallback(),
         },
       ],
     },
@@ -343,7 +375,8 @@ export const metaDataList = new Map<string, ApiParams>([
         {
           paramName: 'isDeleteMessage',
           paramType: 'boolean',
-          paramDefaultValue: false,
+          paramDefaultValue: true,
+          domType: 'select',
         },
       ],
     },
@@ -361,12 +394,13 @@ export const metaDataList = new Map<string, ApiParams>([
         {
           paramName: 'convType',
           paramType: 'number',
-          paramDefaultValue: 1,
+          paramDefaultValue: 0,
         },
         {
           paramName: 'createIfNeed',
           paramType: 'boolean',
           paramDefaultValue: true,
+          domType: 'select',
         },
       ],
     },
@@ -398,7 +432,8 @@ export const metaDataList = new Map<string, ApiParams>([
         {
           paramName: 'withMessage',
           paramType: 'boolean',
-          paramDefaultValue: false,
+          paramDefaultValue: true,
+          domType: 'select',
         },
       ],
     },
@@ -517,6 +552,7 @@ export const metaDataList = new Map<string, ApiParams>([
           paramName: 'msg',
           paramType: 'object',
           paramDefaultValue: {},
+          paramValue: () => ChatManagerCache.getInstance().getLastSendMessage(),
         },
       ],
     },
@@ -540,6 +576,7 @@ export const metaDataList = new Map<string, ApiParams>([
           paramName: 'msg',
           paramType: 'object',
           paramDefaultValue: {},
+          paramValue: () => ChatManagerCache.getInstance().getLastSendMessage(),
         },
       ],
     },
@@ -563,6 +600,7 @@ export const metaDataList = new Map<string, ApiParams>([
           paramName: 'msg',
           paramType: 'object',
           paramDefaultValue: {},
+          paramValue: () => ChatManagerCache.getInstance().getLastSendMessage(),
         },
       ],
     },
@@ -586,6 +624,7 @@ export const metaDataList = new Map<string, ApiParams>([
           paramName: 'msgId',
           paramType: 'object',
           paramDefaultValue: '1003599319195977800',
+          paramValue: () => ChatManagerCache.getInstance().getLastRecvMessage(),
         },
       ],
     },
@@ -654,7 +693,7 @@ export const metaDataList = new Map<string, ApiParams>([
         {
           paramName: 'direction',
           paramType: 'number',
-          paramDefaultValue: 1,
+          paramDefaultValue: 0,
         },
         {
           paramName: 'timestamp',
@@ -669,7 +708,7 @@ export const metaDataList = new Map<string, ApiParams>([
         {
           paramName: 'sender',
           paramType: 'string',
-          paramDefaultValue: datasheet.accounts[2].id,
+          paramDefaultValue: datasheet.accounts[0].id,
         },
       ],
     },
@@ -697,7 +736,7 @@ export const metaDataList = new Map<string, ApiParams>([
         {
           paramName: 'startMsgId',
           paramType: 'string',
-          paramDefaultValue: '1003225988886169736',
+          paramDefaultValue: '1003607445513177152',
         },
         {
           paramName: 'loadCount',
@@ -768,12 +807,12 @@ export const metaDataList = new Map<string, ApiParams>([
         {
           paramName: 'startTime',
           paramType: 'number',
-          paramDefaultValue: 1652362696825,
+          paramDefaultValue: 1651233202699,
         },
         {
           paramName: 'endTime',
           paramType: 'number',
-          paramDefaultValue: 1652362699237,
+          paramDefaultValue: 1651234714623,
         },
         {
           paramName: 'direction',
@@ -797,11 +836,12 @@ export const metaDataList = new Map<string, ApiParams>([
           paramName: 'msg',
           paramType: 'object',
           paramDefaultValue: {},
+          paramValue: () => ChatManagerCache.getInstance().getLastSendMessage(),
         },
         {
           paramName: 'languages',
           paramType: 'object',
-          paramDefaultValue: [],
+          paramDefaultValue: ['yue', 'en', 'fr', 'de', 'ca'],
         },
       ],
     },
@@ -811,6 +851,376 @@ export const metaDataList = new Map<string, ApiParams>([
     {
       methodName: MN.fetchSupportLanguages,
       params: [],
+    },
+  ],
+  [
+    MN.setConversationExtension,
+    {
+      methodName: MN.setConversationExtension,
+      params: [
+        {
+          paramName: 'convId',
+          paramType: 'string',
+          paramDefaultValue: datasheet.accounts[2].id,
+        },
+        {
+          paramName: 'convType',
+          paramType: 'number',
+          paramDefaultValue: 0,
+        },
+        {
+          paramName: 'ext',
+          paramType: 'object',
+          paramDefaultValue: { key: 'value' },
+        },
+      ],
+    },
+  ],
+  [
+    MN.addReaction,
+    {
+      methodName: MN.addReaction,
+      params: [
+        {
+          paramName: 'reaction',
+          paramType: 'string',
+          paramDefaultValue: 'reaction1',
+        },
+        {
+          paramName: 'msgId',
+          paramType: 'string',
+          paramDefaultValue: '1017652723916474936',
+        },
+      ],
+    },
+  ],
+  [
+    MN.removeReaction,
+    {
+      methodName: MN.removeReaction,
+      params: [
+        {
+          paramName: 'reaction',
+          paramType: 'string',
+          paramDefaultValue: 'reaction1',
+        },
+        {
+          paramName: 'msgId',
+          paramType: 'string',
+          paramDefaultValue: '1017560360250509880',
+        },
+      ],
+    },
+  ],
+  [
+    MN.fetchReactionList,
+    {
+      methodName: MN.fetchReactionList,
+      params: [
+        {
+          paramName: 'msgIds',
+          paramType: 'object',
+          paramDefaultValue: ['1017652723916474936'],
+        },
+        {
+          paramName: 'groupId',
+          paramType: 'string',
+          paramDefaultValue: '183504266657793',
+        },
+        {
+          paramName: 'chatType',
+          paramType: 'object',
+          paramDefaultValue: ChatMessageChatType.GroupChat,
+        },
+      ],
+    },
+  ],
+  [
+    MN.fetchReactionDetail,
+    {
+      methodName: MN.fetchReactionDetail,
+      params: [
+        {
+          paramName: 'msgId',
+          paramType: 'string',
+          paramDefaultValue: '1017220072558561848',
+        },
+        {
+          paramName: 'reaction',
+          paramType: 'string',
+          paramDefaultValue: '',
+        },
+        {
+          paramName: 'cursor',
+          paramType: 'string',
+          paramDefaultValue: '',
+        },
+        {
+          paramName: 'pageSize',
+          paramType: 'number',
+          paramDefaultValue: 20,
+        },
+      ],
+    },
+  ],
+  [
+    MN.reportMessage,
+    {
+      methodName: MN.reportMessage,
+      params: [
+        {
+          paramName: 'msgId',
+          paramType: 'string',
+          paramDefaultValue: '1017220072558561848',
+        },
+        {
+          paramName: 'tag',
+          paramType: 'string',
+          paramDefaultValue: 'reaction',
+        },
+        {
+          paramName: 'reason',
+          paramType: 'string',
+          paramDefaultValue: '',
+        },
+      ],
+    },
+  ],
+  [
+    MN.getReactionList,
+    {
+      methodName: MN.getReactionList,
+      params: [
+        {
+          paramName: 'msgId',
+          paramType: 'string',
+          paramDefaultValue: '1017220072558561848',
+        },
+      ],
+    },
+  ],
+  [
+    MN.groupAckCount,
+    {
+      methodName: MN.groupAckCount,
+      params: [
+        {
+          paramName: 'msgId',
+          paramType: 'string',
+          paramDefaultValue: '10172200725585618481',
+        },
+      ],
+    },
+  ],
+  [
+    MN.createChatThread,
+    {
+      methodName: MN.createChatThread,
+      params: [
+        {
+          paramName: 'name',
+          paramType: 'string',
+          paramDefaultValue: 'name',
+        },
+        {
+          paramName: 'msgId',
+          paramType: 'string',
+          paramDefaultValue: '1003229966910883832',
+        },
+        {
+          paramName: 'parentId',
+          paramType: 'string',
+          paramDefaultValue: '1003229966910883832',
+        },
+      ],
+    },
+  ],
+  [
+    MN.joinChatThread,
+    {
+      methodName: MN.joinChatThread,
+      params: [
+        {
+          paramName: 'chatThreadId',
+          paramType: 'string',
+          paramDefaultValue: '1003229966910883832',
+        },
+      ],
+    },
+  ],
+  [
+    MN.leaveChatThread,
+    {
+      methodName: MN.leaveChatThread,
+      params: [
+        {
+          paramName: 'chatThreadId',
+          paramType: 'string',
+          paramDefaultValue: '1003229966910883832',
+        },
+      ],
+    },
+  ],
+  [
+    MN.destroyChatThread,
+    {
+      methodName: MN.destroyChatThread,
+      params: [
+        {
+          paramName: 'chatThreadId',
+          paramType: 'string',
+          paramDefaultValue: '1003229966910883832',
+        },
+      ],
+    },
+  ],
+  [
+    MN.updateChatThreadName,
+    {
+      methodName: MN.updateChatThreadName,
+      params: [
+        {
+          paramName: 'chatThreadId',
+          paramType: 'string',
+          paramDefaultValue: '1003229966910883832',
+        },
+        {
+          paramName: 'newName',
+          paramType: 'string',
+          paramDefaultValue: 'newName',
+        },
+      ],
+    },
+  ],
+  [
+    MN.removeMemberWithChatThread,
+    {
+      methodName: MN.removeMemberWithChatThread,
+      params: [
+        {
+          paramName: 'chatThreadId',
+          paramType: 'string',
+          paramDefaultValue: '1003229966910883832',
+        },
+        {
+          paramName: 'memberId',
+          paramType: 'string',
+          paramDefaultValue: datasheet.accounts[2],
+        },
+      ],
+    },
+  ],
+  [
+    MN.fetchMembersWithChatThreadFromServer,
+    {
+      methodName: MN.fetchMembersWithChatThreadFromServer,
+      params: [
+        {
+          paramName: 'chatThreadId',
+          paramType: 'string',
+          paramDefaultValue: '1003229966910883832',
+        },
+        {
+          paramName: 'cursor',
+          paramType: 'string',
+          paramDefaultValue: '',
+        },
+        {
+          paramName: 'pageSize',
+          paramType: 'number',
+          paramDefaultValue: 20,
+        },
+      ],
+    },
+  ],
+  [
+    MN.fetchJoinedChatThreadFromServer,
+    {
+      methodName: MN.fetchJoinedChatThreadFromServer,
+      params: [
+        {
+          paramName: 'cursor',
+          paramType: 'string',
+          paramDefaultValue: '',
+        },
+        {
+          paramName: 'pageSize',
+          paramType: 'number',
+          paramDefaultValue: 20,
+        },
+      ],
+    },
+  ],
+  [
+    MN.fetchJoinedChatThreadWithParentFromServer,
+    {
+      methodName: MN.fetchJoinedChatThreadWithParentFromServer,
+      params: [
+        {
+          paramName: 'chatThreadId',
+          paramType: 'string',
+          paramDefaultValue: '1003229966910883832',
+        },
+        {
+          paramName: 'cursor',
+          paramType: 'string',
+          paramDefaultValue: '',
+        },
+        {
+          paramName: 'pageSize',
+          paramType: 'number',
+          paramDefaultValue: 20,
+        },
+      ],
+    },
+  ],
+  [
+    MN.fetchChatThreadWithParentFromServer,
+    {
+      methodName: MN.fetchChatThreadWithParentFromServer,
+      params: [
+        {
+          paramName: 'chatThreadId',
+          paramType: 'string',
+          paramDefaultValue: '1003229966910883832',
+        },
+        {
+          paramName: 'cursor',
+          paramType: 'string',
+          paramDefaultValue: '',
+        },
+        {
+          paramName: 'pageSize',
+          paramType: 'number',
+          paramDefaultValue: 20,
+        },
+      ],
+    },
+  ],
+  [
+    MN.fetchLastMessageWithChatThread,
+    {
+      methodName: MN.fetchLastMessageWithChatThread,
+      params: [
+        {
+          paramName: 'chatThreadIds',
+          paramType: 'object',
+          paramDefaultValue: ['1003229966910883832'],
+        },
+      ],
+    },
+  ],
+  [
+    MN.fetchChatThreadFromServer,
+    {
+      methodName: MN.fetchChatThreadFromServer,
+      params: [
+        {
+          paramName: 'chatThreadId',
+          paramType: 'string',
+          paramDefaultValue: '1003229966910883832',
+        },
+      ],
     },
   ],
 ]);

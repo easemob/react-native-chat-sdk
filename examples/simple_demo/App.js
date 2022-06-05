@@ -24,11 +24,30 @@ import {
 
 const App = () => {
   const title = 'AgoraChatQuickstart';
+  const [appKey, setAppKey] = React.useState('easemob-demo#easeim');
   const [username, setUsername] = React.useState('');
   const [password, setPassword] = React.useState('');
   const [userId, setUserId] = React.useState('');
   const [content, setContent] = React.useState('');
   const [logText, setWarnText] = React.useState('Show log area');
+
+  const init = () => {
+    let o = new ChatOptions({
+      autoLogin: false,
+      appKey: appKey,
+    });
+    ChatClient.getInstance()
+      .init(o)
+      .then(() => {
+        console.log('init success');
+        setWarnText('init success.');
+        this.isInitialized = true;
+      })
+      .catch(() => {
+        console.log('init fail.');
+        setWarnText('init fail.');
+      });
+  };
 
   const setListener = () => {
     let msgListener = {
@@ -64,6 +83,10 @@ const App = () => {
   };
 
   const registerAccount = () => {
+    if (this.isInitialized === false || this.isInitialized === undefined) {
+      setWarnText('Perform initialization first.');
+      return;
+    }
     ChatClient.getInstance()
       .createAccount(username, password)
       .then(() => {
@@ -77,6 +100,10 @@ const App = () => {
   };
 
   const login = () => {
+    if (this.isInitialized === false || this.isInitialized === undefined) {
+      setWarnText('Perform initialization first.');
+      return;
+    }
     setWarnText(`username:${username},password:${password}`);
     let listener = {
       onTokenWillExpire() {
@@ -112,6 +139,10 @@ const App = () => {
   };
 
   const logout = () => {
+    if (this.isInitialized === false || this.isInitialized === undefined) {
+      setWarnText('Perform initialization first.');
+      return;
+    }
     ChatClient.getInstance()
       .logout()
       .then(() => {
@@ -125,6 +156,10 @@ const App = () => {
   };
 
   const sendmsg = () => {
+    if (this.isInitialized === false || this.isInitialized === undefined) {
+      setWarnText('Perform initialization first.');
+      return;
+    }
     let msg = ChatMessage.createTextMessage(
       userId,
       content,
@@ -162,6 +197,20 @@ const App = () => {
         <Text style={styles.title}>{title}</Text>
       </View>
       <ScrollView>
+        <View style={styles.inputCon}>
+          <TextInput
+            multiline
+            style={styles.inputBox}
+            placeholder="Enter appkey"
+            onChangeText={text => setAppKey(text)}
+            value={appKey}
+          />
+        </View>
+        <View style={styles.buttonCon}>
+          <Text style={styles.btn2} onPress={init}>
+            INIT SDK
+          </Text>
+        </View>
         <View style={styles.inputCon}>
           <TextInput
             multiline
@@ -283,20 +332,5 @@ const styles = StyleSheet.create({
     lineHeight: 20,
   },
 });
-
-(function init() {
-  let o = new ChatOptions({
-    autoLogin: false,
-    appKey: 'easemob-demo#easeim',
-  });
-  ChatClient.getInstance()
-    .init(o)
-    .then(() => {
-      console.log('success');
-    })
-    .catch(() => {
-      console.log('error');
-    });
-})();
 
 export default App;

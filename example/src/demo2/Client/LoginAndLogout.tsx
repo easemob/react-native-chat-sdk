@@ -125,6 +125,17 @@ export class LoginAndLogoutScreen extends Component<
       constructor(parent: LoginAndLogoutScreen) {
         this.that = parent;
       }
+      onThreadEvent(
+        event?: ChatMultiDeviceEvent,
+        target?: string,
+        ext?: string[]
+      ): void {
+        console.log('LoginAndLogoutScreen.onThreadEvent: ', event, target, ext);
+        this.that.setState({
+          listenerStatus:
+            'LoginAndLogoutScreen.onThreadEvent: ' + event + target + ext,
+        });
+      }
       onContactEvent(
         event?: ChatMultiDeviceEvent,
         target?: string,

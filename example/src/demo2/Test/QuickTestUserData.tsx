@@ -1,16 +1,11 @@
 import { datasheet } from '../__default__/Datasheet';
 import type { ApiParams } from '../__internal__/DataTypes';
 
-const updateOwnUserInfo = 'updateOwnUserInfo';
-const fetchUserInfoById = 'fetchUserInfoById';
-const fetchOwnInfo = 'fetchOwnInfo';
-const clearUserInfo = 'clearUserInfo';
-
 export const MN = {
-  updateOwnUserInfo,
-  fetchUserInfoById,
-  fetchOwnInfo,
-  clearUserInfo,
+  updateOwnUserInfo: 'updateOwnUserInfo',
+  fetchUserInfoById: 'fetchUserInfoById',
+  fetchOwnInfo: 'fetchOwnInfo',
+  clearUserInfo: 'clearUserInfo',
 };
 
 export const metaDataList = new Map<string, ApiParams>([
@@ -23,41 +18,49 @@ export const metaDataList = new Map<string, ApiParams>([
           paramName: 'nickName',
           paramType: 'string',
           paramDefaultValue: 'foo',
+          domType: 'input',
         },
         {
           paramName: 'avatarUrl',
           paramType: 'string',
           paramDefaultValue: '',
+          domType: 'input',
         },
         {
           paramName: 'mail',
           paramType: 'string',
           paramDefaultValue: 'xxx@hotmail.com',
+          domType: 'input',
         },
         {
           paramName: 'phone',
           paramType: 'string',
           paramDefaultValue: '134 8888 9999',
+          domType: 'input',
         },
         {
           paramName: 'gender',
           paramType: 'number',
           paramDefaultValue: 0,
+          domType: 'input',
         },
         {
           paramName: 'sign',
           paramType: 'string',
           paramDefaultValue: 'I am teacher',
+          domType: 'input',
         },
         {
           paramName: 'birth',
           paramType: 'string',
           paramDefaultValue: '2020.09.01',
+          domType: 'input',
         },
         {
           paramName: 'ext',
           paramType: 'string',
           paramDefaultValue: JSON.stringify({ key: 'value' }),
+          domType: 'input',
         },
       ],
     },
@@ -71,11 +74,13 @@ export const metaDataList = new Map<string, ApiParams>([
           paramName: 'userIds',
           paramType: 'object',
           paramDefaultValue: [datasheet.accounts[0].id],
+          domType: 'input',
         },
         {
           paramName: 'expireTime',
           paramType: 'number',
           paramDefaultValue: 0,
+          domType: 'input',
         },
       ],
     },
@@ -89,6 +94,7 @@ export const metaDataList = new Map<string, ApiParams>([
           paramName: 'expireTime',
           paramType: 'number',
           paramDefaultValue: 0,
+          domType: 'input',
         },
       ],
     },

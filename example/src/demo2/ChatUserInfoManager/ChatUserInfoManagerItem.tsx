@@ -2,9 +2,10 @@ import React, { ReactNode } from 'react';
 import { View } from 'react-native';
 import { styleValues } from '../__internal__/Css';
 import { LeafScreenBase, StateBase } from '../__internal__/LeafScreenBase';
-import { metaData, CHATUSERINFOMN, stateData } from './ChatUserInfoManagerData';
+import { metaDataList, MN } from './ChatUserInfoManagerData';
 import type { ApiParams } from '../__internal__/DataTypes';
 import { ChatClient } from 'react-native-chat-sdk';
+import { generateData } from '../__internal__/Utils';
 export interface StateChatUserInfoMessage extends StateBase {
   fetchOwnInfo: {};
   fetchUserInfoById: {
@@ -17,12 +18,16 @@ export interface StateChatUserInfoMessage extends StateBase {
 export class ChatUserInfoManagerLeafScreen extends LeafScreenBase<StateChatUserInfoMessage> {
   protected static TAG = 'ChatUserInfoManagerLeafScreen';
   public static route = 'ChatUserInfoManagerLeafScreen';
-  metaData: Map<string, ApiParams>;
+  metaDataList: Map<string, ApiParams>;
   state: StateChatUserInfoMessage;
   constructor(props: { navigation: any }) {
     super(props);
-    this.metaData = metaData;
-    this.state = stateData;
+    this.metaDataList = metaDataList;
+    this.state = Object.assign({}, generateData(metaDataList), {
+      sendResult: '',
+      recvResult: '',
+      exceptResult: '',
+    });
   }
   protected renderBody(): ReactNode {
     console.log(`${ChatUserInfoManagerLeafScreen.TAG}: renderBody: `);
@@ -31,9 +36,9 @@ export class ChatUserInfoManagerLeafScreen extends LeafScreenBase<StateChatUserI
     );
   }
   protected renderApiDom(): ReactNode[] {
-    const apiList = ['fetchOwnInfo', 'fetchUserInfoById', 'updateOwnUserInfo'];
+    const apiList = ['updateOwnUserInfo', 'fetchUserInfoById', 'fetchOwnInfo'];
     let renderDomAry: ({} | null | undefined)[] = [];
-    const data = this.metaData;
+    const data = this.metaDataList;
     apiList.forEach((apiItem) => {
       this.setKeyPrefix(apiItem);
       renderDomAry.push(
@@ -82,29 +87,29 @@ export class ChatUserInfoManagerLeafScreen extends LeafScreenBase<StateChatUserI
   private callApi(name: string): void {
     console.log(`${ChatUserInfoManagerLeafScreen.TAG}: callApi: `);
     switch (name) {
-      case CHATUSERINFOMN.fetchOwnInfo: {
+      case MN.fetchOwnInfo: {
         this.tryCatch(
           ChatClient.getInstance().userManager.fetchOwnInfo(),
           ChatUserInfoManagerLeafScreen.TAG,
-          'CHATROOMMN.fetchOwnInfo'
+          name
         );
         break;
       }
-      case CHATUSERINFOMN.fetchUserInfoById: {
+      case MN.fetchUserInfoById: {
         const { userIds } = this.state.fetchUserInfoById;
         this.tryCatch(
           ChatClient.getInstance().userManager.fetchUserInfoById(userIds),
           ChatUserInfoManagerLeafScreen.TAG,
-          'CHATROOMMN.fetchUserInfoById'
+          name
         );
         break;
       }
-      case CHATUSERINFOMN.updateOwnUserInfo: {
+      case MN.updateOwnUserInfo: {
         const { userInfo } = this.state.updateOwnUserInfo;
         this.tryCatch(
           ChatClient.getInstance().userManager.updateOwnUserInfo(userInfo),
           ChatUserInfoManagerLeafScreen.TAG,
-          'CHATROOMMN.updateOwnUserInfo'
+          name
         );
         break;
       }

@@ -1,96 +1,52 @@
 import { datasheet } from '../__default__/Datasheet';
 import type { ApiParams } from '../__internal__/DataTypes';
-
-const getGroupWithId = 'getGroupWithId';
-const getJoinedGroups = 'getJoinedGroups';
-const fetchJoinedGroupsFromServer = 'fetchJoinedGroupsFromServer';
-const fetchPublicGroupsFromServer = 'fetchPublicGroupsFromServer';
-const createGroup = 'createGroup';
-const fetchGroupInfoFromServer = 'fetchGroupInfoFromServer';
-const fetchMemberListFromServer = 'fetchMemberListFromServer';
-const fetchBlockListFromServer = 'fetchBlockListFromServer';
-const fetchMuteListFromServer = 'fetchMuteListFromServer';
-const fetchWhiteListFromServer = 'fetchWhiteListFromServer';
-const isMemberInWhiteListFromServer = 'isMemberInWhiteListFromServer';
-const fetchGroupFileListFromServer = 'fetchGroupFileListFromServer';
-const fetchAnnouncementFromServer = 'fetchAnnouncementFromServer';
-const addMembers = 'addMembers';
-const inviterUser = 'inviterUser';
-const removeMembers = 'removeMembers';
-const blockMembers = 'blockMembers';
-const unblockMembers = 'unblockMembers';
-const changeGroupName = 'changeGroupName';
-const changeGroupDescription = 'changeGroupDescription';
-const leaveGroup = 'leaveGroup';
-const destroyGroup = 'destroyGroup';
-const blockGroup = 'blockGroup';
-const unblockGroup = 'unblockGroup';
-const changeOwner = 'changeOwner';
-const addAdmin = 'addAdmin';
-const removeAdmin = 'removeAdmin';
-const muteMembers = 'muteMembers';
-const unMuteMembers = 'unMuteMembers';
-const muteAllMembers = 'muteAllMembers';
-const unMuteAllMembers = 'unMuteAllMembers';
-const addWhiteList = 'addWhiteList';
-const removeWhiteList = 'removeWhiteList';
-const uploadGroupSharedFile = 'uploadGroupSharedFile';
-const downloadGroupSharedFile = 'downloadGroupSharedFile';
-const removeGroupSharedFile = 'removeGroupSharedFile';
-const updateGroupAnnouncement = 'updateGroupAnnouncement';
-const updateGroupExtension = 'updateGroupExtension';
-const joinPublicGroup = 'joinPublicGroup';
-const requestToJoinPublicGroup = 'requestToJoinPublicGroup';
-const acceptJoinApplication = 'acceptJoinApplication';
-const declineJoinApplication = 'declineJoinApplication';
-const acceptInvitation = 'acceptInvitation';
-const declineInvitation = 'declineInvitation';
+import RNFS from 'react-native-fs';
 
 export const MN = {
-  getGroupWithId,
-  getJoinedGroups,
-  fetchJoinedGroupsFromServer,
-  fetchPublicGroupsFromServer,
-  createGroup,
-  fetchGroupInfoFromServer,
-  fetchMemberListFromServer,
-  fetchBlockListFromServer,
-  fetchMuteListFromServer,
-  fetchWhiteListFromServer,
-  isMemberInWhiteListFromServer,
-  fetchGroupFileListFromServer,
-  fetchAnnouncementFromServer,
-  addMembers,
-  inviterUser,
-  removeMembers,
-  blockMembers,
-  unblockMembers,
-  changeGroupName,
-  changeGroupDescription,
-  leaveGroup,
-  destroyGroup,
-  blockGroup,
-  unblockGroup,
-  changeOwner,
-  addAdmin,
-  removeAdmin,
-  muteMembers,
-  unMuteMembers,
-  muteAllMembers,
-  unMuteAllMembers,
-  addWhiteList,
-  removeWhiteList,
-  uploadGroupSharedFile,
-  downloadGroupSharedFile,
-  removeGroupSharedFile,
-  updateGroupAnnouncement,
-  updateGroupExtension,
-  joinPublicGroup,
-  requestToJoinPublicGroup,
-  acceptJoinApplication,
-  declineJoinApplication,
-  acceptInvitation,
-  declineInvitation,
+  getGroupWithId: 'getGroupWithId',
+  getJoinedGroups: 'getJoinedGroups',
+  fetchJoinedGroupsFromServer: 'fetchJoinedGroupsFromServer',
+  fetchPublicGroupsFromServer: 'fetchPublicGroupsFromServer',
+  createGroup: 'createGroup',
+  fetchGroupInfoFromServer: 'fetchGroupInfoFromServer',
+  fetchMemberListFromServer: 'fetchMemberListFromServer',
+  fetchBlockListFromServer: 'fetchBlockListFromServer',
+  fetchMuteListFromServer: 'fetchMuteListFromServer',
+  fetchWhiteListFromServer: 'fetchWhiteListFromServer',
+  isMemberInWhiteListFromServer: 'isMemberInWhiteListFromServer',
+  fetchGroupFileListFromServer: 'fetchGroupFileListFromServer',
+  fetchAnnouncementFromServer: 'fetchAnnouncementFromServer',
+  addMembers: 'addMembers',
+  inviterUser: 'inviterUser',
+  removeMembers: 'removeMembers',
+  blockMembers: 'blockMembers',
+  unblockMembers: 'unblockMembers',
+  changeGroupName: 'changeGroupName',
+  changeGroupDescription: 'changeGroupDescription',
+  leaveGroup: 'leaveGroup',
+  destroyGroup: 'destroyGroup',
+  blockGroup: 'blockGroup',
+  unblockGroup: 'unblockGroup',
+  changeOwner: 'changeOwner',
+  addAdmin: 'addAdmin',
+  removeAdmin: 'removeAdmin',
+  muteMembers: 'muteMembers',
+  unMuteMembers: 'unMuteMembers',
+  muteAllMembers: 'muteAllMembers',
+  unMuteAllMembers: 'unMuteAllMembers',
+  addWhiteList: 'addWhiteList',
+  removeWhiteList: 'removeWhiteList',
+  uploadGroupSharedFile: 'uploadGroupSharedFile',
+  downloadGroupSharedFile: 'downloadGroupSharedFile',
+  removeGroupSharedFile: 'removeGroupSharedFile',
+  updateGroupAnnouncement: 'updateGroupAnnouncement',
+  updateGroupExtension: 'updateGroupExtension',
+  joinPublicGroup: 'joinPublicGroup',
+  requestToJoinPublicGroup: 'requestToJoinPublicGroup',
+  acceptJoinApplication: 'acceptJoinApplication',
+  declineJoinApplication: 'declineJoinApplication',
+  acceptInvitation: 'acceptInvitation',
+  declineInvitation: 'declineInvitation',
 };
 
 export const metaDataList = new Map<string, ApiParams>([
@@ -158,7 +114,7 @@ export const metaDataList = new Map<string, ApiParams>([
         {
           paramName: 'groupName',
           paramType: 'string',
-          paramDefaultValue: '测试-111',
+          paramDefaultValue: '2022060502',
         },
         {
           paramName: 'desc',
@@ -184,7 +140,7 @@ export const metaDataList = new Map<string, ApiParams>([
           paramName: 'options',
           paramType: 'object',
           paramDefaultValue: {
-            style: 2,
+            style: 3,
             maxCount: 200,
             inviteNeedConfirm: false,
             ext: '',
@@ -723,7 +679,8 @@ export const metaDataList = new Map<string, ApiParams>([
         {
           paramName: 'savePath',
           paramType: 'string',
-          paramDefaultValue: '/storage/emulated/0/Recorder/test2.mp3',
+          paramDefaultValue:
+            RNFS.TemporaryDirectoryPath + '/easemob/easemob.file',
         },
         {
           paramName: 'callback',

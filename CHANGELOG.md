@@ -1,6 +1,12 @@
 # Update Log
 
 ---
+## 0.4.5
+* Add reaction functions
+* Add translation functions
+* Add presence functions
+
+---
 ## 0.4.4
 * Implement log control.
 

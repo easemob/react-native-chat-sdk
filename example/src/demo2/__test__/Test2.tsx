@@ -10,6 +10,8 @@ import {
 } from 'react-native-chat-sdk';
 import { ChatGroupManager } from 'src/ChatGroupManager';
 import type { ChatTextMessageBody } from 'src/common/ChatMessage'; // local for test
+import type { ChatMessageReactionEvent } from 'src/common/ChatMessageReaction';
+import type { ChatMessageThreadEvent } from 'src/common/ChatMessageThread';
 import { styleValues } from '../__internal__/Css';
 import { ApiParams, LeafScreenBase, StateBase } from './Test1';
 
@@ -42,6 +44,21 @@ export class QuickTestScreen extends LeafScreenBase<State> {
       that: QuickTestScreen;
       constructor(parent: any) {
         this.that = parent as QuickTestScreen;
+      }
+      onMessageReactionDidChange(_list: Array<ChatMessageReactionEvent>): void {
+        throw new Error('Method not implemented.');
+      }
+      onChatMessageThreadCreated(_msgThread: ChatMessageThreadEvent): void {
+        throw new Error('Method not implemented.');
+      }
+      onChatMessageThreadUpdated(_msgThread: ChatMessageThreadEvent): void {
+        throw new Error('Method not implemented.');
+      }
+      onChatMessageThreadDestroyed(_msgThread: ChatMessageThreadEvent): void {
+        throw new Error('Method not implemented.');
+      }
+      onChatMessageThreadUserRemoved(_msgThread: ChatMessageThreadEvent): void {
+        throw new Error('Method not implemented.');
       }
       onMessagesReceived(messages: ChatMessage[]): void {
         console.log(`${QuickTestScreen.TAG}: onMessagesReceived: `, messages);
