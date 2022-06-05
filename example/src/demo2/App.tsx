@@ -1,7 +1,6 @@
 import { NavigationContainer } from '@react-navigation/native';
 import React from 'react';
 import { ScrollView, View, Button } from 'react-native';
-import { ChatClient, ChatOptions } from 'react-native-chat-sdk';
 import { screenComponents } from './__internal__/Components';
 import {
   ScreenComponent,
@@ -11,7 +10,6 @@ import {
   unregisterComponents,
 } from './__internal__/Utils';
 import { styleValues } from './__internal__/Css';
-import { datasheet } from './__default__/Datasheet';
 
 function HomeScreen(params: { navigation: any }) {
   return (
@@ -58,14 +56,6 @@ function App() {
     </NavigationContainer>
   );
 }
-
-ChatClient.getInstance().init(
-  new ChatOptions({
-    appKey: datasheet.AppKey[0],
-    autoLogin: false,
-    debugModel: true,
-  })
-);
 
 unregisterComponents();
 screenComponents.forEach((value: ScreenComponent) => {

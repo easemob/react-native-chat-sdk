@@ -40,6 +40,7 @@ export class QuickTestScreenPresence extends QuickTestScreenBase<
       sendResult: '',
       recvResult: '',
       exceptResult: '',
+      cb_result: '',
     };
     this.statelessData = {
       sendMessage: {},

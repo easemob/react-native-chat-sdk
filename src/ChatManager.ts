@@ -11,6 +11,7 @@ import { ChatError } from './common/ChatError';
 import { ChatGroupMessageAck } from './common/ChatGroup';
 import {
   ChatMessage,
+  ChatMessageChatType,
   ChatMessageStatus,
   ChatMessageStatusCallback,
   ChatMessageType,
@@ -64,9 +65,43 @@ import {
   MTloadMsgWithTime,
   MTtranslateMessage,
   MTfetchSupportLanguages,
-  MTsyncConversationName,
+  // MTsyncConversationName,
+  MTaddReaction,
+  MTremoveReaction,
+  MTfetchReactionList,
+  MTfetchReactionDetail,
+  MTreportMessage,
+  MTonReadAckForGroupMessageUpdated,
+  MTmessageReactionDidChange,
+  MTgetReactionList,
+  MTgroupAckCount,
+  MTonChatThreadCreated,
+  MTonChatThreadDestroyed,
+  MTonChatThreadUpdated,
+  MTonChatThreadUserRemoved,
+  MTfetchChatThreadDetail,
+  MTcreateChatThread,
+  MTjoinChatThread,
+  MTdestroyChatThread,
+  MTleaveChatThread,
+  MTupdateChatThreadSubject,
+  MTremoveMemberFromChatThread,
+  MTfetchChatThreadMember,
+  MTfetchJoinedChatThreads,
+  MTfetchChatThreadsWithParentId,
+  MTfetchJoinedChatThreadsWithParentId,
+  MTfetchLastMessageWithChatThreads,
+  MTgetMessageThread,
 } from './__internal__/Consts';
 import { Native } from './__internal__/Native';
+import {
+  ChatMessageReaction,
+  ChatMessageReactionEvent,
+} from './common/ChatMessageReaction';
+import {
+  ChatMessageThread,
+  ChatMessageThreadEvent,
+} from './common/ChatMessageThread';
 
 /**
  * The chat manager class, responsible for sending and receiving messages, loading and deleting conversations, and downloading attachments.
@@ -148,6 +183,37 @@ export class ChatManager extends BaseManager {
       MTonConversationHasRead,
       this.onConversationHasRead.bind(this)
     );
+    event.removeAllListeners(MTonReadAckForGroupMessageUpdated);
+    event.addListener(
+      MTonReadAckForGroupMessageUpdated,
+      this.onReadAckForGroupMessageUpdated.bind(this)
+    );
+    event.removeAllListeners(MTmessageReactionDidChange);
+    event.addListener(
+      MTmessageReactionDidChange,
+      this.onMessageReactionDidChange.bind(this)
+    );
+
+    event.removeAllListeners(MTonChatThreadCreated);
+    event.addListener(
+      MTonChatThreadCreated,
+      this.onChatMessageThreadCreated.bind(this)
+    );
+    event.removeAllListeners(MTonChatThreadUpdated);
+    event.addListener(
+      MTonChatThreadUpdated,
+      this.onChatMessageThreadUpdated.bind(this)
+    );
+    event.removeAllListeners(MTonChatThreadDestroyed);
+    event.addListener(
+      MTonChatThreadDestroyed,
+      this.onChatMessageThreadDestroyed.bind(this)
+    );
+    event.removeAllListeners(MTonChatThreadUserRemoved);
+    event.addListener(
+      MTonChatThreadUserRemoved,
+      this.onChatMessageThreadUserRemoved.bind(this)
+    );
   }
 
   private onMessagesReceived(messages: any[]): void {
@@ -228,6 +294,69 @@ export class ChatManager extends BaseManager {
       let from = params?.from;
       let to = params?.to;
       listener.onConversationRead(from, to);
+    });
+  }
+
+  private onReadAckForGroupMessageUpdated(params: any): void {
+    chatlog.log(
+      `${ChatManager.TAG}: onReadAckForGroupMessageUpdated: `,
+      params
+    );
+  }
+
+  private onMessageReactionDidChange(params: any): void {
+    chatlog.log(
+      `${ChatManager.TAG}: onMessageReactionDidChange: `,
+      JSON.stringify(params)
+    );
+    this._messageListeners.forEach((listener: ChatMessageEventListener) => {
+      const list: Array<ChatMessageReactionEvent> = [];
+      Object.entries(params).forEach((v: [string, any]) => {
+        const convId = v[1].conversationId;
+        const msgId = v[1].messageId;
+        const ll: Array<ChatMessageReaction> = [];
+        Object.entries(v[1].reactions).forEach((vv: [string, any]) => {
+          ll.push(new ChatMessageReaction(vv[1]));
+        });
+        list.push(
+          new ChatMessageReactionEvent({
+            convId: convId,
+            msgId: msgId,
+            reactions: ll,
+          })
+        );
+      });
+      listener.onMessageReactionDidChange(list);
+    });
+  }
+
+  private onChatMessageThreadCreated(params: any): void {
+    chatlog.log(`${ChatManager.TAG}: onChatMessageThreadCreated: `, params);
+    this._messageListeners.forEach((listener: ChatMessageEventListener) => {
+      listener.onChatMessageThreadCreated(new ChatMessageThreadEvent(params));
+    });
+  }
+
+  private onChatMessageThreadUpdated(params: any): void {
+    chatlog.log(`${ChatManager.TAG}: onChatMessageThreadUpdated: `, params);
+    this._messageListeners.forEach((listener: ChatMessageEventListener) => {
+      listener.onChatMessageThreadUpdated(new ChatMessageThreadEvent(params));
+    });
+  }
+
+  private onChatMessageThreadDestroyed(params: any): void {
+    chatlog.log(`${ChatManager.TAG}: onChatMessageThreadDestroyed: `, params);
+    this._messageListeners.forEach((listener: ChatMessageEventListener) => {
+      listener.onChatMessageThreadDestroyed(new ChatMessageThreadEvent(params));
+    });
+  }
+
+  private onChatMessageThreadUserRemoved(params: any): void {
+    chatlog.log(`${ChatManager.TAG}: onChatMessageThreadUserRemoved: `, params);
+    this._messageListeners.forEach((listener: ChatMessageEventListener) => {
+      listener.onChatMessageThreadUserRemoved(
+        new ChatMessageThreadEvent(params)
+      );
     });
   }
 
@@ -441,7 +570,7 @@ export class ChatManager extends BaseManager {
     chatlog.log(`${ChatManager.TAG}: sendConversationReadAck: ${convId}`);
     let r: any = await Native._callMethod(MTackConversationRead, {
       [MTackConversationRead]: {
-        con_id: convId,
+        convId: convId,
       },
     });
     Native.checkErrorFromResult(r);
@@ -632,7 +761,7 @@ export class ChatManager extends BaseManager {
     );
     let r: any = await Native._callMethod(MTfetchHistoryMessages, {
       [MTfetchHistoryMessages]: {
-        con_id: convId,
+        convId: convId,
         type: chatType as number,
         pageSize: pageSize,
         startMsgId: startMsgId,
@@ -806,7 +935,7 @@ export class ChatManager extends BaseManager {
     );
     let r: any = await Native._callMethod(MTgetConversation, {
       [MTgetConversation]: {
-        con_id: convId,
+        convId: convId,
         type: convType as number,
         createIfNeed: createIfNeed,
       },
@@ -891,7 +1020,7 @@ export class ChatManager extends BaseManager {
     );
     let r: any = await Native._callMethod(MTdeleteConversation, {
       [MTdeleteConversation]: {
-        con_id: convId,
+        convId: convId,
         deleteMessages: withMessage,
       },
     });
@@ -918,7 +1047,7 @@ export class ChatManager extends BaseManager {
     chatlog.log(`${ChatManager.TAG}: latestMessage: `, convId, convType);
     let r: any = await Native._callMethod(MTgetLatestMessage, {
       [MTgetLatestMessage]: {
-        con_id: convId,
+        convId: convId,
         type: convType,
       },
     });
@@ -946,7 +1075,7 @@ export class ChatManager extends BaseManager {
     chatlog.log(`${ChatManager.TAG}: lastReceivedMessage: `, convId, convType);
     let r: any = await Native._callMethod(MTgetLatestMessageFromOthers, {
       [MTgetLatestMessageFromOthers]: {
-        con_id: convId,
+        convId: convId,
         type: convType,
       },
     });
@@ -974,7 +1103,7 @@ export class ChatManager extends BaseManager {
     chatlog.log(`${ChatManager.TAG}: unreadCount: `, convId, convType);
     let r: any = await Native._callMethod(MTgetUnreadMsgCount, {
       [MTgetUnreadMsgCount]: {
-        con_id: convId,
+        convId: convId,
         type: convType,
       },
     });
@@ -1005,7 +1134,7 @@ export class ChatManager extends BaseManager {
     );
     let r: any = await Native._callMethod(MTmarkMessageAsRead, {
       [MTmarkMessageAsRead]: {
-        con_id: convId,
+        convId: convId,
         type: convType,
         msg_id: msgId,
       },
@@ -1032,7 +1161,7 @@ export class ChatManager extends BaseManager {
     );
     let r: any = await Native._callMethod(MTmarkAllMessagesAsRead, {
       [MTmarkAllMessagesAsRead]: {
-        con_id: convId,
+        convId: convId,
         type: convType,
       },
     });
@@ -1056,7 +1185,7 @@ export class ChatManager extends BaseManager {
     chatlog.log(`${ChatManager.TAG}: insertMessage: `, convId, convType, msg);
     let r: any = await Native._callMethod(MTinsertMessage, {
       [MTinsertMessage]: {
-        con_id: convId,
+        convId: convId,
         type: convType,
         msg: msg,
       },
@@ -1081,7 +1210,7 @@ export class ChatManager extends BaseManager {
     chatlog.log(`${ChatManager.TAG}: appendMessage: `, convId, convType, msg);
     let r: any = await Native._callMethod(MTappendMessage, {
       [MTappendMessage]: {
-        con_id: convId,
+        convId: convId,
         type: convType,
         msg: msg,
       },
@@ -1113,7 +1242,7 @@ export class ChatManager extends BaseManager {
     );
     let r: any = await Native._callMethod(MTupdateConversationMessage, {
       [MTupdateConversationMessage]: {
-        con_id: convId,
+        convId: convId,
         type: convType,
         msg: msg,
       },
@@ -1140,7 +1269,7 @@ export class ChatManager extends BaseManager {
     );
     let r: any = await Native._callMethod(MTremoveMessage, {
       [MTremoveMessage]: {
-        con_id: convId,
+        convId: convId,
         type: convType,
         msg_id: msgId,
       },
@@ -1163,7 +1292,7 @@ export class ChatManager extends BaseManager {
     chatlog.log(`${ChatManager.TAG}: deleteAllMessages: `, convId, convType);
     let r: any = await Native._callMethod(MTclearAllMessages, {
       [MTclearAllMessages]: {
-        con_id: convId,
+        convId: convId,
         type: convType,
       },
     });
@@ -1193,7 +1322,7 @@ export class ChatManager extends BaseManager {
     );
     let r: any = await Native._callMethod(MTloadMsgWithId, {
       [MTloadMsgWithId]: {
-        con_id: convId,
+        convId: convId,
         type: convType,
         msg_id: msgId,
       },
@@ -1211,7 +1340,7 @@ export class ChatManager extends BaseManager {
    *
    * @param convId The conversation id.
    * @param convType The conversation type.
-   * @param msgType The message type, including TXT, VOICE, IMAGE, and so on.
+   * @param msgType The message type, see {@link ChatMessageType}
    * @param direction The direction in which the message is loaded: ChatSearchDirection.
    * - `ChatSearchDirection.Up`: Messages are retrieved in the reverse chronological order of when the server received messages.
    * - `ChatSearchDirection.Down`: Messages are retrieved in the chronological order of when the server received messages.
@@ -1243,7 +1372,7 @@ export class ChatManager extends BaseManager {
     );
     let r: any = await Native._callMethod(MTloadMsgWithMsgType, {
       [MTloadMsgWithMsgType]: {
-        con_id: convId,
+        convId: convId,
         type: convType,
         msg_type: msgType,
         direction: direction === ChatSearchDirection.UP ? 'up' : 'down',
@@ -1296,7 +1425,7 @@ export class ChatManager extends BaseManager {
     );
     let r: any = await Native._callMethod(MTloadMsgWithStartId, {
       [MTloadMsgWithStartId]: {
-        con_id: convId,
+        convId: convId,
         type: convType,
         direction: direction === ChatSearchDirection.UP ? 'up' : 'down',
         startId: startMsgId,
@@ -1352,7 +1481,7 @@ export class ChatManager extends BaseManager {
     );
     let r: any = await Native._callMethod(MTloadMsgWithKeywords, {
       [MTloadMsgWithKeywords]: {
-        con_id: convId,
+        convId: convId,
         type: convType,
         keywords: keywords,
         direction: direction === ChatSearchDirection.UP ? 'up' : 'down',
@@ -1407,7 +1536,7 @@ export class ChatManager extends BaseManager {
     );
     let r: any = await Native._callMethod(MTloadMsgWithTime, {
       [MTloadMsgWithTime]: {
-        con_id: convId,
+        convId: convId,
         type: convType,
         startTime: startTime,
         endTime: endTime,
@@ -1480,25 +1609,621 @@ export class ChatManager extends BaseManager {
    * @param convId The conversation id.
    * @param convType The conversation type.
    * @param ext The custom attribute.
+   *
+   * @throws A description of the exception. See {@link ChatError}.
    */
-  public async setConversationExtension(
-    convId: string,
-    convType: ChatConversationType,
-    ext: any
-  ): Promise<void> {
-    chatlog.log(
-      `${ChatManager.TAG}: setConversationExtension: `,
-      convId,
-      convType,
-      ext
-    );
-    let r: any = await Native._callMethod(MTsyncConversationName, {
-      [MTsyncConversationName]: {
-        con_id: convId,
-        type: convType,
-        ext: ext,
+  // public async setConversationExtension(
+  //   convId: string,
+  //   convType: ChatConversationType,
+  //   ext: any
+  // ): Promise<void> {
+  //   chatlog.log(
+  //     `${ChatManager.TAG}: setConversationExtension: `,
+  //     convId,
+  //     convType,
+  //     ext
+  //   );
+  //   let r: any = await Native._callMethod(MTsyncConversationName, {
+  //     [MTsyncConversationName]: {
+  //       convId: convId,
+  //       type: convType,
+  //       ext: ext,
+  //     },
+  //   });
+  //   ChatManager.checkErrorFromResult(r);
+  // }
+
+  /**
+   * Adds a reaction.
+   *
+   * @param reaction The reaction content.
+   * @param msgId The message ID.
+   *
+   * @throws A description of the exception. See {@link ChatError}.
+   */
+  public async addReaction(reaction: string, msgId: string): Promise<void> {
+    chatlog.log(`${ChatManager.TAG}: addReaction: `, reaction, msgId);
+    let r: any = await Native._callMethod(MTaddReaction, {
+      [MTaddReaction]: {
+        reaction,
+        msgId,
       },
     });
     ChatManager.checkErrorFromResult(r);
+  }
+
+  /**
+   * Deletes a reaction.
+   *
+   * @param reaction The message reaction.
+   * @param msgId The message ID.
+   *
+   * @throws A description of the exception. See {@link ChatError}.
+   */
+  public async removeReaction(reaction: string, msgId: string): Promise<void> {
+    chatlog.log(`${ChatManager.TAG}: removeReaction: `, reaction, msgId);
+    let r: any = await Native._callMethod(MTremoveReaction, {
+      [MTremoveReaction]: {
+        reaction,
+        msgId,
+      },
+    });
+    ChatManager.checkErrorFromResult(r);
+  }
+
+  /**
+   * Gets the list of Reactions.
+   *
+   * @param msgIds The message ID list.
+   * @param groupId The group ID, which is invalid only when the chat type is group chat.
+   * @param chatType The chat type.
+   * @returns The Reaction list under the specified message ID（The UserList of ChatMessageReaction is the summary data, which only contains the information of the first three users）.
+   *
+   * @throws A description of the exception. See {@link ChatError}.
+   */
+  public async fetchReactionList(
+    msgIds: Array<string>,
+    groupId: string,
+    chatType: ChatMessageChatType
+  ): Promise<Map<string, Array<ChatMessageReaction>>> {
+    chatlog.log(
+      `${ChatManager.TAG}: fetchReactionList: `,
+      msgIds,
+      groupId,
+      chatType
+    );
+    let r: any = await Native._callMethod(MTfetchReactionList, {
+      [MTfetchReactionList]: {
+        msgIds,
+        groupId,
+        chatType,
+      },
+    });
+    ChatManager.checkErrorFromResult(r);
+    const ret: Map<string, Array<ChatMessageReaction>> = new Map();
+    Object.entries(r?.[MTfetchReactionList]).forEach((v: [string, any]) => {
+      const list: Array<ChatMessageReaction> = [];
+      Object.entries(v[1]).forEach((vv: [string, any]) => {
+        list.push(new ChatMessageReaction(vv[1]));
+      });
+      ret.set(v[0], list);
+    });
+    return ret;
+  }
+
+  /**
+   * Gets the reaction details.
+   *
+   * @param msgId The message ID.
+   * @param reaction The reaction content.
+   * @param cursor The cursor position from which to get Reactions.
+   * @param pageSize The number of Reactions you expect to get on each page.
+   * @returns The result callback, which contains the reaction list obtained from the server and the cursor for the next query. Returns null if all the data is fetched.
+   *
+   * @throws A description of the exception. See {@link ChatError}.
+   */
+  public async fetchReactionDetail(
+    msgId: string,
+    reaction: string,
+    cursor?: string,
+    pageSize?: number
+  ): Promise<ChatCursorResult<ChatMessageReaction>> {
+    chatlog.log(
+      `${ChatManager.TAG}: fetchReactionDetail: `,
+      msgId,
+      reaction,
+      cursor,
+      pageSize
+    );
+    let r: any = await Native._callMethod(MTfetchReactionDetail, {
+      [MTfetchReactionDetail]: {
+        msgId,
+        reaction,
+        cursor,
+        pageSize,
+      },
+    });
+    ChatManager.checkErrorFromResult(r);
+    let ret = new ChatCursorResult<ChatMessageReaction>({
+      cursor: r?.[MTfetchReactionDetail].cursor,
+      list: r?.[MTfetchReactionDetail].list,
+      opt: {
+        map: (param: any) => {
+          return new ChatMessageReaction(param);
+        },
+      },
+    });
+    return ret;
+  }
+
+  /**
+   * Report violation message
+   *
+   * @param msgId Violation Message ID
+   * @param tag Report type (For example: involving pornography and terrorism)
+   * @param reason Report Reason.
+   *
+   * @throws A description of the exception. See {@link ChatError}.
+   */
+  public async reportMessage(
+    msgId: string,
+    tag: string,
+    reason: string
+  ): Promise<void> {
+    chatlog.log(`${ChatManager.TAG}: reportMessage: `, msgId, tag, reason);
+    let r: any = await Native._callMethod(MTreportMessage, {
+      [MTreportMessage]: {
+        msgId,
+        tag,
+        reason,
+      },
+    });
+    ChatManager.checkErrorFromResult(r);
+  }
+
+  /**
+   * Gets the list of Reactions from message.
+   *
+   * @param msgId The message id.
+   * @returns The reaction list.
+   *
+   * @throws A description of the exception. See {@link ChatError}.
+   */
+  public async getReactionList(
+    msgId: string
+  ): Promise<Array<ChatMessageReaction>> {
+    chatlog.log(`${ChatManager.TAG}: getReactionList: `, msgId);
+    let r: any = await Native._callMethod(MTgetReactionList, {
+      [MTgetReactionList]: {
+        msgId,
+      },
+    });
+    ChatManager.checkErrorFromResult(r);
+    const ret: Array<ChatMessageReaction> = [];
+    Object.entries(r?.[MTgetReactionList]).forEach((value: [string, any]) => {
+      ret.push(new ChatMessageReaction(value[1]));
+    });
+    return ret;
+  }
+
+  /**
+   * Get the group message read count.
+   *
+   * @param msgId The message id.
+   * @returns The group message count.
+   *
+   * @throws A description of the exception. See {@link ChatError}.
+   */
+  public async groupAckCount(msgId: string): Promise<number> {
+    chatlog.log(`${ChatManager.TAG}: groupAckCount: `, msgId);
+    let r: any = await Native._callMethod(MTgroupAckCount, {
+      [MTgroupAckCount]: {
+        msgId,
+      },
+    });
+    ChatManager.checkErrorFromResult(r);
+    return r?.[MTgroupAckCount] as number;
+  }
+
+  /**
+   * Create Chat Thread.
+   * Group members have permission.
+   *
+   * After chat thread is created, the following notices will appear:
+   *
+   * 1. Members of the organization (group) to which chat thread belongs will receive the created notification event, and can listen to related events by setting {@link ChatMessageEventListener}. The event callback function is {@link ChatMessageEventListener#onChatMessageThreadCreated(ChatMessageThreadEvent)}.
+   * 2. Multiple devices will receive the notification event and you can set {@link ChatMultiDeviceEventListener} to listen on the event. The event callback function is {@link ChatMultiDeviceEventListener#onThreadEvent(int, String, List)}, where the first parameter is the event, for example, {@link ChatMultiDeviceEventListener#THREAD_CREATE} for the chat thread creation event.
+   * @param name Chat Thread name. No more than 64 characters in length.
+   * @param msgId Parent message ID, generally refers to group message ID.
+   * @param parentId Parent ID, generally refers to group ID.
+   * @returns Returns the created thread object if successful.
+   *
+   * @throws A description of the exception. See {@link ChatError}.
+   */
+  public async createChatThread(
+    name: string,
+    msgId: string,
+    parentId: string
+  ): Promise<ChatMessageThread> {
+    chatlog.log(
+      `${ChatManager.TAG}: createChatThread: `,
+      name,
+      msgId,
+      parentId
+    );
+    let r: any = await Native._callMethod(MTcreateChatThread, {
+      [MTcreateChatThread]: {
+        name: name,
+        messageId: msgId,
+        parentId: parentId,
+      },
+    });
+    ChatManager.checkErrorFromResult(r);
+    return new ChatMessageThread(r?.[MTcreateChatThread]);
+  }
+
+  /**
+   * Join Chat Thread.
+   * Group members have permission.
+   *
+   * Join successfully, return the Chat Thread details {@link EMChatThread}, the details do not include the number of members. Repeated addition will result in an error with the error code {@link EMError#USER_ALREADY_EXIST}. After joining chat thread, the multiple devices will receive the notification event. You can set {@link EMMultiDeviceListener} to listen on the event.
+   * The event callback function is {@link EMMultiDeviceListener#onThreadEvent(int, String, List), where the first parameter is the event, and chat thread join event is {@link EMMultiDeviceListener#THREAD_JOIN}.
+   *
+   * @param chatThreadId Chat Thread ID.
+   * @returns Returns the thread object if successful.
+   *
+   * @throws A description of the exception. See {@link ChatError}.
+   */
+  public async joinChatThread(
+    chatThreadId: string
+  ): Promise<ChatMessageThread> {
+    chatlog.log(`${ChatManager.TAG}: joinChatThread: `, chatThreadId);
+    let r: any = await Native._callMethod(MTjoinChatThread, {
+      [MTjoinChatThread]: {
+        threadId: chatThreadId,
+      },
+    });
+    ChatManager.checkErrorFromResult(r);
+    return new ChatMessageThread(r?.[MTjoinChatThread]);
+  }
+
+  /**
+   * Leave Chat Thread.
+   * The operation is available to Chat Thread members.
+   * After joining chat thread, the multiple devices will receive the notification event.
+   * You can set {@link com.hyphenate.EMMultiDeviceListener} to listen on the event. The event callback function is {@link com.hyphenate.EMMultiDeviceListener#onThreadEvent(int, String, List), where the first parameter is the event, and chat thread exit event is {@link com.hyphenate.EMMultiDeviceListener#THREAD_LEAVE}.
+   *
+   * @param chatThreadId Chat Thread ID.
+   *
+   * @throws A description of the exception. See {@link ChatError}.
+   */
+  public async leaveChatThread(chatThreadId: string): Promise<void> {
+    chatlog.log(`${ChatManager.TAG}: leaveChatThread: `, chatThreadId);
+    let r: any = await Native._callMethod(MTleaveChatThread, {
+      [MTleaveChatThread]: {
+        threadId: chatThreadId,
+      },
+    });
+    ChatManager.checkErrorFromResult(r);
+  }
+
+  /**
+   * Disband Chat Thread.
+   * Group owner and group administrator to which the Chat Thread belongs have permission.
+   *
+   * After chat thread is disbanded, there will be the following notification:
+   * 1. Members of the organization (group) to which chat thread belongs will receive the disbanded notification event, and can listen to related events by setting {@link EMChatThreadChangeListener}. The event callback function is {@link EMChatThreadChangeListener#onChatThreadDestroyed(EMChatThreadEvent)}.
+   * 2. Multiple devices will receive the notification event and you can set {@link com.hyphenate.EMMultiDeviceListener} to listen on the event. The event callback function is {@link com.hyphenate.EMMultiDeviceListener#onThreadEvent(int, String, List)}, where the first parameter is the event, for example, {@link com.hyphenate.EMMultiDeviceListener#THREAD_DESTROY} for the chat thread destruction event.
+   *
+   * @param chatThreadId Chat Thread ID.
+   *
+   * @throws A description of the exception. See {@link ChatError}.
+   */
+  public async destroyChatThread(chatThreadId: string): Promise<void> {
+    chatlog.log(`${ChatManager.TAG}: destroyChatThread: `, chatThreadId);
+    let r: any = await Native._callMethod(MTdestroyChatThread, {
+      [MTdestroyChatThread]: {
+        threadId: chatThreadId,
+      },
+    });
+    ChatManager.checkErrorFromResult(r);
+  }
+
+  /**
+   * Update Chat Thread name.
+   * The group owner, group administrator and Thread creator have permission.
+   * After modifying chat thread name, members of the organization (group) to which chat thread belongs will receive the update notification event.
+   * You can set {@link EMChatThreadChangeListener} to listen on the event.
+   * The event callback function is {@link EMChatThreadChangeListener#onChatThreadUpdated(EMChatThreadEvent)} .
+   *
+   * @param chatThreadId Chat Thread ID.
+   * @param newName New Chat Thread name. No more than 64 characters in length.
+   *
+   * @throws A description of the exception. See {@link ChatError}.
+   */
+  public async updateChatThreadName(
+    chatThreadId: string,
+    newName: string
+  ): Promise<void> {
+    chatlog.log(
+      `${ChatManager.TAG}: updateChatThreadName: `,
+      chatThreadId,
+      newName
+    );
+    let r: any = await Native._callMethod(MTupdateChatThreadSubject, {
+      [MTupdateChatThreadSubject]: {
+        threadId: chatThreadId,
+        name: newName,
+      },
+    });
+    ChatManager.checkErrorFromResult(r);
+  }
+
+  /**
+   * Remove member from Chat Thread.
+   * Group owner and group administrator to which Chat Thread belongs have permission.
+   * The removed chat thread members will receive the removed notification event.
+   * You can set {@link EMChatThreadChangeListener} to listen on the event.
+   * The event callback function is {@link EMChatThreadChangeListener#onChatThreadUserRemoved(EMChatThreadEvent)}.
+   *
+   * @param chatThreadId Chat Thread ID.
+   * @param memberId The ID of the member that was removed from Chat Thread.
+   *
+   * @throws A description of the exception. See {@link ChatError}.
+   */
+  public async removeMemberWithChatThread(
+    chatThreadId: string,
+    memberId: string
+  ): Promise<void> {
+    chatlog.log(
+      `${ChatManager.TAG}: removeMemberWithChatThread: `,
+      chatThreadId,
+      memberId
+    );
+    let r: any = await Native._callMethod(MTremoveMemberFromChatThread, {
+      [MTremoveMemberFromChatThread]: {
+        threadId: chatThreadId,
+        memberId: memberId,
+      },
+    });
+    ChatManager.checkErrorFromResult(r);
+  }
+
+  /**
+   * Paging to get Chat Thread members.
+   * The members of the group to which Chat Thread belongs have permission.
+   *
+   * @param chatThreadId Chat Thread ID.
+   * @param cursor Cursor, the initial value can be empty or empty string.
+   * @param pageSize The number of fetches at one time. Value range (0, 50].
+   * @returns Returns a list if successful, otherwise throws an exception.
+   *
+   * @throws A description of the exception. See {@link ChatError}.
+   */
+  public async fetchMembersWithChatThreadFromServer(
+    chatThreadId: string,
+    cursor: string = '',
+    pageSize: number = 20
+  ): Promise<Array<string>> {
+    chatlog.log(
+      `${ChatManager.TAG}: fetchMembersWithChatThreadFromServer: `,
+      chatThreadId,
+      cursor,
+      pageSize
+    );
+    let r: any = await Native._callMethod(MTfetchChatThreadMember, {
+      [MTfetchChatThreadMember]: {
+        threadId: chatThreadId,
+        cursor: cursor,
+        pageSize: pageSize,
+      },
+    });
+    ChatManager.checkErrorFromResult(r);
+    return r?.[MTfetchChatThreadMember] as Array<string>;
+  }
+
+  /**
+   * Paging to get the list of Chat Threads that the current user has joined from the server.
+   *
+   * @param cursor Cursor, the initial value can be empty or empty string.
+   * @param pageSize The number of fetches at one time. Value range (0, 50].
+   * @returns Returns a list if successful, otherwise throws an exception.
+   *
+   * @throws A description of the exception. See {@link ChatError}.
+   */
+  public async fetchJoinedChatThreadFromServer(
+    cursor: string = '',
+    pageSize: number = 20
+  ): Promise<ChatCursorResult<ChatMessageThread>> {
+    chatlog.log(
+      `${ChatManager.TAG}: fetchJoinedChatThreadFromServer: `,
+      cursor,
+      pageSize
+    );
+    let r: any = await Native._callMethod(MTfetchJoinedChatThreads, {
+      [MTfetchJoinedChatThreads]: {
+        cursor: cursor,
+        pageSize: pageSize,
+      },
+    });
+    ChatManager.checkErrorFromResult(r);
+    let ret = new ChatCursorResult<ChatMessageThread>({
+      cursor: r?.[MTfetchJoinedChatThreads].cursor,
+      list: r?.[MTfetchJoinedChatThreads].list,
+      opt: {
+        map: (param: any) => {
+          return new ChatMessage(param);
+        },
+      },
+    });
+    return ret;
+  }
+
+  /**
+   * Paging to get the list of Chat Threads that the current user has joined the specified group from the server。
+   *
+   * @param parentId Generally refers to group ID.
+   * @param cursor Cursor, the initial value can be empty or empty string.
+   * @param pageSize The number of fetches at one time. Value range (0, 50].
+   * @returns Returns a list if successful, otherwise throws an exception.
+   *
+   * @throws A description of the exception. See {@link ChatError}.
+   */
+  public async fetchJoinedChatThreadWithParentFromServer(
+    parentId: string,
+    cursor: string = '',
+    pageSize: number = 20
+  ): Promise<ChatCursorResult<ChatMessageThread>> {
+    chatlog.log(
+      `${ChatManager.TAG}: fetchJoinedChatThreadWithParentFromServer: `,
+      parentId,
+      cursor,
+      pageSize
+    );
+    let r: any = await Native._callMethod(
+      MTfetchJoinedChatThreadsWithParentId,
+      {
+        [MTfetchJoinedChatThreadsWithParentId]: {
+          parentId: parentId,
+          cursor: cursor,
+          pageSize: pageSize,
+        },
+      }
+    );
+    ChatManager.checkErrorFromResult(r);
+    let ret = new ChatCursorResult<ChatMessageThread>({
+      cursor: r?.[MTfetchJoinedChatThreadsWithParentId].cursor,
+      list: r?.[MTfetchJoinedChatThreadsWithParentId].list,
+      opt: {
+        map: (param: any) => {
+          return new ChatMessage(param);
+        },
+      },
+    });
+    return ret;
+  }
+
+  /**
+   * Paging to get the list of Chat Threads of the specified group from the server.
+   *
+   * @param parentId Generally refers to group ID.
+   * @param cursor Cursor, the initial value can be empty or empty string.
+   * @param pageSize The number of fetches at one time. Value range (0, 50].
+   * @returns Returns a list if successful, otherwise throws an exception.
+   *
+   * @throws A description of the exception. See {@link ChatError}.
+   */
+  public async fetchChatThreadWithParentFromServer(
+    parentId: string,
+    cursor: string = '',
+    pageSize: number = 20
+  ): Promise<ChatCursorResult<ChatMessageThread>> {
+    chatlog.log(
+      `${ChatManager.TAG}: fetchChatThreadWithParentFromServer: `,
+      parentId,
+      cursor,
+      pageSize
+    );
+    let r: any = await Native._callMethod(MTfetchChatThreadsWithParentId, {
+      [MTfetchChatThreadsWithParentId]: {
+        parentId: parentId,
+        cursor: cursor,
+        pageSize: pageSize,
+      },
+    });
+    ChatManager.checkErrorFromResult(r);
+    let ret = new ChatCursorResult<ChatMessageThread>({
+      cursor: r?.[MTfetchChatThreadsWithParentId].cursor,
+      list: r?.[MTfetchChatThreadsWithParentId].list,
+      opt: {
+        map: (param: any) => {
+          return new ChatMessage(param);
+        },
+      },
+    });
+    return ret;
+  }
+
+  /**
+   * Get the latest news of the specified Chat Thread list from the server.
+   *
+   * @param chatThreadIds Chat Thread id list. The list length is not greater than 20.
+   * @returns Returns a list if successful, otherwise throws an exception.
+   *
+   * @throws A description of the exception. See {@link ChatError}.
+   */
+  public async fetchLastMessageWithChatThread(
+    chatThreadIds: Array<string>
+  ): Promise<Map<string, ChatMessage>> {
+    chatlog.log(
+      `${ChatManager.TAG}: fetchLastMessageWithChatThread: `,
+      chatThreadIds
+    );
+    let r: any = await Native._callMethod(MTfetchLastMessageWithChatThreads, {
+      [MTfetchLastMessageWithChatThreads]: {
+        threadId: chatThreadIds,
+      },
+    });
+    ChatManager.checkErrorFromResult(r);
+    const ret: Map<string, ChatMessage> = new Map();
+    Object.entries(r?.[MTfetchLastMessageWithChatThreads]).forEach(
+      (v: [string, any]) => {
+        ret.set(v[0], new ChatMessage(v[1]));
+      }
+    );
+    return ret;
+  }
+
+  /**
+   * Get Chat Thread details from server.
+   *
+   * @param chatThreadId Chat Thread ID.
+   * @returns Returns a thread if successful, otherwise a undefined value.
+   *
+   * @throws A description of the exception. See {@link ChatError}.
+   */
+  public async fetchChatThreadFromServer(
+    chatThreadId: string
+  ): Promise<ChatMessageThread | undefined> {
+    chatlog.log(
+      `${ChatManager.TAG}: fetchChatThreadFromServer: `,
+      chatThreadId
+    );
+    let r: any = await Native._callMethod(MTfetchChatThreadDetail, {
+      [MTfetchChatThreadDetail]: {
+        threadId: chatThreadId,
+      },
+    });
+    ChatManager.checkErrorFromResult(r);
+    const rr = r?.[MTfetchChatThreadDetail];
+    if (rr) {
+      return new ChatMessageThread(rr);
+    }
+    return undefined;
+  }
+
+  /**
+   * Get Chat Thread details from message cache.
+   *
+   * @param msgId The message id.
+   * @returns Returns a thread if successful, otherwise a undefined value.
+   *
+   * @throws A description of the exception. See {@link ChatError}.
+   */
+  public async getMessageThread(
+    msgId: string
+  ): Promise<ChatMessageThreadEvent | undefined> {
+    chatlog.log(`${ChatManager.TAG}: getMessageThread: `, msgId);
+    let r: any = await Native._callMethod(MTgetMessageThread, {
+      [MTgetMessageThread]: {
+        msgId: msgId,
+      },
+    });
+    ChatManager.checkErrorFromResult(r);
+    const rr = r?.[MTfetchChatThreadDetail];
+    if (rr) {
+      return new ChatMessageThreadEvent(rr);
+    }
+    return undefined;
   }
 }

@@ -35,6 +35,7 @@ export class QuickTestScreenContact extends QuickTestScreenBase<
       sendResult: '',
       recvResult: '',
       exceptResult: '',
+      cb_result: '',
     };
     this.statelessData = {};
     registerStateDataList(metaDataList);

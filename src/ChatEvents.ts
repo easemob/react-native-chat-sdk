@@ -1,6 +1,8 @@
 import { ChatError } from './common/ChatError';
 import type { ChatGroupMessageAck } from './common/ChatGroup';
 import type { ChatMessage } from './common/ChatMessage';
+import type { ChatMessageReactionEvent } from './common/ChatMessageReaction';
+import type { ChatMessageThreadEvent } from './common/ChatMessageThread';
 import type { ChatPresence } from './common/ChatPresence';
 
 /**
@@ -10,7 +12,7 @@ export enum ChatMultiDeviceEvent {
   /**
    * The current user removed a contact on another device.
    */
-  CONTACT_REMOVE,
+  CONTACT_REMOVE = 2,
   /**
    * The current user accepted a friend request on another device.
    */
@@ -31,7 +33,7 @@ export enum ChatMultiDeviceEvent {
   /**
    * The current user created a group on another device.
    */
-  GROUP_CREATE,
+  GROUP_CREATE = 10,
   /**
    * The current user destroyed a group on another device.
    */
@@ -108,15 +110,56 @@ export enum ChatMultiDeviceEvent {
    * The current user unmuted a member on another device.
    */
   GROUP_REMOVE_MUTE,
+  /**
+   * The current user adds other users to the group whitelist on another device.
+   */
+  GROUP_ADD_USER_WHITE_LIST,
+  /**
+   * The current user removes other users from the group whitelist on another device.
+   */
+  GROUP_REMOVE_USER_WHITE_LIST,
+  /**
+   * The current user has set the group to mute on another device.
+   */
+  GROUP_ALL_BAN,
+  /**
+   * The current user unblocks the group on another device.
+   */
+  GROUP_REMOVE_ALL_BAN,
+
+  /**
+   * The current user created a Thread on another device.
+   */
+  THREAD_CREATE = 40,
+  /**
+   * The current user destroyed a Thread on another device.
+   */
+  THREAD_DESTROY,
+  /**
+   * The current user joined a Thread on another device.
+   */
+  THREAD_JOIN,
+  /**
+   * The current user left a Thread on another device.
+   */
+  THREAD_LEAVE,
+  /**
+   * The current user updated Thread info on another device.
+   */
+  THREAD_UPDATE,
+  /**
+   * The current user kicked a member out of a Thread on another device.
+   */
+  THREAD_KICK,
 }
 
 /**
- * Contact or group type convert.
+ * Multi device event type convert.
  *
  * @param params The integer representing event type.
  * @returns The event type.
  */
-export function ChatContactGroupEventFromNumber(
+export function ChatMultiDeviceEventFromNumber(
   params: number
 ): ChatMultiDeviceEvent {
   switch (params) {
@@ -130,6 +173,7 @@ export function ChatContactGroupEventFromNumber(
       return ChatMultiDeviceEvent.CONTACT_BAN;
     case 6:
       return ChatMultiDeviceEvent.CONTACT_ALLOW;
+
     case 10:
       return ChatMultiDeviceEvent.GROUP_CREATE;
     case 11:
@@ -170,6 +214,28 @@ export function ChatContactGroupEventFromNumber(
       return ChatMultiDeviceEvent.GROUP_ADD_MUTE;
     case 29:
       return ChatMultiDeviceEvent.GROUP_REMOVE_MUTE;
+    case 30:
+      return ChatMultiDeviceEvent.GROUP_ADD_USER_WHITE_LIST;
+    case 31:
+      return ChatMultiDeviceEvent.GROUP_REMOVE_USER_WHITE_LIST;
+    case 32:
+      return ChatMultiDeviceEvent.GROUP_ALL_BAN;
+    case 33:
+      return ChatMultiDeviceEvent.GROUP_REMOVE_ALL_BAN;
+
+    case 40:
+      return ChatMultiDeviceEvent.THREAD_CREATE;
+    case 41:
+      return ChatMultiDeviceEvent.THREAD_DESTROY;
+    case 42:
+      return ChatMultiDeviceEvent.THREAD_JOIN;
+    case 43:
+      return ChatMultiDeviceEvent.THREAD_LEAVE;
+    case 44:
+      return ChatMultiDeviceEvent.THREAD_UPDATE;
+    case 45:
+      return ChatMultiDeviceEvent.THREAD_KICK;
+
     default:
       throw new ChatError({
         code: 1,
@@ -266,6 +332,19 @@ export interface ChatMultiDeviceEventListener {
    * @param usernames The array of usernames.
    */
   onGroupEvent(
+    event?: ChatMultiDeviceEvent,
+    target?: string,
+    usernames?: Array<string>
+  ): void;
+
+  /**
+   * The multi-device event callback of thread.
+   *
+   * @param event The event type.
+   * @param target The group ID.
+   * @param usernames The array of usernames.
+   */
+  onThreadEvent(
     event?: ChatMultiDeviceEvent,
     target?: string,
     usernames?: Array<string>
@@ -389,6 +468,41 @@ export interface ChatMessageEventListener {
    * @param to The user who receives the read receipt.
    */
   onConversationRead(from: string, to?: string): void;
+
+  /**
+   * The message reaction change listener.
+   *
+   * @param list The reaction event which is changed
+   */
+  onMessageReactionDidChange(list: Array<ChatMessageReactionEvent>): void;
+
+  /**
+   * Chat thread creation notification.
+   * Available to all group members.
+   *
+   * @param event The message sub-zone create notify.
+   */
+  onChatMessageThreadCreated(event: ChatMessageThreadEvent): void;
+  /**
+   * Chat thread update notification, including: chat thread  name update, chat thread message update.
+   * Available to all group members.
+   *
+   * @param event The message sub-zone update notify.
+   */
+  onChatMessageThreadUpdated(event: ChatMessageThreadEvent): void;
+  /**
+   * Chat thread disbandment notice.
+   * Available to all group members.
+   *
+   * @param event The message sub-zone destroy notify.
+   */
+  onChatMessageThreadDestroyed(event: ChatMessageThreadEvent): void;
+  /**
+   * The current user is removed from chat thread by the administrator.
+   *
+   * @param event The message sub-zone remove user notify.
+   */
+  onChatMessageThreadUserRemoved(event: ChatMessageThreadEvent): void;
 }
 
 /**

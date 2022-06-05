@@ -25,7 +25,7 @@ export enum ChatGroupStyle {
 /**
  * The enumeration of group permission types.
  */
-export enum ChatGroupPermissionType {
+export enum ChatGroupType {
   /**
    * Unknown.
    */
@@ -84,18 +84,16 @@ export function ChatGroupStyleToString(params: ChatGroupStyle): string {
  * @param params Integer representing group type.
  * @returns The group type.
  */
-export function ChatGroupPermissionTypeFromNumber(
-  params: number
-): ChatGroupPermissionType {
+export function ChatGroupTypeFromNumber(params: number): ChatGroupType {
   switch (params) {
     case -1:
-      return ChatGroupPermissionType.None;
+      return ChatGroupType.None;
     case 0:
-      return ChatGroupPermissionType.Member;
+      return ChatGroupType.Member;
     case 1:
-      return ChatGroupPermissionType.Admin;
+      return ChatGroupType.Admin;
     case 2:
-      return ChatGroupPermissionType.Owner;
+      return ChatGroupType.Owner;
     default:
       throw new ChatError({
         code: 1,
@@ -110,10 +108,8 @@ export function ChatGroupPermissionTypeFromNumber(
  * @param params The group permission type.
  * @returns String representing group permission type.
  */
-export function ChatGroupPermissionTypeToString(
-  params: ChatGroupPermissionType
-): string {
-  return ChatGroupPermissionType[params];
+export function ChatGroupTypeToString(params: ChatGroupType): string {
+  return ChatGroupType[params];
 }
 
 /**
@@ -217,9 +213,9 @@ export class ChatGroup {
    */
   isAllMemberMuted: boolean;
   /**
-   * The current user's role in group.
+   * The current group's permission types.
    */
-  permissionType: ChatGroupPermissionType;
+  permissionType: ChatGroupType;
   /**
    * The group option.
    */
@@ -260,8 +256,8 @@ export class ChatGroup {
     this.messageBlocked = params.messageBlocked ?? false;
     this.isAllMemberMuted = params.isAllMemberMuted ?? false;
     this.permissionType = params.permissionType
-      ? ChatGroupPermissionTypeFromNumber(params.permissionType)
-      : ChatGroupPermissionType.None;
+      ? ChatGroupTypeFromNumber(params.permissionType)
+      : ChatGroupType.None;
     this.options = params.options ?? new ChatGroupOptions({});
   }
 }

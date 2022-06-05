@@ -1,6 +1,10 @@
 import { generateMessageId, getNowTimestamp } from '../__internal__/Utils';
 import { ChatClient } from '../ChatClient';
 import { ChatError } from './ChatError';
+import type {
+  ChatMessageThreadEvent,
+  ChatMessageReaction,
+} from 'react-native-chat-sdk';
 
 /**
  * The conversation types.
@@ -133,18 +137,6 @@ export function ChatMessageChatTypeFromNumber(
     default:
       return ChatMessageChatType.PeerChat;
   }
-}
-
-/**
- * The message body type convert.
- *
- * @param params The message body type.
- * @returns String representing message body type.
- */
-export function ChatGroupPermissionTypeToString(
-  params: ChatMessageChatType
-): string {
-  return ChatMessageChatType[params];
 }
 
 /**
@@ -382,89 +374,32 @@ export class ChatMessage {
   body: ChatMessageBody;
 
   /**
+   * This attribute indicates whether the message is a sub-message. If it is a sub-message, it may be a sub-message under a group message. Only group messages have submessages. Personal messages and chat room messages cannot have sub-messages. The value of this property is false for normal messages. If the group message has sub-messages, you can obtain the corresponding information by calling {@link #threadInfo}. Sub-messages of group messages receive notifications via {@link ChatMessageEventListener}.
+   */
+  isChatThread: boolean;
+
+  /**
    * Constructs a message.
    */
   public constructor(params: {
-    /**
-     * Sets the server message ID.
-     */
     msgId?: string;
-    /**
-     * Sets the local message ID.
-     */
     localMsgId?: string;
-    /**
-     * Sets the conversation ID.
-     */
     conversationId?: string;
-    /**
-     * Sets the message sender.
-     */
     from?: string;
-    /**
-     * Sets the message recipient.
-     */
     to?: string;
-    /**
-     * Sets the local timestamp of the message.
-     */
     localTime?: number;
-    /**
-     * Sets the server timestamp of the message.
-     */
     serverTime?: number;
-    /**
-     * Sets whether the message delivery receipt is required.
-     *
-     * - `true`: Yes.
-     * - `false`: No.
-     */
     hasDeliverAck?: boolean;
-    /**
-     * Sets whether the message read receipt is required.
-     *
-     * - `true`: Yes.
-     * - `false`: No.
-     */
     hasReadAck?: boolean;
-    /**
-     * Sets whether the read receipt is required for a group message.
-     *
-     * - `true`: Yes.
-     * - `false`: No.
-     */
     needGroupAck?: boolean;
-    /**
-     * Sets the number of members that have read the group message.
-     */
     groupAckCount?: number;
-    /**
-     * Sets whether the message is read.
-     *
-     * - `true`: Yes.
-     * - `false`: No.
-     */
     hasRead?: boolean;
-    /**
-     * Sets the chat type. See {@link ChatType}.
-     */
     chatType?: number;
-    /**
-     * Sets the message direction. See {@link ChatMessageDirectionFromString}.
-     */
     direction?: string;
-    /**
-     * Sets the message status. See {@link ChatMessageStatusFromNumber}.
-     */
     status?: number;
-    /**
-     * Sets the extension attributes of the message.
-     */
-    attributes?: Object;
-    /**
-     * Sets the message body.
-     */
-    body: Object;
+    attributes?: any;
+    body: any;
+    isChatThread?: boolean;
   }) {
     this.msgId = params.msgId ?? generateMessageId();
     this.conversationId = params.conversationId ?? '';
@@ -483,6 +418,7 @@ export class ChatMessage {
     this.attributes = params.attributes ?? {};
     this.body = ChatMessage.getBody(params.body);
     this.localMsgId = this.localTime.toString();
+    this.isChatThread = params.isChatThread ?? false;
   }
 
   private static getBody(params: any): ChatMessageBody {
@@ -520,18 +456,20 @@ export class ChatMessage {
     }
   }
 
-  private static createSendMessage(
-    body: ChatMessageBody,
-    targetId: string,
-    chatType: ChatMessageChatType
-  ): ChatMessage {
+  private static createSendMessage(params: {
+    body: ChatMessageBody;
+    targetId: string;
+    chatType: ChatMessageChatType;
+    isChatThread?: boolean;
+  }): ChatMessage {
     let r = new ChatMessage({
       from: ChatClient.getInstance().currentUserName ?? '',
-      body: body,
+      body: params.body,
       direction: 'send',
-      to: targetId,
+      to: params.targetId,
       hasRead: true,
-      chatType: chatType,
+      chatType: params.chatType,
+      isChatThread: params.isChatThread,
     });
     return r;
   }
@@ -550,14 +488,23 @@ export class ChatMessage {
   public static createTextMessage(
     targetId: string,
     content: string,
-    chatType: ChatMessageChatType = ChatMessageChatType.PeerChat
+    chatType: ChatMessageChatType = ChatMessageChatType.PeerChat,
+    opt?: {
+      isChatThread?: boolean;
+      targetLanguages?: Array<string>;
+    }
   ): ChatMessage {
     let s = ChatMessageType.TXT.valueOf();
-    return ChatMessage.createSendMessage(
-      new ChatTextMessageBody({ type: s, content: content }),
-      targetId,
-      chatType
-    );
+    return ChatMessage.createSendMessage({
+      body: new ChatTextMessageBody({
+        type: s,
+        content: content,
+        targetLanguages: opt?.targetLanguages,
+      }),
+      targetId: targetId,
+      chatType: chatType,
+      isChatThread: opt?.isChatThread,
+    });
   }
 
   /**
@@ -578,17 +525,19 @@ export class ChatMessage {
     chatType: ChatMessageChatType = ChatMessageChatType.PeerChat,
     opt?: {
       displayName: string;
+      isChatThread?: boolean;
     }
   ): ChatMessage {
-    return ChatMessage.createSendMessage(
-      new ChatFileMessageBody({
+    return ChatMessage.createSendMessage({
+      body: new ChatFileMessageBody({
         type: ChatMessageType.FILE.valueOf(),
         localPath: filePath,
         displayName: opt?.displayName ?? '',
       }),
-      targetId,
-      chatType
-    );
+      targetId: targetId,
+      chatType: chatType,
+      isChatThread: opt?.isChatThread,
+    });
   }
 
   /**
@@ -620,10 +569,11 @@ export class ChatMessage {
       sendOriginalImage?: boolean;
       width: number;
       height: number;
+      isChatThread?: boolean;
     }
   ): ChatMessage {
-    return ChatMessage.createSendMessage(
-      new ChatImageMessageBody({
+    return ChatMessage.createSendMessage({
+      body: new ChatImageMessageBody({
         type: ChatMessageType.IMAGE.valueOf(),
         localPath: filePath,
         displayName: opt?.displayName ?? filePath,
@@ -632,9 +582,10 @@ export class ChatMessage {
         width: opt?.width,
         height: opt?.height,
       }),
-      targetId,
-      chatType
-    );
+      targetId: targetId,
+      chatType: chatType,
+      isChatThread: opt?.isChatThread,
+    });
   }
 
   /**
@@ -664,10 +615,11 @@ export class ChatMessage {
       duration: number;
       width: number;
       height: number;
+      isChatThread?: boolean;
     }
   ): ChatMessage {
-    return ChatMessage.createSendMessage(
-      new ChatVideoMessageBody({
+    return ChatMessage.createSendMessage({
+      body: new ChatVideoMessageBody({
         type: ChatMessageType.VIDEO.valueOf(),
         localPath: filePath,
         displayName: opt?.displayName ?? '',
@@ -676,9 +628,10 @@ export class ChatMessage {
         width: opt?.width,
         height: opt?.height,
       }),
-      targetId,
-      chatType
-    );
+      targetId: targetId,
+      chatType: chatType,
+      isChatThread: opt?.isChatThread,
+    });
   }
 
   /**
@@ -702,18 +655,20 @@ export class ChatMessage {
     opt?: {
       displayName: string;
       duration: number;
+      isChatThread?: boolean;
     }
   ): ChatMessage {
-    return ChatMessage.createSendMessage(
-      new ChatVoiceMessageBody({
+    return ChatMessage.createSendMessage({
+      body: new ChatVoiceMessageBody({
         type: ChatMessageType.VOICE.valueOf(),
         localPath: filePath,
         displayName: opt?.displayName ?? '',
         duration: opt?.duration,
       }),
-      targetId,
-      chatType
-    );
+      targetId: targetId,
+      chatType: chatType,
+      isChatThread: opt?.isChatThread,
+    });
   }
 
   /**
@@ -737,18 +692,20 @@ export class ChatMessage {
     chatType: ChatMessageChatType = ChatMessageChatType.PeerChat,
     opt?: {
       address: string;
+      isChatThread?: boolean;
     }
   ): ChatMessage {
-    return ChatMessage.createSendMessage(
-      new ChatLocationMessageBody({
+    return ChatMessage.createSendMessage({
+      body: new ChatLocationMessageBody({
         type: ChatMessageType.LOCATION.valueOf(),
         latitude: latitude,
         longitude: longitude,
         address: opt?.address ?? '',
       }),
-      targetId,
-      chatType
-    );
+      targetId: targetId,
+      chatType: chatType,
+      isChatThread: opt?.isChatThread,
+    });
   }
 
   /**
@@ -765,15 +722,19 @@ export class ChatMessage {
   public static createCmdMessage(
     targetId: string,
     action: string,
-    chatType: ChatMessageChatType = ChatMessageChatType.PeerChat
+    chatType: ChatMessageChatType = ChatMessageChatType.PeerChat,
+    opt?: {
+      isChatThread?: boolean;
+    }
   ): ChatMessage {
-    return ChatMessage.createSendMessage(
-      new ChatCmdMessageBody({
+    return ChatMessage.createSendMessage({
+      body: new ChatCmdMessageBody({
         action: action,
       }),
-      targetId,
-      chatType
-    );
+      targetId: targetId,
+      chatType: chatType,
+      isChatThread: opt?.isChatThread,
+    });
   }
 
   /**
@@ -795,20 +756,52 @@ export class ChatMessage {
     chatType: ChatMessageChatType = ChatMessageChatType.PeerChat,
     opt?: {
       params: any;
+      isChatThread?: boolean;
     }
   ): ChatMessage {
-    return ChatMessage.createSendMessage(
-      new ChatCustomMessageBody({
+    return ChatMessage.createSendMessage({
+      body: new ChatCustomMessageBody({
         event: event,
         params: opt?.params,
       }),
-      targetId,
-      chatType
-    );
+      targetId: targetId,
+      chatType: chatType,
+      isChatThread: opt?.isChatThread,
+    });
   }
 
+  /**
+   * Create a message from the server.
+   *
+   * @param params message in json format.
+   * @returns message object.
+   */
   public static createReceiveMessage(params: any): ChatMessage {
     return new ChatMessage(params);
+  }
+
+  /**
+   * Gets the list of Reactions.
+   */
+  public get reactionList(): Promise<Array<ChatMessageReaction>> {
+    return ChatClient.getInstance().chatManager.getReactionList(this.msgId);
+  }
+
+  /**
+   * Get message read count.
+   *
+   * **Note**
+   * This parameter is valid only when it is a group type. see{@link ChatMessageChatType#GroupChat}
+   */
+  public get groupReadCount(): Promise<number> {
+    return ChatClient.getInstance().chatManager.groupAckCount(this.msgId);
+  }
+
+  /**
+   * Asynchronously returns the chat thread object.
+   */
+  public get threadInfo(): Promise<ChatMessageThreadEvent | undefined> {
+    return ChatClient.getInstance().chatManager.getMessageThread(this.msgId);
   }
 }
 
@@ -836,9 +829,25 @@ export class ChatTextMessageBody extends ChatMessageBody {
    * The text message content.
    */
   content: string;
-  constructor(params: { type: string; content: string }) {
+  /**
+   * Specifies a list of languages to translate. {@link https://docs.microsoft.com/en-us/azure/cognitive-services/translator/language-support}
+   */
+  targetLanguages?: Array<string>;
+  /**
+   * The translated results are placed here.
+   * It is Map Object, key is target language, value is translated content.
+   */
+  translations?: any;
+  constructor(params: {
+    type: string;
+    content: string;
+    targetLanguages?: Array<string>;
+    translations?: any;
+  }) {
     super(params.type);
     this.content = params.content;
+    this.targetLanguages = params.targetLanguages;
+    this.translations = params.translations;
   }
 }
 

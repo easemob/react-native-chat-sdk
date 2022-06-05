@@ -1,5 +1,11 @@
 export const datasheet = {
-  AppKey: ['easemob-demo#easeim', '1135220126133718#demo', '81446724#514456'],
+  AppKey: [
+    'easemob-demo#easeim',
+    '1135220126133718#demo',
+    '81446724#514456',
+    '41117440#383391',
+    '5101220107132865#test',
+  ],
   ChatManager: {
     SendMessage: {
       latitude: '0.0',

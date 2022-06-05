@@ -9,6 +9,9 @@ import {
   ChatMessageEventListener,
   ChatGroupMessageAck,
   ChatError,
+  ChatMessageThreadEvent,
+  ChatMessageReactionEvent,
+  ChatMessageChatTypeFromNumber,
 } from 'react-native-chat-sdk';
 import { styleValues } from '../__internal__/Css';
 import {
@@ -16,14 +19,9 @@ import {
   StateBase,
   StatelessBase,
 } from '../__internal__/LeafScreenBase';
-import {
-  ChatManagerCache,
-  metaDataList,
-  MN,
-  stateDataValue,
-  statelessDataValue,
-} from './ChatManagerData';
+import { ChatManagerCache, metaDataList, MN } from './ChatManagerData';
 import type { ApiParams } from '../__internal__/DataTypes';
+import { generateData } from '../__internal__/Utils';
 
 export interface StateChatMessage extends StateBase {
   cb_result: string;
@@ -181,6 +179,46 @@ export interface StateChatMessage extends StateBase {
     direction: number;
     count: number;
   };
+  translateMessage: {
+    msg: ChatMessage;
+    languages: string[];
+  };
+  fetchSupportLanguages: {};
+  // setConversationExtension: {
+  //   convId: string;
+  //   convType: number;
+  //   ext: any;
+  // };
+  addReaction: {
+    reaction: string;
+    msgId: string;
+  };
+  removeReaction: {
+    reaction: string;
+    msgId: string;
+  };
+  fetchReactionList: {
+    msgIds: string[];
+    groupId: string;
+    chatType: number;
+  };
+  fetchReactionDetail: {
+    msgId: string;
+    reaction: string;
+    cursor: string;
+    pageSize: number;
+  };
+  reportMessage: {
+    msgId: string;
+    tag: string;
+    reason: string;
+  };
+  getReactionList: {
+    msgId: string;
+  };
+  groupAckCount: {
+    msgId: string;
+  };
 }
 
 export interface StatelessChatMessage extends StatelessBase {
@@ -205,8 +243,17 @@ export class ChatManagerLeafScreen extends LeafScreenBase<StateChatMessage> {
   constructor(props: { navigation: any }) {
     super(props);
     this.metaData = metaDataList;
-    this.state = stateDataValue;
-    this.statelessData = statelessDataValue;
+    this.state = Object.assign({}, generateData(metaDataList), {
+      sendResult: '',
+      recvResult: '',
+      exceptResult: '',
+      cb_result: '',
+    });
+    this.statelessData = {
+      sendMessage: {},
+      resendMessage: {},
+      sendMessageReadAck: {},
+    };
   }
 
   protected renderResult(): ReactNode {
@@ -225,6 +272,36 @@ export class ChatManagerLeafScreen extends LeafScreenBase<StateChatMessage> {
       that: ChatManagerLeafScreen;
       constructor(parent: any) {
         this.that = parent as ChatManagerLeafScreen;
+      }
+      onMessageReactionDidChange(list: Array<ChatMessageReactionEvent>): void {
+        console.log(
+          `${ChatManagerLeafScreen.TAG}: onMessageReactionDidChange: `,
+          list
+        );
+      }
+      onChatMessageThreadCreated(msgThread: ChatMessageThreadEvent): void {
+        console.log(
+          `${ChatManagerLeafScreen.TAG}: onChatMessageThreadCreated: `,
+          msgThread
+        );
+      }
+      onChatMessageThreadUpdated(msgThread: ChatMessageThreadEvent): void {
+        console.log(
+          `${ChatManagerLeafScreen.TAG}: onChatMessageThreadUpdated: `,
+          msgThread
+        );
+      }
+      onChatMessageThreadDestroyed(msgThread: ChatMessageThreadEvent): void {
+        console.log(
+          `${ChatManagerLeafScreen.TAG}: onChatMessageThreadDestroyed: `,
+          msgThread
+        );
+      }
+      onChatMessageThreadUserRemoved(msgThread: ChatMessageThreadEvent): void {
+        console.log(
+          `${ChatManagerLeafScreen.TAG}: onChatMessageThreadUserRemoved: `,
+          msgThread
+        );
       }
       onMessagesReceived(messages: ChatMessage[]): void {
         console.log(
@@ -396,6 +473,16 @@ export class ChatManagerLeafScreen extends LeafScreenBase<StateChatMessage> {
       'getMessages',
       'getMessagesWithKeyword',
       'getMessagesFromTime',
+      'translateMessage',
+      'fetchSupportLanguages',
+      // 'setConversationExtension',
+      'addReaction',
+      'removeReaction',
+      'fetchReactionList',
+      'fetchReactionDetail',
+      'reportMessage',
+      'getReactionList',
+      'groupAckCount',
     ];
     let renderDomAry: ({} | null | undefined)[] = [];
     const data = this.metaData;
@@ -442,6 +529,7 @@ export class ChatManagerLeafScreen extends LeafScreenBase<StateChatMessage> {
               value = JSON.stringify(v);
             }
           }
+          // console.log('test: name: ', item.paramName, 'value: ', value);
           renderDomAry.push(
             this.renderGroupParamWithInput(
               item.paramName,
@@ -841,6 +929,89 @@ export class ChatManagerLeafScreen extends LeafScreenBase<StateChatMessage> {
         ),
         ChatManagerLeafScreen.TAG,
         this.metaData.get(MN.getMessagesFromTime)!.methodName
+      );
+    } else if (name === MN.translateMessage) {
+      const { msg, languages } = this.state.translateMessage;
+      this.tryCatch(
+        ChatClient.getInstance().chatManager.translateMessage(msg, languages),
+        ChatManagerLeafScreen.TAG,
+        name
+      );
+    } else if (name === MN.fetchSupportLanguages) {
+      this.tryCatch(
+        ChatClient.getInstance().chatManager.fetchSupportedLanguages(),
+        ChatManagerLeafScreen.TAG,
+        name
+      );
+      // } else if (name === MN.setConversationExtension) {
+      //   const { convId, convType, ext } = this.state.setConversationExtension;
+      //   this.tryCatch(
+      //     ChatClient.getInstance().chatManager.setConversationExtension(
+      //       convId,
+      //       ChatConversationTypeFromNumber(convType),
+      //       ext
+      //     ),
+      //     ChatManagerLeafScreen.TAG,
+      //     name
+      //   );
+    } else if (name === MN.addReaction) {
+      const { reaction, msgId } = this.state.addReaction;
+      this.tryCatch(
+        ChatClient.getInstance().chatManager.addReaction(reaction, msgId),
+        ChatManagerLeafScreen.TAG,
+        name
+      );
+    } else if (name === MN.removeReaction) {
+      const { reaction, msgId } = this.state.removeReaction;
+      this.tryCatch(
+        ChatClient.getInstance().chatManager.removeReaction(reaction, msgId),
+        ChatManagerLeafScreen.TAG,
+        name
+      );
+    } else if (name === MN.fetchReactionList) {
+      const { msgIds, groupId, chatType } = this.state.fetchReactionList;
+      this.tryCatch(
+        ChatClient.getInstance().chatManager.fetchReactionList(
+          msgIds,
+          groupId,
+          ChatMessageChatTypeFromNumber(chatType)
+        ),
+        ChatManagerLeafScreen.TAG,
+        name
+      );
+    } else if (name === MN.fetchReactionDetail) {
+      const { msgId, reaction, cursor, pageSize } =
+        this.state.fetchReactionDetail;
+      this.tryCatch(
+        ChatClient.getInstance().chatManager.fetchReactionDetail(
+          msgId,
+          reaction,
+          cursor,
+          pageSize
+        ),
+        ChatManagerLeafScreen.TAG,
+        name
+      );
+    } else if (name === MN.reportMessage) {
+      const { msgId, tag, reason } = this.state.reportMessage;
+      this.tryCatch(
+        ChatClient.getInstance().chatManager.reportMessage(msgId, tag, reason),
+        ChatManagerLeafScreen.TAG,
+        name
+      );
+    } else if (name === MN.getReactionList) {
+      const { msgId } = this.state.getReactionList;
+      this.tryCatch(
+        ChatClient.getInstance().chatManager.getReactionList(msgId),
+        ChatManagerLeafScreen.TAG,
+        name
+      );
+    } else if (name === MN.groupAckCount) {
+      const { msgId } = this.state.groupAckCount;
+      this.tryCatch(
+        ChatClient.getInstance().chatManager.groupAckCount(msgId),
+        ChatManagerLeafScreen.TAG,
+        name
       );
     }
   }

@@ -10,6 +10,8 @@ import {
   ChatMessageChatType,
   ChatError,
   ChatConversationType,
+  ChatMessageThreadEvent,
+  ChatMessageReactionEvent,
 } from 'react-native-chat-sdk';
 import { styleValues } from '../__internal__/Css';
 import {
@@ -173,6 +175,36 @@ export class SendMessageLeafScreen extends LeafScreenBase<StateSendMessage> {
       that: SendMessageLeafScreen;
       constructor(parent: any) {
         this.that = parent as SendMessageLeafScreen;
+      }
+      onMessageReactionDidChange(list: Array<ChatMessageReactionEvent>): void {
+        console.log(
+          `${SendMessageLeafScreen.TAG}: onMessageReactionDidChange: `,
+          list
+        );
+      }
+      onChatMessageThreadCreated(msgThread: ChatMessageThreadEvent): void {
+        console.log(
+          `${SendMessageLeafScreen.TAG}: onChatMessageThreadCreated: `,
+          msgThread
+        );
+      }
+      onChatMessageThreadUpdated(msgThread: ChatMessageThreadEvent): void {
+        console.log(
+          `${SendMessageLeafScreen.TAG}: onChatMessageThreadUpdated: `,
+          msgThread
+        );
+      }
+      onChatMessageThreadDestroyed(msgThread: ChatMessageThreadEvent): void {
+        console.log(
+          `${SendMessageLeafScreen.TAG}: onChatMessageThreadDestroyed: `,
+          msgThread
+        );
+      }
+      onChatMessageThreadUserRemoved(msgThread: ChatMessageThreadEvent): void {
+        console.log(
+          `${SendMessageLeafScreen.TAG}: onChatMessageThreadUserRemoved: `,
+          msgThread
+        );
       }
       onMessagesReceived(messages: ChatMessage[]): void {
         console.log(
@@ -348,7 +380,7 @@ export class SendMessageLeafScreen extends LeafScreenBase<StateSendMessage> {
     return [
       this.renderParamWithSelectFile('filePath', filePath, (json: string) => {
         const j = JSON.parse(json);
-        console.log('test: j: ', j, decodeURIComponent(j.uri));
+        // console.log('test: j: ', j, decodeURIComponent(j.uri));
         this.setState({
           filePath: j.localPath,
           displayName: j.name,
@@ -566,7 +598,11 @@ export class SendMessageLeafScreen extends LeafScreenBase<StateSendMessage> {
       case ChatMessageType.TXT:
         {
           const { content } = this.state;
-          ret = ChatMessage.createTextMessage(targetId, content, targetType);
+          ret = ChatManagerCache.getInstance().createTextMessageWithParams(
+            targetId,
+            content,
+            targetType
+          );
         }
         break;
       case ChatMessageType.CMD:

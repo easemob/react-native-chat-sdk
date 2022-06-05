@@ -12,6 +12,8 @@ import {
   ChatGroupEventListener,
   ChatRoomEventListener,
   ChatMessageType,
+  ChatMessageThreadEvent,
+  ChatMessageReactionEvent,
 } from 'react-native-chat-sdk';
 import { styleValues } from '../__internal__/Css';
 import {
@@ -48,6 +50,7 @@ export interface QuickTestState extends StateBase {
   group_listener: string;
   room_listener: string;
   presence_listener: string;
+  cb_result: string;
 }
 
 export interface QuickTestStateless extends StatelessBase {}
@@ -105,6 +108,17 @@ export abstract class QuickTestScreenBase<
       constructor(parent: QuickTestScreenBase<S, SL>) {
         this.that = parent;
       }
+      onThreadEvent(
+        event?: ChatMultiDeviceEvent,
+        target?: string,
+        ext?: string[]
+      ): void {
+        console.log('QuickTestScreenBase.onThreadEvent: ', event, target, ext);
+        this.that.setState({
+          multi_listener:
+            'QuickTestScreenBase.onThreadEvent: ' + event + target + ext,
+        });
+      }
       onContactEvent(
         event?: ChatMultiDeviceEvent,
         target?: string,
@@ -158,6 +172,36 @@ export abstract class QuickTestScreenBase<
       that: QuickTestScreenBase<S, SL>;
       constructor(parent: any) {
         this.that = parent as QuickTestScreenBase<S, SL>;
+      }
+      onMessageReactionDidChange(list: Array<ChatMessageReactionEvent>): void {
+        console.log(
+          `${QuickTestScreenBase.TAG}: onMessageReactionDidChange: `,
+          list
+        );
+      }
+      onChatMessageThreadCreated(msgThread: ChatMessageThreadEvent): void {
+        console.log(
+          `${QuickTestScreenBase.TAG}: onChatMessageThreadCreated: `,
+          msgThread
+        );
+      }
+      onChatMessageThreadUpdated(msgThread: ChatMessageThreadEvent): void {
+        console.log(
+          `${QuickTestScreenBase.TAG}: onChatMessageThreadUpdated: `,
+          msgThread
+        );
+      }
+      onChatMessageThreadDestroyed(msgThread: ChatMessageThreadEvent): void {
+        console.log(
+          `${QuickTestScreenBase.TAG}: onChatMessageThreadDestroyed: `,
+          msgThread
+        );
+      }
+      onChatMessageThreadUserRemoved(msgThread: ChatMessageThreadEvent): void {
+        console.log(
+          `${QuickTestScreenBase.TAG}: onChatMessageThreadUserRemoved: `,
+          msgThread
+        );
       }
       onMessagesReceived(messages: ChatMessage[]): void {
         console.log(
@@ -914,6 +958,7 @@ export abstract class QuickTestScreenBase<
         {this.renderParamWithText(
           'pre_listener: ' + this.state.presence_listener
         )}
+        {this.renderParamWithText('cb_result: ' + this.state.cb_result)}
         {this.addSpaces()}
       </View>
     );

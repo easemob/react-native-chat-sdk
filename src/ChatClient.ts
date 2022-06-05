@@ -8,7 +8,7 @@ import {
 import { ChatContactManager } from './ChatContactManager';
 import {
   ChatConnectEventListener,
-  ChatContactGroupEventFromNumber,
+  ChatMultiDeviceEventFromNumber,
   ChatCustomEventListener,
   ChatMultiDeviceEventListener,
 } from './ChatEvents';
@@ -270,17 +270,23 @@ export class ChatClient extends BaseManager {
     chatlog.log(`${ChatClient.TAG}: onMultiDeviceEvent: `, params);
     this._multiDeviceListeners.forEach((element) => {
       let event = params?.event as number;
-      if (event > 10) {
+      if (event < 10) {
+        element.onContactEvent(
+          ChatMultiDeviceEventFromNumber(event),
+          params.target,
+          params.ext
+        );
+      } else if (event >= 10 && event < 40) {
         element.onGroupEvent(
-          ChatContactGroupEventFromNumber(event),
-          params?.target,
-          params?.userNames
+          ChatMultiDeviceEventFromNumber(event),
+          params.target,
+          params.ext
         );
       } else {
-        element.onContactEvent(
-          ChatContactGroupEventFromNumber(event),
-          params?.target,
-          params?.userNames
+        element.onThreadEvent(
+          ChatMultiDeviceEventFromNumber(event),
+          params.target,
+          params.ext
         );
       }
     });
@@ -364,24 +370,6 @@ export class ChatClient extends BaseManager {
     chatlog.log(`${ChatClient.TAG}: currentUserName: `, this._currentUsername);
     return this._currentUsername;
   }
-
-  /**
-   * Gets the version of the Native SDK.
-   *
-   * @returns The version of the React Native SDK.
-   */
-  // public get sdkVersion(): string {
-  //   return this._sdkVersion;
-  // }
-
-  /**
-   * Gets the version of the React Native SDK.
-   *
-   * @returns The version of the React Native SDK.
-   */
-  // public get rnSdkVersion(): string {
-  //   return this._rnSdkVersion;
-  // }
 
   /**
    * Initializes the SDK.
@@ -484,7 +472,7 @@ export class ChatClient extends BaseManager {
    *
    * There are two registration modes, open registration and authorized registration. The client can register only when the registration is open, otherwise an error message will be returned.
    * Open registration is for testing use, and it is not recommended to use this method to register a Huanxin account in a formal environment;
-   * The process of authorization registration should be that your server registers through the REST API provided by RingSign, and then saves it to your server or returns it to the client.
+   * The process of authorization registration should be that your server registers through the REST API provided by Agora, and then saves it to your server or returns it to the client.
    *
    * @param username The user ID.
    *                 This parameter is required. The user ID can be a maximum of 64 characters of the following types:

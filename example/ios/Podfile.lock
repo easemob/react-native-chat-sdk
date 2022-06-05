@@ -72,7 +72,7 @@ PODS:
     - FlipperKit/FlipperKitNetworkPlugin
   - fmt (6.2.1)
   - glog (0.3.5)
-  - HyphenateChat (3.9.1.1)
+  - HyphenateChat (3.9.3)
   - libevent (2.1.12)
   - OpenSSL-Universal (1.1.180)
   - RCT-Folly (2021.06.28.00-v2):
@@ -273,8 +273,8 @@ PODS:
   - React-jsinspector (0.66.4)
   - React-logger (0.66.4):
     - glog
-  - react-native-chat-sdk (0.4.1):
-    - HyphenateChat (= 3.9.1.1)
+  - react-native-chat-sdk (0.4.4):
+    - HyphenateChat (= 3.9.3)
     - React-Core
   - react-native-document-picker (8.1.0):
     - React-Core
@@ -542,7 +542,7 @@ SPEC CHECKSUMS:
   FlipperKit: de934d365bfc0af358d3b7b7d453c24ffddd7cac
   fmt: ff9d55029c625d3757ed641535fd4a75fedc7ce9
   glog: 5337263514dd6f09803962437687240c5dc39aa4
-  HyphenateChat: dcacd3e4646a3e9ad70ec06f04926b603a59d33e
+  HyphenateChat: d98a0ed5d5b9b79ea4cd7117e14a80c1b4a25152
   libevent: 4049cae6c81cdb3654a443be001fb9bdceff7913
   OpenSSL-Universal: 1aa4f6a6ee7256b83db99ec1ccdaa80d10f9af9b
   RCT-Folly: a21c126816d8025b547704b777a2ba552f3d9fa9
@@ -557,7 +557,7 @@ SPEC CHECKSUMS:
   React-jsiexecutor: 94ce921e1d8ce7023366873ec371f3441383b396
   React-jsinspector: d0374f7509d407d2264168b6d0fad0b54e300b85
   React-logger: 933f80c97c633ee8965d609876848148e3fef438
-  react-native-chat-sdk: ba66b4c296c6d9cd4eabfcb0a5999dbd0431611a
+  react-native-chat-sdk: 5d76b00af032d4119b179db560b90bd6611d06ea
   react-native-document-picker: 5663fe4bcdb646200683a41790464d2793307ac8
   react-native-image-picker: 4e6008ad8c2321622affa2c85432a5ebd02d480c
   react-native-safe-area-context: f98b0b16d1546d208fc293b4661e3f81a895afd9
@@ -581,6 +581,6 @@ SPEC CHECKSUMS:
   Yoga: e7dc4e71caba6472ff48ad7d234389b91dadc280
   YogaKit: f782866e155069a2cca2517aafea43200b01fd5a
 
-PODFILE CHECKSUM: d646fa2a945a9fad3989159dab636bb95ba29ea3
+PODFILE CHECKSUM: db061b42240b089355fd2b008a4cb89e6a5c75a7
 
 COCOAPODS: 1.11.3

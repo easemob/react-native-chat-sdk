@@ -79,21 +79,25 @@ export function ChatConversationTypeToString(
  * If room chat type, see {@link ChatRoom#fetchChatRoomInfoFromServer}.
  */
 export class ChatConversation {
-  con_id: string;
-  type: ChatConversationType;
-  // unreadCount: number;
-  // con_name?: string;
-  // lastMessage?: ChatMessage;
-  // lastReceivedMessage?: ChatMessage;
+  /**
+   * The conversation id.
+   */
+  convId: string;
+  /**
+   * The conversation type.
+   */
+  convType: ChatConversationType;
+  /**
+   * The conversation extension.
+   */
   ext?: any;
-
   constructor(params: {
-    con_id: string;
-    type: ChatConversationType;
+    convId: string;
+    convType: ChatConversationType;
     ext?: any;
   }) {
-    this.con_id = params.con_id;
-    this.type = params.type;
+    this.convId = params.convId;
+    this.convType = params.convType;
     this.ext = params.ext;
   }
 
@@ -103,33 +107,33 @@ export class ChatConversation {
    * @returns The conversation name.
    */
   public async name(): Promise<string | undefined> {
-    if (this.type === ChatConversationType.PeerChat) {
+    if (this.convType === ChatConversationType.PeerChat) {
       const ret = await ChatClient.getInstance().userManager.fetchUserInfoById([
-        this.con_id,
+        this.convId,
       ]);
       if (ret.size > 0) {
         return ret.values().next().value.nickName;
       }
-    } else if (this.type === ChatConversationType.GroupChat) {
+    } else if (this.convType === ChatConversationType.GroupChat) {
       const ret =
         await ChatClient.getInstance().groupManager.fetchGroupInfoFromServer(
-          this.con_id
+          this.convId
         );
       if (ret) {
         return ret.groupName;
       }
-    } else if (this.type === ChatConversationType.RoomChat) {
+    } else if (this.convType === ChatConversationType.RoomChat) {
       const ret =
         await ChatClient.getInstance().roomManager.fetchChatRoomInfoFromServer(
-          this.con_id
+          this.convId
         );
       if (ret) {
-        return ret.name;
+        return ret.roomName;
       }
     } else {
       throw new ChatError({
         code: 1,
-        description: `This type is not supported. ` + this.type,
+        description: `This type is not supported. ` + this.convType,
       });
     }
     return undefined;
@@ -144,8 +148,8 @@ export class ChatConversation {
    */
   public async fetchUnreadCount(): Promise<number> {
     return ChatClient.getInstance().chatManager.unreadCount(
-      this.con_id,
-      this.type
+      this.convId,
+      this.convType
     );
   }
 
@@ -158,8 +162,8 @@ export class ChatConversation {
    */
   public async fetchLatestMessage(): Promise<ChatMessage | undefined> {
     return ChatClient.getInstance().chatManager.fetchLatestMessage(
-      this.con_id,
-      this.type
+      this.convId,
+      this.convType
     );
   }
 
@@ -172,8 +176,8 @@ export class ChatConversation {
    */
   public async fetchLatestReceivedMessage(): Promise<ChatMessage | undefined> {
     return ChatClient.getInstance().chatManager.fetchLastReceivedMessage(
-      this.con_id,
-      this.type
+      this.convId,
+      this.convType
     );
   }
 
@@ -184,14 +188,14 @@ export class ChatConversation {
    *
    * @throws A description of the exception. See {@link ChatError}.
    */
-  public async setConversationExtension(ext: any): Promise<void> {
-    this.ext = ext;
-    return ChatClient.getInstance().chatManager.setConversationExtension(
-      this.con_id,
-      this.type,
-      this.ext
-    );
-  }
+  // public async setConversationExtension(ext: any): Promise<void> {
+  //   this.ext = ext;
+  //   return ChatClient.getInstance().chatManager.setConversationExtension(
+  //     this.convId,
+  //     this.convType,
+  //     this.ext
+  //   );
+  // }
 
   /**
    * Marks a message as read.
@@ -202,8 +206,8 @@ export class ChatConversation {
    */
   public async markMessageAsRead(msgId: string): Promise<void> {
     return ChatClient.getInstance().chatManager.markMessageAsRead(
-      this.con_id,
-      this.type,
+      this.convId,
+      this.convType,
       msgId
     );
   }
@@ -215,8 +219,8 @@ export class ChatConversation {
    */
   public async markAllMessagesAsRead(): Promise<void> {
     return ChatClient.getInstance().chatManager.markAllMessagesAsRead(
-      this.con_id,
-      this.type
+      this.convId,
+      this.convType
     );
   }
 
@@ -228,7 +232,7 @@ export class ChatConversation {
    * @throws A description of the exception. See {@link ChatError}.
    */
   public async insertMessage(msg: ChatMessage): Promise<void> {
-    if (msg.conversationId !== this.con_id) {
+    if (msg.conversationId !== this.convId) {
       throw new ChatError({
         code: 1,
         description:
@@ -236,8 +240,8 @@ export class ChatConversation {
       });
     }
     return ChatClient.getInstance().chatManager.insertMessage(
-      this.con_id,
-      this.type,
+      this.convId,
+      this.convType,
       msg
     );
   }
@@ -250,7 +254,7 @@ export class ChatConversation {
    * @throws A description of the exception. See {@link ChatError}.
    */
   public async appendMessage(msg: ChatMessage): Promise<void> {
-    if (msg.conversationId !== this.con_id) {
+    if (msg.conversationId !== this.convId) {
       throw new ChatError({
         code: 1,
         description:
@@ -258,8 +262,8 @@ export class ChatConversation {
       });
     }
     return ChatClient.getInstance().chatManager.appendMessage(
-      this.con_id,
-      this.type,
+      this.convId,
+      this.convType,
       msg
     );
   }
@@ -274,7 +278,7 @@ export class ChatConversation {
    * @throws A description of the exception. See {@link ChatError}.
    */
   public async updateMessage(msg: ChatMessage): Promise<void> {
-    if (msg.conversationId !== this.con_id) {
+    if (msg.conversationId !== this.convId) {
       throw new ChatError({
         code: 1,
         description:
@@ -282,8 +286,8 @@ export class ChatConversation {
       });
     }
     return ChatClient.getInstance().chatManager.updateConversationMessage(
-      this.con_id,
-      this.type,
+      this.convId,
+      this.convType,
       msg
     );
   }
@@ -301,8 +305,8 @@ export class ChatConversation {
     msgId: string
   ): Promise<void> {
     return ChatClient.getInstance().chatManager.deleteMessage(
-      this.con_id,
-      this.type,
+      this.convId,
+      this.convType,
       msgId
     );
   }
@@ -314,8 +318,8 @@ export class ChatConversation {
    */
   public async deleteAllMessages(): Promise<void> {
     return ChatClient.getInstance().chatManager.deleteAllMessages(
-      this.con_id,
-      this.type
+      this.convId,
+      this.convType
     );
   }
 
@@ -329,8 +333,8 @@ export class ChatConversation {
    */
   public async getMessageById(msgId: string): Promise<ChatMessage | undefined> {
     return ChatClient.getInstance().chatManager.getMessageById(
-      this.con_id,
-      this.type,
+      this.convId,
+      this.convType,
       msgId
     );
   }
@@ -357,8 +361,8 @@ export class ChatConversation {
     sender?: string
   ): Promise<Array<ChatMessage>> {
     return ChatClient.getInstance().chatManager.getMessagesWithMsgType(
-      this.con_id,
-      this.type,
+      this.convId,
+      this.convType,
       msgType,
       direction,
       timestamp,
@@ -387,8 +391,8 @@ export class ChatConversation {
     loadCount: number = 20
   ): Promise<Array<ChatMessage>> {
     return ChatClient.getInstance().chatManager.getMessages(
-      this.con_id,
-      this.type,
+      this.convId,
+      this.convType,
       startMsgId,
       direction,
       loadCount
@@ -418,8 +422,8 @@ export class ChatConversation {
     sender?: string
   ): Promise<Array<ChatMessage>> {
     return ChatClient.getInstance().chatManager.getMessagesWithKeyword(
-      this.con_id,
-      this.type,
+      this.convId,
+      this.convType,
       keywords,
       direction,
       timestamp,
@@ -449,8 +453,8 @@ export class ChatConversation {
     count: number = 20
   ): Promise<Array<ChatMessage>> {
     return ChatClient.getInstance().chatManager.getMessagesFromTime(
-      this.con_id,
-      this.type,
+      this.convId,
+      this.convType,
       startTime,
       endTime,
       direction,
