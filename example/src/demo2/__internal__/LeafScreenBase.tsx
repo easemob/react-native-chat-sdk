@@ -68,7 +68,11 @@ export abstract class LeafScreenBase<
           let result;
           if (value !== undefined) {
             if (value instanceof Object) {
-              result = JSON.stringify(value);
+              if (value instanceof Map) {
+                result = value;
+              } else {
+                result = JSON.stringify(value);
+              }
             } else {
               result = value;
             }

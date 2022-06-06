@@ -240,6 +240,7 @@ export class ChatManagerLeafScreen extends LeafScreenBase<StateChatMessage> {
   public static route = 'ChatManagerLeafScreen';
   metaData: Map<string, ApiParams>;
   statelessData: StatelessChatMessage;
+  stateTemp: any;
   constructor(props: { navigation: any }) {
     super(props);
     this.metaData = metaDataList;
@@ -254,6 +255,7 @@ export class ChatManagerLeafScreen extends LeafScreenBase<StateChatMessage> {
       resendMessage: {},
       sendMessageReadAck: {},
     };
+    this.stateTemp = Object.assign({}, this.state);
   }
 
   protected renderResult(): ReactNode {
@@ -428,6 +430,166 @@ export class ChatManagerLeafScreen extends LeafScreenBase<StateChatMessage> {
         </Text>
       </View>,
     ];
+  }
+
+  protected renderApiDom2(): ReactNode[] {
+    console.log('test: ', 'renderApiDom');
+    const apiList = [
+      'resendMessage',
+      'sendMessageReadAck',
+      'sendGroupMessageReadAck',
+      'sendConversationReadAck',
+      'recallMessage',
+      'getMessage',
+      'markAllConversationsAsRead',
+      'getUnreadMessageCount',
+      'updateMessage',
+      'importMessages',
+      'downloadAttachment',
+      'downloadThumbnail',
+      'fetchHistoryMessages',
+      'searchMsgFromDB',
+      'fetchGroupAcks',
+      'deleteRemoteConversation',
+      'getConversation',
+      'loadAllConversations',
+      'getConversationsFromServer',
+      'deleteConversation',
+      'getLatestMessage',
+      'getLastReceivedMessage',
+      'unreadCount',
+      'markMessageAsRead',
+      'markAllMessagesAsRead',
+      'insertMessage',
+      'appendMessage',
+      'updateConversationMessage',
+      'deleteMessage',
+      'deleteAllMessages',
+      'getMessageById',
+      'getMessagesWithMsgType',
+      'getMessages',
+      'getMessagesWithKeyword',
+      'getMessagesFromTime',
+      'translateMessage',
+      'fetchSupportLanguages',
+      // 'setConversationExtension',
+      'addReaction',
+      'removeReaction',
+      'fetchReactionList',
+      'fetchReactionDetail',
+      'reportMessage',
+      'getReactionList',
+      'groupAckCount',
+    ];
+    let renderDomAry: ({} | null | undefined)[] = [];
+    // const data2: any = this.state;
+    // apiList.forEach((apiItem) => {
+    //   const apiItemObject: any = data2?.[apiItem];
+    //   console.log('test: apiItemObject: ', JSON.stringify(apiItemObject));
+    //   if (apiItemObject !== undefined) {
+    //     console.log('test: ----------------------------');
+    //     console.log('test: title: ', apiItem);
+    //     console.log('test: entries: ', Object.entries(apiItemObject));
+    //     console.log('test: names: ', Object.getOwnPropertyNames(apiItemObject));
+    //     console.log('test: keys: ', Object.keys(apiItemObject));
+    //     console.log('test: values: ', Object.values(apiItemObject));
+    //     console.log('test: ----------------------------');
+    //   }
+    // });
+    const data = this.metaData;
+    const stateData: any = this.stateTemp;
+    apiList.forEach((apiItem) => {
+      this.setKeyPrefix(apiItem);
+      renderDomAry.push(
+        this.renderParamWithText(data.get(apiItem)!.methodName)
+      );
+      data.get(apiItem)?.params.forEach((item) => {
+        let currentData = data.get(apiItem);
+        let itemValue =
+          // eslint-disable-next-line no-undef
+          this.state[apiItem as keyof typeof this.state][
+            item.paramName as keyof typeof currentData
+          ];
+        const apiItemObject: any = stateData?.[apiItem];
+        const itemValue2 = apiItemObject?.[item.paramName];
+        // console.log(
+        //   'test: itemValue: ',
+        //   data.get(apiItem)!.methodName,
+        //   itemValue
+        // );
+        // console.log(
+        //   'test: itemValue2: ',
+        //   data.get(apiItem)!.methodName,
+        //   itemValue2
+        // );
+        if (item.domType && item.domType === 'select') {
+          if (item.paramType === 'boolean') {
+            renderDomAry.push(
+              this.renderParamWithEnum(
+                item.paramName,
+                ['true', 'false'],
+                itemValue ? 'true' : 'false',
+                (index: string, option: any) => {
+                  let inputData = option === 'true' ? true : false;
+                  let pv: any = {};
+                  pv[apiItem] = Object.assign(
+                    {},
+                    // eslint-disable-next-line no-undef
+                    this.state[apiItem as keyof typeof this.state],
+                    inputData
+                  );
+                  return this.setState(pv);
+                }
+              )
+            );
+          }
+        } else {
+          let value =
+            item.paramType === 'object'
+              ? JSON.stringify(itemValue2)
+              : itemValue2;
+          if (item.paramValue) {
+            value = JSON.stringify({ key: 'value' });
+            const v = item.paramValue();
+            if (v instanceof ChatMessage) {
+              value = JSON.stringify(v);
+            }
+          }
+          // console.log('test: name: ', item.paramName, 'value: ', value);
+          renderDomAry.push(
+            this.renderGroupParamWithInput(
+              item.paramName,
+              item.paramType,
+              value,
+              (inputData: { [index: string]: string }) => {
+                let pv: any = {};
+                pv[apiItem] = Object.assign(
+                  {},
+                  // eslint-disable-next-line no-undef
+                  this.state[apiItem as keyof typeof this.state],
+                  inputData
+                );
+                console.log('test: pv: ', JSON.stringify(pv));
+                this.stateTemp = Object.assign(this.stateTemp, pv);
+                console.log('test: stateTemp: ', this.stateTemp);
+                this.state = Object.assign(this.state, pv);
+                return this.setState(pv, () => {
+                  console.log('test: 111111');
+                });
+              }
+            )
+          );
+        }
+      });
+      renderDomAry.push(
+        this.renderButton(data.get(apiItem)!.methodName, () => {
+          this.callApi(data.get(apiItem)!.methodName);
+        })
+      );
+      renderDomAry.push(this.renderDivider());
+    });
+    renderDomAry.push(this.addSpaces());
+    return renderDomAry;
   }
 
   protected renderBody(): ReactNode {

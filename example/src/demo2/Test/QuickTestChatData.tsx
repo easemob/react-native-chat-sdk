@@ -841,7 +841,7 @@ export const metaDataList = new Map<string, ApiParams>([
         {
           paramName: 'languages',
           paramType: 'object',
-          paramDefaultValue: ['yue'],
+          paramDefaultValue: ['yue', 'en', 'fr', 'de', 'ca'],
         },
       ],
     },
@@ -889,7 +889,7 @@ export const metaDataList = new Map<string, ApiParams>([
         {
           paramName: 'msgId',
           paramType: 'string',
-          paramDefaultValue: '1017220072558561848',
+          paramDefaultValue: '1017652723916474936',
         },
       ],
     },
@@ -907,7 +907,7 @@ export const metaDataList = new Map<string, ApiParams>([
         {
           paramName: 'msgId',
           paramType: 'string',
-          paramDefaultValue: '1017217320256277048',
+          paramDefaultValue: '1017560360250509880',
         },
       ],
     },
@@ -920,12 +920,12 @@ export const metaDataList = new Map<string, ApiParams>([
         {
           paramName: 'msgIds',
           paramType: 'object',
-          paramDefaultValue: ['1017203473839557176'],
+          paramDefaultValue: ['1017652723916474936'],
         },
         {
           paramName: 'groupId',
           paramType: 'string',
-          paramDefaultValue: '183503336570881',
+          paramDefaultValue: '183504266657793',
         },
         {
           paramName: 'chatType',

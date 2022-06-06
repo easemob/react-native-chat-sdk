@@ -24,11 +24,29 @@ import {
 
 const App = () => {
   const title = 'AgoraChatQuickstart';
+  const [appKey, setAppKey] = React.useState('easemob-demo#easeim');
   const [username, setUsername] = React.useState('');
   const [password, setPassword] = React.useState('');
   const [userId, setUserId] = React.useState('');
   const [content, setContent] = React.useState('');
   const [logText, setWarnText] = React.useState('Show log area');
+
+  const init = () => {
+    let o = new ChatOptions({
+      autoLogin: false,
+      appKey: appKey,
+    });
+    ChatClient.getInstance()
+      .init(o)
+      .then(() => {
+        console.log('init success');
+        setWarnText('init success.');
+      })
+      .catch(() => {
+        console.log('init fail.');
+        setWarnText('init fail.');
+      });
+  };
 
   const setListener = () => {
     let msgListener = {
@@ -166,6 +184,20 @@ const App = () => {
           <TextInput
             multiline
             style={styles.inputBox}
+            placeholder="Enter appkey"
+            onChangeText={text => setAppKey(text)}
+            value={appKey}
+          />
+        </View>
+        <View style={styles.buttonCon}>
+          <Text style={styles.btn2} onPress={init}>
+            INIT SDK
+          </Text>
+        </View>
+        <View style={styles.inputCon}>
+          <TextInput
+            multiline
+            style={styles.inputBox}
             placeholder="Enter username"
             onChangeText={text => setUsername(text)}
             value={username}
@@ -283,20 +315,5 @@ const styles = StyleSheet.create({
     lineHeight: 20,
   },
 });
-
-(function init() {
-  let o = new ChatOptions({
-    autoLogin: false,
-    appKey: 'easemob-demo#easeim',
-  });
-  ChatClient.getInstance()
-    .init(o)
-    .then(() => {
-      console.log('success');
-    })
-    .catch(() => {
-      console.log('error');
-    });
-})();
 
 export default App;

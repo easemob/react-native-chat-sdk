@@ -17,7 +17,3 @@ export interface ApiParams {
   methodName: string;
   params: ParamPair[];
 }
-export interface ApiParams {
-  methodName: string;
-  params: ParamPair[];
-}
