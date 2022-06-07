@@ -43,11 +43,6 @@ export const screenComponents: ScreenComponent[] = [
   // root navigator
   { route: ClientRoute, screen: ClientScreen, isNavigation: true },
   { route: ChatManagerRoute, screen: ChatManagerScreen, isNavigation: true },
-  {
-    route: ChatUserInfoManagerRoute,
-    screen: ChatUserInfoManagerScreen,
-    isNavigation: true,
-  },
   { route: GroupManagerRoute, screen: GroupManagerScreen, isNavigation: true },
   {
     route: ChatRoomManagerRoute,
@@ -62,6 +57,11 @@ export const screenComponents: ScreenComponent[] = [
   {
     route: ContactManagerRoute,
     screen: ContactManagerScreen,
+    isNavigation: true,
+  },
+  {
+    route: ChatUserInfoManagerRoute,
+    screen: ChatUserInfoManagerScreen,
     isNavigation: true,
   },
   {
@@ -153,6 +153,7 @@ export const screenComponents: ScreenComponent[] = [
     isNavigation: false,
     parentScreen: ChatRoomManagerRoute,
   },
+
   // ChatUserInfoManagerRoute navigator
   {
     route: ChatUserInfoManagerLeafScreen.route,
