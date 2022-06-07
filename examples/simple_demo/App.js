@@ -41,6 +41,7 @@ const App = () => {
       .then(() => {
         console.log('init success');
         setWarnText('init success.');
+        this.isInitialized = true;
       })
       .catch(() => {
         console.log('init fail.');
@@ -82,6 +83,10 @@ const App = () => {
   };
 
   const registerAccount = () => {
+    if (this.isInitialized === false || this.isInitialized === undefined) {
+      setWarnText('Perform initialization first.');
+      return;
+    }
     ChatClient.getInstance()
       .createAccount(username, password)
       .then(() => {
@@ -95,6 +100,10 @@ const App = () => {
   };
 
   const login = () => {
+    if (this.isInitialized === false || this.isInitialized === undefined) {
+      setWarnText('Perform initialization first.');
+      return;
+    }
     setWarnText(`username:${username},password:${password}`);
     let listener = {
       onTokenWillExpire() {
@@ -130,6 +139,10 @@ const App = () => {
   };
 
   const logout = () => {
+    if (this.isInitialized === false || this.isInitialized === undefined) {
+      setWarnText('Perform initialization first.');
+      return;
+    }
     ChatClient.getInstance()
       .logout()
       .then(() => {
@@ -143,6 +156,10 @@ const App = () => {
   };
 
   const sendmsg = () => {
+    if (this.isInitialized === false || this.isInitialized === undefined) {
+      setWarnText('Perform initialization first.');
+      return;
+    }
     let msg = ChatMessage.createTextMessage(
       userId,
       content,
