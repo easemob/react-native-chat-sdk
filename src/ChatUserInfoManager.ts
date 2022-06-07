@@ -7,6 +7,9 @@ import {
 } from './__internal__/Consts';
 import { Native } from './__internal__/Native';
 
+/**
+ * The user information manager for updating and getting user attributes.
+ */
 export class ChatUserInfoManager extends Native {
   private static TAG = 'ChatUserInfoManager';
 
@@ -17,15 +20,18 @@ export class ChatUserInfoManager extends Native {
   /**
    * Modifies the user attributes of the current user.
    *
-   * @param params The params set.
-   * - [nickName] The user name.
-   * - [avatarUrl] The user head image.
-   * - [mail] The user email address.
-   * - [phone] The user mobile phone number.
-   * - [gender] The user sex.
-   * - [sign] The user signature.
-   * - [birth] The user birthday.
-   * - [ext] The user custom define attribute.
+   * @param params The parameter set.
+   * - [nickName] The nickname of the user.
+   * - [avatarUrl] The avatar URL of the user.
+   * - [mail] The email address of the user.
+   * - [phone] The phone number of the user.
+   * - [gender] The gender of the user. The value can only be `0`, `1`, or `2`. Other values are invalid.
+   *    - `0`: (Default) Unknown;
+   *    - `1`: Male;
+   *    - `2`: Female.
+   * - [sign] The signature of the user.
+   * - [birth] The birthday of the user.
+   * - [ext] The custom extension information of the user. You can set it to an empty string or type custom information and encapsulate them as a JSON string.
    *
    * @throws A description of the exception. See {@link ChatError}.
    */
@@ -55,10 +61,10 @@ export class ChatUserInfoManager extends Native {
   }
 
   /**
-   * Gets user attributes of the specified users.
+   * Gets the user attributes of the specified users.
    *
-   * @param userIds The username array.
-   * @returns A map that contains key-value pairs where the key is the user ID and the value is user attributes，see {@link ChatUserInfo}
+   * @param userIds The user ID array.
+   * @returns A map that contains key-value pairs where the key is the user ID and the value is user attributes，see {@link ChatUserInfo}.
    *
    * @throws A description of the exception. See {@link ChatError}.
    */
@@ -81,9 +87,9 @@ export class ChatUserInfoManager extends Native {
   }
 
   /**
-   * Gets the current user's attributes from the server.
+   * Gets attributes of the current user from the server.
    *
-   * @returns The user properties that are obtained. See {@link ChatUserInfo}.
+   * @returns The obtained user attributes. See {@link ChatUserInfo}.
    *
    * @throws A description of the exception. See {@link ChatError}.
    */

@@ -39,7 +39,7 @@ export enum ChatMessageDirection {
 }
 
 /**
- * The message sending status.
+ * The message sending states.
  */
 export enum ChatMessageStatus {
   /**
@@ -61,7 +61,7 @@ export enum ChatMessageStatus {
 }
 
 /**
- * The download status of the attachment file.
+ * The attachment file download states.
  */
 export enum ChatDownloadStatus {
   /**
@@ -115,16 +115,16 @@ export enum ChatMessageType {
    */
   CMD = 'cmd',
   /**
-   * Customized message.
+   * Custom message.
    */
   CUSTOM = 'custom',
 }
 
 /**
- * The message body type convert.
+ * Converts the conversation type from int to string.
  *
- * @param params Integer representing message body type.
- * @returns The message body type.
+ * @param params The conversation type of the int type.
+ * @returns The conversation type of the string type.
  */
 export function ChatMessageChatTypeFromNumber(
   params: number
@@ -140,10 +140,10 @@ export function ChatMessageChatTypeFromNumber(
 }
 
 /**
- * The message send direction convert.
+ * Converts the message direction from string to enum.
  *
- * @param params The String representing message direction.
- * @returns The String.
+ * @param params The message direction of the string type.
+ * @returns The message direction of the enum type.
  */
 export function ChatMessageDirectionFromString(
   params: string
@@ -157,10 +157,10 @@ export function ChatMessageDirectionFromString(
 }
 
 /**
- * The message status type convert.
+ * Converts the message status from int to enum.
  *
- * @param params The Integer representing message status.
- * @returns The message status.
+ * @param params The message status of the int type.
+ * @returns The message status of the enum type.
  */
 export function ChatMessageStatusFromNumber(params: number): ChatMessageStatus {
   switch (params) {
@@ -176,20 +176,20 @@ export function ChatMessageStatusFromNumber(params: number): ChatMessageStatus {
 }
 
 /**
- * The message status type convert.
+ * Converts the message status from enum to string.
  *
- * @param params The message status type.
- * @returns The String representing message status type.
+ * @param params The message status of the enum type.
+ * @returns The message status of the string type.
  */
 export function ChatMessageStatusToString(params: ChatMessageStatus): string {
   return ChatMessageStatus[params];
 }
 
 /**
- * The message download status type convert.
+ * Converts the message download status from int to string.
  *
- * @param params The integer representing message download status type.
- * @returns The message download status type.
+ * @param params The message download status of the int type.
+ * @returns The message download status of the string type.
  */
 export function ChatDownloadStatusFromNumber(
   params: number
@@ -207,20 +207,20 @@ export function ChatDownloadStatusFromNumber(
 }
 
 /**
- * The message download status type convert.
+ * Converts the message download status from int to string.
  *
- * @param params The download status type.
- * @returns The String representing download status type.
+ * @param params The message download status of the int type.
+ * @returns The message download status of the string type.
  */
 export function ChatDownloadStatusToString(params: ChatDownloadStatus): string {
   return ChatDownloadStatus[params];
 }
 
 /**
- * The message type convert.
+ * Converts the message type from string to enum.
  *
- * @param params The string representing message type.
- * @returns The message type.
+ * @param params The message type of the string type.
+ * @returns The message type of the enum type.
  */
 export function ChatMessageTypeFromString(params: string): ChatMessageType {
   switch (params) {
@@ -249,32 +249,33 @@ export function ChatMessageTypeFromString(params: string): ChatMessageType {
 }
 
 /**
- * The message status change listener interface.
+ * The message status change listener.
  */
 export interface ChatMessageStatusCallback {
   /**
-   * The progress of sending or receiving messages.
+   * Occurs when a message is uploaded or downloaded.
    *
-   * @param progress The progress value.
+   * @param progress The message upload/download progress value. The value range is 0 to 100 in percentage.
    */
   onProgress(localMsgId: string, progress: number): void;
 
   /**
-   * Error message sending or receiving.
+   * Occurs when a message error occurs.
    *
    * @param error A description of the error. See {@link ChatError}.
    */
   onError(localMsgId: string, error: ChatError): void;
 
   /**
-   * The message is sent or received.
-   * @param message The message.
+   * Occurs when a message is successfully delivered.
+   *
+   * @param message The message that is successfully delivered.
    */
   onSuccess(message: ChatMessage): void;
 }
 
 /**
- * The message instance class, which represents a sent/received message.
+ * The message class that defines a message that is to be sent or received.
  *
  * For example:
  *
@@ -291,7 +292,7 @@ export interface ChatMessageStatusCallback {
 export class ChatMessage {
   static TAG = 'ChatMessage';
   /**
-   * The server message ID.
+   * The message ID generated on the server.
    */
   msgId: string = generateMessageId();
   /**
@@ -311,11 +312,11 @@ export class ChatMessage {
    */
   to: string = '';
   /**
-   * The local timestamp of the message.
+   * The Unix timestamp when the message is created locally. The unit is millisecond.
    */
   localTime: number = getNowTimestamp();
   /**
-   * The server timestamp of the message.
+   * The Unix timestamp when the server receives the message. The unit is millisecond.
    */
   serverTime: number = getNowTimestamp();
   /**
@@ -351,9 +352,7 @@ export class ChatMessage {
    */
   hasRead: boolean = false;
   /**
-   * The chat types.
-   *
-   * There are three chat types: one-to-one chat, group chat, and chat room.
+   * The conversation type. See {@link ChatType}.
    */
   chatType: ChatMessageChatType = ChatMessageChatType.ChatRoom;
   /**
@@ -361,7 +360,7 @@ export class ChatMessage {
    */
   direction: ChatMessageDirection = ChatMessageDirection.SEND;
   /**
-   * The message sending/reception status. See {@link ChatMessageStatus}
+   * The message sending status. See {@link ChatMessageStatus}.
    */
   status: ChatMessageStatus = ChatMessageStatus.CREATE;
   /**
@@ -374,7 +373,7 @@ export class ChatMessage {
   body: ChatMessageBody;
 
   /**
-   * This attribute indicates whether the message is a sub-message. If it is a sub-message, it may be a sub-message under a group message. Only group messages have submessages. Personal messages and chat room messages cannot have sub-messages. The value of this property is false for normal messages. If the group message has sub-messages, you can obtain the corresponding information by calling {@link #threadInfo}. Sub-messages of group messages receive notifications via {@link ChatMessageEventListener}.
+   * Constructs a message.
    */
   isChatThread: boolean;
 
@@ -477,12 +476,12 @@ export class ChatMessage {
   /**
    * Creates a text message for sending.
    *
-   * @param targetId The ID of the message recipient.
+   * @param targetId The user ID of the message recipient.
    * - For a one-to-one chat, it is the user ID of the peer user.
    * - For a group chat, it is the group ID.
    * - For a chat room, it is the chat room ID.
    * @param content The text content.
-   * @param chatType The conversation type.
+   * @param chatType The conversation type. See {@link ChatType}.
    * @returns The message instance.
    */
   public static createTextMessage(
@@ -508,14 +507,14 @@ export class ChatMessage {
   }
 
   /**
-   * Creates a message with file attachment for sending.
+   * Creates a message with a file attachment for sending.
    *
-   * @param targetId The ID of the message recipient.
+   * @param targetId The user ID of the message recipient.
    * - For a one-to-one chat, it is the user ID of the peer user.
    * - For a group chat, it is the group ID.
    * - For a chat room, it is the chat room ID.
    * @param filePath The file path.
-   * @param chatType The conversation type.
+   * @param chatType The conversation type. See {@link ChatType}.
    * @param opt The file name.
    * @returns The message instance.
    */
@@ -543,18 +542,18 @@ export class ChatMessage {
   /**
    * Creates an image message for sending.
    *
-   * @param targetId The ID of the message recipient.
+   * @param targetId The user ID of the message recipient.
    * - For a one-to-one chat, it is the user ID of the peer user.
    * - For a group chat, it is the group ID.
    * - For a chat room, it is the chat room ID.
    * @param filePath The image path.
-   * @param chatType The conversation type.
+   * @param chatType The conversation type. See {@link ChatType}.
    * @param opt
    *   @{#displayName} The image name.
    *   @{#thumbnailLocalPath} The image thumbnail path.
    *   @{#sendOriginalImage} Whether to send the original image.
-   *     - `true`: Sends the original image.
-   *     - `false`: (Default) Sends the thumbnail. For an image greater than 100 KB, the SDK will first compress it.
+   *     - `true`: The SDK sends the original image and its thumbnail.
+   *     - (Default) `false`: If the image is smaller than 100 KB, the SDK sends the original image and its thumbnail. If the image is equal to or greater than 100 KB, the SDK will compress it before sending the compressed image and the thumbnail of the compressed image.
    *   @{#width} The image width in pixels.
    *   @{#height} The image height in pixels.
    * @returns The message instance.
@@ -591,12 +590,12 @@ export class ChatMessage {
   /**
    * Creates a video message for sending.
    *
-   * @param targetId The ID of the message recipient.
+   * @param targetId The user ID of the message recipient.
    * - For a one-to-one chat, it is the user ID of the peer user.
    * - For a group chat, it is the group ID.
    * - For a chat room, it is the chat room ID.
    * @param filePath The path of the video file.
-   * @param chatType The conversation type.
+   * @param chatType The conversation type. See {@link ChatType}.
    * @param opt
    *   @{#displayName} The video name.
    *   @{#thumbnailLocalPath} The path of the thumbnail of the first frame of video.
@@ -635,16 +634,16 @@ export class ChatMessage {
   }
 
   /**
-   * Creates a video message for sending.
+   * Creates a voice message for sending.
    *
-   * @param targetId The ID of the message recipient.
+   * @param targetId The user ID of the message recipient.
    * - For a one-to-one chat, it is the user ID of the peer user.
    * - For a group chat, it is the group ID.
    * - For a chat room, it is the chat room ID.
    * @param filePath The path of the voice file.
-   * @param chatType The conversation type.
+   * @param chatType The conversation type. See {@link ChatType}.
    * @param opt
-   *   @{#displayName} The voice name.
+   *   @{#displayName} The voice file name.
    *   @{#duration} The voice duration in seconds.
    * @returns The message instance.
    */
@@ -674,13 +673,13 @@ export class ChatMessage {
   /**
    * Creates a location message for sending.
    *
-   * @param targetId The ID of the message recipient.
+   * @param targetId The user ID of the message recipient.
    * - For a one-to-one chat, it is the user ID of the peer user.
    * - For a group chat, it is the group ID.
    * - For a chat room, it is the chat room ID.
    * @param latitude The latitude.
    * @param longitude The longitude.
-   * @param chatType The conversation type.
+   * @param chatType The conversation type. See {@link ChatType}.
    * @param opt
    *   @{#address} The address.
    * @returns The message instance.
@@ -711,12 +710,12 @@ export class ChatMessage {
   /**
    * Creates a command message for sending.
    *
-   * @param targetId The ID of the message recipient.
+   * @param targetId The user ID of the message recipient.
    * - For a one-to-one chat, it is the user ID of the peer user.
    * - For a group chat, it is the group ID.
    * - For a chat room, it is the chat room ID.
    * @param action The command action.
-   * @param chatType The conversation type.
+   * @param chatType The conversation type. See {@link ChatType}.
    * @returns The message instance.
    */
   public static createCmdMessage(
@@ -740,14 +739,14 @@ export class ChatMessage {
   /**
    * Creates a custom message for sending.
    *
-   * @param targetId The ID of the message recipient.
+   * @param targetId The user ID of the message recipient.
    * - For a one-to-one chat, it is the user ID of the peer user.
    * - For a group chat, it is the group ID.
    * - For a chat room, it is the chat room ID.
-   * @param event
-   * @param chatType The conversation type.
+   * @param event The custom event.
+   * @param chatType The conversation type. See {@link ChatType}.
    * @param opt
-   *   @{#params} Custom parameters. Key/value pair. It can be nested.
+   *   @{#params} The dictionary of custom parameters.
    * @returns The message instance.
    */
   public static createCustomMessage(
@@ -806,9 +805,7 @@ export class ChatMessage {
 }
 
 /**
- * The content part of the message.
- *
- * The base class for the concrete message type.
+ * The message body base class.
  */
 export class ChatMessageBody {
   /**
@@ -822,7 +819,7 @@ export class ChatMessageBody {
 }
 
 /**
- * The text message body.
+ * The text message body class.
  */
 export class ChatTextMessageBody extends ChatMessageBody {
   /**
@@ -852,7 +849,7 @@ export class ChatTextMessageBody extends ChatMessageBody {
 }
 
 /**
- * The location message body.
+ * The location message body class.
  */
 export class ChatLocationMessageBody extends ChatMessageBody {
   /**
@@ -881,11 +878,11 @@ export class ChatLocationMessageBody extends ChatMessageBody {
 }
 
 /**
- * The file message body.
+ * The file message body class.
  */
 export class ChatFileMessageBody extends ChatMessageBody {
   /**
-   * The local path of the image file.
+   * The local path of the file.
    */
   localPath: string = '';
   /**
@@ -897,7 +894,7 @@ export class ChatFileMessageBody extends ChatMessageBody {
    */
   remotePath: string;
   /**
-   * The download status of the attachment file. See {@link ChatDownloadStatus}
+   * The download status of the attachment file. See {@link ChatDownloadStatus}.
    */
   fileStatus: ChatDownloadStatus;
   /**
@@ -933,10 +930,10 @@ export class ChatFileMessageBody extends ChatMessageBody {
  */
 export class ChatImageMessageBody extends ChatFileMessageBody {
   /**
-   * Sets whether to send the original image when sending an image.
+   * Whether to send the original image when sending an image.
    *
-   * - `false`: (Default) Sends the thumbnail. For an image larger than 100 KB, the SDK will first compress it.
-   * - `true`: Sends the original image.
+   * - `true`: Yes.
+   * - (Default) `false`: No. The thumbnail is sent. For an image greater than 100 KB, the SDK will compress it before sending its thumbnail.
    */
   sendOriginalImage: boolean;
   /**
@@ -948,7 +945,7 @@ export class ChatImageMessageBody extends ChatFileMessageBody {
    */
   thumbnailRemotePath: string;
   /**
-   * The secret to access the thumbnail. A secret is required for verification for thumbnail download.
+   * The token to access the thumbnail. A token is required for verification for thumbnail download.
    */
   thumbnailSecret: string;
   /**
@@ -1001,7 +998,7 @@ export class ChatImageMessageBody extends ChatFileMessageBody {
 }
 
 /**
- * The video message body.
+ * The video message body class.
  */
 export class ChatVideoMessageBody extends ChatFileMessageBody {
   /**
@@ -1017,7 +1014,7 @@ export class ChatVideoMessageBody extends ChatFileMessageBody {
    */
   thumbnailRemotePath: string;
   /**
-   * The secret key of the video thumbnail.
+   * The token to download the video thumbnail.
    */
   thumbnailSecret: string;
   /**
@@ -1109,8 +1106,8 @@ export class ChatCmdMessageBody extends ChatMessageBody {
    */
   action: string;
   /**
-   * Checks whether to deliver to online users only.
-   * - (Default)`false`: The command message is delivered users, regardless of their online or offline status.
+   * Whether this command message is delivered only to online users.
+   * - (Default)`false`: The command message is delivered to users, regardless of their online or offline status.
    * - `true`: The message is delivered to the online users only, so the offline users won't receive the message when they log in later.
    */
   deliverOnlineOnly: boolean;

@@ -39,7 +39,7 @@ import { ChatCursorResult } from './common/ChatCursorResult';
 import { ChatError } from './common/ChatError';
 
 /**
- * The chat room manager class, which manages user joining and exiting the chat room, retrieving the chat room list, and managing member privileges.
+ * The chat room manager class, which manages user operations, like joining and leaving the chat room and retrieving the chat room list, and manages member privileges.
  */
 export class ChatRoomManager extends Native {
   private static TAG = 'ChatRoomManager';
@@ -163,9 +163,9 @@ export class ChatRoomManager extends Native {
   }
 
   /**
-   * Add room event listener.
+   * Adds a chat room listener.
    *
-   * @param listener The listener to be added.
+   * @param listener The listener to add.
    */
   public addRoomListener(listener: ChatRoomEventListener): void {
     chatlog.log(`${ChatRoomManager.TAG}: addRoomListener: `);
@@ -173,9 +173,9 @@ export class ChatRoomManager extends Native {
   }
 
   /**
-   * Remove room event listener
+   * Removes the chat room listener.
    *
-   * @param listener The listener to be deleted.
+   * @param listener The listener to remove.
    */
   public removeRoomListener(listener: ChatRoomEventListener): void {
     chatlog.log(`${ChatRoomManager.TAG}: removeRoomListener: `);
@@ -183,7 +183,7 @@ export class ChatRoomManager extends Native {
   }
 
   /**
-   * Clear all room event listener
+   * Removes all the chat room listeners.
    */
   public removeAllRoomListener(): void {
     chatlog.log(`${ChatRoomManager.TAG}: removeAllRoomListener: `);
@@ -193,7 +193,7 @@ export class ChatRoomManager extends Native {
   /**
    * Joins the chat room.
    *
-   * To exit the chat room, call {@link #leaveChatRoom(String)}.
+   * To leave the chat room, you can call {@link #leaveChatRoom(String)}.
    *
    * @param roomId The ID of the chat room to join.
    *
@@ -230,8 +230,8 @@ export class ChatRoomManager extends Native {
    * Gets chat room data from the server with pagination.
    *
    * @param pageNum The page number, starting from 1.
-   * @param pageSize The number of records per page.
-   * @returns Chat room data. See {@link ChatPageResult}.
+   * @param pageSize The number of chat rooms that you expect to get on each page.
+   * @returns The list of obtained chat rooms. See {@link ChatPageResult}.
    *
    * @throws A description of the exception. See {@link ChatError}.
    */
@@ -265,10 +265,11 @@ export class ChatRoomManager extends Native {
 
   /**
    * Gets the details of the chat room from the server.
+   *
    * By default, the details do not include the chat room member list.
    *
    * @param roomId The chat room ID.
-   * @returns The chat room instance. Returns undefined if the room does not exist.
+   * @returns The chat room instance. The SDK returns `undefined` if the chat room does not exist.
    *
    * @throws A description of the exception. See {@link ChatError}.
    */
@@ -292,10 +293,10 @@ export class ChatRoomManager extends Native {
   }
 
   /**
-   * Gets the chat room in the cache.
+   * Gets the chat room by ID from the local database.
    *
    * @param roomId The chat room ID.
-   * @returns The chat room instance. Returns undefined if the room does not exist.
+   * @returns The chat room instance. The SDK returns `undefined` if the chat room does not exist.
    *
    * @throws A description of the exception. See {@link ChatError}.
    */
@@ -319,9 +320,9 @@ export class ChatRoomManager extends Native {
   /**
    * Creates a chat room.
    *
-   * @param subject The chat room subject.
+   * @param subject The chat room name.
    * @param description The chat room description.
-   * @param welcome A welcome message that invites users to join the chat room.
+   * @param welcome A welcome message for new chat room members.
    * @param members The list of members invited to join the chat room.
    * @param maxCount The maximum number of members allowed to join the chat room.
    * @returns The chat room instance.
@@ -377,12 +378,12 @@ export class ChatRoomManager extends Native {
   }
 
   /**
-   * Changes the chat room subject.
+   * Changes the chat room name.
    *
    * Only the chat room owner can call this method.
    *
    * @param roomId The chat room ID.
-   * @param subject The new subject of the chat room.
+   * @param subject The new name of the chat room.
    *
    * @throws A description of the exception. See {@link ChatError}.
    */
@@ -434,9 +435,10 @@ export class ChatRoomManager extends Native {
    * Gets the chat room member list.
    *
    * @param roomId The chat room ID.
-   * @param cursor The cursor position from which to start getting data.
-   * @param pageSize The number of members per page.
-   * @returns The list of chat room members. See {@link ChatCursorResult}. If `ChatCursorResult.cursor` is an empty string (""), all data is fetched.
+   * @param cursor The cursor position from which to start to get data.
+   *               At the first method call, if you set `cursor` as `null` or an empty string, the SDK gets the data in the reverse chronological order of when users join the chat room.
+   * @param pageSize The number of members that you expect to get on each page.
+   * @returns The list of chat room members and the cursor for the next query. See {@link ChatCursorResult}.
    *
    * @throws A description of the exception. See {@link ChatError}.
    */
@@ -477,7 +479,7 @@ export class ChatRoomManager extends Native {
    * Only the chat room owner or admin can call this method.
    *
    * @param roomId The chat room ID.
-   * @param muteMembers The list of members to be muted.
+   * @param muteMembers The user IDs of members to be muted.
    * @param duration The mute duration in milliseconds.
    *
    * @throws A description of the exception. See {@link ChatError}.
@@ -504,12 +506,12 @@ export class ChatRoomManager extends Native {
   }
 
   /**
-   * Cancel mutes the specified members in a chat room.
+   * Unmutes the specified members in a chat room.
    *
    * Only the chat room owner or admin can call this method.
    *
    * @param roomId The chat room ID.
-   * @param unMuteMembers The list of members to be unmuted.
+   * @param unMuteMembers The user IDs of members to be unmuted.
    *
    * @throws A description of the exception. See {@link ChatError}.
    */
@@ -537,7 +539,7 @@ export class ChatRoomManager extends Native {
    * Only the chat room owner can call this method.
    *
    * @param roomId The chat room ID.
-   * @param newOwner The ID of the new chat room owner.
+   * @param newOwner The user ID of the new chat room owner.
    *
    * @throws A description of the exception. See {@link ChatError}.
    */
@@ -558,7 +560,7 @@ export class ChatRoomManager extends Native {
    * Only the chat room owner can call this method.
    *
    * @param roomId The chat room ID.
-   * @param admin The ID of the chat room admin to be added.
+   * @param admin The user ID of the chat room admin to be added.
    *
    * @throws A description of the exception. See {@link ChatError}.
    */
@@ -574,10 +576,10 @@ export class ChatRoomManager extends Native {
   }
 
   /**
-   * Removes privileges of a chat room admin.
+   * Removes administrative privileges of a chat room admin.
    *
    * @param roomId The chat room ID.
-   * @param admin The ID of admin whose privileges are to be removed.
+   * @param admin The user ID of the chat room admin whose administrative privileges are to be removed.
    *
    * @throws A description of the exception. See {@link ChatError}.
    */
@@ -596,14 +598,16 @@ export class ChatRoomManager extends Native {
   }
 
   /**
-   * Gets the list of members who are muted in the chat room from the server.
+   * Uses the pagination to get the list of members who are muted in the chat room.
+   *
+   * This method gets data from the server.
    *
    * Only the chat room owner or admin can call this method.
    *
    * @param roomId The chat room ID.
    * @param pageNum The page number, starting from 1.
-   * @param pageSize The number of muted members per page.
-   * @returns The muted member list.
+   * @param pageSize The number of muted members that you expect to get on each page.
+   * @returns The user IDs of muted members.
    *
    * @throws A description of the exception. See {@link ChatError}.
    */
@@ -636,7 +640,7 @@ export class ChatRoomManager extends Native {
    * Only the chat room owner or admin can call this method.
    *
    * @param roomId The chat room ID.
-   * @param members The list of the members to be removed.
+   * @param members The user IDs of the members to be removed.
    *
    * @throws A description of the exception. See {@link ChatError}.
    */
@@ -664,7 +668,7 @@ export class ChatRoomManager extends Native {
    * Only the chat room owner or admin can call this method.
    *
    * @param roomId The chat room ID.
-   * @param members The list of members to be added to block list.
+   * @param members The user IDs of members to be added to block list of the chat room.
    *
    * @throws A description of the exception. See {@link ChatError}.
    */
@@ -692,7 +696,7 @@ export class ChatRoomManager extends Native {
    * Only the chat room owner or admin can call this method.
    *
    * @param roomId The chat room ID.
-   * @param members The list of members to be removed from the block list.
+   * @param members The user IDs of members to be removed from the block list of the chat room.
    *
    * @throws A description of the exception. See {@link ChatError}.
    */
@@ -721,8 +725,8 @@ export class ChatRoomManager extends Native {
    *
    * @param roomId The chat room ID.
    * @param pageNum The page number, starting from 1.
-   * @param pageSize The number of users on the block list per page.
-   * @returns The list of the blocked chat room members.
+   * @param pageSize The number of users on the block list that you expect to get on each page.
+   * @returns The user IDs of the chat room members on the block list.
    *
    * @throws A description of the exception. See {@link ChatError}.
    */
@@ -755,7 +759,7 @@ export class ChatRoomManager extends Native {
    * Only the chat room owner or admin can call this method.
    *
    * @param roomId The chat room ID.
-   * @param announcement The announcement content.
+   * @param announcement The new chat room announcement.
    *
    * @throws A description of the exception. See {@link ChatError}.
    */
@@ -804,7 +808,7 @@ export class ChatRoomManager extends Native {
    * Only the chat room owner or admin can call this method.
    *
    * @param roomId The chat room ID.
-   * @returns The chat room allow list.
+   * @returns The allow list of the chat room.
    *
    * @throws A description of the exception. See {@link ChatError}.
    */
@@ -826,10 +830,12 @@ export class ChatRoomManager extends Native {
   }
 
   /**
-   * Checks whether the member is on the allow list.
+   * Checks whether the member is on the allow list of the chat room.
    *
    * @param roomId The chat room ID.
-   * @returns Whether the member is on the allow list.
+   * @returns Whether the member is on the allow list of the chat room.
+   *          - `true`: Yes.
+   *          - `false`: No.
    *
    * @throws A description of the exception. See {@link ChatError}.
    */
@@ -852,12 +858,12 @@ export class ChatRoomManager extends Native {
   }
 
   /**
-   * Adds members to the allowlist.
+   * Adds members to the allow list of the chat room.
    *
    * Only the chat room owner or admin can call this method.
    *
    * @param roomId The chat room ID.
-   * @param members The list of members to be added to the allow list.
+   * @param members The user IDs of members to be added to the allow list of the chat room.
    *
    * @throws A description of the exception. See {@link ChatError}.
    */
@@ -880,12 +886,12 @@ export class ChatRoomManager extends Native {
   }
 
   /**
-   * Removes members from the allow list.
+   * Removes members from the allow list of the chat room.
    *
    * Only the chat room owner or admin can call this method.
    *
    * @param roomId The chat room ID.
-   * @param members The list of members to be removed from the allow list.
+   * @param members The user IDs of members to be removed from the allow list of the chat room.
    *
    * @throws A description of the exception. See {@link ChatError}.
    */
@@ -915,7 +921,7 @@ export class ChatRoomManager extends Native {
    *
    * Only the chat room owner or admin can call this method.
    *
-   * This method does not work for the chat room owner, admin, and members added to the allow list.
+   * The chat room owner, admins, and members added to the allow list cannot be muted.
    *
    * @param roomId The chat room ID.
    *
@@ -932,9 +938,9 @@ export class ChatRoomManager extends Native {
   }
 
   /**
-   * Cancel mutes all members.
+   * Unmutes all members of the chat room.
    *
-   * Only the chat room owner or admin can call this method.
+   * Only the chat room owner or admins can call this method.
    *
    * @param roomId The chat room ID.
    *

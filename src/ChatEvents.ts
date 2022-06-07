@@ -6,108 +6,110 @@ import type { ChatMessageThreadEvent } from './common/ChatMessageThread';
 import type { ChatPresence } from './common/ChatPresence';
 
 /**
- * Multi-device event types.
+ *  The event types in multi-device login scenarios.
+ *
+ * This class takes user A that uses both Device A1 and Device A2 as an example to describe when the various types of multi-device events are triggered.
  */
 export enum ChatMultiDeviceEvent {
   /**
-   * The current user removed a contact on another device.
+   * If user A deletes a contact on Device A1, this event is triggered on Device A2.
    */
   CONTACT_REMOVE = 2,
   /**
-   * The current user accepted a friend request on another device.
+   * If user A accepts a friend request on Device A1, this event is triggered on Device A2.
    */
   CONTACT_ACCEPT,
   /**
-   * The current user declined a friend request on another device.
+   * If user A declines a friend request on Device A1, this event is triggered on Device A2.
    */
   CONTACT_DECLINE,
   /**
-   * The current user added a contact to the block list on another device.
+   * If user A adds another user to the block list on Device A1, this event is triggered on Device A2.
    */
   CONTACT_BAN,
   /**
-   * The current user removed a contact from the block list on another device.
+   * If user A removes another user from the block list on Device A1, this event is triggered on Device A2.
    */
   CONTACT_ALLOW,
 
   /**
-   * The current user created a group on another device.
+   * If user A creates a chat group on Device A1, this event is triggered on Device A2.
    */
   GROUP_CREATE = 10,
   /**
-   * The current user destroyed a group on another device.
+   * If user A destroys a chat group on Device A1, this event is triggered on Device A2.
    */
   GROUP_DESTROY,
   /**
-   * The current user joined a group on another device.
+   * If user A joins a chat group on Device A1, this event is triggered on Device A2.
    */
   GROUP_JOIN,
   /**
-   * The current user left a group on another device.
+   * If user A leaves a chat group on Device A1, this event is triggered on Device A2.
    */
   GROUP_LEAVE,
   /**
-   * The current user requested to join a group on another device.
+   * If user A requests to join a chat group on Device A1, this event is triggered on Device A2.
    */
   GROUP_APPLY,
   /**
-   * The current user accepted a group request on another device.
+   * If user A receives a request to join the chat group on Device A1, this event is triggered on Device A2.
    */
   GROUP_APPLY_ACCEPT,
   /**
-   * The current user declined a group request on another device.
+   * If user A declines a request to join the chat group on Device A1, this event is triggered on Device A2.
    */
   GROUP_APPLY_DECLINE,
   /**
-   * The current user invited a user to join the group on another device.
+   * If user A invites a user to join the chat group on Device A1, this event is triggered on Device A2.
    */
   GROUP_INVITE,
   /**
-   * The current user accepted a group invitation on another device.
+   * If user A accepts a group invitation on Device A1, this event is triggered on Device A2.
    */
   GROUP_INVITE_ACCEPT,
   /**
-   * The current user declined a group invitation on another device.
+   * If user A declines a group invitation on Device A1, this event is triggered on Device A2.
    */
   GROUP_INVITE_DECLINE,
   /**
-   * The current user kicked a member out of a group on another device.
+   * If user A removes a user from a chat group on Device A1, this event is triggered on Device A2.
    */
   GROUP_KICK,
   /**
-   * The current user added a member to a group block list on another device.
+   * If user A is added to the group block list on Device A1, this event is triggered on Device A2.
    */
   GROUP_BAN,
   /**
-   * The current user removed a member from a group block list on another device.
+   * If user A removes other users from a chat group on Device A1, this event is triggered on Device A2.
    */
   GROUP_ALLOW,
   /**
-   * The current user blocked a group on another device.
+   * If user A blocks messages from a chat group on Device A1, this event is triggered on Device A2.
    */
   GROUP_BLOCK,
   /**
-   * The current user unblocked a group on another device.
+   * If user A unblocks messages from a chat group on Device A1, this event is triggered on Device A2.
    */
   GROUP_UNBLOCK,
   /**
-   * The current user transferred the group ownership on another device.
+   * If user A changes the group owner on Device A1, this event is triggered on Device A2.
    */
   GROUP_ASSIGN_OWNER,
   /**
-   * The current user added an admin on another device.
+   * If user A adds a group admin on Device A1, this event is triggered on Device A2.
    */
   GROUP_ADD_ADMIN,
   /**
-   * The current user removed an admin on another device.
+   * If user A removes a group admin on Device A1, this event is triggered on Device A2.
    */
   GROUP_REMOVE_ADMIN,
   /**
-   * The current user muted a member on another device.
+   * If user A mutes a group member on Device A1, this event is triggered on Device A2.
    */
   GROUP_ADD_MUTE,
   /**
-   * The current user unmuted a member on another device.
+   * If user A unmutes a group member on Device A1, this event is triggered on Device A2.
    */
   GROUP_REMOVE_MUTE,
   /**
@@ -154,10 +156,10 @@ export enum ChatMultiDeviceEvent {
 }
 
 /**
- * Multi device event type convert.
+ * Converts the multi-device event from Int to enum.
  *
- * @param params The integer representing event type.
- * @returns The event type.
+ * @param params The multi-device event of the int type.
+ * @returns The multi-device event of the enum type.
  */
 export function ChatMultiDeviceEventFromNumber(
   params: number
@@ -245,19 +247,18 @@ export function ChatMultiDeviceEventFromNumber(
 }
 
 /**
- * The chat connection listener.
+ * The connection event listener.
  *
- * For the occasion of onDisconnected during unstable network condition, you
- * don't need to reconnect manually, the chat SDK will handle it automatically.
+ * In the case of disconnection in an unstable network environment, the app using the SDK receives the `onDisconnected` callback.
  *
- * There are only two states: onConnected, onDisconnected.
+ * You do not need to reconnect manually as the chat SDK will handle it automatically.
  *
- * Note: We recommend not to update UI based on those methods, because this
- * method is called on worker thread. If you update UI in those methods, other
- * UI errors might be invoked. Also do not insert heavy computation work here,
- * which might invoke other listeners to handle this connection event.
+ * There are two connection-related callbacks:
+ * - `onConnected`: Occurs when the connection is set up.
+ * - `onDisconnected`: Occurs when the connection breaks down.
  *
- * Register:
+ * Adds a connection event listener:
+ *
  *  ```typescript
  *  let listener = new (class s implements ChatConnectEventListener {
  *    onTokenWillExpire(): void {
@@ -275,7 +276,8 @@ export function ChatMultiDeviceEventFromNumber(
  *  })();
  *  ChatClient.getInstance().addConnectionListener(listener);
  *  ```
- * Unregister:
+ * Removes a connection event listener:
+ *
  *  ```typescript
  *  ChatClient.getInstance().removeConnectionListener(listener);
  *  ```
@@ -289,34 +291,35 @@ export interface ChatConnectEventListener {
   /**
    * Occurs when the SDK disconnect from the chat server.
    *
-   * Note that the logout may not be performed at the bottom level when the SDK is disconnected.
+   * The logout does not necessarily occur at the bottom level when the SDK is disconnected.
    *
    * @param errorCode The Error code, see {@link ChatError}
    */
   onDisconnected(errorCode?: number): void;
 
   /**
-   * Occurs when the agora token has expired.
+   * Occurs when the Agora token is about to expire.
    */
   onTokenWillExpire(): void;
 
   /**
-   * Occurs when the agora token is about to expire.
+   * Occurs when the Agora token has expired.
    */
   onTokenDidExpire(): void;
 }
 
 /**
  * The multi-device event listener.
- * Listens for callback for the current user's actions on other devices, including contact changes and group changes.
+ *
+ * The listener listens for the actions of the current user on other devices, including contact events and group events.
  */
 export interface ChatMultiDeviceEventListener {
   /**
    * The multi-device event callback of contact.
    *
    * @param event The event type.
-   * @param target The username.
-   * @param ext The extended Information.
+   * @param target The user ID.
+   * @param ext The extension of user information.
    */
   onContactEvent(
     event?: ChatMultiDeviceEvent,
@@ -325,11 +328,11 @@ export interface ChatMultiDeviceEventListener {
   ): void;
 
   /**
-   * The multi-device event callback of group.
+   * Occurs when a group event occurs.
    *
    * @param event The event type.
    * @param target The group ID.
-   * @param usernames The array of usernames.
+   * @param usernames The array of user IDs.
    */
   onGroupEvent(
     event?: ChatMultiDeviceEvent,
@@ -352,7 +355,7 @@ export interface ChatMultiDeviceEventListener {
 }
 
 /**
- * User custom data.
+ * The custom event listener.
  */
 export interface ChatCustomEventListener {
   onDataReceived(params: any): void;
@@ -361,14 +364,16 @@ export interface ChatCustomEventListener {
 /**
  * The message event listener.
  *
- * This listener is used to check whether messages are received. If messages are sent successfully, a delivery receipt will be returned (delivery receipt needs to be enabled: {@link ChatOptions#requireDeliveryAck(boolean)}.
+ * This listener listen for message state changes:
  *
- * If the peer user reads the received message, a read receipt will be returned (read receipt needs to be enabled: {@link ChatOptions#requireAck(boolean)})
+ * - If messages are sent successfully, a delivery receipt will be returned to the sender (the delivery receipt function needs to be enabled: {@link ChatOptions#requireDeliveryAck(boolean)}.
+ *
+ * - If the recipient reads the received message, a read receipt will be returned to the sender (the read receipt function needs to be enabled: {@link ChatOptions#requireAck(boolean)})
  *
  * During message delivery, the message ID will be changed from a local uuid to a global unique ID that is generated by the server to uniquely identify a message on all devices using the SDK.
- * This API should be implemented in the app to listen for message status changes.
  *
- * Adds the message listener:
+ * Adds a message event listener:
+ *
  *   ```typescript
  *   let msgListener = new (class ss implements ChatMessageEventListener {
  *     onMessagesReceived(messages: ChatMessage[]): void {
@@ -399,7 +404,8 @@ export interface ChatCustomEventListener {
  *   ChatClient.getInstance().chatManager.addListener(msgListener);
  *   ```
  *
- * Removes the message listener:
+ * Removes a message event listener:
+ *
  *   ```typescript
  *   ChatClient.getInstance().chatManager.delListener(this.msgListener);
  *   ```
@@ -408,46 +414,46 @@ export interface ChatMessageEventListener {
   /**
    * Occurs when a message is received.
    *
-   * This callback is triggered to notify the user when a message such as texts or an image, video, voice, location, or file is received.
+   * This callback is triggered to notify the user of the message that is received, such as texts or an image, video, voice, location, or file.
    *
-   * @param messages The received messages.
+   * @param messages The received message(s).
    */
   onMessagesReceived(messages: Array<ChatMessage>): void;
 
   /**
    * Occurs when a command message is received.
    *
-   * This callback only contains a command message body that is usually invisible to users.
+   * Unlike {@link #onMessageReceived(messages: Array<ChatMessage>)}, this callback only contains a command message body that is usually invisible to users.
    *
-   * @param messages The received command messages.
+   * @param messages The received command message(s).
    */
   onCmdMessagesReceived(messages: Array<ChatMessage>): void;
 
   /**
    * Occurs when a read receipt is received for a message.
    *
-   * @param messages The read message(s).
+   * @param messages The read receipt(s).
    */
   onMessagesRead(messages: Array<ChatMessage>): void;
 
   /**
    * Occurs when a read receipt is received for a group message.
    *
-   * @param groupMessageAcks The group message read receipt.
+   * @param groupMessageAcks The read receipt(s) for group message(s).
    */
   onGroupMessageRead(groupMessageAcks: Array<ChatGroupMessageAck>): void;
 
   /**
    * Occurs when a delivery receipt is received.
    *
-   * @param messages The delivered message.
+   * @param messages The message(s) for which delivery receipt(s) is sent.
    */
   onMessagesDelivered(messages: Array<ChatMessage>): void;
 
   /**
    * Occurs when a received message is recalled.
    *
-   * @param messages The recalled message.
+   * @param messages The recalled message(s).
    */
   onMessagesRecalled(messages: Array<ChatMessage>): void;
 
@@ -457,15 +463,16 @@ export interface ChatMessageEventListener {
   onConversationsUpdate(): void;
 
   /**
-   * Occurs when received conversation read receipt.
+   * Occurs when a conversation read receipt is received.
    *
-   * This callback occurs in either of the following scenarios:
-   * - The message is read by the recipient (The conversation receipt is sent). Upon receiving this event, the SDK sets the `isAcked` property of the message in the conversation to `true` in the local database.
+   * This callback occurs in either of the following cases:
    *
-   * - In the multi-device login scenario, when one device sends a conversation receipt,
-   * the server will set the number of unread messages to 0, and the callback occurs on the other devices. and sets the `isRead` property of the message in the conversation to `true` in the local database.
-   * @param from The user who sends the read receipt.
-   * @param to The user who receives the read receipt.
+   * - The message is read by the recipient and the conversation read receipt is sent. Upon receiving this event, the SDK sets the `isAcked` property of the message in the conversation to `true` in the local database.
+   *
+   * - In a multi-device login scenario, when one device sends a conversation receipt, the server will set the number of unread messages to `0`, call the callback method on the other devices, and set the `isRead` property of the message in the conversation to `true` in the local database.
+   *
+   *  @param from The user who sends the conversation read receipt.
+   *  @param to The user who receives the conversation read receipt.
    */
   onConversationRead(from: string, to?: string): void;
 
@@ -506,17 +513,21 @@ export interface ChatMessageEventListener {
 }
 
 /**
- * The Group event listener.
+ * The group event listener.
+ *
+ * For descriptions of callback methods in the listener, user A acts as the current user and user B serves as the peer user.
  */
 export interface ChatGroupEventListener {
   /**
-   * Occurs when an invitation is rejected by the inviter.
+   * Occurs when the current user receives a group invitation.
    *
-   * @param params The params set.
+   * For example, after user B sends user A a group invitation, user A receives this callback.
+   *
+   * @param params The parameter set.
    * - Param [groupId] The group ID.
    * - Param [groupName] The group name.
-   * - Param [inviter] The username of the inviter.
-   * - Param [reason] The reason.
+   * - Param [inviter] The user ID of the inviter.
+   * - Param [reason] The reason for invitation.
    */
   onInvitationReceived(params: {
     groupId: string;
@@ -526,13 +537,15 @@ export interface ChatGroupEventListener {
   }): void;
 
   /**
-   * Occurs when a group join application is received from an applicant.
+   * Occurs when a join request from the current user is received by the peer user.
    *
-   * @param params The params set.
+   * For example, after user A sends a join request to user B, user B receives this callback.
+   *
+   * @param params The parameter set.
    * - Param [groupId] The group ID.
    * - Param [groupName] The group name.
-   * - Param [applicant] The username of the applicant.
-   * - Param [reason] The reason.
+   * - Param [applicant] The user ID of the applicant.
+   * - Param [reason] The reason for requesting to join the group.
    */
   onRequestToJoinReceived(params: {
     groupId: string;
@@ -541,12 +554,14 @@ export interface ChatGroupEventListener {
     reason?: string;
   }): void;
   /**
-   * Occurs when a group-join application is accepted.
+   * Occurs when a join request from the current user is accepted by the peer user.
    *
-   * @param params The params set.
+   * For a group of the `PublicJoinNeedApproval` style, after user B accepts a join request from user A, user A receives this callback.
+   *
+   * @param params The parameter set.
    * - Param [groupId] The group ID.
    * - Param [groupName] The group name.
-   * - Param [accepter] The username of the accepter.
+   * - Param [accepter] The ID of the user that accepts the join request.
    */
   onRequestToJoinAccepted(params: {
     groupId: string;
@@ -554,13 +569,15 @@ export interface ChatGroupEventListener {
     groupName?: string;
   }): void;
   /**
-   * Occurs when a group-join application is declined.
+   * Occurs when a join request from the current user is declined by the peer user.
    *
-   * @param params The params set.
+   * For example, for a group of the `PublicJoinNeedApproval` style, after user B declines a join request from user A, user A receives this callback.
+   *
+   * @param params The parameter set.
    * - Param [groupId] The group ID.
    * - Param [groupName] The group name.
-   * - Param [decliner] The username of the decliner.
-   * - Param [reason] The reason.
+   * - Param [decliner] The ID of the user that declines the join request.
+   * - Param [reason] The reason for declining the join request.
    */
   onRequestToJoinDeclined(params: {
     groupId: string;
@@ -569,13 +586,15 @@ export interface ChatGroupEventListener {
     reason?: string;
   }): void;
   /**
-   * Occurs when a group invitation is approved.
+   * Occurs when a group invitation from the current user is accepted by the peer user.
    *
-   * @param params The params set.
+   * For example, after user B accepts a group invitation from user A, user A receives this callback.
+   *
+   * @param params The parameter set.
    * - Param [groupId] The group ID.
    * - Param [groupName] The group name.
-   * - Param [invitee] The username of the invitee.
-   * - Param [reason] The reason.
+   * - Param [invitee] The user ID of the invitee.
+   * - Param [reason] The reason for accepting the group invitation.
    */
   onInvitationAccepted(params: {
     groupId: string;
@@ -583,12 +602,14 @@ export interface ChatGroupEventListener {
     reason?: string;
   }): void;
   /**
-   * Occurs when a group invitation is declined.
+   * Occurs when a group invitation from the current user is declined by the peer user.
    *
-   * @param params The params set.
+   * For example, after user B declines a group invitation from user A, user A receives this callback.
+   *
+   * @param params The parameter set.
    * - Param [groupId] The group ID.
-   * - Param [invitee] The username of the invitee.
-   * - Param [reason] The reason.
+   * - Param [invitee] The user ID of the invitee.
+   * - Param [reason] The reason for accepting the group invitation.
    */
   onInvitationDeclined(params: {
     groupId: string;
@@ -596,8 +617,9 @@ export interface ChatGroupEventListener {
     reason?: string;
   }): void;
   /**
-   * Occurs when a group member is removed from the group.
-   * @param params The params set.
+   * Occurs when the current user is removed from the group.
+   *
+   * @param params The parameter set.
    * - Param [groupId] The group ID.
    * - Param [groupName] The group name.
    */
@@ -605,19 +627,20 @@ export interface ChatGroupEventListener {
   /**
    * Occurs when a group is destroyed.
    *
-   * @param params The params set.
+   * @param params The parameter set.
    * - Param [groupId] The group ID.
    * - Param [groupName] The group name.
    */
   onGroupDestroyed(params: { groupId: string; groupName?: string }): void;
   /**
-   * Occurs when the group invitation is accepted automatically.
-   * The SDK will join the group before notifying the app of the acceptance of the group invitation.
+   * Occurs when the group invitation is accepted automatically by the current user.
    *
-   * @param params The params set.
+   * For example, after user B invites user A to join the group, as user A sets {@link ChatOptions#autoAcceptGroupInvitation} to `true`, the invitee joins the group automatically and receives this callback.
+   *
+   * @param params The parameter set.
    * - Param [groupId]			The group ID.
-   * - Param [inviter]			The inviter ID.
-   * - Param [inviteMessage]		The invitation message.
+   * - Param [inviter]			The user ID of the inviter.
+   * - Param [inviteMessage]    The invitation message.
    */
   onAutoAcceptInvitation(params: {
     groupId: string;
@@ -625,12 +648,14 @@ export interface ChatGroupEventListener {
     inviteMessage?: string;
   }): void;
   /**
-   * Occurs when members are added to the mute list of the group.
+   * Occurs when one or more members are added to the mute list of the group.
    *
-   * @param params The params set.
+   * A user, when muted, can still see group messages, but cannot send messages in the group. However, a user on the block list can neither see nor send group messages.
+   *
+   * @param params The parameter set.
    * - Param [groupId] The group ID.
-   * - Param [mutes] The members to be muted.
-   * - Param [muteExpire] Reserved parameter. The time when the mute state expires.
+   * - Param [mutes] The user ID(s) of member(s) to be muted.
+   * - Param [muteExpire] Reserved parameter. The Unix timestamp when the mute expires. The unit is millisecond.
    */
   onMuteListAdded(params: {
     groupId: string;
@@ -638,36 +663,36 @@ export interface ChatGroupEventListener {
     muteExpire?: number;
   }): void;
   /**
-   * Occurs when members are removed from the mute list of the group.
+   * Occurs when one or more members are removed from the mute list of the group.
    *
-   * @param params The params set.
+   * @param params The parameter set.
    * - Param [groupId] The group ID.
-   * - Param [mutes] The members to be removed from the mute list.
+   * - Param [mutes] The user ID(s) of member(s) to be removed from the mute list.
    */
   onMuteListRemoved(params: { groupId: string; mutes: Array<string> }): void;
   /**
-   * Occurs when members are changed to admins.
+   * Occurs when a member is set as an admin.
    *
-   * @param params The params set.
+   * @param params The parameter set.
    * - Param [groupId] The group ID.
-   * - Param [admin] The members changed to be admins.
+   * - Param [admin] The user ID of the member that is set as an admin.
    */
   onAdminAdded(params: { groupId: string; admin: string }): void;
   /**
-   * Occurs when an admin permission is removed.
+   * Occurs when the administrative privileges of an admin are removed.
    *
-   * @param params The params set.
+   * @param params The parameter set.
    * - Param [groupId] The group ID.
-   * - Param [admin] The member whose admin permission is removed.
+   * - Param [admin] The user ID of the admin whose administrative privileges are removed.
    */
   onAdminRemoved(params: { groupId: string; admin: string }): void;
   /**
-   * Occurs when the chat room ownership is transferred.
+   * Occurs when the group ownership is transferred.
    *
-   * @param params The params set.
+   * @param params The parameter set.
    * - Param [groupId] The group ID.
-   * - Param [newOwner] The new owner.
-   * - Param [oldOwner] The previous owner.
+   * - Param [newOwner] The user ID of the new group owner.
+   * - Param [oldOwner] The user ID of the previous group owner.
    */
   onOwnerChanged(params: {
     groupId: string;
@@ -675,27 +700,27 @@ export interface ChatGroupEventListener {
     oldOwner: string;
   }): void;
   /**
-   * Occurs when a member joins the group.
+   * Occurs when a user joins a group.
    *
-   * @param params The params set.
+   * @param params The parameter set.
    * - Param [groupId] The group ID.
-   * - Param [member] The new member.
+   * - Param [member] The user ID of the new member.
    */
   onMemberJoined(params: { groupId: string; member: string }): void;
   /**
-   * Occurs when a member exits the group.
+   * Occurs when a member voluntarily leaves the group.
    *
-   * @param params The params set.
+   * @param params The parameter set.
    * - Param [groupId] The group ID.
-   * - Param [member] The member who exits the group.
+   * - Param [member] The user ID of the member leaving the group.
    */
   onMemberExited(params: { groupId: string; member: string }): void;
   /**
-   * Occurs when the announcement changed.
+   * Occurs when the group announcement is updated.
    *
-   * @param params The params set.
+   * @param params The parameter set.
    * - Param [groupId] The group ID.
-   * - Param [member] The new announcement.
+   * - Param [announcement] The new announcement.
    */
   onAnnouncementChanged(params: {
     groupId: string;
@@ -704,41 +729,43 @@ export interface ChatGroupEventListener {
   /**
    * Occurs when a shared file is added to the group.
    *
-   * @param params The params set.
+   * @param params The parameter set.
    * - Param [groupId] The group ID.
-   * - Param [member] The new shared File.
+   * - Param [sharedFile] The ID of the new shared file.
    */
   onSharedFileAdded(params: { groupId: string; sharedFile: string }): void;
   /**
-   * Occurs when a shared file is deleted.
+   * Occurs when a shared file is removed from a group.
    *
-   * @param params The params set.
+   * @param params The parameter set.
    * - Param [groupId] The group ID.
-   * - Param [member] The ID of the shared file that is deleted.
+   * - Param [fileId] The ID of the shared file that is deleted.
    */
   onSharedFileDeleted(params: { groupId: string; fileId: string }): void;
   /**
    * Occurs when one or more group members are added to the allow list.
    *
-   * @param params The params set.
+   * @param params The parameter set.
    * - Param [groupId] The group ID.
-   * - Param [members] The members that are added to the allow list.
+   * - Param [members] The user IDs of members that are added to the allow list.
    */
   onWhiteListAdded(params: { groupId: string; members: Array<string> }): void;
   /**
    * Occurs when one or more group members are removed from the allow list.
    *
-   * @param params The params set.
+   * @param params The parameter set.
    * - Param [groupId] The group ID.
-   * - Param [members] The members that are removed from the allow list.
+   * - Param [members] The user IDs of members that are removed from the allow list.
    */
   onWhiteListRemoved(params: { groupId: string; members: Array<string> }): void;
   /**
    * Occurs when all group members are muted or unmuted.
    *
-   * @param params The params set.
+   * @param params The parameter set.
    * - Param [groupId] The group ID.
-   * - Param [isAllMuted] Whether all group members are muted or unmuted.
+   * - Param [isAllMuted] Whether all group members are muted.
+   *   - `true`: Yes.
+   *   - `false`: No.
    */
   onAllGroupMemberMuteStateChanged(params: {
     groupId: string;
@@ -747,70 +774,82 @@ export interface ChatGroupEventListener {
 }
 
 /**
- * The contact updates listener.
+ * The contact update listener.
  *
- * Occurs when the contact changes, including requests to add friends, notifications to delete friends, requests to accept friends, and requests to reject friends.
+ * It listens for contact changes, including adding or removing a friend and accepting and declining a friend request.
+ *
+ * For descriptions of callback methods in the listener, user A acts as the current user and user B serves as the peer user.
  */
 export interface ChatContactEventListener {
   /**
-   * Occurs when user is added as a contact by another user.
+   * Occurs when a friend request from the current user is accepted by the peer user.
    *
-   * @param userName The new contact to be added.
+   * For example, after user B accepts a friend request from user A, user A receives this callback.
+   *
+   * @param userName The user ID of the user that accepts the friend request of the current user.
    */
   onContactAdded(userName: string): void;
   /**
-   * Occurs when a user is removed from the contact list by another user.
+   * Occurs when a friend request from the current user is declined by the peer user.
    *
-   * @param userName The user who is removed from the contact list by another user.
+   * For example, after user B declines a friend request from user A, user A receives this callback.
+   *
+   * @param userName The user that declines the friend request from the current user.
    */
   onContactDeleted(userName: string): void;
   /**
-   * Occurs when a user receives a friend request.
+   * Occurs when a friend request is received by the current user.
    *
-   * @param userName The user who initiated the friend request.
+   * For example, after user A receives a friend request from user B, user A receives this callback.
+   *
+   * @param userName The user who initiates the friend request.
    * @param reason The invitation message.
    */
   onContactInvited(userName: string, reason?: string): void;
   /**
-   * Occurs when a friend request is approved.
+   * Occurs when a friend request is accepted by the current user.
    *
-   * @param userName The user who initiated the friend request.
+   * For example, after user A accepts a friend request from user B, user A receives this callback.
+   *
+   * @param userName The user who initiates the friend request.
    */
   onFriendRequestAccepted(userName: string): void;
   /**
-   * Occurs when a friend request is declined.
+   * Occurs when a friend request is declined by the current user.
    *
-   * @param userName The user who initiated the friend request.
+   * For example, after user A declines a friend request from user B, user A receives this callback.
+   *
+   * @param userName The user who initiates the friend request.
    */
   onFriendRequestDeclined(userName: string): void;
 }
 
 /**
- * The chat room change listener.
+ * The chat room event listener.
  */
 export interface ChatRoomEventListener {
   /**
    * Occurs when the chat room is destroyed.
    *
-   * @param params The params set.
-   * - Param [roomId] The chatroom ID.
-   * - Param [roomName] The chatroom subject.
+   * @param params The parameter set.
+   * - Param [roomId] The chat room ID.
+   * - Param [roomName] The name of the chat room.
    */
   onChatRoomDestroyed(params: { roomId: string; roomName?: string }): void;
   /**
-   * Occurs when a member join the chatroom.
+   * Occurs when a user joins the chat room.
    *
-   * @param params The params set.
-   * - Param [roomId] The chatroom ID.
-   * - Param [participant] The new member's username.
+   * @param params The parameter set.
+   * - Param [roomId] The chat room ID.
+   * - Param [participant] The user ID of the new member.
    */
   onMemberJoined(params: { roomId: string; participant: string }): void;
   /**
-   * Occurs when a member leaves the chatroom.
+   * Occurs when a member voluntarily leaves the chat room.
    *
-   * @param params The params set.
-   * - Param [roomId] The chatroom ID.
-   * - Param [participant] The new member's username.
+   * @param params The parameter set.
+   * - Param [roomId] The chat room ID.
+   * - Param [participant] The user ID of the member who leaves the chat room.
    */
   onMemberExited(params: {
     roomId: string;
@@ -818,12 +857,12 @@ export interface ChatRoomEventListener {
     roomName?: string;
   }): void;
   /**
-   * Occurs when a member is dismissed from a chat room.
+   *  Occurs when a member is removed from a chat room.
    *
-   * @param params The params set.
-   * - Param [roomId] The chatroom ID.
-   * - Param [roomName] The chatroom subject.
-   * - Param [participant] The member is dismissed from a chat room.
+   * @param params The parameter set.
+   * - Param [roomId] The chat room ID.
+   * - Param [roomName] The name of the chat room.
+   * - Param [participant] The user ID of the member that is removed from a chat room.
    */
   onRemoved(params: {
     roomId: string;
@@ -831,12 +870,12 @@ export interface ChatRoomEventListener {
     roomName?: string;
   }): void;
   /**
-   * Occurs when there are chat room member(s) muted (added to mute list).
+   * Occurs when a chat room member is added to the mute list.
    *
-   * @param params The params set.
-   * - Param [roomId] The chatroom ID.
-   * - Param [mutes] The members to be muted.
-   * - Param [expireTime] The mute duration.
+   * @param params The parameter set.
+   * - Param [roomId] The chat room ID.
+   * - Param [mutes] The user ID(s) of muted member(s).
+   * - Param [expireTime] Reserved parameter. The Unix timestamp when the mute duration expires.
    */
   onMuteListAdded(params: {
     roomId: string;
@@ -844,36 +883,36 @@ export interface ChatRoomEventListener {
     expireTime?: string;
   }): void;
   /**
-   * Occurs when there are chat room member(s) unmuted (removed from mute list).
+   * Occurs when one or more chat room members are removed from the mute list.
    *
-   * @param params The params set.
-   * - Param [roomId] The chatroom ID.
-   * - Param [mutes] The member(s) muted is removed from the mute list.
+   * @param params The parameter set.
+   * - Param [roomId] The chat room ID.
+   * - Param [mutes] The user ID(s) of unmuted member(s).
    */
   onMuteListRemoved(params: { roomId: string; mutes: Array<string> }): void;
   /**
-   * Occurs when a member has been changed to an admin.
+   *Occurs when a chat room member is set as an admin.
    *
-   * @param params The params set.
-   * - Param [roomId] The chatroom ID.
-   * - Param [admin] The member who has been changed to an admin.
+   * @param params The parameter set.
+   * - Param [roomId] The chat room ID.
+   * - Param [admin]  The user ID of the member who is set as an admin.
    */
   onAdminAdded(params: { roomId: string; admin: string }): void;
   /**
-   * Occurs when an admin is been removed.
+   * Occurs when the administrative privileges of a chat room admin are removed.
    *
-   * @param params The params set.
-   * - Param [roomId] The chatroom ID.
-   * - Param [admin] The member whose admin permission is removed.
+   * @param params The parameter set.
+   * - Param [roomId] The chat room ID.
+   * - Param [admin] The user ID of the admin whose administrative privileges are removed.
    */
   onAdminRemoved(params: { roomId: string; admin: string }): void;
   /**
-   * Occurs when the chat room ownership has been transferred.
+   * Occurs when the chat room ownership is transferred.
    *
-   * @param params The params set.
-   * - Param [roomId] The chatroom ID.
-   * - Param [newOwner] The new owner.
-   * - Param [oldOwner] The previous owner.
+   * @param params The parameter set.
+   * - Param [roomId] The chat room ID.
+   * - Param [newOwner] The user ID of the new chat room owner.
+   * - Param [oldOwner] The user ID of the previous chat room owner.
    */
   onOwnerChanged(params: {
     roomId: string;
@@ -881,35 +920,37 @@ export interface ChatRoomEventListener {
     oldOwner: string;
   }): void;
   /**
-   * Occurs when the announcement changed.
+   * Occurs when the chat room announcement changes.
    *
-   * @param params The params set.
-   * - Param [roomId] The chatroom ID.
-   * - Param [announcement] The changed announcement.
+   * @param params The parameter set.
+   * - Param [roomId] The chat room ID.
+   * - Param [announcement] The new announcement.
    */
   onAnnouncementChanged(params: { roomId: string; announcement: string }): void;
   /**
-   * Occurs when the chat room member(s) is added to the allowlist.
+   * Occurs when one or more chat room members are added to the allow list.
    *
-   * @param params The params set.
-   * - Param [roomId] The chatroom ID.
-   * - Param [members] The member(s) to be added to the allowlist.
+   * @param params The parameter set.
+   * - Param [roomId] The chat room ID.
+   * - Param [members] The member(s) added to the allow list of the chat room.
    */
   onWhiteListAdded(params: { roomId: string; members: Array<string> }): void;
   /**
-   * Occurs when the chat room member(s) is removed from the allowlist.
+   * Occurs when one or more chat room members are removed from the allow list.
    *
-   * @param params The params set.
-   * - Param [roomId] The chatroom ID.
-   * - Param [members] The member(s) is removed from the allowlist.
+   * @param params The parameter set.
+   * - Param [roomId] The chat room ID.
+   * - Param [members] The member(s) removed from the allow list of the chat room.
    */
   onWhiteListRemoved(params: { roomId: string; members: Array<string> }): void;
   /**
    * Occurs when all members in the chat room are muted or unmuted.
    *
-   * @param params The params set.
-   * - Param [roomId] The chatroom ID.
-   * - Param [isAllMuted] Whether all chat room members is muted or unmuted.
+   * @param params The parameter set.
+   * - Param [roomId] The chat room ID.
+   * - Param [isAllMuted] Whether all chat room members are muted.
+   *   - `true`: Yes.
+   *   - `false`: No.
    */
   onAllChatRoomMemberMuteStateChanged(params: {
     roomId: string;
@@ -918,7 +959,7 @@ export interface ChatRoomEventListener {
 }
 
 /**
- * The delegate protocol that defines presence callbacks.
+ * The presence state change listener.
  */
 export interface ChatPresenceEventListener {
   /**

@@ -1,9 +1,9 @@
 /**
- * The ChatDeviceInfo class, which contains the multi-device information.
+ * The device information class, which contains the information of logged-in devices.
  */
 export class ChatDeviceInfo {
   /**
-   * The information of other login devices.
+   * The information of logged-in devices.
    */
   resource: string;
   /**
@@ -11,7 +11,7 @@ export class ChatDeviceInfo {
    */
   deviceUUID: string;
   /**
-   * The device type. For example: "Pixel 6 Pro".
+   * The device type, such as "Pixel 6 Pro".
    */
   deviceName: string;
 

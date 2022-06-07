@@ -948,7 +948,7 @@ export const metaDataList = new Map<string, ApiParams>([
         {
           paramName: 'reaction',
           paramType: 'string',
-          paramDefaultValue: 'reaction1',
+          paramDefaultValue: '',
         },
         {
           paramName: 'cursor',

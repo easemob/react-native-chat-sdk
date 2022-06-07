@@ -74,6 +74,9 @@ const ExtSdkApiRN = NativeModules.ExtSdkApiRN
 const eventEmitter = new NativeEventEmitter(ExtSdkApiRN);
 chatlog.log('eventEmitter: ', eventEmitter);
 
+/**
+ * The chat client class, which is the entry of the chat SDK. It defines how to log in to and log out of the chat app and how to manage the connection between the SDK and the chat server.
+ */
 export class ChatClient extends BaseManager {
   public static eventType = 2; // 1.remove 2.subscription(suggested)
   protected static TAG = 'ChatClient';
@@ -346,11 +349,11 @@ export class ChatClient extends BaseManager {
   }
 
   /**
-   * Gets the configurations. Make sure to set the param, see {@link EMOptions}.
+   * Gets the SDK configurations.
    *
-   * This value is set during initialization.
+   * Ensure that you set the SDK options during initialization. See {@link ChatOptions}.
    *
-   * @returns The configurations.
+   * @returns The SDK configurations.
    */
   public get options(): ChatOptions | undefined {
     chatlog.log(`${ChatClient.TAG}: options: `);
@@ -360,9 +363,11 @@ export class ChatClient extends BaseManager {
   /**
    * Gets the current logged-in user ID.
    *
-   * The value is valid after successful login.
+   * **Note**
    *
-   * The value is cached locally and is updated on login, logout, disconnect, etc. Use {@link getCurrentUsername} if you need a more accurate value.
+   * The user ID for successful login is valid.
+   *
+   * The user ID is obtained from the memory and updated in the case of login, logout, and reconnection upon disconnection. You can call {@link getCurrentUsername} to get the latest data from the server.
    *
    * @returns The current logged-in user ID.
    */
@@ -373,13 +378,13 @@ export class ChatClient extends BaseManager {
 
   /**
    * Initializes the SDK.
-   * Make sure to initialize the SDK in the main thread.
    *
    * **Note**
    *
-   * **This method must be called before any method can be called.**
+   * - Make sure to initialize the SDK in the main thread.
+   * - This method must be called before any other methods are called.
    *
-   * @param options The options for SDK initialization. The options are required. See {@link ChatOptions}.
+   * @param options The options for SDK initialization. Ensure that you set the options. See {@link ChatOptions}.
    *
    * @throws A description of the exception. See {@link ChatError}.
    */
@@ -410,7 +415,12 @@ export class ChatClient extends BaseManager {
   }
 
   /**
-   * Gets the current logged-in user ID from the server. To get it from the memory, see {@link currentUserName}.
+   * Gets the current logged-in user ID from the server.
+   *
+   * **Note**
+   *
+   * To get the current logged-in user ID from the memory, see {@link currentUserName}.
+   *
    * @returns The logged-in user ID.
    *
    * @throws A description of the exception. See {@link ChatError}.
@@ -432,15 +442,15 @@ export class ChatClient extends BaseManager {
   }
 
   /**
-   * Checks whether the user is logged into the app.
+   * Checks whether the current user is logged in to the app.
    *
    * **Note**
    *
-   * This state is after initialization and before login.
+   * This method needs to be called after initialization and before login.
    *
-   * @returns
-   * - `true`: In automatic login mode, the value is true before successful login and false otherwise.
-   * - `false`: In non-automatic login mode, the value is false.
+   * @returns Whether the user is logged in to the app:
+   *          - `true`: The user is logged in to the app. In automatic login mode, the SDK returns `true` before successful login and `false` otherwise.
+   *          - `false`: The user is not logged in to the app. In non-automatic login mode, the SDK returns `false`.
    *
    * @throws A description of the exception. See {@link ChatError}.
    */
@@ -455,7 +465,7 @@ export class ChatClient extends BaseManager {
   /**
    * Gets the token for login.
    *
-   * @returns The token.
+   * @returns The token for login.
    *
    * @throws A description of the exception. See {@link ChatError}.
    */
@@ -468,20 +478,26 @@ export class ChatClient extends BaseManager {
   }
 
   /**
-   * Creates a new user.
+   * Creates a new user (open registration).
    *
-   * There are two registration modes, open registration and authorized registration. The client can register only when the registration is open, otherwise an error message will be returned.
-   * Open registration is for testing use, and it is not recommended to use this method to register a Huanxin account in a formal environment;
-   * The process of authorization registration should be that your server registers through the REST API provided by Agora, and then saves it to your server or returns it to the client.
+   * **Note**
+   *
+   * There are two registration modes:
+   *
+   * - Open registration: This mode is for testing use, but not recommended in a formal environment;
+   *   If a call failure occurs, you can contact our business manager.
+   *
+   * - Authorized registration: You can create a new user through a REST API, and then save it to your server or return it to the client.
    *
    * @param username The user ID.
-   *                 This parameter is required. The user ID can be a maximum of 64 characters of the following types:
+   *                 Ensure that you set this parameter. The user ID can be a maximum of 64 characters of the following types:
    *                 - 26 English letters (a-z)
    *                 - 10 numbers (0-9),
    *                 - "_", "-", "."
-   *                 This parameter is case insensitive and upper-case letters are automatically changed to low-case ones.
-   *                 Also, you can set this parameter with a regular expression in the format of ^[a-zA-Z0-9_-]+$.
-   * @param password The password. It is required. The password can contain a maximum of 64 characters.
+   *                 The user ID is case-insensitive, so Aa and aa are the same user ID.
+   *                 The email address or the UUID of the user cannot be used as the user ID.
+   *                 You can also set this parameter with the regular expression ^[a-zA-Z0-9_-]+$.
+   * @param password The password. Ensure that you set this parameter. The password can contain a maximum of 64 characters.
    *
    * @throws A description of the exception. See {@link ChatError}.
    */
@@ -500,20 +516,23 @@ export class ChatClient extends BaseManager {
   }
 
   /**
-   * Login into the chat server with a password or a token.
+   * Logs in to the chat server with a password or an Easemob token.
    *
-   * If you use a token to log in to the server, there are two ways to obtain the token. The first is obtained through the SDK interface, See {@link createAccount} or {@link getAccessToken}, and the second is obtained through the chatlog, {@link https://chatlog.easemob.com/app/applicationOverview/userManagement}.
+   * **Note**
    *
-   * The token expiration reminder is notified by the listener {@link ChatConnectEventListener#onTokenWillExpire} and  {@link ChatConnectEventListener#onTokenDidExpire}. If necessary, please pay attention to the listener event.
+   * If you use an Easemob token to log in to the server, you can get the token in either of the following ways:
+   * - Through an SDK API. See {@link createAccount} or {@link getAccessToken}.
+   * - Through the console. See {@url https://console.easemob.com/app/applicationOverview/userManagement}.
    *
-   * @param userName The user ID. See {@link createAccount}.
-   * @param pwdOrToken The password or token.
+   * The token expiration reminder is notified by the two callback methods: {@link ChatConnectEventListener#onTokenWillExpire} and {@link ChatConnectEventListener#onTokenDidExpire}.
    *
+   * @param userName    The user ID. See {@link createAccount}.
+   * @param pwdOrToken  The password or token. See {@link createAccount} or {@link getAccessToken}
    * @param isPassword  Whether to log in with a password or a token.
-   *  - `true`: A token is used.
-   *  - `false`: (Default) A password is used.
+   *                    - `true`: A token is used.
+   *                    - (Default) `false`: A password is used.
    *
-   * @throws A description of the exception. See {@link ChatError}.
+   * @throws            A description of the exception. See {@link ChatError}.
    */
   public async login(
     userName: string,
@@ -537,10 +556,13 @@ export class ChatClient extends BaseManager {
   }
 
   /**
-   * Logs into the chat server with the user ID and an Agora token.
-   * This method supports automatic login.
+   * Logs in to the chat server with the user ID and an Agora token.
    *
-   * Agora token is different from token {@link login#token}. Agora is obtained through agora server.
+   * **Note**
+   *
+   * The Agora token is different from token {@link login#token} provided by Easemob.
+   *
+   * This method supports automatic login.
    *
    * @param userName The user ID. See {@link createAccount}.
    * @param agoraToken The Agora token.
@@ -569,7 +591,9 @@ export class ChatClient extends BaseManager {
   /**
    * Renews the Agora token.
    *
-   * If you log in with an Agora token and are notified by a callback method {@link ChatConnectEventListener} that the token is to be expired, you can call this method to update the token to avoid unknown issues caused by an invalid token.
+   * **Note**
+   *
+   * If you log in with an Agora token and are notified by the callback method {@link ChatConnectEventListener} that the token is to expire, you can call this method to update the token to avoid unknown issues caused by an invalid token.
    *
    * @param agoraToken The new Agora token.
    *
@@ -588,9 +612,10 @@ export class ChatClient extends BaseManager {
   /**
    * Logs out of the chat app.
    *
-   * @param unbindDeviceToken Whether to unbind the token upon logout.
-   * - `true`: (Default) Yes.
+   * @param unbindDeviceToken Whether to unbind the token upon logout. This parameter is available only to mobile platforms.
+   * - (Default) `true`: Yes.
    * - `false`: No.
+   *
    * @throws A description of the exception. See {@link ChatError}.
    */
   public async logout(unbindDeviceToken: boolean = true): Promise<void> {
@@ -605,15 +630,19 @@ export class ChatClient extends BaseManager {
   }
 
   /**
-   * Updates the App Key, which is the unique identifier used to access Chat service.
+   * Updates the App Key, which is the unique identifier used to access the chat service.
    *
-   * You can retrieve the new App Key from the Console.
+   * **Note**
    *
-   * As this key controls all access to Chat service for your app, you can only update the key when the current user is logged out.
+   * - As this key controls access to the chat service for your app, you can only update the key when the current user is logged out.
    *
-   * Also, you can set App Key by the following method when logged out: {@link ChatOptions#appKey}.
+   * - Updating the App Key means to switch to a new App Key.
    *
-   * @param newAppKey The App Key. It is required
+   * - You can retrieve the new App Key from the Console.
+   *
+   * - You can also set an App Key by using the {@link ChatOptions#appKey} method when logged out.
+   *
+   * @param newAppKey The new App Key. Ensure that you set this parameter.
    *
    * @throws A description of the exception. See {@link ChatError}.
    */
@@ -628,9 +657,9 @@ export class ChatClient extends BaseManager {
   }
 
   /**
-   * Compresses the debug log into a gzip archive.
+   * Compresses the debug log file into a gzip archive.
    *
-   * We recommend that you delete this debug archive once it is no longer used.
+   * We strongly recommend that you delete this debug archive once it is no longer used.
    *
    * @returns The path of the compressed gzip file.
    *
@@ -644,11 +673,11 @@ export class ChatClient extends BaseManager {
   }
 
   /**
-   * Gets all the information about the devices which you have logged into with a specified account.
+   * Gets the list of online devices to which you have logged in with a specified account.
    *
    * @param username The user ID.
    * @param password The password.
-   * @returns The list of the login devices.
+   * @returns The list of the online logged-in devices.
    *
    * @throws A description of the exception. See {@link ChatError}.
    */
@@ -680,6 +709,7 @@ export class ChatClient extends BaseManager {
 
   /**
    * Logs out from a specified account on a device.
+   *
    * For how to get the device ID, see {@link ChatDeviceInfo#resource}.
    *
    * @param username The user ID.
@@ -732,9 +762,9 @@ export class ChatClient extends BaseManager {
   }
 
   /**
-   *  Adds the connection listener for the chat server.
+   * Adds the connection status listener.
    *
-   *  @param listener The chat server connection listener to be added.
+   * @param listener The connection status listener to add.
    */
   public addConnectionListener(listener: ChatConnectEventListener): void {
     chatlog.log(`${ChatClient.TAG}: addConnectionListener: `);
@@ -742,9 +772,9 @@ export class ChatClient extends BaseManager {
   }
 
   /**
-   *  Removes the connection listener for the chat server.
+   * Removes the connection status listener.
    *
-   *  @param listener The chat server connection listener to be removed.
+   * @param listener The connection status listener to remove.
    */
   public removeConnectionListener(listener: ChatConnectEventListener): void {
     chatlog.log(`${ChatClient.TAG}: removeConnectionListener: `);
@@ -752,7 +782,7 @@ export class ChatClient extends BaseManager {
   }
 
   /**
-   *  Removes all the connection listeners for the chat server.
+   * Removes all the connection status listeners for the chat server.
    */
   public removeAllConnectionListener(): void {
     chatlog.log(`${ChatClient.TAG}: removeAllConnectionListener: `);
@@ -760,9 +790,9 @@ export class ChatClient extends BaseManager {
   }
 
   /**
-   *  Adds the multi-device listener.
+   * Adds the multi-device listener.
    *
-   *  @param listener The multi-device listener to be added.
+   * @param listener The multi-device listener to add.
    */
   public addMultiDeviceListener(listener: ChatMultiDeviceEventListener): void {
     chatlog.log(`${ChatClient.TAG}: addMultiDeviceListener: `);
@@ -770,9 +800,9 @@ export class ChatClient extends BaseManager {
   }
 
   /**
-   *  Removes the multi-device listener.
+   * Removes the specified multi-device listener.
    *
-   *  @param listener The multi-device listener to be removed.
+   * @param listener The multi-device listener to remove.
    */
   public removeMultiDeviceListener(
     listener: ChatMultiDeviceEventListener
@@ -782,7 +812,7 @@ export class ChatClient extends BaseManager {
   }
 
   /**
-   *  Removes all the multi-device listeners.
+   * Removes all the multi-device listeners.
    */
   public removeAllMultiDeviceListener(): void {
     chatlog.log(`${ChatClient.TAG}: removeAllMultiDeviceListener: `);
@@ -790,9 +820,9 @@ export class ChatClient extends BaseManager {
   }
 
   /**
-   *  Adds a custom listener to receive data from iOS or Android devices.
+   * Adds a custom listener to receive data that the iOS or Android devices send to the React Native layer.
    *
-   *  @param listener The custom listener to be added.
+   * @param listener The custom listener to add.
    */
   public addCustomListener(listener: ChatCustomEventListener): void {
     chatlog.log(`${ChatClient.TAG}: addCustomListener: `);
@@ -800,9 +830,9 @@ export class ChatClient extends BaseManager {
   }
 
   /**
-   *  Removes a custom listener to receive data from iOS or Android devices.
+   * Removes a custom listener to no longer receive data that the iOS or Android devices send to the React Native layer.
    *
-   *  @param listener The custom listener to be removed.
+   * @param listener The custom listener to remove.
    */
   public removeCustomListener(listener: ChatCustomEventListener): void {
     chatlog.log(`${ChatClient.TAG}: removeCustomListener: `);
@@ -818,63 +848,77 @@ export class ChatClient extends BaseManager {
   }
 
   /**
-   *  Gets the `ChatManager` class. Make sure to call it after ChatClient has been initialized.
+   * Gets the chat manager class.
    *
-   *  @returns The `ChatManager` class.
+   * This method can be called only after the chat client is initialized.
+   *
+   * @returns The chat manager class.
    */
   public get chatManager(): ChatManager {
     return this._chatManager;
   }
 
   /**
-   *  Gets the `ChatGroupManager` class. Make sure to call it after ChatClient has been initialized.
+   * Gets the chat group manager class.
    *
-   *  @returns The `ChatGroupManager` class.
+   * This method can be called only after the chat client is initialized.
+   *
+   * @returns The chat group manager class.
    */
   public get groupManager(): ChatGroupManager {
     return this._groupManager;
   }
 
   /**
-   *  Gets the `ChatContactManager` class. Make sure to call it after ChatClient has been initialized.
+   * Gets the contact manager class.
    *
-   *  @returns The `ChatContactManager` class.
+   * This method can be called only after the chat client is initialized.
+   *
+   * @returns The contact manager class.
    */
   public get contactManager(): ChatContactManager {
     return this._contactManager;
   }
 
   /**
-   *  Gets the `ChatPushManager` class. Make sure to call it after ChatClient has been initialized.
+   * Gets the push manager class.
    *
-   *  @returns The `ChatPushManager` class.
+   * This method can be called only after the chat client is initialized.
+   *
+   * @returns The push manager class.
    */
   public get pushManager(): ChatPushManager {
     return this._pushManager;
   }
 
   /**
-   *  Gets the `ChatUserInfoManager` class. Make sure to call it after ChatClient has been initialized.
+   * Gets the user information manager class.
    *
-   *  @returns The `ChatUserInfoManager` class.
+   * This method can be called only after the chat client is initialized.
+   *
+   * @returns The user information manager class.
    */
   public get userManager(): ChatUserInfoManager {
     return this._userInfoManager;
   }
 
   /**
-   *  Gets the `ChatRoomManager` class. Make sure to call it after ChatClient has been initialized.
+   * Gets the chat room manager class.
    *
-   *  @returns The `ChatRoomManager` class.
+   * This method can be called only after the chat client is initialized.
+   *
+   * @returns The chat room manager class.
    */
   public get roomManager(): ChatRoomManager {
     return this._chatRoomManager;
   }
 
   /**
-   *  Gets the `ChatPresenceManager` class. Make sure to call it after ChatClient has been initialized.
+   * Gets the presence manager class.
    *
-   *  @returns The `ChatPresenceManager` class.
+   * This method can be called only after the chat client is initialized.
+   *
+   * @returns The presence manager class.
    */
   public get presenceManager(): ChatPresenceManager {
     return this._presenceManager;

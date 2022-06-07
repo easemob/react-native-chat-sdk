@@ -104,9 +104,9 @@ import {
 } from './common/ChatMessageThread';
 
 /**
- * The chat manager class, responsible for sending and receiving messages, loading and deleting conversations, and downloading attachments.
+ * The chat manager class, responsible for sending and receiving messages, managing conversations (including loading and deleting conversations), and downloading attachments.
  *
- * The sample code for sending a text message:
+ * The sample code for sending a text message is as follows:
  *
  *  ```typescript
  *  let msg = ChatMessage.createTextMessage(
@@ -404,7 +404,8 @@ export class ChatManager extends BaseManager {
 
   /**
    * Adds a message listener.
-   * @param listener The listener to be added.
+   *
+   * @param listener The message listener to add.
    */
   public addMessageListener(listener: ChatMessageEventListener): void {
     chatlog.log(`${ChatManager.TAG}: addMessageListener: `);
@@ -413,7 +414,8 @@ export class ChatManager extends BaseManager {
 
   /**
    * Removes the message listener.
-   * @param listener The listener to be deleted.
+   *
+   * @param listener The message listener to remove.
    */
   public removeMessageListener(listener: ChatMessageEventListener): void {
     chatlog.log(`${ChatManager.TAG}: removeMessageListener: `);
@@ -431,9 +433,12 @@ export class ChatManager extends BaseManager {
   /**
    * Sends a message.
    *
-   * For a voice or image or a message with an attachment, the SDK will automatically upload the attachment.
-   * You can determine whether to upload the attachment to the chat sever by setting {@link ChatOptions}.
-   * @param message The message object to be sent. It is required.
+   * **Note**
+   *
+   * - For a voice or image message or a message with an attachment, the SDK will automatically upload the attachment.
+   * - You can determine whether to upload the attachment to the chat sever by setting {@link ChatOptions}.
+   *
+   * @param message The message object to be sent. Ensure that you set this parameter.
    * @param callback The listener that listens for message changes.
    *
    * @throws A description of the exception. See {@link ChatError}.
@@ -493,15 +498,15 @@ export class ChatManager extends BaseManager {
    *
    * This method applies to one-to-one chats only.
    *
-   * **Warning**
-   * This method only takes effect if you set {@link ChatOptions#requireAck(bool)} as `true`.
-   *
    * **Note**
-   * To send the group message read receipt, call {@link #sendGroupMessageReadAck(String, String, String)}.
    *
-   * We recommend that you call {@link #sendConversationReadAck(String)} when entering a chat page, and call this method to reduce the number of method calls.
+   * This method takes effect only when you set {@link ChatOptions#requireAck(bool)} as `true`.
    *
-   * @param message The failed message.
+   * To send a group message read receipt, you can call {@link #sendGroupMessageReadAck(String, String, String)}.
+   *
+   * We recommend that you call {@link #sendConversationReadAck(String)} when opening the chat page. In other cases, you can call this method to reduce the number of method calls.
+   *
+   * @param message The message for which the read receipt is to be sent.
    *
    * @throws A description of the exception. See {@link ChatError}.
    */
@@ -525,8 +530,9 @@ export class ChatManager extends BaseManager {
    * You can call the method only after setting the following method: {@link ChatOptions#requireAck(bool)} and {@link ChatMessage#needGroupAck(bool)}.
    *
    * **Note**
-   * - This method takes effect only after you set {@link ChatOptions#requireAck} and {@link ChatMessage#needGroupAck} as `true`.
-   * - This method applies to group messages only. To send a one-to-one chat message receipt, call {@link sendMessageReadAck}; to send a conversation receipt, call {@link sendConversationReadAck}.
+   *
+   * - This method takes effect only after you set {@link ChatOptions#requireAck(bool)} and {@link ChatMessage#needGroupAck(bool)} as `true`.
+   * - This method applies to group messages only. To send a read receipt for a one-to-one chat message, you can call {@link sendMessageReadAck}; to send a conversation read receipt, you can call {@link sendConversationReadAck}.
    *
    * @param msgId The message ID.
    * @param groupId The group ID.
@@ -559,9 +565,14 @@ export class ChatManager extends BaseManager {
   }
 
   /**
-   * Sends the conversation read receipt to the server. This method is valid only for one-to-one chat conversations.
+   * Sends the conversation read receipt to the server.
    *
-   * This method informs the server to set the unread messages count of the conversation to `0`. In multi-device scenarios, all the devices receive the {@link ChatMessageEventListener#onConversationRead(String, String)} callback.
+   * **Notes**
+   *
+   * - This method is valid only for one-to-one conversations.
+   * - After this method is called, the sever will set the message status from unread to read.
+   * - The SDK triggers the {@link ChatMessageEventListener#onConversationRead(String, String)} callback on the client of the message sender, notifying that the messages are read. This also applies to multi-device scenarios.
+   *
    * @param convId The conversation ID.
    *
    * @throws A description of the exception. See {@link ChatError}.
@@ -594,7 +605,7 @@ export class ChatManager extends BaseManager {
   }
 
   /**
-   * Loads a message from the local database by message ID.
+   * Gets a message from the local database by message ID.
    *
    * @param msgId The message ID.
    * @returns The message.
@@ -617,7 +628,7 @@ export class ChatManager extends BaseManager {
   }
 
   /**
-   * Marks all messages as read.
+   * Marks all conversations as read.
    *
    * This method is for the local conversations only.
    *
@@ -646,7 +657,8 @@ export class ChatManager extends BaseManager {
   /**
    * Updates the local message.
    *
-   * @param message The message will be updated both in the cache and local database.
+   * The message will be updated both in the memory and local database.
+   *
    * @return The updated message.
    *
    * @throws A description of the exception. See {@link ChatError}.
@@ -669,9 +681,9 @@ export class ChatManager extends BaseManager {
   /**
    * Imports messages to the local database.
    *
-   * Before importing, ensure that the message sender or recipient is the current user.
+   * You can only import messages that you sent or received.
    *
-   * @param messages The message list.
+   * @param messages The messages to be imported.
    *
    * @throws A description of the exception. See {@link ChatError}.
    */
@@ -689,12 +701,12 @@ export class ChatManager extends BaseManager {
   }
 
   /**
-   * Downloads the attachment files from the server.
+   * Downloads the message attachment.
    *
-   * You can call the method again if the attachment download fails.
+   * You can also call this method if the attachment fails to be downloaded automatically.
    *
-   * @param message The message with the attachment that is to be downloaded.
-   * @param callback The listener that Listen for message changes.
+   * @param message The ID of the message with the attachment to be downloaded.
+   * @param callback The listener that listens for message changes.
    *
    * @throws A description of the exception. See {@link ChatError}.
    */
@@ -716,9 +728,9 @@ export class ChatManager extends BaseManager {
   }
 
   /**
-   * Downloads the thumbnail.
+   * Downloads the message thumbnail.
    *
-   * @param message The message object.
+   * @param message The ID of the message with the thumbnail to be downloaded. Only the image messages and video messages have a thumbnail.
    *
    * @throws A description of the exception. See {@link ChatError}.
    */
@@ -740,12 +752,12 @@ export class ChatManager extends BaseManager {
   }
 
   /**
-   * Gets historical messages of the conversation from the server with pagination.
+   * Uses the pagination to get historical messages of the specified conversation from the server.
    *
    * @param convId The conversation ID.
    * @param chatType The conversation type. See {@link ChatConversationType}.
    * @param pageSize The number of messages that you expect to get on each page.
-   * @param startMsgId The ID of the message from which you start to get the historical messages. If `null` is passed, the SDK gets messages in reverse chronological order.
+   * @param startMsgId The starting message ID for query. If you set it as an empty string or `null`, the SDK gets messages in the reverse chronological order of when the server receives them.
    * @returns The obtained messages and the cursor for the next query.
    *
    * @throws A description of the exception. See {@link ChatError}.
@@ -781,16 +793,16 @@ export class ChatManager extends BaseManager {
   }
 
   /**
-   * Retrieves messages from the database according to the parameters.
+   * Retrieves messages from the local database.
    *
-   * **Note**
-   * Pay attention to the memory usage when the maxCount is large. Currently, a maximum of 400 historical messages can be retrieved each time.
-   * @param keywords The keywords in message.
-   * @param timestamp The Unix timestamp for search, in milliseconds.
-   * @param maxCount The maximum number of messages to retrieve each time.
-   * @param from A user ID or group ID at which the retrieval is targeted. Usually, it is the conversation ID.
-   * @param direction The message search direction.
-   * @returns The list of messages.
+   * @param keywords The keywords for query.
+   * @param timestamp The starting Unix timestamp for query, in milliseconds.
+   * @param maxCount The maximum number of messages to retrieve each time. The value range is [1,50].
+   * @param from The user ID or group ID at which the retrieval is targeted. Usually, it is the conversation ID.
+   * @param direction The message search direction. See {@link ChatSearchDirection}.
+   *                  - (Default) `ChatSearchDirection.Up`: Messages are retrieved in the reverse chronological order of the Unix timestamp ({@link SortMessageByServerTime}) included in them.
+   *                  - `ChatSearchDirection.Down`: Messages are retrieved in the chronological order of the Unix timestamp ({@link SortMessageByServerTime}) included in them.
+   * @returns The message list. If no message is obtained, an empty list is returned.
    *
    * @throws A description of the exception. See {@link ChatError}.
    */
@@ -825,12 +837,12 @@ export class ChatManager extends BaseManager {
   }
 
   /**
-   * Gets read receipts for group messages from the server with pagination.
+   * Uses the pagination to get read receipts for group messages from the server.
    *
    * For how to send read receipts for group messages, see {@link {@link #sendConversationReadAck(String)}.
    *
    * @param msgId The message ID.
-   * @param startAckId The starting read receipt ID for query. If you set it as null, the SDK retrieves the read receipts in the reverse chronological order of when the server receives the read receipts.
+   * @param startAckId The starting read receipt ID for query. If you set it as an empty string or `null`, the SDK retrieves the read receipts in the reverse chronological order of when the server receives them.
    * @param pageSize The number of read receipts that you expect to get on each page.
    * @returns The list of obtained read receipts and the cursor for the next query.
    *
@@ -867,12 +879,12 @@ export class ChatManager extends BaseManager {
   }
 
   /**
-   * Deletes the specified conversation and the related historical messages from the server.
+   * Deletes the specified conversation and its historical messages from the server.
    *
    * @param convId The conversation ID.
    * @param convType The conversation type. See {@link ChatConversationType}.
    * @param isDeleteMessage Whether to delete the historical messages with the conversation.
-   * - `true`: (Default) Yes.
+   * - (Default) `true`: Yes.
    * - `false`: No.
    *
    * @throws A description of the exception. See {@link ChatError}.
@@ -916,12 +928,12 @@ export class ChatManager extends BaseManager {
    * Gets the conversation by conversation ID and conversation type.
    *
    * @param convId The conversation ID.
-   * @param convType The conversation type: {@link ChatConversationType}.
+   * @param convType The conversation type. See {@link ChatConversationType}.
    * @param createIfNeed Whether to create a conversation if the specified conversation is not found:
    * - `true`: Yes.
    * - `false`: No.
    *
-   * @returns The conversation object found according to the conversation ID and type. Returns null if the conversation is not found.
+   * @returns The retrieved conversation object. The SDK returns `null` if the conversation is not found.
    *
    * @throws A description of the exception. See {@link ChatError}.
    */
@@ -951,9 +963,11 @@ export class ChatManager extends BaseManager {
   /**
    * Gets all conversations from the local database.
    *
-   * Conversations will be first loaded from the memory. If no conversation is found, the SDK loads from the local database.
+   * **Note**
    *
-   * @returns All the conversations from the the local memory or local database.
+   * Conversations will be first retrieved from the memory. If no conversation is found, the SDK retrieves from the local database.
+   *
+   * @returns The retrieved conversations.
    *
    * @throws A description of the exception. See {@link ChatError}.
    */
@@ -974,9 +988,11 @@ export class ChatManager extends BaseManager {
   /**
    * Gets the conversation list from the server.
    *
-   * To use this function, you need to contact our business manager to activate it.
-   * After this function is activated, users can pull 10 conversations within 7 days by default (each conversation contains the latest historical message).
-   * If you want to adjust the number of conversations or time limit, please contact our business manager.
+   * **Note**
+   *
+   * - To use this function, you need to contact our business manager to activate it.
+   * - After this function is activated, users can pull 10 conversations within 7 days by default (each conversation contains the latest historical message).
+   * - If you want to adjust the number of conversations or time limit, contact our business manager.
    *
    * @returns The conversation list of the current user.
    *
@@ -997,13 +1013,11 @@ export class ChatManager extends BaseManager {
   }
 
   /**
-   * Deletes a conversation and its related messages from the local database.
-   *
-   * If you set `deleteMessages` to `true`, the local historical messages are deleted with the conversation.
+   * Deletes a conversation and its local messages from the local database.
    *
    * @param convId The conversation ID.
    * @param withMessage Whether to delete the historical messages with the conversation.
-   * - `true`: (Default) Yes.
+   * - (Default) `true`: Yes.
    * - `false`: No.
    * @returns Whether the conversation is successfully deleted.
    * - `true`: Yes.
@@ -1028,15 +1042,17 @@ export class ChatManager extends BaseManager {
   }
 
   /**
-   * Gets the lastest message from the conversation.
+   * Gets the latest message from the conversation.
+   *
+   * **Note**
    *
    * The operation does not change the unread message count.
    *
-   * The SDK gets the latest message from the local memory first. If no message is found, the SDK loads the message from the local database and then puts it in the memory.
+   * The SDK gets the latest message from the memory first. If no message is found, the SDK loads the message from the local database and then puts it in the memory.
    *
-   * @param convId The conversation id.
-   * @param convType The conversation type.
-   * @returns The message instance. Returns undefined if the message does not exist.
+   * @param convId The conversation ID.
+   * @param convType The conversation type. See {@link ChatConversationType}.
+   * @returns The message instance. The SDK returns `undefined` if the message does not exist.
    *
    * @throws A description of the exception. See {@link ChatError}.
    */
@@ -1060,11 +1076,11 @@ export class ChatManager extends BaseManager {
   }
 
   /**
-   * Gets the latest message from the conversation.
+   * Gets the latest received message from the conversation.
    *
-   * @param convId The conversation id.
-   * @param convType The conversation type.
-   * @returns The message instance. Returns undefined if the message does not exist.
+   * @param convId The conversation ID.
+   * @param convType The conversation type. See {@link ChatConversationType}.
+   * @returns The message instance. The SDK returns `undefined` if the message does not exist.
    *
    * @throws A description of the exception. See {@link ChatError}.
    */
@@ -1090,9 +1106,9 @@ export class ChatManager extends BaseManager {
   /**
    * Gets the unread message count of the conversation.
    *
-   * @param convId The conversation id.
-   * @param convType The conversation type.
-   * @returns The unread message count of the conversation.
+   * @param convId The conversation ID.
+   * @param convType The conversation type. See {@link ChatConversationType}.
+   * @returns The unread message count.
    *
    * @throws A description of the exception. See {@link ChatError}.
    */
@@ -1115,9 +1131,9 @@ export class ChatManager extends BaseManager {
   /**
    * Marks a message as read.
    *
-   * @param convId The conversation id.
-   * @param convType The conversation type.
-   * @param msgId The message id.
+   * @param convId The conversation ID.
+   * @param convType The conversation type. See {@link ChatConversationType}.
+   * @param msgId The message ID.
    *
    * @throws A description of the exception. See {@link ChatError}.
    */
@@ -1145,8 +1161,8 @@ export class ChatManager extends BaseManager {
   /**
    * Marks all messages as read.
    *
-   * @param convId The conversation id.
-   * @param convType The conversation type.
+   * @param convId The conversation ID.
+   * @param convType The conversation type. See {@link ChatConversationType}.
    *
    * @throws A description of the exception. See {@link ChatError}.
    */
@@ -1169,11 +1185,13 @@ export class ChatManager extends BaseManager {
   }
 
   /**
-   * Inserts a message to a conversation in the local database and the SDK will automatically update the latest message.
+   * Inserts a message to a conversation in the local database.
    *
-   * @param convId The conversation id.
-   * @param convType The conversation type.
-   * @param msg The message instance.
+   * After this method is called, the SDK will automatically update the latest message in the conversation.
+   *
+   * @param convId The conversation ID.
+   * @param convType The conversation type. See {@link ChatConversationType}.
+   * @param msg The message to insert.
    *
    * @throws A description of the exception. See {@link ChatError}.
    */
@@ -1196,9 +1214,9 @@ export class ChatManager extends BaseManager {
   /**
    * Inserts a message to the end of a conversation in the local database.
    *
-   * @param convId The conversation id.
-   * @param convType The conversation type.
-   * @param msg The message instance.
+   * @param convId The conversation ID.
+   * @param convType The conversation type. See {@link ChatConversationType}.
+   * @param msg The message to insert.
    *
    * @throws A description of the exception. See {@link ChatError}.
    */
@@ -1221,11 +1239,11 @@ export class ChatManager extends BaseManager {
   /**
    * Updates a message in the local database.
    *
-   * The latest Message of the conversation and other properties will be updated accordingly. The message ID of the message, however, remains the same.
+   * After you modify a message, the message ID remains unchanged and the SDK automatically updates properties of the conversation, like `latestMessage`.
    *
-   * @param convId The conversation id.
-   * @param convType The conversation type.
-   * @param msg The message instance.
+   * @param convId The conversation ID.
+   * @param convType The conversation type. See {@link ChatConversationType}.
+   * @param msg The ID of the message to update.
    *
    * @throws A description of the exception. See {@link ChatError}.
    */
@@ -1251,11 +1269,11 @@ export class ChatManager extends BaseManager {
   }
 
   /**
-   * Deletes a message in the local database.
+   * Deletes a message from the local database.
    *
-   * @param convId The conversation id.
-   * @param convType The conversation type.
-   * @param msgId The ID of message to be deleted.
+   * @param convId The conversation ID.
+   * @param convType The conversation type. See {@link ChatConversationType}.
+   * @param msgId The ID of the message to delete.
    *
    * @throws A description of the exception. See {@link ChatError}.
    */
@@ -1278,10 +1296,10 @@ export class ChatManager extends BaseManager {
   }
 
   /**
-   * Deletes all the messages of the conversation from both the memory and local database.
+   * Deletes all messages in the conversation from both the memory and local database.
    *
-   * @param convId The conversation id.
-   * @param convType The conversation type.
+   * @param convId The conversation ID.
+   * @param convType The conversation type. See {@link ChatConversationType}.
    *
    * @throws A description of the exception. See {@link ChatError}.
    */
@@ -1300,12 +1318,12 @@ export class ChatManager extends BaseManager {
   }
 
   /**
-   * Gets the message with a specific message ID.
+   * Gets the specified message.
    *
-   * @param convId The conversation id.
-   * @param convType The conversation type.
+   * @param convId The conversation ID.
+   * @param convType The conversation type. See {@link ChatConversationType}.
    * @param msgId The message ID.
-   * @returns The message instance. Returns undefined if the message does not exist.
+   * @returns The message instance. The SDK returns `undefined` if the message is not found.
    *
    * @throws A description of the exception. See {@link ChatError}.
    */
@@ -1336,18 +1354,20 @@ export class ChatManager extends BaseManager {
   }
 
   /**
-   * Retrieves messages from the database according to the following parameters: the message type, the Unix timestamp, max count, sender.
+   * Gets messages of certain types that a specified user sends in a conversation.
    *
-   * @param convId The conversation id.
-   * @param convType The conversation type.
-   * @param msgType The message type, see {@link ChatMessageType}
-   * @param direction The direction in which the message is loaded: ChatSearchDirection.
-   * - `ChatSearchDirection.Up`: Messages are retrieved in the reverse chronological order of when the server received messages.
-   * - `ChatSearchDirection.Down`: Messages are retrieved in the chronological order of when the server received messages.
-   * @param timestamp The Unix timestamp for the search.
-   * @param count The max number of messages to search.
-   * @param sender The sender of the message. The param can also be used to search in group chat or chat room.
-   * @returns The message list. but, maybe is empty list.
+   * This method gets data from the local database.
+   *
+   * @param convId The conversation ID.
+   * @param convType The conversation type. See {@link ChatConversationType}.
+   * @param msgType The message type. See {@link ChatMessageType}.
+   * @param direction The message search direction. See {@link ChatSearchDirection}.
+   * - (Default) `ChatSearchDirection.Up`: Messages are retrieved in the reverse chronological order of the Unix timestamp ({@link SortMessageByServerTime}) included in them.
+   * - `ChatSearchDirection.Down`: Messages are retrieved in the chronological order of the Unix timestamp ({@link SortMessageByServerTime}) included in them.
+   * @param timestamp The Unix timestamp for query, in milliseconds.
+   * @param count The maximum number of messages to retrieve. The value range is [1,50].
+   * @param sender The message sender. This parameter can also be used for search among group messages or chat room messages.
+   * @returns The message list. If no message is obtained, an empty list is returned.
    *
    * @throws A description of the exception. See {@link ChatError}.
    */
@@ -1393,18 +1413,20 @@ export class ChatManager extends BaseManager {
   }
 
   /**
-   * Loads multiple messages from the local database.
+   * Gets messages of a specified quantity in a conversation from the local database.
    *
-   * Loads messages from the local database before the specified message.
+   * **Note**
    *
-   * The loaded messages will also join the existing messages of the conversation stored in the memory.
+   * The obtained messages will also join the existing messages of the conversation stored in the memory.
    *
-   * @param convId The conversation id.
-   * @param convType The conversation type.
-   * @param startMsgId The starting message ID. Message loaded in the memory before this message ID will be loaded. If the `startMsgId` is set as "" or null, the SDK will first load the latest messages in the database.
-   * @param direction The direction in which the message is loaded: ChatSearchDirection.
-   * @param loadCount The number of messages per page.
-   * @returns The message list. but, maybe is empty list.
+   * @param convId The conversation ID.
+   * @param convType The conversation type. See {@link ChatConversationType}.
+   * @param startMsgId The starting message ID. If this parameter is set as "" or `null`, the SDK loads messages in the reverse chronological order of when the server receives them.
+   * @param direction The message search direction. See {@link ChatSearchDirection}.
+   * - (Default) `ChatSearchDirection.Up`: Messages are retrieved in the reverse chronological order of the Unix timestamp ({@link SortMessageByServerTime}) included in them.
+   * - `ChatSearchDirection.Down`: Messages are retrieved in the chronological order of the Unix timestamp ({@link SortMessageByServerTime}) included in them.
+   * @param loadCount The maximum number of messages to retrieve. The value range is [1,50].
+   * @returns The message list. If no message is obtained, an empty list is returned.
    *
    * @throws A description of the exception. See {@link ChatError}.
    */
@@ -1444,19 +1466,22 @@ export class ChatManager extends BaseManager {
   }
 
   /**
-   * Loads messages from the local database by the following parameters: keywords, timestamp, max count, sender, search direction.
+   * Gets messages that the specified user sends in a conversation in a certain period.
+   *
+   * This method gets data from the local database.
    *
    * **Note**
-   * Pay attention to the memory usage when the maxCount is large.
    *
-   * @param convId The conversation id.
-   * @param convType The conversation type.
-   * @param keywords The keywords in message.
-   * @param direction The direction in which the message is loaded: ChatSearchDirection.
-   * @param timestamp The timestamp for search.
-   * @param count The maximum number of messages to search.
-   * @param sender The message sender. The param can also be used to search in group chat.
-   * @returns The message list. but, maybe is empty list.
+   * @param convId The conversation ID.
+   * @param convType The conversation type. See {@link ChatConversationType}.
+   * @param keywords The keywords for query.
+   * @param direction The message search direction. See {@link ChatSearchDirection}.
+   * - (Default) `ChatSearchDirection.Up`: Messages are retrieved in the reverse chronological order of the Unix timestamp ({@link SortMessageByServerTime}) included in them.
+   * - `ChatSearchDirection.Down`: Messages are retrieved in the chronological order of the Unix timestamp ({@link SortMessageByServerTime}) included in them.
+   * @param timestamp The Unix timestamp for query, in milliseconds.
+   * @param count The maximum number of messages to retrieve. The value range is [1,50].
+   * @param sender The message sender. The parameter can also be used to search among group chat messages.
+   * @returns The message list. If no message is obtained, an empty list is returned.
    *
    * @throws A description of the exception. See {@link ChatError}.
    */
@@ -1502,18 +1527,19 @@ export class ChatManager extends BaseManager {
   }
 
   /**
-   * Loads messages from the local database according the following parameters: start timestamp, end timestamp, count.
+   * Gets messages that are sent or received in a certain period in a conversation.
    *
-   * **Note**
-   * Pay attention to the memory usage when the maxCount is large.
+   * This method gets data from the local database.
    *
-   * @param convId The conversation id.
-   * @param convType The conversation type.
-   * @param startTime The starting Unix timestamp for search.
-   * @param endTime The ending Unix timestamp for search.
-   * @param direction The direction in which the message is loaded: ChatSearchDirection.
-   * @param count The maximum number of message to retrieve.
-   * @returns The list of searched messages.
+   * @param convId The conversation ID.
+   * @param convType The conversation type. See {@link ChatConversationType}.
+   * @param startTime The starting Unix timestamp for query, in milliseconds.
+   * @param endTime The ending Unix timestamp for query, in milliseconds.
+   * @param direction The message search direction. See {@link ChatSearchDirection}.
+   * - (Default) `ChatSearchDirection.Up`: Messages are retrieved in the reverse chronological order of the Unix timestamp ({@link SortMessageByServerTime}) included in them.
+   * - `ChatSearchDirection.Down`: Messages are retrieved in the chronological order of the Unix timestamp ({@link SortMessageByServerTime}) included in them.
+   * @param count The maximum number of message to retrieve. The value range is [1,50].
+   * @returns The message list. If no message is obtained, an empty list is returned.
    *
    * @throws A description of the exception. See {@link ChatError}.
    */
@@ -1556,11 +1582,11 @@ export class ChatManager extends BaseManager {
   }
 
   /**
-   * Translate a message.
+   * Translates a text message.
    *
-   * @param msg The message object
-   * @param languages The target languages to translate
-   * @returns Translated Message
+   * @param msg The text message to translate.
+   * @param languages The target languages.
+   * @returns The translation.
    *
    * @throws A description of the exception. See {@link ChatError}.
    */
@@ -1581,9 +1607,9 @@ export class ChatManager extends BaseManager {
   }
 
   /**
-   * Fetch all languages what the translate service support
+   * Gets all languages supported by the translation service.
    *
-   * @returns Supported languages list.
+   * @returns The list of languages supported for translation.
    *
    * @throws A description of the exception. See {@link ChatError}.
    */
@@ -1604,13 +1630,11 @@ export class ChatManager extends BaseManager {
   }
 
   /**
-   * Set custom properties for the conversation.
+   * Sets the custom properties of the conversation.
    *
-   * @param convId The conversation id.
-   * @param convType The conversation type.
-   * @param ext The custom attribute.
-   *
-   * @throws A description of the exception. See {@link ChatError}.
+   * @param convId The conversation ID.
+   * @param convType The conversation type. See {@link ChatConversationType}.
+   * @param ext The extension information. You can add the extension information as required.
    */
   // public async setConversationExtension(
   //   convId: string,

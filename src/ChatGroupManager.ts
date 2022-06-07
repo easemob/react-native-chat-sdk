@@ -61,7 +61,7 @@ import { BaseManager } from './__internal__/Base';
 import { ChatError } from './common/ChatError';
 
 /**
- * The group manager class, which manages group creation and deletion, user joining and exiting the group, etc.
+ * The group manager class, which defines how to manage groups, like group creation and destruction and member management.
  */
 export class ChatGroupManager extends BaseManager {
   protected static TAG = 'ChatGroupManager';
@@ -278,10 +278,10 @@ export class ChatGroupManager extends BaseManager {
   }
 
   /**
-   * Gets the group instance from the cache by group ID.
+   * Gets the group instance from the memory by group ID.
    *
    * @param groupId The group ID.
-   * @returns The group instance. Returns undefined if the group does not exist.
+   * @returns The group instance. The SDK returns `undefined` if the group does not exist.
    *
    * @throws A description of the exception. See {@link ChatError}.
    */
@@ -301,7 +301,9 @@ export class ChatGroupManager extends BaseManager {
   }
 
   /**
-   * Gets all groups of the current user from the cache.
+   * Gets the list of groups that the current user has joined.
+   *
+   * This method gets data from the local database.
    *
    * @returns The group list.
    *
@@ -319,12 +321,14 @@ export class ChatGroupManager extends BaseManager {
   }
 
   /**
-   * Gets all joined groups of the current user from the server.
+   * Gets the list of groups that the current user has joined.
+   *
+   * This method gets data from the server.
    *
    * This method returns a group list which does not contain member information. If you want to update information of a group to include its member information, call {@link #fetchMemberListFromServer}.
    *
-   * @param pageSize The number of pages.
-   * @param pageNum The page number.
+   * @param pageSize The number of groups that you expect to return on each page.
+   * @param pageNum The page number, starting from 1.
    * @returns The list of groups that the current user joins.
    *
    * @throws A description of the exception. See {@link ChatError}.
@@ -357,9 +361,9 @@ export class ChatGroupManager extends BaseManager {
   /**
    * Gets public groups from the server with pagination.
    *
-   * @param pageSize The number of pages.
-   * @param cursor The cursor position from which to start to get data next time. Sets the parameter as null for the first time.
-   * @returns The result of {@link ChatCursorResult}, including the cursor for getting data next time and the group list.
+   * @param pageSize The number of public groups that you expect on each page.
+   * @param cursor The cursor position from which to start to get data. At the first method call, if you set `cursor` as `null`, the SDK gets the data in the reverse chronological order of when groups are created.
+   * @returns The group list and the cursor for the next query. See {@link ChatCursorResult}.
    *
    * @throws A description of the exception. See {@link ChatError}.
    */
@@ -394,18 +398,20 @@ export class ChatGroupManager extends BaseManager {
   /**
    * Creates a group instance.
    *
-   * After the group is created, the data in the cache and database will be updated and multiple devices will receive the notification event and update the group data to the cache and database.
+   * After the group is created, the data in the memory and database will be updated and multiple devices will receive the notification event and update the group to the memory and database.
    *
    * You can set {@link ChatGroupEventListener} to listen for the event.
    *
-   * @param options The options for creating a group. See {@link ChatGroupOptions}.
+   * @param options The options for creating a group. They are optional and cannot be `null`. See {@link ChatGroupOptions}.
    * The options are as follows:
-   * - The maximum number of group members. The default value is 200.
+   * - The maximum number of members allowed in the group. The default value is 200.
    * - The group style. See {@link ChatGroupStyle}. The default value is {@link ChatGroupStyle#PrivateOnlyOwnerInvite}.
-   * @param groupName The group name.
-   * @param desc The group description.
-   * @param inviteMembers The group member array. The group owner ID is optional.
-   * @param inviteReason The group joining invitation.
+   * - Whether to ask for permission when inviting a user to join the group. The default value is `false`, indicating that invitees are automatically added to the group without their permission.
+   * - The extension of group details.
+   * @param groupName The group name. It is optional. Pass `null` if you do not want to set this parameter.
+   * @param desc The group description. It is optional. Pass `null` if you do not want to set this parameter.
+   * @param inviteMembers The group member array. The group owner ID is optional. This parameter cannot be `null`.
+   * @param inviteReason The group joining invitation. It is optional. Pass `null` if you do not want to set this parameter.
    * @returns The created group instance.
    *
    * @throws A description of the exception. See {@link ChatError}.
@@ -441,10 +447,10 @@ export class ChatGroupManager extends BaseManager {
   /**
    * Gets the group information from the server.
    *
-   * This method does not get member information. If member information is required, call {@link #fetchMemberListFromServer}.
+   * This method does not get member information. If member information is required, you can call {@link #fetchMemberListFromServer}.
    *
    * @param groupId The group ID.
-   * @returns The group instance. Returns undefined if the group does not exist.
+   * @returns The group instance. The SDK returns `undefined` if the group does not exist.
    *
    * @throws A description of the exception. See {@link ChatError}.
    */
@@ -466,12 +472,12 @@ export class ChatGroupManager extends BaseManager {
   }
 
   /**
-   * Gets the member list of the group with pagination.
+   * Uses the pagination to get the member list of the group from the server.
    *
    * @param groupId The group ID.
-   * @param pageSize The number of group members per page.
-   * @param cursor The cursor position from which to start to get data next time. Sets the parameter as null for the first time.
-   * @returns The result of {@link ChatCursorResult}, including the cursor for getting data next time and the group member list.
+   * @param pageSize The number of group members that you expect to get on each page.
+   * @param cursor The cursor position from which to start to get data. At the first method call, if you set `cursor` as `null`, the SDK gets the data in the reverse chronological order of when users join the group.
+   * @returns The group member list and the cursor for the next query. See {@link ChatCursorResult}.
    *
    * @throws A description of the exception. See {@link ChatError}.
    */
@@ -507,12 +513,12 @@ export class ChatGroupManager extends BaseManager {
   }
 
   /**
-   * Gets the group block list from server with pagination.
+   * Uses the pagination to get the group block list from the server.
    *
    * Only the group owner or admin can call this method.
    *
    * @param groupId The group ID.
-   * @param pageSize The number of groups per page.
+   * @param pageSize The number of group members on the block list that you expect to get on each page.
    * @param pageNum The page number, starting from 1.
    * @returns The group block list.
    *
@@ -542,12 +548,12 @@ export class ChatGroupManager extends BaseManager {
   }
 
   /**
-   * Gets the mute list of the group from the server.
+   * Uses the pagination to get the mute list of the group from the server.
    *
    * Only the group owner or admin can call this method.
    *
    * @param groupId The group ID.
-   * @param pageSize The number of muted members per page.
+   * @param pageSize The number of muted members that you expect to get on each page.
    * @param pageNum The page number, starting from 1.
    * @returns The group mute list.
    *
@@ -577,7 +583,7 @@ export class ChatGroupManager extends BaseManager {
   }
 
   /**
-   * Gets the allow list of the group from the server.
+   * Uses the pagination to the allow list of the group from the server.
    *
    * Only the group owner or admin can call this method.
    *
@@ -604,7 +610,9 @@ export class ChatGroupManager extends BaseManager {
    * Gets whether the member is on the allow list of the group.
    *
    * @param groupId The group ID.
-   * @returns A Boolean value to indicate whether the current user is on the allow list of the group;
+   * @returns Whether the current user is on the allow list of the group.
+   * - `true`: Yes.
+   * - `false`: No.
    *
    * @throws A description of the exception. See {@link ChatError}.
    */
@@ -626,10 +634,10 @@ export class ChatGroupManager extends BaseManager {
   }
 
   /**
-   * Gets the shared files of the group from the server.
+   * Uses the pagination to get the shared files of the group from the server.
    *
    * @param groupId The group ID.
-   * @param pageSize The number of shared files per page.
+   * @param pageSize The number of shared files that you get on each page.
    * @param pageNum The page number, starting from 1.
    * @returns The shared file list.
    *
@@ -666,7 +674,7 @@ export class ChatGroupManager extends BaseManager {
   /**
    * Gets the group announcement from the server.
    *
-   * Group members can call this method.
+   * All group members can call this method.
    *
    * @param groupId The group ID.
    * @returns The group announcement.
@@ -695,7 +703,7 @@ export class ChatGroupManager extends BaseManager {
    *
    * @param groupId The group ID.
    * @param members The array of new members to add.
-   * @param welcome (option) The welcome message.
+   * @param welcome (optional) The welcome message.
    *
    * @throws A description of the exception. See {@link ChatError}.
    */
@@ -723,12 +731,13 @@ export class ChatGroupManager extends BaseManager {
   /**
    * Invites users to join the group.
    *
-   * This method works only for groups with the style of `PrivateOnlyOwnerInvite`, `PrivateMemberCanInvite`, or `PublicJoinNeedApproval`.
-   * For a group with the PrivateOnlyOwnerInvite style, only the group owner can invite users to join the group;
-   * For a group with the PrivateMemberCanInvite style, each group member can invite users to join the group.
+   * This method works only for groups with the following styles:
+   * `PrivateOnlyOwnerInvite` style: Only the group owner can invite users to join the group;
+   * `PrivateMemberCanInvite` style: Each group member can invite users to join the group.
+   * `PublicJoinNeedApproval` style: Each group member can invite users to join the group and users can join a group only after getting approval from the group owner or admins.
    *
    * @param groupId The group ID.
-   * @param members The array of new members to invite.
+   * @param members The array of user IDs of new members to invite.
    * @param reason The invitation reason.
    *
    * @throws A description of the exception. See {@link ChatError}.
@@ -760,7 +769,7 @@ export class ChatGroupManager extends BaseManager {
    * Only the group owner or admin can call this method.
    *
    * @param groupId The group ID.
-   * @param members The username of the member to be removed.
+   * @param members The user ID of the member to be removed.
    *
    * @throws A description of the exception. See {@link ChatError}.
    */
@@ -786,7 +795,7 @@ export class ChatGroupManager extends BaseManager {
    * Only the group owner or admin can call this method.
    *
    * @param groupId The group ID.
-   * @param members The list of users to be added to the block list.
+   * @param members The array of user IDs of members to be added to the block list.
    *
    * @throws A description of the exception. See {@link ChatError}.
    */
@@ -810,7 +819,7 @@ export class ChatGroupManager extends BaseManager {
    * Only the group owner or admin can call this method.
    *
    * @param groupId The group ID.
-   * @param members The users to be removed from the group block list.
+   * @param members The user IDs of members to be removed from the group block list.
    *
    * @throws A description of the exception. See {@link ChatError}.
    */
@@ -857,7 +866,7 @@ export class ChatGroupManager extends BaseManager {
   }
 
   /**
-   * Changes the group description.
+   * Modifies the group description.
    *
    * Only the group owner or admin can call this method.
    *
@@ -885,7 +894,6 @@ export class ChatGroupManager extends BaseManager {
   }
 
   /**
-   *
    * Leaves a group.
    *
    * @param groupId The group ID.
@@ -924,7 +932,7 @@ export class ChatGroupManager extends BaseManager {
   /**
    * Blocks group messages.
    *
-   * The user that blocks group messages is still a group member, but can't receive group messages.
+   * The user that blocks group messages is still a group member, but cannot receive group messages.
    *
    * @param groupId The group ID.
    *
@@ -963,7 +971,7 @@ export class ChatGroupManager extends BaseManager {
    * Only the group owner can call this method.
    *
    * @param groupId The group ID.
-   * @param newOwner The new owner ID.
+   * @param newOwner The user ID of the new group owner.
    *
    * @throws A description of the exception. See {@link ChatError}.
    */
@@ -984,7 +992,7 @@ export class ChatGroupManager extends BaseManager {
    * Only the group owner can call this method and group admins cannot.
    *
    * @param groupId The group ID.
-   * @param admin The username of the admin to add.
+   * @param admin The user ID of the admin to add.
    *
    * @throws A description of the exception. See {@link ChatError}.
    */
@@ -1005,7 +1013,7 @@ export class ChatGroupManager extends BaseManager {
    * Only the group owner can call this method.
    *
    * @param groupId The group ID.
-   * @param admin The username of the admin to remove.
+   * @param admin The user ID of the group admin to remove.
    *
    * @throws A description of the exception. See {@link ChatError}.
    */
@@ -1026,8 +1034,8 @@ export class ChatGroupManager extends BaseManager {
    * Only the group owner or admin can call this method.
    *
    * @param groupId The group ID.
-   * @param members The list of members to be muted.
-   * @param duration The mute duration in milliseconds.
+   * @param members The list of user IDs of members to mute.
+   * @param duration The mute duration in milliseconds. It is a reserved parameter.
    *
    * @throws A description of the exception. See {@link ChatError}.
    */
@@ -1053,12 +1061,12 @@ export class ChatGroupManager extends BaseManager {
   }
 
   /**
-   * Cancel mutes group members.
+   * Unmutes group members.
    *
    * Only the group owner or admin can call this method.
    *
    * @param groupId The group ID.
-   * @param members The list of members to be muted.
+   * @param members The array of user IDs of members to be unmuted.
    *
    * @throws A description of the exception. See {@link ChatError}.
    */
@@ -1096,7 +1104,7 @@ export class ChatGroupManager extends BaseManager {
   }
 
   /**
-   * Cancel mute all group members.
+   * Unmutes all group members.
    *
    * Only the group owner or admin can call this method.
    *
@@ -1120,7 +1128,7 @@ export class ChatGroupManager extends BaseManager {
    * Only the group owner or admin can call this method.
    *
    * @param groupId The group ID.
-   * @param members The members to be added to the allow list of the group.
+   * @param members The user IDs of members to be added to the allow list of the group.
    *
    * @throws A description of the exception. See {@link ChatError}.
    */
@@ -1144,7 +1152,7 @@ export class ChatGroupManager extends BaseManager {
    * Only the group owner or admin can call this method.
    *
    * @param groupId The group ID.
-   * @param members The members to be removed from the allow list of the group.
+   * @param members The user IDs of members to be removed from the allow list of the group.
    *
    * @throws A description of the exception. See {@link ChatError}.
    */
@@ -1169,7 +1177,7 @@ export class ChatGroupManager extends BaseManager {
    *
    * @param groupId The group ID.
    * @param filePath The local path of the shared file.
-   * @param callback (option) The result for file upload.
+   * @param callback (Optional) The file upload result callback.
    *
    * @throws A description of the exception. See {@link ChatError}.
    */
@@ -1204,7 +1212,7 @@ export class ChatGroupManager extends BaseManager {
    * @param groupId The group ID.
    * @param fileId The ID of the shared file.
    * @param savePath The local path of the shared file.
-   * @param callback (option) The result for file download.
+   * @param callback (Optional) The file upload result callback.
    *
    * @throws A description of the exception. See {@link ChatError}.
    */
@@ -1298,7 +1306,7 @@ export class ChatGroupManager extends BaseManager {
    * Only the group owner or admin can call this method.
    *
    * @param groupId The group ID.
-   * @param extension The group extension field.
+   * @param extension The updated group extension field.
    *
    * @throws A description of the exception. See {@link ChatError}.
    */
@@ -1323,8 +1331,9 @@ export class ChatGroupManager extends BaseManager {
   /**
    * Joins a public group.
    *
-   * For a group that requires no authentication，users can join it freely without obtaining permissions from the group owner.
-   * For a group that requires authentication, users need to wait for the group owner to agree before joining the group. For details, see {@link ChatGroupStyle}.
+   * For a group that requires no authentication，users can join it freely without obtaining permissions from the group owner or admin.
+   *
+   * For a group that requires authentication, users need to wait for the group owner or admin to agree before joining the group. For details, see {@link ChatGroupStyle}.
    *
    * @param groupId The group ID.
    *
@@ -1343,7 +1352,7 @@ export class ChatGroupManager extends BaseManager {
   /**
    * Requests to join a group.
    *
-   * This method works only for public groups requiring authentication, i.e., groups with the style of {@link ChatGroupStyle#PublicJoinNeedApproval}.
+   * You can call this method to only join public groups requiring authentication, i.e., groups with the style of {@link ChatGroupStyle#PublicJoinNeedApproval}.
    *
    * @param groupId The group ID.
    * @param reason The reason for requesting to join the group.
@@ -1369,12 +1378,12 @@ export class ChatGroupManager extends BaseManager {
   }
 
   /**
-   * Approves a group request.
+   * Accepts a join request.
    *
    * Only the group owner or admin can call this method.
    *
    * @param groupId The group ID.
-   * @param username The username of the user who sends a request to join the group.
+   * @param username The ID of the user who sends a request to join the group.
    *
    * @throws A description of the exception. See {@link ChatError}.
    */
@@ -1397,13 +1406,13 @@ export class ChatGroupManager extends BaseManager {
   }
 
   /**
-   * Declines a group request.
+   * Declines a join request.
    *
    * Only the group owner or admin can call this method.
    *
    * @param groupId The group ID.
-   * @param username The username of the user who sends a request to join the group.
-   * @param reason The reason of declining.
+   * @param username The ID of the user who sends a request to join the group.
+   * @param reason The reason of declining the join request.
    *
    * @throws A description of the exception. See {@link ChatError}.
    */
@@ -1432,7 +1441,7 @@ export class ChatGroupManager extends BaseManager {
    * Accepts a group invitation.
    *
    * @param groupId The group ID.
-   * @param inviter The user who initiates the invitation.
+   * @param inviter The user ID of the inviter.
    *
    * @throws A description of the exception. See {@link ChatError}.
    */
@@ -1458,8 +1467,8 @@ export class ChatGroupManager extends BaseManager {
    * Declines a group invitation.
    *
    * @param groupId The group ID.
-   * @param inviter The username of the inviter.
-   * @param reason The reason of declining.
+   * @param inviter The user ID of the inviter.
+   * @param reason The reason for declining the invitation.
    *
    * @throws A description of the exception. See {@link ChatError}.
    */
@@ -1485,9 +1494,9 @@ export class ChatGroupManager extends BaseManager {
   }
 
   /**
-   * Add contact listener
+   * Adds a group listener.
    *
-   * @param listener The listener to be added.
+   * @param listener The group listener to add.
    */
   addGroupListener(listener: ChatGroupEventListener): void {
     chatlog.log(`${ChatGroupManager.TAG}: addGroupListener: `);
@@ -1495,9 +1504,9 @@ export class ChatGroupManager extends BaseManager {
   }
 
   /**
-   * Remove contact listener
+   * Removes the group listener.
    *
-   * @param listener The listener to be deleted.
+   * @param listener The group listener to remove.
    */
   removeGroupListener(listener: ChatGroupEventListener): void {
     chatlog.log(`${ChatGroupManager.TAG}: removeGroupListener: `);
@@ -1505,7 +1514,7 @@ export class ChatGroupManager extends BaseManager {
   }
 
   /**
-   * Clear contact listener
+   * Clears all group listeners.
    */
   removeAllGroupListener(): void {
     chatlog.log(`${ChatGroupManager.TAG}: removeAllGroupListener: `);

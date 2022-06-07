@@ -1,29 +1,29 @@
 import { ChatError } from './ChatError';
 
 /**
- * The enumeration of group types.
+ * The group types.
  */
 export enum ChatGroupStyle {
   /**
-   * Private groups where only the the group owner can invite users to join.
+   * Private groups where only the group owner can invite users to join.
    */
   PrivateOnlyOwnerInvite = 0,
   /**
-   * Private groups where all group members can invite users to join.
+   * Private groups where each group member can invite users to join.
    */
   PrivateMemberCanInvite = 1,
   /**
-   * Public groups where users can join only after receiving an invitation from the group owner(admin) or the joining request being approved by the  group owner(admin).
+   * Public groups where users can join only after an invitation is received from the group owner(admin) or the join request is accepted by the  group owner(admin).
    */
   PublicJoinNeedApproval = 2,
   /**
-   * Public groups where users can join freely.
+   * Public groups where users can join freely, without the approval of the group owner or admins.
    */
   PublicOpenJoin = 3,
 }
 
 /**
- * The enumeration of group permission types.
+ * The group role types.
  */
 export enum ChatGroupType {
   /**
@@ -45,10 +45,10 @@ export enum ChatGroupType {
 }
 
 /**
- * The group type convert.
+ * Converts the group type from Int to enum.
  *
- * @param params Integer representing group type.
- * @returns The group type.
+ * @param params The group type of the Int type.
+ * @returns The group type of the enum type.
  */
 export function ChatGroupStyleFromNumber(params: number): ChatGroupStyle {
   switch (params) {
@@ -69,20 +69,20 @@ export function ChatGroupStyleFromNumber(params: number): ChatGroupStyle {
 }
 
 /**
- * The group permission type convert.
+ * Converts the group type from enum to string.
  *
- * @param params The group permission type.
- * @returns String representing group permission type.
+ * @param params The group type of the enum type.
+ * @returns The group type of the string type.
  */
 export function ChatGroupStyleToString(params: ChatGroupStyle): string {
   return ChatGroupStyle[params];
 }
 
 /**
- * The group permission type convert.
+ * Converts the group role from Int to enum.
  *
- * @param params Integer representing group type.
- * @returns The group type.
+ * @param params The group role of the Int type.
+ * @returns The group role of the enum type.
  */
 export function ChatGroupTypeFromNumber(params: number): ChatGroupType {
   switch (params) {
@@ -103,17 +103,17 @@ export function ChatGroupTypeFromNumber(params: number): ChatGroupType {
 }
 
 /**
- * The group permission type convert.
+ * Converts the group role from enum to string.
  *
- * @param params The group permission type.
- * @returns String representing group permission type.
+ * @param params The group role of the enum type.
+ * @returns The group role of the string type.
  */
 export function ChatGroupTypeToString(params: ChatGroupType): string {
   return ChatGroupType[params];
 }
 
 /**
- * The class for group message read receipts.
+ *The class for read receipts of group messages.
  */
 export class ChatGroupMessageAck {
   /**
@@ -121,23 +121,23 @@ export class ChatGroupMessageAck {
    */
   msg_id: string;
   /**
-   * The ID of the  group message read receipt.
+   * The ID of the read receipt of a group message.
    */
   ack_id: string;
   /**
-   * The username of the user who sends the read receipt.
+   * The ID of the user who sends the read receipt.
    */
   from: string;
   /**
-   * The number read receipts of group messages.
+   * The number of read receipts of group messages.
    */
   count: number;
   /**
-   * The timestamp of sending read receipts of group messages.
+   * The Unix timestamp of sending the read receipt of a group message. The unit is millisecond.
    */
   timestamp: number;
   /**
-   * The read receipt extension.
+   * The extension information of a read receipt.
    */
   content?: string;
   constructor(params: {
@@ -160,8 +160,9 @@ export class ChatGroupMessageAck {
 }
 
 /**
- * The ChatGroup class, which contains the information of the chat group.
- * Call {@link ChatGroupManager#fetchGroupInfoFromServer} method to obtain group information.
+ * The group information class, which contains the information of the chat group.
+ *
+ * You can call the {@link ChatGroupManager#fetchGroupInfoFromServer} method to obtain group information.
  */
 export class ChatGroup {
   /**
@@ -205,23 +206,27 @@ export class ChatGroup {
    */
   muteList: Array<string>;
   /**
-   * Whether the group message is blocked.
+   * Whether group messages are blocked.
+   * - `true`: Yes.
+   * - `false`: No.
    */
   messageBlocked: boolean;
   /**
-   * Whether all members are muted.
+   * Whether all group members are muted.
+   * - `true`: Yes.
+   * - `false`: No.
    */
   isAllMemberMuted: boolean;
   /**
-   * The current group's permission types.
+   * The role of the current user in the group.
    */
   permissionType: ChatGroupType;
   /**
-   * The group option.
+   * The group options.
    */
   private options: ChatGroupOptions;
   /**
-   * Get the maximum number of group members allowed in a group. The parameter is set when the group is created.
+   * Gets the maximum number of members allowed in a group. The parameter is set when the group is created.
    */
   get maxCount(): number {
     return this.options.maxCount;
@@ -271,17 +276,27 @@ export class ChatGroupOptions {
    */
   style: ChatGroupStyle;
   /**
-   * The maximum number of members in a group.
+   * The maximum number of members allowed in a group.
    */
   maxCount: number;
   /**
-   * Whether you need the approval from the user when adding this user to the chat group.
+   * Whether to ask for consent when inviting a user to join a group.
    *
-   * Whether you can automatically add a user to the chat group depends on the settings of {ChatGroupOptions#inviteNeedConfirm} and {ChatOptions#autoAcceptGroupInvitation}.
+   * Whether to automatically accept the invitation to join a group depends on two settings:
+   *
+   * - {@link GroupOptions#inviteNeedConfirm}, an option for group creation.
+   * - {@link ChatOptions#autoAcceptGroupInvitation}: Determines whether to automatically accept an invitation to join the group.
+   *
+   * There are two cases:
+   * - If `inviteNeedConfirm` is set to `false`, the SDK adds the invitee directly to the group on the server side, regardless of the setting of {@link ChatOptions#autoAcceptGroupInvitation} on the invitee side.
+   * - If `inviteNeedConfirm` is set to `true`, whether the invitee automatically joins the chat group or not depends on the settings of {@link ChatOptions#autoAcceptGroupInvitation}.
+   *
+   * {@link ChatOptions#autoAcceptGroupInvitation} is an SDK-level operation. If it is set to `true`, the invitee automatically joins the chat group; if it is set to `false`, the invitee can manually accept or decline the group invitation instead of joining the group automatically.
+   *
    */
   inviteNeedConfirm: boolean;
   /**
-   * The group extension field.
+   * The extension information of group details.
    */
   ext?: string;
   constructor(params: {
@@ -300,19 +315,19 @@ export class ChatGroupOptions {
 }
 
 /**
- * The ChatGroupSharedFile class, which manages the chat group shared files.
+ * The shared file class, which defines how to manage shared files.
  */
 export class ChatGroupSharedFile {
   /**
-   * The shared file ID.
+   * The ID of the shared file.
    */
   fileId: string;
   /**
-   * The shared file name.
+   * The name of the shared file.
    */
   name: string;
   /**
-   * The username that uploads the shared file.
+   * The user ID of the member who uploads the shared file.
    */
   owner: string;
   /**
@@ -320,7 +335,7 @@ export class ChatGroupSharedFile {
    */
   createTime: number;
   /**
-   * The data length of the shared file, in bytes.
+   * The size of the shared file, in bytes.
    */
   fileSize: number;
   constructor(params: {
@@ -339,11 +354,11 @@ export class ChatGroupSharedFile {
 }
 
 /**
- * The ChatGroupInfo class.
+ * The class that defines basic information of chat groups.
  */
 export class ChatGroupInfo {
   /**
-   * The group id.
+   * The group ID.
    */
   groupId: string;
   /**
@@ -357,32 +372,32 @@ export class ChatGroupInfo {
 }
 
 /**
- * The file status change listener interface.
+ * The status change listener for shared files in groups.
  */
 export interface ChatGroupFileStatusCallback {
   /**
-   * The progress of sending or receiving messages.
+   * Occurs when a shared file is being uploaded or downloaded.
    *
-   * @param groupId The group id.
-   * @param filePath The file path.
-   * @param progress The progress value.
+   * @param groupId The group ID.
+   * @param filePath The path of the shared file.
+   * @param progress The value of the download or upload progress. The value range is 0-100 in percentage.
    */
   onProgress(groupId: string, filePath: string, progress: number): void;
 
   /**
-   * Error message sending or receiving.
+   * Occurs when there is an error during the upload or download of a shared file.
    *
-   * @param groupId The group id.
-   * @param filePath The file path.
+   * @param groupId The group ID.
+   * @param filePath The path of the shared file.
    * @param error A description of the error. See {@link ChatError}.
    */
   onError(groupId: string, filePath: string, error: ChatError): void;
 
   /**
-   * The message is sent or received.
+   * Occurs when the message is sent.
    *
-   * @param groupId The group id.
-   * @param filePath The file path.
+   * @param groupId The group ID.
+   * @param filePath The path of the shared file.
    */
   onSuccess(groupId: string, filePath: string): void;
 }

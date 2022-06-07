@@ -77,9 +77,9 @@ export class ChatContactManager extends BaseManager {
   }
 
   /**
-   * Add contact listener
+   * Adds a contact listener.
    *
-   * @param listener The listener to be added.
+   * @param listener The listener to add.
    */
   public addContactListener(listener: ChatContactEventListener): void {
     chatlog.log(`${ChatContactManager.TAG}: addContactListener: `);
@@ -87,9 +87,9 @@ export class ChatContactManager extends BaseManager {
   }
 
   /**
-   * Remove contact listener
+   * Removes the contact listener.
    *
-   * @param listener The listener to be deleted.
+   * @param listener The listener to remove.
    */
   public removeContactListener(listener: ChatContactEventListener): void {
     chatlog.log(`${ChatContactManager.TAG}: removeContactListener: `);
@@ -97,7 +97,7 @@ export class ChatContactManager extends BaseManager {
   }
 
   /**
-   * Clear contact listener
+   * Removes all contact listeners.
    */
   public removeAllContactListener(): void {
     chatlog.log(`${ChatContactManager.TAG}: removeAllContactListener: `);
@@ -107,8 +107,8 @@ export class ChatContactManager extends BaseManager {
   /**
    * Adds a new contact.
    *
-   * @param userId The user to be added.
-   * @param reason (optional) The invitation message.
+   * @param userId The user ID of the contact to add.
+   * @param reason (optional) The reason for adding the contact. It can be `null` or "".
    *
    * @throws A description of the exception. See {@link ChatError}.
    */
@@ -126,8 +126,8 @@ export class ChatContactManager extends BaseManager {
   /**
    * Deletes a contact and all the related conversations.
    *
-   * @param userId The contact to be deleted.
-   * @param keepConversation Whether to retain conversations of the deleted contact.
+   * @param userId The user ID of the contact to delete.
+   * @param keepConversation Whether to retain conversations of the contact to delete.
    * - `true`: Yes.
    * - `false`: (default) No.
    *
@@ -148,7 +148,7 @@ export class ChatContactManager extends BaseManager {
   }
 
   /**
-   * Gets all the contacts from the server.
+   * Gets the contact list from the server.
    *
    * @returns The list of contacts.
    *
@@ -178,10 +178,11 @@ export class ChatContactManager extends BaseManager {
   }
 
   /**
-   * Adds a user to the block list.
+   * Adds a contact to the block list.
+   *
    * You can send messages to the users on the block list, but cannot receive messages from them.
    *
-   * @param userId The user to be added to the block list.
+   * @param userId The ID of the contact to be added to the block list.
    *
    * @throws A description of the exception. See {@link ChatError}.
    */
@@ -198,7 +199,7 @@ export class ChatContactManager extends BaseManager {
   /**
    * Removes the contact from the block list.
    *
-   * @param userId The contact to be removed from the block list.
+   * @param userId The user ID of the contact to be removed from the block list.
    *
    * @throws A description of the exception. See {@link ChatError}.
    */
