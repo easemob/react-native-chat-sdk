@@ -26,6 +26,12 @@ export const styleValues = StyleSheet.create({
     backgroundColor: '#96f2ca',
     margin: 1,
   },
+  bottomSpace: {
+    paddingBottom: 100,
+  },
+  resultDom: {
+    maxHeight: '50%',
+  },
   textStyle: {
     margin: 5,
     fontSize: 20,
