@@ -2185,7 +2185,7 @@ export class ChatManager extends BaseManager {
     );
     let r: any = await Native._callMethod(MTfetchLastMessageWithChatThreads, {
       [MTfetchLastMessageWithChatThreads]: {
-        threadId: chatThreadIds,
+        threadIds: chatThreadIds,
       },
     });
     ChatManager.checkErrorFromResult(r);
