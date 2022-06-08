@@ -62,7 +62,6 @@ export const MN = {
     'fetchJoinedChatThreadWithParentFromServer',
   fetchChatThreadWithParentFromServer: 'fetchChatThreadWithParentFromServer',
   fetchLastMessageWithChatThread: 'fetchLastMessageWithChatThread',
-  fetchChatThread: 'fetchChatThread',
   fetchChatThreadFromServer: 'fetchChatThreadFromServer',
   getMessageThread: 'getMessageThread',
 };
@@ -1018,7 +1017,7 @@ export const metaDataList = new Map<string, ApiParams>([
       methodName: MN.createChatThread,
       params: [
         {
-          paramName: 'name',
+          paramName: 'threadName',
           paramType: 'string',
           paramDefaultValue: 'name',
         },
@@ -1105,7 +1104,7 @@ export const metaDataList = new Map<string, ApiParams>([
         {
           paramName: 'memberId',
           paramType: 'string',
-          paramDefaultValue: datasheet.accounts[2],
+          paramDefaultValue: datasheet.accounts[2].id,
         },
       ],
     },
@@ -1157,7 +1156,7 @@ export const metaDataList = new Map<string, ApiParams>([
       methodName: MN.fetchJoinedChatThreadWithParentFromServer,
       params: [
         {
-          paramName: 'chatThreadId',
+          paramName: 'parentId',
           paramType: 'string',
           paramDefaultValue: '1003229966910883832',
         },
@@ -1180,7 +1179,7 @@ export const metaDataList = new Map<string, ApiParams>([
       methodName: MN.fetchChatThreadWithParentFromServer,
       params: [
         {
-          paramName: 'chatThreadId',
+          paramName: 'parentId',
           paramType: 'string',
           paramDefaultValue: '1003229966910883832',
         },
@@ -1217,6 +1216,19 @@ export const metaDataList = new Map<string, ApiParams>([
       params: [
         {
           paramName: 'chatThreadId',
+          paramType: 'string',
+          paramDefaultValue: '1003229966910883832',
+        },
+      ],
+    },
+  ],
+  [
+    MN.getMessageThread,
+    {
+      methodName: MN.getMessageThread,
+      params: [
+        {
+          paramName: 'msgId',
           paramType: 'string',
           paramDefaultValue: '1003229966910883832',
         },

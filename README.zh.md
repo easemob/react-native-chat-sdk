@@ -47,20 +47,20 @@ git clone --recurse-submodules git@github.com:easemob/react-native-chat-sdk.git
 
 ## 构建 ios 平台
 
-+ 使用`xcode`打开文件`example/ios/ChatSdkExample.xcworkspace`;  
-+ 连接 ios 设备，或者选择模拟器;  
-+ 设置签名（如果是真机）;  
-+ 执行编译、安装并运行 demo。  
-+ **注意** 运行`yarn`的命令时候已经执行了`pod install`命令，否则，需要手动运行。  
+- 使用`xcode`打开文件`example/ios/ChatSdkExample.xcworkspace`;
+- 连接 ios 设备，或者选择模拟器;
+- 设置签名（如果是真机）;
+- 执行编译、安装并运行 demo。
+- **注意** 运行`yarn`的命令时候已经执行了`pod install`命令，否则，需要手动运行。
 
 ## 构建 android 平台
 
-+ 使用`android studio`打开文件夹`example/android`;  
-+ 如果是首次运行请先运行`sync`命令;  
-+ 执行编译、安装并运行 demo;  
-+ 在 demo 运行之前，先启动服务: `cd example && yarn start`。  
-+ **注意** 在构建之前确保执行了如下命令: `cd native_src/cpp && sh generate.sh --type rn`    
-+ **注意** android5.0 或以上的版本，需要进行数据转发: `adb reverse tcp:8081 tcp:8081`  
+- 使用`android studio`打开文件夹`example/android`;
+- 如果是首次运行请先运行`sync`命令;
+- 执行编译、安装并运行 demo;
+- 在 demo 运行之前，先启动服务: `cd example && yarn start`。
+- **注意** 在构建之前确保执行了如下命令: `cd native_src/cpp && sh generate.sh --type rn`
+- **注意** android5.0 或以上的版本，需要进行数据转发: `adb reverse tcp:8081 tcp:8081`
 
 ## 快速开始
 
@@ -73,11 +73,15 @@ git clone --recurse-submodules git@github.com:easemob/react-native-chat-sdk.git
 
 ## 贡献者
 
-See the [contributing guide](./CONTRIBUTING.md) to learn how to contribute to the repository and the development workflow.
+详见 [contributing guide](./CONTRIBUTING.md) to learn how to contribute to the repository and the development workflow.
 
 ## 发版说明
 
-See the [change log](./CHANGELOG.md).
+详见 [change log](./CHANGELOG.md).
+
+## 发版类型说明
+
+详见 [version types](./docs/version-types.zh.md).
 
 ## License
 

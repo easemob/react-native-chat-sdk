@@ -2,39 +2,39 @@ import { ChatMessage } from './ChatMessage';
 
 export class ChatMessageThread {
   /**
-   * sub-zone id
+   * sub-zone id.
    */
   threadId: string;
   /**
-   * Subject of the sub-zone(There will be a list of requested sub-areas and sub-area details)
+   * The name of the sub-zone.
    */
   threadName: string;
   /**
-   * create  of the sub-zone, require fetch thread's detail first
+   * Creator of the sub-zone.
    */
   owner: string;
   /**
-   * A messageId that create sub-zone
+   * A messageId that create sub-zone.
    */
   messageId: string;
   /**
-   * A channelId that create sub-zone
+   * A id that create sub-zone. Generally, it is a group ID.
    */
   parentId: string;
   /**
-   * Member list of the sub-zone, require fetch thread's detail first
+   * Member list of the sub-zone.
    */
   memberCount: number;
   /**
-   * Number of messages in subsection
+   * Number of messages in sub-zone.
    */
   messageCount: number;
   /**
-   * Timestamp of subarea creation
+   * Timestamp of sub-zone creation.
    */
   createAt: number;
   /**
-   * The last message in the sub-area, if it is empty, it means the last message is withdrawn. If it is not empty, it means a new message.
+   * The last message in the sub-zone, if it is empty, it means the last message is withdrawn. If it is not empty, it means a new message.
    */
   lastMessage?: ChatMessage;
   /**
@@ -65,14 +65,38 @@ export class ChatMessageThread {
   }
 }
 
+/**
+ * Chat thread operation type.
+ */
 export enum ChatMessageThreadOperation {
+  /**
+   * Unknown sub-zone operation type
+   */
   UnKnown = 0,
+  /**
+   * Create sub-zone operation.
+   */
   Create,
+  /**
+   * update sub-zone operation.
+   */
   Update,
+  /**
+   * remove sub-zone operation.
+   */
   Delete,
+  /**
+   * update sub-zone last message.
+   */
   Update_Msg,
 }
 
+/**
+ * Converts the thread operation type from int to enum.
+ *
+ * @param type The chat thread operation type of the int type.
+ * @returns The chat thread operation type.
+ */
 export function ChatMessageThreadOperationFromNumber(type: number) {
   let ret = ChatMessageThreadOperation.UnKnown;
   switch (type) {
@@ -94,10 +118,25 @@ export function ChatMessageThreadOperationFromNumber(type: number) {
   return ret;
 }
 
+/**
+ * The chat thread notify event.
+ */
 export class ChatMessageThreadEvent {
+  /**
+   * The chat thread operator ID.
+   */
   from: string;
+  /**
+   * The chat thread operation type.
+   */
   type: ChatMessageThreadOperation;
+  /**
+   * The chat thread object.
+   */
   thread: ChatMessageThread;
+  /**
+   * Construct a chat thread event object.
+   */
   constructor(params: { from: string; type: number; thread: any }) {
     this.from = params.from;
     this.type = ChatMessageThreadOperationFromNumber(params.type);

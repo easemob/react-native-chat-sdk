@@ -219,6 +219,56 @@ export interface StateChatMessage extends StateBase {
   groupAckCount: {
     msgId: string;
   };
+  createChatThread: {
+    threadName: string;
+    msgId: string;
+    parentId: string;
+  };
+  joinChatThread: {
+    chatThreadId: string;
+  };
+  leaveChatThread: {
+    chatThreadId: string;
+  };
+  destroyChatThread: {
+    chatThreadId: string;
+  };
+  updateChatThreadName: {
+    chatThreadId: string;
+    newName: string;
+  };
+  removeMemberWithChatThread: {
+    chatThreadId: string;
+    memberId: string;
+  };
+  fetchMembersWithChatThreadFromServer: {
+    chatThreadId: string;
+    cursor: string;
+    pageSize: number;
+  };
+  fetchJoinedChatThreadFromServer: {
+    cursor: string;
+    pageSize: number;
+  };
+  fetchJoinedChatThreadWithParentFromServer: {
+    parentId: string;
+    cursor: string;
+    pageSize: number;
+  };
+  fetchChatThreadWithParentFromServer: {
+    parentId: string;
+    cursor: string;
+    pageSize: number;
+  };
+  fetchLastMessageWithChatThread: {
+    chatThreadIds: string[];
+  };
+  fetchChatThreadFromServer: {
+    chatThreadId: string;
+  };
+  getMessageThread: {
+    msgId: string;
+  };
 }
 
 export interface StatelessChatMessage extends StatelessBase {
@@ -480,6 +530,19 @@ export class ChatManagerLeafScreen extends LeafScreenBase<StateChatMessage> {
       'reportMessage',
       'getReactionList',
       'groupAckCount',
+      'createChatThread',
+      'joinChatThread',
+      'leaveChatThread',
+      'destroyChatThread',
+      'updateChatThreadName',
+      'removeMemberWithChatThread',
+      'fetchMembersWithChatThreadFromServer',
+      'fetchJoinedChatThreadFromServer',
+      'fetchJoinedChatThreadWithParentFromServer',
+      'fetchChatThreadWithParentFromServer',
+      'fetchLastMessageWithChatThread',
+      'fetchChatThreadFromServer',
+      'getMessageThread',
     ];
     let renderDomAry: ({} | null | undefined)[] = [];
     // const data2: any = this.state;
@@ -645,11 +708,25 @@ export class ChatManagerLeafScreen extends LeafScreenBase<StateChatMessage> {
       'reportMessage',
       'getReactionList',
       'groupAckCount',
+      'createChatThread',
+      'joinChatThread',
+      'leaveChatThread',
+      'destroyChatThread',
+      'updateChatThreadName',
+      'removeMemberWithChatThread',
+      'fetchMembersWithChatThreadFromServer',
+      'fetchJoinedChatThreadFromServer',
+      'fetchJoinedChatThreadWithParentFromServer',
+      'fetchChatThreadWithParentFromServer',
+      'fetchLastMessageWithChatThread',
+      'fetchChatThreadFromServer',
+      'getMessageThread',
     ];
     let renderDomAry: ({} | null | undefined)[] = [];
     const data = this.metaData;
     apiList.forEach((apiItem) => {
       this.setKeyPrefix(apiItem);
+      console.log('test: apiItem: ', apiItem);
       renderDomAry.push(
         this.renderParamWithText(data.get(apiItem)!.methodName)
       );
@@ -691,7 +768,14 @@ export class ChatManagerLeafScreen extends LeafScreenBase<StateChatMessage> {
               value = JSON.stringify(v);
             }
           }
-          // console.log('test: name: ', item.paramName, 'value: ', value);
+          console.log(
+            'test: method: ',
+            data.get(apiItem)!.methodName,
+            'name: ',
+            item.paramName,
+            'value: ',
+            value
+          );
           renderDomAry.push(
             this.renderGroupParamWithInput(
               item.paramName,
@@ -1172,6 +1256,129 @@ export class ChatManagerLeafScreen extends LeafScreenBase<StateChatMessage> {
       const { msgId } = this.state.groupAckCount;
       this.tryCatch(
         ChatClient.getInstance().chatManager.groupAckCount(msgId),
+        ChatManagerLeafScreen.TAG,
+        name
+      );
+    } else if (name === MN.createChatThread) {
+      const { threadName, msgId, parentId } = this.state.createChatThread;
+      this.tryCatch(
+        ChatClient.getInstance().chatManager.createChatThread(
+          threadName,
+          msgId,
+          parentId
+        ),
+        ChatManagerLeafScreen.TAG,
+        name
+      );
+    } else if (name === MN.joinChatThread) {
+      const { chatThreadId } = this.state.joinChatThread;
+      this.tryCatch(
+        ChatClient.getInstance().chatManager.joinChatThread(chatThreadId),
+        ChatManagerLeafScreen.TAG,
+        name
+      );
+    } else if (name === MN.leaveChatThread) {
+      const { chatThreadId } = this.state.leaveChatThread;
+      this.tryCatch(
+        ChatClient.getInstance().chatManager.leaveChatThread(chatThreadId),
+        ChatManagerLeafScreen.TAG,
+        name
+      );
+    } else if (name === MN.destroyChatThread) {
+      const { chatThreadId } = this.state.destroyChatThread;
+      this.tryCatch(
+        ChatClient.getInstance().chatManager.destroyChatThread(chatThreadId),
+        ChatManagerLeafScreen.TAG,
+        name
+      );
+    } else if (name === MN.updateChatThreadName) {
+      const { chatThreadId, newName } = this.state.updateChatThreadName;
+      this.tryCatch(
+        ChatClient.getInstance().chatManager.updateChatThreadName(
+          chatThreadId,
+          newName
+        ),
+        ChatManagerLeafScreen.TAG,
+        name
+      );
+    } else if (name === MN.removeMemberWithChatThread) {
+      const { chatThreadId, memberId } = this.state.removeMemberWithChatThread;
+      this.tryCatch(
+        ChatClient.getInstance().chatManager.removeMemberWithChatThread(
+          chatThreadId,
+          memberId
+        ),
+        ChatManagerLeafScreen.TAG,
+        name
+      );
+    } else if (name === MN.fetchMembersWithChatThreadFromServer) {
+      const { chatThreadId, cursor, pageSize } =
+        this.state.fetchMembersWithChatThreadFromServer;
+      this.tryCatch(
+        ChatClient.getInstance().chatManager.fetchMembersWithChatThreadFromServer(
+          chatThreadId,
+          cursor,
+          pageSize
+        ),
+        ChatManagerLeafScreen.TAG,
+        name
+      );
+    } else if (name === MN.fetchJoinedChatThreadFromServer) {
+      const { cursor, pageSize } = this.state.fetchJoinedChatThreadFromServer;
+      this.tryCatch(
+        ChatClient.getInstance().chatManager.fetchJoinedChatThreadFromServer(
+          cursor,
+          pageSize
+        ),
+        ChatManagerLeafScreen.TAG,
+        name
+      );
+    } else if (name === MN.fetchJoinedChatThreadWithParentFromServer) {
+      const { parentId, cursor, pageSize } =
+        this.state.fetchJoinedChatThreadWithParentFromServer;
+      this.tryCatch(
+        ChatClient.getInstance().chatManager.fetchJoinedChatThreadWithParentFromServer(
+          parentId,
+          cursor,
+          pageSize
+        ),
+        ChatManagerLeafScreen.TAG,
+        name
+      );
+    } else if (name === MN.fetchChatThreadWithParentFromServer) {
+      const { parentId, cursor, pageSize } =
+        this.state.fetchChatThreadWithParentFromServer;
+      this.tryCatch(
+        ChatClient.getInstance().chatManager.fetchChatThreadWithParentFromServer(
+          parentId,
+          cursor,
+          pageSize
+        ),
+        ChatManagerLeafScreen.TAG,
+        name
+      );
+    } else if (name === MN.fetchLastMessageWithChatThread) {
+      const { chatThreadIds } = this.state.fetchLastMessageWithChatThread;
+      this.tryCatch(
+        ChatClient.getInstance().chatManager.fetchLastMessageWithChatThread(
+          chatThreadIds
+        ),
+        ChatManagerLeafScreen.TAG,
+        name
+      );
+    } else if (name === MN.fetchChatThreadFromServer) {
+      const { chatThreadId } = this.state.fetchChatThreadFromServer;
+      this.tryCatch(
+        ChatClient.getInstance().chatManager.fetchChatThreadFromServer(
+          chatThreadId
+        ),
+        ChatManagerLeafScreen.TAG,
+        name
+      );
+    } else if (name === MN.getMessageThread) {
+      const { msgId } = this.state.getMessageThread;
+      this.tryCatch(
+        ChatClient.getInstance().chatManager.getMessageThread(msgId),
         ChatManagerLeafScreen.TAG,
         name
       );

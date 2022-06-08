@@ -1831,7 +1831,7 @@ export class ChatManager extends BaseManager {
   }
 
   /**
-   * Get the group message read count.
+   * Gets the number of members that have read the group message.
    *
    * @param msgId The message id.
    * @returns The group message count.
@@ -1855,8 +1855,8 @@ export class ChatManager extends BaseManager {
    *
    * After chat thread is created, the following notices will appear:
    *
-   * 1. Members of the organization (group) to which chat thread belongs will receive the created notification event, and can listen to related events by setting {@link ChatMessageEventListener}. The event callback function is {@link ChatMessageEventListener#onChatMessageThreadCreated(ChatMessageThreadEvent)}.
-   * 2. Multiple devices will receive the notification event and you can set {@link ChatMultiDeviceEventListener} to listen on the event. The event callback function is {@link ChatMultiDeviceEventListener#onThreadEvent(int, String, List)}, where the first parameter is the event, for example, {@link ChatMultiDeviceEventListener#THREAD_CREATE} for the chat thread creation event.
+   * 1. Members of the organization (group) to which chat thread belongs will receive the created notification event, and can listen to related events by setting {@link ChatMessageEventListener#onChatMessageThreadCreated}.
+   * 2. Multiple devices will receive the notification event, and can listen to related events by setting {@link ChatMultiDeviceEventListener#onThreadEvent}.
    * @param name Chat Thread name. No more than 64 characters in length.
    * @param msgId Parent message ID, generally refers to group message ID.
    * @param parentId Parent ID, generally refers to group ID.
@@ -1890,11 +1890,10 @@ export class ChatManager extends BaseManager {
    * Join Chat Thread.
    * Group members have permission.
    *
-   * Join successfully, return the Chat Thread details {@link EMChatThread}, the details do not include the number of members. Repeated addition will result in an error with the error code {@link EMError#USER_ALREADY_EXIST}. After joining chat thread, the multiple devices will receive the notification event. You can set {@link EMMultiDeviceListener} to listen on the event.
-   * The event callback function is {@link EMMultiDeviceListener#onThreadEvent(int, String, List), where the first parameter is the event, and chat thread join event is {@link EMMultiDeviceListener#THREAD_JOIN}.
+   * Join successfully, return the Chat Thread details {@link ChatMessageThread}. After joining chat thread, the multiple devices will receive the notification event. You can set {@link ChatMultiDeviceEventListener#onThreadEvent} to listen on the event.
    *
    * @param chatThreadId Chat Thread ID.
-   * @returns Returns the thread object if successful.
+   * @returns If the execution is successful, the thread object is returned, otherwise an error message is thrown.
    *
    * @throws A description of the exception. See {@link ChatError}.
    */
@@ -1914,8 +1913,8 @@ export class ChatManager extends BaseManager {
   /**
    * Leave Chat Thread.
    * The operation is available to Chat Thread members.
-   * After joining chat thread, the multiple devices will receive the notification event.
-   * You can set {@link com.hyphenate.EMMultiDeviceListener} to listen on the event. The event callback function is {@link com.hyphenate.EMMultiDeviceListener#onThreadEvent(int, String, List), where the first parameter is the event, and chat thread exit event is {@link com.hyphenate.EMMultiDeviceListener#THREAD_LEAVE}.
+   * After leave chat thread, the multiple devices will receive the notification event.
+   * You can set {@link ChatMultiDeviceEventListener#onThreadEvent} to listen on the event.
    *
    * @param chatThreadId Chat Thread ID.
    *
@@ -1932,12 +1931,12 @@ export class ChatManager extends BaseManager {
   }
 
   /**
-   * Disband Chat Thread.
+   * Destroy Chat Thread.
    * Group owner and group administrator to which the Chat Thread belongs have permission.
    *
-   * After chat thread is disbanded, there will be the following notification:
-   * 1. Members of the organization (group) to which chat thread belongs will receive the disbanded notification event, and can listen to related events by setting {@link EMChatThreadChangeListener}. The event callback function is {@link EMChatThreadChangeListener#onChatThreadDestroyed(EMChatThreadEvent)}.
-   * 2. Multiple devices will receive the notification event and you can set {@link com.hyphenate.EMMultiDeviceListener} to listen on the event. The event callback function is {@link com.hyphenate.EMMultiDeviceListener#onThreadEvent(int, String, List)}, where the first parameter is the event, for example, {@link com.hyphenate.EMMultiDeviceListener#THREAD_DESTROY} for the chat thread destruction event.
+   * After chat thread is destroy, there will be the following notification:
+   * 1. Members of the organization (group) to which chat thread belongs will receive the disbanded notification event, and can listen to related events by setting {@link ChatMessageEventListener#onChatMessageThreadDestroyed}.
+   * 2. Multiple devices will receive the notification event and you can set {@link ChatMultiDeviceEventListener#onThreadEvent} to listen on the event.
    *
    * @param chatThreadId Chat Thread ID.
    *
@@ -1957,8 +1956,7 @@ export class ChatManager extends BaseManager {
    * Update Chat Thread name.
    * The group owner, group administrator and Thread creator have permission.
    * After modifying chat thread name, members of the organization (group) to which chat thread belongs will receive the update notification event.
-   * You can set {@link EMChatThreadChangeListener} to listen on the event.
-   * The event callback function is {@link EMChatThreadChangeListener#onChatThreadUpdated(EMChatThreadEvent)} .
+   * You can set {@link ChatMessageEventListener#onChatMessageThreadUpdated} to listen on the event.
    *
    * @param chatThreadId Chat Thread ID.
    * @param newName New Chat Thread name. No more than 64 characters in length.
@@ -1987,8 +1985,7 @@ export class ChatManager extends BaseManager {
    * Remove member from Chat Thread.
    * Group owner and group administrator to which Chat Thread belongs have permission.
    * The removed chat thread members will receive the removed notification event.
-   * You can set {@link EMChatThreadChangeListener} to listen on the event.
-   * The event callback function is {@link EMChatThreadChangeListener#onChatThreadUserRemoved(EMChatThreadEvent)}.
+   * You can set {@link ChatMessageEventListener#onChatMessageThreadUserRemoved} to listen on the event.
    *
    * @param chatThreadId Chat Thread ID.
    * @param memberId The ID of the member that was removed from Chat Thread.

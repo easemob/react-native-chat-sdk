@@ -8,7 +8,7 @@ This SDK is based on React Native and Chat SDK implementations for Android and i
 
 ## directory description
 
-├── CHANGELOG.md // Release notes document   
+├── CHANGELOG.md // Release notes document  
 ├── CONTRIBUTING.md // Contributor documentation  
 ├── LICENSE // License file  
 ├── README.md // Project help documentation  
@@ -27,7 +27,7 @@ This SDK is based on React Native and Chat SDK implementations for Android and i
 ├── src // react native source code folder  
 ├── tsconfig.build.json // typescript language build configuration file  
 ├── tsconfig.json // typescript language configuration file  
-└── yarn.lock // yarn project dependency version configuration file  
+└── yarn.lock // yarn project dependency version configuration file
 
 ## project preparation
 
@@ -47,20 +47,20 @@ Open a terminal and run `yarn` or `yarn install` command
 
 ## build ios platform
 
-+ use `xcode` to open the file `example/ios/ChatSdkExample.xcworkspace`;  
-+ Connect an ios device, or choose an emulator;  
-+ Set the signature (if it is a real machine);  
-+ Execute build, install and run demo.  
-+ **Note** The `pod install` command has been executed when running the `yarn` command, otherwise, it needs to be run manually.  
+- use `xcode` to open the file `example/ios/ChatSdkExample.xcworkspace`;
+- Connect an ios device, or choose an emulator;
+- Set the signature (if it is a real machine);
+- Execute build, install and run demo.
+- **Note** The `pod install` command has been executed when running the `yarn` command, otherwise, it needs to be run manually.
 
 ## build android platform
 
-+ use `android studio` to open the folder `example/android`;  
-+ If it is the first time, please run the `sync` command first;  
-+ Execute build, install and run demo;  
-+ Before running the demo, start the service: `cd example && yarn start`.  
-+ **Note** Make sure to execute the following command before building: `cd native_src/cpp && sh generate.sh --type rn`   
-+ **Note** android5.0 or above requires data forwarding: `adb reverse tcp:8081 tcp:8081`  
+- use `android studio` to open the folder `example/android`;
+- If it is the first time, please run the `sync` command first;
+- Execute build, install and run demo;
+- Before running the demo, start the service: `cd example && yarn start`.
+- **Note** Make sure to execute the following command before building: `cd native_src/cpp && sh generate.sh --type rn`
+- **Note** android5.0 or above requires data forwarding: `adb reverse tcp:8081 tcp:8081`
 
 ## quick start
 
@@ -78,6 +78,10 @@ See the [contributing guide](./CONTRIBUTING.md) to learn how to contribute to th
 ## Release Notes
 
 See the [change log](./CHANGELOG.md).
+
+## Version types
+
+See the [version types](./docs/version-types.md).
 
 ## License
 

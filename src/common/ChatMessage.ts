@@ -832,7 +832,7 @@ export class ChatTextMessageBody extends ChatMessageBody {
   targetLanguages?: Array<string>;
   /**
    * The translated results are placed here.
-   * It is Map Object, key is target language, value is translated content.
+   * It is KV Object, key is target language, value is translated content.
    */
   translations?: any;
   constructor(params: {
