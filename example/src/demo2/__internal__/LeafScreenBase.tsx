@@ -287,7 +287,7 @@ export abstract class LeafScreenBase<
           onChangeText={(text: string) => {
             if (oct) {
               let obj: { [index: string]: string } = {};
-              obj[name] = type === 'object' ? JSON.parse(text) : text;
+              obj[name] = type === 'json' ? JSON.parse(text) : text;
               oct(obj);
             }
           }}
@@ -637,6 +637,16 @@ export abstract class LeafScreenBase<
    */
   protected handleApi(): ReactNode {
     throw new Error('Please sub class implement.');
+  }
+
+  protected parseValue(valueType: string, value: any): any {
+    if (valueType === 'json') {
+      return JSON.stringify(value);
+    } else if (valueType === 'object') {
+      return 'cannot be displayed';
+    } else {
+      return value;
+    }
   }
 }
 

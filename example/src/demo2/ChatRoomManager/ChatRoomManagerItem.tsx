@@ -182,8 +182,7 @@ export class ChatRoomManagerLeafScreen extends LeafScreenBase<StateChatRoomMessa
             item.paramName as keyof typeof currentData
           ];
         if (item.domType === 'input') {
-          let value =
-            item.paramType === 'object' ? JSON.stringify(itemValue) : itemValue;
+          let value = this.parseValue(item.paramType, itemValue);
           renderDomAry.push(
             this.renderGroupParamWithInput(
               item.paramName,

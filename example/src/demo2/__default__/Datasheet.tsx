@@ -1,10 +1,10 @@
 export const datasheet = {
   AppKey: [
-    'easemob-demo#easeim',
-    '1135220126133718#demo',
-    '81446724#514456',
+    'easemob-demo#easeim', // easemob demo
+    '1135220126133718#demo', // asterisk's
+    '81446724#514456', // agora token app key.
     '41117440#383391',
-    '5101220107132865#test',
+    '5101220107132865#test', // microsoft test box
   ],
   ChatManager: {
     SendMessage: {

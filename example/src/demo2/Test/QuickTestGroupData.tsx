@@ -123,7 +123,7 @@ export const metaDataList = new Map<string, ApiParams>([
         },
         {
           paramName: 'allMembers',
-          paramType: 'object',
+          paramType: 'json',
           paramDefaultValue: [
             datasheet.accounts[0].id,
             datasheet.accounts[1].id,
@@ -138,7 +138,7 @@ export const metaDataList = new Map<string, ApiParams>([
         },
         {
           paramName: 'options',
-          paramType: 'object',
+          paramType: 'json',
           paramDefaultValue: {
             style: 3,
             maxCount: 200,
@@ -305,7 +305,7 @@ export const metaDataList = new Map<string, ApiParams>([
         },
         {
           paramName: 'members',
-          paramType: 'object',
+          paramType: 'json',
           paramDefaultValue: ['asterisk001'],
         },
         {
@@ -328,7 +328,7 @@ export const metaDataList = new Map<string, ApiParams>([
         },
         {
           paramName: 'members',
-          paramType: 'object',
+          paramType: 'json',
           paramDefaultValue: ['asterisk002'],
         },
         {
@@ -351,7 +351,7 @@ export const metaDataList = new Map<string, ApiParams>([
         },
         {
           paramName: 'members',
-          paramType: 'object',
+          paramType: 'json',
           paramDefaultValue: ['asterisk002'],
         },
       ],
@@ -369,7 +369,7 @@ export const metaDataList = new Map<string, ApiParams>([
         },
         {
           paramName: 'members',
-          paramType: 'object',
+          paramType: 'json',
           paramDefaultValue: ['asterisk002'],
         },
       ],
@@ -387,7 +387,7 @@ export const metaDataList = new Map<string, ApiParams>([
         },
         {
           paramName: 'members',
-          paramType: 'object',
+          paramType: 'json',
           paramDefaultValue: ['asterisk002'],
         },
       ],
@@ -547,7 +547,7 @@ export const metaDataList = new Map<string, ApiParams>([
         },
         {
           paramName: 'members',
-          paramType: 'object',
+          paramType: 'json',
           paramDefaultValue: ['asterisk002'],
         },
         {
@@ -570,7 +570,7 @@ export const metaDataList = new Map<string, ApiParams>([
         },
         {
           paramName: 'members',
-          paramType: 'object',
+          paramType: 'json',
           paramDefaultValue: ['asterisk002'],
         },
       ],
@@ -614,7 +614,7 @@ export const metaDataList = new Map<string, ApiParams>([
         },
         {
           paramName: 'members',
-          paramType: 'object',
+          paramType: 'json',
           paramDefaultValue: ['asterisk005'],
         },
       ],
@@ -632,7 +632,7 @@ export const metaDataList = new Map<string, ApiParams>([
         },
         {
           paramName: 'members',
-          paramType: 'object',
+          paramType: 'json',
           paramDefaultValue: ['asterisk005'],
         },
       ],
@@ -652,6 +652,7 @@ export const metaDataList = new Map<string, ApiParams>([
           paramName: 'filePath',
           paramType: 'string',
           paramDefaultValue: '/storage/emulated/0/Recorder/test.mp3',
+          domType: 'upload',
         },
         {
           paramName: 'callback',

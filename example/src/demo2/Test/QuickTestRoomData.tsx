@@ -141,7 +141,7 @@ export const metaDataList = new Map<string, ApiParams>([
         },
         {
           paramName: 'members',
-          paramType: 'object',
+          paramType: 'json',
           paramDefaultValue: ['bye', 'nat'],
           domType: 'input',
         },
@@ -247,7 +247,7 @@ export const metaDataList = new Map<string, ApiParams>([
         },
         {
           paramName: 'muteMembers',
-          paramType: 'object',
+          paramType: 'json',
           paramDefaultValue: ['asterisk002', 'asterisk003'],
           domType: 'input',
         },
@@ -273,7 +273,7 @@ export const metaDataList = new Map<string, ApiParams>([
         },
         {
           paramName: 'unMuteMembers',
-          paramType: 'object',
+          paramType: 'json',
           paramDefaultValue: ['bye', 'nat'],
           domType: 'input',
         },
@@ -379,7 +379,7 @@ export const metaDataList = new Map<string, ApiParams>([
         },
         {
           paramName: 'members',
-          paramType: 'object',
+          paramType: 'json',
           paramDefaultValue: ['nat'],
           domType: 'input',
         },
@@ -399,7 +399,7 @@ export const metaDataList = new Map<string, ApiParams>([
         },
         {
           paramName: 'members',
-          paramType: 'object',
+          paramType: 'json',
           paramDefaultValue: ['asterisk004'],
           domType: 'input',
         },
@@ -419,7 +419,7 @@ export const metaDataList = new Map<string, ApiParams>([
         },
         {
           paramName: 'members',
-          paramType: 'object',
+          paramType: 'json',
           paramDefaultValue: ['asterisk004'],
           domType: 'input',
         },
@@ -527,7 +527,7 @@ export const metaDataList = new Map<string, ApiParams>([
         },
         {
           paramName: 'anouncement',
-          paramType: 'object',
+          paramType: 'json',
           paramDefaultValue: ['asterisk002'],
           domType: 'input',
         },
@@ -547,7 +547,7 @@ export const metaDataList = new Map<string, ApiParams>([
         },
         {
           paramName: 'anouncement',
-          paramType: 'object',
+          paramType: 'json',
           paramDefaultValue: ['asterisk002'],
           domType: 'input',
         },
