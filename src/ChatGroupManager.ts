@@ -450,17 +450,20 @@ export class ChatGroupManager extends BaseManager {
    * This method does not get member information. If member information is required, you can call {@link #fetchMemberListFromServer}.
    *
    * @param groupId The group ID.
+   * @param isFetchMembers Whether to carry a group member. True carries up to 200 members.
    * @returns The group instance. The SDK returns `undefined` if the group does not exist.
    *
    * @throws A description of the exception. See {@link ChatError}.
    */
   public async fetchGroupInfoFromServer(
-    groupId: string
+    groupId: string,
+    isFetchMembers: boolean = false
   ): Promise<ChatGroup | undefined> {
     chatlog.log(`${ChatGroupManager.TAG}: fetchGroupInfoFromServer: `, groupId);
     let r: any = await Native._callMethod(MTgetGroupSpecificationFromServer, {
       [MTgetGroupSpecificationFromServer]: {
-        groupId,
+        groupId: groupId,
+        fetchMembers: isFetchMembers,
       },
     });
     ChatGroupManager.checkErrorFromResult(r);

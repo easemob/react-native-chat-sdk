@@ -71,7 +71,7 @@ export class PresenceLeafScreen extends LeafScreenBase<StateChatPresence> {
   }
 
   protected renderBody(): ReactNode {
-    console.log(`${PresenceLeafScreen.TAG}: renderBody: `);
+    // console.log(`${PresenceLeafScreen.TAG}: renderBody: `);
     return (
       <View style={styleValues.containerColumn}>{this.renderApiDom()}</View>
     );

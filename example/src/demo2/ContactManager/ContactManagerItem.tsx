@@ -78,7 +78,7 @@ export class ContactLeafScreen extends LeafScreenBase<StateChatContact> {
   }
 
   protected renderBody(): ReactNode {
-    console.log(`${ContactLeafScreen.TAG}: renderBody: `);
+    // console.log(`${ContactLeafScreen.TAG}: renderBody: `);
     return (
       <View style={styleValues.containerColumn}>{this.renderApiDom()}</View>
     );

@@ -130,7 +130,7 @@ export class ChatRoomManagerLeafScreen extends LeafScreenBase<StateChatRoomMessa
     });
   }
   protected renderBody(): ReactNode {
-    console.log(`${ChatRoomManagerLeafScreen.TAG}: renderBody: `);
+    // console.log(`${ChatRoomManagerLeafScreen.TAG}: renderBody: `);
     return (
       <View style={styleValues.containerColumn}>{this.renderApiDom()}</View>
     );

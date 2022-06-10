@@ -157,7 +157,12 @@ export const metaDataList = new Map<string, ApiParams>([
         {
           paramName: 'groupId',
           paramType: 'string',
-          paramDefaultValue: '180804431970306',
+          paramDefaultValue: '183958105030657',
+        },
+        {
+          paramName: 'isFetchMembers',
+          paramType: 'boolean',
+          paramDefaultValue: true,
         },
       ],
     },
@@ -170,7 +175,7 @@ export const metaDataList = new Map<string, ApiParams>([
         {
           paramName: 'groupId',
           paramType: 'string',
-          paramDefaultValue: '180804431970306',
+          paramDefaultValue: '183958105030657',
         },
         {
           paramName: 'pageSize',
@@ -753,7 +758,7 @@ export const metaDataList = new Map<string, ApiParams>([
         {
           paramName: 'groupId',
           paramType: 'string',
-          paramDefaultValue: '180804431970306',
+          paramDefaultValue: '183958105030657',
         },
       ],
     },

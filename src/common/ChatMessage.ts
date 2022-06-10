@@ -2,8 +2,8 @@ import { generateMessageId, getNowTimestamp } from '../__internal__/Utils';
 import { ChatClient } from '../ChatClient';
 import { ChatError } from './ChatError';
 import type {
-  ChatMessageThreadEvent,
   ChatMessageReaction,
+  ChatMessageThread,
 } from 'react-native-chat-sdk';
 
 /**
@@ -308,7 +308,8 @@ export class ChatMessage {
    */
   from: string = '';
   /**
-   * The user ID of the message recipient.
+   * Id of the receiving object.
+   * Generally, the peer type message is the user ID, the group type message is the group ID, the chat room type message is the chat room ID, and the chat thread type message is the chat thread ID.
    */
   to: string = '';
   /**
@@ -368,12 +369,16 @@ export class ChatMessage {
    */
   attributes: Object = {};
   /**
-   * The message body. See {@link ChatMessageBody)}.
+   * The message body. See {@link ChatMessageBody}.
    */
   body: ChatMessageBody;
 
   /**
-   * Constructs a message.
+   * Whether it is an chat thread message.
+   * If true, you need to set receiver to chat thread ID. See {@link #to}.
+   *
+   * **Note**
+   * The chat type messages can occur only in groups.
    */
   isChatThread: boolean;
 
@@ -799,7 +804,7 @@ export class ChatMessage {
   /**
    * Asynchronously returns the chat thread object.
    */
-  public get threadInfo(): Promise<ChatMessageThreadEvent | undefined> {
+  public get threadInfo(): Promise<ChatMessageThread | undefined> {
     return ChatClient.getInstance().chatManager.getMessageThread(this.msgId);
   }
 }

@@ -2073,7 +2073,7 @@ export class ChatManager extends BaseManager {
       list: r?.[MTfetchJoinedChatThreads].list,
       opt: {
         map: (param: any) => {
-          return new ChatMessage(param);
+          return new ChatMessageThread(param);
         },
       },
     });
@@ -2117,7 +2117,7 @@ export class ChatManager extends BaseManager {
       list: r?.[MTfetchJoinedChatThreadsWithParentId].list,
       opt: {
         map: (param: any) => {
-          return new ChatMessage(param);
+          return new ChatMessageThread(param);
         },
       },
     });
@@ -2158,7 +2158,7 @@ export class ChatManager extends BaseManager {
       list: r?.[MTfetchChatThreadsWithParentId].list,
       opt: {
         map: (param: any) => {
-          return new ChatMessage(param);
+          return new ChatMessageThread(param);
         },
       },
     });
@@ -2233,7 +2233,7 @@ export class ChatManager extends BaseManager {
    */
   public async getMessageThread(
     msgId: string
-  ): Promise<ChatMessageThreadEvent | undefined> {
+  ): Promise<ChatMessageThread | undefined> {
     chatlog.log(`${ChatManager.TAG}: getMessageThread: `, msgId);
     let r: any = await Native._callMethod(MTgetMessageThread, {
       [MTgetMessageThread]: {
@@ -2241,9 +2241,9 @@ export class ChatManager extends BaseManager {
       },
     });
     ChatManager.checkErrorFromResult(r);
-    const rr = r?.[MTfetchChatThreadDetail];
+    const rr = r?.[MTgetMessageThread];
     if (rr) {
-      return new ChatMessageThreadEvent(rr);
+      return new ChatMessageThread(rr);
     }
     return undefined;
   }

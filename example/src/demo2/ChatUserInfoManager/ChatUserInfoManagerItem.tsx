@@ -30,7 +30,7 @@ export class ChatUserInfoManagerLeafScreen extends LeafScreenBase<StateChatUserI
     });
   }
   protected renderBody(): ReactNode {
-    console.log(`${ChatUserInfoManagerLeafScreen.TAG}: renderBody: `);
+    // console.log(`${ChatUserInfoManagerLeafScreen.TAG}: renderBody: `);
     return (
       <View style={styleValues.containerColumn}>{this.renderApiDom()}</View>
     );

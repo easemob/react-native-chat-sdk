@@ -9,7 +9,6 @@ import {
   ChatMessageType,
   ChatMessageChatType,
   ChatError,
-  ChatConversationType,
   ChatMessageThreadEvent,
   ChatMessageReactionEvent,
 } from 'react-native-chat-sdk';
@@ -21,7 +20,6 @@ import {
 } from '../__internal__/LeafScreenBase';
 import { ChatManagerCache } from './ChatManagerData';
 import type { ApiParams } from '../__internal__/DataTypes';
-import { datasheet } from '../__default__/Datasheet';
 
 const MN = {
   sendMessage: 'sendMessage',
@@ -32,7 +30,6 @@ export interface StateSendMessage extends StateBase {
 
   targetId: string;
   targetType: ChatMessageChatType;
-  convType: ChatConversationType;
 
   // text messge body
   content: string;
@@ -58,6 +55,9 @@ export interface StateSendMessage extends StateBase {
   event: string;
   ext: string;
 
+  // is chat message
+  isChatMessage: boolean;
+
   cb_result: string;
 }
 
@@ -79,12 +79,12 @@ export class SendMessageLeafScreen extends LeafScreenBase<StateSendMessage> {
             {
               paramName: 'targetId',
               paramType: 'string',
-              paramDefaultValue: datasheet.accounts[2].id,
+              paramDefaultValue: '183970312552449',
             },
             {
               paramName: 'targetType',
               paramType: 'object',
-              paramDefaultValue: ChatMessageChatType.PeerChat,
+              paramDefaultValue: ChatMessageChatType.GroupChat,
             },
             {
               paramName: 'content',
@@ -95,6 +95,11 @@ export class SendMessageLeafScreen extends LeafScreenBase<StateSendMessage> {
               paramName: 'messageType',
               paramType: 'object',
               paramDefaultValue: ChatMessageType.TXT,
+            },
+            {
+              paramName: 'isChatMessage',
+              paramType: 'boolean',
+              paramDefaultValue: false,
             },
           ],
         },
@@ -107,12 +112,12 @@ export class SendMessageLeafScreen extends LeafScreenBase<StateSendMessage> {
       cb_result: '',
       messageType: ChatMessageType.TXT,
 
-      targetId: datasheet.accounts[2].id,
-      targetType: ChatMessageChatType.PeerChat,
-      convType: ChatConversationType.PeerChat,
+      targetId: this.metaData.get(MN.sendMessage)?.params[0].paramDefaultValue,
+      targetType: this.metaData.get(MN.sendMessage)?.params[1]
+        .paramDefaultValue,
 
       // text messge body
-      content: '',
+      content: this.metaData.get(MN.sendMessage)?.params[2].paramDefaultValue,
 
       // file message body
       filePath: '',
@@ -134,6 +139,9 @@ export class SendMessageLeafScreen extends LeafScreenBase<StateSendMessage> {
       // custom message body
       event: '',
       ext: '',
+      // is chat message
+      isChatMessage: this.metaData.get(MN.sendMessage)?.params[4]
+        .paramDefaultValue,
     };
     this.statelessData = {};
   }
@@ -164,7 +172,7 @@ export class SendMessageLeafScreen extends LeafScreenBase<StateSendMessage> {
   }
 
   protected renderBody(): ReactNode {
-    console.log(`${SendMessageLeafScreen.TAG}: renderBody: `);
+    // console.log(`${SendMessageLeafScreen.TAG}: renderBody: `);
     return (
       <View style={styleValues.containerColumn}>{this.sendMessage()}</View>
     );
@@ -519,6 +527,17 @@ export class SendMessageLeafScreen extends LeafScreenBase<StateSendMessage> {
 
     return [
       this.renderParamWithText(data.methodName),
+      this.renderParamWithEnum(
+        data.params[4].paramName,
+        ['true', 'false'],
+        data.params[4].paramDefaultValue ? 'true' : 'false',
+        (index: string, option: any) => {
+          let ic = option === 'true' ? true : false;
+          this.setState({
+            isChatMessage: ic,
+          });
+        }
+      ),
       this.renderParamWithInput('targetId', targetId, (text: string) => {
         this.setState({
           targetId: text,
@@ -598,10 +617,11 @@ export class SendMessageLeafScreen extends LeafScreenBase<StateSendMessage> {
       case ChatMessageType.TXT:
         {
           const { content } = this.state;
-          ret = ChatManagerCache.getInstance().createTextMessageWithParams(
+          ret = ChatManagerCache.getInstance().createTestMessage(
             targetId,
             content,
-            targetType
+            targetType,
+            3
           );
         }
         break;

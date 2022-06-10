@@ -330,30 +330,35 @@ export class ChatManagerLeafScreen extends LeafScreenBase<StateChatMessage> {
           `${ChatManagerLeafScreen.TAG}: onMessageReactionDidChange: `,
           list
         );
+        this.that.setState({ recvResult: JSON.stringify(list) });
       }
       onChatMessageThreadCreated(msgThread: ChatMessageThreadEvent): void {
         console.log(
           `${ChatManagerLeafScreen.TAG}: onChatMessageThreadCreated: `,
           msgThread
         );
+        this.that.setState({ recvResult: JSON.stringify(msgThread) });
       }
       onChatMessageThreadUpdated(msgThread: ChatMessageThreadEvent): void {
         console.log(
           `${ChatManagerLeafScreen.TAG}: onChatMessageThreadUpdated: `,
           msgThread
         );
+        this.that.setState({ recvResult: JSON.stringify(msgThread) });
       }
       onChatMessageThreadDestroyed(msgThread: ChatMessageThreadEvent): void {
         console.log(
           `${ChatManagerLeafScreen.TAG}: onChatMessageThreadDestroyed: `,
           msgThread
         );
+        this.that.setState({ recvResult: JSON.stringify(msgThread) });
       }
       onChatMessageThreadUserRemoved(msgThread: ChatMessageThreadEvent): void {
         console.log(
           `${ChatManagerLeafScreen.TAG}: onChatMessageThreadUserRemoved: `,
           msgThread
         );
+        this.that.setState({ recvResult: JSON.stringify(msgThread) });
       }
       onMessagesReceived(messages: ChatMessage[]): void {
         console.log(
@@ -364,6 +369,9 @@ export class ChatManagerLeafScreen extends LeafScreenBase<StateChatMessage> {
           ChatManagerCache.getInstance().addRecvMessage(
             messages[messages.length - 1]
           );
+          this.that.setState({
+            recvResult: JSON.stringify(messages[messages.length - 1]),
+          });
         }
       }
       onCmdMessagesReceived(messages: ChatMessage[]): void {
@@ -375,6 +383,9 @@ export class ChatManagerLeafScreen extends LeafScreenBase<StateChatMessage> {
           ChatManagerCache.getInstance().addRecvMessage(
             messages[messages.length - 1]
           );
+          this.that.setState({
+            recvResult: JSON.stringify(messages[messages.length - 1]),
+          });
         }
       }
       onMessagesRead(messages: ChatMessage[]): void {
@@ -483,7 +494,7 @@ export class ChatManagerLeafScreen extends LeafScreenBase<StateChatMessage> {
   }
 
   protected renderBody(): ReactNode {
-    console.log(`${ChatManagerLeafScreen.TAG}: renderBody: `);
+    // console.log(`${ChatManagerLeafScreen.TAG}: renderBody: `);
     return (
       <View style={styleValues.containerColumn}>{this.renderApiDom()}</View>
     );

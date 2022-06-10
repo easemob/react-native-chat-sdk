@@ -58,6 +58,7 @@ export interface StateGroupMessage extends StateBase {
   };
   fetchGroupInfoFromServer: {
     groupId: string;
+    isFetchMembers: boolean;
   };
   fetchMemberListFromServer: {
     groupId: string;
@@ -205,7 +206,7 @@ export class GroupManagerLeafScreen extends LeafScreenBase<StateGroupMessage> {
     });
   }
   protected renderBody(): ReactNode {
-    console.log(`${GroupManagerLeafScreen.TAG}: renderBody: `);
+    // console.log(`${GroupManagerLeafScreen.TAG}: renderBody: `);
     return (
       <View style={styleValues.containerColumn}>{this.renderApiDom()}</View>
     );
@@ -470,10 +471,11 @@ export class GroupManagerLeafScreen extends LeafScreenBase<StateGroupMessage> {
         break;
       }
       case MN.fetchGroupInfoFromServer: {
-        const { groupId } = this.state.fetchGroupInfoFromServer;
+        const { groupId, isFetchMembers } = this.state.fetchGroupInfoFromServer;
         this.tryCatch(
           ChatClient.getInstance().groupManager.fetchGroupInfoFromServer(
-            groupId
+            groupId,
+            isFetchMembers
           ),
           GroupManagerLeafScreen.TAG,
           name
