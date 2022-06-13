@@ -14,9 +14,9 @@ export class ChatMessageThread {
    */
   owner: string;
   /**
-   * A messageId that create sub-zone.
+   * A msgId that create sub-zone.
    */
-  messageId: string;
+  msgId: string;
   /**
    * A id that create sub-zone. Generally, it is a group ID.
    */
@@ -28,7 +28,7 @@ export class ChatMessageThread {
   /**
    * Number of messages in sub-zone.
    */
-  messageCount: number;
+  msgCount: number;
   /**
    * Timestamp of sub-zone creation.
    */
@@ -45,19 +45,19 @@ export class ChatMessageThread {
     threadName: string;
     owner: string;
     parentId: string;
-    messageId: string;
+    msgId: string;
     memberCount: number;
-    messageCount: number;
+    msgCount: number;
     createAt: number;
     lastMessage?: any;
   }) {
     this.threadId = params.threadId;
     this.threadName = params.threadName;
     this.parentId = params.parentId;
-    this.messageId = params.messageId;
+    this.msgId = params.msgId;
     this.owner = params.owner;
     this.memberCount = params.memberCount;
-    this.messageCount = params.messageCount;
+    this.msgCount = params.msgCount;
     this.createAt = params.createAt;
     if (params.lastMessage) {
       this.lastMessage = ChatMessage.createReceiveMessage(params.lastMessage);
