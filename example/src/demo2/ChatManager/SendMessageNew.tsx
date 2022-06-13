@@ -187,37 +187,37 @@ export class SendMessageLeafScreen extends LeafScreenBase<StateSendMessage> {
       onMessageReactionDidChange(list: Array<ChatMessageReactionEvent>): void {
         console.log(
           `${SendMessageLeafScreen.TAG}: onMessageReactionDidChange: `,
-          list
+          JSON.stringify(list)
         );
       }
       onChatMessageThreadCreated(msgThread: ChatMessageThreadEvent): void {
         console.log(
           `${SendMessageLeafScreen.TAG}: onChatMessageThreadCreated: `,
-          msgThread
+          JSON.stringify(msgThread)
         );
       }
       onChatMessageThreadUpdated(msgThread: ChatMessageThreadEvent): void {
         console.log(
           `${SendMessageLeafScreen.TAG}: onChatMessageThreadUpdated: `,
-          msgThread
+          JSON.stringify(msgThread)
         );
       }
       onChatMessageThreadDestroyed(msgThread: ChatMessageThreadEvent): void {
         console.log(
           `${SendMessageLeafScreen.TAG}: onChatMessageThreadDestroyed: `,
-          msgThread
+          JSON.stringify(msgThread)
         );
       }
       onChatMessageThreadUserRemoved(msgThread: ChatMessageThreadEvent): void {
         console.log(
           `${SendMessageLeafScreen.TAG}: onChatMessageThreadUserRemoved: `,
-          msgThread
+          JSON.stringify(msgThread)
         );
       }
       onMessagesReceived(messages: ChatMessage[]): void {
         console.log(
           `${SendMessageLeafScreen.TAG}: onMessagesReceived: `,
-          messages
+          JSON.stringify(messages)
         );
         if (messages.length > 0) {
           ChatManagerCache.getInstance().addRecvMessage(
@@ -228,7 +228,7 @@ export class SendMessageLeafScreen extends LeafScreenBase<StateSendMessage> {
       onCmdMessagesReceived(messages: ChatMessage[]): void {
         console.log(
           `${SendMessageLeafScreen.TAG}: onCmdMessagesReceived: `,
-          messages
+          JSON.stringify(messages)
         );
         if (messages.length > 0) {
           ChatManagerCache.getInstance().addRecvMessage(
@@ -237,7 +237,10 @@ export class SendMessageLeafScreen extends LeafScreenBase<StateSendMessage> {
         }
       }
       onMessagesRead(messages: ChatMessage[]): void {
-        console.log(`${SendMessageLeafScreen.TAG}: onMessagesRead: `, messages);
+        console.log(
+          `${SendMessageLeafScreen.TAG}: onMessagesRead: `,
+          JSON.stringify(messages)
+        );
         this.that.setState({
           recvResult: `onMessagesRead: ${messages.length}: ` + messages,
         });
@@ -245,7 +248,7 @@ export class SendMessageLeafScreen extends LeafScreenBase<StateSendMessage> {
       onGroupMessageRead(groupMessageAcks: ChatGroupMessageAck[]): void {
         console.log(
           `${SendMessageLeafScreen.TAG}: onGroupMessageRead: `,
-          groupMessageAcks
+          JSON.stringify(groupMessageAcks)
         );
         this.that.setState({
           recvResult:
@@ -512,7 +515,7 @@ export class SendMessageLeafScreen extends LeafScreenBase<StateSendMessage> {
   protected sendMessage(): ReactNode[] {
     this.setKeyPrefix(MN.sendMessage);
     const data = this.metaData.get(MN.sendMessage)!;
-    const { targetId, targetType, messageType } = this.state;
+    const { targetId, targetType, messageType, isChatMessage } = this.state;
 
     const getTargetId = (tt: ChatMessageChatType): string => {
       if (tt === ChatMessageChatType.PeerChat) {
@@ -530,7 +533,7 @@ export class SendMessageLeafScreen extends LeafScreenBase<StateSendMessage> {
       this.renderParamWithEnum(
         data.params[4].paramName,
         ['true', 'false'],
-        data.params[4].paramDefaultValue ? 'true' : 'false',
+        isChatMessage === true ? 'true' : 'false',
         (index: string, option: any) => {
           let ic = option === 'true' ? true : false;
           this.setState({
@@ -612,7 +615,7 @@ export class SendMessageLeafScreen extends LeafScreenBase<StateSendMessage> {
 
   private createMessage(): ChatMessage {
     let ret: ChatMessage;
-    const { targetId, targetType, messageType } = this.state;
+    const { targetId, targetType, messageType, isChatMessage } = this.state;
     switch (messageType) {
       case ChatMessageType.TXT:
         {
@@ -621,7 +624,7 @@ export class SendMessageLeafScreen extends LeafScreenBase<StateSendMessage> {
             targetId,
             content,
             targetType,
-            3
+            isChatMessage ? 3 : 1
           );
         }
         break;
