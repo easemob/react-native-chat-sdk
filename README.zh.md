@@ -1,6 +1,6 @@
 _Chinese | [English](./README.md)_
 
-# 环信即时通讯 IM React-Native 说明
+# 即时通讯 IM React-Native 说明
 
 更新时间：2022-05-10
 
