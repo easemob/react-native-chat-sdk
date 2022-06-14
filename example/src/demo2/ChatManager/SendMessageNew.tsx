@@ -56,7 +56,7 @@ export interface StateSendMessage extends StateBase {
   ext: string;
 
   // is chat message
-  isChatMessage: boolean;
+  isChatThread: boolean;
 
   cb_result: string;
 }
@@ -97,7 +97,7 @@ export class SendMessageLeafScreen extends LeafScreenBase<StateSendMessage> {
               paramDefaultValue: ChatMessageType.TXT,
             },
             {
-              paramName: 'isChatMessage',
+              paramName: 'isChatThread',
               paramType: 'boolean',
               paramDefaultValue: false,
             },
@@ -139,8 +139,8 @@ export class SendMessageLeafScreen extends LeafScreenBase<StateSendMessage> {
       // custom message body
       event: '',
       ext: '',
-      // is chat message
-      isChatMessage: this.metaData.get(MN.sendMessage)?.params[4]
+      // is thread message
+      isChatThread: this.metaData.get(MN.sendMessage)?.params[4]
         .paramDefaultValue,
     };
     this.statelessData = {};
@@ -515,7 +515,7 @@ export class SendMessageLeafScreen extends LeafScreenBase<StateSendMessage> {
   protected sendMessage(): ReactNode[] {
     this.setKeyPrefix(MN.sendMessage);
     const data = this.metaData.get(MN.sendMessage)!;
-    const { targetId, targetType, messageType, isChatMessage } = this.state;
+    const { targetId, targetType, messageType, isChatThread } = this.state;
 
     const getTargetId = (tt: ChatMessageChatType): string => {
       if (tt === ChatMessageChatType.PeerChat) {
@@ -533,11 +533,11 @@ export class SendMessageLeafScreen extends LeafScreenBase<StateSendMessage> {
       this.renderParamWithEnum(
         data.params[4].paramName,
         ['true', 'false'],
-        isChatMessage === true ? 'true' : 'false',
+        isChatThread === true ? 'true' : 'false',
         (index: string, option: any) => {
           let ic = option === 'true' ? true : false;
           this.setState({
-            isChatMessage: ic,
+            isChatThread: ic,
           });
         }
       ),
@@ -615,7 +615,7 @@ export class SendMessageLeafScreen extends LeafScreenBase<StateSendMessage> {
 
   private createMessage(): ChatMessage {
     let ret: ChatMessage;
-    const { targetId, targetType, messageType, isChatMessage } = this.state;
+    const { targetId, targetType, messageType, isChatThread } = this.state;
     switch (messageType) {
       case ChatMessageType.TXT:
         {
@@ -624,14 +624,16 @@ export class SendMessageLeafScreen extends LeafScreenBase<StateSendMessage> {
             targetId,
             content,
             targetType,
-            isChatMessage ? 3 : 1
+            isChatThread ? 3 : 1
           );
         }
         break;
       case ChatMessageType.CMD:
         {
           const { action } = this.state;
-          ret = ChatMessage.createCmdMessage(targetId, action, targetType);
+          ret = ChatMessage.createCmdMessage(targetId, action, targetType, {
+            isChatThread: isChatThread,
+          });
         }
         break;
       case ChatMessageType.CUSTOM:
@@ -639,6 +641,7 @@ export class SendMessageLeafScreen extends LeafScreenBase<StateSendMessage> {
           const { event, ext } = this.state;
           ret = ChatMessage.createCustomMessage(targetId, event, targetType, {
             params: ext,
+            isChatThread,
           });
         }
         break;
@@ -650,7 +653,7 @@ export class SendMessageLeafScreen extends LeafScreenBase<StateSendMessage> {
             latitude,
             longitude,
             targetType,
-            { address }
+            { address, isChatThread }
           );
         }
         break;
@@ -659,6 +662,7 @@ export class SendMessageLeafScreen extends LeafScreenBase<StateSendMessage> {
           const { filePath, displayName } = this.state;
           ret = ChatMessage.createFileMessage(targetId, filePath, targetType, {
             displayName,
+            isChatThread,
           });
         }
         break;
@@ -668,6 +672,7 @@ export class SendMessageLeafScreen extends LeafScreenBase<StateSendMessage> {
           ret = ChatMessage.createVoiceMessage(targetId, filePath, targetType, {
             displayName,
             duration,
+            isChatThread,
           });
         }
         break;
@@ -680,6 +685,7 @@ export class SendMessageLeafScreen extends LeafScreenBase<StateSendMessage> {
             width,
             height,
             thumbnailLocalPath,
+            isChatThread,
           });
         }
         break;
@@ -699,6 +705,7 @@ export class SendMessageLeafScreen extends LeafScreenBase<StateSendMessage> {
             height,
             thumbnailLocalPath,
             duration,
+            isChatThread,
           });
         }
         break;
