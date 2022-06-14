@@ -1,6 +1,6 @@
 _English | [Chinese](./README.zh.md)_
 
-# Huanxin IM React-Native Description
+# IM React-Native Description
 
 Update time: 2022-05-10
 
