@@ -133,4 +133,11 @@ cd example && yarn android
 
 ---
 
+## publish
+```sh
+npm version prerelease --preid=beta
+npm publish --tag=beta
+git push --tags
+```
+
 ## Q & A
