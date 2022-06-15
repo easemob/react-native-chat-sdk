@@ -11,6 +11,7 @@ mkdir -p ${current_dir}/Output/agora
 
 old_package_name=react-native-chat-sdk
 new_package_name=react-native-agora-chat-sdk
+version=$1
 
 yarn global add ${old_package_name}@rc --global-folder ${current_dir}/Output
 
@@ -32,7 +33,11 @@ zip -r -1 -q -b ${current_dir}/Output/node_modules/${new_package_name} ${new_pac
 
 popd
 
-mv ${current_dir}/Output/node_modules/${new_package_name}.zip ${current_dir}/Output/agora/${new_package_name}.zip
+if [ "${version}" == "" ]; then
+    mv ${current_dir}/Output/node_modules/${new_package_name}.zip ${current_dir}/Output/agora/${new_package_name}.zip
+else
+    mv ${current_dir}/Output/node_modules/${new_package_name}.zip ${current_dir}/Output/agora/${new_package_name}-${version}.zip
+fi
 
 yarn global remove ${old_package_name} --global-folder ${current_dir}/Output
 
