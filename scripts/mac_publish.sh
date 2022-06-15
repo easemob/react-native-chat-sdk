@@ -1,5 +1,10 @@
 # /bin/bash
 
+# readme
+# sh ./scripts/mac_publish.sh 1.0.5-rc.5
+# sh ./scripts/mac_publish.sh
+# sh mac_publish.sh
+
 current_dir=$(
     cd "$(dirname "$0")"
     pwd
