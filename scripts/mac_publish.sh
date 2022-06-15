@@ -26,7 +26,7 @@ rm -rf ${current_dir}/Output/node_modules/${new_package_name}/native_src/cpp/gen
 
 rm -rf ${current_dir}/Output/agora/${new_package_name}.zip
 
-pushd Output/node_modules
+pushd ${current_dir}/Output/node_modules
 
 zip -r -1 -q -b ${current_dir}/Output/node_modules/${new_package_name} ${new_package_name} *
 
