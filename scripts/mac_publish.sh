@@ -15,14 +15,14 @@ current_dir=$(
 mkdir -p ${current_dir}/Output/agora
 
 old_package_name=react-native-chat-sdk
-new_package_name=react-native-agora-chat-sdk
+new_package_name=agora-react-native-chat
 version=$1
 
 yarn global add ${old_package_name}@rc --global-folder ${current_dir}/Output
 
 mv ${current_dir}/Output/node_modules/${old_package_name} ${current_dir}/Output/node_modules/${new_package_name}
 
-sed -i '' 's/: \"react-native-chat-sdk/: \"react-native-agora-chat-sdk/g' ${current_dir}/Output/node_modules/${new_package_name}/package.json
+sed -i '' 's/: \"react-native-chat-sdk/: \"agora-react-native-chat/g' ${current_dir}/Output/node_modules/${new_package_name}/package.json
 
 mv ${current_dir}/Output/node_modules/${new_package_name}/native_src/cpp/CMakeLists.txt.rn ${current_dir}/Output/node_modules/${new_package_name}/native_src/cpp/CMakeLists.txt
 
