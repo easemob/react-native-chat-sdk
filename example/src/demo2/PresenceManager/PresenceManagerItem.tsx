@@ -12,7 +12,7 @@ import type { ApiParams } from '../__internal__/DataTypes';
 import { generateData } from '../__internal__/Utils';
 
 export interface StateChatPresence extends StateBase {
-  publishPresenceWithDescription: {
+  publishPresence: {
     description: string;
   };
   presenceSubscribe: {
@@ -78,7 +78,7 @@ export class PresenceLeafScreen extends LeafScreenBase<StateChatPresence> {
   }
   protected renderApiDom(): ReactNode[] {
     const apiList = [
-      'publishPresenceWithDescription',
+      'publishPresence',
       'presenceSubscribe',
       'presenceUnsubscribe',
       'fetchSubscribedMembersWithPageNum',
@@ -153,12 +153,10 @@ export class PresenceLeafScreen extends LeafScreenBase<StateChatPresence> {
 
   private callApi(name: string): void {
     console.log(`${PresenceLeafScreen.TAG}: callApi: `);
-    if (name === MN.publishPresenceWithDescription) {
-      const { description } = this.state.publishPresenceWithDescription;
+    if (name === MN.publishPresence) {
+      const { description } = this.state.publishPresence;
       this.tryCatch(
-        ChatClient.getInstance().presenceManager.publishPresenceWithDescription(
-          description
-        ),
+        ChatClient.getInstance().presenceManager.publishPresence(description),
         PresenceLeafScreen.TAG,
         name
       );

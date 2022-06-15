@@ -80,13 +80,8 @@ export class ChatPresenceManager extends Native {
    *
    * @throws A description of the exception. See {@link ChatError}.
    */
-  public async publishPresenceWithDescription(
-    description?: string
-  ): Promise<void> {
-    chatlog.log(
-      `${ChatPresenceManager.TAG}: publishPresenceWithDescription: `,
-      description
-    );
+  public async publishPresence(description?: string): Promise<void> {
+    chatlog.log(`${ChatPresenceManager.TAG}: publishPresence: `, description);
     let r: any = await Native._callMethod(MTpublishPresenceWithDescription, {
       [MTpublishPresenceWithDescription]: {
         desc: description,
