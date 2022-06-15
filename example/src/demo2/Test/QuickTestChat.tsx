@@ -16,8 +16,8 @@ import {
   ChatMessageThreadEvent,
   ChatMessageType,
   ChatMessageChatType,
+  ChatCmdMessageBody,
 } from 'react-native-chat-sdk';
-import type { ChatCmdMessageBody } from 'src/common/ChatMessage';
 import { ChatManagerCache } from './ChatManagerCache';
 
 export interface QuickTestChatState extends QuickTestState {}

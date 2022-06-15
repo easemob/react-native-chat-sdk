@@ -7,12 +7,12 @@ import {
   ChatMessageReactionEvent,
   ChatMessageStatusCallback,
   ChatMessageThreadEvent,
-} from 'react-native-chat-sdk';
-import {
+  ChatPresenceEventListener,
+  ChatPresence,
   ChatImageMessageBody,
   ChatMessageChatType,
   ChatTextMessageBody,
-} from 'src/common/ChatMessage';
+} from 'react-native-chat-sdk';
 import { ChatManagerCache } from '../Test/ChatManagerCache';
 
 function demo(this: any): void {
@@ -189,6 +189,7 @@ export function test_demo(): void {
   demo3();
   demo4();
   demo5();
+  demo6();
 }
 
 class ChatMessageEvent implements ChatMessageEventListener {
@@ -315,4 +316,65 @@ function demo5() {
     .catch((error) => {
       console.log('fail: ', error);
     });
+}
+
+function demo6(): void {
+  const memberIds: string[] = ['zhangsan'];
+  const expiry = 1000;
+  ChatClient.getInstance()
+    .presenceManager.subscribe(memberIds, expiry)
+    .then((result) => {
+      console.log('success: ', result);
+    })
+    .catch((error) => {
+      console.log('fail: ', error);
+    });
+  const description = 'up';
+  ChatClient.getInstance()
+    .presenceManager.publishPresence(description)
+    .then((result) => {
+      console.log('success: ', result);
+    })
+    .catch((error) => {
+      console.log('fail: ', error);
+    });
+
+  ChatClient.getInstance().presenceManager.removeAllPresenceListener();
+  ChatClient.getInstance().presenceManager.addPresenceListener(
+    new ChatPresenceEvent()
+  );
+
+  ChatClient.getInstance()
+    .presenceManager.unSubscribe(memberIds)
+    .then((result) => {
+      console.log('success: ', result);
+    })
+    .catch((error) => {
+      console.log('fail: ', error);
+    });
+
+  const pageNum = 1;
+  const pageSize = 20;
+  ChatClient.getInstance()
+    .presenceManager.fetchSubscribedMembers(pageNum, pageSize)
+    .then((result) => {
+      console.log('success: ', result);
+    })
+    .catch((error) => {
+      console.log('fail: ', error);
+    });
+
+  ChatClient.getInstance()
+    .presenceManager.fetchPresenceStatus(memberIds)
+    .then((result) => {
+      console.log('success: ', result);
+    })
+    .catch((error) => {
+      console.log('fail: ', error);
+    });
+}
+class ChatPresenceEvent implements ChatPresenceEventListener {
+  onPresenceStatusChanged(list: ChatPresence[]): void {
+    console.log(`onPresenceStatusChanged:`, list.length, list);
+  }
 }

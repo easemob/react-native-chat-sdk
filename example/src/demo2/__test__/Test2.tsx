@@ -7,11 +7,11 @@ import {
   ChatMessage,
   ChatMessageType,
   ChatOptions,
+  ChatTextMessageBody,
+  ChatMessageReactionEvent,
+  ChatMessageThreadEvent,
 } from 'react-native-chat-sdk';
 import { ChatGroupManager } from 'src/ChatGroupManager';
-import type { ChatTextMessageBody } from 'src/common/ChatMessage'; // local for test
-import type { ChatMessageReactionEvent } from 'src/common/ChatMessageReaction';
-import type { ChatMessageThreadEvent } from 'src/common/ChatMessageThread';
 import { styleValues } from '../__internal__/Css';
 import { ApiParams, LeafScreenBase, StateBase } from './Test1';
 

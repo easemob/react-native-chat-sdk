@@ -18,6 +18,7 @@
     "native_src/objc",
     "react-native-chat-sdk.podspec",
     "CHANGELOG.md",
+    "tsconfig.json",
     "!lib/typescript/example",
     "!lib/typescript/examples",
     "!android/build",

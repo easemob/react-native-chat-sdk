@@ -14,6 +14,10 @@ import {
   ChatMessageType,
   ChatMessageThreadEvent,
   ChatMessageReactionEvent,
+  ChatMultiDeviceEvent,
+  ChatPresenceEventListener,
+  ChatPresence,
+  ChatCmdMessageBody,
 } from 'react-native-chat-sdk';
 import { styleValues } from '../__internal__/Css';
 import {
@@ -22,12 +26,6 @@ import {
   StatelessBase,
 } from '../__internal__/LeafScreenBase';
 import type { ApiParams } from '../__internal__/DataTypes';
-import type {
-  ChatMultiDeviceEvent,
-  ChatPresenceEventListener,
-} from 'react-native-chat-sdk';
-import type { ChatCmdMessageBody } from 'src/common/ChatMessage';
-import type { ChatPresence } from 'src/common/ChatPresence';
 
 export const metaData = new Map<string, ApiParams>();
 export function registerStateData(params: ApiParams): void {
