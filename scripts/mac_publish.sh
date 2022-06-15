@@ -5,7 +5,7 @@ current_dir=$(
     pwd
 )
 
-# read -s -n1 -p "any key ..."
+# read -s -n1 -p "Enter any key continue..."
 
 mkdir -p ${current_dir}/Output/agora
 
@@ -36,6 +36,6 @@ mv ${current_dir}/Output/node_modules/${new_package_name}.zip ${current_dir}/Out
 
 yarn global remove ${old_package_name} --global-folder ${current_dir}/Output
 
-read -s -n1 -p "any key ..."
+read -s -n1 -p "Enter any key continue..."
 
 rm -rf ${current_dir}/Output
