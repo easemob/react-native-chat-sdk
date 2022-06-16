@@ -6,10 +6,6 @@ _Chinese | [English](./README.md)_
 
 本文介绍如何极简集成 Agora 即时通讯 React-Native SDK，在你的 app 中实现发送和接收单聊文本消息。
 
-## 实现原理
-
-~338e0e30-e568-11ec-8e95-1b7dfd4b7cb0~
-
 ## 前提条件
 
 集成前请确认 app 的开发和运行环境满足以下要求：
