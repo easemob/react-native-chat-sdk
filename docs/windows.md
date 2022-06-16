@@ -1,4 +1,7 @@
+Update time: 2022-06-16
+
 **Here are only the things that are different from MacOS.**
+
 ## Environment Requirements
 
 - Windows 10 or later
@@ -10,9 +13,10 @@
 - react-native 0.63.4 or later
 
 ## Integrate the Chat React Native SDK
+
 If you run `yarn` for the first time, you also need to run the following command:
 
-```sh
+```powershell
 cd node_modules/react-native-chat-sdk/native_src/cpp
-.\generate.ps1 --type rn  
+.\generate.ps1 --type rn
 ```

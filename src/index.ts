@@ -85,6 +85,7 @@ import type {
 import type {
   ChatMessageThread,
   ChatMessageThreadEvent,
+  ChatMessageThreadOperation,
 } from './common/ChatMessageThread';
 import type { ChatPresence } from './common/ChatPresence';
 import type { ChatTranslateLanguage } from './common/ChatTranslateLanguage';
@@ -131,6 +132,7 @@ export {
   ChatDownloadStatus,
   ChatMessageType,
   ChatRoomPermissionType,
+  ChatMessageThreadOperation,
 };
 
 /**

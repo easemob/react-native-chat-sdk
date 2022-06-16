@@ -1,11 +1,10 @@
-export type PageResultMap = (obj: any) => any;
 /**
- * The ChatPageResult class, which specifies the cursor from which to query results.
+ * The ChatPageResult class, which specifies the maximum number per page from which to query results.
  * When querying using this class, the SDK returns the queried instance and the cursor.
  */
 export class ChatPageResult<T> {
   /**
-   * The value of the current page number.
+   * The value of the current page number. Same as the number of list.
    */
   pageCount: number;
   /**
@@ -15,7 +14,7 @@ export class ChatPageResult<T> {
   constructor(params: {
     pageCount: number;
     list?: Array<T>;
-    opt?: { map: PageResultMap };
+    opt?: { map: (obj: any) => any };
   }) {
     this.pageCount = params.pageCount;
     let data: Array<T> = [];
