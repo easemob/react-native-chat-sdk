@@ -6,6 +6,10 @@ _Chinese | [English](./README.md)_
 
 本文介绍如何极简集成 Agora 即时通讯 React-Native SDK，在你的 app 中实现发送和接收单聊文本消息。
 
+## 实现原理
+
+~338e0e30-e568-11ec-8e95-1b7dfd4b7cb0~
+
 ## 前提条件
 
 集成前请确认 app 的开发和运行环境满足以下要求：
@@ -62,11 +66,11 @@ _Chinese | [English](./README.md)_
 
 4. 在目标平台执行脚本
 
-  iOS：
+iOS：
 
-  ```sh
-  cd ios && pod install && cd ..
-  ```
+```sh
+cd ios && pod install && cd ..
+```
 
 ## 实现发送和接收单聊消息
 
@@ -514,4 +518,4 @@ export default App;
 
 ## 更多操作
 
-为了保证安全性，我们推荐使用 `username + password + token` 方式创建用户，token 在你的 app server 生成供客户端获取，当 token 过期时你需要重新获取。详见 [获取 user token](./generate_user_tokens?platform=React%20Native).
+为保障通信安全，在正式生产环境中，你需要在自己的 app 服务端生成 Token。详见 [使用 User Token 鉴权](https://docs-preprod.agora.io/cn/agora-chat/generate_user_tokens?platform=Android)。

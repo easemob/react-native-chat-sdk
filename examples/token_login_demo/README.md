@@ -8,6 +8,10 @@ Instant messaging connects people wherever they are and allows them to communica
 
 This page shows a sample code to add peer-to-peer messaging into a Windows project by using the Agora Chat SDK.
 
+## Understand the tech
+
+~338e0e30-e568-11ec-8e95-1b7dfd4b7cb0~
+
 ## Prerequisites
 
 Before proceeding, ensure that your development and run environment meets the following requirements.
@@ -34,6 +38,12 @@ If your target platform is Android:
 - Yarn compile and run tool
 - Watchman debugging tool
 - A physical or virtual mobile device running Android 6.0 or later
+
+For more information, see [RN dev](https://reactnative.dev/).
+
+### Other prerequisites
+
+A valid Agora [account](https://docs-preprod.agora.io/en/Agora Platform/sign_in_and_sign_up?platform=All Platforms).
 
 ## Project setup
 
@@ -74,8 +84,8 @@ To send a one-to-one message, chat users should register a Chat account, log int
 
 Open `token_login_demo/App.js`, and replace the code with the following:
 
-```typescript
-// import depend packages.
+```javascript
+// Import depend packages.
 import React, {useEffect} from 'react';
 import {
   SafeAreaView,
@@ -94,7 +104,7 @@ import {
 
 // The App Object.
 const App = () => {
-  // variable defines.
+  // The settings.
   const title = 'AgoraChatQuickstart';
   const [appKey, setAppKey] = React.useState('81446724#514456');
   const [username, setUsername] = React.useState('asterisk0020');
@@ -103,7 +113,7 @@ const App = () => {
   const [content, setContent] = React.useState('');
   const [logText, setWarnText] = React.useState('Show log area');
 
-  // output console log.
+  // Output the console log.
   useEffect(() => {
     logText.split('\n').forEach((value, index, array) => {
       if (index === 0) {
@@ -112,7 +122,7 @@ const App = () => {
     });
   }, [logText]);
 
-  // output ui log.
+  // Output the UI log.
   const rollLog = text => {
     setWarnText(preLogText => {
       let newLogText = text;
@@ -150,7 +160,7 @@ const App = () => {
     return requestHttp('https://a1.easemob.com/app/chat/user/register');
   };
 
-  // register listener for message.
+  // Register the listener for message.
   const setMessageListener = () => {
     let msgListener = {
       onMessagesReceived(messages) {
@@ -171,8 +181,8 @@ const App = () => {
     ChatClient.getInstance().chatManager.addMessageListener(msgListener);
   };
 
-  // Init sdk.
-  // Please initialize any interface before calling it.
+  // Initialize sdk.
+  // Please initialize before calling any interface.
   const init = () => {
     let o = new ChatOptions({
       autoLogin: false,
@@ -209,7 +219,7 @@ const App = () => {
       });
   };
 
-  // register account for login
+  // Register an account.
   const registerAccount = () => {
     if (this.isInitialized === false || this.isInitialized === undefined) {
       rollLog('Perform initialization first.');
@@ -225,7 +235,7 @@ const App = () => {
       });
   };
 
-  // login with account id and token
+  // Login with account ID and token.
   const loginWithToken = () => {
     if (this.isInitialized === false || this.isInitialized === undefined) {
       rollLog('Perform initialization first.');
@@ -261,7 +271,7 @@ const App = () => {
       });
   };
 
-  // logout from server.
+  // Logout from server.
   const logout = () => {
     if (this.isInitialized === false || this.isInitialized === undefined) {
       rollLog('Perform initialization first.');
@@ -278,7 +288,7 @@ const App = () => {
       });
   };
 
-  // send text message to somebody
+  // Send a text message.
   const sendmsg = () => {
     if (this.isInitialized === false || this.isInitialized === undefined) {
       rollLog('Perform initialization first.');
@@ -311,7 +321,7 @@ const App = () => {
       });
   };
 
-  // ui render.
+  // The UI render.
   return (
     <SafeAreaView>
       <View style={styles.titleContainer}>
@@ -400,7 +410,7 @@ const App = () => {
   );
 };
 
-// ui styles sets.
+// Set UI styles.
 const styles = StyleSheet.create({
   titleContainer: {
     height: 60,
@@ -513,4 +523,4 @@ You can also read from the logs below to see whether you have successfully signe
 
 ## Next steps
 
-For demonstration purposes, the sample code on this page uses `username + password` to register a new user. In production environment, to enhance communication security, we recommend you using `username + password + token` to register a user. Tokens need to be generated on your app server and retrieved from your app client; when a token expires, you need to generate a new token and renew it in the client. For details, refer to [Implement an Agora user token server for Agora Chat](./generate_user_tokens?platform=React%20Native).
+For demonstration purposes, Agora Chat provides an app server that enables you to quickly retrieve a token using the App Key given in this guide. In a production context, the best practice is for you to deploy your own token server, use your own [App Key](./enable_agora_chat?platform=React%20Native#get-the-information-of-the-agora-chat-project) to generate a token, and retrieve the token on the client side to log in to Agora. To see how to implement a server that generates and serves tokens on request, see [Generate a User Token](./generate_user_tokens?platform=React%20Native).
