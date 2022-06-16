@@ -1,8 +1,8 @@
 _English | [Chinese](./README.zh.md)_
 
-# IM React-Native Description
-
 Update time: 2022-06-16
+
+# IM React-Native Description
 
 This SDK is based on the native `Android` and `iOS` version of React Native implemented in the `typescript` language.
 `Android` is detailed here. [Portal](https://docs-im.easemob.com/im/android/sdk/import).
