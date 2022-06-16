@@ -22,6 +22,7 @@ import {
   ChatMessage,
 } from 'react-native-chat-sdk';
 
+// The App Object.
 const App = () => {
   const title = 'AgoraChatQuickstart';
   const [appKey, setAppKey] = React.useState('easemob-demo#easeim');
@@ -31,6 +32,7 @@ const App = () => {
   const [content, setContent] = React.useState('');
   const [logText, setWarnText] = React.useState('Show log area');
 
+  // output console log.
   useEffect(() => {
     logText.split('\n').forEach((value, index, array) => {
       if (index === 0) {
@@ -39,6 +41,7 @@ const App = () => {
     });
   }, [logText]);
 
+  // output ui log.
   const rollLog = text => {
     setWarnText(preLogText => {
       let newLogText = text;
@@ -57,6 +60,7 @@ const App = () => {
     });
   };
 
+  // register listener for message.
   const setMessageListener = () => {
     let msgListener = {
       onMessagesReceived(messages) {
@@ -77,6 +81,8 @@ const App = () => {
     ChatClient.getInstance().chatManager.addMessageListener(msgListener);
   };
 
+  // Init sdk.
+  // Please initialize any interface before calling it.
   const init = () => {
     let o = new ChatOptions({
       autoLogin: false,
@@ -113,6 +119,7 @@ const App = () => {
       });
   };
 
+  // register account for login
   const registerAccount = () => {
     if (this.isInitialized === false || this.isInitialized === undefined) {
       rollLog('Perform initialization first.');
@@ -129,6 +136,7 @@ const App = () => {
       });
   };
 
+  // login with account id and password
   const loginWithPassword = () => {
     if (this.isInitialized === false || this.isInitialized === undefined) {
       rollLog('Perform initialization first.');
@@ -145,6 +153,7 @@ const App = () => {
       });
   };
 
+  // logout from server.
   const logout = () => {
     if (this.isInitialized === false || this.isInitialized === undefined) {
       rollLog('Perform initialization first.');
@@ -161,6 +170,7 @@ const App = () => {
       });
   };
 
+  // send text message to somebody
   const sendmsg = () => {
     if (this.isInitialized === false || this.isInitialized === undefined) {
       rollLog('Perform initialization first.');
@@ -193,6 +203,7 @@ const App = () => {
       });
   };
 
+  // ui render.
   return (
     <SafeAreaView>
       <View style={styles.titleContainer}>

@@ -1,84 +1,90 @@
-_English | [Chinese](./quick-start.zh.md)_
+_English | [Chinese](./README.zh.md)_
+
+Update time: 2022-06-16
 
 # Huanxin IM React-Native Quick Start
 
-Update time: 2022-05-10
-
-Through this article, a simple app that integrates the chat SDK can be implemented.
+This article introduces how to integrate the React-Native SDK of Huanxin Instant Messaging in a minimal way to send and receive single-chat text messages in your app.
 
 ## Implementation principle
 
 The following diagram shows the workflow for sending and receiving one-to-one text messages on the client side.
-![Workflow diagram](https://web-cdn.agora.io/docs-files/1643335864426)
 
-## Conditional requirements for compilation and running
+[![img](https://docs-im.easemob.com/_media/ccim/web/sendandreceivemsg.png?w=800&tok=54ca33)](https://docs-im.easemob.com/_detail/ ccim/web/sendandreceivemsg.png?id=ccim%3Aandroid%3Amessage2)
+
+## Preconditions
+
+Before integrating, please confirm that the development and running environment of the app meets the following requirements:
+
+For iOS platform:
 
 - MacOS 10.15.7 or above
 - Xcode 12.4 or above, including command line tools
-- Android Studio 4.0 or above, including JDK 1.8 or above
+- React Native 0.63.4 or above
 - NodeJs 16 or above, including npm package management tool
 - CocoaPods package management tool
 - Yarn compile and run tool
 - Watchman debugging tool
-- react-native-cli command line tool
-- react 16.13.1 or above
-- react-native 0.63.4 or above
+- Operating environment real machine or simulator iOS 10.0 or above
 
-### Condition specification
+For Android platform:
 
-[If you encounter problems configuring the development or runtime environment, please refer to here](./docs/developer.md)
+- MacOS 10.15.7 or above, Windows 10 or above
+- Android Studio 4.0 or above, including JDK 1.8 or above
+- React Native 0.63.4 or above
+- If you develop with Macos system, you need CocoaPods package management tool
+- If developing on Windows, Powershell 5.1 or above is required
+- NodeJs 16 or above, including npm package management tool
+- Yarn compile and run tool
+- Watchman debugging tool
+- Operating environment real machine or emulator Android 6.0 or above
 
-## Register a developer account
+If you encounter problems in configuring the development or running environment, please refer to [RN official website](https://reactnative.dev/).
 
-Register a developer account and get the App Key, [Portal](https://console.easemob.com/user/login).
+### other requirements
 
-### About registration
+- Valid Huanxin IM developer account and App key, see [Huanxin IM Cloud Management Background](https://console.easemob.com/user/login).
 
-The SDK also provides a registration method, which is recommended to be used in a formal environment.
+## project settings
 
-## Create a personal demo project for sending text messages
+Create a React Native project and integrate it
 
-### Create project using command
+1. Prepare the development environment according to the development system and target platform;
+2. Open the terminal, enter the directory where the project needs to be created, and enter the command to create the React Native project:
 
-Open the terminal, enter the directory where the project needs to be created, and enter the command to create the `react-native` project:
-
-```bash
+```sh
 npx react-native init simple_demo
 cd simple_demo
 yarn
 ```
 
-### Integrated SDK
+The name of the created project is `simple_demo`.
 
-At the terminal command line, enter the command to add dependencies:
+3. On the terminal command line, enter the following command to add dependencies:
 
-```bash
-yarn add react-native-chat-sdk
-```
+   ```sh
+   yarn add react-native-chat-sdk
+   ```
 
-### android platform needs to execute scripts
+4. Execute the script on the target platform
 
-For the android platform, a pre-build script needs to be executed to generate the required files.
+Android:
 
-```bash
+```sh
 cd node_modules/react-native-chat-sdk/native_src/cpp && sh generate.sh --type rn && cd ../../../..
 ```
 
-### The ios platform needs to execute the pod tool
+iOS:
 
-At the terminal command line, enter the command to execute the pod:
-
-```bash
-cd ios
-pod install
-cd..
+```sh
+cd ios && pod install && cd ..
 ```
 
-### Add sample code
+## Implement sending and receiving single chat messages
 
-It is recommended to use `visual studio code` to open the folder `simple_demo`.
-Open the file `App.js`
-Delete everything and add the following:
+Before sending a single chat message, end users need to register a Chat account and log in.
+
+It is recommended to use `visual studio code` to open the folder `simple_demo`, open the file `App.js`, delete all contents, and add the following:
 
 ```typescript
 import React, {useEffect} from 'react';
@@ -97,8 +103,9 @@ import {
   ChatMessage,
 } from 'react-native-chat-sdk';
 
+// The App Object.
 const App = () => {
-  const title = 'ChatQuickstart';
+  const title = 'AgoraChatQuickstart';
   const [appKey, setAppKey] = React.useState('easemob-demo#easeim');
   const [username, setUsername] = React.useState('asterisk001');
   const [password, setPassword] = React.useState('qwer');
@@ -106,6 +113,7 @@ const App = () => {
   const [content, setContent] = React.useState('');
   const [logText, setWarnText] = React.useState('Show log area');
 
+  // output console log.
   useEffect(() => {
     logText.split('\n').forEach((value, index, array) => {
       if (index === 0) {
@@ -114,6 +122,7 @@ const App = () => {
     });
   }, [logText]);
 
+  // output ui log.
   const rollLog = text => {
     setWarnText(preLogText => {
       let newLogText = text;
@@ -132,6 +141,7 @@ const App = () => {
     });
   };
 
+  // register listener for message.
   const setMessageListener = () => {
     let msgListener = {
       onMessagesReceived(messages) {
@@ -152,6 +162,8 @@ const App = () => {
     ChatClient.getInstance().chatManager.addMessageListener(msgListener);
   };
 
+  // Init sdk.
+  // Please initialize any interface before calling it.
   const init = () => {
     let o = new ChatOptions({
       autoLogin: false,
@@ -188,6 +200,7 @@ const App = () => {
       });
   };
 
+  // register account for login
   const registerAccount = () => {
     if (this.isInitialized === false || this.isInitialized === undefined) {
       rollLog('Perform initialization first.');
@@ -204,6 +217,7 @@ const App = () => {
       });
   };
 
+  // login with account id and password
   const loginWithPassword = () => {
     if (this.isInitialized === false || this.isInitialized === undefined) {
       rollLog('Perform initialization first.');
@@ -220,6 +234,7 @@ const App = () => {
       });
   };
 
+  // logout from server.
   const logout = () => {
     if (this.isInitialized === false || this.isInitialized === undefined) {
       rollLog('Perform initialization first.');
@@ -236,6 +251,7 @@ const App = () => {
       });
   };
 
+  // send text message to somebody
   const sendmsg = () => {
     if (this.isInitialized === false || this.isInitialized === undefined) {
       rollLog('Perform initialization first.');
@@ -268,6 +284,7 @@ const App = () => {
       });
   };
 
+  // ui render.
   return (
     <SafeAreaView>
       <View style={styles.titleContainer}>
@@ -423,65 +440,56 @@ const styles = StyleSheet.create({
 export default App;
 ```
 
-### Compile and run on ios real machine
+### Compile and run the project
 
-> 1. Connect the iphone and set it to developer mode;
-> 2. Open the `ios` folder and use `xcode` to open the `simple_demo.xcworkspace` project file;
-> 3. In `xcode`, set the application signature under the signature option;
-> 4. Click the Build and Run button;
-> 5. After the program is built, it will be installed and run automatically, and the application interface will be displayed.
->    ![](./res/ios-1.png)
+Now you can start creating and running projects on the target platform.
 
-### Compile and run in ios simulator
+Compile and run on real iOS device:
 
-> 1. Open the `ios` folder and use `xcode` to open the `simple_demo.xcworkspace` project file;
-> 2. In `xcode`, select the simulator `iphone13`;
-> 3. Click the Build and Run button;
-> 4. After the program is built, it will be automatically installed and run, and the application interface will be displayed.
->    ![](./res/ios-2.png)
+1. Connect the iPhone and set it to developer mode;
+2. Open `simple_demo/ios`, use `xcode` to open `simple_demo.xcworkspace`;
+3. Click **Targets** > **simple_demo** > **Signing & Capabilities** to set the application signature under the signature option;
+4. Click `Build` to build and run the project. After the program is built, it will be automatically installed and run, and the application interface will be displayed.
 
-### Compile and run on android real machine
+![img](./res/ios-1.png)
 
-> 1. Use `android studio` to open the `android` folder;
-> 2. Connect to android phone, set to developer mode, and set usb adjustable;
-> 3. Set data forwarding: enter `adb reverse tcp:8081 tcp:8081` in the terminal command line;
-> 4. Start the service: execute the command in `package.json`: `"start": "react-native start"`, run the command `yarn start` in the terminal;
-> 5. Click the Build and Run button;
-> 6. After the program is built, it will be installed and run automatically, and the application interface will be displayed.
->    ![](./res/android-1.png)
+Compile and run in iOS simulator
 
-### Verify SDK
+1. Open `simple_demo/ios`, use `xcode` to open `simple_demo.xcworkspace`;
+2. In `xcode`, select the simulator `iphone13`;
+3. Click `Build` to build and run the project. After the program is built, it will be automatically installed and run, and the application interface will be displayed.
 
-#### Verify login
+![img](./res/ios-2.png)
 
-> 1. Enter username and password;
-> 2. Click the Login button;
-> 3. The login result will be prompted at the bottom of the interface.
+Compile and run on real Android device
 
-#### verify exit
+1. Open `simple_demo/android` in Android Studio;
+2. Connect to Android phone, set to developer mode, and set USB adjustable;
+3. Set data forwarding: enter `adb reverse tcp:8081 tcp:8081` in the terminal command line;
+4. Start the service: execute the command in `package.json`: `"start": "react-native start"`, run the command `yarn start` in the terminal:
 
-> 1. Click the Exit button;
-> 2. The bottom of the interface will prompt the exit result.
+   ```sh
+   yarn start
+   ```
 
-#### Verify registration
+5. After the program is built, it will be installed and run automatically, and the application interface will be displayed.
 
-Unregistered users cannot log in. So, you can register in this interface, or [register in console](https://console.easemob.com/user/login).
+![img](./res/android-1.png)
 
-> 1. Enter username and password;
-> 2. Click the Register button;
-> 3. The registration result is prompted at the bottom of the interface.
+Display demo main interface:
+![img](./res/main.png)
 
-#### Verify sending message
+## Test your app
 
-After logging in successfully, you can send messages.
+Refer to the following code to test registering an account, logging in, sending and receiving messages.
 
-> 1. Enter the content to send;
-> 2. Click the Send button;
-> 3. At the bottom of the interface, you will be prompted to send the result.
+1. Enter the username and password on the real device or emulator, and click **Register**.
+2. Click **Login**.
+3. Register and log in a new user on another real machine or emulator.
+4. Enter the username on the second machine on the first real machine or emulator, edit the message and click **Send** to receive the message on the second machine.
 
-#### Verify received message
+At the same time, you can view the log below to check whether the registration, login, and message sending are successful.
 
-After successful login, you can receive messages. Messages can be sent using another device.
+## more operations
 
-> 1. Another device logs in and sends a message;
-> 2. The device receives a message and prompts the reception result.
+To ensure security, we recommend using the `username + password + token` method to create a user. The token is generated on your app server for the client to obtain. When the token expires, you need to obtain it again. For details, see [Get user token](https://docs-im.easemob.com/ccim/rest/accountsystem#Get user_token).

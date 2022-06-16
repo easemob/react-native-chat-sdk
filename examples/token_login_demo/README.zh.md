@@ -1,86 +1,85 @@
-_Chinese | [English](./quick-start.md)_
+_Chinese | [English](./README.md)_
 
-# 环信即时通讯 IM React-Native 快速入门
+更新时间：2022-06-16
 
-更新时间：2022-05-10
+# Agora Chat React-Native 快速入门
 
-通过本文可以实现一个集成聊天 SDK 的简单 app。
+本文介绍如何极简集成 Agora 即时通讯 React-Native SDK，在你的 app 中实现发送和接收单聊文本消息。
 
 ## 实现原理
 
-下图展示在客户端发送和接收一对一文本消息的工作流程。
-![工作流程图](https://web-cdn.agora.io/docs-files/1644379153389)
+~338e0e30-e568-11ec-8e95-1b7dfd4b7cb0~
 
-## 编译运行的条件要求
+## 前提条件
+
+集成前请确认 app 的开发和运行环境满足以下要求：
+
+对于 iOS 平台：
 
 - MacOS 10.15.7 或以上版本
 - Xcode 12.4 或以上版本，包括命令行工具
-- Android Studio 4.0 或以上版本，包括 JDK 1.8 或以上版本
+- React Native 0.63.4 或以上版本
 - NodeJs 16 或以上版本，包含 npm 包管理工具
 - CocoaPods 包管理工具
 - Yarn 编译运行工具
 - Watchman 调试工具
-- react-native-cli 命令行工具
-- react 16.13.1 或以上版本
-- react-native 0.63.4 或以上版本
+- 运行环境真机或模拟器 iOS 10.0 或以上版本
 
-### 条件的具体说明
+对于 Android 平台：
 
-[配置开发或者运行环境如果遇到问题，请参考这里](./docs/developer.md)
+- MacOS 10.15.7 或以上版本，Windows 10 或以上版本
+- Android Studio 4.0 或以上版本，包括 JDK 1.8 或以上版本
+- React Native 0.63.4 或以上版本
+- 如果用 Macos 系统开发，需要 CocoaPods 包管理工具
+- 如果用 Windows 开发，需要 Powershell 5.1 或以上版本
+- NodeJs 16 或以上版本，包含 npm 包管理工具
+- Yarn 编译运行工具
+- Watchman 调试工具
+- 运行环境真机或模拟器 Android 6.0 或以上版本
 
-## 注册开发者账号
+配置开发或者运行环境如果遇到问题，请参考 [RN 官网](https://reactnative.dev/)。
 
-注册开发者账号以及获取 App Key，[传送门](https://console.easemob.com/user/login)。
+### 其他要求
 
-### 关于注册
+- 有效的 Agora 即时通讯 IM 开发者账号和 App Key，详见 [Agora 即时通讯云控制台](https://console.agora.io/)。
 
-SDK 也提供了注册方式，建议在正式的环境中使用。
+## 项目设置
 
-## 创建个人的发送文本消息的 demo 项目
+创建一个 React Native 项目并将 Agora Chat 集成进去
 
-### 使用命令创建项目
+1. 根据开发系统和目标平台准备开发环境；
+2. 打开终端，进入需要创建项目的目录，输入命令创建 React Native 项目：
 
-打开终端，进入需要创建项目的目录，输入命令进行`react-native`项目创建:
+   ```sh
+   npx react-native init token_login_demo
+   cd token_login_demo
+   yarn
+   ```
 
-```bash
-npx react-native init simple_demo
-cd simple_demo
-yarn
-```
+   创建好的项目名称是 `token_login_demo`。
 
-### 集成 SDK
+3. 在终端命令行，输入以下命令添加依赖：
 
-在终端命令行，输入命令添加依赖:
+   ```sh
+   yarn add agora-react-native-chat
+   ```
 
-```bash
-yarn add react-native-chat-sdk
-```
+4. 在目标平台执行脚本
 
-### android 平台需要执行脚本
+  iOS：
 
-对于 android 平台，需要执行预构建脚本生成需要的文件。
+  ```sh
+  cd ios && pod install && cd ..
+  ```
 
-```bash
-cd node_modules/react-native-chat-sdk/native_src/cpp && sh generate.sh --type rn && cd ../../../..
-```
+## 实现发送和接收单聊消息
 
-### ios 平台需要执行 pod 工具
+发送单聊消息前，终端用户需要先注册 Chat 账号，登录。
 
-在终端命令行，输入命令执行 pod:
+打开 `token_login_demo/App.js`，用以下代码进行替换：
 
-```bash
-cd ios
-pod install
-cd ..
-```
-
-### 添加示例代码
-
-建议使用`visual studio code`打开文件夹`simple_demo`.  
-打开文件`App.js`
-删除全部内容，添加如下内容:
-
-```typescript
+```javascript
+// 导入依赖库
 import React, {useEffect} from 'react';
 import {
   SafeAreaView,
@@ -95,9 +94,11 @@ import {
   ChatOptions,
   ChatMessageChatType,
   ChatMessage,
-} from 'react-native-chat-sdk';
+} from 'agora-react-native-chat';
 
+// 创建 app
 const App = () => {
+  // 进行 app 设置
   const title = 'AgoraChatQuickstart';
   const [appKey, setAppKey] = React.useState('81446724#514456');
   const [username, setUsername] = React.useState('asterisk0020');
@@ -106,6 +107,7 @@ const App = () => {
   const [content, setContent] = React.useState('');
   const [logText, setWarnText] = React.useState('Show log area');
 
+  // 输出 console log 文件
   useEffect(() => {
     logText.split('\n').forEach((value, index, array) => {
       if (index === 0) {
@@ -114,6 +116,7 @@ const App = () => {
     });
   }, [logText]);
 
+  // 输出 UI log 文件
   const rollLog = text => {
     setWarnText(preLogText => {
       let newLogText = text;
@@ -144,6 +147,7 @@ const App = () => {
       }),
     });
   };
+  // 获取 token。这里是示例，实际中需要从你自己的 app 服务器获取，参见：https://docs-preprod.agora.io/en/agora-chat/generate_user_tokens?platform=React%20Native。
   const requestGetToken = () => {
     return requestHttp('https://a1.easemob.com/app/chat/user/login');
   };
@@ -151,6 +155,7 @@ const App = () => {
     return requestHttp('https://a1.easemob.com/app/chat/user/register');
   };
 
+  // 设置消息监听器。
   const setMessageListener = () => {
     let msgListener = {
       onMessagesReceived(messages) {
@@ -171,6 +176,8 @@ const App = () => {
     ChatClient.getInstance().chatManager.addMessageListener(msgListener);
   };
 
+  // SDK 初始化。
+  // 调用任何接口之前，请先进行初始化。
   const init = () => {
     let o = new ChatOptions({
       autoLogin: false,
@@ -207,6 +214,7 @@ const App = () => {
       });
   };
 
+  // 注册账号。
   const registerAccount = () => {
     if (this.isInitialized === false || this.isInitialized === undefined) {
       rollLog('Perform initialization first.');
@@ -222,6 +230,7 @@ const App = () => {
       });
   };
 
+  // 用 Agora Chat 账号和 token 登录。
   const loginWithToken = () => {
     if (this.isInitialized === false || this.isInitialized === undefined) {
       rollLog('Perform initialization first.');
@@ -257,6 +266,7 @@ const App = () => {
       });
   };
 
+  // 登出。
   const logout = () => {
     if (this.isInitialized === false || this.isInitialized === undefined) {
       rollLog('Perform initialization first.');
@@ -273,6 +283,7 @@ const App = () => {
       });
   };
 
+  // 发送一条文本消息。
   const sendmsg = () => {
     if (this.isInitialized === false || this.isInitialized === undefined) {
       rollLog('Perform initialization first.');
@@ -305,6 +316,7 @@ const App = () => {
       });
   };
 
+  // UI 组件渲染。
   return (
     <SafeAreaView>
       <View style={styles.titleContainer}>
@@ -393,6 +405,7 @@ const App = () => {
   );
 };
 
+// 设置 UI。
 const styles = StyleSheet.create({
   titleContainer: {
     height: 60,
@@ -460,65 +473,49 @@ const styles = StyleSheet.create({
 export default App;
 ```
 
-### 编译并在 ios 真机运行
+### 编译和运行项目
 
-> 1. 连接 iphone 手机，设置为开发者模式；
-> 2. 打开`ios`文件夹，使用`xcode`打开`simple_demo.xcworkspace`工程文件；
-> 3. 在`xcode`中，在签名选项下设置应用签名；
-> 4. 点击构建并运行按钮；
-> 5. 程序构建完成后，自动安装和运行，并显示应用界面。
->    ![](./res/ios-1.png)
+现在你可以开始在目标平台创建和运行项目。
 
-### 编译并在 ios 模拟器中运行
+编译并在 iOS 真机运行：
 
-> 1. 打开`ios`文件夹，使用`xcode`打开`simple_demo.xcworkspace`工程文件；
-> 2. 在`xcode`中，选择模拟器`iphone13`；
-> 3. 点击构建并运行按钮；
-> 4. 程序构建完成后，自动安装和运行，并显示应用界面。
->    ![](./res/ios-2.png)
+1. 连接苹果手机，设置为开发者模式；
+2. 打开 `token_login_demo/ios`，使用 `xcode` 打开 `token_login_demo.xcworkspace`；
+3. 依次点击 **Targets** > **token_login_demo** > **Signing & Capabilities** 在签名选项下设置应用签名；
+4. 点击 `Build` 构建并运行项目。程序构建完成后，自动安装和运行，并显示应用界面。
 
-### 编译并在 android 真机运行
+编译并在 iOS 模拟器中运行：
 
-> 1. 使用`android studio`打开`android`文件夹；
-> 2. 连接 android 系统手机，设置为开发者模式，并且设置 usb 可调式；
-> 3. 设置数据转发: 在终端命令行输入`adb reverse tcp:8081 tcp:8081`；
-> 4. 启动服务: 执行`package.json`里面的命令: `"start": "react-native start"`, 在终端中运行命令`yarn start`；
-> 5. 点击构建并运行按钮；
-> 6. 程序构建完成后，自动安装和运行，并显示应用界面。
->    ![](./res/android-1.png)
+1. 打开 `token_login_demo/ios`，使用 `xcode` 打开 `token_login_demo.xcworkspace`；
+2. 在 `xcode` 中，选择模拟器 `iphone13`；
+3. 点击 `Build` 构建并运行项目。程序构建完成后，自动安装和运行，并显示应用界面。
 
-### 验证 SDK
+编译并在 Android 真机运行：
 
-#### 验证登录
+1. 在 Android Studio 中打开 `token_login_demo/android`；
+2. 连接 Android 系统手机，设置为开发者模式，并且设置 USB 可调式；
+3. 设置数据转发：在终端命令行输入 `adb reverse tcp:8081 tcp:8081`；
+4. 启动服务：执行 `package.json` 里面的命令：`"start": "react-native start"`，在终端中运行命令 `yarn start`：
 
-> 1. 输入用户名 和 密码；
-> 2. 点击 登录 按钮；
-> 3. 界面下方会提示登录结果。
+   ```sh
+   yarn start
+   ```
 
-#### 验证退出
+5. 程序构建完成后，自动安装和运行，并显示应用界面。
 
-> 1. 点击 退出 按钮；
-> 2. 界面下方会提示退出结果。
+![img](./res/main.png)
 
-#### 验证注册
+## 测试你的 app
 
-没有注册的用户无法登录。所以，可以在该界面进行注册，或者[在控制台进行注册](https://console.easemob.com/user/login)。
+参考以下代码测试注册账号，登录，发送和接收消息。
 
-> 1. 输入 用户名 和 密码；
-> 2. 点击 注册 按钮；
-> 3. 界面下面提示注册结果。
+1. 在真机或模拟器上输入用户名和密码，点击 **注册**。
+2. 点击 **登录**。
+3. 在另一台真机或模拟器上注册和登录一个新用户。
+4. 在第一台真机或模拟器上输入第二台上的用户名，编辑消息并点击 **发送**，在第二台机器上接收消息。
 
-#### 验证发送消息
+同时你可以在下方查看日志，检查注册，登录，发送消息是否成功。
 
-登录成功之后就可以发送消息。
+## 更多操作
 
-> 1. 输入发送内容；
-> 2. 点击 发送 按钮；
-> 3. 界面下方提示发送结果。
-
-#### 验证接收消息
-
-登录成功之后就可以接收消息。可以使用另外一台设备进行消息发送。
-
-> 1. 另外设备登录并发送消息；
-> 2. 该设备收到消息并提示接收结果。
+为了保证安全性，我们推荐使用 `username + password + token` 方式创建用户，token 在你的 app server 生成供客户端获取，当 token 过期时你需要重新获取。详见 [获取 user token](./generate_user_tokens?platform=React%20Native).

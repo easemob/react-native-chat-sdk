@@ -1,8 +1,8 @@
 _English | [Chinese](./README.zh.md)_
 
-# Agora Chat IM React-Native Quick Start
+Update time: 2022-06-16
 
-Update time: 2022-06-10
+# Agora Chat IM React-Native Quick Start
 
 Instant messaging connects people wherever they are and allows them to communicate with others in real time. The Agora Chat SDK enables you to embed real-time messaging in any app, on any device, anywhere.
 
@@ -42,7 +42,7 @@ Follow the steps to create a React Native project and add Agora Chat into your a
 1. Make sure you have set up the development environment based on your operating system and target platform.
 2. In your terminal, run the following command to create a React Native project.
 
-   ```bash
+   ```sh
    npx react-native init token_login_demo
    cd token_login_demo
    yarn
@@ -52,21 +52,15 @@ Follow the steps to create a React Native project and add Agora Chat into your a
 
 3. Run the following command to import the Chat SDK using yarn:
 
-   ```bash
-   yarn add react-native-chat-sdk
+   ```sh
+   yarn add agora-react-native-chat
    ```
 
 4. Execute the scripts or tools according to your target platform.
 
-   If your target platform is Android:
-
-   ```bash
-   cd node_modules/react-native-chat-sdk/native_src/cpp && sh generate.sh --type rn && cd ../../../..
-   ```
-
    If your target platform is iOS:
 
-   ```bash
+   ```sh
    cd ios && pod install && cd ..
    ```
 
@@ -96,7 +90,7 @@ import {
   ChatOptions,
   ChatMessageChatType,
   ChatMessage,
-} from 'react-native-chat-sdk';
+} from 'agora-react-native-chat';
 
 // The App Object.
 const App = () => {
@@ -498,13 +492,13 @@ To build and run the project on an Android device, take the following steps:
 3. In terminal, type in `adb reverse tcp:8081 tcp:8081` to set up data forwarding.
 4. Run the following command to execute `"start": "react-native start"` in `package.json`:
 
-   ```bash
+   ```sh
    yarn start
    ```
 
 5. Click `Build` in Android Studio to build the project. When the build succeeds, Android Studio runs the project and installs it on the device. You see the app interface.
 
-![](./res/main.png)
+![img](./res/main.png)
 
 ## Test your app
 
