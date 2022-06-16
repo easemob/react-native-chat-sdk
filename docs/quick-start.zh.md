@@ -35,6 +35,6 @@ _Chinese | [English](./quick-start.md)_
 
 详见具体 demo 的相应文档。
 
-[api demo](../example/README.zh.md).
+[api demo](../example/README.zh.md).  
 [simple demo](../examples/simple_demo/README.zh.md).  
 [token login demo](../examples/token_login_demo/README.zh.md).
