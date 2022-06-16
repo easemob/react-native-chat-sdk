@@ -1,8 +1,8 @@
 _Chinese | [English](./README.md)_
 
-# 即时通讯 IM React-Native 说明
-
 更新时间：2022-06-16
+
+# 即时通讯 IM React-Native 说明
 
 此 SDK 基于原生 `Android` 和 `iOS` 使用 `typescript` 语言 实现的 React Native 版本。
 `Android` 详见这里。[传送门](https://docs-im.easemob.com/im/android/sdk/import)。
