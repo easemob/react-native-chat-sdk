@@ -35,6 +35,6 @@ If you encounter problems in configuring the development or running environment,
 
 For details, please refer to the corresponding documentation of the specific demo.
 
-[api demo](../example/README.md).
+[api demo](../example/README.md).  
 [simple demo](../examples/simple_demo/README.md).  
 [token login demo](../examples/token_login_demo/README.md).
