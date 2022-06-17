@@ -2,28 +2,42 @@
 
 # readme
 #
-# sh mac_publish.sh [suffix] [version]|[tag]
+# sh publish_agora_package.sh [suffix] [version]|[tag] [directory]
 # See `npm help install`
-# [suffix]: generate package name's suffix
+# [suffix]: (optional) generate package name's suffix
 # For example: suffix is 1.0.5-rc.1, package name is agora-react-native-chat-1.0.5-rc.1
-# [version]: specified version
-# [tag]: package tag, see `npm help dist-tag`, common ones are alpha, beta, rc and latest.
+# [version]: (optional) specified version
+# [tag]: (optional) package tag, see `npm help dist-tag`, common ones are alpha, beta, rc and latest.
+# [directory]: (optional) specified output zip directory
 #
 # download latest release version
-# sh mac_publish.sh 0.4.5 latest
+# sh publish_agora_package.sh 0.4.5 latest
 # or
-# sh mac_publish.sh 0.4.5
+# sh publish_agora_package.sh 0.4.5
 #
 # download tag latest version
-# sh mac_publish.sh 1.0.5 rc
+# sh publish_agora_package.sh 1.0.5 rc
 #
 # download specified version
-# sh mac_publish.sh 0.4.4 0.4.4
+# sh publish_agora_package.sh 0.4.4 0.4.4
 #
 # any directory execute this bash script is ok.
-# For example: sh mac_publish.sh
+# For example: sh publish_agora_package.sh
 #
 # npm package version list: `npm dist-tag react-native-chat-sdk`
+
+function now() {
+    local lv_var=$1
+    eval $lv_var='$(date +%Y-%m-%d\ %H:%M:%S)'
+}
+
+function log() {
+    # high | green
+    local FOREGROUND=32
+    local FONT=5
+    now CURRENT_DATETIME
+    echo "[$CURRENT_DATETIME] \\033[${FOREGROUND};${FONT}m${@}\\033[0m"
+}
 
 current_dir=$(
     cd "$(dirname "$0")"
@@ -38,6 +52,12 @@ old_package_name=react-native-chat-sdk
 new_package_name=agora-react-native-chat
 suffix=$1
 tagOrVersion=$2
+output_dir=$3
+
+log package name: "${new_package_name}"
+log package zip suffix: "${suffix}"
+log package tag or version: "${tagOrVersion}"
+log package output directory: "${output_dir}"
 
 if [ "${tagOrVersion}" == "" ]; then
     yarn global add ${old_package_name} --global-folder ${current_dir}/Output
@@ -55,18 +75,26 @@ rm -rf ${current_dir}/Output/node_modules/${new_package_name}/native_src/cpp/CMa
 rm -rf ${current_dir}/Output/node_modules/${new_package_name}/native_src/cpp/generate.ps1
 rm -rf ${current_dir}/Output/node_modules/${new_package_name}/native_src/cpp/generate.sh
 
-rm -rf ${current_dir}/Output/agora/${new_package_name}.zip
-
 pushd ${current_dir}/Output/node_modules
 
 zip -r -1 -q -b ${current_dir}/Output/node_modules/${new_package_name} ${new_package_name} *
 
 popd
 
-if [ "${suffix}" == "" ]; then
-    mv ${current_dir}/Output/node_modules/${new_package_name}.zip ${current_dir}/Output/agora/${new_package_name}.zip
+if [ "${output_dir}" == "" ]; then
+    output_dir=${current_dir}/Output/agora
 else
-    mv ${current_dir}/Output/node_modules/${new_package_name}.zip ${current_dir}/Output/agora/${new_package_name}-${suffix}.zip
+    mkdir -p ${output_dir}
+fi
+
+if [ "${suffix}" == "" ]; then
+    rm -rf ${output_dir}/${new_package_name}.zip
+    mv ${current_dir}/Output/node_modules/${new_package_name}.zip ${output_dir}/${new_package_name}.zip
+    log "agora package output local path: ${output_dir}/${new_package_name}.zip"
+else
+    rm -rf ${output_dir}/${new_package_name}-${suffix}.zip
+    mv ${current_dir}/Output/node_modules/${new_package_name}.zip ${output_dir}/${new_package_name}-${suffix}.zip
+    log "agora package output local path: ${output_dir}/${new_package_name}-${suffix}.zip"
 fi
 
 yarn global remove ${old_package_name} --global-folder ${current_dir}/Output
@@ -74,3 +102,5 @@ yarn global remove ${old_package_name} --global-folder ${current_dir}/Output
 read -s -n1 -p "Enter any key continue..."
 
 rm -rf ${current_dir}/Output
+
+log "agora package make success."
