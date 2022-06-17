@@ -169,7 +169,7 @@ cd example && yarn android
 npm version prerelease --preid=beta
 npm publish --tag=beta
 git push --tags
-sh scripts/mac_publish.sh 1.0.5-rc.1 rc
+sh scripts/publish_agora_package.sh 1.0.5-rc.1 rc ~/Output/agora
 ```
 
 ## generate docs
