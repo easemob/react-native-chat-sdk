@@ -2,43 +2,43 @@ import { ChatMessage } from './ChatMessage';
 
 export class ChatMessageThread {
   /**
-   * sub-zone id.
+   * The message thread ID.
    */
   threadId: string;
   /**
-   * The name of the sub-zone.
+   * The name of the message thread.
    */
   threadName: string;
   /**
-   * Creator of the sub-zone.
+   * The creator of the message thread.
    */
   owner: string;
   /**
-   * A msgId that create sub-zone.
+   * The ID of the parent message of the message thread.
    */
   msgId: string;
   /**
-   * A id that create sub-zone. Generally, it is a group ID.
+   * The group ID where the message thread belongs.
    */
   parentId: string;
   /**
-   * Member list of the sub-zone.
+   * The count of members in the message thread.
    */
   memberCount: number;
   /**
-   * Number of messages in sub-zone.
+   * The count of messages in the message thread.
    */
   msgCount: number;
   /**
-   * Timestamp of sub-zone creation.
+   * The Unix timestamp when the message thread is created. The unit is millisecond.
    */
   createAt: number;
   /**
-   * The last message in the sub-zone, if it is empty, it means the last message is withdrawn. If it is not empty, it means a new message.
+   * The last reply in the message thread. If it is empty, the last message is withdrawn.
    */
   lastMessage?: ChatMessage;
   /**
-   * Construct chat thread object.
+   * Creates a message thread.
    */
   constructor(params: {
     threadId: string;
@@ -66,36 +66,36 @@ export class ChatMessageThread {
 }
 
 /**
- * Chat thread operation type.
+ * The message thread event types.
  */
 export enum ChatMessageThreadOperation {
   /**
-   * Unknown sub-zone operation type
+   * The unknown type of message thread event.
    */
   UnKnown = 0,
   /**
-   * Create sub-zone operation.
+   * The message thread is created.
    */
   Create,
   /**
-   * update sub-zone operation.
+   * The message thread is updated.
    */
   Update,
   /**
-   * remove sub-zone operation.
+   * The message thread is destroyed.
    */
   Delete,
   /**
-   * update sub-zone last message.
+   * The last reply in the message thread is updated.
    */
   Update_Msg,
 }
 
 /**
- * Converts the thread operation type from int to enum.
+ * Converts the message thread event type from Int to enum.
  *
- * @param type The chat thread operation type of the int type.
- * @returns The chat thread operation type.
+ * @param type The message thread event type of the Int type.
+ * @returns The message thread event type of the enum type.
  */
 export function ChatMessageThreadOperationFromNumber(type: number) {
   let ret = ChatMessageThreadOperation.UnKnown;
@@ -119,23 +119,23 @@ export function ChatMessageThreadOperationFromNumber(type: number) {
 }
 
 /**
- * The chat thread notify event.
+ * The message thread event class.
  */
 export class ChatMessageThreadEvent {
   /**
-   * The chat thread operator ID.
+   * The user ID of the message thread operator.
    */
   from: string;
   /**
-   * The chat thread operation type.
+   * The message thread event type.
    */
   type: ChatMessageThreadOperation;
   /**
-   * The chat thread object.
+   * The message thread object.
    */
   thread: ChatMessageThread;
   /**
-   * Construct a chat thread event object.
+   * Constructs a message thread event.
    */
   constructor(params: { from: string; type: number; thread: any }) {
     this.from = params.from;

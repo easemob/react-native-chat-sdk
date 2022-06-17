@@ -298,7 +298,7 @@ export class ChatGroupOptions {
    */
   inviteNeedConfirm: boolean;
   /**
-   * The extension information of group details.
+   * The group extension information.
    */
   ext?: string;
   constructor(params: {
