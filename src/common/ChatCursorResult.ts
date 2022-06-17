@@ -1,6 +1,7 @@
 /**
- * The ChatCursorResult class, which specifies the cursor from which to query results.
- * When querying using this class, the SDK returns the queried instance and the cursor.
+ * The generic class which contains the cursor and pagination result.
+ *
+ * The class instance is returned when you make a paginated query.
  */
 export class ChatCursorResult<T> {
   /**

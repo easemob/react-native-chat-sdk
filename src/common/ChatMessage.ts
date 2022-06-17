@@ -277,9 +277,7 @@ export interface ChatMessageStatusCallback {
 /**
  * The message class that defines a message that is to be sent or received.
  *
- * For example:
- *
- * Constructs a text message to send:
+ * For example, construct a text message to send:
  *
  * ```typescript
  *   let msg = ChatMessage.createTextMessage(
@@ -308,8 +306,12 @@ export class ChatMessage {
    */
   from: string = '';
   /**
-   * Id of the receiving object.
-   * Generally, the peer type message is the user ID, the group type message is the group ID, the chat room type message is the chat room ID, and the chat thread type message is the chat thread ID.
+   * The user ID of the message recipient:
+   *
+   * - For the one-to-one chat, it is the user ID of the message recipient;
+   * - For the group chat, it is the group ID;
+   * - For the chat room chat, it is the chat room ID;
+   * - For a message thread, it is the ID of the message thread.
    */
   to: string = '';
   /**
@@ -324,21 +326,21 @@ export class ChatMessage {
    * Whether the delivery receipt is required, which is to check whether the message is delivered successfully.
    *
    * - `true`: Yes.
-   * - `false`: No.
+   * - (Default) `false`: No.
    */
   hasDeliverAck: boolean = false;
   /**
    * Whether the message read receipt is required.
    *
    * - `true`: Yes.
-   * - `false`: No.
+   * - (Default) `false`: No.
    */
   hasReadAck: boolean = false;
   /**
    * Whether read receipts are required for group messages.
    *
    * - `true`: Yes.
-   * - `false`: No.
+   * - (Default) `false`: No.
    */
   needGroupAck: boolean = false;
   /**
@@ -349,7 +351,7 @@ export class ChatMessage {
    * Whether the message is read.
    *
    * - `true`: Yes.
-   * - `false`: No.
+   * - (Default) `false`: No.
    */
   hasRead: boolean = false;
   /**
@@ -374,11 +376,14 @@ export class ChatMessage {
   body: ChatMessageBody;
 
   /**
-   * Whether it is an chat thread message.
-   * If true, you need to set receiver to chat thread ID. See {@link #to}.
+   * Whether it is a message in a message thread.
+   * 
+   * - `true`: Yes. In this case, you need to set the user ID of the message recipient to the message thread ID. See {@link #to}.
+   * - `false`: No.
    *
    * **Note**
-   * The chat type messages can occur only in groups.
+
+   * This parameter is valid only for group.
    */
   isChatThread: boolean;
 
@@ -775,10 +780,10 @@ export class ChatMessage {
   }
 
   /**
-   * Create a message from the server.
+   * Creates a received message instance.
    *
-   * @param params message in json format.
-   * @returns message object.
+   * @param params The received message.
+   * @returns The message object.
    */
   public static createReceiveMessage(params: any): ChatMessage {
     return new ChatMessage(params);
@@ -792,17 +797,14 @@ export class ChatMessage {
   }
 
   /**
-   * Get message read count.
-   *
-   * **Note**
-   * This parameter is valid only when it is a group type. see{@link ChatMessageChatType#GroupChat}
+   * Gets the count of read receipts of a group message.
    */
   public get groupReadCount(): Promise<number> {
     return ChatClient.getInstance().chatManager.groupAckCount(this.msgId);
   }
 
   /**
-   * Asynchronously returns the chat thread object.
+   * Gets details of a message thread.
    */
   public get threadInfo(): Promise<ChatMessageThread | undefined> {
     return ChatClient.getInstance().chatManager.getMessageThread(this.msgId);
@@ -832,12 +834,13 @@ export class ChatTextMessageBody extends ChatMessageBody {
    */
   content: string;
   /**
-   * Specifies a list of languages to translate. {@link https://docs.microsoft.com/en-us/azure/cognitive-services/translator/language-support}
+   * The target language for translation. See {@link https://docs.microsoft.com/en-us/azure/cognitive-services/translator/language-support}.
    */
   targetLanguages?: Array<string>;
   /**
-   * The translated results are placed here.
-   * It is KV Object, key is target language, value is translated content.
+   * The translation.
+   *
+   * It is a KV object, where the key is the target language and the value is the translation.
    */
   translations?: any;
   constructor(params: {
@@ -935,10 +938,9 @@ export class ChatFileMessageBody extends ChatMessageBody {
  */
 export class ChatImageMessageBody extends ChatFileMessageBody {
   /**
-   * Whether to send the original image when sending an image.
-   *
-   * - `true`: Yes.
-   * - (Default) `false`: No. The thumbnail is sent. For an image greater than 100 KB, the SDK will compress it before sending its thumbnail.
+   Whether to send the original image.
+  * - `true`: Yes. 
+  * - (Default) `false`: No. If the image is smaller than 100 KB, the SDK sends the original image and its thumbnail. If the image is equal to or greater than 100 KB, the SDK will compress it before sending the compressed image and the thumbnail of the compressed image.
    */
   sendOriginalImage: boolean;
   /**

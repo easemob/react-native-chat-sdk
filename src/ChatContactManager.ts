@@ -20,7 +20,7 @@ import {
 import { Native } from './__internal__/Native';
 
 /**
- * The contact manager class, which manages chat contacts such as adding, deleting, retrieving, and modifying contacts.
+ * The contact manager class, which manages chat contacts such as adding, retrieving, modifying, and deleting contacts.
  */
 export class ChatContactManager extends BaseManager {
   protected static TAG = 'ChatContactManager';
@@ -108,7 +108,7 @@ export class ChatContactManager extends BaseManager {
    * Adds a new contact.
    *
    * @param userId The user ID of the contact to add.
-   * @param reason (optional) The reason for adding the contact. It can be `null` or "".
+   * @param reason The reason for adding the contact. This parameter is optional and can be `null` or "".
    *
    * @throws A description of the exception. See {@link ChatError}.
    */
@@ -129,7 +129,7 @@ export class ChatContactManager extends BaseManager {
    * @param userId The user ID of the contact to delete.
    * @param keepConversation Whether to retain conversations of the contact to delete.
    * - `true`: Yes.
-   * - `false`: (default) No.
+   * - (Default) `false`: No.
    *
    * @throws A description of the exception. See {@link ChatError}.
    */
@@ -182,7 +182,7 @@ export class ChatContactManager extends BaseManager {
    *
    * You can send messages to the users on the block list, but cannot receive messages from them.
    *
-   * @param userId The ID of the contact to be added to the block list.
+   * @param userId The user ID of the contact to be added to the block list.
    *
    * @throws A description of the exception. See {@link ChatError}.
    */
@@ -274,7 +274,7 @@ export class ChatContactManager extends BaseManager {
   }
 
   /**
-   * Gets the unique IDs of the current user on the other devices. The ID is in the format of username + "/" + resource.
+   * Gets the unique IDs of the current user on the other devices. The ID is in the format of user ID + "/" + resource.
    *
    * @returns The list of unique IDs of users on the other devices if the method succeeds.
    *

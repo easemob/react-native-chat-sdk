@@ -1,7 +1,7 @@
 import { ChatError } from './ChatError';
 
 /**
- * The enumeration of chat room role types.
+ * The chat room role types.
  */
 export enum ChatRoomPermissionType {
   /**
@@ -23,10 +23,10 @@ export enum ChatRoomPermissionType {
 }
 
 /**
- * The room permission type convert.
+ * Converts the chat room role type from Int to enum.
  *
- * @param params The integer representing permission type.
- * @returns The room permission type.
+ * @param params The chat room role type of the Int type.
+ * @returns The chat room role type of the enum type.
  */
 export function ChatRoomPermissionTypeFromNumber(
   params: number
@@ -49,10 +49,10 @@ export function ChatRoomPermissionTypeFromNumber(
 }
 
 /**
- * The room permission type convert.
+ * Converts the chat room role type from enum to string.
  *
- * @param params The room permission type.
- * @returns The string representing room permission type.
+ * @param params The chat room role type of the enum type.
+ * @returns The chat room role type of the string type.
  */
 export function ChatRoomPermissionTypeToString(
   params: ChatRoomPermissionType
@@ -62,7 +62,8 @@ export function ChatRoomPermissionTypeToString(
 
 /**
  * The chat room instance class.
- * To get the correct value, ensure that you call {@ link ChatRoomManager#fetchChatRoomInfoFromServer(String)} before calling this method.
+ *
+ * To get the correct value, ensure that you call {@link ChatRoomManager#fetchChatRoomInfoFromServer(String)} to get chat room details before calling this method.
  */
 export class ChatRoom {
   /**
@@ -70,39 +71,39 @@ export class ChatRoom {
    */
   roomId: string;
   /**
-   * The chat room name from the memory.
+   * The chat room name.
    */
   roomName?: string;
   /**
-   * The chat room description from the memory.
+   * The chat room description.
    */
   description?: string;
   /**
-   * The chat room owner ID. If this method returns an empty string, the SDK fails to get chat room details.
+   * The user ID of the chat room owner.
    */
   owner: string;
   /**
-   * The chat room announcement in the chat room from the memory.
+   * The chat room announcement.
    */
   announcement?: string;
   /**
-   * The number of online members from the memory.
+   * The number of members in the chat room.
    */
   memberCount?: string;
   /**
-   * The maximum number of members in the chat room from the memory, which is set/specified when the chat room is created.
+   * The maximum number of users allowed to join a chat room. This field is specified during the creation of a chat room.
    */
   maxUsers?: string;
   /**
-   * The chat room admin list.
+   * The admin list of the chat room.
    */
   adminList?: Array<string>;
   /**
-   * The member list.
+   * The member list of the chat room.
    */
   memberList?: Array<string>;
   /**
-   * The chat room block list.
+   * The block list of the chat room.
    */
   blockList?: Array<string>;
   /**
@@ -110,11 +111,13 @@ export class ChatRoom {
    */
   muteList?: Array<string>;
   /**
-   * Whether all members are muted in the chat room from the memory.
+   * Whether all members are muted in the chat room.
+   * - `true`: Yes.
+   * - `false`: No.
    */
   isAllMemberMuted?: boolean;
   /**
-   * The current user's role in the chat room. The role types: {@link ChatRoomPermissionType}.
+   * The role of the current user in the chat room. For role types, see {@link ChatRoomPermissionType}.
    */
   permissionType: ChatRoomPermissionType;
   constructor(params: {

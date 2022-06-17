@@ -527,8 +527,6 @@ export class ChatManager extends BaseManager {
   /**
    * Sends the group message receipt to the server.
    *
-   * You can call the method only after setting the following method: {@link ChatOptions#requireAck(bool)} and {@link ChatMessage#needGroupAck(bool)}.
-   *
    * **Note**
    *
    * - This method takes effect only after you set {@link ChatOptions#requireAck(bool)} and {@link ChatMessage#needGroupAck(bool)} as `true`.
@@ -567,7 +565,7 @@ export class ChatManager extends BaseManager {
   /**
    * Sends the conversation read receipt to the server.
    *
-   * **Notes**
+   * **Note**
    *
    * - This method is valid only for one-to-one conversations.
    * - After this method is called, the sever will set the message status from unread to read.
@@ -683,7 +681,7 @@ export class ChatManager extends BaseManager {
    *
    * You can only import messages that you sent or received.
    *
-   * @param messages The messages to be imported.
+   * @param messages The messages to import.
    *
    * @throws A description of the exception. See {@link ChatError}.
    */
@@ -930,7 +928,7 @@ export class ChatManager extends BaseManager {
    * @param convId The conversation ID.
    * @param convType The conversation type. See {@link ChatConversationType}.
    * @param createIfNeed Whether to create a conversation if the specified conversation is not found:
-   * - `true`: Yes.
+   * - (Default) `true`: Yes.
    * - `false`: No.
    *
    * @returns The retrieved conversation object. The SDK returns `null` if the conversation is not found.
@@ -962,8 +960,6 @@ export class ChatManager extends BaseManager {
 
   /**
    * Gets all conversations from the local database.
-   *
-   * **Note**
    *
    * Conversations will be first retrieved from the memory. If no conversation is found, the SDK retrieves from the local database.
    *
@@ -1630,7 +1626,7 @@ export class ChatManager extends BaseManager {
   }
 
   /**
-   * Sets the custom properties of the conversation.
+   * Sets the extension properties of the conversation.
    *
    * @param convId The conversation ID.
    * @param convType The conversation type. See {@link ChatConversationType}.
@@ -1658,10 +1654,10 @@ export class ChatManager extends BaseManager {
   // }
 
   /**
-   * Adds a reaction.
+   * Adds a Reaction.
    *
-   * @param reaction The reaction content.
-   * @param msgId The message ID.
+   * @param reaction The Reaction content.
+   * @param msgId The ID of the message for which the Reaction is added.
    *
    * @throws A description of the exception. See {@link ChatError}.
    */
@@ -1677,9 +1673,9 @@ export class ChatManager extends BaseManager {
   }
 
   /**
-   * Deletes a reaction.
+   * Deletes a Reaction.
    *
-   * @param reaction The message reaction.
+   * @param reaction The Reaction to delete.
    * @param msgId The message ID.
    *
    * @throws A description of the exception. See {@link ChatError}.
@@ -1701,7 +1697,7 @@ export class ChatManager extends BaseManager {
    * @param msgIds The message ID list.
    * @param groupId The group ID, which is invalid only when the chat type is group chat.
    * @param chatType The chat type.
-   * @returns The Reaction list under the specified message ID（The UserList of ChatMessageReaction is the summary data, which only contains the information of the first three users）.
+   * @returns If success, the Reaction list is returned; otherwise, an exception is thrown.
    *
    * @throws A description of the exception. See {@link ChatError}.
    */
@@ -1736,13 +1732,14 @@ export class ChatManager extends BaseManager {
   }
 
   /**
-   * Gets the reaction details.
+   * Gets the Reaction details.
    *
    * @param msgId The message ID.
-   * @param reaction The reaction content.
-   * @param cursor The cursor position from which to get Reactions.
+   * @param reaction The Reaction content.
+   * @param cursor The cursor position from which to start getting Reactions.
    * @param pageSize The number of Reactions you expect to get on each page.
-   * @returns The result callback, which contains the reaction list obtained from the server and the cursor for the next query. Returns null if all the data is fetched.
+   * @returns If success, the SDK returns the Reaction details and the cursor for the next query. The SDK returns `null` if all the data is fetched.
+   *          If a failure occurs, an exception is thrown.
    *
    * @throws A description of the exception. See {@link ChatError}.
    */
@@ -1781,11 +1778,11 @@ export class ChatManager extends BaseManager {
   }
 
   /**
-   * Report violation message
+   * Reports an inappropriate message.
    *
-   * @param msgId Violation Message ID
-   * @param tag Report type (For example: involving pornography and terrorism)
-   * @param reason Report Reason.
+   * @param msgId The ID of the inappropriate message.
+   * @param tag The message content tag. For example, the message is related to pornography and terrorism.
+   * @param reason The reason for reporting the message.
    *
    * @throws A description of the exception. See {@link ChatError}.
    */
@@ -1806,10 +1803,10 @@ export class ChatManager extends BaseManager {
   }
 
   /**
-   * Gets the list of Reactions from message.
+   * Gets the list of Reactions from a message.
    *
-   * @param msgId The message id.
-   * @returns The reaction list.
+   * @param msgId The message ID.
+   * @returns If success, the Reaction list is returned; otherwise, an exception will be thrown.
    *
    * @throws A description of the exception. See {@link ChatError}.
    */
@@ -1833,8 +1830,8 @@ export class ChatManager extends BaseManager {
   /**
    * Gets the number of members that have read the group message.
    *
-   * @param msgId The message id.
-   * @returns The group message count.
+   * @param msgId The message ID.
+   * @returns If success, the SDK returns the number of members that have read the group message; otherwise, an exception will be thrown.
    *
    * @throws A description of the exception. See {@link ChatError}.
    */
@@ -1850,17 +1847,22 @@ export class ChatManager extends BaseManager {
   }
 
   /**
-   * Create Chat Thread.
-   * Group members have permission.
+   * Creates a message thread.
    *
-   * After chat thread is created, the following notices will appear:
+   * Each member of the group where the thread belongs can call this method.
    *
-   * 1. Members of the organization (group) to which chat thread belongs will receive the created notification event, and can listen to related events by setting {@link ChatMessageEventListener#onChatMessageThreadCreated}.
-   * 2. Multiple devices will receive the notification event, and can listen to related events by setting {@link ChatMultiDeviceEventListener#onThreadEvent}.
-   * @param name Chat Thread name. No more than 64 characters in length.
-   * @param msgId Parent message ID, generally refers to group message ID.
-   * @param parentId Parent ID, generally refers to group ID.
-   * @returns Returns the created thread object if successful.
+   * Upon the creation of a message thread, the following will occur:
+   *
+   *  - In a single-device login scenario, each member of the group to which the message thread belongs will receive the {@link ChatMessageEventListener#onChatMessageThreadCreated} callback.
+   *   You can listen for message thread events by setting {@link ChatMessageEventListener}.
+   *
+   * - In a multi-device login scenario, the devices will receive the {@link ChatMultiDeviceEventListener#onThreadEvent} callback.
+   *   You can listen for message thread events by setting {@link ChatMultiDeviceEventListener}.
+   *
+   * @param name The name of the new message thread. It can contain a maximum of 64 characters.
+   * @param msgId The ID of the parent message.
+   * @param parentId The parent ID, which is the group ID.
+   * @returns If success, the new message thread object is returned; otherwise, an exception will be thrown.
    *
    * @throws A description of the exception. See {@link ChatError}.
    */
@@ -1887,13 +1889,18 @@ export class ChatManager extends BaseManager {
   }
 
   /**
-   * Join Chat Thread.
-   * Group members have permission.
+   * Joins a message thread.
    *
-   * Join successfully, return the Chat Thread details {@link ChatMessageThread}. After joining chat thread, the multiple devices will receive the notification event. You can set {@link ChatMultiDeviceEventListener#onThreadEvent} to listen on the event.
+   * Each member of the group where the message thread belongs can call this method.
    *
-   * @param chatThreadId Chat Thread ID.
-   * @returns If the execution is successful, the thread object is returned, otherwise an error message is thrown.
+   * In a multi-device login scenario, note the following:
+   *
+   * - The devices will receive the {@link ChatMultiDeviceEventListener#onThreadEvent} callback.
+   *
+   * - You can listen for message thread events by setting {@link ChatMultiDeviceEventListener}.
+   *
+   * @param chatThreadId The message thread ID.
+   * @returns If success, the message thread details {@link ChatMessageThread} are returned; otherwise, an exception will be thrown.
    *
    * @throws A description of the exception. See {@link ChatError}.
    */
@@ -1911,12 +1918,17 @@ export class ChatManager extends BaseManager {
   }
 
   /**
-   * Leave Chat Thread.
-   * The operation is available to Chat Thread members.
-   * After leave chat thread, the multiple devices will receive the notification event.
-   * You can set {@link ChatMultiDeviceEventListener#onThreadEvent} to listen on the event.
+   * Leaves a message thread.
    *
-   * @param chatThreadId Chat Thread ID.
+   * Each member in the message thread can call this method.
+   *
+   * In a multi-device login scenario, note the following:
+   *
+   * - The devices will receive the {@link ChatMultiDeviceEventListener#onThreadEvent} callback.
+   *
+   * - You can listen for message thread events by setting {@link ChatMultiDeviceEventListener}.
+   *
+   * @param chatThreadId The ID of the message thread that the current user wants to leave.
    *
    * @throws A description of the exception. See {@link ChatError}.
    */
@@ -1931,14 +1943,19 @@ export class ChatManager extends BaseManager {
   }
 
   /**
-   * Destroy Chat Thread.
-   * Group owner and group administrator to which the Chat Thread belongs have permission.
+   * Destroys the message thread.
    *
-   * After chat thread is destroy, there will be the following notification:
-   * 1. Members of the organization (group) to which chat thread belongs will receive the disbanded notification event, and can listen to related events by setting {@link ChatMessageEventListener#onChatMessageThreadDestroyed}.
-   * 2. Multiple devices will receive the notification event and you can set {@link ChatMultiDeviceEventListener#onThreadEvent} to listen on the event.
+   * Only the owner or admins of the group where the message thread belongs can call this method.
    *
-   * @param chatThreadId Chat Thread ID.
+   * **Note**
+   *
+   * - In a single-device login scenario, each member of the group to which the message thread belongs will receive the {@link ChatMessageEventListener#onChatMessageThreadDestroyed} callback.
+   *   You can listen for message thread events by setting {@link ChatMessageEventListener}.
+   *
+   * - In a multi-device login scenario, the devices will receive the {@link ChatMultiDeviceEventListener#onThreadEvent} callback.
+   *   You can listen for message thread events by setting {@link ChatMultiDeviceEventListener}.
+   *
+   * @param chatThreadId The message thread ID.
    *
    * @throws A description of the exception. See {@link ChatError}.
    */
@@ -1953,13 +1970,16 @@ export class ChatManager extends BaseManager {
   }
 
   /**
-   * Update Chat Thread name.
-   * The group owner, group administrator and Thread creator have permission.
-   * After modifying chat thread name, members of the organization (group) to which chat thread belongs will receive the update notification event.
-   * You can set {@link ChatMessageEventListener#onChatMessageThreadUpdated} to listen on the event.
+   * Changes the name of the message thread.
    *
-   * @param chatThreadId Chat Thread ID.
-   * @param newName New Chat Thread name. No more than 64 characters in length.
+   * Only the owner or admins of the group where the message thread belongs and the message thread creator can call this method.
+   *
+   * Each member of the group to which the message thread belongs will receive the {@link ChatMessageEventListener#onChatMessageThreadUpdated} callback.
+   *
+   * You can listen for message thread events by setting {@link ChatMessageEventListener}.
+   *
+   * @param chatThreadId  The message thread ID.
+   * @param newName The new message thread name. It can contain a maximum of 64 characters.
    *
    * @throws A description of the exception. See {@link ChatError}.
    */
@@ -1982,13 +2002,16 @@ export class ChatManager extends BaseManager {
   }
 
   /**
-   * Remove member from Chat Thread.
-   * Group owner and group administrator to which Chat Thread belongs have permission.
-   * The removed chat thread members will receive the removed notification event.
-   * You can set {@link ChatMessageEventListener#onChatMessageThreadUserRemoved} to listen on the event.
+   * Removes a member from the message thread.
    *
-   * @param chatThreadId Chat Thread ID.
-   * @param memberId The ID of the member that was removed from Chat Thread.
+   * Only the owner or admins of the group where the message thread belongs and the message thread creator can call this method.
+   *
+   * The removed member will receive the {@link ChatMessageEventListener#onChatMessageThreadUserRemoved} callback.
+   *
+   * You can listen for message thread events by setting {@link ChatMessageEventListener}.
+   *
+   * @param chatThreadId The message thread ID.
+   * @param memberId The user ID of the member to be removed from the message thread.
    *
    * @throws A description of the exception. See {@link ChatError}.
    */
@@ -2011,13 +2034,14 @@ export class ChatManager extends BaseManager {
   }
 
   /**
-   * Paging to get Chat Thread members.
-   * The members of the group to which Chat Thread belongs have permission.
+   * Gets a list of members in the message thread with pagination.
    *
-   * @param chatThreadId Chat Thread ID.
-   * @param cursor Cursor, the initial value can be empty or empty string.
-   * @param pageSize The number of fetches at one time. Value range (0, 50].
-   * @returns Returns a list if successful, otherwise throws an exception.
+   * Each member of the group to which the message thread belongs can call this method.
+   *
+   * @param chatThreadId The message thread ID.
+   * @param cursor The position from which to start getting data. At the first method call, if you set `cursor` to `null` or an empty string, the SDK will get data in the chronological order of when members join the message thread.
+   * @param pageSize The number of members that you expect to get on each page. The value range is [1,50].
+   * @returns If success, the list of members in a message thread is returned; otherwise, an exception will be thrown.
    *
    * @throws A description of the exception. See {@link ChatError}.
    */
@@ -2044,11 +2068,11 @@ export class ChatManager extends BaseManager {
   }
 
   /**
-   * Paging to get the list of Chat Threads that the current user has joined from the server.
+   * Uses the pagination to get the list of message threads that the current user has joined.
    *
-   * @param cursor Cursor, the initial value can be empty or empty string.
-   * @param pageSize The number of fetches at one time. Value range (0, 50].
-   * @returns Returns a list if successful, otherwise throws an exception.
+   * @param cursor The position from which to start getting data. At the first method call, if you set `cursor` to `null` or an empty string, the SDK will get data in the reverse chronological order of when the user joins the message threads.
+   * @param pageSize The number of message threads that you expect to get on each page. The value range is [1,50].
+   * @returns If success, a list of message threads is returned; otherwise, an exception will be thrown.
    *
    * @throws A description of the exception. See {@link ChatError}.
    */
@@ -2081,12 +2105,14 @@ export class ChatManager extends BaseManager {
   }
 
   /**
-   * Paging to get the list of Chat Threads that the current user has joined the specified group from the server。
+   * Uses the pagination to get the list of message threads that the current user has joined in the specified group.
    *
-   * @param parentId Generally refers to group ID.
-   * @param cursor Cursor, the initial value can be empty or empty string.
-   * @param pageSize The number of fetches at one time. Value range (0, 50].
-   * @returns Returns a list if successful, otherwise throws an exception.
+   * This method gets data from the server.
+   *
+   * @param parentId The parent ID, which is the group ID.
+   * @param cursor The position from which to start getting data. At the first method call, if you set `cursor` to `null` or an empty string, the SDK will get data in the reverse chronological order of when the user joins the message threads.
+   * @param pageSize The number of message threads that you expect to get on each page. The value range is [1,50].
+   * @returns If success, a list of message threads is returned; otherwise, an exception will be thrown.
    *
    * @throws A description of the exception. See {@link ChatError}.
    */
@@ -2125,12 +2151,14 @@ export class ChatManager extends BaseManager {
   }
 
   /**
-   * Paging to get the list of Chat Threads of the specified group from the server.
+   * Uses the pagination to get the list of message threads in the specified group.
    *
-   * @param parentId Generally refers to group ID.
-   * @param cursor Cursor, the initial value can be empty or empty string.
-   * @param pageSize The number of fetches at one time. Value range (0, 50].
-   * @returns Returns a list if successful, otherwise throws an exception.
+   * This method gets data from the server.
+   *
+   * @param parentId The parent ID, which is the group ID.
+   * @param cursor The position from which to start getting data. At the first method call, if you set `cursor` to `null` or an empty string, the SDK will get data in the reverse chronological order of when message threads are created.
+   * @param pageSize The number of message threads that you expect to get on each page. The value range is [1,50].
+   * @returns If success, a list of message threads is returned; otherwise, an exception will be thrown.
    *
    * @throws A description of the exception. See {@link ChatError}.
    */
@@ -2166,10 +2194,10 @@ export class ChatManager extends BaseManager {
   }
 
   /**
-   * Get the latest news of the specified Chat Thread list from the server.
+   * Gets the last reply in the specified message threads from the server.
    *
-   * @param chatThreadIds Chat Thread id list. The list length is not greater than 20.
-   * @returns Returns a list if successful, otherwise throws an exception.
+   * @param chatThreadIds The list of message thread IDs to query. You can pass a maximum of 20 message thread IDs each time.
+   * @returns If success, a list of last replies are returned; otherwise, an exception will be thrown.
    *
    * @throws A description of the exception. See {@link ChatError}.
    */
@@ -2196,10 +2224,10 @@ export class ChatManager extends BaseManager {
   }
 
   /**
-   * Get Chat Thread details from server.
+   * Gets the details of the message thread from the server.
    *
-   * @param chatThreadId Chat Thread ID.
-   * @returns Returns a thread if successful, otherwise a undefined value.
+   * @param chatThreadId The message thread ID.
+   * @returns If success, the details of the message thread are returned; otherwise, an exception will be thrown.
    *
    * @throws A description of the exception. See {@link ChatError}.
    */
@@ -2224,10 +2252,10 @@ export class ChatManager extends BaseManager {
   }
 
   /**
-   * Get Chat Thread details from message cache.
+   * Gets the details of the message thread from the memory.
    *
-   * @param msgId The message id.
-   * @returns Returns a thread if successful, otherwise a undefined value.
+   * @param msgId The message thread ID.
+   * @returns If success, the details of the message thread are returned; otherwise, an exception will be thrown.
    *
    * @throws A description of the exception. See {@link ChatError}.
    */
