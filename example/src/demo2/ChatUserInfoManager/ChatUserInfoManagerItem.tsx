@@ -30,7 +30,7 @@ export class ChatUserInfoManagerLeafScreen extends LeafScreenBase<StateChatUserI
     });
   }
   protected renderBody(): ReactNode {
-    console.log(`${ChatUserInfoManagerLeafScreen.TAG}: renderBody: `);
+    // console.log(`${ChatUserInfoManagerLeafScreen.TAG}: renderBody: `);
     return (
       <View style={styleValues.containerColumn}>{this.renderApiDom()}</View>
     );
@@ -52,8 +52,7 @@ export class ChatUserInfoManagerLeafScreen extends LeafScreenBase<StateChatUserI
             item.paramName as keyof typeof currentData
           ];
         if (item.domType === 'input') {
-          let value =
-            item.paramType === 'object' ? JSON.stringify(itemValue) : itemValue;
+          let value = this.parseValue(item.paramType, itemValue);
           renderDomAry.push(
             this.renderGroupParamWithInput(
               item.paramName,

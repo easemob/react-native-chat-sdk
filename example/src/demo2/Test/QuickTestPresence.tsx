@@ -70,21 +70,18 @@ export class QuickTestScreenPresence extends QuickTestScreenBase<
   protected callApi(name: string): void {
     super.callApi(name);
     switch (name) {
-      case MN.publishPresenceWithDescription:
+      case MN.publishPresence:
         {
-          const methodName = this.metaData.get(
-            MN.publishPresenceWithDescription
-          )?.methodName!;
-          console.log(`${MN.publishPresenceWithDescription} === ${methodName}`);
-          const description = this.metaData.get(
-            MN.publishPresenceWithDescription
-          )!.params[0].paramDefaultValue;
+          const methodName = this.metaData.get(MN.publishPresence)?.methodName!;
+          console.log(`${MN.publishPresence} === ${methodName}`);
+          const description = this.metaData.get(MN.publishPresence)!.params[0]
+            .paramDefaultValue;
           this.tryCatch(
-            ChatClient.getInstance().presenceManager.publishPresenceWithDescription(
+            ChatClient.getInstance().presenceManager.publishPresence(
               description
             ),
             QuickTestScreenPresence.TAG,
-            MN.publishPresenceWithDescription
+            MN.publishPresence
           );
         }
         break;

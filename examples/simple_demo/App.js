@@ -6,7 +6,7 @@
  * @flow strict-local
  */
 
-import React from 'react';
+import React, {useEffect} from 'react';
 import {
   SafeAreaView,
   ScrollView,
@@ -22,142 +22,158 @@ import {
   ChatMessage,
 } from 'react-native-chat-sdk';
 
+// The App Object.
 const App = () => {
   const title = 'AgoraChatQuickstart';
   const [appKey, setAppKey] = React.useState('easemob-demo#easeim');
-  const [username, setUsername] = React.useState('');
-  const [password, setPassword] = React.useState('');
+  const [username, setUsername] = React.useState('asterisk001');
+  const [password, setPassword] = React.useState('qwer');
   const [userId, setUserId] = React.useState('');
   const [content, setContent] = React.useState('');
   const [logText, setWarnText] = React.useState('Show log area');
 
-  const init = () => {
-    let o = new ChatOptions({
-      autoLogin: false,
-      appKey: appKey,
+  // output console log.
+  useEffect(() => {
+    logText.split('\n').forEach((value, index, array) => {
+      if (index === 0) {
+        console.log(value);
+      }
     });
-    ChatClient.getInstance()
-      .init(o)
-      .then(() => {
-        console.log('init success');
-        setWarnText('init success.');
-        this.isInitialized = true;
-      })
-      .catch(() => {
-        console.log('init fail.');
-        setWarnText('init fail.');
-      });
+  }, [logText]);
+
+  // output ui log.
+  const rollLog = text => {
+    setWarnText(preLogText => {
+      let newLogText = text;
+      preLogText
+        .split('\n')
+        .filter((value, index, array) => {
+          if (index > 8) {
+            return false;
+          }
+          return true;
+        })
+        .forEach((value, index, array) => {
+          newLogText += '\n' + value;
+        });
+      return newLogText;
+    });
   };
 
-  const setListener = () => {
+  // register listener for message.
+  const setMessageListener = () => {
     let msgListener = {
       onMessagesReceived(messages) {
-        console.log('onMessagesReceived: ', messages);
-        setWarnText('onMessagesReceived: ' + JSON.stringify(messages));
+        for (let index = 0; index < messages.length; index++) {
+          rollLog('received msgId: ' + messages[index].msgId);
+        }
       },
-      onCmdMessagesReceived: messages => {
-        console.log('onCmdMessagesReceived: ', messages);
-      },
-      onMessagesRead: messages => {
-        console.log('onMessagesRead: ', messages);
-      },
-      onGroupMessageRead: groupMessageAcks => {
-        console.log('onGroupMessageRead: ', groupMessageAcks);
-      },
-      onMessagesDelivered: messages => {
-        console.log(`onMessagesDelivered: ${messages.length}: `, messages);
-      },
-      onMessagesRecalled: messages => {
-        console.log('onMessagesRecalled: ', messages);
-      },
-      onConversationsUpdate: () => {
-        console.log('onConversationsUpdate: ');
-      },
-      onConversationRead: (from, to) => {
-        console.log('onConversationRead: ', from, to);
-      },
+      onCmdMessagesReceived: messages => {},
+      onMessagesRead: messages => {},
+      onGroupMessageRead: groupMessageAcks => {},
+      onMessagesDelivered: messages => {},
+      onMessagesRecalled: messages => {},
+      onConversationsUpdate: () => {},
+      onConversationRead: (from, to) => {},
     };
 
     ChatClient.getInstance().chatManager.removeAllMessageListener();
     ChatClient.getInstance().chatManager.addMessageListener(msgListener);
   };
 
+  // Init sdk.
+  // Please initialize any interface before calling it.
+  const init = () => {
+    let o = new ChatOptions({
+      autoLogin: false,
+      appKey: appKey,
+    });
+    ChatClient.getInstance().removeAllConnectionListener();
+    ChatClient.getInstance()
+      .init(o)
+      .then(() => {
+        rollLog('init success');
+        this.isInitialized = true;
+        let listener = {
+          onTokenWillExpire() {
+            rollLog('token expire.');
+          },
+          onTokenDidExpire() {
+            rollLog('token did expire');
+          },
+          onConnected() {
+            rollLog('login success.');
+            setMessageListener();
+          },
+          onDisconnected(errorCode) {
+            rollLog('login fail: ' + errorCode);
+          },
+        };
+        ChatClient.getInstance().addConnectionListener(listener);
+      })
+      .catch(error => {
+        rollLog(
+          'init fail: ' +
+            (error instanceof Object ? JSON.stringify(error) : error),
+        );
+      });
+  };
+
+  // register account for login
   const registerAccount = () => {
     if (this.isInitialized === false || this.isInitialized === undefined) {
-      setWarnText('Perform initialization first.');
+      rollLog('Perform initialization first.');
       return;
     }
+    rollLog('start register account ...');
     ChatClient.getInstance()
       .createAccount(username, password)
-      .then(() => {
-        console.log('register: success');
-        setWarnText('register: success');
+      .then(response => {
+        rollLog(`register success: userName = ${username}, password = ******`);
       })
-      .catch(reason => {
-        console.log('register: fail', reason);
-        setWarnText('register: fail' + reason);
+      .catch(error => {
+        rollLog('register fail: ' + JSON.stringify(error));
       });
   };
 
-  const login = () => {
+  // login with account id and password
+  const loginWithPassword = () => {
     if (this.isInitialized === false || this.isInitialized === undefined) {
-      setWarnText('Perform initialization first.');
+      rollLog('Perform initialization first.');
       return;
     }
-    setWarnText(`username:${username},password:${password}`);
-    let listener = {
-      onTokenWillExpire() {
-        console.log('onTokenWillExpire');
-        setWarnText('onTokenWillExpire');
-      },
-      onTokenDidExpire() {
-        console.log('onTokenDidExpire');
-        setWarnText('onTokenDidExpire');
-      },
-      onConnected() {
-        console.log('onConnected');
-        setWarnText('onConnected');
-        setListener();
-      },
-      onDisconnected(errorCode) {
-        console.log('onDisconnected: ', errorCode);
-        setWarnText('onDisconnected' + errorCode);
-      },
-    };
-    ChatClient.getInstance().removeAllConnectionListener();
-    ChatClient.getInstance().addConnectionListener(listener);
+    rollLog('start login ...');
     ChatClient.getInstance()
-      .login('asteriskhx1', 'qwer')
+      .login(username, password)
       .then(() => {
-        console.log('login: success');
-        setWarnText('login: success');
+        rollLog('login operation success.');
       })
       .catch(reason => {
-        console.log('login: fail', reason);
-        setWarnText('login: fail' + JSON.stringify(reason));
+        rollLog('login fail: ' + JSON.stringify(reason));
       });
   };
 
+  // logout from server.
   const logout = () => {
     if (this.isInitialized === false || this.isInitialized === undefined) {
-      setWarnText('Perform initialization first.');
+      rollLog('Perform initialization first.');
       return;
     }
+    rollLog('start logout ...');
     ChatClient.getInstance()
       .logout()
       .then(() => {
-        console.log('logout: success');
-        setWarnText('logout: success');
+        rollLog('logout success.');
       })
       .catch(reason => {
-        console.log('logout: fail', reason);
-        setWarnText('logout: fail' + reason);
+        rollLog('logout fail:' + JSON.stringify(reason));
       });
   };
 
+  // send text message to somebody
   const sendmsg = () => {
     if (this.isInitialized === false || this.isInitialized === undefined) {
-      setWarnText('Perform initialization first.');
+      rollLog('Perform initialization first.');
       return;
     }
     let msg = ChatMessage.createTextMessage(
@@ -167,30 +183,27 @@ const App = () => {
     );
     const callback = new (class {
       onProgress(locaMsgId, progress) {
-        console.log('onProgress ', locaMsgId, progress);
-        setWarnText('onProgress: ' + locaMsgId + progress);
+        rollLog(`send message process: ${locaMsgId}, ${progress}`);
       }
       onError(locaMsgId, error) {
-        console.log('onError ', locaMsgId, error);
-        setWarnText('onError: ' + locaMsgId + error);
+        rollLog(`send message fail: ${locaMsgId}, ${JSON.stringify(error)}`);
       }
       onSuccess(message) {
-        console.log('onSuccess', message.localMsgId);
-        setWarnText('onSuccess: ' + message.localMsgId);
+        rollLog('send message success: ' + message.localMsgId);
       }
     })();
+    rollLog('start send message ...');
     ChatClient.getInstance()
       .chatManager.sendMessage(msg, callback)
       .then(() => {
-        console.log('send success');
-        setWarnText('send success: ' + msg.localMsgId);
+        rollLog('send message: ' + msg.localMsgId);
       })
       .catch(reason => {
-        console.log('send failed');
-        setWarnText('send fail: ' + reason);
+        rollLog('send fail: ' + JSON.stringify(reason));
       });
   };
 
+  // ui render.
   return (
     <SafeAreaView>
       <View style={styles.titleContainer}>
@@ -233,7 +246,7 @@ const App = () => {
           <Text style={styles.eachBtn} onPress={registerAccount}>
             SIGN UP
           </Text>
-          <Text style={styles.eachBtn} onPress={login}>
+          <Text style={styles.eachBtn} onPress={loginWithPassword}>
             SIGN IN
           </Text>
           <Text style={styles.eachBtn} onPress={logout}>
@@ -264,7 +277,15 @@ const App = () => {
           </Text>
         </View>
         <View>
-          <Text style={styles.logText}>{logText}</Text>
+          <Text style={styles.logText} multiline={true}>
+            {logText}
+          </Text>
+        </View>
+        <View>
+          <Text style={styles.logText}>{}</Text>
+        </View>
+        <View>
+          <Text style={styles.logText}>{}</Text>
         </View>
       </ScrollView>
     </SafeAreaView>
@@ -314,6 +335,7 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontSize: 16,
     backgroundColor: '#6200ED',
+    borderRadius: 5,
   },
   btn2: {
     height: 40,
@@ -323,6 +345,7 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontSize: 16,
     backgroundColor: '#6200ED',
+    borderRadius: 5,
   },
   logText: {
     padding: 10,

@@ -69,13 +69,14 @@ export class ChatManagerCache {
   }
 
   public getLastSendMessage(
+    id: string = datasheet.accounts[2].id,
     type: ChatMessageChatType = ChatMessageChatType.PeerChat
   ): ChatMessage {
     let ret: ChatMessage;
     if (this.sendMessageList.length > 0) {
       ret = this.sendMessageList[this.sendMessageList.length - 1];
     } else {
-      ret = this.createTestMessage(type);
+      ret = this.createTestMessage(id, Date.now().toString(), type);
     }
     return ret;
   }
@@ -83,13 +84,14 @@ export class ChatManagerCache {
     this.sendMessageList.push(msg);
   }
   public getLastRecvMessage(
+    id: string = datasheet.accounts[2].id,
     type: ChatMessageChatType = ChatMessageChatType.PeerChat
   ): ChatMessage {
     let ret: ChatMessage;
     if (this.recvMessageList.length > 0) {
       ret = this.recvMessageList[this.recvMessageList.length - 1];
     } else {
-      ret = this.createTestMessage(type);
+      ret = this.createTestMessage(id, Date.now().toString(), type);
     }
     return ret;
   }
@@ -97,25 +99,23 @@ export class ChatManagerCache {
     this.recvMessageList.push(msg);
   }
 
-  protected createTestMessage(type: ChatMessageChatType): ChatMessage {
+  public createTestMessage(
+    id: string,
+    context: string,
+    type: ChatMessageChatType,
+    testType: number = 1 // 1.普通消息 2.翻译消息 3.thread消息
+  ): ChatMessage {
     let ret: ChatMessage;
-    // ret = this.createTextMessageWithParams(
-    //   datasheet.accounts[2].id,
-    //   'content',
-    //   type
-    // );
-    ret = this.createTextMessageWithTranslate(
-      datasheet.accounts[2].id,
-      '中国人',
-      type,
-      ['en', 'fr']
-    );
-    // ret = this.createTextMessageWithThread(
-    //   datasheet.accounts[2].id,
-    //   '中国人',
-    //   type,
-    //   true
-    // );
+    if (testType === 2) {
+      ret = this.createTextMessageWithTranslate(id, '中国人的礼物', type, [
+        'en',
+        'fr',
+      ]);
+    } else if (testType === 3) {
+      ret = this.createTextMessageWithThread(id, context, type, true);
+    } else {
+      ret = this.createTextMessageWithParams(id, context, type);
+    }
     return ret;
   }
 

@@ -8,10 +8,11 @@ export interface ParamPair {
     | 'symbol'
     | 'undefined'
     | 'object'
-    | 'function';
+    | 'function'
+    | 'json';
   paramValue?: () => any;
   paramDefaultValue: any;
-  domType?: 'input' | 'title' | 'button' | 'select';
+  domType?: 'input' | 'title' | 'button' | 'select' | 'upload' | 'download';
 }
 export interface ApiParams {
   methodName: string;

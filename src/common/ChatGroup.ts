@@ -224,12 +224,12 @@ export class ChatGroup {
   /**
    * The group options.
    */
-  private options: ChatGroupOptions;
+  options?: ChatGroupOptions;
   /**
    * Gets the maximum number of members allowed in a group. The parameter is set when the group is created.
    */
   get maxCount(): number {
-    return this.options.maxCount;
+    return this.options?.maxCount ?? 0;
   }
 
   constructor(params: {
@@ -246,7 +246,7 @@ export class ChatGroup {
     messageBlocked?: boolean;
     isAllMemberMuted?: boolean;
     permissionType: number;
-    options?: ChatGroupOptions;
+    options?: any;
   }) {
     this.groupId = params.groupId;
     this.groupName = params.groupName ?? '';
@@ -263,7 +263,9 @@ export class ChatGroup {
     this.permissionType = params.permissionType
       ? ChatGroupTypeFromNumber(params.permissionType)
       : ChatGroupType.None;
-    this.options = params.options ?? new ChatGroupOptions({});
+    if (params.options) {
+      this.options = new ChatGroupOptions(params.options);
+    }
   }
 }
 
@@ -296,7 +298,7 @@ export class ChatGroupOptions {
    */
   inviteNeedConfirm: boolean;
   /**
-   * The extension information of group details.
+   * The group extension information.
    */
   ext?: string;
   constructor(params: {

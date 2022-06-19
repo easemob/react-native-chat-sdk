@@ -1,7 +1,7 @@
 import type { ApiParams } from '../__internal__/DataTypes';
 
 export const MN = {
-  publishPresenceWithDescription: 'publishPresenceWithDescription',
+  publishPresence: 'publishPresence',
   presenceSubscribe: 'presenceSubscribe',
   presenceUnsubscribe: 'presenceUnsubscribe',
   fetchSubscribedMembersWithPageNum: 'fetchSubscribedMembersWithPageNum',
@@ -10,9 +10,9 @@ export const MN = {
 
 export const metaDataList = new Map<string, ApiParams>([
   [
-    MN.publishPresenceWithDescription,
+    MN.publishPresence,
     {
-      methodName: MN.publishPresenceWithDescription,
+      methodName: MN.publishPresence,
       params: [
         {
           paramName: 'description',
@@ -29,7 +29,7 @@ export const metaDataList = new Map<string, ApiParams>([
       params: [
         {
           paramName: 'members',
-          paramType: 'object',
+          paramType: 'json',
           paramDefaultValue: ['asterisk003'],
         },
         {
@@ -47,7 +47,7 @@ export const metaDataList = new Map<string, ApiParams>([
       params: [
         {
           paramName: 'members',
-          paramType: 'object',
+          paramType: 'json',
           paramDefaultValue: ['zhangsan', 'lisi', 'asterisk003'],
         },
       ],
@@ -78,7 +78,7 @@ export const metaDataList = new Map<string, ApiParams>([
       params: [
         {
           paramName: 'members',
-          paramType: 'object',
+          paramType: 'json',
           paramDefaultValue: ['asterisk003', 'lisi'],
         },
       ],

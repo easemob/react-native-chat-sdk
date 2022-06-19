@@ -113,44 +113,44 @@ export enum ChatMultiDeviceEvent {
    */
   GROUP_REMOVE_MUTE,
   /**
-   * The current user adds other users to the group whitelist on another device.
+   * If user A adds other members to the allow list of the chat group on Device A1, this event is triggered on Device A2.
    */
   GROUP_ADD_USER_WHITE_LIST,
   /**
-   * The current user removes other users from the group whitelist on another device.
+   * If user A removes other members from the allow list of the chat group on Device A1, this event is triggered on Device A2.
    */
   GROUP_REMOVE_USER_WHITE_LIST,
   /**
-   * The current user has set the group to mute on another device.
+   * If user A adds all other group members to the group mute list on Device A1, this event is triggered on Device A2.
    */
   GROUP_ALL_BAN,
   /**
-   * The current user unblocks the group on another device.
+   * If user A removes all other group members from the group mute list on Device A1, this event is triggered on Device A2.
    */
   GROUP_REMOVE_ALL_BAN,
 
   /**
-   * The current user created a Thread on another device.
+   * If user A creates a message thread on Device A1, this event is triggered on Device A2.
    */
   THREAD_CREATE = 40,
   /**
-   * The current user destroyed a Thread on another device.
+   * If user A destroys a message thread on Device A1, this event is triggered on Device A2.
    */
   THREAD_DESTROY,
   /**
-   * The current user joined a Thread on another device.
+   * If user A joins a message thread on Device A1, this event is triggered on Device A2.
    */
   THREAD_JOIN,
   /**
-   * The current user left a Thread on another device.
+   * If user A leaves a message thread on Device A1, this event is triggered on Device A2.
    */
   THREAD_LEAVE,
   /**
-   * The current user updated Thread info on another device.
+   * If user A updates information of a message thread on Device A1, this event is triggered on Device A2.
    */
   THREAD_UPDATE,
   /**
-   * The current user kicked a member out of a Thread on another device.
+   * If user A kicks a user from a message thread on Device A1, this event is triggered on Device A2.
    */
   THREAD_KICK,
 }
@@ -293,7 +293,7 @@ export interface ChatConnectEventListener {
    *
    * The logout does not necessarily occur at the bottom level when the SDK is disconnected.
    *
-   * @param errorCode The Error code, see {@link ChatError}
+   * @param errorCode The error code. See {@link ChatError}.
    */
   onDisconnected(errorCode?: number): void;
 
@@ -315,7 +315,7 @@ export interface ChatConnectEventListener {
  */
 export interface ChatMultiDeviceEventListener {
   /**
-   * The multi-device event callback of contact.
+   * Occurs when a contact event occurs.
    *
    * @param event The event type.
    * @param target The user ID.
@@ -341,11 +341,11 @@ export interface ChatMultiDeviceEventListener {
   ): void;
 
   /**
-   * The multi-device event callback of thread.
+   * Occurs when a thread event occurs.
    *
    * @param event The event type.
    * @param target The group ID.
-   * @param usernames The array of usernames.
+   * @param usernames The array of user IDs.
    */
   onThreadEvent(
     event?: ChatMultiDeviceEvent,
@@ -364,7 +364,7 @@ export interface ChatCustomEventListener {
 /**
  * The message event listener.
  *
- * This listener listen for message state changes:
+ * This listener listens for message state changes:
  *
  * - If messages are sent successfully, a delivery receipt will be returned to the sender (the delivery receipt function needs to be enabled: {@link ChatOptions#requireDeliveryAck(boolean)}.
  *
@@ -477,37 +477,42 @@ export interface ChatMessageEventListener {
   onConversationRead(from: string, to?: string): void;
 
   /**
-   * The message reaction change listener.
+   * Occurs when a message reaction changes.
    *
-   * @param list The reaction event which is changed
+   * @param list The reaction change event.
    */
   onMessageReactionDidChange(list: Array<ChatMessageReactionEvent>): void;
 
   /**
-   * Chat thread creation notification.
-   * Available to all group members.
+   * Occurs when a message thread is created.
    *
-   * @param event The message sub-zone create notify.
+   * Each member of the group where the message thread belongs can call this method.
+   *
+   * @param event The message thread creation event.
    */
   onChatMessageThreadCreated(event: ChatMessageThreadEvent): void;
   /**
-   * Chat thread update notification, including: chat thread  name update, chat thread message update.
-   * Available to all group members.
+   * Occurs when a message thread is updated.
    *
-   * @param event The message sub-zone update notify.
+   * This method is triggered when the message thread name is changed or a message in the message thread is updated.
+   *
+   * Each member of the group where the message thread belongs can call this method.
+   *
+   * @param event The message thread update event.
    */
   onChatMessageThreadUpdated(event: ChatMessageThreadEvent): void;
   /**
-   * Chat thread disbandment notice.
-   * Available to all group members.
+   * Occurs when a message thread is destroyed.
    *
-   * @param event The message sub-zone destroy notify.
+   * Each member of the group where the message thread belongs can call this method.
+   *
+   * @param event The message thread destruction event.
    */
   onChatMessageThreadDestroyed(event: ChatMessageThreadEvent): void;
   /**
-   * The current user is removed from chat thread by the administrator.
+   * Occurs when the current user is removed from the message thread by the admin.
    *
-   * @param event The message sub-zone remove user notify.
+   * @param event The message thread user removal event.
    */
   onChatMessageThreadUserRemoved(event: ChatMessageThreadEvent): void;
 }
@@ -654,7 +659,7 @@ export interface ChatGroupEventListener {
    *
    * @param params The parameter set.
    * - Param [groupId] The group ID.
-   * - Param [mutes] The user ID(s) of member(s) to be muted.
+   * - Param [mutes] The user ID(s) of member(s) that are muted.
    * - Param [muteExpire] Reserved parameter. The Unix timestamp when the mute expires. The unit is millisecond.
    */
   onMuteListAdded(params: {
@@ -667,7 +672,7 @@ export interface ChatGroupEventListener {
    *
    * @param params The parameter set.
    * - Param [groupId] The group ID.
-   * - Param [mutes] The user ID(s) of member(s) to be removed from the mute list.
+   * - Param [mutes] The user ID(s) of member(s) that is removed from the mute list.
    */
   onMuteListRemoved(params: { groupId: string; mutes: Array<string> }): void;
   /**
@@ -747,7 +752,7 @@ export interface ChatGroupEventListener {
    *
    * @param params The parameter set.
    * - Param [groupId] The group ID.
-   * - Param [members] The user IDs of members that are added to the allow list.
+   * - Param [members] The user IDs of members that are added to the allow list of the group.
    */
   onWhiteListAdded(params: { groupId: string; members: Array<string> }): void;
   /**
@@ -755,7 +760,7 @@ export interface ChatGroupEventListener {
    *
    * @param params The parameter set.
    * - Param [groupId] The group ID.
-   * - Param [members] The user IDs of members that are removed from the allow list.
+   * - Param [members] The user IDs of members that are removed from the allow list of the group.
    */
   onWhiteListRemoved(params: { groupId: string; members: Array<string> }): void;
   /**
@@ -965,7 +970,7 @@ export interface ChatPresenceEventListener {
   /**
    * Occurs when the presence state of a subscribed user changes.
    *
-   * @param list Param [list] The new presence state of a subscribed user.
+   * @param list The new presence state of a subscribed user.
    */
   onPresenceStatusChanged(list: Array<ChatPresence>): void;
 }

@@ -16,8 +16,8 @@ import {
   ChatMessageThreadEvent,
   ChatMessageType,
   ChatMessageChatType,
+  ChatCmdMessageBody,
 } from 'react-native-chat-sdk';
-import type { ChatCmdMessageBody } from 'src/common/ChatMessage';
 import { ChatManagerCache } from './ChatManagerCache';
 
 export interface QuickTestChatState extends QuickTestState {}
@@ -1352,7 +1352,7 @@ export class QuickTestScreenChat extends QuickTestScreenBase<
           console.log(
             `${MN.fetchJoinedChatThreadWithParentFromServer} === ${methodName}`
           );
-          const chatThreadId = this.metaData.get(
+          const parentId = this.metaData.get(
             MN.fetchJoinedChatThreadWithParentFromServer
           )?.params[0].paramDefaultValue;
           const cursor = this.metaData.get(
@@ -1363,7 +1363,7 @@ export class QuickTestScreenChat extends QuickTestScreenBase<
           )?.params[2].paramDefaultValue;
           this.tryCatch(
             ChatClient.getInstance().chatManager.fetchJoinedChatThreadWithParentFromServer(
-              chatThreadId,
+              parentId,
               cursor,
               pageSize
             ),
@@ -1430,6 +1430,19 @@ export class QuickTestScreenChat extends QuickTestScreenBase<
             ChatClient.getInstance().chatManager.fetchChatThreadFromServer(
               chatThreadId
             ),
+            QuickTestScreenChat.TAG,
+            name
+          );
+        }
+        break;
+      case MN.getMessageThread:
+        {
+          const methodName = this.metaData.get(MN.getMessageThread)!.methodName;
+          console.log(`${MN.getMessageThread} === ${methodName}`);
+          const msgId = this.metaData.get(MN.getMessageThread)?.params[0]
+            .paramDefaultValue;
+          this.tryCatch(
+            ChatClient.getInstance().chatManager.getMessageThread(msgId),
             QuickTestScreenChat.TAG,
             name
           );

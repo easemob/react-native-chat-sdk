@@ -6,9 +6,22 @@ import { ChatPresenceManager } from './ChatPresenceManager';
 import { ChatPushManager } from './ChatPushManager';
 import { ChatRoomManager } from './ChatRoomManager';
 import { ChatUserInfoManager } from './ChatUserInfoManager';
+import type {
+  ChatMultiDeviceEvent,
+  ChatConnectEventListener,
+  ChatMultiDeviceEventListener,
+  ChatCustomEventListener,
+  ChatMessageEventListener,
+  ChatGroupEventListener,
+  ChatContactEventListener,
+  ChatRoomEventListener,
+  ChatPresenceEventListener,
+  ChatMultiDeviceEventFromNumber,
+} from './ChatEvents';
 import {
   ChatConversationType,
   ChatConversation,
+  ChatConversationTypeToString,
 } from './common/ChatConversation';
 import { ChatCursorResult } from './common/ChatCursorResult';
 import { ChatDeviceInfo } from './common/ChatDeviceInfo';
@@ -21,6 +34,11 @@ import {
   ChatGroup,
   ChatGroupInfo,
   ChatGroupFileStatusCallback,
+  ChatGroupSharedFile,
+  ChatGroupStyleFromNumber,
+  ChatGroupStyleToString,
+  ChatGroupTypeFromNumber,
+  ChatGroupTypeToString,
 } from './common/ChatGroup';
 import {
   ChatMessageChatType,
@@ -32,6 +50,20 @@ import {
   ChatMessage,
   ChatMessageTypeFromString,
   ChatMessageChatTypeFromNumber,
+  ChatMessageBody,
+  ChatTextMessageBody,
+  ChatLocationMessageBody,
+  ChatFileMessageBody,
+  ChatImageMessageBody,
+  ChatVideoMessageBody,
+  ChatVoiceMessageBody,
+  ChatCmdMessageBody,
+  ChatCustomMessageBody,
+  ChatMessageDirectionFromString,
+  ChatMessageStatusFromNumber,
+  ChatMessageStatusToString,
+  ChatDownloadStatusFromNumber,
+  ChatDownloadStatusToString,
 } from './common/ChatMessage';
 import {
   ChatConversationTypeFromNumber,
@@ -39,19 +71,13 @@ import {
 } from './common/ChatConversation';
 import { ChatOptions } from './common/ChatOptions';
 import { ChatPageResult } from './common/ChatPageResult';
-import { ChatRoomPermissionType, ChatRoom } from './common/ChatRoom';
+import {
+  ChatRoomPermissionType,
+  ChatRoom,
+  ChatRoomPermissionTypeFromNumber,
+  ChatRoomPermissionTypeToString,
+} from './common/ChatRoom';
 import { ChatUserInfo } from './common/ChatUserInfo';
-import type {
-  ChatMultiDeviceEvent,
-  ChatConnectEventListener,
-  ChatMultiDeviceEventListener,
-  ChatCustomEventListener,
-  ChatMessageEventListener,
-  ChatGroupEventListener,
-  ChatContactEventListener,
-  ChatRoomEventListener,
-  ChatPresenceEventListener,
-} from './ChatEvents';
 import type {
   ChatMessageReaction,
   ChatMessageReactionEvent,
@@ -59,10 +85,13 @@ import type {
 import type {
   ChatMessageThread,
   ChatMessageThreadEvent,
+  ChatMessageThreadOperation,
 } from './common/ChatMessageThread';
+import type { ChatPresence } from './common/ChatPresence';
+import type { ChatTranslateLanguage } from './common/ChatTranslateLanguage';
 
 /**
- * export Objects
+ * export manager
  */
 export {
   ChatClient,
@@ -76,9 +105,24 @@ export {
 };
 
 /**
- * export enum
+ * export notify
  */
 export {
+  ChatConnectEventListener,
+  ChatMultiDeviceEventListener,
+  ChatCustomEventListener,
+  ChatMessageEventListener,
+  ChatGroupEventListener,
+  ChatContactEventListener,
+  ChatRoomEventListener,
+  ChatPresenceEventListener,
+};
+
+/**
+ * export enum type
+ */
+export {
+  ChatSearchDirection,
   ChatConversationType,
   ChatGroupStyle,
   ChatGroupType,
@@ -88,11 +132,11 @@ export {
   ChatDownloadStatus,
   ChatMessageType,
   ChatRoomPermissionType,
-  ChatSearchDirection,
+  ChatMessageThreadOperation,
 };
 
 /**
- * export class
+ * export class type
  */
 export {
   ChatConversation,
@@ -102,22 +146,26 @@ export {
   ChatGroupMessageAck,
   ChatGroupOptions,
   ChatGroup,
+  ChatGroupSharedFile,
   ChatGroupInfo,
-  ChatMessageStatusCallback,
   ChatGroupFileStatusCallback,
+  ChatMessageStatusCallback,
   ChatMessage,
+  ChatMessageBody,
+  ChatTextMessageBody,
+  ChatLocationMessageBody,
+  ChatFileMessageBody,
+  ChatImageMessageBody,
+  ChatVideoMessageBody,
+  ChatVoiceMessageBody,
+  ChatCmdMessageBody,
+  ChatCustomMessageBody,
   ChatOptions,
   ChatPageResult,
+  ChatPresence,
   ChatRoom,
+  ChatTranslateLanguage,
   ChatUserInfo,
-  ChatMessageEventListener,
-  ChatConnectEventListener,
-  ChatMultiDeviceEventListener,
-  ChatCustomEventListener,
-  ChatContactEventListener,
-  ChatGroupEventListener,
-  ChatRoomEventListener,
-  ChatPresenceEventListener,
   ChatMultiDeviceEvent,
   ChatMessageReaction,
   ChatMessageThread,
@@ -125,8 +173,24 @@ export {
   ChatMessageReactionEvent,
 };
 
+/**
+ * export converter
+ */
 export {
   ChatMessageTypeFromString,
   ChatMessageChatTypeFromNumber,
+  ChatMessageDirectionFromString,
+  ChatMessageStatusFromNumber,
+  ChatMessageStatusToString,
+  ChatDownloadStatusFromNumber,
+  ChatDownloadStatusToString,
   ChatConversationTypeFromNumber,
+  ChatMultiDeviceEventFromNumber,
+  ChatConversationTypeToString,
+  ChatGroupStyleFromNumber,
+  ChatGroupStyleToString,
+  ChatGroupTypeFromNumber,
+  ChatGroupTypeToString,
+  ChatRoomPermissionTypeFromNumber,
+  ChatRoomPermissionTypeToString,
 };

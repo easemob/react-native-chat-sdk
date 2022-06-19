@@ -2,41 +2,54 @@ import { ChatMessage } from './ChatMessage';
 
 export class ChatMessageThread {
   /**
-   * sub-zone id
+   * The message thread ID.
    */
   threadId: string;
   /**
-   * Subject of the sub-zone(There will be a list of requested sub-areas and sub-area details)
+   * The name of the message thread.
    */
   threadName: string;
   /**
-   * create  of the sub-zone, require fetch thread's detail first
+   * The creator of the message thread.
    */
   owner: string;
   /**
-   * A parent that create sub-zone. examples: group id.
-   */
-  parentId: string;
-  /**
-   * A messageId that create sub-zone
+   * The ID of the parent message of the message thread.
    */
   msgId: string;
   /**
-   * Member list of the sub-zone, require fetch thread's detail first
+   * The group ID where the message thread belongs.
    */
-  memberCount: string;
+  parentId: string;
   /**
-   * Timestamp of subarea creation
+   * The count of members in the message thread.
    */
-  timestamp: number;
+  memberCount: number;
+  /**
+   * The count of messages in the message thread.
+   */
+  msgCount: number;
+  /**
+   * The Unix timestamp when the message thread is created. The unit is millisecond.
+   */
+  createAt: number;
+  /**
+   * The last reply in the message thread. If it is empty, the last message is withdrawn.
+   */
+  lastMessage?: ChatMessage;
+  /**
+   * Creates a message thread.
+   */
   constructor(params: {
     threadId: string;
     threadName: string;
     owner: string;
     parentId: string;
     msgId: string;
-    memberCount: string;
-    timestamp: number;
+    memberCount: number;
+    msgCount: number;
+    createAt: number;
+    lastMessage?: any;
   }) {
     this.threadId = params.threadId;
     this.threadName = params.threadName;
@@ -44,69 +57,89 @@ export class ChatMessageThread {
     this.msgId = params.msgId;
     this.owner = params.owner;
     this.memberCount = params.memberCount;
-    this.timestamp = params.timestamp;
+    this.msgCount = params.msgCount;
+    this.createAt = params.createAt;
+    if (params.lastMessage) {
+      this.lastMessage = ChatMessage.createReceiveMessage(params.lastMessage);
+    }
   }
 }
 
+/**
+ * The message thread event types.
+ */
+export enum ChatMessageThreadOperation {
+  /**
+   * The unknown type of message thread event.
+   */
+  UnKnown = 0,
+  /**
+   * The message thread is created.
+   */
+  Create,
+  /**
+   * The message thread is updated.
+   */
+  Update,
+  /**
+   * The message thread is destroyed.
+   */
+  Delete,
+  /**
+   * The last reply in the message thread is updated.
+   */
+  Update_Msg,
+}
+
+/**
+ * Converts the message thread event type from Int to enum.
+ *
+ * @param type The message thread event type of the Int type.
+ * @returns The message thread event type of the enum type.
+ */
+export function ChatMessageThreadOperationFromNumber(type: number) {
+  let ret = ChatMessageThreadOperation.UnKnown;
+  switch (type) {
+    case 1:
+      ret = ChatMessageThreadOperation.Create;
+      break;
+    case 2:
+      ret = ChatMessageThreadOperation.Update;
+      break;
+    case 3:
+      ret = ChatMessageThreadOperation.Delete;
+      break;
+    case 4:
+      ret = ChatMessageThreadOperation.Update_Msg;
+      break;
+    default:
+      break;
+  }
+  return ret;
+}
+
+/**
+ * The message thread event class.
+ */
 export class ChatMessageThreadEvent {
   /**
-   * sub-zone id
+   * The user ID of the message thread operator.
    */
-  threadId: string;
+  from: string;
   /**
-   * Subject of the sub-zone(There will be a list of requested sub-areas and sub-area details)
+   * The message thread event type.
    */
-  threadName: string;
+  type: ChatMessageThreadOperation;
   /**
-   * A parent that create sub-zone. examples: group id.
+   * The message thread object.
    */
-  parentId: string;
+  thread: ChatMessageThread;
   /**
-   * A messageId that create sub-zone
+   * Constructs a message thread event.
    */
-  msgId: string;
-  /**
-   * Number of messages in subsection
-   */
-  msgCount: string;
-  /**
-   * Timestamp of subarea creation
-   */
-  timestamp: number;
-  /**
-   * Received the operation type of the sub-area from others.
-   * Maybe is one of create, update, delete, update_msg.
-   */
-  operation: string;
-  /**
-   * User id of the operation sub-area
-   */
-  fromId: string;
-  /**
-   * The last message in the sub-area, if it is empty, it means the last message is withdrawn. If it is not empty, it means a new message.
-   */
-  lastMsg?: ChatMessage;
-  constructor(params: {
-    threadId: string;
-    threadName: string;
-    parentId: string;
-    msgId: string;
-    msgCount: string;
-    timestamp: number;
-    operation: string;
-    fromId: string;
-    lastMsg?: any;
-  }) {
-    this.threadId = params.threadId;
-    this.threadName = params.threadName;
-    this.parentId = params.parentId;
-    this.msgId = params.msgId;
-    this.msgCount = params.msgCount;
-    this.timestamp = params.timestamp;
-    this.operation = params.operation;
-    this.fromId = params.fromId;
-    if (params.lastMsg) {
-      this.lastMsg = new ChatMessage(params.lastMsg);
-    }
+  constructor(params: { from: string; type: number; thread: any }) {
+    this.from = params.from;
+    this.type = ChatMessageThreadOperationFromNumber(params.type);
+    this.thread = new ChatMessageThread(params.thread);
   }
 }

@@ -1,41 +1,46 @@
 /**
- * The ChatUserInfo class, which contains the user attributes, such as the nickname, description, and avatar.
+ * The user information class, which contains the user attributes, such as the user ID and the nickname and avatar of a user.
  */
 export class ChatUserInfo {
   /**
-   * The user id.
+   * The user ID.
    */
   userId: string;
   /**
-   * The user name.
+   * The nickname of the user.
    */
   nickName?: string;
   /**
-   * The url of user avatar.
+   * The avatar URL of the user.
    */
   avatarUrl?: string;
   /**
-   * The user email.
+   * The email address of the user.
    */
   mail?: string;
   /**
-   * The user mobile phone number.
+   * The mobile phone number of the user.
    */
   phone?: string;
   /**
-   * The user gender.
+   * The gender of the user.
+   * - (Default) `0`: Unknown.
+   * - `1`: Male.
+   * - `2`: Female.
    */
   gender?: number;
   /**
-   * The user sign.
+   * The signature of the user.
    */
   sign?: string;
   /**
-   * The user birthday.
+   * The birth date of the user.
    */
   birth?: string;
   /**
-   * The user extension information.
+   * The extension information of the user.
+   *
+   * You can specify either an empty string or the custom information encapsulated as the JSON string.
    */
   ext?: string;
 

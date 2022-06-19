@@ -1,20 +1,23 @@
+/**
+ * The message Reaction instance class that defines Reaction attributes.
+ */
 export class ChatMessageReaction {
   /**
-   * The Reaction content
+   * The Reaction content.
    */
   reaction: string;
   /**
-   * The count of the users who added this Reaction
+   * The count of the users who added this Reaction.
    */
   count: string;
   /**
-   * Whether the current user added this Reaction
-   * - `Yes`: is added by self
-   * - `No`: is not added by self.
+   * Whether the current user added this Reaction.
+   * - `true`: Yes.
+   * - `false`: No.
    */
   isAddedBySelf: boolean;
   /**
-   * The list of users that added this Reaction
+   * The list of users that added this Reaction.
    */
   userList: Array<string>;
   constructor(params: {
@@ -29,7 +32,10 @@ export class ChatMessageReaction {
     this.userList = params.userList;
   }
 }
-
+/**
+ * The message Reaction event class.
+ *
+ */
 export class ChatMessageReactionEvent {
   /**
    * The conversation ID.
