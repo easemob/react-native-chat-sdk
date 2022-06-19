@@ -1,21 +1,25 @@
-export type PageResultMap = (obj: any) => any;
 /**
- * The ChatPageResult class, which specifies the cursor from which to query results.
- * When querying using this class, the SDK returns the queried instance and the cursor.
+ * The pagination class.
+ *
+ * This class contains the cursor for the next query and the number of records on the page.
+ *
+ * The class instance is returned when you make a paginated query.
  */
 export class ChatPageResult<T> {
   /**
-   * The value of the current page number.
+   * The number of records on the current page.
+   *
+   * If the value of `PageCount` is smaller than the number of records that you expect to get on each page, the current page is the last page.
    */
   pageCount: number;
   /**
-   * A list of results for the current page number.
+   * The data of the generic List<T> type.
    */
   list?: Array<T>;
   constructor(params: {
     pageCount: number;
     list?: Array<T>;
-    opt?: { map: PageResultMap };
+    opt?: { map: (obj: any) => any };
   }) {
     this.pageCount = params.pageCount;
     let data: Array<T> = [];

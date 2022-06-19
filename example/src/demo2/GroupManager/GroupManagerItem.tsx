@@ -58,6 +58,7 @@ export interface StateGroupMessage extends StateBase {
   };
   fetchGroupInfoFromServer: {
     groupId: string;
+    isFetchMembers: boolean;
   };
   fetchMemberListFromServer: {
     groupId: string;
@@ -205,57 +206,9 @@ export class GroupManagerLeafScreen extends LeafScreenBase<StateGroupMessage> {
     });
   }
   protected renderBody(): ReactNode {
-    console.log(`${GroupManagerLeafScreen.TAG}: renderBody: `);
+    // console.log(`${GroupManagerLeafScreen.TAG}: renderBody: `);
     return (
-      <View style={styleValues.containerColumn}>
-        {this.renderApiDom()}
-        {/* {this.createGroup()}
-        {this.addMembers()}
-        {this.removeMembers()} 
-        {this.uploadGroupSharedFile()}
-        {this.downloadGroupSharedFile()}
-        {this.removeGroupSharedFile()}
-        {this.acceptJoinApplication()}
-        {this.declineJoinApplication()}
-        {this.updateGroupAnnouncement()}
-        {this.updateGroupExtension()}
-        {this.addWhiteList()}
-        {this.removeWhiteList()}
-        {this.fetchWhiteListFromServer()}
-        {this.muteAllMembers()}
-        {this.unMuteAllMembers()}
-        {this.fetchMuteListFromServer()}
-        {this.muteMembers()}
-        {this.unMuteMembers()}
-        {this.destroyGroup()}
-        {this.blockGroup()}
-        {this.unblockGroup()}
-        {this.changeOwner()}
-        {this.addAdmin()}
-        {this.removeAdmin()}
-        {this.requestToJoinPublicGroup()}
-        {this.joinPublicGroup()}
-        {this.leaveGroup()}
-        {this.getGroupWithId()}
-        {this.addMembers()}
-        {this.removeMembers()}
-        {this.inviterUser()}
-        {this.acceptInvitation()}
-        {this.declineInvitation()}
-        {this.getJoinedGroups()}
-        {this.fetchJoinedGroupsFromServer()}
-        {this.fetchPublicGroupsFromServer()}
-        {this.fetchGroupInfoFromServer()}
-        {this.fetchMemberListFromServer()}
-        {this.fetchGroupFileListFromServer()}
-        {this.isMemberInWhiteListFromServer()}
-        {this.fetchAnnouncementFromServer()}
-        {this.blockMembers()}
-        {this.unblockMembers()}
-        {this.fetchBlockListFromServer()}
-        {this.changeGroupName()}
-        {this.changeGroupDescription()} */}
-      </View>
+      <View style={styleValues.containerColumn}>{this.renderApiDom()}</View>
     );
   }
   protected renderApiDom(): ReactNode[] {
@@ -319,24 +272,24 @@ export class GroupManagerLeafScreen extends LeafScreenBase<StateGroupMessage> {
           this.state[apiItem as keyof typeof this.state][
             item.paramName as keyof typeof currentData
           ];
-        if (item.paramName === 'filePath') {
+        if (item.domType && item.domType === 'upload') {
           renderDomAry.push(
-            this.renderGroupParamWithSelectFile(
-              item.paramName,
+            this.renderParamWithSelectFile(
+              'filePath',
               itemValue,
-              (inputData: { [index: string]: string }) => {
+              (json: string) => {
+                const j = JSON.parse(json);
                 this.setState({
                   uploadGroupSharedFile: Object.assign(
                     this.state.uploadGroupSharedFile,
-                    inputData
+                    { filePath: j.localPath }
                   ),
                 });
               }
             )
           );
         } else {
-          let value =
-            item.paramType === 'object' ? JSON.stringify(itemValue) : itemValue;
+          let value = this.parseValue(item.paramType, itemValue);
           renderDomAry.push(
             this.renderGroupParamWithInput(
               item.paramName,
@@ -518,10 +471,11 @@ export class GroupManagerLeafScreen extends LeafScreenBase<StateGroupMessage> {
         break;
       }
       case MN.fetchGroupInfoFromServer: {
-        const { groupId } = this.state.fetchGroupInfoFromServer;
+        const { groupId, isFetchMembers } = this.state.fetchGroupInfoFromServer;
         this.tryCatch(
           ChatClient.getInstance().groupManager.fetchGroupInfoFromServer(
-            groupId
+            groupId,
+            isFetchMembers
           ),
           GroupManagerLeafScreen.TAG,
           name

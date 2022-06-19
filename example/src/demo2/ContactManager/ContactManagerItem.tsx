@@ -1,6 +1,6 @@
 import React, { ReactNode } from 'react';
 import { View } from 'react-native';
-import { ChatClient, ChatMessage } from 'react-native-chat-sdk';
+import { ChatClient } from 'react-native-chat-sdk';
 import { styleValues } from '../__internal__/Css';
 import {
   LeafScreenBase,
@@ -78,7 +78,7 @@ export class ContactLeafScreen extends LeafScreenBase<StateChatContact> {
   }
 
   protected renderBody(): ReactNode {
-    console.log(`${ContactLeafScreen.TAG}: renderBody: `);
+    // console.log(`${ContactLeafScreen.TAG}: renderBody: `);
     return (
       <View style={styleValues.containerColumn}>{this.renderApiDom()}</View>
     );
@@ -133,15 +133,7 @@ export class ContactLeafScreen extends LeafScreenBase<StateChatContact> {
             );
           }
         } else {
-          let value =
-            item.paramType === 'object' ? JSON.stringify(itemValue) : itemValue;
-          if (item.paramValue) {
-            value = JSON.stringify({ key: 'value' });
-            const v = item.paramValue();
-            if (v instanceof ChatMessage) {
-              value = JSON.stringify(v);
-            }
-          }
+          let value = this.parseValue(item.paramType, itemValue);
           renderDomAry.push(
             this.renderGroupParamWithInput(
               item.paramName,

@@ -1,6 +1,6 @@
 {
   "name": "react-native-chat-sdk",
-  "version": "0.4.6-beta.0",
+  "version": "1.0.5",
   "description": "react native chat sdk",
   "main": "lib/commonjs/index",
   "module": "lib/module/index",
@@ -17,7 +17,10 @@
     "native_src/java",
     "native_src/objc",
     "react-native-chat-sdk.podspec",
+    "CHANGELOG.md",
+    "tsconfig.json",
     "!lib/typescript/example",
+    "!lib/typescript/examples",
     "!android/build",
     "!ios/build",
     "!**/__tests__",

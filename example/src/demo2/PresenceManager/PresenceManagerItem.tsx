@@ -1,6 +1,6 @@
 import React, { ReactNode } from 'react';
 import { View } from 'react-native';
-import { ChatClient, ChatMessage } from 'react-native-chat-sdk';
+import { ChatClient } from 'react-native-chat-sdk';
 import { styleValues } from '../__internal__/Css';
 import {
   LeafScreenBase,
@@ -12,7 +12,7 @@ import type { ApiParams } from '../__internal__/DataTypes';
 import { generateData } from '../__internal__/Utils';
 
 export interface StateChatPresence extends StateBase {
-  publishPresenceWithDescription: {
+  publishPresence: {
     description: string;
   };
   presenceSubscribe: {
@@ -71,14 +71,14 @@ export class PresenceLeafScreen extends LeafScreenBase<StateChatPresence> {
   }
 
   protected renderBody(): ReactNode {
-    console.log(`${PresenceLeafScreen.TAG}: renderBody: `);
+    // console.log(`${PresenceLeafScreen.TAG}: renderBody: `);
     return (
       <View style={styleValues.containerColumn}>{this.renderApiDom()}</View>
     );
   }
   protected renderApiDom(): ReactNode[] {
     const apiList = [
-      'publishPresenceWithDescription',
+      'publishPresence',
       'presenceSubscribe',
       'presenceUnsubscribe',
       'fetchSubscribedMembersWithPageNum',
@@ -120,15 +120,7 @@ export class PresenceLeafScreen extends LeafScreenBase<StateChatPresence> {
             );
           }
         } else {
-          let value =
-            item.paramType === 'object' ? JSON.stringify(itemValue) : itemValue;
-          if (item.paramValue) {
-            value = JSON.stringify({ key: 'value' });
-            const v = item.paramValue();
-            if (v instanceof ChatMessage) {
-              value = JSON.stringify(v);
-            }
-          }
+          let value = this.parseValue(item.paramType, itemValue);
           renderDomAry.push(
             this.renderGroupParamWithInput(
               item.paramName,
@@ -161,12 +153,10 @@ export class PresenceLeafScreen extends LeafScreenBase<StateChatPresence> {
 
   private callApi(name: string): void {
     console.log(`${PresenceLeafScreen.TAG}: callApi: `);
-    if (name === MN.publishPresenceWithDescription) {
-      const { description } = this.state.publishPresenceWithDescription;
+    if (name === MN.publishPresence) {
+      const { description } = this.state.publishPresence;
       this.tryCatch(
-        ChatClient.getInstance().presenceManager.publishPresenceWithDescription(
-          description
-        ),
+        ChatClient.getInstance().presenceManager.publishPresence(description),
         PresenceLeafScreen.TAG,
         name
       );

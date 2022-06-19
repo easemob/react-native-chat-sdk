@@ -447,20 +447,23 @@ export class ChatGroupManager extends BaseManager {
   /**
    * Gets the group information from the server.
    *
-   * This method does not get member information. If member information is required, you can call {@link #fetchMemberListFromServer}.
-   *
    * @param groupId The group ID.
+   * @param isFetchMembers Whether to get group member information:
+   *                       - `true`: Yes. This method can return information of at most 200 group members. To get information of all group members, you can call {@link #fetchMemberListFromServer}.
+   *                       - `false`: No.
    * @returns The group instance. The SDK returns `undefined` if the group does not exist.
    *
    * @throws A description of the exception. See {@link ChatError}.
    */
   public async fetchGroupInfoFromServer(
-    groupId: string
+    groupId: string,
+    isFetchMembers: boolean = false
   ): Promise<ChatGroup | undefined> {
     chatlog.log(`${ChatGroupManager.TAG}: fetchGroupInfoFromServer: `, groupId);
     let r: any = await Native._callMethod(MTgetGroupSpecificationFromServer, {
       [MTgetGroupSpecificationFromServer]: {
-        groupId,
+        groupId: groupId,
+        fetchMembers: isFetchMembers,
       },
     });
     ChatGroupManager.checkErrorFromResult(r);
@@ -583,7 +586,7 @@ export class ChatGroupManager extends BaseManager {
   }
 
   /**
-   * Uses the pagination to the allow list of the group from the server.
+   * Uses the pagination to get the allow list of the group from the server.
    *
    * Only the group owner or admin can call this method.
    *
@@ -732,9 +735,9 @@ export class ChatGroupManager extends BaseManager {
    * Invites users to join the group.
    *
    * This method works only for groups with the following styles:
-   * `PrivateOnlyOwnerInvite` style: Only the group owner can invite users to join the group;
-   * `PrivateMemberCanInvite` style: Each group member can invite users to join the group.
-   * `PublicJoinNeedApproval` style: Each group member can invite users to join the group and users can join a group only after getting approval from the group owner or admins.
+   * - `PrivateOnlyOwnerInvite` style: Only the group owner can invite users to join the group.
+   * - `PrivateMemberCanInvite` style: Each group member can invite users to join the group.
+   * - `PublicJoinNeedApproval` style: Each group member can invite users to join the group and users can join a group only after getting approval from the group owner or admins.
    *
    * @param groupId The group ID.
    * @param members The array of user IDs of new members to invite.

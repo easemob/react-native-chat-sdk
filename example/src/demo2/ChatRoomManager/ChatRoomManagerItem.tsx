@@ -130,7 +130,7 @@ export class ChatRoomManagerLeafScreen extends LeafScreenBase<StateChatRoomMessa
     });
   }
   protected renderBody(): ReactNode {
-    console.log(`${ChatRoomManagerLeafScreen.TAG}: renderBody: `);
+    // console.log(`${ChatRoomManagerLeafScreen.TAG}: renderBody: `);
     return (
       <View style={styleValues.containerColumn}>{this.renderApiDom()}</View>
     );
@@ -182,8 +182,7 @@ export class ChatRoomManagerLeafScreen extends LeafScreenBase<StateChatRoomMessa
             item.paramName as keyof typeof currentData
           ];
         if (item.domType === 'input') {
-          let value =
-            item.paramType === 'object' ? JSON.stringify(itemValue) : itemValue;
+          let value = this.parseValue(item.paramType, itemValue);
           renderDomAry.push(
             this.renderGroupParamWithInput(
               item.paramName,

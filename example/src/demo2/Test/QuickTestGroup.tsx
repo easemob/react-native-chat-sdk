@@ -201,10 +201,13 @@ export class QuickTestScreenGroup extends QuickTestScreenBase<
           console.log(`${MN.fetchGroupInfoFromServer} === ${methodName}`);
           const groupId = this.metaData.get(MN.fetchGroupInfoFromServer)
             ?.params[0].paramDefaultValue;
+          const isFetchMembers = this.metaData.get(MN.fetchGroupInfoFromServer)
+            ?.params[1].paramDefaultValue;
 
           this.tryCatch(
             ChatClient.getInstance().groupManager.fetchGroupInfoFromServer(
-              groupId
+              groupId,
+              isFetchMembers
             ),
             QuickTestScreenGroup.TAG,
             methodName

@@ -82,7 +82,7 @@ export function ChatConversationTypeToString(
  */
 export class ChatConversation {
   /**
-   * The conversation id.
+   * The conversation ID.
    */
   convId: string;
   /**
@@ -414,7 +414,7 @@ export class ChatConversation {
   }
 
   /**
-   * Gets messages that the specified user sends in a conversation in a certain period.
+   * Gets messages of a certain quantity that the specified user sends in a conversation.
    *
    * This method gets data from the local database.
    *

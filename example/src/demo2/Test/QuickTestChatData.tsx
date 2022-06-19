@@ -1,4 +1,8 @@
-import { ChatMessageType, ChatMessageChatType } from 'react-native-chat-sdk';
+import {
+  ChatMessageType,
+  ChatMessageChatType,
+  ChatConversationType,
+} from 'react-native-chat-sdk';
 import { datasheet } from '../__default__/Datasheet';
 import type { ApiParams } from '../__internal__/DataTypes';
 import { ChatManagerCache } from './ChatManagerCache';
@@ -62,7 +66,6 @@ export const MN = {
     'fetchJoinedChatThreadWithParentFromServer',
   fetchChatThreadWithParentFromServer: 'fetchChatThreadWithParentFromServer',
   fetchLastMessageWithChatThread: 'fetchLastMessageWithChatThread',
-  fetchChatThread: 'fetchChatThread',
   fetchChatThreadFromServer: 'fetchChatThreadFromServer',
   getMessageThread: 'getMessageThread',
 };
@@ -80,17 +83,17 @@ export const metaDataList = new Map<string, ApiParams>([
         },
         {
           paramName: 'targetType',
-          paramType: 'object',
+          paramType: 'number',
           paramDefaultValue: ChatMessageChatType.PeerChat,
         },
         {
           paramName: 'content',
-          paramType: 'object',
+          paramType: 'string',
           paramDefaultValue: Date.now().toString(),
         },
         {
           paramName: 'messageType',
-          paramType: 'object',
+          paramType: 'string',
           paramDefaultValue: ChatMessageType.TXT,
         },
       ],
@@ -103,7 +106,7 @@ export const metaDataList = new Map<string, ApiParams>([
       params: [
         {
           paramName: 'message', // 使用发送成功或者失败的数据测试，依赖sendMessage
-          paramType: 'object',
+          paramType: 'json',
           paramDefaultValue: {},
           paramValue: () => ChatManagerCache.getInstance().createTextMessage(),
         },
@@ -117,7 +120,7 @@ export const metaDataList = new Map<string, ApiParams>([
       params: [
         {
           paramName: 'message', // 使用发送成功或者失败的数据测试，依赖sendMessage
-          paramType: 'object',
+          paramType: 'json',
           paramDefaultValue: {},
           paramValue: () => ChatManagerCache.getInstance().getLastRecvMessage(),
         },
@@ -141,7 +144,7 @@ export const metaDataList = new Map<string, ApiParams>([
         },
         {
           paramName: 'opt',
-          paramType: 'object',
+          paramType: 'json',
           paramDefaultValue: { content: 'test' },
         },
       ],
@@ -207,7 +210,7 @@ export const metaDataList = new Map<string, ApiParams>([
       params: [
         {
           paramName: 'message', // 使用发送成功或者失败的数据测试，依赖sendMessage
-          paramType: 'object',
+          paramType: 'json',
           paramDefaultValue: {},
           paramValue: () => ChatManagerCache.getInstance().getLastSendMessage(),
         },
@@ -221,7 +224,7 @@ export const metaDataList = new Map<string, ApiParams>([
       params: [
         {
           paramName: 'message', // 使用发送成功或者失败的数据测试，依赖sendMessage
-          paramType: 'object',
+          paramType: 'json',
           paramDefaultValue: {},
           paramValue: () => ChatManagerCache.getInstance().getLastSendMessage(),
         },
@@ -235,7 +238,7 @@ export const metaDataList = new Map<string, ApiParams>([
       params: [
         {
           paramName: 'message', // 使用发送成功或者失败的数据测试，依赖sendMessage
-          paramType: 'object',
+          paramType: 'json',
           paramDefaultValue: {},
           paramValue: () => ChatManagerCache.getInstance().getLastRecvMessage(),
         },
@@ -244,6 +247,7 @@ export const metaDataList = new Map<string, ApiParams>([
           paramType: 'object',
           paramDefaultValue: {},
           paramValue: () => ChatManagerCache.getInstance().createCallback(),
+          domType: 'download',
         },
       ],
     },
@@ -255,7 +259,7 @@ export const metaDataList = new Map<string, ApiParams>([
       params: [
         {
           paramName: 'message', // 使用发送成功或者失败的数据测试，依赖sendMessage
-          paramType: 'object',
+          paramType: 'json',
           paramDefaultValue: {},
           paramValue: () => ChatManagerCache.getInstance().getLastRecvMessage(),
         },
@@ -264,6 +268,7 @@ export const metaDataList = new Map<string, ApiParams>([
           paramType: 'object',
           paramDefaultValue: {},
           paramValue: () => ChatManagerCache.getInstance().createCallback(),
+          domType: 'download',
         },
       ],
     },
@@ -281,7 +286,7 @@ export const metaDataList = new Map<string, ApiParams>([
         {
           paramName: 'chatType',
           paramType: 'number',
-          paramDefaultValue: 0,
+          paramDefaultValue: ChatConversationType.PeerChat,
         },
         {
           paramName: 'pageSize',
@@ -550,7 +555,7 @@ export const metaDataList = new Map<string, ApiParams>([
         },
         {
           paramName: 'msg',
-          paramType: 'object',
+          paramType: 'json',
           paramDefaultValue: {},
           paramValue: () => ChatManagerCache.getInstance().getLastSendMessage(),
         },
@@ -574,7 +579,7 @@ export const metaDataList = new Map<string, ApiParams>([
         },
         {
           paramName: 'msg',
-          paramType: 'object',
+          paramType: 'json',
           paramDefaultValue: {},
           paramValue: () => ChatManagerCache.getInstance().getLastSendMessage(),
         },
@@ -598,7 +603,7 @@ export const metaDataList = new Map<string, ApiParams>([
         },
         {
           paramName: 'msg',
-          paramType: 'object',
+          paramType: 'json',
           paramDefaultValue: {},
           paramValue: () => ChatManagerCache.getInstance().getLastSendMessage(),
         },
@@ -622,9 +627,8 @@ export const metaDataList = new Map<string, ApiParams>([
         },
         {
           paramName: 'msgId',
-          paramType: 'object',
+          paramType: 'string',
           paramDefaultValue: '1003599319195977800',
-          paramValue: () => ChatManagerCache.getInstance().getLastRecvMessage(),
         },
       ],
     },
@@ -642,7 +646,7 @@ export const metaDataList = new Map<string, ApiParams>([
         {
           paramName: 'convType',
           paramType: 'number',
-          paramDefaultValue: 0,
+          paramDefaultValue: ChatConversationType.PeerChat,
         },
       ],
     },
@@ -688,7 +692,7 @@ export const metaDataList = new Map<string, ApiParams>([
         {
           paramName: 'msgType',
           paramType: 'string',
-          paramDefaultValue: 'txt',
+          paramDefaultValue: ChatMessageType.TXT,
         },
         {
           paramName: 'direction',
@@ -834,13 +838,13 @@ export const metaDataList = new Map<string, ApiParams>([
       params: [
         {
           paramName: 'msg',
-          paramType: 'object',
+          paramType: 'json',
           paramDefaultValue: {},
           paramValue: () => ChatManagerCache.getInstance().getLastSendMessage(),
         },
         {
           paramName: 'languages',
-          paramType: 'object',
+          paramType: 'json',
           paramDefaultValue: ['yue', 'en', 'fr', 'de', 'ca'],
         },
       ],
@@ -866,11 +870,11 @@ export const metaDataList = new Map<string, ApiParams>([
         {
           paramName: 'convType',
           paramType: 'number',
-          paramDefaultValue: 0,
+          paramDefaultValue: ChatConversationType.PeerChat,
         },
         {
           paramName: 'ext',
-          paramType: 'object',
+          paramType: 'json',
           paramDefaultValue: { key: 'value' },
         },
       ],
@@ -919,7 +923,7 @@ export const metaDataList = new Map<string, ApiParams>([
       params: [
         {
           paramName: 'msgIds',
-          paramType: 'object',
+          paramType: 'json',
           paramDefaultValue: ['1017652723916474936'],
         },
         {
@@ -929,7 +933,7 @@ export const metaDataList = new Map<string, ApiParams>([
         },
         {
           paramName: 'chatType',
-          paramType: 'object',
+          paramType: 'number',
           paramDefaultValue: ChatMessageChatType.GroupChat,
         },
       ],
@@ -1018,19 +1022,19 @@ export const metaDataList = new Map<string, ApiParams>([
       methodName: MN.createChatThread,
       params: [
         {
-          paramName: 'name',
+          paramName: 'threadName',
           paramType: 'string',
           paramDefaultValue: 'name',
         },
         {
           paramName: 'msgId',
           paramType: 'string',
-          paramDefaultValue: '1003229966910883832',
+          paramDefaultValue: '1019115514598787640',
         },
         {
           paramName: 'parentId',
           paramType: 'string',
-          paramDefaultValue: '1003229966910883832',
+          paramDefaultValue: '183958105030657',
         },
       ],
     },
@@ -1043,7 +1047,7 @@ export const metaDataList = new Map<string, ApiParams>([
         {
           paramName: 'chatThreadId',
           paramType: 'string',
-          paramDefaultValue: '1003229966910883832',
+          paramDefaultValue: '184230147588097',
         },
       ],
     },
@@ -1056,7 +1060,7 @@ export const metaDataList = new Map<string, ApiParams>([
         {
           paramName: 'chatThreadId',
           paramType: 'string',
-          paramDefaultValue: '1003229966910883832',
+          paramDefaultValue: '184230147588097',
         },
       ],
     },
@@ -1069,7 +1073,7 @@ export const metaDataList = new Map<string, ApiParams>([
         {
           paramName: 'chatThreadId',
           paramType: 'string',
-          paramDefaultValue: '1003229966910883832',
+          paramDefaultValue: '184230147588097',
         },
       ],
     },
@@ -1082,7 +1086,7 @@ export const metaDataList = new Map<string, ApiParams>([
         {
           paramName: 'chatThreadId',
           paramType: 'string',
-          paramDefaultValue: '1003229966910883832',
+          paramDefaultValue: '184230147588097',
         },
         {
           paramName: 'newName',
@@ -1100,12 +1104,12 @@ export const metaDataList = new Map<string, ApiParams>([
         {
           paramName: 'chatThreadId',
           paramType: 'string',
-          paramDefaultValue: '1003229966910883832',
+          paramDefaultValue: '184230147588097',
         },
         {
           paramName: 'memberId',
           paramType: 'string',
-          paramDefaultValue: datasheet.accounts[2],
+          paramDefaultValue: datasheet.accounts[2].id,
         },
       ],
     },
@@ -1118,7 +1122,7 @@ export const metaDataList = new Map<string, ApiParams>([
         {
           paramName: 'chatThreadId',
           paramType: 'string',
-          paramDefaultValue: '1003229966910883832',
+          paramDefaultValue: '184230147588097',
         },
         {
           paramName: 'cursor',
@@ -1157,9 +1161,9 @@ export const metaDataList = new Map<string, ApiParams>([
       methodName: MN.fetchJoinedChatThreadWithParentFromServer,
       params: [
         {
-          paramName: 'chatThreadId',
+          paramName: 'parentId',
           paramType: 'string',
-          paramDefaultValue: '1003229966910883832',
+          paramDefaultValue: '183958105030657',
         },
         {
           paramName: 'cursor',
@@ -1180,9 +1184,9 @@ export const metaDataList = new Map<string, ApiParams>([
       methodName: MN.fetchChatThreadWithParentFromServer,
       params: [
         {
-          paramName: 'chatThreadId',
+          paramName: 'parentId',
           paramType: 'string',
-          paramDefaultValue: '1003229966910883832',
+          paramDefaultValue: '183958105030657',
         },
         {
           paramName: 'cursor',
@@ -1204,8 +1208,8 @@ export const metaDataList = new Map<string, ApiParams>([
       params: [
         {
           paramName: 'chatThreadIds',
-          paramType: 'object',
-          paramDefaultValue: ['1003229966910883832'],
+          paramType: 'json',
+          paramDefaultValue: ['184230147588097'],
         },
       ],
     },
@@ -1218,7 +1222,20 @@ export const metaDataList = new Map<string, ApiParams>([
         {
           paramName: 'chatThreadId',
           paramType: 'string',
-          paramDefaultValue: '1003229966910883832',
+          paramDefaultValue: '184230147588097',
+        },
+      ],
+    },
+  ],
+  [
+    MN.getMessageThread,
+    {
+      methodName: MN.getMessageThread,
+      params: [
+        {
+          paramName: 'msgId',
+          paramType: 'string',
+          paramDefaultValue: '1020169139521587768',
         },
       ],
     },

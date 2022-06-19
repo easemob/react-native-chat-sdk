@@ -85,6 +85,9 @@ export function generateData(kv: Map<string, ApiParams>): any {
     let eachMethodParams: any = {};
     kv.get(key)?.params.forEach((item) => {
       eachMethodParams[item.paramName] = item.paramDefaultValue;
+      if (item.paramValue) {
+        eachMethodParams[item.paramName] = item.paramValue();
+      }
     });
     ret[key] = eachMethodParams;
   }

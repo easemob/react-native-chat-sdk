@@ -3,8 +3,6 @@
  *
  * The class instance is returned when you make a paginated query.
  */
-export type CursorResultMap = (obj: any) => any;
-
 export class ChatCursorResult<T> {
   /**
    * The cursor that specifies where to start to get data.
@@ -17,7 +15,7 @@ export class ChatCursorResult<T> {
   constructor(params: {
     cursor: string;
     list?: Array<T>;
-    opt?: { map: CursorResultMap };
+    opt?: { map: (obj: any) => any };
   }) {
     this.cursor = params.cursor;
     let data: Array<any> = [];

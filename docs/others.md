@@ -1,3 +1,5 @@
+Update time: 2022-06-16
+
 # Instructions
 
 Here is a supplementary description of the relevant content, if other topics do not find relevant content, you can refer to this document.
@@ -15,19 +17,22 @@ git submodule foreach "git checkout dev"
 
 ## npm repository
 
-[reference](https:#www.npmjs.com/package/react-native-chat-sdk)
+[reference](https://www.npmjs.com/package/react-native-chat-sdk)
 
 ## Development environment review.
 
 ```sh
 npx react-native doctor
 ```
+
 or
+
 ```sh
 npx react-native info
 ```
 
 ## Android devices review
+
 ```sh
 # review tcp port list
 adb reverse --list
@@ -79,8 +84,9 @@ $ npm install -g react-devtools
 ```
 
 ## Possible problems
+
 1. Use vscode to debug the necessary plug-ins.
-   vscode plugin `React Native Tools` `https:#github.com/microsoft/vscode-react-native`
+   vscode plugin `React Native Tools` `https://github.com/microsoft/vscode-react-native`
 
 2. Could not find entry function problem.
    add file `example/index.js`， original file `example/index.tsx`
@@ -95,36 +101,36 @@ $ npm install -g react-devtools
    - The phone is not properly connected to the computer.
    - You need your phone and your computer on the same network.
    - For versions 5.0 or later, data forwarding is required: `adb reverse tcp:8081 tcp:8081`
-   - 
+   -
 6. `watchman watch-del '/Users/asterisk/Codes/rn/react-native-chat-sdk' ; watchman watch-project '/Users/asterisk/Codes/rn/react-native-chat-sdk'`
+
    - `watchman watch-del-all`
 
 7. editorconfig 影响第三方代码格式
-   - Add ignore folder: https:#stackoverflow.com/questions/30310396/possible-to-ignore-exclude-file-folder-from-editorconfig
+
+   - Add ignore folder: https://stackoverflow.com/questions/30310396/possible-to-ignore-exclude-file-folder-from-editorconfig
 
 8. Iso real machine debugging using vscode.
    - `brew install ios-deploy`
    - `npx react-native run-ios --device "xxx's iPhone"`
 
-
 ## eslint
 
-[eslint en](https:#eslint.org/docs/rules/no-shadow)  
-[eslint cn](http:#eslint.cn/docs/rules/no-shadow)
+[eslint en](https://eslint.org/docs/rules/no-shadow)  
+[eslint cn](http://eslint.cn/docs/rules/no-shadow)
 
 ---
 
 ## 参考资料
 
-[react native website](https:#reactnative.dev/)  
-[react native website cn](https:#reactnative.cn/)  
+[react native website](https://reactnative.dev/)  
+[react native website cn](https://reactnative.cn/)
 
 ---
 
 ## Q & A
 
-[others references](https:#note.youdao.com/s/5eHWCnPb)
-
+[others references](https://note.youdao.com/s/5eHWCnPb)
 
 # install depends
 

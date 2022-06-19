@@ -9,7 +9,6 @@ import {
   ChatMessageType,
   ChatMessageChatType,
   ChatError,
-  ChatConversationType,
   ChatMessageThreadEvent,
   ChatMessageReactionEvent,
 } from 'react-native-chat-sdk';
@@ -21,7 +20,6 @@ import {
 } from '../__internal__/LeafScreenBase';
 import { ChatManagerCache } from './ChatManagerData';
 import type { ApiParams } from '../__internal__/DataTypes';
-import { datasheet } from '../__default__/Datasheet';
 
 const MN = {
   sendMessage: 'sendMessage',
@@ -32,7 +30,6 @@ export interface StateSendMessage extends StateBase {
 
   targetId: string;
   targetType: ChatMessageChatType;
-  convType: ChatConversationType;
 
   // text messge body
   content: string;
@@ -58,6 +55,9 @@ export interface StateSendMessage extends StateBase {
   event: string;
   ext: string;
 
+  // is chat message
+  isChatThread: boolean;
+
   cb_result: string;
 }
 
@@ -79,12 +79,12 @@ export class SendMessageLeafScreen extends LeafScreenBase<StateSendMessage> {
             {
               paramName: 'targetId',
               paramType: 'string',
-              paramDefaultValue: datasheet.accounts[2].id,
+              paramDefaultValue: '183970312552449',
             },
             {
               paramName: 'targetType',
               paramType: 'object',
-              paramDefaultValue: ChatMessageChatType.PeerChat,
+              paramDefaultValue: ChatMessageChatType.GroupChat,
             },
             {
               paramName: 'content',
@@ -95,6 +95,11 @@ export class SendMessageLeafScreen extends LeafScreenBase<StateSendMessage> {
               paramName: 'messageType',
               paramType: 'object',
               paramDefaultValue: ChatMessageType.TXT,
+            },
+            {
+              paramName: 'isChatThread',
+              paramType: 'boolean',
+              paramDefaultValue: false,
             },
           ],
         },
@@ -107,12 +112,12 @@ export class SendMessageLeafScreen extends LeafScreenBase<StateSendMessage> {
       cb_result: '',
       messageType: ChatMessageType.TXT,
 
-      targetId: datasheet.accounts[2].id,
-      targetType: ChatMessageChatType.PeerChat,
-      convType: ChatConversationType.PeerChat,
+      targetId: this.metaData.get(MN.sendMessage)?.params[0].paramDefaultValue,
+      targetType: this.metaData.get(MN.sendMessage)?.params[1]
+        .paramDefaultValue,
 
       // text messge body
-      content: '',
+      content: this.metaData.get(MN.sendMessage)?.params[2].paramDefaultValue,
 
       // file message body
       filePath: '',
@@ -134,6 +139,9 @@ export class SendMessageLeafScreen extends LeafScreenBase<StateSendMessage> {
       // custom message body
       event: '',
       ext: '',
+      // is thread message
+      isChatThread: this.metaData.get(MN.sendMessage)?.params[4]
+        .paramDefaultValue,
     };
     this.statelessData = {};
   }
@@ -164,7 +172,7 @@ export class SendMessageLeafScreen extends LeafScreenBase<StateSendMessage> {
   }
 
   protected renderBody(): ReactNode {
-    console.log(`${SendMessageLeafScreen.TAG}: renderBody: `);
+    // console.log(`${SendMessageLeafScreen.TAG}: renderBody: `);
     return (
       <View style={styleValues.containerColumn}>{this.sendMessage()}</View>
     );
@@ -179,37 +187,37 @@ export class SendMessageLeafScreen extends LeafScreenBase<StateSendMessage> {
       onMessageReactionDidChange(list: Array<ChatMessageReactionEvent>): void {
         console.log(
           `${SendMessageLeafScreen.TAG}: onMessageReactionDidChange: `,
-          list
+          JSON.stringify(list)
         );
       }
       onChatMessageThreadCreated(msgThread: ChatMessageThreadEvent): void {
         console.log(
           `${SendMessageLeafScreen.TAG}: onChatMessageThreadCreated: `,
-          msgThread
+          JSON.stringify(msgThread)
         );
       }
       onChatMessageThreadUpdated(msgThread: ChatMessageThreadEvent): void {
         console.log(
           `${SendMessageLeafScreen.TAG}: onChatMessageThreadUpdated: `,
-          msgThread
+          JSON.stringify(msgThread)
         );
       }
       onChatMessageThreadDestroyed(msgThread: ChatMessageThreadEvent): void {
         console.log(
           `${SendMessageLeafScreen.TAG}: onChatMessageThreadDestroyed: `,
-          msgThread
+          JSON.stringify(msgThread)
         );
       }
       onChatMessageThreadUserRemoved(msgThread: ChatMessageThreadEvent): void {
         console.log(
           `${SendMessageLeafScreen.TAG}: onChatMessageThreadUserRemoved: `,
-          msgThread
+          JSON.stringify(msgThread)
         );
       }
       onMessagesReceived(messages: ChatMessage[]): void {
         console.log(
           `${SendMessageLeafScreen.TAG}: onMessagesReceived: `,
-          messages
+          JSON.stringify(messages)
         );
         if (messages.length > 0) {
           ChatManagerCache.getInstance().addRecvMessage(
@@ -220,7 +228,7 @@ export class SendMessageLeafScreen extends LeafScreenBase<StateSendMessage> {
       onCmdMessagesReceived(messages: ChatMessage[]): void {
         console.log(
           `${SendMessageLeafScreen.TAG}: onCmdMessagesReceived: `,
-          messages
+          JSON.stringify(messages)
         );
         if (messages.length > 0) {
           ChatManagerCache.getInstance().addRecvMessage(
@@ -229,7 +237,10 @@ export class SendMessageLeafScreen extends LeafScreenBase<StateSendMessage> {
         }
       }
       onMessagesRead(messages: ChatMessage[]): void {
-        console.log(`${SendMessageLeafScreen.TAG}: onMessagesRead: `, messages);
+        console.log(
+          `${SendMessageLeafScreen.TAG}: onMessagesRead: `,
+          JSON.stringify(messages)
+        );
         this.that.setState({
           recvResult: `onMessagesRead: ${messages.length}: ` + messages,
         });
@@ -237,7 +248,7 @@ export class SendMessageLeafScreen extends LeafScreenBase<StateSendMessage> {
       onGroupMessageRead(groupMessageAcks: ChatGroupMessageAck[]): void {
         console.log(
           `${SendMessageLeafScreen.TAG}: onGroupMessageRead: `,
-          groupMessageAcks
+          JSON.stringify(groupMessageAcks)
         );
         this.that.setState({
           recvResult:
@@ -504,7 +515,7 @@ export class SendMessageLeafScreen extends LeafScreenBase<StateSendMessage> {
   protected sendMessage(): ReactNode[] {
     this.setKeyPrefix(MN.sendMessage);
     const data = this.metaData.get(MN.sendMessage)!;
-    const { targetId, targetType, messageType } = this.state;
+    const { targetId, targetType, messageType, isChatThread } = this.state;
 
     const getTargetId = (tt: ChatMessageChatType): string => {
       if (tt === ChatMessageChatType.PeerChat) {
@@ -519,6 +530,17 @@ export class SendMessageLeafScreen extends LeafScreenBase<StateSendMessage> {
 
     return [
       this.renderParamWithText(data.methodName),
+      this.renderParamWithEnum(
+        data.params[4].paramName,
+        ['true', 'false'],
+        isChatThread === true ? 'true' : 'false',
+        (index: string, option: any) => {
+          let ic = option === 'true' ? true : false;
+          this.setState({
+            isChatThread: ic,
+          });
+        }
+      ),
       this.renderParamWithInput('targetId', targetId, (text: string) => {
         this.setState({
           targetId: text,
@@ -593,22 +615,25 @@ export class SendMessageLeafScreen extends LeafScreenBase<StateSendMessage> {
 
   private createMessage(): ChatMessage {
     let ret: ChatMessage;
-    const { targetId, targetType, messageType } = this.state;
+    const { targetId, targetType, messageType, isChatThread } = this.state;
     switch (messageType) {
       case ChatMessageType.TXT:
         {
           const { content } = this.state;
-          ret = ChatManagerCache.getInstance().createTextMessageWithParams(
+          ret = ChatManagerCache.getInstance().createTestMessage(
             targetId,
             content,
-            targetType
+            targetType,
+            isChatThread ? 3 : 1
           );
         }
         break;
       case ChatMessageType.CMD:
         {
           const { action } = this.state;
-          ret = ChatMessage.createCmdMessage(targetId, action, targetType);
+          ret = ChatMessage.createCmdMessage(targetId, action, targetType, {
+            isChatThread: isChatThread,
+          });
         }
         break;
       case ChatMessageType.CUSTOM:
@@ -616,6 +641,7 @@ export class SendMessageLeafScreen extends LeafScreenBase<StateSendMessage> {
           const { event, ext } = this.state;
           ret = ChatMessage.createCustomMessage(targetId, event, targetType, {
             params: ext,
+            isChatThread,
           });
         }
         break;
@@ -627,7 +653,7 @@ export class SendMessageLeafScreen extends LeafScreenBase<StateSendMessage> {
             latitude,
             longitude,
             targetType,
-            { address }
+            { address, isChatThread }
           );
         }
         break;
@@ -636,6 +662,7 @@ export class SendMessageLeafScreen extends LeafScreenBase<StateSendMessage> {
           const { filePath, displayName } = this.state;
           ret = ChatMessage.createFileMessage(targetId, filePath, targetType, {
             displayName,
+            isChatThread,
           });
         }
         break;
@@ -645,6 +672,7 @@ export class SendMessageLeafScreen extends LeafScreenBase<StateSendMessage> {
           ret = ChatMessage.createVoiceMessage(targetId, filePath, targetType, {
             displayName,
             duration,
+            isChatThread,
           });
         }
         break;
@@ -657,6 +685,7 @@ export class SendMessageLeafScreen extends LeafScreenBase<StateSendMessage> {
             width,
             height,
             thumbnailLocalPath,
+            isChatThread,
           });
         }
         break;
@@ -676,6 +705,7 @@ export class SendMessageLeafScreen extends LeafScreenBase<StateSendMessage> {
             height,
             thumbnailLocalPath,
             duration,
+            isChatThread,
           });
         }
         break;

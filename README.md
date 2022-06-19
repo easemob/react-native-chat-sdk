@@ -1,14 +1,16 @@
 _English | [Chinese](./README.zh.md)_
 
-# Huanxin IM React-Native Description
+Update time: 2022-06-16
 
-Update time: 2022-05-10
+# IM React-Native Description
 
-This SDK is based on React Native and Chat SDK implementations for Android and iOS.
+This SDK is based on the native `Android` and `iOS` version of React Native implemented in the `typescript` language.
+`Android` is detailed here. [Portal](https://docs-im.easemob.com/im/android/sdk/import).
+`iOS` is detailed here. [Portal](https://docs-im.easemob.com/im/ios/sdk/import).
 
 ## directory description
 
-├── CHANGELOG.md // Release notes document   
+├── CHANGELOG.md // Release notes document  
 ├── CONTRIBUTING.md // Contributor documentation  
 ├── LICENSE // License file  
 ├── README.md // Project help documentation  
@@ -27,62 +29,74 @@ This SDK is based on React Native and Chat SDK implementations for Android and i
 ├── src // react native source code folder  
 ├── tsconfig.build.json // typescript language build configuration file  
 ├── tsconfig.json // typescript language configuration file  
-└── yarn.lock // yarn project dependency version configuration file  
+└── yarn.lock // yarn project dependency version configuration file
 
-## project preparation
+## project acquisition
 
 Download using git command
 
-```bash
+```sh
 git clone --recurse-submodules git@github.com:easemob/react-native-chat-sdk.git
 ```
 
-## Compile and run conditions
+## Project development environment requirements
 
-See here for specific requirements. [Portal](./docs/quick-start.md)
+For details, please refer to the Quick Start demo. [Portal](./docs/quick-start.md)
 
-## project compilation
+## project build and run
 
 Open a terminal and run `yarn` or `yarn install` command
 
-## build ios platform
+### Build ios platform
 
-+ use `xcode` to open the file `example/ios/ChatSdkExample.xcworkspace`;  
-+ Connect an ios device, or choose an emulator;  
-+ Set the signature (if it is a real machine);  
-+ Execute build, install and run demo.  
-+ **Note** The `pod install` command has been executed when running the `yarn` command, otherwise, it needs to be run manually.  
+- use `xcode` to open the file `example/ios/ChatSdkExample.xcworkspace`;
+- Connect an ios device, or choose an emulator;
+- set the signature (if it is a real machine);
+- Execute build, install and run demo.
+- **Note** The `pod install` command has been executed when running the `yarn` command, otherwise, it needs to be run manually.
 
-## build android platform
+### Build the android platform
 
-+ use `android studio` to open the folder `example/android`;  
-+ If it is the first time, please run the `sync` command first;  
-+ Execute build, install and run demo;  
-+ Before running the demo, start the service: `cd example && yarn start`.  
-+ **Note** Make sure to execute the following command before building: `cd native_src/cpp && sh generate.sh --type rn`   
-+ **Note** android5.0 or above requires data forwarding: `adb reverse tcp:8081 tcp:8081`  
+- use `android studio` to open the folder `example/android`;
+- If it is the first time, please run the `sync` command first;
+- Execute build, install and run demo;
+- Before running the demo, start the service: `cd example && yarn start`.
+- **NOTE** Make sure to execute the following command before building: `cd native_src/cpp && sh generate.sh --type rn`
+- **Note** android5.0 or above, data forwarding is required: `adb reverse tcp:8081 tcp:8081`
 
 ## quick start
 
-Please check the specific documentation. [Portal](./docs/quick-start.md)
+See the Quick Start documentation for details. [Portal](./docs/quick-start.md)
 
 ## demo experience
 
-You can run the demo to experience the api level. [portal](./example/package.json).
-You can run a simple demo for experience. [portal](./examples/simple_demo/package.json).
+For details, see the demo of running the experience api. [portal](./example/package.json).
+For details, see the demo of running experience login, logout, sending and receiving messages. [portal](./examples/simple_demo/package.json).
 
 ## Contributors
 
-See the [contributing guide](./CONTRIBUTING.md) to learn how to contribute to the repository and the development workflow.
+See Contributor Guide for details. [Portal](./CONTRIBUTING.md).
 
 ## Release Notes
 
-See the [change log](./CHANGELOG.md).
+See the changelog for details. [Portal](./CHANGELOG.md).
+
+## Release type description
+
+See version type description for details. [Portal](./docs/version-types.md).
+
+## Developer Instructions
+
+See developer instructions for details. [Portal](./docs/developer.md).
+
+## User Instructions
+
+See the User Instructions [Portal](./docs/user.md) for details.
 
 ## License
 
 MIT
 
-## Q&A
+## Q & A
 
-[If you encounter problems, please refer to here](./docs/others.md)
+If you encounter problems, please refer to here. [Portal](./docs/others.md).
