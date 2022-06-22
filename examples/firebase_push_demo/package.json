@@ -6,6 +6,9 @@
     "android": "react-native run-android",
     "ios": "react-native run-ios",
     "start": "react-native start",
+    "startr": "react-native start --reset-cache",
+    "start8888": "react-native start --port 8888",
+    "start8889": "react-native start --port 8889",
     "test": "jest",
     "lint": "eslint ."
   },
@@ -14,7 +17,7 @@
     "@react-native-firebase/messaging": "^14.11.0",
     "react": "17.0.2",
     "react-native": "0.68.2",
-    "react-native-chat-sdk": "^0.4.6-beta.4"
+    "react-native-chat-sdk": "^1.0.5"
   },
   "devDependencies": {
     "@babel/core": "^7.12.9",

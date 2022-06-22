@@ -26,7 +26,9 @@ import {
 import messaging from '@react-native-firebase/messaging';
 
 async function requestUserPermission() {
-  const authStatus = await messaging().requestPermission();
+  const authStatus = await messaging().requestPermission({
+    announcement: true,
+  });
   const enabled =
     authStatus === messaging.AuthorizationStatus.AUTHORIZED ||
     authStatus === messaging.AuthorizationStatus.PROVISIONAL;
@@ -34,6 +36,28 @@ async function requestUserPermission() {
   if (enabled) {
     console.log('Authorization status:', authStatus);
   }
+}
+
+async function checkApplicationPermission() {
+  const authorizationStatus = await messaging().requestPermission();
+
+  if (authorizationStatus === messaging.AuthorizationStatus.AUTHORIZED) {
+    console.log('User has notification permissions enabled.');
+  } else if (
+    authorizationStatus === messaging.AuthorizationStatus.PROVISIONAL
+  ) {
+    console.log('User has provisional notification permissions.');
+  } else {
+    console.log('User has notification permissions disabled');
+  }
+}
+
+async function requestFcmToken() {
+  // https://rnfirebase.io/reference/messaging#getToken
+  // await messaging().registerDeviceForRemoteMessages();
+  const fcmToken = await messaging().getToken();
+  console.log('fcm token: ', fcmToken);
+  return fcmToken;
 }
 
 // The App Object.
@@ -119,6 +143,8 @@ const App = () => {
   // Please initialize any interface before calling it.
   const init = async () => {
     await requestUserPermission();
+    await checkApplicationPermission();
+    await requestFcmToken();
     this.unsubscribe = messaging().onMessage(async remoteMessage => {
       Alert.alert('A new FCM message arrived!', JSON.stringify(remoteMessage));
     });
