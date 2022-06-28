@@ -10,6 +10,7 @@ import {
   unregisterComponents,
 } from './__internal__/Utils';
 import { styleValues } from './__internal__/Css';
+import messaging from '@react-native-firebase/messaging';
 
 function HomeScreen(params: { navigation: any }) {
   return (
@@ -56,6 +57,19 @@ function App() {
     </NavigationContainer>
   );
 }
+
+(function onListenerNotification(): void {
+  console.log('fcm message listener:');
+  messaging().onMessage(async (remoteMessage) => {
+    console.log('A new FCM message arrived!', JSON.stringify(remoteMessage));
+  });
+  messaging().setBackgroundMessageHandler(async (remoteMessage) => {
+    console.log(
+      'Message handled in the background!',
+      JSON.stringify(remoteMessage)
+    );
+  });
+})();
 
 unregisterComponents();
 screenComponents.forEach((value: ScreenComponent) => {

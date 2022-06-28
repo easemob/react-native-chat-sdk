@@ -1,4 +1,4 @@
-// import { ChatPushConfig } from './ChatPushConfig';
+import type { ChatPushConfig } from './ChatPushConfig';
 
 /**
  * The chat setting class that defines parameters and options of the SDK, including whether to encrypt the messages before sending them and whether to automatically accept the friend invitations.
@@ -104,7 +104,7 @@ export class ChatOptions {
   /**
    * The push configuration.
    */
-  //pushConfig: ChatPushConfig;
+  pushConfig?: ChatPushConfig;
   /**
    * Whether to disable DNS.
    *
@@ -156,7 +156,7 @@ export class ChatOptions {
     usingHttpsOnly?: boolean;
     serverTransfer?: boolean;
     isAutoDownload?: boolean;
-    // pushConfig?: any;
+    pushConfig?: ChatPushConfig;
     enableDNSConfig?: boolean;
     dnsUrl?: string;
     restServer?: string;
@@ -179,9 +179,7 @@ export class ChatOptions {
     this.usingHttpsOnly = params.usingHttpsOnly ?? false;
     this.serverTransfer = params.serverTransfer ?? true;
     this.isAutoDownload = params.isAutoDownload ?? true;
-    // this.pushConfig = params.pushConfig
-    //   ? new ChatPushConfig(params.pushConfig)
-    //   : new ChatPushConfig({});
+    this.pushConfig = params.pushConfig;
     this.enableDNSConfig = params.enableDNSConfig ?? true;
     this.dnsUrl = params.dnsUrl ?? '';
     this.restServer = params.restServer ?? '';

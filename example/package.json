@@ -13,6 +13,8 @@
     "start8888": "react-native start --port 8888"
   },
   "dependencies": {
+    "@react-native-firebase/app": "^15.0.0",
+    "@react-native-firebase/messaging": "^15.0.0",
     "@react-native-picker/picker": "^2.4.0",
     "@react-navigation/bottom-tabs": "^6.2.0",
     "@react-navigation/core": "^6.1.1",

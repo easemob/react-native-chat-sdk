@@ -6,6 +6,11 @@ export const datasheet = {
     '41117440#383391',
     '5101220107132865#test', // microsoft test box
   ],
+  PushInfo: {
+    sendId: '1068131238942',
+    KeyId:
+      'AAAA-LGVRB4:APA91bHLX0GeBZn4rJeSY9KyTSJYpTJr-vBMPdwA3G6zE7Y0gIBXLNkoNPqsRgROOvUAHm4zWpnxM4jV_A0QTD62B5Hco8smkJ_KefS-izFwsip1sVhYnA4ZeojtI-yEtxxnGx9hzIGF',
+  },
   ChatManager: {
     SendMessage: {
       latitude: '0.0',

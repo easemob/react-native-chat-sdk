@@ -12,6 +12,11 @@ target 'ChatSdkExample' do
 
   pod 'react-native-chat-sdk', :path => '../..'
 
+  # [!] The following Swift pods cannot yet be integrated as static libraries:
+  # The Swift pod `FirebaseCoreInternal` depends upon `GoogleUtilities`, which does not define modules. To opt into those targets generating module maps (which is necessary to import them from Swift when building as static libraries), you may set `use_modular_headers!` globally in your Podfile, or specify `:modular_headers => true` for particular dependencies.
+  pod 'GoogleUtilities', :modular_headers => true
+  pod 'FirebaseCore', :modular_headers => true
+
   # Enables Flipper.
   #
   # Note that if you have use_frameworks! enabled, Flipper will not work and
