@@ -78,17 +78,18 @@ import {
   ChatRoomPermissionTypeToString,
 } from './common/ChatRoom';
 import { ChatUserInfo } from './common/ChatUserInfo';
-import type {
+import {
   ChatMessageReaction,
   ChatMessageReactionEvent,
 } from './common/ChatMessageReaction';
-import type {
+import {
   ChatMessageThread,
   ChatMessageThreadEvent,
   ChatMessageThreadOperation,
 } from './common/ChatMessageThread';
-import type { ChatPresence } from './common/ChatPresence';
-import type { ChatTranslateLanguage } from './common/ChatTranslateLanguage';
+import { ChatPresence } from './common/ChatPresence';
+import { ChatTranslateLanguage } from './common/ChatTranslateLanguage';
+import { ChatPushConfig } from './common/ChatPushConfig';
 
 /**
  * export manager
@@ -171,6 +172,7 @@ export {
   ChatMessageThread,
   ChatMessageThreadEvent,
   ChatMessageReactionEvent,
+  ChatPushConfig,
 };
 
 /**

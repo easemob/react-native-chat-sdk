@@ -250,6 +250,8 @@ export const MTgetNoDisturbGroups = 'getNoDisturbGroups';
 export const MTupdateUserPushService = 'updateUserPushService';
 export const MTgetNoPushUsers = 'getNoPushUsers';
 
+export const MTupdatePushConfig = 'updatePushConfig';
+
 /// ChatUserInfoManager methods
 export const MTupdateOwnUserInfo = 'updateOwnUserInfo';
 export const MTupdateOwnUserInfoWithType = 'updateOwnUserInfoWithType';
@@ -284,19 +286,3 @@ export const MTjoinChatThread = 'joinChatThread';
 export const MTleaveChatThread = 'leaveChatThread';
 export const MTdestroyChatThread = 'destroyChatThread';
 export const MTgetMessageThread = 'getMessageThread';
-
-export const CHAT_ROOM_EVENT_ON_CHAT_ROOM_DESTROYED = 'onChatRoomDestroyed';
-export const CHAT_ROOM_EVENT_ON_MEMBER_JOINED = 'onMemberJoined';
-export const CHAT_ROOM_EVENT_ON_MEMBER_EXITED = 'onMemberExited';
-export const CHAT_ROOM_EVENT_ON_REMOVED_FROM_CHAT_ROOM =
-  'onRemovedFromChatRoom';
-export const CHAT_ROOM_EVENT_ON_MUTE_LIST_ADDED = 'onMuteListAdded';
-export const CHAT_ROOM_EVENT_ON_MUTE_LIST_REMOVED = 'onMuteListRemoved';
-export const CHAT_ROOM_EVENT_ON_ADMIN_ADDED = 'onAdminAdded';
-export const CHAT_ROOM_EVENT_ON_ADMIN_REMOVED = 'onAdminRemoved';
-export const CHAT_ROOM_EVENT_ON_OWNER_CHANGED = 'onOwnerChanged';
-export const CHAT_ROOM_EVENT_ON_ANNOUNCEMENT_CHANGED = 'onAnnouncementChanged';
-export const CHAT_ROOM_EVENT_ON_WHITE_LIST_REMOVED = 'onWhiteListRemoved';
-export const CHAT_ROOM_EVENT_ON_WHITE_LIST_ADDED = 'onWhiteListAdded';
-export const CHAT_ROOM_EVENT_ON_ALL_MEMBER_MUTE_STATE_CHANGED =
-  'onAllMemberMuteStateChanged';
