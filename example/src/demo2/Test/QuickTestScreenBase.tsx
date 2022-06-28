@@ -18,7 +18,6 @@ import {
   ChatPresenceEventListener,
   ChatPresence,
   ChatCmdMessageBody,
-  ChatGroup,
 } from 'react-native-chat-sdk';
 import { styleValues } from '../__internal__/Css';
 import {
