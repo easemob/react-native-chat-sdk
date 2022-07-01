@@ -1,6 +1,6 @@
 import { NavigationContainer } from '@react-navigation/native';
 import React from 'react';
-import { ScrollView, View, Button } from 'react-native';
+import { ScrollView, View, Button, Alert } from 'react-native';
 import { screenComponents } from './__internal__/Components';
 import {
   ScreenComponent,
@@ -61,13 +61,15 @@ function App() {
 (function onListenerNotification(): void {
   console.log('fcm message listener:');
   messaging().onMessage(async (remoteMessage) => {
-    console.log('A new FCM message arrived!', JSON.stringify(remoteMessage));
+    const l = 'init: onMessage:' + JSON.stringify(remoteMessage);
+    Alert.alert(l);
+    console.log(l);
   });
   messaging().setBackgroundMessageHandler(async (remoteMessage) => {
-    console.log(
-      'Message handled in the background!',
-      JSON.stringify(remoteMessage)
-    );
+    const l =
+      'init: setBackgroundMessageHandler: ' + JSON.stringify(remoteMessage);
+    Alert.alert(l);
+    console.log(l);
   });
 })();
 

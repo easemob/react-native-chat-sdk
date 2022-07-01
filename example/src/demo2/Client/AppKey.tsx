@@ -59,16 +59,6 @@ export class AppKeyScreen extends Component<{ navigation: any }, State, any> {
     return fcmToken;
   }
 
-  private onListenerNotification(): void {
-    console.log('fcm message listener:');
-    messaging().onMessage(async (remoteMessage) => {
-      console.log('A new FCM message arrived!', JSON.stringify(remoteMessage));
-    });
-    messaging().setBackgroundMessageHandler(async (remoteMessage) => {
-      console.log('Message handled in the background!', remoteMessage);
-    });
-  }
-
   private async initSDK(): Promise<void> {
     await this.requestUserPermission();
     await this.checkApplicationPermission();
@@ -123,16 +113,6 @@ export class AppKeyScreen extends Component<{ navigation: any }, State, any> {
               title="appKey"
               onPress={() => {
                 this.initSDK();
-              }}
-            >
-              agoraToken
-            </Button>
-          </View>
-          <View style={styleValues.containerRow}>
-            <Button
-              title="fcm message listener:"
-              onPress={() => {
-                this.onListenerNotification();
               }}
             >
               agoraToken

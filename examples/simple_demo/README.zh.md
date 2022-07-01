@@ -25,7 +25,7 @@ _Chinese | [English](./README.md)_
 - CocoaPods 包管理工具
 - Yarn 编译运行工具
 - Watchman 调试工具
-- 运行环境真机或模拟器 iOS 10.0 或以上版本
+- 运行环境真机或模拟器 iOS 11.0 或以上版本
 
 对于 Android 平台：
 

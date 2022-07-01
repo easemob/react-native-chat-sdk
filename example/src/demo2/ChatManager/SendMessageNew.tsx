@@ -20,6 +20,7 @@ import {
 } from '../__internal__/LeafScreenBase';
 import { ChatManagerCache } from './ChatManagerData';
 import type { ApiParams } from '../__internal__/DataTypes';
+import { datasheet } from '../__default__/Datasheet';
 
 const MN = {
   sendMessage: 'sendMessage',
@@ -79,12 +80,12 @@ export class SendMessageLeafScreen extends LeafScreenBase<StateSendMessage> {
             {
               paramName: 'targetId',
               paramType: 'string',
-              paramDefaultValue: '183970312552449',
+              paramDefaultValue: datasheet.accounts[0].id,
             },
             {
               paramName: 'targetType',
               paramType: 'object',
-              paramDefaultValue: ChatMessageChatType.GroupChat,
+              paramDefaultValue: ChatMessageChatType.PeerChat,
             },
             {
               paramName: 'content',
