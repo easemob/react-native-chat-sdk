@@ -32,7 +32,7 @@ export interface StateSendMessage extends StateBase {
   targetId: string;
   targetType: ChatMessageChatType;
 
-  // text messge body
+  // text message body
   content: string;
 
   // file message body
@@ -44,7 +44,7 @@ export interface StateSendMessage extends StateBase {
   duration: number;
   thumbnailLocalPath: string;
 
-  // localtion message body
+  // location message body
   latitude: string;
   longitude: string;
   address: string;
@@ -117,7 +117,7 @@ export class SendMessageLeafScreen extends LeafScreenBase<StateSendMessage> {
       targetType: this.metaData.get(MN.sendMessage)?.params[1]
         .paramDefaultValue,
 
-      // text messge body
+      // text message body
       content: this.metaData.get(MN.sendMessage)?.params[2].paramDefaultValue,
 
       // file message body
@@ -129,7 +129,7 @@ export class SendMessageLeafScreen extends LeafScreenBase<StateSendMessage> {
       duration: 0,
       thumbnailLocalPath: '',
 
-      // localtion message body
+      // location message body
       latitude: '',
       longitude: '',
       address: '',
