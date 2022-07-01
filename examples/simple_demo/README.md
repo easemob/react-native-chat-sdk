@@ -25,7 +25,7 @@ For iOS platform:
 - CocoaPods package management tool
 - Yarn compile and run tool
 - Watchman debugging tool
-- Operating environment real machine or simulator iOS 10.0 or above
+- Operating environment real machine or simulator iOS 11.0 or above
 
 For Android platform:
 
