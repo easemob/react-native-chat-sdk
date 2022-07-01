@@ -157,11 +157,6 @@ export class ChatOptions {
     serverTransfer?: boolean;
     isAutoDownload?: boolean;
     pushConfig?: ChatPushConfig;
-    enableDNSConfig?: boolean;
-    dnsUrl?: string;
-    restServer?: string;
-    imServer?: string;
-    imPort?: number;
   }) {
     this.appKey = params.appKey;
     this.autoLogin = params.autoLogin ?? true;
@@ -176,14 +171,14 @@ export class ChatOptions {
     this.isChatRoomOwnerLeaveAllowed =
       params.isChatRoomOwnerLeaveAllowed ?? true;
     this.sortMessageByServerTime = params.sortMessageByServerTime ?? true;
-    this.usingHttpsOnly = params.usingHttpsOnly ?? false;
+    this.usingHttpsOnly = params.usingHttpsOnly ?? true;
     this.serverTransfer = params.serverTransfer ?? true;
     this.isAutoDownload = params.isAutoDownload ?? true;
     this.pushConfig = params.pushConfig;
-    this.enableDNSConfig = params.enableDNSConfig ?? true;
-    this.dnsUrl = params.dnsUrl ?? '';
-    this.restServer = params.restServer ?? '';
-    this.imServer = params.imServer ?? '';
-    this.imPort = params.imPort ?? 0;
+    this.enableDNSConfig = true;
+    this.dnsUrl = '';
+    this.restServer = '';
+    this.imServer = '';
+    this.imPort = 0;
   }
 }

@@ -48,7 +48,7 @@ export interface ScreenComponent {
   screen: NavigationComponentType | LeafComponentType;
   route: string;
   /**
-   * is naviagtion screen
+   * is navigation screen
    */
   isNavigation: boolean;
   /**
