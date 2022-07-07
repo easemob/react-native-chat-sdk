@@ -132,12 +132,11 @@ git submodule foreach "git pull"
 
 ## Preprocessing
 
-```sh
-# for MacOS platform
-yarn cpp
+Execute it before using the yarn command.
 
-# for Windows platform
-yarn cpp_win
+```sh
+cd native_src/cpp
+generate.sh --type rn
 ```
 
 ## Processing
