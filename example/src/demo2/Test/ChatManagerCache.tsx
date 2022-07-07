@@ -1,7 +1,7 @@
 import {
   ChatMessage,
-  ChatMessageStatusCallback,
-  ChatError,
+  type ChatMessageStatusCallback,
+  type ChatError,
   ChatMessageChatType,
 } from 'react-native-chat-sdk';
 import { datasheet } from '../__default__/Datasheet';
