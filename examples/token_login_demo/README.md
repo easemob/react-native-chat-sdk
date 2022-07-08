@@ -25,7 +25,7 @@ If your target platform is iOS:
 - CocoaPods package management tool
 - Yarn compile and run tool
 - Watchman debugging tool
-- A physical or virtual mobile device running iOS 10.0 or later
+- A physical or virtual mobile device running iOS 11.0 or later
 
 If your target platform is Android:
 

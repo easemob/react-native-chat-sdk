@@ -6,5 +6,5 @@ export function test3() {
   //   console.log('test3: ', typeof ChatMessageType.TXT);
   console.log('test3: ', typeof ChatMessageType);
   console.log('test3: ', typeof ChatMessageChatType);
-//   const s: ChatMessageChatType = ChatMessageChatType.ChatRoom;
+  //   const s: ChatMessageChatType = ChatMessageChatType.ChatRoom;
 }

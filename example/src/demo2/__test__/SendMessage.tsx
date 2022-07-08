@@ -40,7 +40,7 @@ interface State extends StateBase {
   chatType: ChatMessageChatType;
   convType: ChatConversationType;
 
-  // text messge body
+  // text message body
   content: string;
 
   // file message body

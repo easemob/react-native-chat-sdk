@@ -79,20 +79,14 @@ export const screenComponents: ScreenComponent[] = [
     parentScreen: ClientRoute,
   },
   {
-    route: LoginLogoutScreen.route,
-    screen: LoginLogoutScreen,
-    isNavigation: false,
-    parentScreen: ClientRoute,
-  },
-  {
-    route: ClientOthersScreen.route,
-    screen: ClientOthersScreen,
-    isNavigation: false,
-    parentScreen: ClientRoute,
-  },
-  {
     route: CreateAccountScreen.route,
     screen: CreateAccountScreen,
+    isNavigation: false,
+    parentScreen: ClientRoute,
+  },
+  {
+    route: LoginLogoutScreen.route,
+    screen: LoginLogoutScreen,
     isNavigation: false,
     parentScreen: ClientRoute,
   },
@@ -105,6 +99,12 @@ export const screenComponents: ScreenComponent[] = [
   {
     route: KickScreen.route,
     screen: KickScreen,
+    isNavigation: false,
+    parentScreen: ClientRoute,
+  },
+  {
+    route: ClientOthersScreen.route,
+    screen: ClientOthersScreen,
     isNavigation: false,
     parentScreen: ClientRoute,
   },

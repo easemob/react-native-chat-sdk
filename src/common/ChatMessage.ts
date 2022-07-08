@@ -388,6 +388,14 @@ export class ChatMessage {
   isChatThread: boolean;
 
   /**
+   * Whether it is a online message.
+   *
+   * - `true`: Yes. In this case, if the application is running in the background, you may need to pop up a notification window.
+   * - `false`: No.
+   */
+  isOnline: boolean;
+
+  /**
    * Constructs a message.
    */
   public constructor(params: {
@@ -409,6 +417,7 @@ export class ChatMessage {
     attributes?: any;
     body: any;
     isChatThread?: boolean;
+    isOnline?: boolean;
   }) {
     this.msgId = params.msgId ?? generateMessageId();
     this.conversationId = params.conversationId ?? '';
@@ -428,6 +437,7 @@ export class ChatMessage {
     this.body = ChatMessage.getBody(params.body);
     this.localMsgId = this.localTime.toString();
     this.isChatThread = params.isChatThread ?? false;
+    this.isOnline = params.isOnline ?? true;
   }
 
   private static getBody(params: any): ChatMessageBody {

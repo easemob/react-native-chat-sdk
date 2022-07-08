@@ -21,7 +21,8 @@ import { ChatUserInfoManager } from './ChatUserInfoManager';
 import { ChatDeviceInfo } from './common/ChatDeviceInfo';
 import { ChatError } from './common/ChatError';
 import { chatlog } from './common/ChatLog';
-import type { ChatOptions } from './common/ChatOptions';
+import { ChatOptions } from './common/ChatOptions';
+import { ChatPushConfig } from './common/ChatPushConfig';
 import { BaseManager } from './__internal__/Base';
 import {
   MTchangeAppKey,
@@ -52,6 +53,7 @@ import {
   MTonUserDidRemoveFromServer,
   MTonUserKickedByOtherDevice,
   MTrenewToken,
+  MTupdatePushConfig,
 } from './__internal__/Consts';
 import { Native } from './__internal__/Native';
 
@@ -390,7 +392,7 @@ export class ChatClient extends BaseManager {
    */
   public async init(options: ChatOptions): Promise<void> {
     chatlog.log(`${ChatClient.TAG}: init: `, options);
-    this._options = options;
+    this._options = new ChatOptions(options); // deep copy
     chatlog.enableLog = options.debugModel ?? false;
     const r = await Native._callMethod(MTinit, { options });
     ChatClient.checkErrorFromResult(r);
@@ -759,6 +761,37 @@ export class ChatClient extends BaseManager {
       },
     });
     ChatClient.checkErrorFromResult(r);
+  }
+
+  /**
+   * Update push config.
+   *
+   * **Note**
+   * For the iOS platform, you need to pass the device id during initialization. Otherwise, the push function cannot be used normally. See {@link ChatClient#init}
+   *
+   * @param config The push config, See {@link ChatPushConfig}
+   *
+   * @throws A description of the exception. See {@link ChatError}.
+   */
+  public async updatePushConfig(config: ChatPushConfig): Promise<void> {
+    chatlog.log(
+      `${ChatClient.TAG}: updatePushConfig: ${JSON.stringify(config)}`
+    );
+    if (this._options) {
+      this._options.pushConfig = new ChatPushConfig(this._options.pushConfig); // deep copy
+      if (config.deviceId) {
+        this._options.pushConfig.deviceId = config.deviceId;
+      }
+      if (config.deviceToken) {
+        this._options.pushConfig.deviceToken = config.deviceToken;
+      }
+    }
+    let r: any = await Native._callMethod(MTupdatePushConfig, {
+      [MTupdatePushConfig]: {
+        config: config,
+      },
+    });
+    ChatPushManager.checkErrorFromResult(r);
   }
 
   /**

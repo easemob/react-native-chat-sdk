@@ -1,7 +1,8 @@
 import React, { Component, ReactNode } from 'react';
 import { View, Button, Text, TextInput, ScrollView } from 'react-native';
-import { ChatClient } from 'react-native-chat-sdk';
+import { ChatClient, ChatPushConfig } from 'react-native-chat-sdk';
 import { styleValues } from '../__internal__/Css';
+import messaging from '@react-native-firebase/messaging';
 
 interface State {
   result: string;
@@ -10,6 +11,8 @@ interface State {
   password: string;
   agoraToken: string;
   devices: string;
+  deviceId: string;
+  deviceToken: string;
 }
 
 export class ClientOthersScreen extends Component<
@@ -31,6 +34,8 @@ export class ClientOthersScreen extends Component<
       username: 'asteriskhx1',
       password: 'qwer',
       devices: '',
+      deviceId: '',
+      deviceToken: '',
     };
   }
 
@@ -64,6 +69,34 @@ export class ClientOthersScreen extends Component<
       });
   }
 
+  private async requestFcmToken() {
+    // https://rnfirebase.io/reference/messaging#getToken
+    // await messaging().registerDeviceForRemoteMessages();
+    const fcmToken = await messaging().getToken();
+    console.log('fcm token: ', fcmToken);
+    return fcmToken;
+  }
+
+  private async updatePush(): Promise<void> {
+    const deviceId = ChatClient.getInstance().options?.pushConfig?.deviceId;
+    const deviceToken = await this.requestFcmToken();
+    ChatClient.getInstance()
+      .updatePushConfig(new ChatPushConfig({ deviceId, deviceToken }))
+      .then(() => {
+        console.log(`${ClientOthersScreen.TAG}: updatePush: success`);
+        this.setState({ result: `updatePush: success` });
+      })
+      .catch((reason: any) => {
+        console.log(
+          `${ClientOthersScreen.TAG}: updatePush: fail`,
+          JSON.stringify(reason)
+        );
+        this.setState({
+          result: `updatePush: fail: ${reason.code} ${reason.description}`,
+        });
+      });
+  }
+
   private compressLogs(): void {
     ChatClient.getInstance()
       .compressLogs()
@@ -88,7 +121,7 @@ export class ClientOthersScreen extends Component<
   }
 
   render(): ReactNode {
-    const { result, agoraToken, newAppKey } = this.state;
+    const { result, agoraToken, newAppKey, deviceId, deviceToken } = this.state;
     return (
       <ScrollView>
         <View style={styleValues.containerColumn}>
@@ -141,6 +174,36 @@ export class ClientOthersScreen extends Component<
               }}
             >
               compressLogs
+            </Button>
+          </View>
+          <View style={styleValues.containerRow}>
+            <Text style={styleValues.textStyle}>deviceId: </Text>
+            <TextInput
+              style={styleValues.textInputStyle}
+              onChangeText={(text: string) => {
+                this.setState({ deviceId: text });
+              }}
+            >
+              {deviceId}
+            </TextInput>
+          </View>
+          <View style={styleValues.containerRow}>
+            <Text style={styleValues.textStyle}>deviceToken: </Text>
+            <TextInput
+              style={styleValues.textInputStyle}
+              onChangeText={(text: string) => {
+                this.setState({ deviceToken: text });
+              }}
+            >
+              {deviceToken}
+            </TextInput>
+            <Button
+              title="updatePush"
+              onPress={() => {
+                this.updatePush();
+              }}
+            >
+              newAppKey
             </Button>
           </View>
           <View style={styleValues.containerColumn}>

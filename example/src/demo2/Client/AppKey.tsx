@@ -1,8 +1,9 @@
 import React, { Component, ReactNode } from 'react';
 import { View, Button, Text, TextInput, ScrollView } from 'react-native';
-import { ChatClient, ChatOptions } from 'react-native-chat-sdk';
+import { ChatClient, ChatOptions, ChatPushConfig } from 'react-native-chat-sdk';
 import { datasheet } from '../__default__/Datasheet';
 import { styleValues } from '../__internal__/Css';
+import messaging from '@react-native-firebase/messaging';
 
 interface State {
   result: string;
@@ -19,17 +20,62 @@ export class AppKeyScreen extends Component<{ navigation: any }, State, any> {
     this.navigation = props.navigation;
     this.state = {
       result: '',
-      appKey: datasheet.AppKey[4],
+      appKey: datasheet.AppKey[1],
     };
   }
 
-  private initSDK(): void {
+  private async requestUserPermission(): Promise<void> {
+    const authStatus = await messaging().requestPermission({
+      announcement: true,
+    });
+    const enabled =
+      authStatus === messaging.AuthorizationStatus.AUTHORIZED ||
+      authStatus === messaging.AuthorizationStatus.PROVISIONAL;
+
+    if (enabled) {
+      console.log('Authorization status:', authStatus);
+    }
+  }
+
+  private async checkApplicationPermission(): Promise<void> {
+    const authorizationStatus = await messaging().requestPermission();
+
+    if (authorizationStatus === messaging.AuthorizationStatus.AUTHORIZED) {
+      console.log('User has notification permissions enabled.');
+    } else if (
+      authorizationStatus === messaging.AuthorizationStatus.PROVISIONAL
+    ) {
+      console.log('User has provisional notification permissions.');
+    } else {
+      console.log('User has notification permissions disabled');
+    }
+  }
+
+  private async requestFcmToken() {
+    // https://rnfirebase.io/reference/messaging#getToken
+    // await messaging().registerDeviceForRemoteMessages();
+    const fcmToken = await messaging().getToken();
+    console.log('fcm token: ', fcmToken);
+    return fcmToken;
+  }
+
+  private async initSDK(): Promise<void> {
+    await this.requestUserPermission();
+    await this.checkApplicationPermission();
+    const fcmToken = await this.requestFcmToken();
+    let pushConfig: any;
+    // from: https://console.firebase.google.com/project/test-push-6b4b6/settings/cloudmessaging/ios:com.easemob.reactnativechatsdk?hl=zh-cn
+    pushConfig = new ChatPushConfig({
+      deviceId: datasheet.PushInfo.sendId,
+      deviceToken: fcmToken,
+    });
     ChatClient.getInstance()
       .init(
         new ChatOptions({
           appKey: this.state.appKey,
           autoLogin: false,
           debugModel: true,
+          pushConfig: pushConfig,
         })
       )
       .then(() => {

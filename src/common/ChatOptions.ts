@@ -1,4 +1,4 @@
-// import { ChatPushConfig } from './ChatPushConfig';
+import type { ChatPushConfig } from './ChatPushConfig';
 
 /**
  * The chat setting class that defines parameters and options of the SDK, including whether to encrypt the messages before sending them and whether to automatically accept the friend invitations.
@@ -104,7 +104,7 @@ export class ChatOptions {
   /**
    * The push configuration.
    */
-  //pushConfig: ChatPushConfig;
+  pushConfig?: ChatPushConfig;
   /**
    * Whether to disable DNS.
    *
@@ -156,12 +156,7 @@ export class ChatOptions {
     usingHttpsOnly?: boolean;
     serverTransfer?: boolean;
     isAutoDownload?: boolean;
-    // pushConfig?: any;
-    enableDNSConfig?: boolean;
-    dnsUrl?: string;
-    restServer?: string;
-    imServer?: string;
-    imPort?: number;
+    pushConfig?: ChatPushConfig;
   }) {
     this.appKey = params.appKey;
     this.autoLogin = params.autoLogin ?? true;
@@ -176,16 +171,14 @@ export class ChatOptions {
     this.isChatRoomOwnerLeaveAllowed =
       params.isChatRoomOwnerLeaveAllowed ?? true;
     this.sortMessageByServerTime = params.sortMessageByServerTime ?? true;
-    this.usingHttpsOnly = params.usingHttpsOnly ?? false;
+    this.usingHttpsOnly = params.usingHttpsOnly ?? true;
     this.serverTransfer = params.serverTransfer ?? true;
     this.isAutoDownload = params.isAutoDownload ?? true;
-    // this.pushConfig = params.pushConfig
-    //   ? new ChatPushConfig(params.pushConfig)
-    //   : new ChatPushConfig({});
-    this.enableDNSConfig = params.enableDNSConfig ?? true;
-    this.dnsUrl = params.dnsUrl ?? '';
-    this.restServer = params.restServer ?? '';
-    this.imServer = params.imServer ?? '';
-    this.imPort = params.imPort ?? 0;
+    this.pushConfig = params.pushConfig;
+    this.enableDNSConfig = true;
+    this.dnsUrl = '';
+    this.restServer = '';
+    this.imServer = '';
+    this.imPort = 0;
   }
 }
