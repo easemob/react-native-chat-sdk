@@ -8,6 +8,7 @@
 - Add api {@link ChatClient#updatePushConfig} for push config.
 - Update api reference example.
 - The dependent native SDK (ios and android) was upgraded to version 3.9.4.
+- React-Native upgrade to 0.66.4 LTS version.
 
 ---
 
