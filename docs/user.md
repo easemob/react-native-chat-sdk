@@ -50,15 +50,6 @@ or
 yarn add react-native-chat-sdk
 ```
 
-## Preprocessing
-
-Execute it before using the yarn command.
-
-```sh
-cd node_modules/react-native-chat-sdk/native_src/cpp
-generate.sh --type rn
-```
-
 ## Processing
 
 ```sh

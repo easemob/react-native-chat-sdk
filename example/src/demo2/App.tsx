@@ -1,6 +1,6 @@
 import { NavigationContainer } from '@react-navigation/native';
 import React from 'react';
-import { ScrollView, View, Button } from 'react-native';
+import { ScrollView, View, Button, Alert } from 'react-native';
 import { screenComponents } from './__internal__/Components';
 import {
   ScreenComponent,
@@ -10,6 +10,7 @@ import {
   unregisterComponents,
 } from './__internal__/Utils';
 import { styleValues } from './__internal__/Css';
+import messaging from '@react-native-firebase/messaging';
 
 function HomeScreen(params: { navigation: any }) {
   return (
@@ -56,6 +57,21 @@ function App() {
     </NavigationContainer>
   );
 }
+
+(function onListenerNotification(): void {
+  console.log('fcm message listener:');
+  messaging().onMessage(async (remoteMessage) => {
+    const l = 'init: onMessage:' + JSON.stringify(remoteMessage);
+    Alert.alert(l);
+    console.log(l);
+  });
+  messaging().setBackgroundMessageHandler(async (remoteMessage) => {
+    const l =
+      'init: setBackgroundMessageHandler: ' + JSON.stringify(remoteMessage);
+    Alert.alert(l);
+    console.log(l);
+  });
+})();
 
 unregisterComponents();
 screenComponents.forEach((value: ScreenComponent) => {

@@ -4,8 +4,8 @@ import { styleValues } from '../__internal__/Css';
 import { LeafScreenBase, StateBase } from '../__internal__/LeafScreenBase';
 import { metaDataList, MN } from './GroupManagerData';
 import type { ApiParams } from '../__internal__/DataTypes';
-import type { ChatGroupOptions } from 'react-native-chat-sdk';
 import {
+  ChatGroupOptions,
   ChatClient,
   ChatError,
   ChatGroupEventListener,
@@ -1042,14 +1042,14 @@ export class GroupManagerLeafScreen extends LeafScreenBase<StateGroupMessage> {
         inviteMessage?: string | undefined;
       }): void {
         console.log(
-          `${GroupManagerLeafScreen.TAG}: onGroupDestroyed:`,
+          `${GroupManagerLeafScreen.TAG}: onAutoAcceptInvitation:`,
           params.groupId,
           params.inviter,
           params.inviteMessage
         );
         this.that.setState({
           recvResult:
-            `onGroupDestroyed: ` +
+            `onAutoAcceptInvitation: ` +
             params.groupId +
             params.inviter +
             params.inviteMessage,

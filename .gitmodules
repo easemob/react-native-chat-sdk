@@ -1,12 +1,12 @@
 [submodule "native_src/cpp"]
 	path = native_src/cpp
-	url = git@github.com:easemob/im_ext_sdk_cpp.git
+	url = git@github.com:asteriskzuo/im_ext_sdk_cpp.git
 	branch = dev
 [submodule "native_src/java"]
 	path = native_src/java
-	url = git@github.com:easemob/im_ext_sdk_java.git
+	url = git@github.com:asteriskzuo/im_ext_sdk_java.git
 	branch = dev
 [submodule "native_src/objc"]
 	path = native_src/objc
-	url = git@github.com:easemob/im_ext_sdk_objc.git
+	url = git@github.com:asteriskzuo/im_ext_sdk_objc.git
 	branch = dev

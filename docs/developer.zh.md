@@ -103,8 +103,11 @@ git submodule foreach "git pull"
 Execute it before using the yarn command.
 
 ```sh
-cd native_src/cpp
-generate.sh --type rn
+# 对于MacOS平台
+yarn cpp
+
+# 对于Windows平台
+yarn cpp_win
 ```
 
 ## Processing
