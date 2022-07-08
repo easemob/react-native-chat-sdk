@@ -7,22 +7,14 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:1068131238942:android:666750b3bc2c8b1e191a0f",
+        "mobilesdk_app_id": "1:1068131238942:android:9a46d9046eb68ba6191a0f",
         "android_client_info": {
-          "package_name": "com.firebase_push_demo"
+          "package_name": "com.example.reactnativechatsdk"
         }
       },
       "oauth_client": [
         {
-          "client_id": "1068131238942-vcvtqk7jtadu62snbi8qeb7s8t1dk1bu.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.firebase_push_demo",
-            "certificate_hash": "3652bc79c3487fd344ca3f75a3600314a1cf76bb"
-          }
-        },
-        {
-          "client_id": "1068131238942-rnu3pt1oiuglbes9e2e8n07nn0f38mdm.apps.googleusercontent.com",
+          "client_id": "1068131238942-ps4ppu4kvguouqe4014q29vblkps4etc.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
@@ -35,14 +27,50 @@
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "1068131238942-rnu3pt1oiuglbes9e2e8n07nn0f38mdm.apps.googleusercontent.com",
+              "client_id": "1068131238942-ps4ppu4kvguouqe4014q29vblkps4etc.apps.googleusercontent.com",
               "client_type": 3
             },
             {
-              "client_id": "1068131238942-ks5780ipmfqb1lar0vvsk9unmafc76gd.apps.googleusercontent.com",
+              "client_id": "1068131238942-68ttfrd5fvrpnc265amgprhumg1p3qc0.apps.googleusercontent.com",
               "client_type": 2,
               "ios_info": {
-                "bundle_id": "com.company.name"
+                "bundle_id": "com.easemob.reactnativechatsdk"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1068131238942:android:ca3993c624f1946f191a0f",
+        "android_client_info": {
+          "package_name": "com.firebase_push_demo"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1068131238942-ps4ppu4kvguouqe4014q29vblkps4etc.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC_78PrBuQoFRIEa17lEKs2twz7XzfjXes"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1068131238942-ps4ppu4kvguouqe4014q29vblkps4etc.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "1068131238942-68ttfrd5fvrpnc265amgprhumg1p3qc0.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.easemob.reactnativechatsdk"
               }
             }
           ]

@@ -22,6 +22,7 @@ import {
   ChatOptions,
   ChatMessageChatType,
   ChatMessage,
+  ChatPushConfig,
 } from 'react-native-chat-sdk';
 import messaging from '@react-native-firebase/messaging';
 
@@ -64,7 +65,11 @@ async function requestFcmToken() {
 const App = () => {
   // variable defines.
   const title = 'AgoraChatQuickstart';
-  const [appKey, setAppKey] = React.useState('81446724#514456');
+  const senderId = '';
+  const requestGetTokenUrl = 'https://a41.easemob.com/app/chat/user/login';
+  const requestRegistryAccountUrl =
+    'https://a41.easemob.com/app/chat/user/register';
+  const [appKey, setAppKey] = React.useState('');
   const [username, setUsername] = React.useState('');
   const [password, setPassword] = React.useState('');
   const [userId, setUserId] = React.useState('');
@@ -112,10 +117,10 @@ const App = () => {
     });
   };
   const requestGetToken = () => {
-    return requestHttp('https://a1.easemob.com/app/chat/user/login');
+    return requestHttp(requestGetTokenUrl);
   };
   const requestRegistryAccount = () => {
-    return requestHttp('https://a1.easemob.com/app/chat/user/register');
+    return requestHttp(requestRegistryAccountUrl);
   };
 
   // register listener for message.
@@ -144,16 +149,21 @@ const App = () => {
   const init = async () => {
     await requestUserPermission();
     await checkApplicationPermission();
-    await requestFcmToken();
+    const fcmToken = await requestFcmToken();
     this.unsubscribe = messaging().onMessage(async remoteMessage => {
       Alert.alert('A new FCM message arrived!', JSON.stringify(remoteMessage));
     });
     messaging().setBackgroundMessageHandler(async remoteMessage => {
       console.log('Message handled in the background!', remoteMessage);
     });
+    const pushConfig = new ChatPushConfig({
+      deviceId: senderId,
+      deviceToken: fcmToken,
+    });
     let o = new ChatOptions({
       autoLogin: false,
       appKey: appKey,
+      pushConfig: pushConfig,
     });
     ChatClient.getInstance().removeAllConnectionListener();
     ChatClient.getInstance()
@@ -216,7 +226,9 @@ const App = () => {
           .json()
           .then(value => {
             rollLog(
-              `response token success: username = ${username}, token = ******`,
+              `response token success: username = ${username}, token = ${JSON.stringify(
+                value,
+              )}`,
             );
             const token = value.accessToken;
             rollLog('start login ...');
