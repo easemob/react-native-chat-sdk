@@ -10,6 +10,9 @@
 - The dependent native SDK (ios and android) was upgraded to version 3.9.4.
 - React-Native upgrade to 0.66.4 LTS version.
 - Update firebase_push_demo project with 1.0.6 version sdk.
+- Fix bug: Type declaration entry point is incorrect
+- Optimize: The android platform no longer needs to perform additional operations.
+- Rename: agora-react-native-chat was changed to react-native-agora-chat.
 
 ---
 
