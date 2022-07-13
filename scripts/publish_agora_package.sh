@@ -5,7 +5,7 @@
 # sh publish_agora_package.sh [suffix] [version]|[tag] [directory]
 # See `npm help install`
 # [suffix]: (optional) generate package name's suffix
-# For example: suffix is 1.0.5-rc.1, package name is agora-react-native-chat-1.0.5-rc.1
+# For example: suffix is 1.0.5-rc.1, package name is react-native-agora-chat-1.0.5-rc.1
 # [version]: (optional) specified version
 # [tag]: (optional) package tag, see `npm help dist-tag`, common ones are alpha, beta, rc and latest.
 # [directory]: (optional) specified output zip directory
@@ -49,7 +49,7 @@ current_dir=$(
 mkdir -p ${current_dir}/Output/agora
 
 old_package_name=react-native-chat-sdk
-new_package_name=agora-react-native-chat
+new_package_name=react-native-agora-chat
 suffix=$1
 tagOrVersion=$2
 output_dir=$3
@@ -67,7 +67,7 @@ fi
 
 mv ${current_dir}/Output/node_modules/${old_package_name} ${current_dir}/Output/node_modules/${new_package_name}
 
-sed -i '' 's/: \"react-native-chat-sdk/: \"agora-react-native-chat/g' ${current_dir}/Output/node_modules/${new_package_name}/package.json
+sed -i '' 's/: \"react-native-chat-sdk/: \"react-native-agora-chat/g' ${current_dir}/Output/node_modules/${new_package_name}/package.json
 
 mv ${current_dir}/Output/node_modules/${new_package_name}/native_src/cpp/CMakeLists.txt.rn ${current_dir}/Output/node_modules/${new_package_name}/native_src/cpp/CMakeLists.txt
 
