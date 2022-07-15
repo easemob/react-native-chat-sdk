@@ -13,6 +13,7 @@
 - Fix bug: Type declaration entry point is incorrect
 - Optimize: The android platform no longer needs to perform additional operations.
 - Rename: agora-react-native-chat was changed to react-native-agora-chat.
+- Add functions: message push silent mode set.
 
 ---
 
