@@ -94,7 +94,6 @@ export class PresenceLeafScreen extends LeafScreenBase<StateChatPresence> {
       data.get(apiItem)?.params.forEach((item) => {
         let currentData = data.get(apiItem);
         let itemValue =
-          // eslint-disable-next-line no-undef
           this.state[apiItem as keyof typeof this.state][
             item.paramName as keyof typeof currentData
           ];
@@ -110,7 +109,6 @@ export class PresenceLeafScreen extends LeafScreenBase<StateChatPresence> {
                   let pv: any = {};
                   pv[apiItem] = Object.assign(
                     {},
-                    // eslint-disable-next-line no-undef
                     this.state[apiItem as keyof typeof this.state],
                     inputData
                   );
@@ -130,7 +128,6 @@ export class PresenceLeafScreen extends LeafScreenBase<StateChatPresence> {
                 let pv: any = {};
                 pv[apiItem] = Object.assign(
                   {},
-                  // eslint-disable-next-line no-undef
                   this.state[apiItem as keyof typeof this.state],
                   inputData
                 );

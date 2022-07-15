@@ -252,6 +252,19 @@ export const MTgetNoPushUsers = 'getNoPushUsers';
 
 export const MTupdatePushConfig = 'updatePushConfig';
 
+export const MTreportPushAction = 'reportPushAction';
+export const MTsetConversationSilentMode = 'setConversationSilentMode';
+export const MTremoveConversationSilentMode = 'removeConversationSilentMode';
+export const MTfetchConversationSilentMode = 'fetchConversationSilentMode';
+export const MTsetSilentModeForAll = 'setSilentModeForAll';
+export const MTfetchSilentModeForAll = 'fetchSilentModeForAll';
+export const MTfetchSilentModeForConversations =
+  'fetchSilentModeForConversations';
+export const MTsetPreferredNotificationLanguage =
+  'setPreferredNotificationLanguage';
+export const MTfetchPreferredNotificationLanguage =
+  'fetchPreferredNotificationLanguage';
+
 /// ChatUserInfoManager methods
 export const MTupdateOwnUserInfo = 'updateOwnUserInfo';
 export const MTupdateOwnUserInfoWithType = 'updateOwnUserInfoWithType';

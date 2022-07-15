@@ -1,5 +1,5 @@
 import React, { Component, ReactNode } from 'react';
-import { View, Button, Text, TextInput, ScrollView } from 'react-native';
+import { View, Button, Text, TextInput, ScrollView, Alert } from 'react-native';
 import { ChatClient, ChatOptions, ChatPushConfig } from 'react-native-chat-sdk';
 import { datasheet } from '../__default__/Datasheet';
 import { styleValues } from '../__internal__/Css';
@@ -8,6 +8,7 @@ import messaging from '@react-native-firebase/messaging';
 interface State {
   result: string;
   appKey: string;
+  enablePush: string;
 }
 
 export class AppKeyScreen extends Component<{ navigation: any }, State, any> {
@@ -21,6 +22,7 @@ export class AppKeyScreen extends Component<{ navigation: any }, State, any> {
     this.state = {
       result: '',
       appKey: datasheet.AppKey[1],
+      enablePush: '0',
     };
   }
 
@@ -59,16 +61,37 @@ export class AppKeyScreen extends Component<{ navigation: any }, State, any> {
     return fcmToken;
   }
 
+  private onListenerNotification(): void {
+    console.log('fcm message listener:');
+    messaging().onMessage(async (remoteMessage) => {
+      const l = 'init: onMessage:' + JSON.stringify(remoteMessage);
+      Alert.alert(l);
+      console.log(l);
+    });
+    messaging().setBackgroundMessageHandler(async (remoteMessage) => {
+      const l =
+        'init: setBackgroundMessageHandler: ' + JSON.stringify(remoteMessage);
+      Alert.alert(l);
+      console.log(l);
+    });
+  }
+
   private async initSDK(): Promise<void> {
+    // from: https://console.firebase.google.com/project/test-push-6b4b6/settings/cloudmessaging/ios:com.easemob.reactnativechatsdk?hl=zh-cn
+    console.log('initSDK: ', this.state.enablePush);
     await this.requestUserPermission();
     await this.checkApplicationPermission();
-    const fcmToken = await this.requestFcmToken();
+    let fcmToken: string;
     let pushConfig: any;
-    // from: https://console.firebase.google.com/project/test-push-6b4b6/settings/cloudmessaging/ios:com.easemob.reactnativechatsdk?hl=zh-cn
-    pushConfig = new ChatPushConfig({
-      deviceId: datasheet.PushInfo.sendId,
-      deviceToken: fcmToken,
-    });
+    if (this.state.enablePush === '1') {
+      fcmToken = await this.requestFcmToken();
+      pushConfig = new ChatPushConfig({
+        deviceId: datasheet.PushInfo.sendId,
+        deviceToken: fcmToken,
+      });
+      this.onListenerNotification();
+    }
+
     ChatClient.getInstance()
       .init(
         new ChatOptions({
@@ -95,7 +118,7 @@ export class AppKeyScreen extends Component<{ navigation: any }, State, any> {
   }
 
   render(): ReactNode {
-    const { result, appKey: appKey } = this.state;
+    const { result, appKey, enablePush } = this.state;
     return (
       <ScrollView>
         <View style={styleValues.containerColumn}>
@@ -109,6 +132,19 @@ export class AppKeyScreen extends Component<{ navigation: any }, State, any> {
             >
               {appKey}
             </TextInput>
+          </View>
+          <View style={styleValues.containerRow}>
+            <Text style={styleValues.textStyle}>enablePushConfig: </Text>
+            <TextInput
+              style={styleValues.textInputStyle}
+              onChangeText={(text: string) => {
+                this.setState({ enablePush: text === '1' ? '1' : '0' });
+              }}
+            >
+              {enablePush}
+            </TextInput>
+          </View>
+          <View style={styleValues.containerRow}>
             <Button
               title="appKey"
               onPress={() => {

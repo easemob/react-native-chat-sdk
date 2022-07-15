@@ -268,7 +268,6 @@ export class GroupManagerLeafScreen extends LeafScreenBase<StateGroupMessage> {
       data.get(apiItem)?.params.forEach((item) => {
         let currentData = data.get(apiItem);
         let itemValue =
-          // eslint-disable-next-line no-undef
           this.state[apiItem as keyof typeof this.state][
             item.paramName as keyof typeof currentData
           ];
@@ -299,7 +298,6 @@ export class GroupManagerLeafScreen extends LeafScreenBase<StateGroupMessage> {
                 let paramValue: any = {};
                 paramValue[apiItem] = Object.assign(
                   {},
-                  // eslint-disable-next-line no-undef
                   this.state[apiItem as keyof typeof this.state],
                   inputData
                 );
@@ -593,10 +591,12 @@ export class GroupManagerLeafScreen extends LeafScreenBase<StateGroupMessage> {
         break;
       }
       case MN.changeGroupName: {
-        // eslint-disable-next-line no-shadow
-        const { groupId, name } = this.state.changeGroupName;
+        const { groupId, name: groupName } = this.state.changeGroupName;
         this.tryCatch(
-          ChatClient.getInstance().groupManager.changeGroupName(groupId, name),
+          ChatClient.getInstance().groupManager.changeGroupName(
+            groupId,
+            groupName
+          ),
           GroupManagerLeafScreen.TAG,
           name
         );

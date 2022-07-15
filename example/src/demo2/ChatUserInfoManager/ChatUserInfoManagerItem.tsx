@@ -47,7 +47,6 @@ export class ChatUserInfoManagerLeafScreen extends LeafScreenBase<StateChatUserI
       data.get(apiItem)?.params.forEach((item) => {
         let currentData = data.get(apiItem);
         let itemValue =
-          // eslint-disable-next-line no-undef
           this.state[apiItem as keyof typeof this.state][
             item.paramName as keyof typeof currentData
           ];
@@ -62,7 +61,6 @@ export class ChatUserInfoManagerLeafScreen extends LeafScreenBase<StateChatUserI
                 let paramValue: any = {};
                 paramValue[apiItem] = Object.assign(
                   {},
-                  // eslint-disable-next-line no-undef
                   this.state[apiItem as keyof typeof this.state],
                   inputData
                 );

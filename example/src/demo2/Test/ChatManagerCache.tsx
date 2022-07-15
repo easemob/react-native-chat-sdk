@@ -143,7 +143,7 @@ export class ChatManagerCache {
     languages: Array<string>
   ): ChatMessage {
     const ext = {
-      targetLanguages: languages,
+      targetLanguageCodes: languages,
     };
     const msg = ChatMessage.createTextMessage(
       targetId,
