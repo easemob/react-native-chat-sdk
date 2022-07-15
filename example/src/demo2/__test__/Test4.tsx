@@ -304,7 +304,7 @@ function demo5() {
     targetId,
     content,
     ChatMessageChatType.PeerChat,
-    { targetLanguages: languages }
+    { targetLanguageCodes: languages }
   );
   ChatClient.getInstance()
     .chatManager.translateMessage(msg, languages)

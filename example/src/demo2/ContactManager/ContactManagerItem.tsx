@@ -107,7 +107,6 @@ export class ContactLeafScreen extends LeafScreenBase<StateChatContact> {
       data.get(apiItem)?.params.forEach((item) => {
         let currentData = data.get(apiItem);
         let itemValue =
-          // eslint-disable-next-line no-undef
           this.state[apiItem as keyof typeof this.state][
             item.paramName as keyof typeof currentData
           ];
@@ -123,7 +122,6 @@ export class ContactLeafScreen extends LeafScreenBase<StateChatContact> {
                   let pv: any = {};
                   pv[apiItem] = Object.assign(
                     {},
-                    // eslint-disable-next-line no-undef
                     this.state[apiItem as keyof typeof this.state],
                     inputData
                   );
@@ -143,7 +141,6 @@ export class ContactLeafScreen extends LeafScreenBase<StateChatContact> {
                 let pv: any = {};
                 pv[apiItem] = Object.assign(
                   {},
-                  // eslint-disable-next-line no-undef
                   this.state[apiItem as keyof typeof this.state],
                   inputData
                 );

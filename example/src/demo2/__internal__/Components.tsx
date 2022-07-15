@@ -39,6 +39,9 @@ import { QuickTestScreenGroup } from '../Test/QuickTestGroup';
 import { QuickTestScreenRoom } from '../Test/QuickTestRoom';
 import { QuickTestScreenUser } from '../Test/QuickTestUser';
 import { QuickTestScreenPresence } from '../Test/QuickTestPresence';
+import { QuickTestScreenPush } from '../Test/QuickTestPush';
+import { PushManagerRoute, PushManagerScreen } from '../PushManager';
+import { PushManagerLeafScreen } from '../PushManager/PushManagerItem';
 
 export const screenComponents: ScreenComponent[] = [
   // root navigator
@@ -63,6 +66,11 @@ export const screenComponents: ScreenComponent[] = [
   {
     route: ChatUserInfoManagerRoute,
     screen: ChatUserInfoManagerScreen,
+    isNavigation: true,
+  },
+  {
+    route: PushManagerRoute,
+    screen: PushManagerScreen,
     isNavigation: true,
   },
   {
@@ -169,6 +177,14 @@ export const screenComponents: ScreenComponent[] = [
     parentScreen: ChatUserInfoManagerRoute,
   },
 
+  // PushManagerRoute navigator
+  {
+    route: PushManagerLeafScreen.route,
+    screen: PushManagerLeafScreen,
+    isNavigation: false,
+    parentScreen: PushManagerRoute,
+  },
+
   // QuickTestManagerRoute navigator
   {
     route: QuickTestScreenChat.route,
@@ -203,6 +219,12 @@ export const screenComponents: ScreenComponent[] = [
   {
     route: QuickTestScreenPresence.route,
     screen: QuickTestScreenPresence,
+    isNavigation: false,
+    parentScreen: QuickTestManagerRoute,
+  },
+  {
+    route: QuickTestScreenPush.route,
+    screen: QuickTestScreenPush,
     isNavigation: false,
     parentScreen: QuickTestManagerRoute,
   },

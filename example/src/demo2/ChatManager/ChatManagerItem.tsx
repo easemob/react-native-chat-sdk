@@ -570,7 +570,6 @@ export class ChatManagerLeafScreen extends LeafScreenBase<StateChatMessage> {
       data.get(apiItem)?.params.forEach((item) => {
         let currentData = data.get(apiItem);
         let itemValue =
-          // eslint-disable-next-line no-undef
           this.state[apiItem as keyof typeof this.state][
             item.paramName as keyof typeof currentData
           ];
@@ -586,7 +585,6 @@ export class ChatManagerLeafScreen extends LeafScreenBase<StateChatMessage> {
                   let pv: any = {};
                   pv[apiItem] = Object.assign(
                     {},
-                    // eslint-disable-next-line no-undef
                     this.state[apiItem as keyof typeof this.state],
                     inputData
                   );
@@ -616,7 +614,6 @@ export class ChatManagerLeafScreen extends LeafScreenBase<StateChatMessage> {
                 let pv: any = {};
                 pv[apiItem] = Object.assign(
                   {},
-                  // eslint-disable-next-line no-undef
                   this.state[apiItem as keyof typeof this.state],
                   inputData
                 );

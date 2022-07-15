@@ -90,6 +90,17 @@ import {
 import { ChatPresence } from './common/ChatPresence';
 import { ChatTranslateLanguage } from './common/ChatTranslateLanguage';
 import { ChatPushConfig } from './common/ChatPushConfig';
+import {
+  ChatPushRemindType,
+  ChatPushRemindTypeFromNumber,
+  ChatPushRemindTypeToNumber,
+  ChatSilentModeParam,
+  ChatSilentModeParamType,
+  ChatSilentModeParamTypeFromNumber,
+  ChatSilentModeParamTypeToNumber,
+  ChatSilentModeTime,
+  ChatSilentModeResult,
+} from './common/ChatSilentMode';
 
 /**
  * export manager
@@ -134,6 +145,8 @@ export {
   ChatMessageType,
   ChatRoomPermissionType,
   ChatMessageThreadOperation,
+  ChatSilentModeParamType,
+  ChatPushRemindType,
 };
 
 /**
@@ -173,6 +186,9 @@ export {
   ChatMessageThreadEvent,
   ChatMessageReactionEvent,
   ChatPushConfig,
+  ChatSilentModeTime,
+  ChatSilentModeParam,
+  ChatSilentModeResult,
 };
 
 /**
@@ -195,4 +211,8 @@ export {
   ChatGroupTypeToString,
   ChatRoomPermissionTypeFromNumber,
   ChatRoomPermissionTypeToString,
+  ChatSilentModeParamTypeFromNumber,
+  ChatSilentModeParamTypeToNumber,
+  ChatPushRemindTypeFromNumber,
+  ChatPushRemindTypeToNumber,
 };

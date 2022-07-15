@@ -510,7 +510,7 @@ export class ChatMessage {
     chatType: ChatMessageChatType = ChatMessageChatType.PeerChat,
     opt?: {
       isChatThread?: boolean;
-      targetLanguages?: Array<string>;
+      targetLanguageCodes?: Array<string>;
     }
   ): ChatMessage {
     let s = ChatMessageType.TXT.valueOf();
@@ -518,7 +518,7 @@ export class ChatMessage {
       body: new ChatTextMessageBody({
         type: s,
         content: content,
-        targetLanguages: opt?.targetLanguages,
+        targetLanguageCodes: opt?.targetLanguageCodes,
       }),
       targetId: targetId,
       chatType: chatType,
@@ -844,9 +844,9 @@ export class ChatTextMessageBody extends ChatMessageBody {
    */
   content: string;
   /**
-   * The target language for translation. See {@link https://docs.microsoft.com/en-us/azure/cognitive-services/translator/language-support}.
+   * The target language for translation. See {@url https://docs.microsoft.com/en-us/azure/cognitive-services/translator/language-support}.
    */
-  targetLanguages?: Array<string>;
+  targetLanguageCodes?: Array<string>;
   /**
    * The translation.
    *
@@ -856,12 +856,12 @@ export class ChatTextMessageBody extends ChatMessageBody {
   constructor(params: {
     type: string;
     content: string;
-    targetLanguages?: Array<string>;
+    targetLanguageCodes?: Array<string>;
     translations?: any;
   }) {
     super(params.type);
     this.content = params.content;
-    this.targetLanguages = params.targetLanguages;
+    this.targetLanguageCodes = params.targetLanguageCodes;
     this.translations = params.translations;
   }
 }
