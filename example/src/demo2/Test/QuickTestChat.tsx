@@ -414,16 +414,14 @@ export class QuickTestScreenChat extends QuickTestScreenBase<
           );
         }
         break;
-      case MN.getUnreadMessageCount:
+      case MN.getUnreadCount:
         {
-          const methodName = this.metaData.get(
-            MN.getUnreadMessageCount
-          )!.methodName;
-          console.log(`${MN.getUnreadMessageCount} === ${methodName}`);
+          const methodName = this.metaData.get(MN.getUnreadCount)!.methodName;
+          console.log(`${MN.getUnreadCount} === ${methodName}`);
           this.tryCatch(
-            ChatClient.getInstance().chatManager.getUnreadMessageCount(),
+            ChatClient.getInstance().chatManager.getUnreadCount(),
             QuickTestScreenChat.TAG,
-            MN.getUnreadMessageCount
+            MN.getUnreadCount
           );
         }
         break;
@@ -562,26 +560,27 @@ export class QuickTestScreenChat extends QuickTestScreenBase<
           );
         }
         break;
-      case MN.deleteRemoteConversation:
+      case MN.removeConversationFromServer:
         {
           const methodName = this.metaData.get(
-            MN.deleteRemoteConversation
+            MN.removeConversationFromServer
           )!.methodName;
-          console.log(`${MN.deleteRemoteConversation} === ${methodName}`);
-          const convId = this.metaData.get(MN.deleteRemoteConversation)
+          console.log(`${MN.removeConversationFromServer} === ${methodName}`);
+          const convId = this.metaData.get(MN.removeConversationFromServer)
             ?.params[0].paramDefaultValue;
-          const convType = this.metaData.get(MN.deleteRemoteConversation)
+          const convType = this.metaData.get(MN.removeConversationFromServer)
             ?.params[1].paramDefaultValue;
-          const isDeleteMessage = this.metaData.get(MN.deleteRemoteConversation)
-            ?.params[2].paramDefaultValue;
+          const isDeleteMessage = this.metaData.get(
+            MN.removeConversationFromServer
+          )?.params[2].paramDefaultValue;
           this.tryCatch(
-            ChatClient.getInstance().chatManager.deleteRemoteConversation(
+            ChatClient.getInstance().chatManager.removeConversationFromServer(
               convId,
               convType,
               isDeleteMessage
             ),
             QuickTestScreenChat.TAG,
-            MN.deleteRemoteConversation
+            MN.removeConversationFromServer
           );
         }
         break;
@@ -606,29 +605,29 @@ export class QuickTestScreenChat extends QuickTestScreenBase<
           );
         }
         break;
-      case MN.loadAllConversations:
+      case MN.getAllConversations:
         {
           const methodName = this.metaData.get(
-            MN.loadAllConversations
+            MN.getAllConversations
           )!.methodName;
-          console.log(`${MN.loadAllConversations} === ${methodName}`);
+          console.log(`${MN.getAllConversations} === ${methodName}`);
           this.tryCatch(
-            ChatClient.getInstance().chatManager.loadAllConversations(),
+            ChatClient.getInstance().chatManager.getAllConversations(),
             QuickTestScreenChat.TAG,
-            MN.loadAllConversations
+            MN.getAllConversations
           );
         }
         break;
-      case MN.getConversationsFromServer:
+      case MN.fetchAllConversations:
         {
           const methodName = this.metaData.get(
-            MN.getConversationsFromServer
+            MN.fetchAllConversations
           )!.methodName;
-          console.log(`${MN.getConversationsFromServer} === ${methodName}`);
+          console.log(`${MN.fetchAllConversations} === ${methodName}`);
           this.tryCatch(
-            ChatClient.getInstance().chatManager.getConversationsFromServer(),
+            ChatClient.getInstance().chatManager.fetchAllConversations(),
             QuickTestScreenChat.TAG,
-            MN.getConversationsFromServer
+            MN.fetchAllConversations
           );
         }
         break;
@@ -661,7 +660,7 @@ export class QuickTestScreenChat extends QuickTestScreenBase<
           const convType = this.metaData.get(MN.getLatestMessage)?.params[1]
             .paramDefaultValue;
           this.tryCatch(
-            ChatClient.getInstance().chatManager.fetchLatestMessage(
+            ChatClient.getInstance().chatManager.getLatestMessage(
               convId,
               convType
             ),
@@ -681,7 +680,7 @@ export class QuickTestScreenChat extends QuickTestScreenBase<
           const convType = this.metaData.get(MN.getLastReceivedMessage)
             ?.params[1].paramDefaultValue;
           this.tryCatch(
-            ChatClient.getInstance().chatManager.fetchLastReceivedMessage(
+            ChatClient.getInstance().chatManager.getLatestReceivedMessage(
               convId,
               convType
             ),
@@ -690,18 +689,23 @@ export class QuickTestScreenChat extends QuickTestScreenBase<
           );
         }
         break;
-      case MN.unreadCount:
+      case MN.getConversationUnreadCount:
         {
-          const methodName = this.metaData.get(MN.unreadCount)!.methodName;
-          console.log(`${MN.unreadCount} === ${methodName}`);
-          const convId = this.metaData.get(MN.unreadCount)?.params[0]
-            .paramDefaultValue;
-          const convType = this.metaData.get(MN.unreadCount)?.params[1]
-            .paramDefaultValue;
+          const methodName = this.metaData.get(
+            MN.getConversationUnreadCount
+          )!.methodName;
+          console.log(`${MN.getConversationUnreadCount} === ${methodName}`);
+          const convId = this.metaData.get(MN.getConversationUnreadCount)
+            ?.params[0].paramDefaultValue;
+          const convType = this.metaData.get(MN.getConversationUnreadCount)
+            ?.params[1].paramDefaultValue;
           this.tryCatch(
-            ChatClient.getInstance().chatManager.unreadCount(convId, convType),
+            ChatClient.getInstance().chatManager.getConversationUnreadCount(
+              convId,
+              convType
+            ),
             QuickTestScreenChat.TAG,
-            MN.unreadCount
+            MN.getConversationUnreadCount
           );
         }
         break;
@@ -851,27 +855,6 @@ export class QuickTestScreenChat extends QuickTestScreenBase<
           );
         }
         break;
-      case MN.getMessageById:
-        {
-          const methodName = this.metaData.get(MN.getMessageById)!.methodName;
-          console.log(`${MN.getMessageById} === ${methodName}`);
-          const convId = this.metaData.get(MN.getMessageById)?.params[0]
-            .paramDefaultValue;
-          const convType = this.metaData.get(MN.getMessageById)?.params[1]
-            .paramDefaultValue;
-          const msgId = this.metaData.get(MN.getMessageById)?.params[2]
-            .paramDefaultValue;
-          this.tryCatch(
-            ChatClient.getInstance().chatManager.getMessageById(
-              convId,
-              convType,
-              msgId
-            ),
-            QuickTestScreenChat.TAG,
-            MN.getMessageById
-          );
-        }
-        break;
       case MN.getMessagesWithMsgType:
         {
           const methodName = this.metaData.get(
@@ -969,26 +952,26 @@ export class QuickTestScreenChat extends QuickTestScreenBase<
           );
         }
         break;
-      case MN.getMessagesFromTime:
+      case MN.getMessageWithTimestamp:
         {
           const methodName = this.metaData.get(
-            MN.getMessagesFromTime
+            MN.getMessageWithTimestamp
           )!.methodName;
-          console.log(`${MN.getMessagesFromTime} === ${methodName}`);
-          const convId = this.metaData.get(MN.getMessagesFromTime)?.params[0]
-            .paramDefaultValue;
-          const convType = this.metaData.get(MN.getMessagesFromTime)?.params[1]
-            .paramDefaultValue;
-          const startTime = this.metaData.get(MN.getMessagesFromTime)?.params[2]
-            .paramDefaultValue;
-          const endTime = this.metaData.get(MN.getMessagesFromTime)?.params[3]
-            .paramDefaultValue;
-          const direction = this.metaData.get(MN.getMessagesFromTime)?.params[4]
-            .paramDefaultValue;
-          const count = this.metaData.get(MN.getMessagesFromTime)?.params[5]
+          console.log(`${MN.getMessageWithTimestamp} === ${methodName}`);
+          const convId = this.metaData.get(MN.getMessageWithTimestamp)
+            ?.params[0].paramDefaultValue;
+          const convType = this.metaData.get(MN.getMessageWithTimestamp)
+            ?.params[1].paramDefaultValue;
+          const startTime = this.metaData.get(MN.getMessageWithTimestamp)
+            ?.params[2].paramDefaultValue;
+          const endTime = this.metaData.get(MN.getMessageWithTimestamp)
+            ?.params[3].paramDefaultValue;
+          const direction = this.metaData.get(MN.getMessageWithTimestamp)
+            ?.params[4].paramDefaultValue;
+          const count = this.metaData.get(MN.getMessageWithTimestamp)?.params[5]
             .paramDefaultValue;
           this.tryCatch(
-            ChatClient.getInstance().chatManager.getMessagesFromTime(
+            ChatClient.getInstance().chatManager.getMessageWithTimestamp(
               convId,
               convType,
               startTime,
@@ -997,7 +980,7 @@ export class QuickTestScreenChat extends QuickTestScreenBase<
               count
             ),
             QuickTestScreenChat.TAG,
-            MN.getMessagesFromTime
+            MN.getMessageWithTimestamp
           );
         }
         break;

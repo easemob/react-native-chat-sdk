@@ -496,83 +496,83 @@ export class QuickTestScreenRoom extends QuickTestScreenBase<
           );
         }
         break;
-      case MN.fetchChatRoomWhiteListFromServer:
+      case MN.fetchChatRoomAllowListFromServer:
         {
           const methodName = this.metaData.get(
-            MN.fetchChatRoomWhiteListFromServer
+            MN.fetchChatRoomAllowListFromServer
           )!.methodName;
           console.log(
-            `${MN.fetchChatRoomWhiteListFromServer} === ${methodName}`
+            `${MN.fetchChatRoomAllowListFromServer} === ${methodName}`
           );
-          const roomId = this.metaData.get(MN.fetchChatRoomWhiteListFromServer)!
+          const roomId = this.metaData.get(MN.fetchChatRoomAllowListFromServer)!
             .params[0].paramDefaultValue;
           this.tryCatch(
-            ChatClient.getInstance().roomManager.fetchChatRoomWhiteListFromServer(
+            ChatClient.getInstance().roomManager.fetchChatRoomAllowListFromServer(
               roomId
             ),
             QuickTestScreenRoom.TAG,
-            MN.fetchChatRoomWhiteListFromServer
+            MN.fetchChatRoomAllowListFromServer
           );
         }
         break;
-      case MN.isMemberInChatRoomWhiteList:
+      case MN.isMemberInChatRoomAllowList:
         {
           const methodName = this.metaData.get(
-            MN.isMemberInChatRoomWhiteList
+            MN.isMemberInChatRoomAllowList
           )!.methodName;
-          console.log(`${MN.isMemberInChatRoomWhiteList} === ${methodName}`);
-          const roomId = this.metaData.get(MN.isMemberInChatRoomWhiteList)!
+          console.log(`${MN.isMemberInChatRoomAllowList} === ${methodName}`);
+          const roomId = this.metaData.get(MN.isMemberInChatRoomAllowList)!
             .params[0].paramDefaultValue;
           this.tryCatch(
-            ChatClient.getInstance().roomManager.isMemberInChatRoomWhiteList(
+            ChatClient.getInstance().roomManager.isMemberInChatRoomAllowList(
               roomId
             ),
             QuickTestScreenRoom.TAG,
-            MN.isMemberInChatRoomWhiteList
+            MN.isMemberInChatRoomAllowList
           );
         }
         break;
-      case MN.addMembersToChatRoomWhiteList:
+      case MN.addMembersToChatRoomAllowList:
         {
           const methodName = this.metaData.get(
-            MN.addMembersToChatRoomWhiteList
+            MN.addMembersToChatRoomAllowList
           )!.methodName;
-          console.log(`${MN.addMembersToChatRoomWhiteList} === ${methodName}`);
-          const roomId = this.metaData.get(MN.addMembersToChatRoomWhiteList)!
+          console.log(`${MN.addMembersToChatRoomAllowList} === ${methodName}`);
+          const roomId = this.metaData.get(MN.addMembersToChatRoomAllowList)!
             .params[0].paramDefaultValue;
-          const members = this.metaData.get(MN.addMembersToChatRoomWhiteList)!
+          const members = this.metaData.get(MN.addMembersToChatRoomAllowList)!
             .params[1].paramDefaultValue;
           this.tryCatch(
-            ChatClient.getInstance().roomManager.addMembersToChatRoomWhiteList(
+            ChatClient.getInstance().roomManager.addMembersToChatRoomAllowList(
               roomId,
               members
             ),
             QuickTestScreenRoom.TAG,
-            MN.addMembersToChatRoomWhiteList
+            MN.addMembersToChatRoomAllowList
           );
         }
         break;
-      case MN.removeMembersFromChatRoomWhiteList:
+      case MN.removeMembersFromChatRoomAllowList:
         {
           const methodName = this.metaData.get(
-            MN.removeMembersFromChatRoomWhiteList
+            MN.removeMembersFromChatRoomAllowList
           )!.methodName;
           console.log(
-            `${MN.removeMembersFromChatRoomWhiteList} === ${methodName}`
+            `${MN.removeMembersFromChatRoomAllowList} === ${methodName}`
           );
           const roomId = this.metaData.get(
-            MN.removeMembersFromChatRoomWhiteList
+            MN.removeMembersFromChatRoomAllowList
           )!.params[0].paramDefaultValue;
           const members = this.metaData.get(
-            MN.removeMembersFromChatRoomWhiteList
+            MN.removeMembersFromChatRoomAllowList
           )!.params[1].paramDefaultValue;
           this.tryCatch(
-            ChatClient.getInstance().roomManager.removeMembersFromChatRoomWhiteList(
+            ChatClient.getInstance().roomManager.removeMembersFromChatRoomAllowList(
               roomId,
               members
             ),
             QuickTestScreenRoom.TAG,
-            MN.removeMembersFromChatRoomWhiteList
+            MN.removeMembersFromChatRoomAllowList
           );
         }
         break;

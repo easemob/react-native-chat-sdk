@@ -572,8 +572,8 @@ export class ChatMessage {
    *   @{#displayName} The image name.
    *   @{#thumbnailLocalPath} The image thumbnail path.
    *   @{#sendOriginalImage} Whether to send the original image.
-   *     - `true`: The SDK sends the original image and its thumbnail.
-   *     - (Default) `false`: If the image is smaller than 100 KB, the SDK sends the original image and its thumbnail. If the image is equal to or greater than 100 KB, the SDK will compress it before sending the compressed image and the thumbnail of the compressed image.
+   *     - `true`: Yes.
+   *     - (Default) `false`: If the image is smaller than 100 KB, the SDK sends the original image. If the image is equal to or greater than 100 KB, the SDK will compress it before sending the compressed image.
    *   @{#width} The image width in pixels.
    *   @{#height} The image height in pixels.
    * @returns The message instance.
@@ -844,7 +844,7 @@ export class ChatTextMessageBody extends ChatMessageBody {
    */
   content: string;
   /**
-   * The target language for translation. See {@url https://docs.microsoft.com/en-us/azure/cognitive-services/translator/language-support}.
+   * The target language for translation. See {@link https://docs.microsoft.com/en-us/azure/cognitive-services/translator/language-support}.
    */
   targetLanguageCodes?: Array<string>;
   /**
@@ -950,7 +950,7 @@ export class ChatImageMessageBody extends ChatFileMessageBody {
   /**
    Whether to send the original image.
   * - `true`: Yes. 
-  * - (Default) `false`: No. If the image is smaller than 100 KB, the SDK sends the original image and its thumbnail. If the image is equal to or greater than 100 KB, the SDK will compress it before sending the compressed image and the thumbnail of the compressed image.
+  * - (Default) `false`: No. If the image is smaller than 100 KB, the SDK sends the original image. If the image is equal to or greater than 100 KB, the SDK will compress it before sending the compressed image.
    */
   sendOriginalImage: boolean;
   /**
@@ -962,7 +962,7 @@ export class ChatImageMessageBody extends ChatFileMessageBody {
    */
   thumbnailRemotePath: string;
   /**
-   * The token to access the thumbnail. A token is required for verification for thumbnail download.
+   * The secret to access the thumbnail. A secret is required for verification for thumbnail download.
    */
   thumbnailSecret: string;
   /**
@@ -1031,7 +1031,7 @@ export class ChatVideoMessageBody extends ChatFileMessageBody {
    */
   thumbnailRemotePath: string;
   /**
-   * The token to download the video thumbnail.
+   * The secret to download the video thumbnail.
    */
   thumbnailSecret: string;
   /**

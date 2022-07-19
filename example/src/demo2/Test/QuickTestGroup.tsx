@@ -283,16 +283,16 @@ export class QuickTestScreenGroup extends QuickTestScreenBase<
           );
         }
         break;
-      case MN.fetchWhiteListFromServer:
+      case MN.fetchAllowListFromServer:
         {
-          const methodName = this.metaData.get(MN.fetchWhiteListFromServer)
+          const methodName = this.metaData.get(MN.fetchAllowListFromServer)
             ?.methodName!;
-          console.log(`${MN.fetchWhiteListFromServer} === ${methodName}`);
-          const groupId = this.metaData.get(MN.fetchWhiteListFromServer)
+          console.log(`${MN.fetchAllowListFromServer} === ${methodName}`);
+          const groupId = this.metaData.get(MN.fetchAllowListFromServer)
             ?.params[0].paramDefaultValue;
 
           this.tryCatch(
-            ChatClient.getInstance().groupManager.fetchWhiteListFromServer(
+            ChatClient.getInstance().groupManager.fetchAllowListFromServer(
               groupId
             ),
             QuickTestScreenGroup.TAG,
@@ -300,16 +300,16 @@ export class QuickTestScreenGroup extends QuickTestScreenBase<
           );
         }
         break;
-      case MN.isMemberInWhiteListFromServer:
+      case MN.isMemberInAllowListFromServer:
         {
-          const methodName = this.metaData.get(MN.isMemberInWhiteListFromServer)
+          const methodName = this.metaData.get(MN.isMemberInAllowListFromServer)
             ?.methodName!;
-          console.log(`${MN.isMemberInWhiteListFromServer} === ${methodName}`);
-          const groupId = this.metaData.get(MN.isMemberInWhiteListFromServer)
+          console.log(`${MN.isMemberInAllowListFromServer} === ${methodName}`);
+          const groupId = this.metaData.get(MN.isMemberInAllowListFromServer)
             ?.params[0].paramDefaultValue;
 
           this.tryCatch(
-            ChatClient.getInstance().groupManager.isMemberInWhiteListFromServer(
+            ChatClient.getInstance().groupManager.isMemberInAllowListFromServer(
               groupId
             ),
             QuickTestScreenGroup.TAG,
@@ -660,17 +660,17 @@ export class QuickTestScreenGroup extends QuickTestScreenBase<
           );
         }
         break;
-      case MN.addWhiteList:
+      case MN.addAllowList:
         {
-          const methodName = this.metaData.get(MN.addWhiteList)?.methodName!;
-          console.log(`${MN.addWhiteList} === ${methodName}`);
-          const groupId = this.metaData.get(MN.addWhiteList)?.params[0]
+          const methodName = this.metaData.get(MN.addAllowList)?.methodName!;
+          console.log(`${MN.addAllowList} === ${methodName}`);
+          const groupId = this.metaData.get(MN.addAllowList)?.params[0]
             .paramDefaultValue;
-          const members = this.metaData.get(MN.addWhiteList)?.params[1]
+          const members = this.metaData.get(MN.addAllowList)?.params[1]
             .paramDefaultValue;
 
           this.tryCatch(
-            ChatClient.getInstance().groupManager.addWhiteList(
+            ChatClient.getInstance().groupManager.addAllowList(
               groupId,
               members
             ),
@@ -679,17 +679,17 @@ export class QuickTestScreenGroup extends QuickTestScreenBase<
           );
         }
         break;
-      case MN.removeWhiteList:
+      case MN.removeAllowList:
         {
-          const methodName = this.metaData.get(MN.removeWhiteList)?.methodName!;
-          console.log(`${MN.removeWhiteList} === ${methodName}`);
-          const groupId = this.metaData.get(MN.removeWhiteList)?.params[0]
+          const methodName = this.metaData.get(MN.removeAllowList)?.methodName!;
+          console.log(`${MN.removeAllowList} === ${methodName}`);
+          const groupId = this.metaData.get(MN.removeAllowList)?.params[0]
             .paramDefaultValue;
-          const members = this.metaData.get(MN.removeWhiteList)?.params[1]
+          const members = this.metaData.get(MN.removeAllowList)?.params[1]
             .paramDefaultValue;
 
           this.tryCatch(
-            ChatClient.getInstance().groupManager.removeWhiteList(
+            ChatClient.getInstance().groupManager.removeAllowList(
               groupId,
               members
             ),

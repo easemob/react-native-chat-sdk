@@ -863,7 +863,7 @@ export class ChatClient extends BaseManager {
   }
 
   /**
-   * Removes a custom listener to no longer receive data that the iOS or Android devices send to the React Native layer.
+   * Removes a custom listener to stop receiving data that the iOS or Android devices send to the React Native layer.
    *
    * @param listener The custom listener to remove.
    */

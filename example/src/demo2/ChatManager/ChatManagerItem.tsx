@@ -46,7 +46,7 @@ export interface StateChatMessage extends StateBase {
     msgId: string;
   };
   markAllConversationsAsRead: {};
-  getUnreadMessageCount: {};
+  getUnreadCount: {};
   updateMessage: {
     message: ChatMessage;
   };
@@ -80,7 +80,7 @@ export interface StateChatMessage extends StateBase {
     pageSize: number;
     groupId: string;
   };
-  deleteRemoteConversation: {
+  removeConversationFromServer: {
     convId: string;
     convType: number;
     isDeleteMessage: boolean;
@@ -90,8 +90,8 @@ export interface StateChatMessage extends StateBase {
     convType: number;
     createIfNeed: boolean;
   };
-  loadAllConversations: {};
-  getConversationsFromServer: {};
+  getAllConversations: {};
+  fetchAllConversations: {};
   deleteConversation: {
     convId: string;
     withMessage: boolean;
@@ -104,7 +104,7 @@ export interface StateChatMessage extends StateBase {
     convId: string;
     convType: number;
   };
-  unreadCount: {
+  getConversationUnreadCount: {
     convId: string;
     convType: number;
   };
@@ -141,11 +141,6 @@ export interface StateChatMessage extends StateBase {
     convId: string;
     convType: number;
   };
-  getMessageById: {
-    convId: string;
-    convType: number;
-    msgId: string;
-  };
   getMessagesWithMsgType: {
     convId: string;
     convType: number;
@@ -171,7 +166,7 @@ export interface StateChatMessage extends StateBase {
     count: number;
     sender: string;
   };
-  getMessagesFromTime: {
+  getMessageWithTimestamp: {
     convId: string;
     convType: number;
     startTime: number;
@@ -508,7 +503,7 @@ export class ChatManagerLeafScreen extends LeafScreenBase<StateChatMessage> {
       'recallMessage',
       'getMessage',
       'markAllConversationsAsRead',
-      'getUnreadMessageCount',
+      'getUnreadCount',
       'updateMessage',
       'importMessages',
       'downloadAttachment',
@@ -516,14 +511,14 @@ export class ChatManagerLeafScreen extends LeafScreenBase<StateChatMessage> {
       'fetchHistoryMessages',
       'searchMsgFromDB',
       'fetchGroupAcks',
-      'deleteRemoteConversation',
+      'removeConversationFromServer',
       'getConversation',
-      'loadAllConversations',
-      'getConversationsFromServer',
+      'getAllConversations',
+      'fetchAllConversations',
       'deleteConversation',
       'getLatestMessage',
       'getLastReceivedMessage',
-      'unreadCount',
+      'getConversationUnreadCount',
       'markMessageAsRead',
       'markAllMessagesAsRead',
       'insertMessage',
@@ -531,11 +526,10 @@ export class ChatManagerLeafScreen extends LeafScreenBase<StateChatMessage> {
       'updateConversationMessage',
       'deleteMessage',
       'deleteAllMessages',
-      'getMessageById',
       'getMessagesWithMsgType',
       'getMessages',
       'getMessagesWithKeyword',
-      'getMessagesFromTime',
+      'getMessageWithTimestamp',
       'translateMessage',
       'fetchSupportLanguages',
       // 'setConversationExtension',
@@ -695,11 +689,11 @@ export class ChatManagerLeafScreen extends LeafScreenBase<StateChatMessage> {
         ChatManagerLeafScreen.TAG,
         this.metaData.get(MN.markAllConversationsAsRead)!.methodName
       );
-    } else if (name === MN.getUnreadMessageCount) {
+    } else if (name === MN.getUnreadCount) {
       this.tryCatch(
-        ChatClient.getInstance().chatManager.getUnreadMessageCount(),
+        ChatClient.getInstance().chatManager.getUnreadCount(),
         ChatManagerLeafScreen.TAG,
-        this.metaData.get(MN.getUnreadMessageCount)!.methodName
+        this.metaData.get(MN.getUnreadCount)!.methodName
       );
     } else if (name === MN.updateMessage) {
       const { message } = this.state.updateMessage;
@@ -777,17 +771,17 @@ export class ChatManagerLeafScreen extends LeafScreenBase<StateChatMessage> {
         ChatManagerLeafScreen.TAG,
         this.metaData.get(MN.fetchGroupAcks)!.methodName
       );
-    } else if (name === MN.deleteRemoteConversation) {
+    } else if (name === MN.removeConversationFromServer) {
       const { convId, convType, isDeleteMessage } =
-        this.state.deleteRemoteConversation;
+        this.state.removeConversationFromServer;
       this.tryCatch(
-        ChatClient.getInstance().chatManager.deleteRemoteConversation(
+        ChatClient.getInstance().chatManager.removeConversationFromServer(
           convId,
           convType,
           isDeleteMessage
         ),
         ChatManagerLeafScreen.TAG,
-        this.metaData.get(MN.deleteRemoteConversation)!.methodName
+        this.metaData.get(MN.removeConversationFromServer)!.methodName
       );
     } else if (name === MN.getConversation) {
       const { convId, convType, createIfNeed } = this.state.getConversation;
@@ -800,17 +794,17 @@ export class ChatManagerLeafScreen extends LeafScreenBase<StateChatMessage> {
         ChatManagerLeafScreen.TAG,
         this.metaData.get(MN.getConversation)!.methodName
       );
-    } else if (name === MN.loadAllConversations) {
+    } else if (name === MN.getAllConversations) {
       this.tryCatch(
-        ChatClient.getInstance().chatManager.loadAllConversations(),
+        ChatClient.getInstance().chatManager.getAllConversations(),
         ChatManagerLeafScreen.TAG,
-        this.metaData.get(MN.loadAllConversations)!.methodName
+        this.metaData.get(MN.getAllConversations)!.methodName
       );
-    } else if (name === MN.getConversationsFromServer) {
+    } else if (name === MN.fetchAllConversations) {
       this.tryCatch(
-        ChatClient.getInstance().chatManager.getConversationsFromServer(),
+        ChatClient.getInstance().chatManager.fetchAllConversations(),
         ChatManagerLeafScreen.TAG,
-        this.metaData.get(MN.getConversationsFromServer)!.methodName
+        this.metaData.get(MN.fetchAllConversations)!.methodName
       );
     } else if (name === MN.deleteConversation) {
       const { convId, withMessage } = this.state.deleteConversation;
@@ -825,7 +819,7 @@ export class ChatManagerLeafScreen extends LeafScreenBase<StateChatMessage> {
     } else if (name === MN.getLatestMessage) {
       const { convId, convType } = this.state.getLatestMessage;
       this.tryCatch(
-        ChatClient.getInstance().chatManager.fetchLatestMessage(
+        ChatClient.getInstance().chatManager.getLatestMessage(
           convId,
           ChatConversationTypeFromNumber(convType)
         ),
@@ -835,22 +829,22 @@ export class ChatManagerLeafScreen extends LeafScreenBase<StateChatMessage> {
     } else if (name === MN.getLastReceivedMessage) {
       const { convId, convType } = this.state.getLastReceivedMessage;
       this.tryCatch(
-        ChatClient.getInstance().chatManager.fetchLastReceivedMessage(
+        ChatClient.getInstance().chatManager.getLatestReceivedMessage(
           convId,
           ChatConversationTypeFromNumber(convType)
         ),
         ChatManagerLeafScreen.TAG,
         this.metaData.get(MN.getLastReceivedMessage)!.methodName
       );
-    } else if (name === MN.unreadCount) {
-      const { convId, convType } = this.state.unreadCount;
+    } else if (name === MN.getConversationUnreadCount) {
+      const { convId, convType } = this.state.getConversationUnreadCount;
       this.tryCatch(
-        ChatClient.getInstance().chatManager.unreadCount(
+        ChatClient.getInstance().chatManager.getConversationUnreadCount(
           convId,
           ChatConversationTypeFromNumber(convType)
         ),
         ChatManagerLeafScreen.TAG,
-        this.metaData.get(MN.unreadCount)!.methodName
+        this.metaData.get(MN.getConversationUnreadCount)!.methodName
       );
     } else if (name === MN.markMessageAsRead) {
       const { convId, convType, msgId } = this.state.markMessageAsRead;
@@ -927,17 +921,6 @@ export class ChatManagerLeafScreen extends LeafScreenBase<StateChatMessage> {
         ChatManagerLeafScreen.TAG,
         this.metaData.get(MN.deleteAllMessages)!.methodName
       );
-    } else if (name === MN.getMessageById) {
-      const { convId, convType, msgId } = this.state.getMessageById;
-      this.tryCatch(
-        ChatClient.getInstance().chatManager.getMessageById(
-          convId,
-          ChatConversationTypeFromNumber(convType),
-          msgId
-        ),
-        ChatManagerLeafScreen.TAG,
-        this.metaData.get(MN.getMessageById)!.methodName
-      );
     } else if (name === MN.getMessagesWithMsgType) {
       const { convId, convType, msgType, direction, timestamp, count, sender } =
         this.state.getMessagesWithMsgType;
@@ -991,11 +974,11 @@ export class ChatManagerLeafScreen extends LeafScreenBase<StateChatMessage> {
         ChatManagerLeafScreen.TAG,
         this.metaData.get(MN.getMessagesWithKeyword)!.methodName
       );
-    } else if (name === MN.getMessagesFromTime) {
+    } else if (name === MN.getMessageWithTimestamp) {
       const { convId, convType, startTime, endTime, direction, count } =
-        this.state.getMessagesFromTime;
+        this.state.getMessageWithTimestamp;
       this.tryCatch(
-        ChatClient.getInstance().chatManager.getMessagesFromTime(
+        ChatClient.getInstance().chatManager.getMessageWithTimestamp(
           convId,
           ChatConversationTypeFromNumber(convType),
           startTime,
@@ -1004,7 +987,7 @@ export class ChatManagerLeafScreen extends LeafScreenBase<StateChatMessage> {
           count
         ),
         ChatManagerLeafScreen.TAG,
-        this.metaData.get(MN.getMessagesFromTime)!.methodName
+        this.metaData.get(MN.getMessageWithTimestamp)!.methodName
       );
     } else if (name === MN.translateMessage) {
       const { msg, languages } = this.state.translateMessage;

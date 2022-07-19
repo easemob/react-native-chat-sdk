@@ -162,13 +162,13 @@ export const MTfetchChatRoomBlockList = 'fetchChatRoomBlockList';
 export const MTupdateChatRoomAnnouncement = 'updateChatRoomAnnouncement';
 export const MTfetchChatRoomAnnouncement = 'fetchChatRoomAnnouncement';
 
-export const MTaddMembersToChatRoomWhiteList = 'addMembersToChatRoomWhiteList';
-export const MTremoveMembersFromChatRoomWhiteList =
-  'removeMembersFromChatRoomWhiteList';
-export const MTfetchChatRoomWhiteListFromServer =
-  'fetchChatRoomWhiteListFromServer';
-export const MTisMemberInChatRoomWhiteListFromServer =
-  'isMemberInChatRoomWhiteListFromServer';
+export const MTaddMembersToChatRoomAllowList = 'addMembersToChatRoomAllowList';
+export const MTremoveMembersFromChatRoomAllowList =
+  'removeMembersFromChatRoomAllowList';
+export const MTfetchChatRoomAllowListFromServer =
+  'fetchChatRoomAllowListFromServer';
+export const MTisMemberInChatRoomAllowListFromServer =
+  'isMemberInChatRoomAllowListFromServer';
 
 export const MTmuteAllChatRoomMembers = 'muteAllChatRoomMembers';
 export const MTunMuteAllChatRoomMembers = 'unMuteAllChatRoomMembers';
@@ -189,8 +189,8 @@ export const MTgetGroupSpecificationFromServer =
 export const MTgetGroupMemberListFromServer = 'getGroupMemberListFromServer';
 export const MTgetGroupBlockListFromServer = 'getGroupBlockListFromServer';
 export const MTgetGroupMuteListFromServer = 'getGroupMuteListFromServer';
-export const MTgetGroupWhiteListFromServer = 'getGroupWhiteListFromServer';
-export const MTisMemberInWhiteListFromServer = 'isMemberInWhiteListFromServer';
+export const MTgetGroupAllowListFromServer = 'getGroupAllowListFromServer';
+export const MTisMemberInAllowListFromServer = 'isMemberInAllowListFromServer';
 export const MTgetGroupFileListFromServer = 'getGroupFileListFromServer';
 export const MTgetGroupAnnouncementFromServer =
   'getGroupAnnouncementFromServer';
@@ -212,8 +212,8 @@ export const MTmuteMembers = 'muteMembers';
 export const MTunMuteMembers = 'unMuteMembers';
 export const MTmuteAllMembers = 'muteAllMembers';
 export const MTunMuteAllMembers = 'unMuteAllMembers';
-export const MTaddWhiteList = 'addWhiteList';
-export const MTremoveWhiteList = 'removeWhiteList';
+export const MTaddAllowList = 'addAllowList';
+export const MTremoveAllowList = 'removeAllowList';
 export const MTuploadGroupSharedFile = 'uploadGroupSharedFile';
 export const MTdownloadGroupSharedFile = 'downloadGroupSharedFile';
 export const MTremoveGroupSharedFile = 'removeGroupSharedFile';

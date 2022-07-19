@@ -274,7 +274,7 @@ export class ChatContactManager extends BaseManager {
   }
 
   /**
-   * Gets the unique IDs of the current user on the other devices. The ID is in the format of user ID + "/" + resource.
+   * Gets the unique IDs of the current user on the other devices. The ID is in the format of `{user_ID} + "/" + {resource_ID}`.
    *
    * @returns The list of unique IDs of users on the other devices if the method succeeds.
    *

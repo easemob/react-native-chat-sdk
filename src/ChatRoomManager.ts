@@ -3,7 +3,7 @@ import type { ChatRoomEventListener } from './ChatEvents';
 import { chatlog } from './common/ChatLog';
 import {
   MTaddChatRoomAdmin,
-  MTaddMembersToChatRoomWhiteList,
+  MTaddMembersToChatRoomAllowList,
   MTblockChatRoomMembers,
   MTchangeChatRoomDescription,
   MTchangeChatRoomOwner,
@@ -16,17 +16,17 @@ import {
   MTfetchChatRoomInfoFromServer,
   MTfetchChatRoomMembers,
   MTfetchChatRoomMuteList,
-  MTfetchChatRoomWhiteListFromServer,
+  MTfetchChatRoomAllowListFromServer,
   MTfetchPublicChatRoomsFromServer,
   MTgetChatRoom,
-  MTisMemberInChatRoomWhiteListFromServer,
+  MTisMemberInChatRoomAllowListFromServer,
   MTjoinChatRoom,
   MTleaveChatRoom,
   MTmuteAllChatRoomMembers,
   MTmuteChatRoomMembers,
   MTremoveChatRoomAdmin,
   MTremoveChatRoomMembers,
-  MTremoveMembersFromChatRoomWhiteList,
+  MTremoveMembersFromChatRoomAllowList,
   MTunBlockChatRoomMembers,
   MTunMuteAllChatRoomMembers,
   MTunMuteChatRoomMembers,
@@ -134,14 +134,14 @@ export class ChatRoomManager extends Native {
             announcement: params.announcement,
           });
           break;
-        case 'onWhiteListAdded':
-          listener.onWhiteListAdded({
+        case 'onAllowListAdded':
+          listener.onAllowListAdded({
             roomId: params.roomId,
             members: params.members,
           });
           break;
-        case 'onWhiteListRemoved':
-          listener.onWhiteListRemoved({
+        case 'onAllowListRemoved':
+          listener.onAllowListRemoved({
             roomId: params.roomId,
             members: params.members,
           });
@@ -812,20 +812,20 @@ export class ChatRoomManager extends Native {
    *
    * @throws A description of the exception. See {@link ChatError}.
    */
-  public async fetchChatRoomWhiteListFromServer(
+  public async fetchChatRoomAllowListFromServer(
     roomId: string
   ): Promise<Array<string>> {
     chatlog.log(
-      `${ChatRoomManager.TAG}: fetchChatRoomWhiteListFromServer: `,
+      `${ChatRoomManager.TAG}: fetchChatRoomAllowListFromServer: `,
       roomId
     );
-    let r: any = await Native._callMethod(MTfetchChatRoomWhiteListFromServer, {
-      [MTfetchChatRoomWhiteListFromServer]: {
+    let r: any = await Native._callMethod(MTfetchChatRoomAllowListFromServer, {
+      [MTfetchChatRoomAllowListFromServer]: {
         roomId,
       },
     });
     ChatRoomManager.checkErrorFromResult(r);
-    let ret: string[] = r?.[MTfetchChatRoomWhiteListFromServer];
+    let ret: string[] = r?.[MTfetchChatRoomAllowListFromServer];
     return ret;
   }
 
@@ -839,21 +839,21 @@ export class ChatRoomManager extends Native {
    *
    * @throws A description of the exception. See {@link ChatError}.
    */
-  public async isMemberInChatRoomWhiteList(roomId: string): Promise<boolean> {
+  public async isMemberInChatRoomAllowList(roomId: string): Promise<boolean> {
     chatlog.log(
-      `${ChatRoomManager.TAG}: isMemberInChatRoomWhiteList: `,
+      `${ChatRoomManager.TAG}: isMemberInChatRoomAllowList: `,
       roomId
     );
     let r: any = await Native._callMethod(
-      MTisMemberInChatRoomWhiteListFromServer,
+      MTisMemberInChatRoomAllowListFromServer,
       {
-        [MTisMemberInChatRoomWhiteListFromServer]: {
+        [MTisMemberInChatRoomAllowListFromServer]: {
           roomId,
         },
       }
     );
     ChatRoomManager.checkErrorFromResult(r);
-    let ret: boolean = r?.[MTisMemberInChatRoomWhiteListFromServer];
+    let ret: boolean = r?.[MTisMemberInChatRoomAllowListFromServer];
     return ret;
   }
 
@@ -867,17 +867,17 @@ export class ChatRoomManager extends Native {
    *
    * @throws A description of the exception. See {@link ChatError}.
    */
-  public async addMembersToChatRoomWhiteList(
+  public async addMembersToChatRoomAllowList(
     roomId: string,
     members: Array<string>
   ): Promise<void> {
     chatlog.log(
-      `${ChatRoomManager.TAG}: addMembersToChatRoomWhiteList: `,
+      `${ChatRoomManager.TAG}: addMembersToChatRoomAllowList: `,
       roomId,
       members
     );
-    let r: any = await Native._callMethod(MTaddMembersToChatRoomWhiteList, {
-      [MTaddMembersToChatRoomWhiteList]: {
+    let r: any = await Native._callMethod(MTaddMembersToChatRoomAllowList, {
+      [MTaddMembersToChatRoomAllowList]: {
         roomId,
         members,
       },
@@ -895,19 +895,19 @@ export class ChatRoomManager extends Native {
    *
    * @throws A description of the exception. See {@link ChatError}.
    */
-  public async removeMembersFromChatRoomWhiteList(
+  public async removeMembersFromChatRoomAllowList(
     roomId: string,
     members: Array<string>
   ): Promise<void> {
     chatlog.log(
-      `${ChatRoomManager.TAG}: removeMembersFromChatRoomWhiteList: `,
+      `${ChatRoomManager.TAG}: removeMembersFromChatRoomAllowList: `,
       roomId,
       members
     );
     let r: any = await Native._callMethod(
-      MTremoveMembersFromChatRoomWhiteList,
+      MTremoveMembersFromChatRoomAllowList,
       {
-        [MTremoveMembersFromChatRoomWhiteList]: {
+        [MTremoveMembersFromChatRoomAllowList]: {
           roomId,
           members,
         },

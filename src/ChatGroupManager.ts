@@ -14,7 +14,7 @@ import {
   MTacceptJoinApplication,
   MTaddAdmin,
   MTaddMembers,
-  MTaddWhiteList,
+  MTaddAllowList,
   MTblockGroup,
   MTblockMembers,
   MTcreateGroup,
@@ -28,13 +28,13 @@ import {
   MTgetGroupMemberListFromServer,
   MTgetGroupMuteListFromServer,
   MTgetGroupSpecificationFromServer,
-  MTgetGroupWhiteListFromServer,
+  MTgetGroupAllowListFromServer,
   MTgetGroupWithId,
   MTgetJoinedGroups,
   MTgetJoinedGroupsFromServer,
   MTgetPublicGroupsFromServer,
   MTinviterUser,
-  MTisMemberInWhiteListFromServer,
+  MTisMemberInAllowListFromServer,
   MTjoinPublicGroup,
   MTleaveGroup,
   MTmuteAllMembers,
@@ -43,7 +43,7 @@ import {
   MTremoveAdmin,
   MTremoveGroupSharedFile,
   MTremoveMembers,
-  MTremoveWhiteList,
+  MTremoveAllowList,
   MTrequestToJoinPublicGroup,
   MTunblockGroup,
   MTunblockMembers,
@@ -220,14 +220,14 @@ export class ChatGroupManager extends BaseManager {
             fileId: params.fileId,
           });
           break;
-        case 'onWhiteListAdded':
-          listener.onWhiteListAdded({
+        case 'onAllowListAdded':
+          listener.onAllowListAdded({
             groupId: params.groupId,
             members: params.members,
           });
           break;
-        case 'onWhiteListRemoved':
-          listener.onWhiteListRemoved({
+        case 'onAllowListRemoved':
+          listener.onAllowListRemoved({
             groupId: params.groupId,
             members: params.members,
           });
@@ -595,17 +595,17 @@ export class ChatGroupManager extends BaseManager {
    *
    * @throws A description of the exception. See {@link ChatError}.
    */
-  public async fetchWhiteListFromServer(
+  public async fetchAllowListFromServer(
     groupId: string
   ): Promise<Array<string>> {
-    chatlog.log(`${ChatGroupManager.TAG}: fetchWhiteListFromServer: `, groupId);
-    let r: any = await Native._callMethod(MTgetGroupWhiteListFromServer, {
-      [MTgetGroupWhiteListFromServer]: {
+    chatlog.log(`${ChatGroupManager.TAG}: fetchAllowListFromServer: `, groupId);
+    let r: any = await Native._callMethod(MTgetGroupAllowListFromServer, {
+      [MTgetGroupAllowListFromServer]: {
         groupId,
       },
     });
     ChatGroupManager.checkErrorFromResult(r);
-    let ret: string[] = r?.[MTgetGroupWhiteListFromServer];
+    let ret: string[] = r?.[MTgetGroupAllowListFromServer];
     return ret;
   }
 
@@ -619,20 +619,20 @@ export class ChatGroupManager extends BaseManager {
    *
    * @throws A description of the exception. See {@link ChatError}.
    */
-  public async isMemberInWhiteListFromServer(
+  public async isMemberInAllowListFromServer(
     groupId: string
   ): Promise<boolean> {
     chatlog.log(
-      `${ChatGroupManager.TAG}: isMemberInWhiteListFromServer: `,
+      `${ChatGroupManager.TAG}: isMemberInAllowListFromServer: `,
       groupId
     );
-    let r: any = await Native._callMethod(MTisMemberInWhiteListFromServer, {
-      [MTisMemberInWhiteListFromServer]: {
+    let r: any = await Native._callMethod(MTisMemberInAllowListFromServer, {
+      [MTisMemberInAllowListFromServer]: {
         groupId,
       },
     });
     ChatGroupManager.checkErrorFromResult(r);
-    let ret = r?.[MTisMemberInWhiteListFromServer] as boolean;
+    let ret = r?.[MTisMemberInAllowListFromServer] as boolean;
     return ret;
   }
 
@@ -1135,13 +1135,13 @@ export class ChatGroupManager extends BaseManager {
    *
    * @throws A description of the exception. See {@link ChatError}.
    */
-  public async addWhiteList(
+  public async addAllowList(
     groupId: string,
     members: Array<string>
   ): Promise<void> {
-    chatlog.log(`${ChatGroupManager.TAG}: addWhiteList: `, groupId, members);
-    let r: any = await Native._callMethod(MTaddWhiteList, {
-      [MTaddWhiteList]: {
+    chatlog.log(`${ChatGroupManager.TAG}: addAllowList: `, groupId, members);
+    let r: any = await Native._callMethod(MTaddAllowList, {
+      [MTaddAllowList]: {
         groupId,
         members,
       },
@@ -1159,13 +1159,13 @@ export class ChatGroupManager extends BaseManager {
    *
    * @throws A description of the exception. See {@link ChatError}.
    */
-  public async removeWhiteList(
+  public async removeAllowList(
     groupId: string,
     members: Array<string>
   ): Promise<void> {
-    chatlog.log(`${ChatGroupManager.TAG}: removeWhiteList: `, groupId, members);
-    let r: any = await Native._callMethod(MTremoveWhiteList, {
-      [MTremoveWhiteList]: {
+    chatlog.log(`${ChatGroupManager.TAG}: removeAllowList: `, groupId, members);
+    let r: any = await Native._callMethod(MTremoveAllowList, {
+      [MTremoveAllowList]: {
         groupId,
         members,
       },

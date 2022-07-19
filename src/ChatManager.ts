@@ -50,7 +50,6 @@ import {
   MTgetLatestMessageFromOthers,
   MTgetUnreadMsgCount,
   MTinsertMessage,
-  MTloadMsgWithId,
   MTloadMsgWithKeywords,
   MTloadMsgWithMsgType,
   MTloadMsgWithStartId,
@@ -645,8 +644,8 @@ export class ChatManager extends BaseManager {
    *
    * @throws A description of the exception. See {@link ChatError}.
    */
-  public async getUnreadMessageCount(): Promise<number> {
-    chatlog.log(`${ChatManager.TAG}: getUnreadMessageCount: `);
+  public async getUnreadCount(): Promise<number> {
+    chatlog.log(`${ChatManager.TAG}: getUnreadCount: `);
     let r: any = await Native._callMethod(MTgetUnreadMessageCount);
     Native.checkErrorFromResult(r);
     return r?.[MTgetUnreadMessageCount] as number;
@@ -750,13 +749,14 @@ export class ChatManager extends BaseManager {
   }
 
   /**
-   * Uses the pagination to get historical messages of the specified conversation from the server.
+   * Uses the pagination to get messages in the specified conversation from the server.
    *
    * @param convId The conversation ID.
    * @param chatType The conversation type. See {@link ChatConversationType}.
-   * @param pageSize The number of messages that you expect to get on each page.
-   * @param startMsgId The starting message ID for query. If you set it as an empty string or `null`, the SDK gets messages in the reverse chronological order of when the server receives them.
-   * @returns The obtained messages and the cursor for the next query.
+   * @param pageSize The number of messages that you expect to get on each page. The value range is [1,400].
+   * @param startMsgId The starting message ID for query. After this parameter is set, the SDK retrieves messages, starting from the specified one, in the reverse chronological order of when the server receives them.
+   *                   If this parameter is set as "null" or an empty string, the SDK retrieves messages, starting from the latest one, in the reverse chronological order of when the server receives them.
+   * @returns The list of retrieved messages (excluding the one with the starting ID) and the cursor for the next query.
    *
    * @throws A description of the exception. See {@link ChatError}.
    */
@@ -791,16 +791,17 @@ export class ChatManager extends BaseManager {
   }
 
   /**
-   * Retrieves messages from the local database.
+   * Retrieves messages with keywords in a conversation from the local database.
    *
    * @param keywords The keywords for query.
-   * @param timestamp The starting Unix timestamp for query, in milliseconds.
-   * @param maxCount The maximum number of messages to retrieve each time. The value range is [1,50].
-   * @param from The user ID or group ID at which the retrieval is targeted. Usually, it is the conversation ID.
+   * @param timestamp The starting Unix timestamp in the message for query. The unit is millisecond. After this parameter is set, the SDK retrieves messages, starting from the specified one, according to the message search direction.
+   *                  If you set this parameter as a negative value, the SDK retrieves messages, starting from the current time, in the descending order of the timestamp included in them.
+   * @param maxCount The maximum number of messages to retrieve each time. The value range is [1,400].
+   * @param from The user ID or group ID for retrieval. Usually, it is the conversation ID.
    * @param direction The message search direction. See {@link ChatSearchDirection}.
-   *                  - (Default) `ChatSearchDirection.Up`: Messages are retrieved in the reverse chronological order of the Unix timestamp ({@link SortMessageByServerTime}) included in them.
-   *                  - `ChatSearchDirection.Down`: Messages are retrieved in the chronological order of the Unix timestamp ({@link SortMessageByServerTime}) included in them.
-   * @returns The message list. If no message is obtained, an empty list is returned.
+   *                  - (Default) `ChatSearchDirection.Up`: Messages are retrieved in the descending order of the Unix timestamp ({@link SortMessageByServerTime}) included in them.
+   *                  - `ChatSearchDirection.Down`: Messages are retrieved in the ascending order of the Unix timestamp ({@link SortMessageByServerTime}) included in them.
+   * @returns The list of retrieved messages (excluding the one with the starting timestamp). If no message is obtained, an empty list is returned.
    *
    * @throws A description of the exception. See {@link ChatError}.
    */
@@ -840,9 +841,10 @@ export class ChatManager extends BaseManager {
    * For how to send read receipts for group messages, see {@link {@link #sendConversationReadAck(String)}.
    *
    * @param msgId The message ID.
-   * @param startAckId The starting read receipt ID for query. If you set it as an empty string or `null`, the SDK retrieves the read receipts in the reverse chronological order of when the server receives them.
-   * @param pageSize The number of read receipts that you expect to get on each page.
-   * @returns The list of obtained read receipts and the cursor for the next query.
+   * @param startAckId The starting read receipt ID for query. After this parameter is set, the SDK retrieves read receipts, from the specified one, in the reverse chronological order of when the server receives them.
+   *                   If this parameter is set as `null` or an empty string, the SDK retrieves read receipts, from the latest one, in the reverse chronological order of when the server receives them.
+   * @param pageSize The number of read receipts for the group message that you expect to get on each page. The value range is [1,400].
+   * @returns The list of retrieved read receipts (excluding the one with the starting ID) and the cursor for the next query.
    *
    * @throws A description of the exception. See {@link ChatError}.
    */
@@ -887,13 +889,13 @@ export class ChatManager extends BaseManager {
    *
    * @throws A description of the exception. See {@link ChatError}.
    */
-  public async deleteRemoteConversation(
+  public async removeConversationFromServer(
     convId: string,
     convType: ChatConversationType,
     isDeleteMessage: boolean = true
   ): Promise<void> {
     chatlog.log(
-      `${ChatManager.TAG}: deleteRemoteConversation: ${convId}, ${convType}, ${isDeleteMessage}`
+      `${ChatManager.TAG}: removeConversationFromServer: ${convId}, ${convType}, ${isDeleteMessage}`
     );
     let ct = 0;
     switch (convType) {
@@ -967,8 +969,8 @@ export class ChatManager extends BaseManager {
    *
    * @throws A description of the exception. See {@link ChatError}.
    */
-  public async loadAllConversations(): Promise<Array<ChatConversation>> {
-    chatlog.log(`${ChatManager.TAG}: loadAllConversations:`);
+  public async getAllConversations(): Promise<Array<ChatConversation>> {
+    chatlog.log(`${ChatManager.TAG}: getAllConversations:`);
     let r: any = await Native._callMethod(MTloadAllConversations);
     Native.checkErrorFromResult(r);
     let ret = new Array<ChatConversation>(0);
@@ -994,8 +996,8 @@ export class ChatManager extends BaseManager {
    *
    * @throws A description of the exception. See {@link ChatError}.
    */
-  public async getConversationsFromServer(): Promise<Array<ChatConversation>> {
-    chatlog.log(`${ChatManager.TAG}: getConversationsFromServer:`);
+  public async fetchAllConversations(): Promise<Array<ChatConversation>> {
+    chatlog.log(`${ChatManager.TAG}: fetchAllConversations:`);
     let r: any = await Native._callMethod(MTgetConversationsFromServer);
     Native.checkErrorFromResult(r);
     let ret = new Array<ChatConversation>(0);
@@ -1052,7 +1054,7 @@ export class ChatManager extends BaseManager {
    *
    * @throws A description of the exception. See {@link ChatError}.
    */
-  public async fetchLatestMessage(
+  public async getLatestMessage(
     convId: string,
     convType: ChatConversationType
   ): Promise<ChatMessage | undefined> {
@@ -1080,7 +1082,7 @@ export class ChatManager extends BaseManager {
    *
    * @throws A description of the exception. See {@link ChatError}.
    */
-  public async fetchLastReceivedMessage(
+  public async getLatestReceivedMessage(
     convId: string,
     convType: ChatConversationType
   ): Promise<ChatMessage | undefined> {
@@ -1108,11 +1110,15 @@ export class ChatManager extends BaseManager {
    *
    * @throws A description of the exception. See {@link ChatError}.
    */
-  public async unreadCount(
+  public async getConversationUnreadCount(
     convId: string,
     convType: ChatConversationType
   ): Promise<number> {
-    chatlog.log(`${ChatManager.TAG}: unreadCount: `, convId, convType);
+    chatlog.log(
+      `${ChatManager.TAG}: getConversationUnreadCount: `,
+      convId,
+      convType
+    );
     let r: any = await Native._callMethod(MTgetUnreadMsgCount, {
       [MTgetUnreadMsgCount]: {
         convId: convId,
@@ -1314,56 +1320,19 @@ export class ChatManager extends BaseManager {
   }
 
   /**
-   * Gets the specified message.
-   *
-   * @param convId The conversation ID.
-   * @param convType The conversation type. See {@link ChatConversationType}.
-   * @param msgId The message ID.
-   * @returns The message instance. The SDK returns `undefined` if the message is not found.
-   *
-   * @throws A description of the exception. See {@link ChatError}.
-   */
-  public async getMessageById(
-    convId: string,
-    convType: ChatConversationType,
-    msgId: string
-  ): Promise<ChatMessage | undefined> {
-    chatlog.log(
-      `${ChatManager.TAG}: getMessageById: `,
-      convId,
-      convType,
-      msgId
-    );
-    let r: any = await Native._callMethod(MTloadMsgWithId, {
-      [MTloadMsgWithId]: {
-        convId: convId,
-        type: convType,
-        msg_id: msgId,
-      },
-    });
-    ChatManager.checkErrorFromResult(r);
-    const rr = r?.[MTloadMsgWithId];
-    if (rr) {
-      return new ChatMessage(rr);
-    }
-    return undefined;
-  }
-
-  /**
-   * Gets messages of certain types that a specified user sends in a conversation.
-   *
-   * This method gets data from the local database.
+   * Retrieves messages of a certain type in the conversation from the local database.
    *
    * @param convId The conversation ID.
    * @param convType The conversation type. See {@link ChatConversationType}.
    * @param msgType The message type. See {@link ChatMessageType}.
    * @param direction The message search direction. See {@link ChatSearchDirection}.
-   * - (Default) `ChatSearchDirection.Up`: Messages are retrieved in the reverse chronological order of the Unix timestamp ({@link SortMessageByServerTime}) included in them.
-   * - `ChatSearchDirection.Down`: Messages are retrieved in the chronological order of the Unix timestamp ({@link SortMessageByServerTime}) included in them.
-   * @param timestamp The Unix timestamp for query, in milliseconds.
-   * @param count The maximum number of messages to retrieve. The value range is [1,50].
-   * @param sender The message sender. This parameter can also be used for search among group messages or chat room messages.
-   * @returns The message list. If no message is obtained, an empty list is returned.
+   * - (Default) `ChatSearchDirection.UP`: Messages are retrieved in the descending order of the Unix timestamp ({@link SortMessageByServerTime}) included in them.
+   * - `ChatSearchDirection.DOWN`: Messages are retrieved in the ascending order of the Unix timestamp ({@link SortMessageByServerTime}) included in them.
+   * @param timestamp The starting Unix timestamp in the message for query. The unit is millisecond. After this parameter is set, the SDK retrieves messages, starting from the specified one, according to the message search direction.
+   *                  If you set this parameter as a negative value, the SDK retrieves messages, starting from the current time, in the descending order of the timestamp included in them.
+   * @param count The maximum number of messages to retrieve each time. The value range is [1,400].
+   * @param sender The user ID or group ID for retrieval. Usually, it is the conversation ID.
+   * @returns The list of retrieved messages (excluding the one with the starting timestamp). If no message is obtained, an empty list is returned.
    *
    * @throws A description of the exception. See {@link ChatError}.
    */
@@ -1409,20 +1378,19 @@ export class ChatManager extends BaseManager {
   }
 
   /**
-   * Gets messages of a specified quantity in a conversation from the local database.
+   * Retrieves messages of a specified quantity in a conversation from the local database.
    *
-   * **Note**
-   *
-   * The obtained messages will also join the existing messages of the conversation stored in the memory.
+   * The retrieved messages will also be put in the conversation in the memory according to the timestamp included in them.
    *
    * @param convId The conversation ID.
    * @param convType The conversation type. See {@link ChatConversationType}.
-   * @param startMsgId The starting message ID. If this parameter is set as "" or `null`, the SDK loads messages in the reverse chronological order of when the server receives them.
+   * @param startMsgId The starting message ID for query. After this parameter is set, the SDK retrieves messages, starting from the specified one, according to the message search direction.
+   *                   If this parameter is set as "null" or an empty string, the SDK retrieves messages according to the message search direction while ignoring this parameter.
    * @param direction The message search direction. See {@link ChatSearchDirection}.
-   * - (Default) `ChatSearchDirection.Up`: Messages are retrieved in the reverse chronological order of the Unix timestamp ({@link SortMessageByServerTime}) included in them.
-   * - `ChatSearchDirection.Down`: Messages are retrieved in the chronological order of the Unix timestamp ({@link SortMessageByServerTime}) included in them.
-   * @param loadCount The maximum number of messages to retrieve. The value range is [1,50].
-   * @returns The message list. If no message is obtained, an empty list is returned.
+   * - (Default) `ChatSearchDirection.UP`: Messages are retrieved in the descending order of the Unix timestamp ({@link SortMessageByServerTime}) included in them.
+   * - `ChatSearchDirection.DOWN`: Messages are retrieved in the ascending order of the Unix timestamp ({@link SortMessageByServerTime}) included in them.
+   * @param loadCount The maximum number of messages to retrieve each time. The value range is [1,50].
+   * @returns The list of retrieved messages (excluding the one with the starting timestamp). If no message is obtained, an empty list is returned.
    *
    * @throws A description of the exception. See {@link ChatError}.
    */
@@ -1472,12 +1440,13 @@ export class ChatManager extends BaseManager {
    * @param convType The conversation type. See {@link ChatConversationType}.
    * @param keywords The keywords for query.
    * @param direction The message search direction. See {@link ChatSearchDirection}.
-   * - (Default) `ChatSearchDirection.Up`: Messages are retrieved in the reverse chronological order of the Unix timestamp ({@link SortMessageByServerTime}) included in them.
-   * - `ChatSearchDirection.Down`: Messages are retrieved in the chronological order of the Unix timestamp ({@link SortMessageByServerTime}) included in them.
-   * @param timestamp The Unix timestamp for query, in milliseconds.
-   * @param count The maximum number of messages to retrieve. The value range is [1,50].
-   * @param sender The message sender. The parameter can also be used to search among group chat messages.
-   * @returns The message list. If no message is obtained, an empty list is returned.
+   * - (Default) `ChatSearchDirection.UP`: Messages are retrieved in the descending order of the Unix timestamp ({@link SortMessageByServerTime}) included in them.
+   * - `ChatSearchDirection.DOWN`: Messages are retrieved in the ascending order of the Unix timestamp ({@link SortMessageByServerTime}) included in them.
+   * @param timestamp The starting Unix timestamp in the message for query. The unit is millisecond. After this parameter is set, the SDK retrieves messages, starting from the specified one, according to the message search direction.
+   *                  If you set this parameter as a negative value, the SDK retrieves messages, starting from the current time, in the descending order of the timestamp included in them.
+   * @param count The maximum number of messages to retrieve each time. The value range is [1,400].
+   * @param sender The user ID or group ID for retrieval. Usually, it is the conversation ID.
+   * @returns The list of retrieved messages (excluding the one with the starting timestamp). If no message is obtained, an empty list is returned.
    *
    * @throws A description of the exception. See {@link ChatError}.
    */
@@ -1523,23 +1492,21 @@ export class ChatManager extends BaseManager {
   }
 
   /**
-   * Gets messages that are sent or received in a certain period in a conversation.
-   *
-   * This method gets data from the local database.
+   * Retrieves messages that are sent and received in a certain period in a conversation in the local database.
    *
    * @param convId The conversation ID.
    * @param convType The conversation type. See {@link ChatConversationType}.
    * @param startTime The starting Unix timestamp for query, in milliseconds.
    * @param endTime The ending Unix timestamp for query, in milliseconds.
    * @param direction The message search direction. See {@link ChatSearchDirection}.
-   * - (Default) `ChatSearchDirection.Up`: Messages are retrieved in the reverse chronological order of the Unix timestamp ({@link SortMessageByServerTime}) included in them.
-   * - `ChatSearchDirection.Down`: Messages are retrieved in the chronological order of the Unix timestamp ({@link SortMessageByServerTime}) included in them.
-   * @param count The maximum number of message to retrieve. The value range is [1,50].
-   * @returns The message list. If no message is obtained, an empty list is returned.
+   * - (Default) `ChatSearchDirection.UP`: Messages are retrieved in the descending order of the Unix timestamp ({@link SortMessageByServerTime}) included in them.
+   * - `ChatSearchDirection.DOWN`: Messages are retrieved in the ascending order of the Unix timestamp ({@link SortMessageByServerTime}) included in them.
+   * @param count The maximum number of messages to retrieve each time. The value range is [1,400].
+   * @returns The list of retrieved messages (excluding with the ones with the starting or ending timestamp). If no message is obtained, an empty list is returned.
    *
    * @throws A description of the exception. See {@link ChatError}.
    */
-  public async getMessagesFromTime(
+  public async getMessageWithTimestamp(
     convId: string,
     convType: ChatConversationType,
     startTime: number,
@@ -1548,7 +1515,7 @@ export class ChatManager extends BaseManager {
     count: number = 20
   ): Promise<Array<ChatMessage>> {
     chatlog.log(
-      `${ChatManager.TAG}: getMessagesFromTime: `,
+      `${ChatManager.TAG}: getMessageWithTimestamp: `,
       convId,
       convType,
       startTime,
@@ -1626,7 +1593,7 @@ export class ChatManager extends BaseManager {
   }
 
   /**
-   * Sets the extension properties of the conversation.
+   * Sets the extension information of the conversation.
    *
    * @param convId The conversation ID.
    * @param convType The conversation type. See {@link ChatConversationType}.
@@ -1781,7 +1748,7 @@ export class ChatManager extends BaseManager {
    * Reports an inappropriate message.
    *
    * @param msgId The ID of the inappropriate message.
-   * @param tag The message content tag. For example, the message is related to pornography and terrorism.
+   * @param tag The message content tag. For example, the message is related to pornography or terrorism.
    * @param reason The reason for reporting the message.
    *
    * @throws A description of the exception. See {@link ChatError}.
@@ -2034,13 +2001,13 @@ export class ChatManager extends BaseManager {
   }
 
   /**
-   * Gets a list of members in the message thread with pagination.
+   * Uses the pagination to get a list of members in the message thread.
    *
    * Each member of the group to which the message thread belongs can call this method.
    *
    * @param chatThreadId The message thread ID.
    * @param cursor The position from which to start getting data. At the first method call, if you set `cursor` to `null` or an empty string, the SDK will get data in the chronological order of when members join the message thread.
-   * @param pageSize The number of members that you expect to get on each page. The value range is [1,50].
+   * @param pageSize The number of members that you expect to get on each page. The value range is [1,400].
    * @returns If success, the list of members in a message thread is returned; otherwise, an exception will be thrown.
    *
    * @throws A description of the exception. See {@link ChatError}.
@@ -2071,7 +2038,7 @@ export class ChatManager extends BaseManager {
    * Uses the pagination to get the list of message threads that the current user has joined.
    *
    * @param cursor The position from which to start getting data. At the first method call, if you set `cursor` to `null` or an empty string, the SDK will get data in the reverse chronological order of when the user joins the message threads.
-   * @param pageSize The number of message threads that you expect to get on each page. The value range is [1,50].
+   * @param pageSize The number of message threads that you expect to get on each page. The value range is [1,400].
    * @returns If success, a list of message threads is returned; otherwise, an exception will be thrown.
    *
    * @throws A description of the exception. See {@link ChatError}.
@@ -2111,7 +2078,7 @@ export class ChatManager extends BaseManager {
    *
    * @param parentId The parent ID, which is the group ID.
    * @param cursor The position from which to start getting data. At the first method call, if you set `cursor` to `null` or an empty string, the SDK will get data in the reverse chronological order of when the user joins the message threads.
-   * @param pageSize The number of message threads that you expect to get on each page. The value range is [1,50].
+   * @param pageSize The number of message threads that you expect to get on each page. The value range is [1,400].
    * @returns If success, a list of message threads is returned; otherwise, an exception will be thrown.
    *
    * @throws A description of the exception. See {@link ChatError}.
@@ -2157,7 +2124,7 @@ export class ChatManager extends BaseManager {
    *
    * @param parentId The parent ID, which is the group ID.
    * @param cursor The position from which to start getting data. At the first method call, if you set `cursor` to `null` or an empty string, the SDK will get data in the reverse chronological order of when message threads are created.
-   * @param pageSize The number of message threads that you expect to get on each page. The value range is [1,50].
+   * @param pageSize The number of message threads that you expect to get on each page. The value range is [1,400].
    * @returns If success, a list of message threads is returned; otherwise, an exception will be thrown.
    *
    * @throws A description of the exception. See {@link ChatError}.

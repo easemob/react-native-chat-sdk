@@ -16,7 +16,7 @@ export const MN = {
   recallMessage: 'recallMessage',
   getMessage: 'getMessage',
   markAllConversationsAsRead: 'markAllConversationsAsRead',
-  getUnreadMessageCount: 'getUnreadMessageCount',
+  getUnreadCount: 'getUnreadCount',
   updateMessage: 'updateMessage',
   importMessages: 'importMessages',
   downloadAttachment: 'downloadAttachment',
@@ -24,14 +24,14 @@ export const MN = {
   fetchHistoryMessages: 'fetchHistoryMessages',
   searchMsgFromDB: 'searchMsgFromDB',
   fetchGroupAcks: 'fetchGroupAcks',
-  deleteRemoteConversation: 'deleteRemoteConversation',
+  removeConversationFromServer: 'removeConversationFromServer',
   getConversation: 'getConversation',
-  loadAllConversations: 'loadAllConversations',
-  getConversationsFromServer: 'getConversationsFromServer',
+  getAllConversations: 'getAllConversations',
+  fetchAllConversations: 'fetchAllConversations',
   deleteConversation: 'deleteConversation',
   getLatestMessage: 'getLatestMessage',
   getLastReceivedMessage: 'getLastReceivedMessage',
-  unreadCount: 'unreadCount',
+  getConversationUnreadCount: 'getConversationUnreadCount',
   markMessageAsRead: 'markMessageAsRead',
   markAllMessagesAsRead: 'markAllMessagesAsRead',
   insertMessage: 'insertMessage',
@@ -39,11 +39,10 @@ export const MN = {
   updateConversationMessage: 'updateConversationMessage',
   deleteMessage: 'deleteMessage',
   deleteAllMessages: 'deleteAllMessages',
-  getMessageById: 'getMessageById',
   getMessagesWithMsgType: 'getMessagesWithMsgType',
   getMessages: 'getMessages',
   getMessagesWithKeyword: 'getMessagesWithKeyword',
-  getMessagesFromTime: 'getMessagesFromTime',
+  getMessageWithTimestamp: 'getMessageWithTimestamp',
   translateMessage: 'translateMessage',
   fetchSupportLanguages: 'fetchSupportLanguages',
   setConversationExtension: 'setConversationExtension',
@@ -197,9 +196,9 @@ export const metaDataList = new Map<string, ApiParams>([
     },
   ],
   [
-    MN.getUnreadMessageCount,
+    MN.getUnreadCount,
     {
-      methodName: MN.getUnreadMessageCount,
+      methodName: MN.getUnreadCount,
       params: [],
     },
   ],
@@ -363,9 +362,9 @@ export const metaDataList = new Map<string, ApiParams>([
     },
   ],
   [
-    MN.deleteRemoteConversation,
+    MN.removeConversationFromServer,
     {
-      methodName: MN.deleteRemoteConversation,
+      methodName: MN.removeConversationFromServer,
       params: [
         {
           paramName: 'convId', // 使用发送成功或者失败的数据测试，依赖sendMessage
@@ -411,16 +410,16 @@ export const metaDataList = new Map<string, ApiParams>([
     },
   ],
   [
-    MN.loadAllConversations,
+    MN.getAllConversations,
     {
-      methodName: MN.loadAllConversations,
+      methodName: MN.getAllConversations,
       params: [],
     },
   ],
   [
-    MN.getConversationsFromServer,
+    MN.fetchAllConversations,
     {
-      methodName: MN.getConversationsFromServer,
+      methodName: MN.fetchAllConversations,
       params: [],
     },
   ],
@@ -480,9 +479,9 @@ export const metaDataList = new Map<string, ApiParams>([
     },
   ],
   [
-    MN.unreadCount,
+    MN.getConversationUnreadCount,
     {
-      methodName: MN.unreadCount,
+      methodName: MN.getConversationUnreadCount,
       params: [
         {
           paramName: 'convId', // 使用发送成功或者失败的数据测试，依赖sendMessage
@@ -652,29 +651,6 @@ export const metaDataList = new Map<string, ApiParams>([
     },
   ],
   [
-    MN.getMessageById,
-    {
-      methodName: MN.getMessageById,
-      params: [
-        {
-          paramName: 'convId', // 使用发送成功或者失败的数据测试，依赖sendMessage
-          paramType: 'string',
-          paramDefaultValue: datasheet.accounts[2].id,
-        },
-        {
-          paramName: 'convType',
-          paramType: 'number',
-          paramDefaultValue: 0,
-        },
-        {
-          paramName: 'msgId',
-          paramType: 'string',
-          paramDefaultValue: '1003598147630401664',
-        },
-      ],
-    },
-  ],
-  [
     MN.getMessagesWithMsgType,
     {
       methodName: MN.getMessagesWithMsgType,
@@ -794,9 +770,9 @@ export const metaDataList = new Map<string, ApiParams>([
     },
   ],
   [
-    MN.getMessagesFromTime,
+    MN.getMessageWithTimestamp,
     {
-      methodName: MN.getMessagesFromTime,
+      methodName: MN.getMessageWithTimestamp,
       params: [
         {
           paramName: 'convId', // 使用发送成功或者失败的数据测试，依赖sendMessage
