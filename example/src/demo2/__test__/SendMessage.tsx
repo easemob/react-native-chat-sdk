@@ -80,7 +80,7 @@ interface State extends StateBase {
   pageSize?: number;
   startMsgId?: string;
   startAckId?: string;
-  deleteRemoteConversation?: boolean;
+  removeConversationFromServer?: boolean;
 }
 
 export class SendMessageScreen extends LeafComponentBaseScreen<State> {
@@ -449,11 +449,11 @@ export class SendMessageScreen extends LeafComponentBaseScreen<State> {
     );
   }
 
-  private getUnreadMessageCount(): void {
+  private getUnreadCount(): void {
     this.tryCatch(
-      ChatClient.getInstance().chatManager.getUnreadMessageCount(),
+      ChatClient.getInstance().chatManager.getUnreadCount(),
       SendMessageScreen.TAG,
-      'getUnreadMessageCount'
+      'getUnreadCount'
     );
   }
 
@@ -559,18 +559,18 @@ export class SendMessageScreen extends LeafComponentBaseScreen<State> {
     }
   }
 
-  private deleteRemoteConversation(): void {
+  private removeConversationFromServer(): void {
     if (this.state.lastMessage === undefined) {
       return;
     }
     this.tryCatch(
-      ChatClient.getInstance().chatManager.deleteRemoteConversation(
+      ChatClient.getInstance().chatManager.removeConversationFromServer(
         this.state.targetId,
         this.state.convType,
-        this.state.deleteRemoteConversation
+        this.state.removeConversationFromServer
       ),
       SendMessageScreen.TAG,
-      'deleteRemoteConversation'
+      'removeConversationFromServer'
     );
   }
 

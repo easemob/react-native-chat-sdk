@@ -70,7 +70,7 @@ export interface StateGroupMessage extends StateBase {
     pageSize: number;
     pageNum: number;
   };
-  fetchWhiteListFromServer: {
+  fetchAllowListFromServer: {
     groupId: string;
   };
   fetchGroupFileListFromServer: {
@@ -78,7 +78,7 @@ export interface StateGroupMessage extends StateBase {
     pageSize: number;
     pageNum: number;
   };
-  isMemberInWhiteListFromServer: {
+  isMemberInAllowListFromServer: {
     groupId: string;
   };
   fetchAnnouncementFromServer: {
@@ -151,11 +151,11 @@ export interface StateGroupMessage extends StateBase {
   unMuteAllMembers: {
     groupId: string;
   };
-  addWhiteList: {
+  addAllowList: {
     groupId: string;
     members: Array<string>;
   };
-  removeWhiteList: {
+  removeAllowList: {
     groupId: string;
     members: Array<string>;
   };
@@ -242,7 +242,7 @@ export class GroupManagerLeafScreen extends LeafScreenBase<StateGroupMessage> {
       'fetchMemberListFromServer',
       'addMembers',
       'removeMembers',
-      'isMemberInWhiteListFromServer',
+      'isMemberInAllowListFromServer',
       'updateGroupAnnouncement',
       'fetchAnnouncementFromServer',
       'changeOwner',
@@ -253,9 +253,9 @@ export class GroupManagerLeafScreen extends LeafScreenBase<StateGroupMessage> {
       'fetchMuteListFromServer',
       'muteMembers',
       'unMuteMembers',
-      'addWhiteList',
-      'removeWhiteList',
-      'fetchWhiteListFromServer',
+      'addAllowList',
+      'removeAllowList',
+      'fetchAllowListFromServer',
       'destroyGroup',
     ];
     let renderDomAry: ({} | null | undefined)[] = [];
@@ -522,10 +522,10 @@ export class GroupManagerLeafScreen extends LeafScreenBase<StateGroupMessage> {
         );
         break;
       }
-      case MN.fetchWhiteListFromServer: {
-        const { groupId } = this.state.fetchWhiteListFromServer;
+      case MN.fetchAllowListFromServer: {
+        const { groupId } = this.state.fetchAllowListFromServer;
         this.tryCatch(
-          ChatClient.getInstance().groupManager.fetchWhiteListFromServer(
+          ChatClient.getInstance().groupManager.fetchAllowListFromServer(
             groupId
           ),
           GroupManagerLeafScreen.TAG,
@@ -547,10 +547,10 @@ export class GroupManagerLeafScreen extends LeafScreenBase<StateGroupMessage> {
         );
         break;
       }
-      case MN.isMemberInWhiteListFromServer: {
-        const { groupId } = this.state.isMemberInWhiteListFromServer;
+      case MN.isMemberInAllowListFromServer: {
+        const { groupId } = this.state.isMemberInAllowListFromServer;
         this.tryCatch(
-          ChatClient.getInstance().groupManager.isMemberInWhiteListFromServer(
+          ChatClient.getInstance().groupManager.isMemberInAllowListFromServer(
             groupId
           ),
           GroupManagerLeafScreen.TAG,
@@ -738,19 +738,19 @@ export class GroupManagerLeafScreen extends LeafScreenBase<StateGroupMessage> {
         );
         break;
       }
-      case MN.addWhiteList: {
-        const { groupId, members } = this.state.addWhiteList;
+      case MN.addAllowList: {
+        const { groupId, members } = this.state.addAllowList;
         this.tryCatch(
-          ChatClient.getInstance().groupManager.addWhiteList(groupId, members),
+          ChatClient.getInstance().groupManager.addAllowList(groupId, members),
           GroupManagerLeafScreen.TAG,
           name
         );
         break;
       }
-      case MN.removeWhiteList: {
-        const { groupId, members } = this.state.removeWhiteList;
+      case MN.removeAllowList: {
+        const { groupId, members } = this.state.removeAllowList;
         this.tryCatch(
-          ChatClient.getInstance().groupManager.removeWhiteList(
+          ChatClient.getInstance().groupManager.removeAllowList(
             groupId,
             members
           ),
@@ -1178,24 +1178,24 @@ export class GroupManagerLeafScreen extends LeafScreenBase<StateGroupMessage> {
           recvResult: `onSharedFileDeleted: ` + params.groupId + params.fileId,
         });
       }
-      onWhiteListAdded(params: { groupId: string; members: string[] }): void {
+      onAllowListAdded(params: { groupId: string; members: string[] }): void {
         console.log(
-          `${GroupManagerLeafScreen.TAG}: onWhiteListAdded:`,
+          `${GroupManagerLeafScreen.TAG}: onAllowListAdded:`,
           params.groupId,
           params.members
         );
         this.that.setState({
-          recvResult: `onWhiteListAdded: ` + params.groupId + params.members,
+          recvResult: `onAllowListAdded: ` + params.groupId + params.members,
         });
       }
-      onWhiteListRemoved(params: { groupId: string; members: string[] }): void {
+      onAllowListRemoved(params: { groupId: string; members: string[] }): void {
         console.log(
-          `${GroupManagerLeafScreen.TAG}: onWhiteListRemoved:`,
+          `${GroupManagerLeafScreen.TAG}: onAllowListRemoved:`,
           params.groupId,
           params.members
         );
         this.that.setState({
-          recvResult: `onWhiteListRemoved: ` + params.groupId + params.members,
+          recvResult: `onAllowListRemoved: ` + params.groupId + params.members,
         });
       }
       onAllGroupMemberMuteStateChanged(params: {

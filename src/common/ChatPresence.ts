@@ -11,7 +11,7 @@ export class ChatPresence {
    */
   statusDescription: string;
   /**
-   * The Unix timestamp when the presence state is updated. The unit is second.
+   * The Unix timestamp when the presence state is last updated. The unit is second.
    */
   lastTime: string;
   /**

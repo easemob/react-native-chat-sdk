@@ -5,7 +5,7 @@ import { ChatError } from './ChatError';
  */
 export enum ChatGroupStyle {
   /**
-   * Private groups where only the group owner can invite users to join.
+   * Private groups where only the group owner or admins can invite users to join.
    */
   PrivateOnlyOwnerInvite = 0,
   /**

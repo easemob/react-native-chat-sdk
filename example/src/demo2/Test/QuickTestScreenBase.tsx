@@ -645,26 +645,26 @@ export abstract class QuickTestScreenBase<
             `onSharedFileDeleted: ` + params.groupId + params.fileId,
         });
       }
-      onWhiteListAdded(params: { groupId: string; members: string[] }): void {
+      onAllowListAdded(params: { groupId: string; members: string[] }): void {
         console.log(
-          `${QuickTestScreenBase.TAG}: onWhiteListAdded:`,
+          `${QuickTestScreenBase.TAG}: onAllowListAdded:`,
           params.groupId,
           params.members
         );
         this.that.setState({
           group_listener:
-            `onWhiteListAdded: ` + params.groupId + params.members,
+            `onAllowListAdded: ` + params.groupId + params.members,
         });
       }
-      onWhiteListRemoved(params: { groupId: string; members: string[] }): void {
+      onAllowListRemoved(params: { groupId: string; members: string[] }): void {
         console.log(
-          `${QuickTestScreenBase.TAG}: onWhiteListRemoved:`,
+          `${QuickTestScreenBase.TAG}: onAllowListRemoved:`,
           params.groupId,
           params.members
         );
         this.that.setState({
           group_listener:
-            `onWhiteListRemoved: ` + params.groupId + params.members,
+            `onAllowListRemoved: ` + params.groupId + params.members,
         });
       }
       onAllGroupMemberMuteStateChanged(params: {
@@ -839,25 +839,25 @@ export abstract class QuickTestScreenBase<
             `onAnnouncementChanged: ` + params.roomId + params.announcement,
         });
       }
-      onWhiteListAdded(params: { roomId: string; members: string[] }): void {
+      onAllowListAdded(params: { roomId: string; members: string[] }): void {
         console.log(
-          `${QuickTestScreenBase.TAG}: onWhiteListAdded:`,
+          `${QuickTestScreenBase.TAG}: onAllowListAdded:`,
           params.roomId,
           params.members
         );
         this.that.setState({
-          room_listener: `onWhiteListAdded: ` + params.roomId + params.members,
+          room_listener: `onAllowListAdded: ` + params.roomId + params.members,
         });
       }
-      onWhiteListRemoved(params: { roomId: string; members: string[] }): void {
+      onAllowListRemoved(params: { roomId: string; members: string[] }): void {
         console.log(
-          `${QuickTestScreenBase.TAG}: onWhiteListRemoved:`,
+          `${QuickTestScreenBase.TAG}: onAllowListRemoved:`,
           params.roomId,
           params.members
         );
         this.that.setState({
           room_listener:
-            `onWhiteListRemoved: ` + params.roomId + params.members,
+            `onAllowListRemoved: ` + params.roomId + params.members,
         });
       }
       onAllChatRoomMemberMuteStateChanged(params: {

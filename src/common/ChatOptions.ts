@@ -53,7 +53,7 @@ export class ChatOptions {
    */
   requireDeliveryAck: boolean;
   /**
-   * Whether to delete the historical messages of the group and local database when leaving a group (either voluntarily or passively).
+   * Whether to delete the historical messages of the group stored in the memory and local database when leaving a group (either voluntarily or passively).
    *
    * - (Default) `true`: Yes.
    * - `false`: No.

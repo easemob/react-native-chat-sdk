@@ -86,7 +86,7 @@ export enum ChatMessageThreadOperation {
    */
   Delete,
   /**
-   * The last reply in the message thread is updated.
+   * One or more messages are updated in the message thread.
    */
   Update_Msg,
 }

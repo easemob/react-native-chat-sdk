@@ -53,7 +53,7 @@ export enum ChatMultiDeviceEvent {
    */
   GROUP_APPLY,
   /**
-   * If user A receives a request to join the chat group on Device A1, this event is triggered on Device A2.
+   * If user A accepts a request to join the chat group on Device A1, this event is triggered on Device A2.
    */
   GROUP_APPLY_ACCEPT,
   /**
@@ -81,7 +81,7 @@ export enum ChatMultiDeviceEvent {
    */
   GROUP_BAN,
   /**
-   * If user A removes other users from a chat group on Device A1, this event is triggered on Device A2.
+   * If user A is removed from the group block list on Device A1, this event is triggered on Device A2.
    */
   GROUP_ALLOW,
   /**
@@ -121,11 +121,14 @@ export enum ChatMultiDeviceEvent {
    */
   GROUP_REMOVE_USER_WHITE_LIST,
   /**
-   * If user A adds all other group members to the group mute list on Device A1, this event is triggered on Device A2.
+   * If user A mutes all chat group members on Device A1, this event is triggered on Device A2.
+   *
    */
   GROUP_ALL_BAN,
   /**
-   * If user A removes all other group members from the group mute list on Device A1, this event is triggered on Device A2.
+   * If user A unmutes all chat group members on Device A1, this event is triggered on Device A2.
+   *
+   * Even if all chat group members are unmuted, members on the mute list still cannot send messages in the group.
    */
   GROUP_REMOVE_ALL_BAN,
 
@@ -146,7 +149,7 @@ export enum ChatMultiDeviceEvent {
    */
   THREAD_LEAVE,
   /**
-   * If user A updates information of a message thread on Device A1, this event is triggered on Device A2.
+   * If user A updates the message thread name, or sends or recalls a message in thread on Device A1, this event is triggered on Device A2.
    */
   THREAD_UPDATE,
   /**
@@ -289,7 +292,7 @@ export interface ChatConnectEventListener {
   onConnected(): void;
 
   /**
-   * Occurs when the SDK disconnect from the chat server.
+   * Occurs when the SDK disconnects from the chat server.
    *
    * The logout does not necessarily occur at the bottom level when the SDK is disconnected.
    *
@@ -453,12 +456,16 @@ export interface ChatMessageEventListener {
   /**
    * Occurs when a received message is recalled.
    *
+   * If the recipient is offline when the message is delivered and recalled, the recipient only receives this callback instead of the message.
+   *
    * @param messages The recalled message(s).
    */
   onMessagesRecalled(messages: Array<ChatMessage>): void;
 
   /**
    * Occurs when the conversation is updated.
+   *
+   * This callback is triggered only when a conversation is added or removed.
    */
   onConversationsUpdate(): void;
 
@@ -754,7 +761,7 @@ export interface ChatGroupEventListener {
    * - Param [groupId] The group ID.
    * - Param [members] The user IDs of members that are added to the allow list of the group.
    */
-  onWhiteListAdded(params: { groupId: string; members: Array<string> }): void;
+  onAllowListAdded(params: { groupId: string; members: Array<string> }): void;
   /**
    * Occurs when one or more group members are removed from the allow list.
    *
@@ -762,7 +769,7 @@ export interface ChatGroupEventListener {
    * - Param [groupId] The group ID.
    * - Param [members] The user IDs of members that are removed from the allow list of the group.
    */
-  onWhiteListRemoved(params: { groupId: string; members: Array<string> }): void;
+  onAllowListRemoved(params: { groupId: string; members: Array<string> }): void;
   /**
    * Occurs when all group members are muted or unmuted.
    *
@@ -939,7 +946,7 @@ export interface ChatRoomEventListener {
    * - Param [roomId] The chat room ID.
    * - Param [members] The member(s) added to the allow list of the chat room.
    */
-  onWhiteListAdded(params: { roomId: string; members: Array<string> }): void;
+  onAllowListAdded(params: { roomId: string; members: Array<string> }): void;
   /**
    * Occurs when one or more chat room members are removed from the allow list.
    *
@@ -947,7 +954,7 @@ export interface ChatRoomEventListener {
    * - Param [roomId] The chat room ID.
    * - Param [members] The member(s) removed from the allow list of the chat room.
    */
-  onWhiteListRemoved(params: { roomId: string; members: Array<string> }): void;
+  onAllowListRemoved(params: { roomId: string; members: Array<string> }): void;
   /**
    * Occurs when all members in the chat room are muted or unmuted.
    *

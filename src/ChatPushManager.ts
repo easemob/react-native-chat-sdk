@@ -21,7 +21,7 @@ import {
 import { Native } from './__internal__/Native';
 
 /**
- * The message push configuration options.
+ * The class for message push configuration options.
  */
 export class ChatPushManager extends Native {
   private static TAG = 'ChatPushManager';

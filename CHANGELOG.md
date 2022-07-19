@@ -14,6 +14,19 @@
 - Optimize: The android platform no longer needs to perform additional operations.
 - Rename: agora-react-native-chat was changed to react-native-agora-chat.
 - Add functions: message push silent mode set.
+- Api rename
+  - deleteRemoteConversation -> removeConversationFromServer
+  - loadAllConversations -> getAllConversations
+  - getConversationsFromServer -> fetchAllConversations
+  - getUnreadMessageCount -> getUnreadCount
+  - fetchLatestMessage -> getLatestMessage
+  - fetchLastReceivedMessage -> getLatestReceivedMessage
+  - unreadCount -> getConversationUnreadCount
+  - getMessagesFromTime -> getMessageWithTimestamp
+  - WhiteList -> AllowList
+  - BlackList -> BlockList
+- Api removed
+  - getMessageById
 
 ---
 

@@ -24,10 +24,10 @@ export const MN = {
   fetchChatRoomBlockList: 'fetchChatRoomBlockList',
   updateChatRoomAnnouncement: 'updateChatRoomAnnouncement',
   fetchChatRoomAnnouncement: 'fetchChatRoomAnnouncement',
-  fetchChatRoomWhiteListFromServer: 'fetchChatRoomWhiteListFromServer',
-  isMemberInChatRoomWhiteList: 'isMemberInChatRoomWhiteList',
-  addMembersToChatRoomWhiteList: 'addMembersToChatRoomWhiteList',
-  removeMembersFromChatRoomWhiteList: 'removeMembersFromChatRoomWhiteList',
+  fetchChatRoomAllowListFromServer: 'fetchChatRoomAllowListFromServer',
+  isMemberInChatRoomAllowList: 'isMemberInChatRoomAllowList',
+  addMembersToChatRoomAllowList: 'addMembersToChatRoomAllowList',
+  removeMembersFromChatRoomAllowList: 'removeMembersFromChatRoomAllowList',
   muteAllChatRoomMembers: 'muteAllChatRoomMembers',
   unMuteAllChatRoomMembers: 'unMuteAllChatRoomMembers',
 };
@@ -41,7 +41,7 @@ export const metaDataList = new Map<string, ApiParams>([
         {
           paramName: 'roomId',
           paramType: 'string',
-          paramDefaultValue: '181871406284801',
+          paramDefaultValue: '187507809517570',
           domType: 'input',
         },
       ],
@@ -55,7 +55,7 @@ export const metaDataList = new Map<string, ApiParams>([
         {
           paramName: 'roomId',
           paramType: 'string',
-          paramDefaultValue: '180456077197313',
+          paramDefaultValue: '187507809517570',
           domType: 'input',
         },
       ],
@@ -216,7 +216,7 @@ export const metaDataList = new Map<string, ApiParams>([
         {
           paramName: 'roomId',
           paramType: 'string',
-          paramDefaultValue: '180456077197313',
+          paramDefaultValue: '187507809517570',
           domType: 'input',
         },
         {
@@ -487,42 +487,42 @@ export const metaDataList = new Map<string, ApiParams>([
     },
   ],
   [
-    MN.fetchChatRoomWhiteListFromServer,
+    MN.fetchChatRoomAllowListFromServer,
     {
-      methodName: MN.fetchChatRoomWhiteListFromServer,
+      methodName: MN.fetchChatRoomAllowListFromServer,
       params: [
         {
           paramName: 'roomId',
           paramType: 'string',
-          paramDefaultValue: '180456077197313',
+          paramDefaultValue: '187507809517570',
           domType: 'input',
         },
       ],
     },
   ],
   [
-    MN.isMemberInChatRoomWhiteList,
+    MN.isMemberInChatRoomAllowList,
     {
-      methodName: MN.isMemberInChatRoomWhiteList,
+      methodName: MN.isMemberInChatRoomAllowList,
       params: [
         {
           paramName: 'roomId',
           paramType: 'string',
-          paramDefaultValue: '180456077197313',
+          paramDefaultValue: '187507809517570',
           domType: 'input',
         },
       ],
     },
   ],
   [
-    MN.addMembersToChatRoomWhiteList,
+    MN.addMembersToChatRoomAllowList,
     {
-      methodName: MN.addMembersToChatRoomWhiteList,
+      methodName: MN.addMembersToChatRoomAllowList,
       params: [
         {
           paramName: 'roomId',
           paramType: 'string',
-          paramDefaultValue: '180456077197313',
+          paramDefaultValue: '187507809517570',
           domType: 'input',
         },
         {
@@ -535,14 +535,14 @@ export const metaDataList = new Map<string, ApiParams>([
     },
   ],
   [
-    MN.removeMembersFromChatRoomWhiteList,
+    MN.removeMembersFromChatRoomAllowList,
     {
-      methodName: MN.removeMembersFromChatRoomWhiteList,
+      methodName: MN.removeMembersFromChatRoomAllowList,
       params: [
         {
           paramName: 'roomId',
           paramType: 'string',
-          paramDefaultValue: '180456077197313',
+          paramDefaultValue: '187507809517570',
           domType: 'input',
         },
         {

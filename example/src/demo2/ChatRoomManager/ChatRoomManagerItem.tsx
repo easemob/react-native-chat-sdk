@@ -47,7 +47,7 @@ export interface StateChatRoomMessage extends StateBase {
     roomId: string;
     newOwner: string;
   };
-  isMemberInChatRoomWhiteListFromServer: {
+  isMemberInChatRoomAllowListFromServer: {
     roomId: string;
   };
   updateChatRoomAnnouncement: {
@@ -69,15 +69,15 @@ export interface StateChatRoomMessage extends StateBase {
     roomId: string;
     members: Array<string>;
   };
-  addMembersToChatRoomWhiteList: {
+  addMembersToChatRoomAllowList: {
     roomId: string;
     members: Array<string>;
   };
-  removeMembersFromChatRoomWhiteList: {
+  removeMembersFromChatRoomAllowList: {
     roomId: string;
     members: Array<string>;
   };
-  fetchChatRoomWhiteListFromServer: {
+  fetchChatRoomAllowListFromServer: {
     roomId: string;
   };
   blockChatRoomMembers: {
@@ -160,10 +160,10 @@ export class ChatRoomManagerLeafScreen extends LeafScreenBase<StateChatRoomMessa
       'fetchChatRoomBlockList',
       'updateChatRoomAnnouncement',
       'fetchChatRoomAnnouncement',
-      'fetchChatRoomWhiteListFromServer',
-      'isMemberInChatRoomWhiteList',
-      'addMembersToChatRoomWhiteList',
-      'removeMembersFromChatRoomWhiteList',
+      'fetchChatRoomAllowListFromServer',
+      'isMemberInChatRoomAllowList',
+      'addMembersToChatRoomAllowList',
+      'removeMembersFromChatRoomAllowList',
       'muteAllChatRoomMembers',
       'unMuteAllChatRoomMembers',
     ];
@@ -326,10 +326,10 @@ export class ChatRoomManagerLeafScreen extends LeafScreenBase<StateChatRoomMessa
         );
         break;
       }
-      case MN.isMemberInChatRoomWhiteList: {
-        const { roomId } = this.state.isMemberInChatRoomWhiteListFromServer;
+      case MN.isMemberInChatRoomAllowList: {
+        const { roomId } = this.state.isMemberInChatRoomAllowListFromServer;
         this.tryCatch(
-          ChatClient.getInstance().roomManager.isMemberInChatRoomWhiteList(
+          ChatClient.getInstance().roomManager.isMemberInChatRoomAllowList(
             roomId
           ),
           ChatRoomManagerLeafScreen.TAG,
@@ -393,10 +393,10 @@ export class ChatRoomManagerLeafScreen extends LeafScreenBase<StateChatRoomMessa
         );
         break;
       }
-      case MN.addMembersToChatRoomWhiteList: {
-        const { roomId, members } = this.state.addMembersToChatRoomWhiteList;
+      case MN.addMembersToChatRoomAllowList: {
+        const { roomId, members } = this.state.addMembersToChatRoomAllowList;
         this.tryCatch(
-          ChatClient.getInstance().roomManager.addMembersToChatRoomWhiteList(
+          ChatClient.getInstance().roomManager.addMembersToChatRoomAllowList(
             roomId,
             members
           ),
@@ -405,11 +405,11 @@ export class ChatRoomManagerLeafScreen extends LeafScreenBase<StateChatRoomMessa
         );
         break;
       }
-      case MN.removeMembersFromChatRoomWhiteList: {
+      case MN.removeMembersFromChatRoomAllowList: {
         const { roomId, members } =
-          this.state.removeMembersFromChatRoomWhiteList;
+          this.state.removeMembersFromChatRoomAllowList;
         this.tryCatch(
-          ChatClient.getInstance().roomManager.removeMembersFromChatRoomWhiteList(
+          ChatClient.getInstance().roomManager.removeMembersFromChatRoomAllowList(
             roomId,
             members
           ),
@@ -418,10 +418,10 @@ export class ChatRoomManagerLeafScreen extends LeafScreenBase<StateChatRoomMessa
         );
         break;
       }
-      case MN.fetchChatRoomWhiteListFromServer: {
-        const { roomId } = this.state.fetchChatRoomWhiteListFromServer;
+      case MN.fetchChatRoomAllowListFromServer: {
+        const { roomId } = this.state.fetchChatRoomAllowListFromServer;
         this.tryCatch(
-          ChatClient.getInstance().roomManager.fetchChatRoomWhiteListFromServer(
+          ChatClient.getInstance().roomManager.fetchChatRoomAllowListFromServer(
             roomId
           ),
           ChatRoomManagerLeafScreen.TAG,
@@ -693,24 +693,24 @@ export class ChatRoomManagerLeafScreen extends LeafScreenBase<StateChatRoomMessa
             `onAnnouncementChanged: ` + params.roomId + params.announcement,
         });
       }
-      onWhiteListAdded(params: { roomId: string; members: string[] }): void {
+      onAllowListAdded(params: { roomId: string; members: string[] }): void {
         console.log(
-          `${ChatRoomManagerLeafScreen.TAG}: onWhiteListAdded:`,
+          `${ChatRoomManagerLeafScreen.TAG}: onAllowListAdded:`,
           params.roomId,
           params.members
         );
         this.that.setState({
-          recvResult: `onWhiteListAdded: ` + params.roomId + params.members,
+          recvResult: `onAllowListAdded: ` + params.roomId + params.members,
         });
       }
-      onWhiteListRemoved(params: { roomId: string; members: string[] }): void {
+      onAllowListRemoved(params: { roomId: string; members: string[] }): void {
         console.log(
-          `${ChatRoomManagerLeafScreen.TAG}: onWhiteListRemoved:`,
+          `${ChatRoomManagerLeafScreen.TAG}: onAllowListRemoved:`,
           params.roomId,
           params.members
         );
         this.that.setState({
-          recvResult: `onWhiteListRemoved: ` + params.roomId + params.members,
+          recvResult: `onAllowListRemoved: ` + params.roomId + params.members,
         });
       }
       onAllChatRoomMemberMuteStateChanged(params: {

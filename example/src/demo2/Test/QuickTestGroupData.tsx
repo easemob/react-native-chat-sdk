@@ -12,8 +12,8 @@ export const MN = {
   fetchMemberListFromServer: 'fetchMemberListFromServer',
   fetchBlockListFromServer: 'fetchBlockListFromServer',
   fetchMuteListFromServer: 'fetchMuteListFromServer',
-  fetchWhiteListFromServer: 'fetchWhiteListFromServer',
-  isMemberInWhiteListFromServer: 'isMemberInWhiteListFromServer',
+  fetchAllowListFromServer: 'fetchAllowListFromServer',
+  isMemberInAllowListFromServer: 'isMemberInAllowListFromServer',
   fetchGroupFileListFromServer: 'fetchGroupFileListFromServer',
   fetchAnnouncementFromServer: 'fetchAnnouncementFromServer',
   addMembers: 'addMembers',
@@ -34,8 +34,8 @@ export const MN = {
   unMuteMembers: 'unMuteMembers',
   muteAllMembers: 'muteAllMembers',
   unMuteAllMembers: 'unMuteAllMembers',
-  addWhiteList: 'addWhiteList',
-  removeWhiteList: 'removeWhiteList',
+  addAllowList: 'addAllowList',
+  removeAllowList: 'removeAllowList',
   uploadGroupSharedFile: 'uploadGroupSharedFile',
   downloadGroupSharedFile: 'downloadGroupSharedFile',
   removeGroupSharedFile: 'removeGroupSharedFile',
@@ -114,7 +114,7 @@ export const metaDataList = new Map<string, ApiParams>([
         {
           paramName: 'groupName',
           paramType: 'string',
-          paramDefaultValue: '2022060502',
+          paramDefaultValue: '2022060506',
         },
         {
           paramName: 'desc',
@@ -175,7 +175,7 @@ export const metaDataList = new Map<string, ApiParams>([
         {
           paramName: 'groupId',
           paramType: 'string',
-          paramDefaultValue: '183958105030657',
+          paramDefaultValue: '187507554713601',
         },
         {
           paramName: 'pageSize',
@@ -237,27 +237,27 @@ export const metaDataList = new Map<string, ApiParams>([
     },
   ],
   [
-    MN.fetchWhiteListFromServer,
+    MN.fetchAllowListFromServer,
     {
-      methodName: MN.fetchWhiteListFromServer,
+      methodName: MN.fetchAllowListFromServer,
       params: [
         {
           paramName: 'groupId',
           paramType: 'string',
-          paramDefaultValue: '180804431970306',
+          paramDefaultValue: '187507554713601',
         },
       ],
     },
   ],
   [
-    MN.isMemberInWhiteListFromServer,
+    MN.isMemberInAllowListFromServer,
     {
-      methodName: MN.isMemberInWhiteListFromServer,
+      methodName: MN.isMemberInAllowListFromServer,
       params: [
         {
           paramName: 'groupId',
           paramType: 'string',
-          paramDefaultValue: '180804431970306',
+          paramDefaultValue: '187507554713601',
         },
       ],
     },
@@ -608,37 +608,37 @@ export const metaDataList = new Map<string, ApiParams>([
     },
   ],
   [
-    MN.addWhiteList,
+    MN.addAllowList,
     {
-      methodName: MN.addWhiteList,
+      methodName: MN.addAllowList,
       params: [
         {
           paramName: 'groupId',
           paramType: 'string',
-          paramDefaultValue: '180804431970306',
+          paramDefaultValue: '187507554713601',
         },
         {
           paramName: 'members',
           paramType: 'json',
-          paramDefaultValue: ['asterisk005'],
+          paramDefaultValue: ['asterisk002'],
         },
       ],
     },
   ],
   [
-    MN.removeWhiteList,
+    MN.removeAllowList,
     {
-      methodName: MN.removeWhiteList,
+      methodName: MN.removeAllowList,
       params: [
         {
           paramName: 'groupId',
           paramType: 'string',
-          paramDefaultValue: '180804431970306',
+          paramDefaultValue: '187507554713601',
         },
         {
           paramName: 'members',
           paramType: 'json',
-          paramDefaultValue: ['asterisk005'],
+          paramDefaultValue: ['asterisk002'],
         },
       ],
     },

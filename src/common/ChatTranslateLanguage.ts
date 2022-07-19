@@ -7,7 +7,7 @@ export class ChatTranslateLanguage {
    */
   code: string;
   /**
-   * The language name. For example, the code for simplified Chinese is "Chinese Simplified".
+   * The language name. For example, the name for simplified Chinese is "Chinese Simplified".
    */
   name: string;
   /**

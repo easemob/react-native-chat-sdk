@@ -97,7 +97,7 @@ export class ChatPresenceManager extends Native {
    *
    * @param members The array of user IDs users whose presence state you want to subscribe to.
    * @param expiry The subscription duration in seconds. The duration cannot exceed 2,592,000 (30×24×3600) seconds, i.e., 30 days.
-   * @returns The current presence state of user IDs users whose presence state you have subscribed to.
+   * @returns The current presence state of users to whom you have subscribed.
    *
    * @throws A description of the exception. See {@link ChatError}.
    */
@@ -142,7 +142,7 @@ export class ChatPresenceManager extends Native {
    *
    * @param pageNum The current page number, starting from 1.
    * @param pageSize The number of subscribed users that you expect to get on each page.
-   * @returns The user IDs whose presence state you have subscribed to. The SDK returns `null` if you does not subscribe to the presence state of any users.
+   * @returns The user IDs of your subscriptions. The SDK returns `null` if you does not subscribe to the presence state of any users.
    *
    * @throws A description of the exception. See {@link ChatError}.
    */
@@ -166,10 +166,10 @@ export class ChatPresenceManager extends Native {
   }
 
   /**
-   * Gets the current presence state of users.
+   * Gets the current presence state of specified users.
    *
    * @param members The array of user IDs whose current presence state you want to check.
-   * @returns The current presence state of subscribed users.
+   * @returns The current presence states of the specified users.
    *
    * @throws A description of the exception. See {@link ChatError}.
    */
