@@ -40,7 +40,7 @@ export const metaDataList = new Map<string, ApiParams>([
           paramName: 'option',
           paramType: 'json',
           paramDefaultValue: ChatSilentModeParam.constructorWithNotification(
-            ChatPushRemindType.ALL
+            ChatPushRemindType.MENTION_ONLY
           ),
           domType: 'input',
         },

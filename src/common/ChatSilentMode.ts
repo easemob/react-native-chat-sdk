@@ -1,48 +1,54 @@
 import type { ChatConversationType } from './ChatConversation';
 
 /**
- * Offline push DND parameter type Enumeration class.
+ * The parameter types of the do-not-disturb mode for the offline message push.
  */
 export enum ChatSilentModeParamType {
   /**
-   * Offline push notification type.
+   * The push notification mode.
    */
   REMIND_TYPE,
   /**
-   * Offline push DND duration.
+   * The duration of the do-not-disturb mode, in minutes.
    */
   SILENT_MODE_DURATION,
   /**
-   * Offline push DND period.
+   * The time frame of the do-not-disturb mode.
    */
   SILENT_MODE_INTERVAL,
 }
-
+/**
+ * The push notification modes.
+ */
 export enum ChatPushRemindType {
   /**
-   * Collect all offline push.
+   * Receives push notifications for all offline messages.
    */
   ALL,
   /**
-   * Only receive @me offline push.
+   * Only receives push notifications for mentioned messages.
    */
   MENTION_ONLY,
   /**
-   * Offline push is not collected.
+   * Receives no push notification for offline messages.
    */
   NONE,
 }
 
 /**
- * For offline push DND time class.
+ * The time class that is used to set the start point and end point in the do-not-disturb time frame for the offline message push.
  */
 export class ChatSilentModeTime {
   /**
-   * Number of hours.
+   * The start or end hour of the do-not-disturb time frame.
+   *
+   * The time is based on a 24-hour clock. The value range is [0,23].
    */
   hour: number;
   /**
-   * Number of minutes.
+   * The start or end minute of the do-not-disturb time frame.
+   *
+   * The value range is [0,59].
    */
   minute: number;
 
@@ -53,32 +59,32 @@ export class ChatSilentModeTime {
 }
 
 /**
- * Offline push Settings parameter entity class
+ * The parameter entity class for the offline message push.
  */
 export class ChatSilentModeParam {
   /**
-   * The silent mode type.
+   * The parameter type of the do-not-disturb mode.
    */
   paramType: ChatSilentModeParamType;
   /**
-   * The offline push notification type.
+   * The push notification mode.
    */
   remindType?: ChatPushRemindType;
   /**
-   * The start time of offline push DND.
+   * The start time of do-not-disturb mode.
    */
   startTime?: ChatSilentModeTime;
   /**
-   * The end time of offline push DND.
+   * The end time of do-not-disturb mode.
    */
   endTime?: ChatSilentModeTime;
   /**
-   * The offline push DND duration.
+   * The duration of the do-not-disturb mode, in minutes.
    */
   silentDuration?: number;
 
   /**
-   * constructor an object.
+   * Constructs an object.
    */
   protected constructor(params: {
     paramType: ChatSilentModeParamType;
@@ -95,9 +101,9 @@ export class ChatSilentModeParam {
   }
 
   /**
-   * Set the offline push notification type, and return an object.
+   * Sets the push notification mode.
    *
-   * @param remindType Offline push notification type.
+   * @param remindType The push notification mode.
    * @returns The ChatSilentModeParam Object.
    */
   public static constructorWithNotification(
@@ -110,10 +116,10 @@ export class ChatSilentModeParam {
   }
 
   /**
-   * Set the offline push DND duration, and return an object.
+   * Set the duration of the do-not-disturb mode for the offline message push.
    *
-   * @param silentDuration Offline push DND duration, units of minutes.
-   * @returns The ChatSilentModeParam Object.
+   * @param silentDuration The duration of the do-not-disturb mode, in minutes.
+   * @returns The ChatSilentModeParam object.
    */
   public static constructorWithDuration(
     silentDuration: number
@@ -125,12 +131,14 @@ export class ChatSilentModeParam {
   }
 
   /**
-   * Set the start time of offline push DND, you need to create the start time and end time together.
+   * Sets the time frame of the do-not-disturb mode.
+   *
+   * The time frame of the do-not-disturb mode is valid only at the app level, but not for conversations.
    *
    * @param params
-   * - startTime: Do not disturb start time.
-   * - endTime: Do not disturb end time.
-   * @returns The ChatSilentModeParam Object.
+   * - startTime: The start point in the do-not-disturb time frame.
+   * - endTime: The end point in the do-not-disturb time frame.
+   * @returns The ChatSilentModeParam object.
    */
   public static constructorWithPeriod(params: {
     startTime: ChatSilentModeTime;
@@ -145,36 +153,36 @@ export class ChatSilentModeParam {
 }
 
 /**
- * Offline push DND result class.
+ * The configuration result class for the do-not-disturb mode of the offline message push.
  */
 export class ChatSilentModeResult {
   /**
-   * The offline push DND expiration timestamp.
+   * The Unix timestamp when the do-not-disturb mode of the offline message push expires, in milliseconds.
    */
   expireTimestamp?: number;
   /**
-   * The Conversation Type.
+   * The conversation Type.
    */
   conversationType: ChatConversationType;
   /**
-   * The Conversation ID.
+   * The conversation ID.
    */
   conversationId: string;
   /**
-   * The offline push notification type.
+   * The push notification mode.
    */
   remindType?: ChatPushRemindType;
   /**
-   * The start time of offline push DND.
+   * The start point in the do-not-disturb time frame for the offline message push.
    */
   startTime?: ChatSilentModeTime;
   /**
-   * The end time of offline push DND.
+   * The end point in the do-not-disturb time frame for the offline message push.
    */
   endTime?: ChatSilentModeTime;
 
   /**
-   * Constructor an object.
+   * Constructs an object.
    */
   constructor(params: {
     expireTimestamp?: number;
@@ -194,10 +202,10 @@ export class ChatSilentModeResult {
 }
 
 /**
- * Converts the silent mode type from int to enum.
+ * Converts the parameter type of the do-not-disturb mode from int to enum.
  *
- * @param params The silent mode type of number type.
- * @returns The silent mode type of enum type.
+ * @param params The do-not-disturb parameter type of the int type.
+ * @returns The do-not-disturb parameter of the enum type.
  */
 export function ChatSilentModeParamTypeFromNumber(
   params: number
@@ -215,10 +223,10 @@ export function ChatSilentModeParamTypeFromNumber(
 }
 
 /**
- * Converts the silent mode type from enum to int.
+ * Converts the parameter type of the do-not-disturb mode from enum to int.
  *
- * @param params The silent mode type of enum type.
- * @returns The silent mode type of int type.
+ * @param params The do-not-disturb parameter type of the enum type.
+ * @returns The do-not-disturb parameter type of the int type.
  */
 export function ChatSilentModeParamTypeToNumber(
   params: ChatSilentModeParamType
@@ -227,10 +235,10 @@ export function ChatSilentModeParamTypeToNumber(
 }
 
 /**
- * Converts the push remind type from int to enum.
+ * Converts the push notification mode from int to enum.
  *
- * @param params The push remind type of int type.
- * @returns The push remind type of enum type.
+ * @param params The push notification mode of the int type.
+ * @returns The push notification mode of the enum type.
  */
 export function ChatPushRemindTypeFromNumber(
   params: number
@@ -248,10 +256,10 @@ export function ChatPushRemindTypeFromNumber(
 }
 
 /**
- * Converts the push remind type from enum to int.
+ * Converts the push notification mode from enum to int.
  *
- * @param params The push remind type of enum type.
- * @returns The push remind type of int type.
+ * @param params The push notification mode of the enum type.
+ * @returns The push notification mode of the int type.
  */
 export function ChatPushRemindTypeToNumber(params: ChatPushRemindType): number {
   return params;

@@ -34,8 +34,6 @@ export const MN = {
   getConversationUnreadCount: 'getConversationUnreadCount',
   markMessageAsRead: 'markMessageAsRead',
   markAllMessagesAsRead: 'markAllMessagesAsRead',
-  insertMessage: 'insertMessage',
-  appendMessage: 'appendMessage',
   updateConversationMessage: 'updateConversationMessage',
   deleteMessage: 'deleteMessage',
   deleteAllMessages: 'deleteAllMessages',
@@ -533,54 +531,6 @@ export const metaDataList = new Map<string, ApiParams>([
           paramName: 'convType',
           paramType: 'number',
           paramDefaultValue: 0,
-        },
-      ],
-    },
-  ],
-  [
-    MN.insertMessage,
-    {
-      methodName: MN.insertMessage,
-      params: [
-        {
-          paramName: 'convId', // 使用发送成功或者失败的数据测试，依赖sendMessage
-          paramType: 'string',
-          paramDefaultValue: datasheet.accounts[2].id,
-        },
-        {
-          paramName: 'convType',
-          paramType: 'number',
-          paramDefaultValue: 0,
-        },
-        {
-          paramName: 'msg',
-          paramType: 'json',
-          paramDefaultValue: {},
-          paramValue: () => ChatManagerCache.getInstance().getLastSendMessage(),
-        },
-      ],
-    },
-  ],
-  [
-    MN.appendMessage,
-    {
-      methodName: MN.appendMessage,
-      params: [
-        {
-          paramName: 'convId', // 使用发送成功或者失败的数据测试，依赖sendMessage
-          paramType: 'string',
-          paramDefaultValue: datasheet.accounts[2].id,
-        },
-        {
-          paramName: 'convType',
-          paramType: 'number',
-          paramDefaultValue: 0,
-        },
-        {
-          paramName: 'msg',
-          paramType: 'json',
-          paramDefaultValue: {},
-          paramValue: () => ChatManagerCache.getInstance().getLastSendMessage(),
         },
       ],
     },

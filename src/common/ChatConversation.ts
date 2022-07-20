@@ -185,7 +185,7 @@ export class ChatConversation {
    *
    * @throws A description of the exception. See {@link ChatError}.
    */
-  public async fetchLatestReceivedMessage(): Promise<ChatMessage | undefined> {
+  public async getLatestReceivedMessage(): Promise<ChatMessage | undefined> {
     return ChatClient.getInstance().chatManager.getLatestReceivedMessage(
       this.convId,
       this.convType
@@ -232,58 +232,6 @@ export class ChatConversation {
     return ChatClient.getInstance().chatManager.markAllMessagesAsRead(
       this.convId,
       this.convType
-    );
-  }
-
-  /**
-   * Inserts a message to a conversation in the local database。
-   *
-   * To insert the message correctly, ensure that the conversation ID of the message is the same as that of the conversation.
-   *
-   * The message will be inserted based on the Unix timestamp included in it. Upon message insertion, the SDK will automatically update attributes of the conversation, including `latestMessage`.
-   *
-   * @param msg The message instance.
-   *
-   * @throws A description of the exception. See {@link ChatError}.
-   */
-  public async insertMessage(msg: ChatMessage): Promise<void> {
-    if (msg.conversationId !== this.convId) {
-      throw new ChatError({
-        code: 1,
-        description:
-          'The Message conversation id is not same as conversation id',
-      });
-    }
-    return ChatClient.getInstance().chatManager.insertMessage(
-      this.convId,
-      this.convType,
-      msg
-    );
-  }
-
-  /**
-   * Inserts a message to the end of a conversation in the local database.
-   *
-   * To insert the message correctly, ensure that the conversation ID of the message is the same as that of the conversation.
-   *
-   * After a message is inserted, the SDK will automatically update attributes of the conversation, including `latestMessage`.
-   *
-   * @param msg The message instance.
-   *
-   * @throws A description of the exception. See {@link ChatError}.
-   */
-  public async appendMessage(msg: ChatMessage): Promise<void> {
-    if (msg.conversationId !== this.convId) {
-      throw new ChatError({
-        code: 1,
-        description:
-          'The Message conversation id is not same as conversation id',
-      });
-    }
-    return ChatClient.getInstance().chatManager.appendMessage(
-      this.convId,
-      this.convType,
-      msg
     );
   }
 

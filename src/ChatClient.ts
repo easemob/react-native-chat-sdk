@@ -764,10 +764,10 @@ export class ChatClient extends BaseManager {
   }
 
   /**
-   * Update push config.
+   * Update push configurations.
    *
    * **Note**
-   * For the iOS platform, you need to pass the device id during initialization. Otherwise, the push function cannot be used normally. See {@link ChatClient#init}
+   * For the iOS platform, you need to pass the device ID during initialization. Otherwise, the push function cannot be used properly. See {@link ChatClient#init}
    *
    * @param config The push config, See {@link ChatPushConfig}
    *

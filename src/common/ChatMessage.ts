@@ -390,7 +390,7 @@ export class ChatMessage {
   /**
    * Whether it is a online message.
    *
-   * - `true`: Yes. In this case, if the application is running in the background, you may need to pop up a notification window.
+   * - `true`: Yes. In this case, if the application is running in the background, a notification window may pop up.
    * - `false`: No.
    */
   isOnline: boolean;

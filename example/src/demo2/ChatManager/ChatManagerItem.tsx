@@ -117,16 +117,6 @@ export interface StateChatMessage extends StateBase {
     convId: string;
     convType: number;
   };
-  insertMessage: {
-    convId: string;
-    convType: number;
-    msg: ChatMessage;
-  };
-  appendMessage: {
-    convId: string;
-    convType: number;
-    msg: ChatMessage;
-  };
   updateConversationMessage: {
     convId: string;
     convType: number;
@@ -521,8 +511,6 @@ export class ChatManagerLeafScreen extends LeafScreenBase<StateChatMessage> {
       'getConversationUnreadCount',
       'markMessageAsRead',
       'markAllMessagesAsRead',
-      'insertMessage',
-      'appendMessage',
       'updateConversationMessage',
       'deleteMessage',
       'deleteAllMessages',
@@ -866,28 +854,6 @@ export class ChatManagerLeafScreen extends LeafScreenBase<StateChatMessage> {
         ),
         ChatManagerLeafScreen.TAG,
         this.metaData.get(MN.markAllMessagesAsRead)!.methodName
-      );
-    } else if (name === MN.insertMessage) {
-      const { convId, convType, msg } = this.state.insertMessage;
-      this.tryCatch(
-        ChatClient.getInstance().chatManager.insertMessage(
-          convId,
-          ChatConversationTypeFromNumber(convType),
-          msg
-        ),
-        ChatManagerLeafScreen.TAG,
-        this.metaData.get(MN.insertMessage)!.methodName
-      );
-    } else if (name === MN.appendMessage) {
-      const { convId, convType, msg } = this.state.appendMessage;
-      this.tryCatch(
-        ChatClient.getInstance().chatManager.appendMessage(
-          convId,
-          ChatConversationTypeFromNumber(convType),
-          msg
-        ),
-        ChatManagerLeafScreen.TAG,
-        this.metaData.get(MN.appendMessage)!.methodName
       );
     } else if (name === MN.updateConversationMessage) {
       const { convId, convType, msg } = this.state.updateConversationMessage;

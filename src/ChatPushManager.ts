@@ -34,12 +34,12 @@ export class ChatPushManager extends Native {
   }
 
   /**
-   * Set offline push notification type for the special conversation.
+   * Sets the do-not-disturb mode for the conversation.
    *
    * @param params -
-   * - convId: The conversation id.
+   * - convId: The conversation ID.
    * - convType: The conversation type.
-   * - option: Push DND parameters offline.
+   * - option: The parameters of the do-not-disturb mode for the offline message push.
    *
    * @throws A description of the exception. See {@link ChatError}.
    */
@@ -65,11 +65,12 @@ export class ChatPushManager extends Native {
   }
 
   /**
-   * Remove the setting of offline push notification type for the special conversation.
-   * After clearing, the session follows the Settings of the current logged-in user  {@link EMPushManager#setSilentModeForAll(ChatSilentModeParam)}.
+   * Removes the do-not-disturb settings of the conversation.
+   *
+   * After clearing, the conversation uses the global do-not-disturb settings of the app. See {@link EMPushManager#setSilentModeForAll(ChatSilentModeParam)}.
    *
    * @param params -
-   * - convId: The conversation id.
+   * - convId: The conversation ID.
    * - convType: The conversation type.
    *
    * @throws A description of the exception. See {@link ChatError}.
@@ -93,13 +94,13 @@ export class ChatPushManager extends Native {
   }
 
   /**
-   * Gets the DND setting of the special conversation.
+   * Gets the do-not-disturb mode of the conversation.
    *
    * @param params -
-   * - convId: The conversation id.
+   * - convId: The conversation ID.
    * - convType: The conversation type.
    *
-   * @returns The conversation silent mode.
+   * @returns The do-not-disturb settings of the conversation.
    *
    * @throws A description of the exception. See {@link ChatError}.
    */
@@ -124,9 +125,9 @@ export class ChatPushManager extends Native {
   }
 
   /**
-   * Set the DND normal settings for the current login user.
+   * Sets the do-not-disturb mode of the app.
    *
-   * @param option Push DND parameters offline.
+   * @param option The parameters of the do-not-disturb mode.
    *
    * @throws A description of the exception. See {@link ChatError}.
    */
@@ -144,9 +145,9 @@ export class ChatPushManager extends Native {
   }
 
   /**
-   * Gets the DND normal settings of the current login user.
+   * Gets the do-not-disturb settings of the app.
    *
-   * @returns The normal silent mode.
+   * @returns The do-not-disturb settings of the app.
    *
    * @throws A description of the exception. See {@link ChatError}.
    */
@@ -159,10 +160,10 @@ export class ChatPushManager extends Native {
   }
 
   /**
-   * Obtain the DND Settings of specified conversations in batches.
+   * Gets the do-not-disturb settings of the specified conversations.
    *
    * @param conversations The conversation list.
-   * @returns key is conversation id and the value is silent mode.
+   * @returns  The do-not-disturb settings of the specified conversations, which are key-value pairs where the key is the conversation ID and the value is the do-not-disturb settings.
    *
    * @throws A description of the exception. See {@link ChatError}.
    */
@@ -188,9 +189,9 @@ export class ChatPushManager extends Native {
   }
 
   /**
-   * Set user push translation language.
+   * Sets the target translation language of offline push notifications.
    *
-   * @param languageCode language code. You can also look here {@link ChatTextMessageBody}
+   * @param languageCode The language code. See {@link ChatTextMessageBody}.
    *
    * @throws A description of the exception. See {@link ChatError}.
    */
@@ -210,9 +211,9 @@ export class ChatPushManager extends Native {
   }
 
   /**
-   * Gets the push translation language set by the user.
+   * Gets the configured push translation language.
    *
-   * @returns Language code that is already supported.
+   * @returns The language code.
    *
    * @throws A description of the exception. See {@link ChatError}.
    */

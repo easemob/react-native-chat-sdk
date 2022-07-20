@@ -44,12 +44,10 @@ import {
   MTsearchChatMsgFromDB,
   MTsendMessage,
   MTupdateChatMessage,
-  MTappendMessage,
   MTclearAllMessages,
   MTgetLatestMessage,
   MTgetLatestMessageFromOthers,
   MTgetUnreadMsgCount,
-  MTinsertMessage,
   MTloadMsgWithKeywords,
   MTloadMsgWithMsgType,
   MTloadMsgWithStartId,
@@ -799,8 +797,8 @@ export class ChatManager extends BaseManager {
    * @param maxCount The maximum number of messages to retrieve each time. The value range is [1,400].
    * @param from The user ID or group ID for retrieval. Usually, it is the conversation ID.
    * @param direction The message search direction. See {@link ChatSearchDirection}.
-   *                  - (Default) `ChatSearchDirection.Up`: Messages are retrieved in the descending order of the Unix timestamp ({@link SortMessageByServerTime}) included in them.
-   *                  - `ChatSearchDirection.Down`: Messages are retrieved in the ascending order of the Unix timestamp ({@link SortMessageByServerTime}) included in them.
+   *                  - (Default) `ChatSearchDirection.Up`: Messages are retrieved in the descending order of the Unix timestamp included in them.
+   *                  - `ChatSearchDirection.Down`: Messages are retrieved in the ascending order of the Unix timestamp included in them.
    * @returns The list of retrieved messages (excluding the one with the starting timestamp). If no message is obtained, an empty list is returned.
    *
    * @throws A description of the exception. See {@link ChatError}.
@@ -1187,58 +1185,6 @@ export class ChatManager extends BaseManager {
   }
 
   /**
-   * Inserts a message to a conversation in the local database.
-   *
-   * After this method is called, the SDK will automatically update the latest message in the conversation.
-   *
-   * @param convId The conversation ID.
-   * @param convType The conversation type. See {@link ChatConversationType}.
-   * @param msg The message to insert.
-   *
-   * @throws A description of the exception. See {@link ChatError}.
-   */
-  public async insertMessage(
-    convId: string,
-    convType: ChatConversationType,
-    msg: ChatMessage
-  ): Promise<void> {
-    chatlog.log(`${ChatManager.TAG}: insertMessage: `, convId, convType, msg);
-    let r: any = await Native._callMethod(MTinsertMessage, {
-      [MTinsertMessage]: {
-        convId: convId,
-        type: convType,
-        msg: msg,
-      },
-    });
-    ChatManager.checkErrorFromResult(r);
-  }
-
-  /**
-   * Inserts a message to the end of a conversation in the local database.
-   *
-   * @param convId The conversation ID.
-   * @param convType The conversation type. See {@link ChatConversationType}.
-   * @param msg The message to insert.
-   *
-   * @throws A description of the exception. See {@link ChatError}.
-   */
-  public async appendMessage(
-    convId: string,
-    convType: ChatConversationType,
-    msg: ChatMessage
-  ): Promise<void> {
-    chatlog.log(`${ChatManager.TAG}: appendMessage: `, convId, convType, msg);
-    let r: any = await Native._callMethod(MTappendMessage, {
-      [MTappendMessage]: {
-        convId: convId,
-        type: convType,
-        msg: msg,
-      },
-    });
-    ChatManager.checkErrorFromResult(r);
-  }
-
-  /**
    * Updates a message in the local database.
    *
    * After you modify a message, the message ID remains unchanged and the SDK automatically updates properties of the conversation, like `latestMessage`.
@@ -1326,8 +1272,8 @@ export class ChatManager extends BaseManager {
    * @param convType The conversation type. See {@link ChatConversationType}.
    * @param msgType The message type. See {@link ChatMessageType}.
    * @param direction The message search direction. See {@link ChatSearchDirection}.
-   * - (Default) `ChatSearchDirection.UP`: Messages are retrieved in the descending order of the Unix timestamp ({@link SortMessageByServerTime}) included in them.
-   * - `ChatSearchDirection.DOWN`: Messages are retrieved in the ascending order of the Unix timestamp ({@link SortMessageByServerTime}) included in them.
+   * - (Default) `ChatSearchDirection.UP`: Messages are retrieved in the descending order of the Unix timestamp included in them.
+   * - `ChatSearchDirection.DOWN`: Messages are retrieved in the ascending order of the Unix timestamp included in them.
    * @param timestamp The starting Unix timestamp in the message for query. The unit is millisecond. After this parameter is set, the SDK retrieves messages, starting from the specified one, according to the message search direction.
    *                  If you set this parameter as a negative value, the SDK retrieves messages, starting from the current time, in the descending order of the timestamp included in them.
    * @param count The maximum number of messages to retrieve each time. The value range is [1,400].
@@ -1387,8 +1333,8 @@ export class ChatManager extends BaseManager {
    * @param startMsgId The starting message ID for query. After this parameter is set, the SDK retrieves messages, starting from the specified one, according to the message search direction.
    *                   If this parameter is set as "null" or an empty string, the SDK retrieves messages according to the message search direction while ignoring this parameter.
    * @param direction The message search direction. See {@link ChatSearchDirection}.
-   * - (Default) `ChatSearchDirection.UP`: Messages are retrieved in the descending order of the Unix timestamp ({@link SortMessageByServerTime}) included in them.
-   * - `ChatSearchDirection.DOWN`: Messages are retrieved in the ascending order of the Unix timestamp ({@link SortMessageByServerTime}) included in them.
+   * - (Default) `ChatSearchDirection.UP`: Messages are retrieved in the descending order of the Unix timestamp included in them.
+   * - `ChatSearchDirection.DOWN`: Messages are retrieved in the ascending order of the Unix timestamp included in them.
    * @param loadCount The maximum number of messages to retrieve each time. The value range is [1,50].
    * @returns The list of retrieved messages (excluding the one with the starting timestamp). If no message is obtained, an empty list is returned.
    *
@@ -1440,8 +1386,8 @@ export class ChatManager extends BaseManager {
    * @param convType The conversation type. See {@link ChatConversationType}.
    * @param keywords The keywords for query.
    * @param direction The message search direction. See {@link ChatSearchDirection}.
-   * - (Default) `ChatSearchDirection.UP`: Messages are retrieved in the descending order of the Unix timestamp ({@link SortMessageByServerTime}) included in them.
-   * - `ChatSearchDirection.DOWN`: Messages are retrieved in the ascending order of the Unix timestamp ({@link SortMessageByServerTime}) included in them.
+   * - (Default) `ChatSearchDirection.UP`: Messages are retrieved in the descending order of the Unix timestamp included in them.
+   * - `ChatSearchDirection.DOWN`: Messages are retrieved in the ascending order of the Unix timestamp included in them.
    * @param timestamp The starting Unix timestamp in the message for query. The unit is millisecond. After this parameter is set, the SDK retrieves messages, starting from the specified one, according to the message search direction.
    *                  If you set this parameter as a negative value, the SDK retrieves messages, starting from the current time, in the descending order of the timestamp included in them.
    * @param count The maximum number of messages to retrieve each time. The value range is [1,400].
@@ -1499,8 +1445,8 @@ export class ChatManager extends BaseManager {
    * @param startTime The starting Unix timestamp for query, in milliseconds.
    * @param endTime The ending Unix timestamp for query, in milliseconds.
    * @param direction The message search direction. See {@link ChatSearchDirection}.
-   * - (Default) `ChatSearchDirection.UP`: Messages are retrieved in the descending order of the Unix timestamp ({@link SortMessageByServerTime}) included in them.
-   * - `ChatSearchDirection.DOWN`: Messages are retrieved in the ascending order of the Unix timestamp ({@link SortMessageByServerTime}) included in them.
+   * - (Default) `ChatSearchDirection.UP`: Messages are retrieved in the descending order of the Unix timestamp included in them.
+   * - `ChatSearchDirection.DOWN`: Messages are retrieved in the ascending order of the Unix timestamp included in them.
    * @param count The maximum number of messages to retrieve each time. The value range is [1,400].
    * @returns The list of retrieved messages (excluding with the ones with the starting or ending timestamp). If no message is obtained, an empty list is returned.
    *
