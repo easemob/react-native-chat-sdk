@@ -113,7 +113,7 @@ export class ChatOptions {
    */
   enableDNSConfig: boolean;
   /**
-   * The URL of the DNS server..
+   * The URL of the DNS server.
    */
   dnsUrl: string;
   /**

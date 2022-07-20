@@ -34,7 +34,7 @@ export class ChatUserInfo {
    */
   sign?: string;
   /**
-   * The birth date of the user.
+   * The birthday of the user.
    */
   birth?: string;
   /**

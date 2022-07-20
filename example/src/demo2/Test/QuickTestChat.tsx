@@ -752,46 +752,6 @@ export class QuickTestScreenChat extends QuickTestScreenBase<
           );
         }
         break;
-      case MN.insertMessage:
-        {
-          const methodName = this.metaData.get(MN.insertMessage)!.methodName;
-          console.log(`${MN.insertMessage} === ${methodName}`);
-          const convId = this.metaData.get(MN.insertMessage)?.params[0]
-            .paramDefaultValue;
-          const convType = this.metaData.get(MN.insertMessage)?.params[1]
-            .paramDefaultValue;
-          const msg = ChatManagerCache.getInstance().createTextMessage();
-          this.tryCatch(
-            ChatClient.getInstance().chatManager.insertMessage(
-              convId,
-              convType,
-              msg
-            ),
-            QuickTestScreenChat.TAG,
-            MN.insertMessage
-          );
-        }
-        break;
-      case MN.appendMessage:
-        {
-          const methodName = this.metaData.get(MN.appendMessage)!.methodName;
-          console.log(`${MN.appendMessage} === ${methodName}`);
-          const convId = this.metaData.get(MN.appendMessage)?.params[0]
-            .paramDefaultValue;
-          const convType = this.metaData.get(MN.appendMessage)?.params[1]
-            .paramDefaultValue;
-          const msg = ChatManagerCache.getInstance().createTextMessage();
-          this.tryCatch(
-            ChatClient.getInstance().chatManager.appendMessage(
-              convId,
-              convType,
-              msg
-            ),
-            QuickTestScreenChat.TAG,
-            MN.appendMessage
-          );
-        }
-        break;
       case MN.updateConversationMessage:
         {
           const methodName = this.metaData.get(
