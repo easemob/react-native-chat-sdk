@@ -69,7 +69,7 @@ export class ChatSilentModeParam {
   /**
    * The push notification mode.
    */
-  remindType?: ChatPushRemindType;
+  remindType: ChatPushRemindType;
   /**
    * The start time of do-not-disturb mode.
    */
@@ -81,23 +81,23 @@ export class ChatSilentModeParam {
   /**
    * The duration of the do-not-disturb mode, in minutes.
    */
-  silentDuration?: number;
+  duration?: number;
 
   /**
    * Constructs an object.
    */
-  protected constructor(params: {
+  public constructor(params: {
     paramType: ChatSilentModeParamType;
-    remindType?: ChatPushRemindType;
+    remindType: ChatPushRemindType;
     startTime?: ChatSilentModeTime;
     endTime?: ChatSilentModeTime;
-    silentDuration?: number;
+    duration?: number;
   }) {
     this.paramType = params.paramType;
     this.remindType = params.remindType;
     this.startTime = params.startTime;
     this.endTime = params.endTime;
-    this.silentDuration = params.silentDuration;
+    this.duration = params.duration;
   }
 
   /**
@@ -126,7 +126,8 @@ export class ChatSilentModeParam {
   ): ChatSilentModeParam {
     return new ChatSilentModeParam({
       paramType: ChatSilentModeParamType.SILENT_MODE_DURATION,
-      silentDuration: silentDuration,
+      remindType: ChatPushRemindType.ALL,
+      duration: silentDuration,
     });
   }
 
@@ -146,6 +147,7 @@ export class ChatSilentModeParam {
   }): ChatSilentModeParam {
     return new ChatSilentModeParam({
       paramType: ChatSilentModeParamType.SILENT_MODE_INTERVAL,
+      remindType: ChatPushRemindType.ALL,
       startTime: params.startTime,
       endTime: params.endTime,
     });

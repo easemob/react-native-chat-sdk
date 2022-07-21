@@ -27,21 +27,19 @@ export const metaDataList = new Map<string, ApiParams>([
         {
           paramName: 'convId',
           paramType: 'string',
-          paramDefaultValue: datasheet.accounts[2].id,
+          paramDefaultValue: '187663429730305',
           domType: 'input',
         },
         {
           paramName: 'convType',
           paramType: 'number',
-          paramDefaultValue: 0,
+          paramDefaultValue: 1,
           domType: 'input',
         },
         {
           paramName: 'option',
           paramType: 'json',
-          paramDefaultValue: ChatSilentModeParam.constructorWithNotification(
-            ChatPushRemindType.MENTION_ONLY
-          ),
+          paramDefaultValue: ChatSilentModeParam.constructorWithDuration(10),
           domType: 'input',
         },
       ],
@@ -75,13 +73,13 @@ export const metaDataList = new Map<string, ApiParams>([
         {
           paramName: 'convId',
           paramType: 'string',
-          paramDefaultValue: datasheet.accounts[2].id,
+          paramDefaultValue: '187663429730305',
           domType: 'input',
         },
         {
           paramName: 'convType',
           paramType: 'number',
-          paramDefaultValue: 0,
+          paramDefaultValue: 1,
           domType: 'input',
         },
       ],
