@@ -33683,7 +33683,7 @@
 					"kind": 512,
 					"kindString": "Constructor",
 					"flags": {
-						"isProtected": true
+						"isPublic": true
 					},
 					"sources": [
 						{
@@ -33718,6 +33718,26 @@
 											"kindString": "Type literal",
 											"flags": {},
 											"children": [
+												{
+													"id": 2251,
+													"name": "duration",
+													"kind": 1024,
+													"kindString": "Property",
+													"flags": {
+														"isOptional": true
+													},
+													"sources": [
+														{
+															"fileName": "common/ChatSilentMode.ts",
+															"line": 94,
+															"character": 4
+														}
+													],
+													"type": {
+														"type": "intrinsic",
+														"name": "number"
+													}
+												},
 												{
 													"id": 2250,
 													"name": "endTime",
@@ -33763,9 +33783,7 @@
 													"name": "remindType",
 													"kind": 1024,
 													"kindString": "Property",
-													"flags": {
-														"isOptional": true
-													},
+													"flags": {},
 													"sources": [
 														{
 															"fileName": "common/ChatSilentMode.ts",
@@ -33777,26 +33795,6 @@
 														"type": "reference",
 														"id": 1462,
 														"name": "ChatPushRemindType"
-													}
-												},
-												{
-													"id": 2251,
-													"name": "silentDuration",
-													"kind": 1024,
-													"kindString": "Property",
-													"flags": {
-														"isOptional": true
-													},
-													"sources": [
-														{
-															"fileName": "common/ChatSilentMode.ts",
-															"line": 94,
-															"character": 4
-														}
-													],
-													"type": {
-														"type": "intrinsic",
-														"name": "number"
 													}
 												},
 												{
@@ -33826,10 +33824,10 @@
 													"title": "Properties",
 													"kind": 1024,
 													"children": [
+														2251,
 														2250,
 														2247,
 														2248,
-														2251,
 														2249
 													]
 												}
@@ -33845,6 +33843,29 @@
 							}
 						}
 					]
+				},
+				{
+					"id": 2256,
+					"name": "duration",
+					"kind": 1024,
+					"kindString": "Property",
+					"flags": {
+						"isOptional": true
+					},
+					"comment": {
+						"shortText": "The duration of the do-not-disturb mode, in minutes."
+					},
+					"sources": [
+						{
+							"fileName": "common/ChatSilentMode.ts",
+							"line": 84,
+							"character": 2
+						}
+					],
+					"type": {
+						"type": "intrinsic",
+						"name": "number"
+					}
 				},
 				{
 					"id": 2255,
@@ -33897,9 +33918,7 @@
 					"name": "remindType",
 					"kind": 1024,
 					"kindString": "Property",
-					"flags": {
-						"isOptional": true
-					},
+					"flags": {},
 					"comment": {
 						"shortText": "The push notification mode."
 					},
@@ -33914,29 +33933,6 @@
 						"type": "reference",
 						"id": 1462,
 						"name": "ChatPushRemindType"
-					}
-				},
-				{
-					"id": 2256,
-					"name": "silentDuration",
-					"kind": 1024,
-					"kindString": "Property",
-					"flags": {
-						"isOptional": true
-					},
-					"comment": {
-						"shortText": "The duration of the do-not-disturb mode, in minutes."
-					},
-					"sources": [
-						{
-							"fileName": "common/ChatSilentMode.ts",
-							"line": 84,
-							"character": 2
-						}
-					],
-					"type": {
-						"type": "intrinsic",
-						"name": "number"
 					}
 				},
 				{
@@ -34078,7 +34074,7 @@
 					"sources": [
 						{
 							"fileName": "common/ChatSilentMode.ts",
-							"line": 143,
+							"line": 144,
 							"character": 16
 						}
 					],
@@ -34122,7 +34118,7 @@
 													"sources": [
 														{
 															"fileName": "common/ChatSilentMode.ts",
-															"line": 145,
+															"line": 146,
 															"character": 4
 														}
 													],
@@ -34141,7 +34137,7 @@
 													"sources": [
 														{
 															"fileName": "common/ChatSilentMode.ts",
-															"line": 144,
+															"line": 145,
 															"character": 4
 														}
 													],
@@ -34187,10 +34183,10 @@
 					"title": "Properties",
 					"kind": 1024,
 					"children": [
+						2256,
 						2255,
 						2252,
 						2253,
-						2256,
 						2254
 					]
 				},
@@ -34231,7 +34227,7 @@
 					"sources": [
 						{
 							"fileName": "common/ChatSilentMode.ts",
-							"line": 187,
+							"line": 189,
 							"character": 2
 						}
 					],
@@ -34270,7 +34266,7 @@
 													"sources": [
 														{
 															"fileName": "common/ChatSilentMode.ts",
-															"line": 190,
+															"line": 192,
 															"character": 4
 														}
 													],
@@ -34288,7 +34284,7 @@
 													"sources": [
 														{
 															"fileName": "common/ChatSilentMode.ts",
-															"line": 189,
+															"line": 191,
 															"character": 4
 														}
 													],
@@ -34309,7 +34305,7 @@
 													"sources": [
 														{
 															"fileName": "common/ChatSilentMode.ts",
-															"line": 193,
+															"line": 195,
 															"character": 4
 														}
 													],
@@ -34330,7 +34326,7 @@
 													"sources": [
 														{
 															"fileName": "common/ChatSilentMode.ts",
-															"line": 188,
+															"line": 190,
 															"character": 4
 														}
 													],
@@ -34350,7 +34346,7 @@
 													"sources": [
 														{
 															"fileName": "common/ChatSilentMode.ts",
-															"line": 191,
+															"line": 193,
 															"character": 4
 														}
 													],
@@ -34371,7 +34367,7 @@
 													"sources": [
 														{
 															"fileName": "common/ChatSilentMode.ts",
-															"line": 192,
+															"line": 194,
 															"character": 4
 														}
 													],
@@ -34420,7 +34416,7 @@
 					"sources": [
 						{
 							"fileName": "common/ChatSilentMode.ts",
-							"line": 170,
+							"line": 172,
 							"character": 2
 						}
 					],
@@ -34441,7 +34437,7 @@
 					"sources": [
 						{
 							"fileName": "common/ChatSilentMode.ts",
-							"line": 166,
+							"line": 168,
 							"character": 2
 						}
 					],
@@ -34465,7 +34461,7 @@
 					"sources": [
 						{
 							"fileName": "common/ChatSilentMode.ts",
-							"line": 182,
+							"line": 184,
 							"character": 2
 						}
 					],
@@ -34489,7 +34485,7 @@
 					"sources": [
 						{
 							"fileName": "common/ChatSilentMode.ts",
-							"line": 162,
+							"line": 164,
 							"character": 2
 						}
 					],
@@ -34512,7 +34508,7 @@
 					"sources": [
 						{
 							"fileName": "common/ChatSilentMode.ts",
-							"line": 174,
+							"line": 176,
 							"character": 2
 						}
 					],
@@ -34536,7 +34532,7 @@
 					"sources": [
 						{
 							"fileName": "common/ChatSilentMode.ts",
-							"line": 178,
+							"line": 180,
 							"character": 2
 						}
 					],
@@ -34571,7 +34567,7 @@
 			"sources": [
 				{
 					"fileName": "common/ChatSilentMode.ts",
-					"line": 158,
+					"line": 160,
 					"character": 13
 				}
 			]
@@ -43769,7 +43765,7 @@
 			"sources": [
 				{
 					"fileName": "common/ChatSilentMode.ts",
-					"line": 243,
+					"line": 245,
 					"character": 16
 				}
 			],
@@ -43817,7 +43813,7 @@
 			"sources": [
 				{
 					"fileName": "common/ChatSilentMode.ts",
-					"line": 264,
+					"line": 266,
 					"character": 16
 				}
 			],
@@ -43961,7 +43957,7 @@
 			"sources": [
 				{
 					"fileName": "common/ChatSilentMode.ts",
-					"line": 210,
+					"line": 212,
 					"character": 16
 				}
 			],
@@ -44009,7 +44005,7 @@
 			"sources": [
 				{
 					"fileName": "common/ChatSilentMode.ts",
-					"line": 231,
+					"line": 233,
 					"character": 16
 				}
 			],
