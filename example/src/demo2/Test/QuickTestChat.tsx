@@ -981,29 +981,6 @@ export class QuickTestScreenChat extends QuickTestScreenBase<
           );
         }
         break;
-      case MN.setConversationExtension:
-        // {
-        //   const methodName = this.metaData.get(
-        //     MN.setConversationExtension
-        //   )!.methodName;
-        //   console.log(`${MN.setConversationExtension} === ${methodName}`);
-        //   const convId = this.metaData.get(MN.setConversationExtension)
-        //     ?.params[0].paramDefaultValue;
-        //   const convType = this.metaData.get(MN.setConversationExtension)
-        //     ?.params[1].paramDefaultValue;
-        //   const ext = this.metaData.get(MN.setConversationExtension)?.params[1]
-        //     .paramDefaultValue;
-        //   this.tryCatch(
-        //     ChatClient.getInstance().chatManager.setConversationExtension(
-        //       convId,
-        //       convType,
-        //       ext
-        //     ),
-        //     QuickTestScreenChat.TAG,
-        //     name
-        //   );
-        // }
-        break;
       case MN.addReaction:
         {
           const methodName = this.metaData.get(MN.addReaction)!.methodName;

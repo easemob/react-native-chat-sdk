@@ -43,7 +43,6 @@ export const MN = {
   getMessageWithTimestamp: 'getMessageWithTimestamp',
   translateMessage: 'translateMessage',
   fetchSupportLanguages: 'fetchSupportLanguages',
-  setConversationExtension: 'setConversationExtension',
   addReaction: 'addReaction',
   removeReaction: 'removeReaction',
   fetchReactionList: 'fetchReactionList',
@@ -781,29 +780,6 @@ export const metaDataList = new Map<string, ApiParams>([
     {
       methodName: MN.fetchSupportLanguages,
       params: [],
-    },
-  ],
-  [
-    MN.setConversationExtension,
-    {
-      methodName: MN.setConversationExtension,
-      params: [
-        {
-          paramName: 'convId',
-          paramType: 'string',
-          paramDefaultValue: datasheet.accounts[2].id,
-        },
-        {
-          paramName: 'convType',
-          paramType: 'number',
-          paramDefaultValue: ChatConversationType.PeerChat,
-        },
-        {
-          paramName: 'ext',
-          paramType: 'json',
-          paramDefaultValue: { key: 'value' },
-        },
-      ],
     },
   ],
   [
