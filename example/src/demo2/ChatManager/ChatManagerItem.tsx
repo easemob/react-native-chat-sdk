@@ -169,11 +169,6 @@ export interface StateChatMessage extends StateBase {
     languages: string[];
   };
   fetchSupportLanguages: {};
-  // setConversationExtension: {
-  //   convId: string;
-  //   convType: number;
-  //   ext: any;
-  // };
   addReaction: {
     reaction: string;
     msgId: string;
@@ -520,7 +515,6 @@ export class ChatManagerLeafScreen extends LeafScreenBase<StateChatMessage> {
       'getMessageWithTimestamp',
       'translateMessage',
       'fetchSupportLanguages',
-      // 'setConversationExtension',
       'addReaction',
       'removeReaction',
       'fetchReactionList',
@@ -968,17 +962,6 @@ export class ChatManagerLeafScreen extends LeafScreenBase<StateChatMessage> {
         ChatManagerLeafScreen.TAG,
         name
       );
-      // } else if (name === MN.setConversationExtension) {
-      //   const { convId, convType, ext } = this.state.setConversationExtension;
-      //   this.tryCatch(
-      //     ChatClient.getInstance().chatManager.setConversationExtension(
-      //       convId,
-      //       ChatConversationTypeFromNumber(convType),
-      //       ext
-      //     ),
-      //     ChatManagerLeafScreen.TAG,
-      //     name
-      //   );
     } else if (name === MN.addReaction) {
       const { reaction, msgId } = this.state.addReaction;
       this.tryCatch(
