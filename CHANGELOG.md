@@ -18,7 +18,7 @@ Improvements
 
 The following APIs are renamed:
 
-- deleteRemoteConversation is renamed removeConversationFromServer.
+- `deleteRemoteConversation` is renamed `removeConversationFromServer`.
 - `loadAllConversations` is renamed `getAllConversations`.
 - `getConversationsFromServer` is renamed `fetchAllConversations`.
 - `getUnreadMessageCount` is renamed `getUnreadCount`.
