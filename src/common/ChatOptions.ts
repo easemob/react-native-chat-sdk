@@ -27,15 +27,15 @@ export class ChatOptions {
   /**
    * Whether to accept friend invitations from other users automatically.
    *
-   * - (Default) `true`: Yes.
-   * - `false`: No.
+   * - `true`: Yes.
+   * - (Default) `false`: No.
    */
   acceptInvitationAlways: boolean;
   /**
    * Whether to accept group invitations automatically.
    *
-   * - (Default) `true`: Yes.
-   * - `false`: No.
+   * - `true`: Yes.
+   * - (Default) `false`: No.
    */
   autoAcceptGroupInvitation: boolean;
   /**
@@ -48,8 +48,8 @@ export class ChatOptions {
   /**
    * Whether to require the delivery receipt.
    *
-   * - (Default) `true`: Yes.
-   * - `false`: No.
+   * - `true`: Yes.
+   * - (Default) `false`: No.
    */
   requireDeliveryAck: boolean;
   /**
