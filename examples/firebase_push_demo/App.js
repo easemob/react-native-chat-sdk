@@ -65,13 +65,15 @@ async function requestFcmToken() {
 const App = () => {
   // variable defines.
   const title = 'AgoraChatQuickstart';
-  const senderId = '';
+  // const senderId = '';
+  let fcmToken = '';
   const requestGetTokenUrl = 'https://a41.easemob.com/app/chat/user/login';
   const requestRegistryAccountUrl =
     'https://a41.easemob.com/app/chat/user/register';
-  const [appKey, setAppKey] = React.useState('');
-  const [username, setUsername] = React.useState('');
-  const [password, setPassword] = React.useState('');
+  const [appKey, setAppKey] = React.useState('1135220126133718#demo');
+  const [senderId, setSenderId] = React.useState('1068131238942');
+  const [username, setUsername] = React.useState('asterisk001');
+  const [password, setPassword] = React.useState('qwer');
   const [userId, setUserId] = React.useState('');
   const [content, setContent] = React.useState('');
   const [logText, setWarnText] = React.useState('Show log area');
@@ -147,11 +149,13 @@ const App = () => {
   // Init sdk.
   // Please initialize any interface before calling it.
   const init = async () => {
+    console.log('init:');
     await requestUserPermission();
     await checkApplicationPermission();
-    const fcmToken = await requestFcmToken();
+    fcmToken = await requestFcmToken();
+    // rollLog('fcm token: ' + fcmToken);
     this.unsubscribe = messaging().onMessage(async remoteMessage => {
-      Alert.alert('A new FCM message arrived!', JSON.stringify(remoteMessage));
+      console.log('A new FCM message arrived!', JSON.stringify(remoteMessage));
     });
     messaging().setBackgroundMessageHandler(async remoteMessage => {
       console.log('Message handled in the background!', remoteMessage);
@@ -165,6 +169,8 @@ const App = () => {
       appKey: appKey,
       pushConfig: pushConfig,
     });
+    console.log('push config', JSON.stringify(pushConfig));
+    rollLog('push config: ' + JSON.stringify(pushConfig));
     ChatClient.getInstance().removeAllConnectionListener();
     ChatClient.getInstance()
       .init(o)
@@ -209,6 +215,23 @@ const App = () => {
       })
       .catch(error => {
         rollLog('register fail: ' + JSON.stringify(error));
+      });
+  };
+
+  // login with account id and password
+  const loginWithPassword = () => {
+    if (this.isInitialized === false || this.isInitialized === undefined) {
+      rollLog('Perform initialization first.');
+      return;
+    }
+    rollLog('start login ...');
+    ChatClient.getInstance()
+      .login(username, password)
+      .then(() => {
+        rollLog('login operation success.');
+      })
+      .catch(reason => {
+        rollLog('login fail: ' + JSON.stringify(reason));
       });
   };
 
@@ -300,6 +323,21 @@ const App = () => {
       });
   };
 
+  const updatePush = () => {
+    ChatClient.getInstance()
+      .updatePushConfig(
+        new ChatPushConfig({deviceId: senderId, deviceToken: fcmToken}),
+      )
+      .then(() => {
+        rollLog('updatePush: success');
+        console.log('updatePush: success');
+      })
+      .catch(reason => {
+        rollLog(`updatePush fail: ${JSON.stringify(reason)}`);
+        console.log('updatePush fail', JSON.stringify(reason));
+      });
+  };
+
   // ui render.
   return (
     <SafeAreaView>
@@ -314,6 +352,15 @@ const App = () => {
             placeholder="Enter appkey"
             onChangeText={text => setAppKey(text)}
             value={appKey}
+          />
+        </View>
+        <View style={styles.inputCon}>
+          <TextInput
+            multiline
+            style={styles.inputBox}
+            placeholder="Enter FCM sendId"
+            onChangeText={text => setSenderId(text)}
+            value={senderId}
           />
         </View>
         <View style={styles.buttonCon}>
@@ -343,7 +390,7 @@ const App = () => {
           <Text style={styles.eachBtn} onPress={registerAccount}>
             SIGN UP
           </Text>
-          <Text style={styles.eachBtn} onPress={loginWithToken}>
+          <Text style={styles.eachBtn} onPress={loginWithPassword}>
             SIGN IN
           </Text>
           <Text style={styles.eachBtn} onPress={logout}>
@@ -371,6 +418,11 @@ const App = () => {
         <View style={styles.buttonCon}>
           <Text style={styles.btn2} onPress={sendmsg}>
             SEND TEXT
+          </Text>
+        </View>
+        <View style={styles.buttonCon}>
+          <Text style={styles.btn2} onPress={updatePush}>
+            PUSH BIND
           </Text>
         </View>
         <View>
