@@ -2,7 +2,7 @@ _Chinese | [English](./README.md)_
 
 更新时间：2022-06-16
 
-# 即时通讯
+# react-native-chat-sdk
 
 即时通讯 SDK 通过实时的消息的双向传递完成信息交换。
 
@@ -22,7 +22,6 @@ _Chinese | [English](./README.md)_
 ├── native_src // react native SDK native 源码文件夹  
 ├── node_modules // react native depends 文件夹，通过`yarn`或者`npm`命令生成  
 ├── package.json // react native project 管理文件  
-├── react-native-chat-sdk.podspec // react native ios cocoapods 配置文件，ios 平台使用。  
 ├── scripts // react native 脚本文件夹  
 ├── src // react native 源码文件夹  
 ├── tsconfig.build.json // typescript 语言构建配置文件  

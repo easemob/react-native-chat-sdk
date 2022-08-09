@@ -70,6 +70,9 @@ mv ${current_dir}/Output/node_modules/${old_package_name} ${current_dir}/Output/
 sed -i '' 's/: \"react-native-chat-sdk/: \"react-native-agora-chat/g' ${current_dir}/Output/node_modules/${new_package_name}/package.json
 sed -i '' 's/lib\/typescript\/src\/index.d.ts/lib\/typescript\/index.d.ts/g' ${current_dir}/Output/node_modules/${new_package_name}/package.json
 
+sed -i '' 's/react-native-chat-sdk/react-native-agora-chat/g' ${current_dir}/Output/node_modules/${new_package_name}/README.md
+sed -i '' 's/react-native-chat-sdk/react-native-agora-chat/g' ${current_dir}/Output/node_modules/${new_package_name}/README.zh.md
+
 mv ${current_dir}/Output/node_modules/${new_package_name}/native_src/cpp/CMakeLists.txt.rn ${current_dir}/Output/node_modules/${new_package_name}/native_src/cpp/CMakeLists.txt
 
 rm -rf ${current_dir}/Output/node_modules/${new_package_name}/native_src/cpp/CMakeLists.txt.flutter
