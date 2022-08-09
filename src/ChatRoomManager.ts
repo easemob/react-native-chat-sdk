@@ -71,83 +71,83 @@ export class ChatRoomManager extends Native {
       const contactEventType = params.type;
       switch (contactEventType) {
         case 'onChatRoomDestroyed':
-          listener.onChatRoomDestroyed({
+          listener.onChatRoomDestroyed?.({
             roomId: params.roomId,
             roomName: params.roomName,
           });
           break;
         case 'onMemberJoined':
-          listener.onMemberJoined({
+          listener.onMemberJoined?.({
             roomId: params.roomId,
             participant: params.participant,
           });
           break;
         case 'onMemberExited':
-          listener.onMemberExited({
+          listener.onMemberExited?.({
             roomId: params.roomId,
             participant: params.participant,
             roomName: params.roomName,
           });
           break;
         case 'onRemovedFromChatRoom':
-          listener.onRemoved({
+          listener.onRemoved?.({
             roomId: params.roomId,
             participant: params.participant,
             roomName: params.roomName,
           });
           break;
         case 'onMuteListAdded':
-          listener.onMuteListAdded({
+          listener.onMuteListAdded?.({
             roomId: params.roomId,
             mutes: params.mutes,
             expireTime: params.expireTime,
           });
           break;
         case 'onMuteListRemoved':
-          listener.onMuteListRemoved({
+          listener.onMuteListRemoved?.({
             roomId: params.roomId,
             mutes: params.mutes,
           });
           break;
         case 'onAdminAdded':
-          listener.onAdminAdded({
+          listener.onAdminAdded?.({
             roomId: params.roomId,
             admin: params.admin,
           });
           break;
         case 'onAdminRemoved':
-          listener.onAdminRemoved({
+          listener.onAdminRemoved?.({
             roomId: params.roomId,
             admin: params.admin,
           });
           break;
         case 'onOwnerChanged':
-          listener.onOwnerChanged({
+          listener.onOwnerChanged?.({
             roomId: params.roomId,
             newOwner: params.newOwner,
             oldOwner: params.oldOwner,
           });
           break;
         case 'onAnnouncementChanged':
-          listener.onAnnouncementChanged({
+          listener.onAnnouncementChanged?.({
             roomId: params.roomId,
             announcement: params.announcement,
           });
           break;
         case 'onAllowListAdded':
-          listener.onAllowListAdded({
+          listener.onAllowListAdded?.({
             roomId: params.roomId,
             members: params.members,
           });
           break;
         case 'onAllowListRemoved':
-          listener.onAllowListRemoved({
+          listener.onAllowListRemoved?.({
             roomId: params.roomId,
             members: params.members,
           });
           break;
         case 'onAllMemberMuteStateChanged':
-          listener.onAllChatRoomMemberMuteStateChanged({
+          listener.onAllChatRoomMemberMuteStateChanged?.({
             roomId: params.roomId,
             isAllMuted: params.isAllMuted,
           });

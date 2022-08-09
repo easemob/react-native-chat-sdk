@@ -221,7 +221,7 @@ export class ChatManager extends BaseManager {
         let m = ChatMessage.createReceiveMessage(message);
         list.push(m);
       });
-      listener.onMessagesReceived(list);
+      listener.onMessagesReceived?.(list);
     });
   }
   private onCmdMessagesReceived(messages: any[]): void {
@@ -232,7 +232,7 @@ export class ChatManager extends BaseManager {
         let m = ChatMessage.createReceiveMessage(message);
         list.push(m);
       });
-      listener.onCmdMessagesReceived(list);
+      listener.onCmdMessagesReceived?.(list);
     });
   }
   private onMessagesRead(messages: any[]): void {
@@ -243,7 +243,7 @@ export class ChatManager extends BaseManager {
         let m = ChatMessage.createReceiveMessage(message);
         list.push(m);
       });
-      listener.onMessagesRead(list);
+      listener.onMessagesRead?.(list);
     });
   }
   private onGroupMessageRead(messages: any[]): void {
@@ -254,7 +254,7 @@ export class ChatManager extends BaseManager {
         let m = new ChatGroupMessageAck(message);
         list.push(m);
       });
-      listener.onGroupMessageRead(messages);
+      listener.onGroupMessageRead?.(messages);
     });
   }
   private onMessagesDelivered(messages: any[]): void {
@@ -265,7 +265,7 @@ export class ChatManager extends BaseManager {
         let m = ChatMessage.createReceiveMessage(message);
         list.push(m);
       });
-      listener.onMessagesDelivered(list);
+      listener.onMessagesDelivered?.(list);
     });
   }
   private onMessagesRecalled(messages: any[]): void {
@@ -276,13 +276,13 @@ export class ChatManager extends BaseManager {
         let m = ChatMessage.createReceiveMessage(message);
         list.push(m);
       });
-      listener.onMessagesRecalled(list);
+      listener.onMessagesRecalled?.(list);
     });
   }
   private onConversationsUpdate(): void {
     chatlog.log(`${ChatManager.TAG}: onConversationsUpdate: `);
     this._messageListeners.forEach((listener: ChatMessageEventListener) => {
-      listener.onConversationsUpdate();
+      listener.onConversationsUpdate?.();
     });
   }
   private onConversationHasRead(params: any): void {
@@ -290,7 +290,7 @@ export class ChatManager extends BaseManager {
     this._messageListeners.forEach((listener: ChatMessageEventListener) => {
       let from = params?.from;
       let to = params?.to;
-      listener.onConversationRead(from, to);
+      listener.onConversationRead?.(from, to);
     });
   }
 
@@ -323,35 +323,37 @@ export class ChatManager extends BaseManager {
           })
         );
       });
-      listener.onMessageReactionDidChange(list);
+      listener.onMessageReactionDidChange?.(list);
     });
   }
 
   private onChatMessageThreadCreated(params: any): void {
     chatlog.log(`${ChatManager.TAG}: onChatMessageThreadCreated: `, params);
     this._messageListeners.forEach((listener: ChatMessageEventListener) => {
-      listener.onChatMessageThreadCreated(new ChatMessageThreadEvent(params));
+      listener.onChatMessageThreadCreated?.(new ChatMessageThreadEvent(params));
     });
   }
 
   private onChatMessageThreadUpdated(params: any): void {
     chatlog.log(`${ChatManager.TAG}: onChatMessageThreadUpdated: `, params);
     this._messageListeners.forEach((listener: ChatMessageEventListener) => {
-      listener.onChatMessageThreadUpdated(new ChatMessageThreadEvent(params));
+      listener.onChatMessageThreadUpdated?.(new ChatMessageThreadEvent(params));
     });
   }
 
   private onChatMessageThreadDestroyed(params: any): void {
     chatlog.log(`${ChatManager.TAG}: onChatMessageThreadDestroyed: `, params);
     this._messageListeners.forEach((listener: ChatMessageEventListener) => {
-      listener.onChatMessageThreadDestroyed(new ChatMessageThreadEvent(params));
+      listener.onChatMessageThreadDestroyed?.(
+        new ChatMessageThreadEvent(params)
+      );
     });
   }
 
   private onChatMessageThreadUserRemoved(params: any): void {
     chatlog.log(`${ChatManager.TAG}: onChatMessageThreadUserRemoved: `, params);
     this._messageListeners.forEach((listener: ChatMessageEventListener) => {
-      listener.onChatMessageThreadUserRemoved(
+      listener.onChatMessageThreadUserRemoved?.(
         new ChatMessageThreadEvent(params)
       );
     });

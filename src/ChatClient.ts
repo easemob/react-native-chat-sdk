@@ -249,26 +249,26 @@ export class ChatClient extends BaseManager {
       this.getCurrentUsername();
     }
     this._connectionListeners.forEach((element) => {
-      element.onConnected();
+      element.onConnected?.();
     });
   }
   private onDisconnected(params?: any): void {
     chatlog.log(`${ChatClient.TAG}: onDisconnected: `, params);
     this._connectionListeners.forEach((element) => {
       let ec = params?.errorCode as number;
-      element.onDisconnected(ec);
+      element.onDisconnected?.(ec);
     });
   }
   private onTokenWillExpire(params?: any): void {
     chatlog.log(`${ChatClient.TAG}: onTokenWillExpire: `, params);
     this._connectionListeners.forEach((element) => {
-      element.onTokenWillExpire();
+      element.onTokenWillExpire?.();
     });
   }
   private onTokenDidExpire(params?: any): void {
     chatlog.log(`${ChatClient.TAG}: onTokenDidExpire: `, params);
     this._connectionListeners.forEach((element) => {
-      element.onTokenDidExpire();
+      element.onTokenDidExpire?.();
     });
   }
   private onMultiDeviceEvent(params?: any): void {
@@ -276,19 +276,19 @@ export class ChatClient extends BaseManager {
     this._multiDeviceListeners.forEach((element) => {
       let event = params?.event as number;
       if (event < 10) {
-        element.onContactEvent(
+        element.onContactEvent?.(
           ChatMultiDeviceEventFromNumber(event),
           params.target,
           params.ext
         );
       } else if (event >= 10 && event < 40) {
-        element.onGroupEvent(
+        element.onGroupEvent?.(
           ChatMultiDeviceEventFromNumber(event),
           params.target,
           params.ext
         );
       } else {
-        element.onThreadEvent(
+        element.onThreadEvent?.(
           ChatMultiDeviceEventFromNumber(event),
           params.target,
           params.ext
@@ -305,43 +305,43 @@ export class ChatClient extends BaseManager {
   private onUserDidLoginFromOtherDevice(): void {
     chatlog.log(`${ChatClient.TAG}: onUserDidLoginFromOtherDevice: `);
     this._connectionListeners.forEach((element) => {
-      element.onDisconnected(206);
+      element.onDisconnected?.(206);
     });
   }
   private onUserDidRemoveFromServer(): void {
     chatlog.log(`${ChatClient.TAG}: onUserDidRemoveFromServer: `);
     this._connectionListeners.forEach((element) => {
-      element.onDisconnected(207);
+      element.onDisconnected?.(207);
     });
   }
   private onUserDidForbidByServer(): void {
     chatlog.log(`${ChatClient.TAG}: onUserDidForbidByServer: `);
     this._connectionListeners.forEach((element) => {
-      element.onDisconnected(305);
+      element.onDisconnected?.(305);
     });
   }
   private onUserDidChangePassword(): void {
     chatlog.log(`${ChatClient.TAG}: onUserDidChangePassword: `);
     this._connectionListeners.forEach((element) => {
-      element.onDisconnected(216);
+      element.onDisconnected?.(216);
     });
   }
   private onUserDidLoginTooManyDevice(): void {
     chatlog.log(`${ChatClient.TAG}: onUserDidLoginTooManyDevice: `);
     this._connectionListeners.forEach((element) => {
-      element.onDisconnected(214);
+      element.onDisconnected?.(214);
     });
   }
   private onUserKickedByOtherDevice(): void {
     chatlog.log(`${ChatClient.TAG}: onUserKickedByOtherDevice: `);
     this._connectionListeners.forEach((element) => {
-      element.onDisconnected(217);
+      element.onDisconnected?.(217);
     });
   }
   private onUserAuthenticationFailed(): void {
     chatlog.log(`${ChatClient.TAG}: onUserAuthenticationFailed: `);
     this._connectionListeners.forEach((element) => {
-      element.onDisconnected(202);
+      element.onDisconnected?.(202);
     });
   }
 
