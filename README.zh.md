@@ -2,11 +2,9 @@ _Chinese | [English](./README.md)_
 
 更新时间：2022-06-16
 
-# 即时通讯 IM React-Native 说明
+# 即时通讯
 
-此 SDK 基于原生 `Android` 和 `iOS` 使用 `typescript` 语言 实现的 React Native 版本。
-`Android` 详见这里。[传送门](https://docs-im.easemob.com/im/android/sdk/import)。
-`iOS` 详见这里。[传送门](https://docs-im.easemob.com/im/ios/sdk/import)。
+即时通讯 SDK 通过实时的消息的双向传递完成信息交换。
 
 ## 目录说明
 
@@ -31,38 +29,66 @@ _Chinese | [English](./README.md)_
 ├── tsconfig.json // typescript 语言配置文件  
 └── yarn.lock // yarn 项目依赖版本配置文件
 
-## 项目获取
+## 项目开发环境要求
 
-使用 git 命令下载
+要求如下：
+
+- React Native 0.63.4 or above
+- NodeJs 16 or above
+- Xcode 12.4 or above for iOS application
+- Android Studio 4.2 or above for Android application
+
+有关详细信息，请参阅快速入门演示。 [Portal](./docs/quick-start.md)
+
+## 添加 SDK 到现有项目
+
+打开终端，进入现有项目文件夹添加 SDK 依赖：
 
 ```sh
-git clone --recurse-submodules git@github.com:easemob/react-native-chat-sdk.git
+yarn add react-native-chat-sdk
 ```
 
-## 项目开发环境需求
+or
 
-具体可以参考快速开始 demo。[传送门](./docs/quick-start.zh.md)
+```sh
+npm i --save react-native-chat-sdk
+```
 
-## 项目构建和运行
+## 习惯用法
 
-打开终端，运行`yarn` 或者 `yarn install` 命令
+### 初始化 SDK
 
-### 构建 ios 平台
+```typescript
+ChatClient.getInstance()
+  .init(
+    new ChatOptions({
+      appKey: '<your app key>',
+    })
+  )
+  .then(() => {
+    console.log('init success');
+  })
+  .catch((reason) => {
+    console.log('init fail:', reason);
+  });
+```
 
-- 使用`xcode`打开文件`example/ios/ChatSdkExample.xcworkspace`;
-- 连接 ios 设备，或者选择模拟器;
-- 设置签名（如果是真机）;
-- 执行编译、安装并运行 demo。
-- **注意** 运行`yarn`的命令时候已经执行了`pod install`命令，否则，需要手动运行。
+### 登录
 
-### 构建 android 平台
+```typescript
+ChatClient.getInstance()
+  .loginWithAgoraToken('<your account ID>', '<your token>')
+  .then((value: any) => {
+    console.log(`login success`, value);
+  })
+  .catch((reason: any) => {
+    console.log(`login fail:`, reason);
+  });
+```
 
-- 使用`android studio`打开文件夹`example/android`;
-- 如果是首次运行请先运行`sync`命令;
-- 执行编译、安装并运行 demo;
-- 在 demo 运行之前，先启动服务: `cd example && yarn start`。
-- **注意** 在构建之前确保执行了如下命令: `cd native_src/cpp && sh generate.sh --type rn`
-- **注意** android5.0 或以上的版本，需要进行数据转发: `adb reverse tcp:8081 tcp:8081`
+### 其它
+
+请参考相应的示例或方法说明。
 
 ## 快速开始
 

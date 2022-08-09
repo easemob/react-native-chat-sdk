@@ -2,13 +2,11 @@ _English | [Chinese](./README.zh.md)_
 
 Update time: 2022-06-16
 
-# IM React-Native Description
+# react-native-chat-sdk
 
-This SDK is based on the native `Android` and `iOS` version of React Native implemented in the `typescript` language.
-`Android` is detailed here. [Portal](https://docs-im.easemob.com/im/android/sdk/import).
-`iOS` is detailed here. [Portal](https://docs-im.easemob.com/im/ios/sdk/import).
+Instant messaging connects people wherever they are and allows them to communicate with others in real time. The Agora Chat SDK enables you to embed real-time messaging in any app, on any device, anywhere.
 
-## directory description
+## Directory description
 
 ├── CHANGELOG.md // Release notes document  
 ├── CONTRIBUTING.md // Contributor documentation  
@@ -31,38 +29,66 @@ This SDK is based on the native `Android` and `iOS` version of React Native impl
 ├── tsconfig.json // typescript language configuration file  
 └── yarn.lock // yarn project dependency version configuration file
 
-## project acquisition
-
-Download using git command
-
-```sh
-git clone --recurse-submodules git@github.com:easemob/react-native-chat-sdk.git
-```
-
 ## Project development environment requirements
+
+The requirements are as follows:
+
+- React Native 0.63.4 or above
+- NodeJs 16 or above
+- Xcode 12.4 or above for iOS application
+- Android Studio 4.2 or above for Android application
 
 For details, please refer to the Quick Start demo. [Portal](./docs/quick-start.md)
 
-## project build and run
+## Add SDK to existing application
 
-Open a terminal and run `yarn` or `yarn install` command
+Open the terminal and go to the existing project folder to add SDK dependencies:
 
-### Build ios platform
+```sh
+yarn add react-native-chat-sdk
+```
 
-- use `xcode` to open the file `example/ios/ChatSdkExample.xcworkspace`;
-- Connect an ios device, or choose an emulator;
-- set the signature (if it is a real machine);
-- Execute build, install and run demo.
-- **Note** The `pod install` command has been executed when running the `yarn` command, otherwise, it needs to be run manually.
+or
 
-### Build the android platform
+```sh
+npm i --save react-native-chat-sdk
+```
 
-- use `android studio` to open the folder `example/android`;
-- If it is the first time, please run the `sync` command first;
-- Execute build, install and run demo;
-- Before running the demo, start the service: `cd example && yarn start`.
-- **NOTE** Make sure to execute the following command before building: `cd native_src/cpp && sh generate.sh --type rn`
-- **Note** android5.0 or above, data forwarding is required: `adb reverse tcp:8081 tcp:8081`
+## General Usage
+
+### Initialization SDK
+
+```typescript
+ChatClient.getInstance()
+  .init(
+    new ChatOptions({
+      appKey: '<your app key>',
+    })
+  )
+  .then(() => {
+    console.log('init success');
+  })
+  .catch((reason) => {
+    console.log('init fail:', reason);
+  });
+```
+
+### Login
+
+```typescript
+ChatClient.getInstance()
+  .loginWithAgoraToken('<your account ID>', '<your token>')
+  .then((value: any) => {
+    console.log(`login success`, value);
+  })
+  .catch((reason: any) => {
+    console.log(`login fail:`, reason);
+  });
+```
+
+### Others
+
+Please refer to the corresponding example or method description.
 
 ## quick start
 
