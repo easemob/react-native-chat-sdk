@@ -95,7 +95,7 @@ export class ChatGroupManager extends BaseManager {
       const groupEventType = params.type;
       switch (groupEventType) {
         case 'onInvitationReceived':
-          listener.onInvitationReceived({
+          listener.onInvitationReceived?.({
             groupId: params.groupId,
             inviter: params.inviter,
             groupName: params?.groupName,
@@ -103,7 +103,7 @@ export class ChatGroupManager extends BaseManager {
           });
           break;
         case 'onRequestToJoinReceived':
-          listener.onRequestToJoinReceived({
+          listener.onRequestToJoinReceived?.({
             groupId: params.groupId,
             applicant: params.applicant,
             groupName: params.groupName,
@@ -111,14 +111,14 @@ export class ChatGroupManager extends BaseManager {
           });
           break;
         case 'onRequestToJoinAccepted':
-          listener.onRequestToJoinAccepted({
+          listener.onRequestToJoinAccepted?.({
             groupId: params.groupId,
             accepter: params.accepter,
             groupName: params?.groupName,
           });
           break;
         case 'onRequestToJoinDeclined':
-          listener.onRequestToJoinDeclined({
+          listener.onRequestToJoinDeclined?.({
             groupId: params.groupId,
             decliner: params.decliner,
             groupName: params?.groupName,
@@ -126,114 +126,114 @@ export class ChatGroupManager extends BaseManager {
           });
           break;
         case 'onInvitationAccepted':
-          listener.onInvitationAccepted({
+          listener.onInvitationAccepted?.({
             groupId: params.groupId,
             invitee: params.invitee,
             reason: params?.reason,
           });
           break;
         case 'onInvitationDeclined':
-          listener.onInvitationDeclined({
+          listener.onInvitationDeclined?.({
             groupId: params.groupId,
             invitee: params.invitee,
             reason: params.reason,
           });
           break;
         case 'onUserRemoved':
-          listener.onUserRemoved({
+          listener.onUserRemoved?.({
             groupId: params.groupId,
             groupName: params.groupName,
           });
           break;
         case 'onGroupDestroyed':
-          listener.onGroupDestroyed({
+          listener.onGroupDestroyed?.({
             groupId: params.groupId,
             groupName: params.groupName,
           });
           break;
         case 'onAutoAcceptInvitationFromGroup':
-          listener.onAutoAcceptInvitation({
+          listener.onAutoAcceptInvitation?.({
             groupId: params.groupId,
             inviter: params.inviter,
             inviteMessage: params.inviteMessage,
           });
           break;
         case 'onMuteListAdded':
-          listener.onMuteListAdded({
+          listener.onMuteListAdded?.({
             groupId: params.groupId,
             mutes: params.mutes,
             muteExpire: params.muteExpire,
           });
           break;
         case 'onMuteListRemoved':
-          listener.onMuteListRemoved({
+          listener.onMuteListRemoved?.({
             groupId: params.groupId,
             mutes: params.mutes,
           });
           break;
         case 'onAdminAdded':
-          listener.onAdminAdded({
+          listener.onAdminAdded?.({
             groupId: params.groupId,
             admin: params.admin,
           });
           break;
         case 'onAdminRemoved':
-          listener.onAdminRemoved({
+          listener.onAdminRemoved?.({
             groupId: params.groupId,
             admin: params.admin,
           });
           break;
         case 'onOwnerChanged':
-          listener.onOwnerChanged({
+          listener.onOwnerChanged?.({
             groupId: params.groupId,
             newOwner: params.newOwner,
             oldOwner: params.oldOwner,
           });
           break;
         case 'onMemberJoined':
-          listener.onMemberJoined({
+          listener.onMemberJoined?.({
             groupId: params.groupId,
             member: params.member,
           });
           break;
         case 'onMemberExited':
-          listener.onMemberExited({
+          listener.onMemberExited?.({
             groupId: params.groupId,
             member: params.member,
           });
           break;
         case 'onAnnouncementChanged':
-          listener.onAnnouncementChanged({
+          listener.onAnnouncementChanged?.({
             groupId: params.groupId,
             announcement: params.announcement,
           });
           break;
         case 'onSharedFileAdded':
-          listener.onSharedFileAdded({
+          listener.onSharedFileAdded?.({
             groupId: params.groupId,
             sharedFile: params.sharedFile,
           });
           break;
         case 'onSharedFileDeleted':
-          listener.onSharedFileDeleted({
+          listener.onSharedFileDeleted?.({
             groupId: params.groupId,
             fileId: params.fileId,
           });
           break;
         case 'onAllowListAdded':
-          listener.onAllowListAdded({
+          listener.onAllowListAdded?.({
             groupId: params.groupId,
             members: params.members,
           });
           break;
         case 'onAllowListRemoved':
-          listener.onAllowListRemoved({
+          listener.onAllowListRemoved?.({
             groupId: params.groupId,
             members: params.members,
           });
           break;
         case 'onAllMemberMuteStateChanged':
-          listener.onAllGroupMemberMuteStateChanged({
+          listener.onAllGroupMemberMuteStateChanged?.({
             groupId: params.groupId,
             isAllMuted: params.isAllMuted,
           });

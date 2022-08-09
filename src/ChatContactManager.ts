@@ -52,19 +52,19 @@ export class ChatContactManager extends BaseManager {
       const contactEventType = params.type;
       switch (contactEventType) {
         case 'onContactAdded':
-          listener.onContactAdded(params.username);
+          listener.onContactAdded?.(params.username);
           break;
         case 'onContactDeleted':
-          listener.onContactDeleted(params.username);
+          listener.onContactDeleted?.(params.username);
           break;
         case 'onContactInvited':
-          listener.onContactInvited(params.username, params.reason);
+          listener.onContactInvited?.(params.username, params.reason);
           break;
         case 'onFriendRequestAccepted':
-          listener.onFriendRequestAccepted(params.username);
+          listener.onFriendRequestAccepted?.(params.username);
           break;
         case 'onFriendRequestDeclined':
-          listener.onFriendRequestDeclined(params.username);
+          listener.onFriendRequestDeclined?.(params.username);
           break;
 
         default:

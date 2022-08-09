@@ -289,7 +289,7 @@ export interface ChatConnectEventListener {
   /**
    * Occurs when the SDK connects to the chat server successfully.
    */
-  onConnected(): void;
+  onConnected?(): void;
 
   /**
    * Occurs when the SDK disconnects from the chat server.
@@ -298,17 +298,17 @@ export interface ChatConnectEventListener {
    *
    * @param errorCode The error code. See {@link ChatError}.
    */
-  onDisconnected(errorCode?: number): void;
+  onDisconnected?(errorCode?: number): void;
 
   /**
    * Occurs when the Agora token is about to expire.
    */
-  onTokenWillExpire(): void;
+  onTokenWillExpire?(): void;
 
   /**
    * Occurs when the Agora token has expired.
    */
-  onTokenDidExpire(): void;
+  onTokenDidExpire?(): void;
 }
 
 /**
@@ -324,7 +324,7 @@ export interface ChatMultiDeviceEventListener {
    * @param target The user ID.
    * @param ext The extension of user information.
    */
-  onContactEvent(
+  onContactEvent?(
     event?: ChatMultiDeviceEvent,
     target?: string,
     ext?: string
@@ -337,7 +337,7 @@ export interface ChatMultiDeviceEventListener {
    * @param target The group ID.
    * @param usernames The array of user IDs.
    */
-  onGroupEvent(
+  onGroupEvent?(
     event?: ChatMultiDeviceEvent,
     target?: string,
     usernames?: Array<string>
@@ -350,7 +350,7 @@ export interface ChatMultiDeviceEventListener {
    * @param target The group ID.
    * @param usernames The array of user IDs.
    */
-  onThreadEvent(
+  onThreadEvent?(
     event?: ChatMultiDeviceEvent,
     target?: string,
     usernames?: Array<string>
@@ -421,7 +421,7 @@ export interface ChatMessageEventListener {
    *
    * @param messages The received message(s).
    */
-  onMessagesReceived(messages: Array<ChatMessage>): void;
+  onMessagesReceived?(messages: Array<ChatMessage>): void;
 
   /**
    * Occurs when a command message is received.
@@ -430,28 +430,28 @@ export interface ChatMessageEventListener {
    *
    * @param messages The received command message(s).
    */
-  onCmdMessagesReceived(messages: Array<ChatMessage>): void;
+  onCmdMessagesReceived?(messages: Array<ChatMessage>): void;
 
   /**
    * Occurs when a read receipt is received for a message.
    *
    * @param messages The read receipt(s).
    */
-  onMessagesRead(messages: Array<ChatMessage>): void;
+  onMessagesRead?(messages: Array<ChatMessage>): void;
 
   /**
    * Occurs when a read receipt is received for a group message.
    *
    * @param groupMessageAcks The read receipt(s) for group message(s).
    */
-  onGroupMessageRead(groupMessageAcks: Array<ChatGroupMessageAck>): void;
+  onGroupMessageRead?(groupMessageAcks: Array<ChatGroupMessageAck>): void;
 
   /**
    * Occurs when a delivery receipt is received.
    *
    * @param messages The message(s) for which delivery receipt(s) is sent.
    */
-  onMessagesDelivered(messages: Array<ChatMessage>): void;
+  onMessagesDelivered?(messages: Array<ChatMessage>): void;
 
   /**
    * Occurs when a received message is recalled.
@@ -460,14 +460,14 @@ export interface ChatMessageEventListener {
    *
    * @param messages The recalled message(s).
    */
-  onMessagesRecalled(messages: Array<ChatMessage>): void;
+  onMessagesRecalled?(messages: Array<ChatMessage>): void;
 
   /**
    * Occurs when the conversation is updated.
    *
    * This callback is triggered only when a conversation is added or removed.
    */
-  onConversationsUpdate(): void;
+  onConversationsUpdate?(): void;
 
   /**
    * Occurs when a conversation read receipt is received.
@@ -481,14 +481,14 @@ export interface ChatMessageEventListener {
    *  @param from The user who sends the conversation read receipt.
    *  @param to The user who receives the conversation read receipt.
    */
-  onConversationRead(from: string, to?: string): void;
+  onConversationRead?(from: string, to?: string): void;
 
   /**
    * Occurs when a message reaction changes.
    *
    * @param list The reaction change event.
    */
-  onMessageReactionDidChange(list: Array<ChatMessageReactionEvent>): void;
+  onMessageReactionDidChange?(list: Array<ChatMessageReactionEvent>): void;
 
   /**
    * Occurs when a message thread is created.
@@ -497,7 +497,7 @@ export interface ChatMessageEventListener {
    *
    * @param event The message thread creation event.
    */
-  onChatMessageThreadCreated(event: ChatMessageThreadEvent): void;
+  onChatMessageThreadCreated?(event: ChatMessageThreadEvent): void;
   /**
    * Occurs when a message thread is updated.
    *
@@ -507,7 +507,7 @@ export interface ChatMessageEventListener {
    *
    * @param event The message thread update event.
    */
-  onChatMessageThreadUpdated(event: ChatMessageThreadEvent): void;
+  onChatMessageThreadUpdated?(event: ChatMessageThreadEvent): void;
   /**
    * Occurs when a message thread is destroyed.
    *
@@ -515,13 +515,13 @@ export interface ChatMessageEventListener {
    *
    * @param event The message thread destruction event.
    */
-  onChatMessageThreadDestroyed(event: ChatMessageThreadEvent): void;
+  onChatMessageThreadDestroyed?(event: ChatMessageThreadEvent): void;
   /**
    * Occurs when the current user is removed from the message thread by the admin.
    *
    * @param event The message thread user removal event.
    */
-  onChatMessageThreadUserRemoved(event: ChatMessageThreadEvent): void;
+  onChatMessageThreadUserRemoved?(event: ChatMessageThreadEvent): void;
 }
 
 /**
@@ -541,7 +541,7 @@ export interface ChatGroupEventListener {
    * - Param [inviter] The user ID of the inviter.
    * - Param [reason] The reason for invitation.
    */
-  onInvitationReceived(params: {
+  onInvitationReceived?(params: {
     groupId: string;
     inviter: string;
     groupName?: string;
@@ -559,7 +559,7 @@ export interface ChatGroupEventListener {
    * - Param [applicant] The user ID of the applicant.
    * - Param [reason] The reason for requesting to join the group.
    */
-  onRequestToJoinReceived(params: {
+  onRequestToJoinReceived?(params: {
     groupId: string;
     applicant: string;
     groupName?: string;
@@ -575,7 +575,7 @@ export interface ChatGroupEventListener {
    * - Param [groupName] The group name.
    * - Param [accepter] The ID of the user that accepts the join request.
    */
-  onRequestToJoinAccepted(params: {
+  onRequestToJoinAccepted?(params: {
     groupId: string;
     accepter: string;
     groupName?: string;
@@ -591,7 +591,7 @@ export interface ChatGroupEventListener {
    * - Param [decliner] The ID of the user that declines the join request.
    * - Param [reason] The reason for declining the join request.
    */
-  onRequestToJoinDeclined(params: {
+  onRequestToJoinDeclined?(params: {
     groupId: string;
     decliner: string;
     groupName?: string;
@@ -608,7 +608,7 @@ export interface ChatGroupEventListener {
    * - Param [invitee] The user ID of the invitee.
    * - Param [reason] The reason for accepting the group invitation.
    */
-  onInvitationAccepted(params: {
+  onInvitationAccepted?(params: {
     groupId: string;
     invitee: string;
     reason?: string;
@@ -623,7 +623,7 @@ export interface ChatGroupEventListener {
    * - Param [invitee] The user ID of the invitee.
    * - Param [reason] The reason for accepting the group invitation.
    */
-  onInvitationDeclined(params: {
+  onInvitationDeclined?(params: {
     groupId: string;
     invitee: string;
     reason?: string;
@@ -635,7 +635,7 @@ export interface ChatGroupEventListener {
    * - Param [groupId] The group ID.
    * - Param [groupName] The group name.
    */
-  onUserRemoved(params: { groupId: string; groupName?: string }): void;
+  onUserRemoved?(params: { groupId: string; groupName?: string }): void;
   /**
    * Occurs when a group is destroyed.
    *
@@ -643,7 +643,7 @@ export interface ChatGroupEventListener {
    * - Param [groupId] The group ID.
    * - Param [groupName] The group name.
    */
-  onGroupDestroyed(params: { groupId: string; groupName?: string }): void;
+  onGroupDestroyed?(params: { groupId: string; groupName?: string }): void;
   /**
    * Occurs when the group invitation is accepted automatically by the current user.
    *
@@ -654,7 +654,7 @@ export interface ChatGroupEventListener {
    * - Param [inviter]			The user ID of the inviter.
    * - Param [inviteMessage]    The invitation message.
    */
-  onAutoAcceptInvitation(params: {
+  onAutoAcceptInvitation?(params: {
     groupId: string;
     inviter: string;
     inviteMessage?: string;
@@ -669,7 +669,7 @@ export interface ChatGroupEventListener {
    * - Param [mutes] The user ID(s) of member(s) that are muted.
    * - Param [muteExpire] Reserved parameter. The Unix timestamp when the mute expires. The unit is millisecond.
    */
-  onMuteListAdded(params: {
+  onMuteListAdded?(params: {
     groupId: string;
     mutes: Array<string>;
     muteExpire?: number;
@@ -681,7 +681,7 @@ export interface ChatGroupEventListener {
    * - Param [groupId] The group ID.
    * - Param [mutes] The user ID(s) of member(s) that is removed from the mute list.
    */
-  onMuteListRemoved(params: { groupId: string; mutes: Array<string> }): void;
+  onMuteListRemoved?(params: { groupId: string; mutes: Array<string> }): void;
   /**
    * Occurs when a member is set as an admin.
    *
@@ -689,7 +689,7 @@ export interface ChatGroupEventListener {
    * - Param [groupId] The group ID.
    * - Param [admin] The user ID of the member that is set as an admin.
    */
-  onAdminAdded(params: { groupId: string; admin: string }): void;
+  onAdminAdded?(params: { groupId: string; admin: string }): void;
   /**
    * Occurs when the administrative privileges of an admin are removed.
    *
@@ -697,7 +697,7 @@ export interface ChatGroupEventListener {
    * - Param [groupId] The group ID.
    * - Param [admin] The user ID of the admin whose administrative privileges are removed.
    */
-  onAdminRemoved(params: { groupId: string; admin: string }): void;
+  onAdminRemoved?(params: { groupId: string; admin: string }): void;
   /**
    * Occurs when the group ownership is transferred.
    *
@@ -706,7 +706,7 @@ export interface ChatGroupEventListener {
    * - Param [newOwner] The user ID of the new group owner.
    * - Param [oldOwner] The user ID of the previous group owner.
    */
-  onOwnerChanged(params: {
+  onOwnerChanged?(params: {
     groupId: string;
     newOwner: string;
     oldOwner: string;
@@ -718,7 +718,7 @@ export interface ChatGroupEventListener {
    * - Param [groupId] The group ID.
    * - Param [member] The user ID of the new member.
    */
-  onMemberJoined(params: { groupId: string; member: string }): void;
+  onMemberJoined?(params: { groupId: string; member: string }): void;
   /**
    * Occurs when a member voluntarily leaves the group.
    *
@@ -726,7 +726,7 @@ export interface ChatGroupEventListener {
    * - Param [groupId] The group ID.
    * - Param [member] The user ID of the member leaving the group.
    */
-  onMemberExited(params: { groupId: string; member: string }): void;
+  onMemberExited?(params: { groupId: string; member: string }): void;
   /**
    * Occurs when the group announcement is updated.
    *
@@ -734,7 +734,7 @@ export interface ChatGroupEventListener {
    * - Param [groupId] The group ID.
    * - Param [announcement] The new announcement.
    */
-  onAnnouncementChanged(params: {
+  onAnnouncementChanged?(params: {
     groupId: string;
     announcement: string;
   }): void;
@@ -745,7 +745,7 @@ export interface ChatGroupEventListener {
    * - Param [groupId] The group ID.
    * - Param [sharedFile] The ID of the new shared file.
    */
-  onSharedFileAdded(params: { groupId: string; sharedFile: string }): void;
+  onSharedFileAdded?(params: { groupId: string; sharedFile: string }): void;
   /**
    * Occurs when a shared file is removed from a group.
    *
@@ -753,7 +753,7 @@ export interface ChatGroupEventListener {
    * - Param [groupId] The group ID.
    * - Param [fileId] The ID of the shared file that is deleted.
    */
-  onSharedFileDeleted(params: { groupId: string; fileId: string }): void;
+  onSharedFileDeleted?(params: { groupId: string; fileId: string }): void;
   /**
    * Occurs when one or more group members are added to the allow list.
    *
@@ -761,7 +761,7 @@ export interface ChatGroupEventListener {
    * - Param [groupId] The group ID.
    * - Param [members] The user IDs of members that are added to the allow list of the group.
    */
-  onAllowListAdded(params: { groupId: string; members: Array<string> }): void;
+  onAllowListAdded?(params: { groupId: string; members: Array<string> }): void;
   /**
    * Occurs when one or more group members are removed from the allow list.
    *
@@ -769,7 +769,10 @@ export interface ChatGroupEventListener {
    * - Param [groupId] The group ID.
    * - Param [members] The user IDs of members that are removed from the allow list of the group.
    */
-  onAllowListRemoved(params: { groupId: string; members: Array<string> }): void;
+  onAllowListRemoved?(params: {
+    groupId: string;
+    members: Array<string>;
+  }): void;
   /**
    * Occurs when all group members are muted or unmuted.
    *
@@ -779,7 +782,7 @@ export interface ChatGroupEventListener {
    *   - `true`: Yes.
    *   - `false`: No.
    */
-  onAllGroupMemberMuteStateChanged(params: {
+  onAllGroupMemberMuteStateChanged?(params: {
     groupId: string;
     isAllMuted: boolean;
   }): void;
@@ -800,7 +803,7 @@ export interface ChatContactEventListener {
    *
    * @param userName The user ID of the user that accepts the friend request of the current user.
    */
-  onContactAdded(userName: string): void;
+  onContactAdded?(userName: string): void;
   /**
    * Occurs when a friend request from the current user is declined by the peer user.
    *
@@ -808,7 +811,7 @@ export interface ChatContactEventListener {
    *
    * @param userName The user that declines the friend request from the current user.
    */
-  onContactDeleted(userName: string): void;
+  onContactDeleted?(userName: string): void;
   /**
    * Occurs when a friend request is received by the current user.
    *
@@ -817,7 +820,7 @@ export interface ChatContactEventListener {
    * @param userName The user who initiates the friend request.
    * @param reason The invitation message.
    */
-  onContactInvited(userName: string, reason?: string): void;
+  onContactInvited?(userName: string, reason?: string): void;
   /**
    * Occurs when a friend request is accepted by the current user.
    *
@@ -825,7 +828,7 @@ export interface ChatContactEventListener {
    *
    * @param userName The user who initiates the friend request.
    */
-  onFriendRequestAccepted(userName: string): void;
+  onFriendRequestAccepted?(userName: string): void;
   /**
    * Occurs when a friend request is declined by the current user.
    *
@@ -833,7 +836,7 @@ export interface ChatContactEventListener {
    *
    * @param userName The user who initiates the friend request.
    */
-  onFriendRequestDeclined(userName: string): void;
+  onFriendRequestDeclined?(userName: string): void;
 }
 
 /**
@@ -847,7 +850,7 @@ export interface ChatRoomEventListener {
    * - Param [roomId] The chat room ID.
    * - Param [roomName] The name of the chat room.
    */
-  onChatRoomDestroyed(params: { roomId: string; roomName?: string }): void;
+  onChatRoomDestroyed?(params: { roomId: string; roomName?: string }): void;
   /**
    * Occurs when a user joins the chat room.
    *
@@ -855,7 +858,7 @@ export interface ChatRoomEventListener {
    * - Param [roomId] The chat room ID.
    * - Param [participant] The user ID of the new member.
    */
-  onMemberJoined(params: { roomId: string; participant: string }): void;
+  onMemberJoined?(params: { roomId: string; participant: string }): void;
   /**
    * Occurs when a member voluntarily leaves the chat room.
    *
@@ -863,7 +866,7 @@ export interface ChatRoomEventListener {
    * - Param [roomId] The chat room ID.
    * - Param [participant] The user ID of the member who leaves the chat room.
    */
-  onMemberExited(params: {
+  onMemberExited?(params: {
     roomId: string;
     participant: string;
     roomName?: string;
@@ -876,7 +879,7 @@ export interface ChatRoomEventListener {
    * - Param [roomName] The name of the chat room.
    * - Param [participant] The user ID of the member that is removed from a chat room.
    */
-  onRemoved(params: {
+  onRemoved?(params: {
     roomId: string;
     participant?: string;
     roomName?: string;
@@ -889,7 +892,7 @@ export interface ChatRoomEventListener {
    * - Param [mutes] The user ID(s) of muted member(s).
    * - Param [expireTime] Reserved parameter. The Unix timestamp when the mute duration expires.
    */
-  onMuteListAdded(params: {
+  onMuteListAdded?(params: {
     roomId: string;
     mutes: Array<string>;
     expireTime?: string;
@@ -901,7 +904,7 @@ export interface ChatRoomEventListener {
    * - Param [roomId] The chat room ID.
    * - Param [mutes] The user ID(s) of unmuted member(s).
    */
-  onMuteListRemoved(params: { roomId: string; mutes: Array<string> }): void;
+  onMuteListRemoved?(params: { roomId: string; mutes: Array<string> }): void;
   /**
    *Occurs when a chat room member is set as an admin.
    *
@@ -909,7 +912,7 @@ export interface ChatRoomEventListener {
    * - Param [roomId] The chat room ID.
    * - Param [admin]  The user ID of the member who is set as an admin.
    */
-  onAdminAdded(params: { roomId: string; admin: string }): void;
+  onAdminAdded?(params: { roomId: string; admin: string }): void;
   /**
    * Occurs when the administrative privileges of a chat room admin are removed.
    *
@@ -917,7 +920,7 @@ export interface ChatRoomEventListener {
    * - Param [roomId] The chat room ID.
    * - Param [admin] The user ID of the admin whose administrative privileges are removed.
    */
-  onAdminRemoved(params: { roomId: string; admin: string }): void;
+  onAdminRemoved?(params: { roomId: string; admin: string }): void;
   /**
    * Occurs when the chat room ownership is transferred.
    *
@@ -926,7 +929,7 @@ export interface ChatRoomEventListener {
    * - Param [newOwner] The user ID of the new chat room owner.
    * - Param [oldOwner] The user ID of the previous chat room owner.
    */
-  onOwnerChanged(params: {
+  onOwnerChanged?(params: {
     roomId: string;
     newOwner: string;
     oldOwner: string;
@@ -938,7 +941,10 @@ export interface ChatRoomEventListener {
    * - Param [roomId] The chat room ID.
    * - Param [announcement] The new announcement.
    */
-  onAnnouncementChanged(params: { roomId: string; announcement: string }): void;
+  onAnnouncementChanged?(params: {
+    roomId: string;
+    announcement: string;
+  }): void;
   /**
    * Occurs when one or more chat room members are added to the allow list.
    *
@@ -946,7 +952,7 @@ export interface ChatRoomEventListener {
    * - Param [roomId] The chat room ID.
    * - Param [members] The member(s) added to the allow list of the chat room.
    */
-  onAllowListAdded(params: { roomId: string; members: Array<string> }): void;
+  onAllowListAdded?(params: { roomId: string; members: Array<string> }): void;
   /**
    * Occurs when one or more chat room members are removed from the allow list.
    *
@@ -954,7 +960,7 @@ export interface ChatRoomEventListener {
    * - Param [roomId] The chat room ID.
    * - Param [members] The member(s) removed from the allow list of the chat room.
    */
-  onAllowListRemoved(params: { roomId: string; members: Array<string> }): void;
+  onAllowListRemoved?(params: { roomId: string; members: Array<string> }): void;
   /**
    * Occurs when all members in the chat room are muted or unmuted.
    *
@@ -964,7 +970,7 @@ export interface ChatRoomEventListener {
    *   - `true`: Yes.
    *   - `false`: No.
    */
-  onAllChatRoomMemberMuteStateChanged(params: {
+  onAllChatRoomMemberMuteStateChanged?(params: {
     roomId: string;
     isAllMuted: boolean;
   }): void;
