@@ -257,7 +257,7 @@ export interface ChatMessageStatusCallback {
    *
    * @param progress The message upload/download progress value. The value range is 0 to 100 in percentage.
    */
-  onProgress(localMsgId: string, progress: number): void;
+  onProgress?(localMsgId: string, progress: number): void;
 
   /**
    * Occurs when a message error occurs.
