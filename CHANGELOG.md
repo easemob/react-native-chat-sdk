@@ -2,6 +2,26 @@
 
 ---
 
+## 1.0.7
+
+Improvements
+
+- The API reference of ChatOption.
+- The listener method has been made optional.
+- Update the release script.
+- sync update demonstration app.
+
+The following APIs are added:
+
+- `setConversationExtension`: set conversation extension.
+- `insertMessage`: insert a message.
+
+Issues fixed
+
+- Fix bug: Json parse error for type field.
+
+---
+
 ## 1.0.6
 
 New features
