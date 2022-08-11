@@ -71,13 +71,16 @@ sed -i '' 's/: \"react-native-chat-sdk/: \"react-native-agora-chat/g' ${current_
 sed -i '' 's/lib\/typescript\/src\/index.d.ts/lib\/typescript\/index.d.ts/g' ${current_dir}/Output/node_modules/${new_package_name}/package.json
 
 sed -i '' 's/react-native-chat-sdk/react-native-agora-chat/g' ${current_dir}/Output/node_modules/${new_package_name}/README.md
-sed -i '' 's/react-native-chat-sdk/react-native-agora-chat/g' ${current_dir}/Output/node_modules/${new_package_name}/README.zh.md
+# https://docs-im.easemob.com/ccim/rn/quickstart
+# https://docs.agora.io/en/agora-chat/agora_chat_get_started_rn?platform=React%20Native
+sed -i '' 's/https:\/\/docs-im.easemob.com\/ccim\/rn\/quickstart/https:\/\/docs.agora.io\/en\/agora-chat\/agora_chat_get_started_rn?platform=React%20Native/g' ${current_dir}/Output/node_modules/${new_package_name}/README.md
 
 mv ${current_dir}/Output/node_modules/${new_package_name}/native_src/cpp/CMakeLists.txt.rn ${current_dir}/Output/node_modules/${new_package_name}/native_src/cpp/CMakeLists.txt
 
 rm -rf ${current_dir}/Output/node_modules/${new_package_name}/native_src/cpp/CMakeLists.txt.flutter
 rm -rf ${current_dir}/Output/node_modules/${new_package_name}/native_src/cpp/generate.ps1
 rm -rf ${current_dir}/Output/node_modules/${new_package_name}/native_src/cpp/generate.sh
+rm -rf ${current_dir}/Output/node_modules/${new_package_name}/README.zh.md
 
 pushd ${current_dir}/Output/node_modules
 

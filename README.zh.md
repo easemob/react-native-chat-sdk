@@ -1,6 +1,6 @@
 _Chinese | [English](./README.md)_
 
-更新时间：2022-06-16
+更新时间：2022-08-11
 
 # react-native-chat-sdk
 
@@ -118,10 +118,15 @@ ChatClient.getInstance()
 
 详见使用者说明 [传送门](./docs/user.md)。
 
-## License
+## 许可证
 
 MIT
 
-## Q&A
+## 常见问题和解决方法
 
 如果遇到问题可以参考这里。[传送门](./docs/others.md)。
+
+## 引用
+
+[Github 仓库地址](https://github.com/easemob/react-native-chat-sdk)
+[官网网站地址](https://docs-im.easemob.com/ccim/rn/quickstart)
