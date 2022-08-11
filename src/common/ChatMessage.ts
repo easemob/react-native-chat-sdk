@@ -502,6 +502,11 @@ export class ChatMessage {
    * - For a chat room, it is the chat room ID.
    * @param content The text content.
    * @param chatType The conversation type. See {@link ChatType}.
+   * @param opt extension params
+   * - targetLanguageCodes: The language code. {@link ChatTextMessageBody#targetLanguageCodes}
+   * - isChatThread: whether to create thread message
+   *   - `true`: Yes.
+   *   - (Default) `false`: No.
    * @returns The message instance.
    */
   public static createTextMessage(
@@ -535,7 +540,11 @@ export class ChatMessage {
    * - For a chat room, it is the chat room ID.
    * @param filePath The file path.
    * @param chatType The conversation type. See {@link ChatType}.
-   * @param opt The file name.
+   * @param opt extension params
+   * - displayName: The file name.
+   * - isChatThread: whether to create thread message
+   *   - `true`: Yes.
+   *   - (Default) `false`: No.
    * @returns The message instance.
    */
   public static createFileMessage(
@@ -568,14 +577,17 @@ export class ChatMessage {
    * - For a chat room, it is the chat room ID.
    * @param filePath The image path.
    * @param chatType The conversation type. See {@link ChatType}.
-   * @param opt
-   *   @{#displayName} The image name.
-   *   @{#thumbnailLocalPath} The image thumbnail path.
-   *   @{#sendOriginalImage} Whether to send the original image.
-   *     - `true`: Yes.
-   *     - (Default) `false`: If the image is smaller than 100 KB, the SDK sends the original image. If the image is equal to or greater than 100 KB, the SDK will compress it before sending the compressed image.
-   *   @{#width} The image width in pixels.
-   *   @{#height} The image height in pixels.
+   * @param opt extension params
+   * - displayName: The image name.
+   * - thumbnailLocalPath: The image thumbnail path.
+   * - sendOriginalImage: Whether to send the original image.
+   *   - `true`: Yes.
+   *   - (Default) `false`: If the image is smaller than 100 KB, the SDK sends the original image.
+   * - width: The image width in pixels.
+   * - height: The image height in pixels.
+   * - isChatThread: whether to create thread message
+   *   - `true`: Yes.
+   *   - (Default) `false`: No.
    * @returns The message instance.
    */
   public static createImageMessage(
@@ -616,12 +628,15 @@ export class ChatMessage {
    * - For a chat room, it is the chat room ID.
    * @param filePath The path of the video file.
    * @param chatType The conversation type. See {@link ChatType}.
-   * @param opt
-   *   @{#displayName} The video name.
-   *   @{#thumbnailLocalPath} The path of the thumbnail of the first frame of video.
-   *   @{#duration} The video duration in seconds.
-   *   @{#width} The video thumbnail width in pixels.
-   *   @{#height} The video thumbnail height in pixels.
+   * @param opt extension params
+   * - displayName: The video file name.
+   * - thumbnailLocalPath: The path of the thumbnail of the first frame of video.
+   * - duration: The video duration in seconds.
+   * - width: The video thumbnail width in pixels.
+   * - height: The video thumbnail height in pixels.
+   * - isChatThread: whether to create thread message
+   *   - `true`: Yes.
+   *   - (Default) `false`: No.
    * @returns The message instance.
    */
   public static createVideoMessage(
@@ -662,9 +677,12 @@ export class ChatMessage {
    * - For a chat room, it is the chat room ID.
    * @param filePath The path of the voice file.
    * @param chatType The conversation type. See {@link ChatType}.
-   * @param opt
-   *   @{#displayName} The voice file name.
-   *   @{#duration} The voice duration in seconds.
+   * @param opt extension params
+   * - displayName: The voice file name.
+   * - duration: The voice duration in seconds.
+   * - isChatThread: whether to create thread message
+   *   - `true`: Yes.
+   *   - (Default) `false`: No.
    * @returns The message instance.
    */
   public static createVoiceMessage(
@@ -700,8 +718,11 @@ export class ChatMessage {
    * @param latitude The latitude.
    * @param longitude The longitude.
    * @param chatType The conversation type. See {@link ChatType}.
-   * @param opt
-   *   @{#address} The address.
+   * @param opt extension params
+   * - address: The address.
+   * - isChatThread: whether to create thread message
+   *   - `true`: Yes.
+   *   - (Default) `false`: No.
    * @returns The message instance.
    */
   public static createLocationMessage(
@@ -736,6 +757,13 @@ export class ChatMessage {
    * - For a chat room, it is the chat room ID.
    * @param action The command action.
    * @param chatType The conversation type. See {@link ChatType}.
+   * @param opt extension params
+   * - isChatThread: whether to create thread message
+   *   - `true`: Yes.
+   *   - (Default) `false`: No.
+   * - deliverOnlineOnly: Whether to delivery to online users only.
+   *   - (Default) `true`: Yes. Only online users receive.
+   *   - `false`: No. The user receives it online, and the offline user receives it online.
    * @returns The message instance.
    */
   public static createCmdMessage(
@@ -744,11 +772,13 @@ export class ChatMessage {
     chatType: ChatMessageChatType = ChatMessageChatType.PeerChat,
     opt?: {
       isChatThread?: boolean;
+      deliverOnlineOnly?: boolean;
     }
   ): ChatMessage {
     return ChatMessage.createSendMessage({
       body: new ChatCmdMessageBody({
         action: action,
+        deliverOnlineOnly: opt?.deliverOnlineOnly,
       }),
       targetId: targetId,
       chatType: chatType,
@@ -765,8 +795,11 @@ export class ChatMessage {
    * - For a chat room, it is the chat room ID.
    * @param event The custom event.
    * @param chatType The conversation type. See {@link ChatType}.
-   * @param opt
-   *   @{#params} The dictionary of custom parameters.
+   * @param opt extension params
+   * - params: The dictionary of custom parameters.
+   * - isChatThread: whether to create thread message
+   *   - `true`: Yes.
+   *   - (Default) `false`: No.
    * @returns The message instance.
    */
   public static createCustomMessage(
@@ -1131,7 +1164,7 @@ export class ChatCmdMessageBody extends ChatMessageBody {
   constructor(params: { action: string; deliverOnlineOnly?: boolean }) {
     super(ChatMessageType.CMD);
     this.action = params.action;
-    this.deliverOnlineOnly = params.deliverOnlineOnly ?? false;
+    this.deliverOnlineOnly = params.deliverOnlineOnly ?? true;
   }
 }
 

@@ -89,6 +89,8 @@ import {
   MTfetchJoinedChatThreadsWithParentId,
   MTfetchLastMessageWithChatThreads,
   MTgetMessageThread,
+  MTsyncConversationExt,
+  MTinsertMessage,
 } from './__internal__/Consts';
 import { Native } from './__internal__/Native';
 import {
@@ -652,6 +654,23 @@ export class ChatManager extends BaseManager {
   }
 
   /**
+   * Add a message to the local session. For example, when some notification messages are received, a message can be constructed and written to the session. Insert fails if message exists (msgId or localMsgId is existed).
+   *
+   * @param message The message to be inserted.
+   *
+   * @throws A description of the exception. See {@link ChatError}.
+   */
+  public async insertMessage(message: ChatMessage): Promise<void> {
+    chatlog.log(`${ChatManager.TAG}: insertMessage: `, message);
+    let r: any = await Native._callMethod(MTinsertMessage, {
+      [MTinsertMessage]: {
+        msg: message,
+      },
+    });
+    Native.checkErrorFromResult(r);
+  }
+
+  /**
    * Updates the local message.
    *
    * The message will be updated both in the memory and local database.
@@ -772,7 +791,7 @@ export class ChatManager extends BaseManager {
     let r: any = await Native._callMethod(MTfetchHistoryMessages, {
       [MTfetchHistoryMessages]: {
         convId: convId,
-        type: chatType as number,
+        convType: chatType as number,
         pageSize: pageSize,
         startMsgId: startMsgId,
       },
@@ -948,7 +967,7 @@ export class ChatManager extends BaseManager {
     let r: any = await Native._callMethod(MTgetConversation, {
       [MTgetConversation]: {
         convId: convId,
-        type: convType as number,
+        convType: convType as number,
         createIfNeed: createIfNeed,
       },
     });
@@ -1062,7 +1081,7 @@ export class ChatManager extends BaseManager {
     let r: any = await Native._callMethod(MTgetLatestMessage, {
       [MTgetLatestMessage]: {
         convId: convId,
-        type: convType,
+        convType: convType,
       },
     });
     ChatManager.checkErrorFromResult(r);
@@ -1090,7 +1109,7 @@ export class ChatManager extends BaseManager {
     let r: any = await Native._callMethod(MTgetLatestMessageFromOthers, {
       [MTgetLatestMessageFromOthers]: {
         convId: convId,
-        type: convType,
+        convType: convType,
       },
     });
     ChatManager.checkErrorFromResult(r);
@@ -1122,7 +1141,7 @@ export class ChatManager extends BaseManager {
     let r: any = await Native._callMethod(MTgetUnreadMsgCount, {
       [MTgetUnreadMsgCount]: {
         convId: convId,
-        type: convType,
+        convType: convType,
       },
     });
     ChatManager.checkErrorFromResult(r);
@@ -1153,7 +1172,7 @@ export class ChatManager extends BaseManager {
     let r: any = await Native._callMethod(MTmarkMessageAsRead, {
       [MTmarkMessageAsRead]: {
         convId: convId,
-        type: convType,
+        convType: convType,
         msg_id: msgId,
       },
     });
@@ -1180,7 +1199,7 @@ export class ChatManager extends BaseManager {
     let r: any = await Native._callMethod(MTmarkAllMessagesAsRead, {
       [MTmarkAllMessagesAsRead]: {
         convId: convId,
-        type: convType,
+        convType: convType,
       },
     });
     ChatManager.checkErrorFromResult(r);
@@ -1211,7 +1230,7 @@ export class ChatManager extends BaseManager {
     let r: any = await Native._callMethod(MTupdateConversationMessage, {
       [MTupdateConversationMessage]: {
         convId: convId,
-        type: convType,
+        convType: convType,
         msg: msg,
       },
     });
@@ -1238,7 +1257,7 @@ export class ChatManager extends BaseManager {
     let r: any = await Native._callMethod(MTremoveMessage, {
       [MTremoveMessage]: {
         convId: convId,
-        type: convType,
+        convType: convType,
         msg_id: msgId,
       },
     });
@@ -1261,7 +1280,7 @@ export class ChatManager extends BaseManager {
     let r: any = await Native._callMethod(MTclearAllMessages, {
       [MTclearAllMessages]: {
         convId: convId,
-        type: convType,
+        convType: convType,
       },
     });
     ChatManager.checkErrorFromResult(r);
@@ -1306,7 +1325,7 @@ export class ChatManager extends BaseManager {
     let r: any = await Native._callMethod(MTloadMsgWithMsgType, {
       [MTloadMsgWithMsgType]: {
         convId: convId,
-        type: convType,
+        convType: convType,
         msg_type: msgType,
         direction: direction === ChatSearchDirection.UP ? 'up' : 'down',
         timestamp: timestamp,
@@ -1360,7 +1379,7 @@ export class ChatManager extends BaseManager {
     let r: any = await Native._callMethod(MTloadMsgWithStartId, {
       [MTloadMsgWithStartId]: {
         convId: convId,
-        type: convType,
+        convType: convType,
         direction: direction === ChatSearchDirection.UP ? 'up' : 'down',
         startId: startMsgId,
         count: loadCount,
@@ -1420,7 +1439,7 @@ export class ChatManager extends BaseManager {
     let r: any = await Native._callMethod(MTloadMsgWithKeywords, {
       [MTloadMsgWithKeywords]: {
         convId: convId,
-        type: convType,
+        convType: convType,
         keywords: keywords,
         direction: direction === ChatSearchDirection.UP ? 'up' : 'down',
         timestamp: timestamp,
@@ -1474,7 +1493,7 @@ export class ChatManager extends BaseManager {
     let r: any = await Native._callMethod(MTloadMsgWithTime, {
       [MTloadMsgWithTime]: {
         convId: convId,
-        type: convType,
+        convType: convType,
         startTime: startTime,
         endTime: endTime,
         direction: direction === ChatSearchDirection.UP ? 'up' : 'down',
@@ -1545,28 +1564,30 @@ export class ChatManager extends BaseManager {
    *
    * @param convId The conversation ID.
    * @param convType The conversation type. See {@link ChatConversationType}.
-   * @param ext The extension information. You can add the extension information as required.
+   * @param ext The extension information. This parameter must be key-value type.
    */
-  // public async setConversationExtension(
-  //   convId: string,
-  //   convType: ChatConversationType,
-  //   ext: any
-  // ): Promise<void> {
-  //   chatlog.log(
-  //     `${ChatManager.TAG}: setConversationExtension: `,
-  //     convId,
-  //     convType,
-  //     ext
-  //   );
-  //   let r: any = await Native._callMethod(MTsyncConversationName, {
-  //     [MTsyncConversationName]: {
-  //       convId: convId,
-  //       type: convType,
-  //       ext: ext,
-  //     },
-  //   });
-  //   ChatManager.checkErrorFromResult(r);
-  // }
+  public async setConversationExtension(
+    convId: string,
+    convType: ChatConversationType,
+    ext: {
+      [key: string]: string | number;
+    }
+  ): Promise<void> {
+    chatlog.log(
+      `${ChatManager.TAG}: setConversationExtension: `,
+      convId,
+      convType,
+      ext
+    );
+    let r: any = await Native._callMethod(MTsyncConversationExt, {
+      [MTsyncConversationExt]: {
+        convId: convId,
+        convType: convType,
+        ext: ext,
+      },
+    });
+    ChatManager.checkErrorFromResult(r);
+  }
 
   /**
    * Adds a Reaction.

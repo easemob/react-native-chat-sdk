@@ -64,6 +64,8 @@ export const MN = {
   fetchLastMessageWithChatThread: 'fetchLastMessageWithChatThread',
   fetchChatThreadFromServer: 'fetchChatThreadFromServer',
   getMessageThread: 'getMessageThread',
+  setConversationExtension: 'setConversationExtension',
+  insertMessage: 'insertMessage',
 };
 
 export const metaDataList = new Map<string, ApiParams>([
@@ -1138,6 +1140,46 @@ export const metaDataList = new Map<string, ApiParams>([
           paramName: 'msgId',
           paramType: 'string',
           paramDefaultValue: '1020169139521587768',
+        },
+      ],
+    },
+  ],
+  [
+    MN.setConversationExtension,
+    {
+      methodName: MN.setConversationExtension,
+      params: [
+        {
+          paramName: 'convId',
+          paramType: 'string',
+          paramDefaultValue: datasheet.accounts[2].id,
+          domType: 'input',
+        },
+        {
+          paramName: 'convType',
+          paramType: 'number',
+          paramDefaultValue: 0,
+          domType: 'input',
+        },
+        {
+          paramName: 'ext',
+          paramType: 'json',
+          paramDefaultValue: { key: 'value' },
+          domType: 'input',
+        },
+      ],
+    },
+  ],
+  [
+    MN.insertMessage,
+    {
+      methodName: MN.insertMessage,
+      params: [
+        {
+          paramName: 'msg',
+          paramType: 'json',
+          paramDefaultValue: {},
+          paramValue: () => ChatManagerCache.getInstance().createTextMessage(),
         },
       ],
     },

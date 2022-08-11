@@ -1368,6 +1368,43 @@ export class QuickTestScreenChat extends QuickTestScreenBase<
           );
         }
         break;
+      case MN.setConversationExtension:
+        {
+          const methodName = this.metaData.get(
+            MN.setConversationExtension
+          )!.methodName;
+          console.log(`${MN.setConversationExtension} === ${methodName}`);
+          const convId = this.metaData.get(MN.setConversationExtension)
+            ?.params[0].paramDefaultValue;
+          const convType = this.metaData.get(MN.setConversationExtension)
+            ?.params[1].paramDefaultValue;
+          const ext = this.metaData.get(MN.setConversationExtension)?.params[2]
+            .paramDefaultValue;
+          this.tryCatch(
+            ChatClient.getInstance().chatManager.setConversationExtension(
+              convId,
+              convType,
+              ext
+            ),
+            QuickTestScreenChat.TAG,
+            name
+          );
+        }
+        break;
+      case MN.insertMessage:
+        {
+          const methodName = this.metaData.get(MN.insertMessage)!.methodName;
+          console.log(`${MN.insertMessage} === ${methodName}`);
+          const msg = this.metaData
+            .get(MN.insertMessage)
+            ?.params[0].paramValue?.();
+          this.tryCatch(
+            ChatClient.getInstance().chatManager.insertMessage(msg),
+            QuickTestScreenChat.TAG,
+            name
+          );
+        }
+        break;
       default:
         break;
     }
