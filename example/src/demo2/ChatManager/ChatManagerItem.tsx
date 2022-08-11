@@ -249,6 +249,14 @@ export interface StateChatMessage extends StateBase {
   getMessageThread: {
     msgId: string;
   };
+  setConversationExtension: {
+    convId: string;
+    convType: number;
+    ext: { [key: string]: string | number };
+  };
+  insertMessage: {
+    message: ChatMessage;
+  };
 }
 
 export interface StatelessChatMessage extends StatelessBase {
@@ -535,6 +543,8 @@ export class ChatManagerLeafScreen extends LeafScreenBase<StateChatMessage> {
       'fetchLastMessageWithChatThread',
       'fetchChatThreadFromServer',
       'getMessageThread',
+      'setConversationExtension',
+      'insertMessage',
     ];
     let renderDomAry: ({} | null | undefined)[] = [];
     const data = this.metaData;
@@ -1141,6 +1151,24 @@ export class ChatManagerLeafScreen extends LeafScreenBase<StateChatMessage> {
       const { msgId } = this.state.getMessageThread;
       this.tryCatch(
         ChatClient.getInstance().chatManager.getMessageThread(msgId),
+        ChatManagerLeafScreen.TAG,
+        name
+      );
+    } else if (name === MN.setConversationExtension) {
+      const { convId, convType, ext } = this.state.setConversationExtension;
+      this.tryCatch(
+        ChatClient.getInstance().chatManager.setConversationExtension(
+          convId,
+          convType,
+          ext
+        ),
+        ChatManagerLeafScreen.TAG,
+        name
+      );
+    } else if (name === MN.insertMessage) {
+      const { message } = this.state.insertMessage;
+      this.tryCatch(
+        ChatClient.getInstance().chatManager.insertMessage(message),
         ChatManagerLeafScreen.TAG,
         name
       );

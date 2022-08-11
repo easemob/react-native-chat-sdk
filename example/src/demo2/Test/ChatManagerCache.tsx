@@ -42,7 +42,7 @@ export class ChatManagerCache {
       }
       onProgress(localMsgId: string, progress: number): void {
         this.that.callbackList.forEach((value: ChatMessageStatusCallback) => {
-          value.onProgress(localMsgId, progress);
+          value.onProgress?.(localMsgId, progress);
         });
       }
       onError(localMsgId: string, error: ChatError): void {

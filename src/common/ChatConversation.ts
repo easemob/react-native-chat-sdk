@@ -193,20 +193,22 @@ export class ChatConversation {
   }
 
   /**
-   * Gets the extension information of the conversation.
+   * Sets the extension information of the conversation.
    *
-   * @param ext The extension information of the conversation.
+   * @param ext The extension information of the conversation. This parameter must be key-value type.
    *
    * @throws A description of the exception. See {@link ChatError}.
    */
-  // public async setConversationExtension(ext: any): Promise<void> {
-  //   this.ext = ext;
-  //   return ChatClient.getInstance().chatManager.setConversationExtension(
-  //     this.convId,
-  //     this.convType,
-  //     this.ext
-  //   );
-  // }
+  public async setConversationExtension(ext: {
+    [key: string]: string | number;
+  }): Promise<void> {
+    await ChatClient.getInstance().chatManager.setConversationExtension(
+      this.convId,
+      this.convType,
+      this.ext
+    );
+    this.ext = ext;
+  }
 
   /**
    * Marks a message as read.
