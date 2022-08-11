@@ -472,7 +472,7 @@ export class ChatClient extends BaseManager {
    * @throws A description of the exception. See {@link ChatError}.
    */
   public async getAccessToken(): Promise<string> {
-    chatlog.log(`${ChatClient.TAG}: isLoginBefore: `);
+    chatlog.log(`${ChatClient.TAG}: getAccessToken: `);
     let r: any = await Native._callMethod(MTgetToken);
     ChatClient.checkErrorFromResult(r);
     let _token = r?.[MTgetToken] as string;
