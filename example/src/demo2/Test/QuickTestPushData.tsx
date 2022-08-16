@@ -3,6 +3,8 @@ import {
   ChatConversationType,
   ChatPushRemindType,
   ChatSilentModeParam,
+  ChatSilentModeParamType,
+  ChatSilentModeTime,
 } from 'react-native-chat-sdk';
 import { datasheet } from '../__default__/Datasheet';
 import type { ApiParams } from '../__internal__/DataTypes';
@@ -39,7 +41,13 @@ export const metaDataList = new Map<string, ApiParams>([
         {
           paramName: 'option',
           paramType: 'json',
-          paramDefaultValue: ChatSilentModeParam.constructorWithDuration(10),
+          paramDefaultValue: new ChatSilentModeParam({
+            paramType: ChatSilentModeParamType.REMIND_TYPE,
+            remindType: ChatPushRemindType.ALL,
+            startTime: new ChatSilentModeTime({ hour: 1, minute: 1 }),
+            endTime: new ChatSilentModeTime({ hour: 1, minute: 1 }),
+            duration: 10,
+          }),
           domType: 'input',
         },
       ],
