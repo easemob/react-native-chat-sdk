@@ -11,16 +11,16 @@ import {
 } from 'react-native-chat-sdk';
 import { generateData } from '../__internal__/Utils';
 export interface StatePushMessage extends StateBase {
-  setConversationSilentMode: {
+  setSilentModeForConversation: {
     convId: string;
     convType: number;
     option: ChatSilentModeParam;
   };
-  removeConversationSilentMode: {
+  removeSilentModeForConversation: {
     convId: string;
     convType: number;
   };
-  fetchConversationSilentMode: {
+  fetchSilentModeForConversation: {
     convId: string;
     convType: number;
   };
@@ -58,9 +58,9 @@ export class PushManagerLeafScreen extends LeafScreenBase<StatePushMessage> {
   }
   protected renderApiDom(): ReactNode[] {
     const apiList = [
-      'setConversationSilentMode',
-      'removeConversationSilentMode',
-      'fetchConversationSilentMode',
+      'setSilentModeForConversation',
+      'removeSilentModeForConversation',
+      'fetchSilentModeForConversation',
       'setSilentModeForAll',
       'fetchSilentModeForAll',
       'fetchSilentModeForConversations',
@@ -114,11 +114,11 @@ export class PushManagerLeafScreen extends LeafScreenBase<StatePushMessage> {
   private callApi(name: string): void {
     console.log(`${PushManagerLeafScreen.TAG}: callApi: `);
     switch (name) {
-      case MN.setConversationSilentMode: {
+      case MN.setSilentModeForConversation: {
         const { convId, convType, option } =
-          this.state.setConversationSilentMode;
+          this.state.setSilentModeForConversation;
         this.tryCatch(
-          ChatClient.getInstance().pushManager.setConversationSilentMode({
+          ChatClient.getInstance().pushManager.setSilentModeForConversation({
             convId,
             convType,
             option,
@@ -128,10 +128,10 @@ export class PushManagerLeafScreen extends LeafScreenBase<StatePushMessage> {
         );
         break;
       }
-      case MN.removeConversationSilentMode: {
-        const { convId, convType } = this.state.removeConversationSilentMode;
+      case MN.removeSilentModeForConversation: {
+        const { convId, convType } = this.state.removeSilentModeForConversation;
         this.tryCatch(
-          ChatClient.getInstance().pushManager.removeConversationSilentMode({
+          ChatClient.getInstance().pushManager.removeSilentModeForConversation({
             convId,
             convType,
           }),
@@ -140,10 +140,10 @@ export class PushManagerLeafScreen extends LeafScreenBase<StatePushMessage> {
         );
         break;
       }
-      case MN.fetchConversationSilentMode: {
-        const { convId, convType } = this.state.fetchConversationSilentMode;
+      case MN.fetchSilentModeForConversation: {
+        const { convId, convType } = this.state.fetchSilentModeForConversation;
         this.tryCatch(
-          ChatClient.getInstance().pushManager.fetchConversationSilentMode({
+          ChatClient.getInstance().pushManager.fetchSilentModeForConversation({
             convId,
             convType,
           }),

@@ -10,9 +10,9 @@ import { datasheet } from '../__default__/Datasheet';
 import type { ApiParams } from '../__internal__/DataTypes';
 
 export const MN = {
-  setConversationSilentMode: 'setConversationSilentMode',
-  removeConversationSilentMode: 'removeConversationSilentMode',
-  fetchConversationSilentMode: 'fetchConversationSilentMode',
+  setSilentModeForConversation: 'setSilentModeForConversation',
+  removeSilentModeForConversation: 'removeSilentModeForConversation',
+  fetchSilentModeForConversation: 'fetchSilentModeForConversation',
   setSilentModeForAll: 'setSilentModeForAll',
   fetchSilentModeForAll: 'fetchSilentModeForAll',
   fetchSilentModeForConversations: 'fetchSilentModeForConversations',
@@ -22,9 +22,9 @@ export const MN = {
 
 export const metaDataList = new Map<string, ApiParams>([
   [
-    MN.setConversationSilentMode,
+    MN.setSilentModeForConversation,
     {
-      methodName: MN.setConversationSilentMode,
+      methodName: MN.setSilentModeForConversation,
       params: [
         {
           paramName: 'convId',
@@ -54,9 +54,9 @@ export const metaDataList = new Map<string, ApiParams>([
     },
   ],
   [
-    MN.removeConversationSilentMode,
+    MN.removeSilentModeForConversation,
     {
-      methodName: MN.removeConversationSilentMode,
+      methodName: MN.removeSilentModeForConversation,
       params: [
         {
           paramName: 'convId',
@@ -74,9 +74,9 @@ export const metaDataList = new Map<string, ApiParams>([
     },
   ],
   [
-    MN.fetchConversationSilentMode,
+    MN.fetchSilentModeForConversation,
     {
-      methodName: MN.fetchConversationSilentMode,
+      methodName: MN.fetchSilentModeForConversation,
       params: [
         {
           paramName: 'convId',

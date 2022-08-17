@@ -63,20 +63,20 @@ export class QuickTestScreenPush extends QuickTestScreenBase<
   protected callApi(name: string): void {
     super.callApi(name);
     switch (name) {
-      case MN.setConversationSilentMode:
+      case MN.setSilentModeForConversation:
         {
           const methodName = this.metaData.get(
-            MN.setConversationSilentMode
+            MN.setSilentModeForConversation
           )!.methodName;
-          console.log(`${MN.setConversationSilentMode} === ${methodName}`);
-          const convId = this.metaData.get(MN.setConversationSilentMode)!
+          console.log(`${MN.setSilentModeForConversation} === ${methodName}`);
+          const convId = this.metaData.get(MN.setSilentModeForConversation)!
             .params[0].paramDefaultValue;
-          const convType = this.metaData.get(MN.setConversationSilentMode)!
+          const convType = this.metaData.get(MN.setSilentModeForConversation)!
             .params[1].paramDefaultValue;
-          const option = this.metaData.get(MN.setConversationSilentMode)!
+          const option = this.metaData.get(MN.setSilentModeForConversation)!
             .params[2].paramDefaultValue;
           this.tryCatch(
-            ChatClient.getInstance().pushManager.setConversationSilentMode({
+            ChatClient.getInstance().pushManager.setSilentModeForConversation({
               convId,
               convType,
               option,
@@ -86,41 +86,48 @@ export class QuickTestScreenPush extends QuickTestScreenBase<
           );
         }
         break;
-      case MN.removeConversationSilentMode:
+      case MN.removeSilentModeForConversation:
         {
           const methodName = this.metaData.get(
-            MN.removeConversationSilentMode
+            MN.removeSilentModeForConversation
           )!.methodName;
-          console.log(`${MN.removeConversationSilentMode} === ${methodName}`);
-          const convId = this.metaData.get(MN.removeConversationSilentMode)!
+          console.log(
+            `${MN.removeSilentModeForConversation} === ${methodName}`
+          );
+          const convId = this.metaData.get(MN.removeSilentModeForConversation)!
             .params[0].paramDefaultValue;
-          const convType = this.metaData.get(MN.removeConversationSilentMode)!
-            .params[1].paramDefaultValue;
+          const convType = this.metaData.get(
+            MN.removeSilentModeForConversation
+          )!.params[1].paramDefaultValue;
           this.tryCatch(
-            ChatClient.getInstance().pushManager.removeConversationSilentMode({
-              convId,
-              convType,
-            }),
+            ChatClient.getInstance().pushManager.removeSilentModeForConversation(
+              {
+                convId,
+                convType,
+              }
+            ),
             QuickTestScreenPush.TAG,
             name
           );
         }
         break;
-      case MN.fetchConversationSilentMode:
+      case MN.fetchSilentModeForConversation:
         {
           const methodName = this.metaData.get(
-            MN.fetchConversationSilentMode
+            MN.fetchSilentModeForConversation
           )!.methodName;
-          console.log(`${MN.fetchConversationSilentMode} === ${methodName}`);
-          const convId = this.metaData.get(MN.fetchConversationSilentMode)!
+          console.log(`${MN.fetchSilentModeForConversation} === ${methodName}`);
+          const convId = this.metaData.get(MN.fetchSilentModeForConversation)!
             .params[0].paramDefaultValue;
-          const convType = this.metaData.get(MN.fetchConversationSilentMode)!
+          const convType = this.metaData.get(MN.fetchSilentModeForConversation)!
             .params[1].paramDefaultValue;
           this.tryCatch(
-            ChatClient.getInstance().pushManager.fetchConversationSilentMode({
-              convId,
-              convType,
-            }),
+            ChatClient.getInstance().pushManager.fetchSilentModeForConversation(
+              {
+                convId,
+                convType,
+              }
+            ),
             QuickTestScreenPush.TAG,
             name
           );

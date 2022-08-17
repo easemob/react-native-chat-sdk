@@ -167,7 +167,7 @@ export class PresenceLeafScreen extends LeafScreenBase<StateChatPresence> {
     } else if (name === MN.presenceUnsubscribe) {
       const { members } = this.state.presenceUnsubscribe;
       this.tryCatch(
-        ChatClient.getInstance().presenceManager.unSubscribe(members),
+        ChatClient.getInstance().presenceManager.unsubscribe(members),
         PresenceLeafScreen.TAG,
         name
       );
