@@ -109,7 +109,7 @@ export class QuickTestScreenPresence extends QuickTestScreenBase<
           const members = this.metaData.get(MN.presenceUnsubscribe)!.params[0]
             .paramDefaultValue;
           this.tryCatch(
-            ChatClient.getInstance().presenceManager.unSubscribe(members),
+            ChatClient.getInstance().presenceManager.unsubscribe(members),
             QuickTestScreenPresence.TAG,
             MN.presenceUnsubscribe
           );

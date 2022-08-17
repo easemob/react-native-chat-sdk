@@ -20,6 +20,10 @@ Issues fixed
 
 - Fix bug: Json parse error for type field.
 
+The following APIs are renamed:
+
+- `unSubscribe` is renamed `unsubscribe`.
+
 ---
 
 ## 1.0.6

@@ -43,13 +43,13 @@ export class ChatPushManager extends Native {
    *
    * @throws A description of the exception. See {@link ChatError}.
    */
-  public async setConversationSilentMode(params: {
+  public async setSilentModeForConversation(params: {
     convId: string;
     convType: ChatConversationType;
     option: ChatSilentModeParam;
   }): Promise<void> {
     chatlog.log(
-      `${ChatPushManager.TAG}: setConversationSilentMode: `,
+      `${ChatPushManager.TAG}: setSilentModeForConversation: `,
       params.convId,
       params.convType,
       params.option
@@ -75,12 +75,12 @@ export class ChatPushManager extends Native {
    *
    * @throws A description of the exception. See {@link ChatError}.
    */
-  public async removeConversationSilentMode(params: {
+  public async removeSilentModeForConversation(params: {
     convId: string;
     convType: ChatConversationType;
   }): Promise<void> {
     chatlog.log(
-      `${ChatPushManager.TAG}: removeConversationSilentMode: `,
+      `${ChatPushManager.TAG}: removeSilentModeForConversation: `,
       params.convId,
       params.convType
     );
@@ -104,12 +104,12 @@ export class ChatPushManager extends Native {
    *
    * @throws A description of the exception. See {@link ChatError}.
    */
-  public async fetchConversationSilentMode(params: {
+  public async fetchSilentModeForConversation(params: {
     convId: string;
     convType: ChatConversationType;
   }): Promise<ChatSilentModeResult> {
     chatlog.log(
-      `${ChatPushManager.TAG}: fetchConversationSilentMode: `,
+      `${ChatPushManager.TAG}: fetchSilentModeForConversation: `,
       params.convId,
       params.convType
     );

@@ -127,8 +127,8 @@ export class ChatPresenceManager extends Native {
    *
    * @throws A description of the exception. See {@link ChatError}.
    */
-  public async unSubscribe(members: Array<string>): Promise<void> {
-    chatlog.log(`${ChatPresenceManager.TAG}: unSubscribe: `, members);
+  public async unsubscribe(members: Array<string>): Promise<void> {
+    chatlog.log(`${ChatPresenceManager.TAG}: unsubscribe: `, members);
     let r: any = await Native._callMethod(MTpresenceUnsubscribe, {
       [MTpresenceUnsubscribe]: {
         members,

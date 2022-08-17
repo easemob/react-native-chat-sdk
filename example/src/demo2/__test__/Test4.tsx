@@ -345,7 +345,7 @@ function demo6(): void {
   );
 
   ChatClient.getInstance()
-    .presenceManager.unSubscribe(memberIds)
+    .presenceManager.unsubscribe(memberIds)
     .then((result) => {
       console.log('success: ', result);
     })
