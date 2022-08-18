@@ -1405,6 +1405,43 @@ export class QuickTestScreenChat extends QuickTestScreenBase<
           );
         }
         break;
+      case MN.deleteMessagesBeforeTimestamp:
+        {
+          const methodName = this.metaData.get(
+            MN.deleteMessagesBeforeTimestamp
+          )!.methodName;
+          console.log(`${MN.deleteMessagesBeforeTimestamp} === ${methodName}`);
+          const timestamp = this.metaData.get(MN.deleteMessagesBeforeTimestamp)
+            ?.params[0].paramDefaultValue;
+          this.tryCatch(
+            ChatClient.getInstance().chatManager.deleteMessagesBeforeTimestamp(
+              timestamp
+            ),
+            QuickTestScreenChat.TAG,
+            name
+          );
+        }
+        break;
+      case MN.getThreadConversation:
+        {
+          const methodName = this.metaData.get(
+            MN.getThreadConversation
+          )!.methodName;
+          console.log(`${MN.getThreadConversation} === ${methodName}`);
+          const convId = this.metaData.get(MN.getThreadConversation)?.params[0]
+            .paramDefaultValue;
+          const createIfNeed = this.metaData.get(MN.getThreadConversation)
+            ?.params[1].paramDefaultValue;
+          this.tryCatch(
+            ChatClient.getInstance().chatManager.getThreadConversation(
+              convId,
+              createIfNeed
+            ),
+            QuickTestScreenChat.TAG,
+            name
+          );
+        }
+        break;
       default:
         break;
     }
