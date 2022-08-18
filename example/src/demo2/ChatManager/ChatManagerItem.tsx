@@ -257,6 +257,13 @@ export interface StateChatMessage extends StateBase {
   insertMessage: {
     message: ChatMessage;
   };
+  deleteMessagesBeforeTimestamp: {
+    timestamp: number;
+  };
+  getThreadConversation: {
+    convId: string;
+    createIfNeed: boolean;
+  };
 }
 
 export interface StatelessChatMessage extends StatelessBase {
@@ -1169,6 +1176,25 @@ export class ChatManagerLeafScreen extends LeafScreenBase<StateChatMessage> {
       const { message } = this.state.insertMessage;
       this.tryCatch(
         ChatClient.getInstance().chatManager.insertMessage(message),
+        ChatManagerLeafScreen.TAG,
+        name
+      );
+    } else if (name === MN.deleteMessagesBeforeTimestamp) {
+      const { timestamp } = this.state.deleteMessagesBeforeTimestamp;
+      this.tryCatch(
+        ChatClient.getInstance().chatManager.deleteMessagesBeforeTimestamp(
+          timestamp
+        ),
+        ChatManagerLeafScreen.TAG,
+        name
+      );
+    } else if (name === MN.getThreadConversation) {
+      const { convId, createIfNeed } = this.state.getThreadConversation;
+      this.tryCatch(
+        ChatClient.getInstance().chatManager.getThreadConversation(
+          convId,
+          createIfNeed
+        ),
         ChatManagerLeafScreen.TAG,
         name
       );

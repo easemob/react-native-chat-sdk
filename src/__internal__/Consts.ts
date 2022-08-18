@@ -75,6 +75,7 @@ export const MTsearchChatMsgFromDB = 'searchChatMsgFromDB';
 export const MTgetMessage = 'getMessage';
 export const MTasyncFetchGroupAcks = 'asyncFetchGroupAcks';
 export const MTdeleteRemoteConversation = 'deleteRemoteConversation';
+export const MTdeleteMessagesBeforeTimestamp = 'deleteMessagesBeforeTimestamp';
 
 export const MTtranslateMessage = 'translateMessage';
 export const MTfetchSupportLanguages = 'fetchSupportLanguages';
@@ -299,3 +300,4 @@ export const MTjoinChatThread = 'joinChatThread';
 export const MTleaveChatThread = 'leaveChatThread';
 export const MTdestroyChatThread = 'destroyChatThread';
 export const MTgetMessageThread = 'getMessageThread';
+export const MTgetThreadConversation = 'getThreadConversation';

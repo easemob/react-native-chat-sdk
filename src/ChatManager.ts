@@ -91,6 +91,8 @@ import {
   MTgetMessageThread,
   MTsyncConversationExt,
   MTinsertMessage,
+  MTdeleteMessagesBeforeTimestamp,
+  MTgetThreadConversation,
 } from './__internal__/Consts';
 import { Native } from './__internal__/Native';
 import {
@@ -1287,6 +1289,26 @@ export class ChatManager extends BaseManager {
   }
 
   /**
+   * Deletes local messages with timestamp that is before the specified one.
+   *
+   * @param timestamp The specified Unix timestamp(milliseconds).
+   *
+   * @throws A description of the exception. See {@link ChatError}.
+   */
+  public async deleteMessagesBeforeTimestamp(timestamp: number): Promise<void> {
+    chatlog.log(
+      `${ChatManager.TAG}: deleteMessagesBeforeTimestamp:`,
+      timestamp
+    );
+    let r: any = await Native._callMethod(MTdeleteMessagesBeforeTimestamp, {
+      [MTdeleteMessagesBeforeTimestamp]: {
+        timestamp: timestamp,
+      },
+    });
+    ChatManager.checkErrorFromResult(r);
+  }
+
+  /**
    * Retrieves messages of a certain type in the conversation from the local database.
    *
    * @param convId The conversation ID.
@@ -2208,6 +2230,41 @@ export class ChatManager extends BaseManager {
     const rr = r?.[MTgetMessageThread];
     if (rr) {
       return new ChatMessageThread(rr);
+    }
+    return undefined;
+  }
+
+  /**
+   * Gets the thread conversation by conversation ID.
+   *
+   * @param convId The conversation ID.
+   * @param createIfNeed Whether to create a conversation if the specified conversation is not found:
+   * - (Default) `true`: Yes.
+   * - `false`: No.
+   *
+   * @returns The retrieved conversation object. The SDK returns `null` if the conversation is not found.
+   *
+   * @throws A description of the exception. See {@link ChatError}.
+   */
+  public async getThreadConversation(
+    convId: string,
+    createIfNeed: boolean = true
+  ): Promise<ChatConversation | undefined> {
+    chatlog.log(
+      `${ChatManager.TAG}: getThreadConversation: `,
+      convId,
+      createIfNeed
+    );
+    let r: any = await Native._callMethod(MTgetThreadConversation, {
+      [MTgetThreadConversation]: {
+        convId: convId,
+        createIfNeed: createIfNeed,
+      },
+    });
+    Native.checkErrorFromResult(r);
+    const rr = r?.[MTgetThreadConversation];
+    if (rr) {
+      return new ChatConversation(rr);
     }
     return undefined;
   }

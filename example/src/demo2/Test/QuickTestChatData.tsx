@@ -66,6 +66,8 @@ export const MN = {
   getMessageThread: 'getMessageThread',
   setConversationExtension: 'setConversationExtension',
   insertMessage: 'insertMessage',
+  deleteMessagesBeforeTimestamp: 'deleteMessagesBeforeTimestamp',
+  getThreadConversation: 'getThreadConversation',
 };
 
 export const metaDataList = new Map<string, ApiParams>([
@@ -1180,6 +1182,38 @@ export const metaDataList = new Map<string, ApiParams>([
           paramType: 'json',
           paramDefaultValue: {},
           paramValue: () => ChatManagerCache.getInstance().createTextMessage(),
+        },
+      ],
+    },
+  ],
+  [
+    MN.deleteMessagesBeforeTimestamp,
+    {
+      methodName: MN.deleteMessagesBeforeTimestamp,
+      params: [
+        {
+          paramName: 'timestamp', // 使用发送成功或者失败的数据测试，依赖sendMessage
+          paramType: 'number',
+          paramDefaultValue: 1660814489000,
+        },
+      ],
+    },
+  ],
+  [
+    MN.getThreadConversation,
+    {
+      methodName: MN.getThreadConversation,
+      params: [
+        {
+          paramName: 'convId', // 使用发送成功或者失败的数据测试，依赖sendMessage
+          paramType: 'string',
+          paramDefaultValue: datasheet.accounts[2].id,
+        },
+        {
+          paramName: 'createIfNeed',
+          paramType: 'boolean',
+          paramDefaultValue: true,
+          domType: 'select',
         },
       ],
     },

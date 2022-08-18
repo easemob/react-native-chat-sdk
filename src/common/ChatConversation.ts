@@ -99,16 +99,29 @@ export class ChatConversation {
    */
   convType: ChatConversationType;
   /**
+   * Whether it is a thread conversation.
+   * 
+   * - `true`: Yes.
+   * - `false`: No.
+   *
+   * **Note**
+
+   * This parameter is valid only for group.
+   */
+  isChatThread: boolean;
+  /**
    * The conversation extension.
    */
   ext?: any;
   constructor(params: {
     convId: string;
     convType: ChatConversationType;
+    isChatThread?: boolean;
     ext?: any;
   }) {
     this.convId = params.convId;
     this.convType = params.convType;
+    this.isChatThread = params.isChatThread ?? false;
     this.ext = params.ext;
   }
 

@@ -6,23 +6,33 @@
 
 Improvements
 
-- The API reference of ChatOption.
+- The dependent native SDK (iOS and Android) is upgraded to V3.9.5.
+- Support push notification settings operation. see {@link ChatPushManager}
+- Support push config setting for FCM. see {@link ChatPushConfig}
+- Support push initialization Settings. see {@link ChatOptions#pushConfig}
+- Support push config setting update. see {@link ChatClient#updatePushConfig}
 - The listener method has been made optional.
 - Update the release script.
 - sync update demonstration app.
-
-The following APIs are added:
-
-- `setConversationExtension`: set conversation extension.
-- `insertMessage`: insert a message.
 
 Issues fixed
 
 - Fix bug: Json parse error for type field.
 
+The following APIs are added:
+
+- `setConversationExtension`: set conversation extension.
+- `insertMessage`: insert a message.
+- `deleteMessagesBeforeTimestamp`: Deletes messages before the specified timestamp. 
+- `getThreadConversation`: Gets or creates a conversation for thread.
+
 The following APIs are renamed:
 
 - `unSubscribe` is renamed `unsubscribe`.
+
+The following Object are updated:
+
+- `ChatConversation` add `isChatThread` attribute.
 
 ---
 
