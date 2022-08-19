@@ -384,7 +384,7 @@ export interface ChatGroupFileStatusCallback {
    * @param filePath The path of the shared file.
    * @param progress The value of the download or upload progress. The value range is 0-100 in percentage.
    */
-  onProgress(groupId: string, filePath: string, progress: number): void;
+  onProgress?(groupId: string, filePath: string, progress: number): void;
 
   /**
    * Occurs when there is an error during the upload or download of a shared file.
