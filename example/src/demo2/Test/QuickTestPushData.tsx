@@ -29,20 +29,20 @@ export const metaDataList = new Map<string, ApiParams>([
         {
           paramName: 'convId',
           paramType: 'string',
-          paramDefaultValue: '187663429730305',
+          paramDefaultValue: datasheet.accounts[2].id,
           domType: 'input',
         },
         {
           paramName: 'convType',
           paramType: 'number',
-          paramDefaultValue: 1,
+          paramDefaultValue: 0,
           domType: 'input',
         },
         {
           paramName: 'option',
           paramType: 'json',
           paramDefaultValue: new ChatSilentModeParam({
-            paramType: ChatSilentModeParamType.REMIND_TYPE,
+            paramType: ChatSilentModeParamType.SILENT_MODE_DURATION,
             remindType: ChatPushRemindType.ALL,
             startTime: new ChatSilentModeTime({ hour: 1, minute: 1 }),
             endTime: new ChatSilentModeTime({ hour: 1, minute: 1 }),
@@ -81,13 +81,13 @@ export const metaDataList = new Map<string, ApiParams>([
         {
           paramName: 'convId',
           paramType: 'string',
-          paramDefaultValue: '187663429730305',
+          paramDefaultValue: datasheet.accounts[2].id,
           domType: 'input',
         },
         {
           paramName: 'convType',
           paramType: 'number',
-          paramDefaultValue: 1,
+          paramDefaultValue: 0,
           domType: 'input',
         },
       ],
