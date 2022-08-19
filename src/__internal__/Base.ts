@@ -83,7 +83,7 @@ export class BaseManager extends Native {
               subscription.remove();
             } else if (callbackType === MTonMessageProgressUpdate) {
               const progress: number = params.progress;
-              callback.onProgress(gid, fp, progress);
+              callback.onProgress?.(gid, fp, progress);
             }
           }
         }
