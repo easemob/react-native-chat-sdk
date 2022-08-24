@@ -128,5 +128,4 @@ If you encounter problems, please refer to here. [Portal](./docs/others.md).
 
 ## References
 
-[Github repository address](https://github.com/easemob/react-native-chat-sdk)
-[Official website document address](https://docs-im.easemob.com/ccim/rn/quickstart)
+[Official website document address](https://docs.agora.io/en/agora-chat/landing-page?platform=React%20Native)
