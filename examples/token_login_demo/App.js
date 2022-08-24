@@ -27,15 +27,17 @@ import {
 const App = () => {
   // The variable defines.
   const title = 'AgoraChatQuickstart';
-  const requestGetTokenUrl = 'https://a41.easemob.com/app/chat/user/login';
+  const requestGetTokenUrl = 'https://a41.chat.agora.io/app/chat/user/login';
   const requestRegistryAccountUrl =
-    'https://a41.easemob.com/app/chat/user/register';
-  const appKey = '41117440#383391';
+    'https://a41.chat.agora.io/app/chat/user/register';
+  const appKey = '81446724#514456';
   const [username, setUsername] = React.useState('');
   const [password, setPassword] = React.useState('');
   const [userId, setUserId] = React.useState('');
   const [content, setContent] = React.useState('');
   const [logText, setWarnText] = React.useState('Show log area');
+  const chatClient = ChatClient.getInstance();
+  const chatManager = chatClient.chatManager;
 
   // output console log.
   useEffect(() => {
@@ -83,8 +85,8 @@ const App = () => {
         onConversationRead: (from, to) => {},
       };
 
-      ChatClient.getInstance().chatManager.removeAllMessageListener();
-      ChatClient.getInstance().chatManager.addMessageListener(msgListener);
+      chatManager.removeAllMessageListener();
+      chatManager.addMessageListener(msgListener);
     };
 
     // Initialize the SDK.
@@ -94,8 +96,8 @@ const App = () => {
         autoLogin: false,
         appKey: appKey,
       });
-      ChatClient.getInstance().removeAllConnectionListener();
-      ChatClient.getInstance()
+      chatClient.removeAllConnectionListener();
+      chatClient
         .init(o)
         .then(() => {
           rollLog('init success');
@@ -115,7 +117,7 @@ const App = () => {
               rollLog('onDisconnected:' + errorCode);
             },
           };
-          ChatClient.getInstance().addConnectionListener(listener);
+          chatClient.addConnectionListener(listener);
         })
         .catch(error => {
           rollLog(
@@ -126,7 +128,7 @@ const App = () => {
     };
 
     init();
-  }, [appKey]);
+  }, [chatClient, chatManager, appKey]);
 
   const requestHttp = url => {
     rollLog(`requestHttp: userAccount: ${username}, userPassword: ${password}`);
@@ -196,7 +198,7 @@ const App = () => {
               );
               const token = value.accessToken;
               rollLog('start login ...');
-              ChatClient.getInstance()
+              chatClient
                 .loginWithAgoraToken(username, token)
                 .then(() => {
                   rollLog('login operation success.');
@@ -224,7 +226,7 @@ const App = () => {
       return;
     }
     rollLog('start logout ...');
-    ChatClient.getInstance()
+    chatClient
       .logout()
       .then(() => {
         rollLog('logout success.');
@@ -257,8 +259,8 @@ const App = () => {
       }
     })();
     rollLog('start send message ...');
-    ChatClient.getInstance()
-      .chatManager.sendMessage(msg, callback)
+    chatClient.chatManager
+      .sendMessage(msg, callback)
       .then(() => {
         rollLog('send message: ' + msg.localMsgId);
       })
