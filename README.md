@@ -91,12 +91,9 @@ Please refer to the corresponding example or method description.
 
 ## quick start
 
-See the Quick Start documentation for details. [Portal](./examples/token_login_demo/README.md)
+See the Quick Start documentation for details. [Portal](https://docs-im.easemob.com/ccim/rn/quickstart)
 
-## demo experience
-
-For details, see the demo of running the experience api. [portal](./example/package.json).
-For details, see the demo of running experience login, logout, sending and receiving messages. [portal](./examples/simple_demo/package.json).
+For more examples, see here.[Portal](https://github.com/easemob/react-native-chat-sdk/tree/dev/examples)
 
 ## Contributors
 
