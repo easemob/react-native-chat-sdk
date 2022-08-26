@@ -18,22 +18,22 @@ import { Platform } from 'react-native';
 export class ChatPushConfig {
   /**
    * The device ID.
-   * If it is google, the field is FCM send ID.
-   * If it is Apple, this field is the certificate name.
+   * For FCM, the field is the user ID of the push notification sender.
+   * For APNs, this field is the certificate name of the push service.
    */
   deviceId?: string;
   /**
    * The device token.
-   * The device token comes from the callback or method provided by the push vendor.
-   * For details, see the push SDK instructions of the respective manufacturers.
+   * The device token is indicated in the callback or method provided by the push vendor.
+   * For details, see the push SDK instructions of the respective push vendors.
    */
   deviceToken?: string;
   /**
-   * The device manufacturer. See {@link Platform#constants#Manufacturer}
+   * The device vendor. See {@link Platform#constants#Manufacturer}
    */
   manufacturer?: string;
   /**
-   * Constructs a ChatPushConfig object.
+   * Constructs a push configuration object.
    */
   constructor(params?: { deviceId?: string; deviceToken?: string }) {
     this.deviceToken = params?.deviceToken;

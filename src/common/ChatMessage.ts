@@ -383,7 +383,7 @@ export class ChatMessage {
    *
    * **Note**
 
-   * This parameter is valid only for group.
+   * This parameter is valid only for group chat.
    */
   isChatThread: boolean;
 
@@ -502,9 +502,9 @@ export class ChatMessage {
    * - For a chat room, it is the chat room ID.
    * @param content The text content.
    * @param chatType The conversation type. See {@link ChatType}.
-   * @param opt extension params
-   * - targetLanguageCodes: The language code. {@link ChatTextMessageBody#targetLanguageCodes}
-   * - isChatThread: whether to create thread message
+   * @param opt The extension parameters of the message.
+   * - targetLanguageCodes: The language code. See {@link ChatTextMessageBody#targetLanguageCodes}.
+   * - isChatThread: Whether this message is a threaded message.
    *   - `true`: Yes.
    *   - (Default) `false`: No.
    * @returns The message instance.
@@ -540,9 +540,9 @@ export class ChatMessage {
    * - For a chat room, it is the chat room ID.
    * @param filePath The file path.
    * @param chatType The conversation type. See {@link ChatType}.
-   * @param opt extension params
+   * @param opt The extension parameters of the message.
    * - displayName: The file name.
-   * - isChatThread: whether to create thread message
+   * - isChatThread: Whether this message is a threaded message.
    *   - `true`: Yes.
    *   - (Default) `false`: No.
    * @returns The message instance.
@@ -577,15 +577,15 @@ export class ChatMessage {
    * - For a chat room, it is the chat room ID.
    * @param filePath The image path.
    * @param chatType The conversation type. See {@link ChatType}.
-   * @param opt extension params
+   * @param opt The extension parameters of the message.
    * - displayName: The image name.
    * - thumbnailLocalPath: The image thumbnail path.
    * - sendOriginalImage: Whether to send the original image.
    *   - `true`: Yes.
-   *   - (Default) `false`: If the image is smaller than 100 KB, the SDK sends the original image.
+   *   - (Default) `false`: If the image is equal to or greater than 100 KB, the SDK will compress it before sending the compressed image.
    * - width: The image width in pixels.
    * - height: The image height in pixels.
-   * - isChatThread: whether to create thread message
+   * - isChatThread: Whether this message is a threaded message.
    *   - `true`: Yes.
    *   - (Default) `false`: No.
    * @returns The message instance.
@@ -628,13 +628,13 @@ export class ChatMessage {
    * - For a chat room, it is the chat room ID.
    * @param filePath The path of the video file.
    * @param chatType The conversation type. See {@link ChatType}.
-   * @param opt extension params
+   * @param opt The extension parameters of the message.
    * - displayName: The video file name.
    * - thumbnailLocalPath: The path of the thumbnail of the first frame of video.
    * - duration: The video duration in seconds.
    * - width: The video thumbnail width in pixels.
    * - height: The video thumbnail height in pixels.
-   * - isChatThread: whether to create thread message
+   * - isChatThread: Whether this message is a threaded message.
    *   - `true`: Yes.
    *   - (Default) `false`: No.
    * @returns The message instance.
@@ -677,10 +677,10 @@ export class ChatMessage {
    * - For a chat room, it is the chat room ID.
    * @param filePath The path of the voice file.
    * @param chatType The conversation type. See {@link ChatType}.
-   * @param opt extension params
+   * @param opt The extension parameters of the message.
    * - displayName: The voice file name.
    * - duration: The voice duration in seconds.
-   * - isChatThread: whether to create thread message
+   * - isChatThread: Whether this message is a threaded message.
    *   - `true`: Yes.
    *   - (Default) `false`: No.
    * @returns The message instance.
@@ -718,9 +718,9 @@ export class ChatMessage {
    * @param latitude The latitude.
    * @param longitude The longitude.
    * @param chatType The conversation type. See {@link ChatType}.
-   * @param opt extension params
-   * - address: The address.
-   * - isChatThread: whether to create thread message
+   * @param opt The extension parameters of the message.
+   * - address: The location details.
+   * - isChatThread: Whether this message is a threaded message.
    *   - `true`: Yes.
    *   - (Default) `false`: No.
    * @returns The message instance.
@@ -757,13 +757,13 @@ export class ChatMessage {
    * - For a chat room, it is the chat room ID.
    * @param action The command action.
    * @param chatType The conversation type. See {@link ChatType}.
-   * @param opt extension params
-   * - isChatThread: whether to create thread message
+   * @param opt The extension parameters of the message.
+   * - isChatThread: Whether this message is a threaded message.
    *   - `true`: Yes.
    *   - (Default) `false`: No.
-   * - deliverOnlineOnly: Whether to delivery to online users only.
-   *   - (Default) `true`: Yes. Only online users receive.
-   *   - `false`: No. The user receives it online, and the offline user receives it online.
+   * - deliverOnlineOnly: Whether this command message is delivered only to the online users.
+   *   - (Default) `true`: Yes.
+   *   - `false`: No. The command message is delivered to users, regardless of their online or offline status.
    * @returns The message instance.
    */
   public static createCmdMessage(
@@ -795,9 +795,9 @@ export class ChatMessage {
    * - For a chat room, it is the chat room ID.
    * @param event The custom event.
    * @param chatType The conversation type. See {@link ChatType}.
-   * @param opt extension params
+   * @param opt The extension parameters of the message.
    * - params: The dictionary of custom parameters.
-   * - isChatThread: whether to create thread message
+   * - isChatThread: Whether this message is a threaded message.
    *   - `true`: Yes.
    *   - (Default) `false`: No.
    * @returns The message instance.

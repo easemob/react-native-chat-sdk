@@ -99,14 +99,14 @@ export class ChatConversation {
    */
   convType: ChatConversationType;
   /**
-   * Whether it is a thread conversation.
+   * Whether the current conversation is a thread conversation.
    * 
    * - `true`: Yes.
    * - `false`: No.
    *
    * **Note**
 
-   * This parameter is valid only for group.
+   * This parameter is valid only for group chat.This parameter is valid only for group.
    */
   isChatThread: boolean;
   /**
@@ -208,7 +208,7 @@ export class ChatConversation {
   /**
    * Sets the extension information of the conversation.
    *
-   * @param ext The extension information of the conversation. This parameter must be key-value type.
+   * @param ext The extension information of the conversation. This parameter must be in the key-value format.
    *
    * @throws A description of the exception. See {@link ChatError}.
    */

@@ -1,7 +1,7 @@
 import type { ChatConversationType } from './ChatConversation';
 
 /**
- * The parameter types of the do-not-disturb mode for the offline message push.
+ * The parameter types of the offline push.
  */
 export enum ChatSilentModeParamType {
   /**
@@ -14,6 +14,7 @@ export enum ChatSilentModeParamType {
   SILENT_MODE_DURATION,
   /**
    * The time frame of the do-not-disturb mode.
+   * This parameter type is valid only at the app level, but not for conversations.
    */
   SILENT_MODE_INTERVAL,
 }
