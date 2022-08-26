@@ -91,7 +91,7 @@ Please refer to the corresponding example or method description.
 
 ## quick start
 
-See the Quick Start documentation for details. [Portal](./docs/quick-start.md)
+See the Quick Start documentation for details. [Portal](./examples/token_login_demo/README.md)
 
 ## demo experience
 
