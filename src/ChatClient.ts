@@ -534,7 +534,7 @@ export class ChatClient extends BaseManager {
    *                    - `true`: A token is used.
    *                    - (Default) `false`: A password is used.
    *
-   * @throws            A description of the exception. See {@link ChatError}.
+   * @throws A description of the exception. See {@link ChatError}.
    */
   public async login(
     userName: string,
