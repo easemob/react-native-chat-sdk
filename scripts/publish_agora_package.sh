@@ -74,6 +74,9 @@ sed -i '' 's/react-native-chat-sdk/react-native-agora-chat/g' ${current_dir}/Out
 # https://docs-im.easemob.com/ccim/rn/quickstart
 # https://docs.agora.io/en/agora-chat/agora_chat_get_started_rn?platform=React%20Native
 sed -i '' 's/https:\/\/docs-im.easemob.com\/ccim\/rn\/quickstart/https:\/\/docs.agora.io\/en\/agora-chat\/agora_chat_get_started_rn?platform=React%20Native/g' ${current_dir}/Output/node_modules/${new_package_name}/README.md
+# For more examples, see here.[Portal](https://github.com/easemob/react-native-chat-sdk/tree/dev/examples)
+# 
+sed -i '' 's/For more examples, see here.\[Portal\](https:\/\/github.com\/easemob\/react-native-chat-sdk\/tree\/dev\/examples)//g' ${current_dir}/Output/node_modules/${new_package_name}/README.md
 
 mv ${current_dir}/Output/node_modules/${new_package_name}/native_src/cpp/CMakeLists.txt.rn ${current_dir}/Output/node_modules/${new_package_name}/native_src/cpp/CMakeLists.txt
 
