@@ -1,3 +1,4 @@
+import type { ChatCircleUserRole } from './common/ChatCircleUser';
 import { ChatError } from './common/ChatError';
 import type { ChatGroupMessageAck } from './common/ChatGroup';
 import type { ChatMessage } from './common/ChatMessage';
@@ -986,4 +987,108 @@ export interface ChatPresenceEventListener {
    * @param list The new presence state of a subscribed user.
    */
   onPresenceStatusChanged(list: Array<ChatPresence>): void;
+}
+
+export interface ChatCircleServerListener {
+  onServerDestroyed?(params: { serverId: string; initiator: string }): void;
+  onServerUpdated?(params: {
+    serverId: string;
+    serverName: string;
+    serverDescription: string;
+    serverCustom: string;
+    serverIconUrl: string;
+    eventSenderId: string;
+    eventReceiveIds: Array<string>;
+    timestamp: number;
+  }): void;
+  onMemberJoinedServer?(params: { serverId: string; memberId: string }): void;
+  onMemberLeftServer?(params: { serverId: string; memberId: string }): void;
+  onMemberRemovedFromServer?(params: {
+    serverId: string;
+    memberIds: string[];
+  }): void;
+  onReceiveServerInvitation?(params: {
+    serverId: string;
+    serverName: string;
+    serverDescription: string;
+    serverCustom: string;
+    serverIconUrl: string;
+    eventSenderId: string;
+    eventReceiveIds: Array<string>;
+    timestamp: number;
+  }): void;
+  onServerInvitationBeAccepted?(params: {
+    serverId: string;
+    invitee: string;
+  }): void;
+  onServerInvitationBeDeclined?(params: {
+    serverId: string;
+    invitee: string;
+  }): void;
+  onServerRoleAssigned?(params: {
+    serverId: string;
+    memberId: string;
+    role: ChatCircleUserRole;
+  }): void;
+}
+
+export interface ChatCircleChannelListener {
+  onChannelCreated?(params: {
+    serverId: string;
+    channelId: string;
+    creator: string;
+  }): void;
+  onChannelDestroyed?(params: {
+    serverId: string;
+    channelId: string;
+    initiator: string;
+  }): void;
+  onChannelUpdated?(params: {
+    serverId: string;
+    channelId: string;
+    channelName: string;
+    channelDescription: string;
+    initiator: string;
+  }): void;
+  onMemberJoinedChannel?(params: {
+    serverId: string;
+    channelId: string;
+    memberId: string;
+  }): void;
+  onMemberLeftChannel?(params: {
+    serverId: string;
+    channelId: string;
+    memberId: string;
+  }): void;
+  onMemberRemovedFromChannel?(params: {
+    serverId: string;
+    channelId: string;
+    memberId: string;
+    initiator: string;
+  }): void;
+  onReceiveChannelInvitation?(params: {
+    serverId: string;
+    serverName: string;
+    serverIcon: string;
+    channelId: string;
+    channelName: string;
+    channelDescription: string;
+    inviter: string;
+  }): void;
+  onChannelInvitationBeAccepted?(params: {
+    serverId: string;
+    channelId: string;
+    invitee: string;
+  }): void;
+  onChannelInvitationBeDeclined?(params: {
+    serverId: string;
+    channelId: string;
+    invitee: string;
+  }): void;
+  onMemberMuteChangeInChannel?(params: {
+    serverId: string;
+    channelId: string;
+    isMuted: boolean;
+    memberIds: string;
+  }): void;
 }

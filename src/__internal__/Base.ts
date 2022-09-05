@@ -10,7 +10,7 @@ import {
 } from './Consts';
 import { Native } from './Native';
 
-export class BaseManager extends Native {
+export abstract class BaseManager extends Native {
   protected static TAG = 'BaseManager';
   protected _eventEmitter?: NativeEventEmitter;
   constructor() {

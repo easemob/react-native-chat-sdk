@@ -301,3 +301,78 @@ export const MTleaveChatThread = 'leaveChatThread';
 export const MTdestroyChatThread = 'destroyChatThread';
 export const MTgetMessageThread = 'getMessageThread';
 export const MTgetThreadConversation = 'getThreadConversation';
+
+/// CircleManager methods
+export const MTcreateCircleServer = 'createCircleServer';
+export const MTdestroyCircleServer = 'destroyCircleServer';
+export const MTupdateCircleServer = 'updateCircleServer';
+export const MTjoinCircleServer = 'joinCircleServer';
+export const MTleaveCircleServer = 'leaveCircleServer';
+export const MTremoveUserFromCircleServer = 'removeUserFromCircleServer';
+export const MTinviteUserToCircleServer = 'inviteUserToCircleServer';
+export const MTacceptCircleServerInvitation = 'acceptCircleServerInvitation';
+export const MTdeclineCircleServerInvitation = 'declineCircleServerInvitation';
+export const MTaddTagsToCircleServer = 'addTagsToCircleServer';
+export const MTremoveTagsFromCircleServer = 'removeTagsFromCircleServer';
+export const MTfetchCircleServerTags = 'fetchCircleServerTags';
+export const MTaddModeratorToCircleServer = 'addModeratorToCircleServer';
+export const MTremoveModeratorFromCircleServer =
+  'removeModeratorFromCircleServer';
+export const MTfetchSelfCircleServerRole = 'fetchSelfCircleServerRole';
+export const MTfetchJoinedCircleServers = 'fetchJoinedCircleServers';
+export const MTfetchCircleServerDetail = 'fetchCircleServerDetail';
+export const MTfetchCircleServersWithKeyword = 'fetchCircleServersWithKeyword';
+export const MTfetchCircleServerMembers = 'fetchCircleServerMembers';
+export const MTcheckSelfInCircleServer = 'checkSelfInCircleServer';
+export const MTcreateCircleChannel = 'createCircleChannel';
+export const MTdestroyCircleChannel = 'destroyCircleChannel';
+export const MTupdateCircleChannel = 'updateCircleChannel';
+export const MTjoinCircleChannel = 'joinCircleChannel';
+export const MTleaveCircleChannel = 'leaveCircleChannel';
+export const MTremoveUserFromCircleChannel = 'removeUserFromCircleChannel';
+export const MTinviteUserToCircleChannel = 'inviteUserToCircleChannel';
+export const MTacceptCircleChannelInvitation = 'acceptCircleChannelInvitation';
+export const MTdeclineCircleChannelInvitation =
+  'declineCircleChannelInvitation';
+export const MTmuteUserInCircleChannel = 'muteUserInCircleChannel';
+export const MTunmuteUserInCircleChannel = 'unmuteUserInCircleChannel';
+export const MTfetchCircleChannelDetail = 'fetchCircleChannelDetail';
+export const MTfetchPublicCircleChannelInServer =
+  'fetchPublicCircleChannelInServer';
+export const MTfetchCircleChannelMembers = 'fetchCircleChannelMembers';
+export const MTfetchVisiblePrivateCircleChannelInServer =
+  'fetchVisiblePrivateCircleChannelInServer';
+export const MTcheckSelfIsInCircleChannel = 'checkSelfIsInCircleChannel';
+export const MTfetchCircleChannelMuteUsers = 'fetchCircleChannelMuteUsers';
+
+/// CircleManager listener
+export const MTonCircleServerDestroyed = 'onCircleServerDestroyed';
+export const MTonCircleServerUpdated = 'onCircleServerUpdated';
+export const MTonMemberJoinedCircleServer = 'onMemberJoinedCircleServer';
+export const MTonMemberLeftCircleServer = 'onMemberLeftCircleServer';
+export const MTonMemberRemovedFromCircleServer =
+  'onMemberRemovedFromCircleServer';
+export const MTonReceiveInvitationFromCircleServer =
+  'onReceiveInvitationFromCircleServer';
+export const MTonInvitationBeAcceptedFromCircleServer =
+  'onInvitationBeAcceptedFromCircleServer';
+export const MTonInvitationBeDeclinedFromCircleServer =
+  'onInvitationBeDeclinedFromCircleServer';
+export const MTonRoleAssignedFromCircleServer =
+  'onRoleAssignedFromCircleServer';
+
+export const MTonCircleChannelCreated = 'onCircleChannelCreated';
+export const MTonCircleChannelDestroyed = 'onCircleChannelDestroyed';
+export const MTonCircleChannelUpdated = 'onCircleChannelUpdated';
+export const MTonMemberJoinedCircleChannel = 'onMemberJoinedCircleChannel';
+export const MTonReceiveInvitationFromCircleChannel =
+  'onReceiveInvitationFromCircleChannel';
+export const MTonInvitationBeAcceptedFromCircleChannel =
+  'onInvitationBeAcceptedFromCircleChannel';
+export const MTonInvitationBeDeclinedFromCircleChannel =
+  'onInvitationBeDeclinedFromCircleChannel';
+export const MTonMemberRemovedFromCircleChannel =
+  'onMemberRemovedFromCircleChannel';
+export const MTonMemberLeftCircleChannel = 'onMemberLeftCircleChannel';
+export const MTonMemberMuteChangedInCircleChannel =
+  'onMemberMuteChangedInCircleChannel';
