@@ -142,6 +142,57 @@ npx react-native init rn_demo --version 0.68.2
 npx react-native init rn_wayang --template react-native-template-typescript@6.8.4
 ```
 
+### 集成 SDK
+
+完成项目创建集成 SDK
+
+```sh
+yarn add react-native-chat-sdk
+```
+
+### 编写代码
+
+导入 SDK 对象
+
+```typescript
+import {
+  ChatClient,
+  ChatOptions,
+  ChatMessageChatType,
+  ChatMessage,
+} from 'react-native-chat-sdk';
+```
+
+调用 SDK 初始化接口
+
+```typescript
+ChatClient.getInstance()
+  .init(
+    new ChatOptions({
+      appKey: appKey,
+    })
+  )
+  .then(() => {
+    console.log('init success');
+  })
+  .catch((error) => {
+    console.log('init fail');
+  });
+```
+
+调用其他接口
+
+```typescript
+ChatClient.getInstance()
+  .login(username, password)
+  .then(() => {
+    console.log('login success.');
+  })
+  .catch((reason) => {
+    console.log('login fail: ' + JSON.stringify(reason));
+  });
+```
+
 ## 创建 plugin 项目
 
 // todo:

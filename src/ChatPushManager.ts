@@ -34,12 +34,12 @@ export class ChatPushManager extends Native {
   }
 
   /**
-   * Sets the do-not-disturb mode for the conversation.
+   * Sets the offline push for the conversation.
    *
    * @param params -
    * - convId: The conversation ID.
    * - convType: The conversation type.
-   * - option: The parameters of the do-not-disturb mode for the offline message push.
+   * - option: The configuration options for the offline push.
    *
    * @throws A description of the exception. See {@link ChatError}.
    */
@@ -65,9 +65,9 @@ export class ChatPushManager extends Native {
   }
 
   /**
-   * Removes the do-not-disturb settings of the conversation.
+   * Clears the offline push settings of the conversation.
    *
-   * After clearing, the conversation uses the global do-not-disturb settings of the app. See {@link EMPushManager#setSilentModeForAll(ChatSilentModeParam)}.
+   * After clearing, the conversation uses the offline push settings of the app. See {@link EMPushManager#setSilentModeForAll(ChatSilentModeParam)}.
    *
    * @param params -
    * - convId: The conversation ID.
@@ -94,13 +94,13 @@ export class ChatPushManager extends Native {
   }
 
   /**
-   * Gets the do-not-disturb mode of the conversation.
+   * Gets the offline push settings of the conversation.
    *
    * @param params -
    * - convId: The conversation ID.
    * - convType: The conversation type.
    *
-   * @returns The do-not-disturb settings of the conversation.
+   * @returns The offline push settings of the conversation.
    *
    * @throws A description of the exception. See {@link ChatError}.
    */
@@ -125,9 +125,9 @@ export class ChatPushManager extends Native {
   }
 
   /**
-   * Sets the do-not-disturb mode of the app.
+   * Sets the offline push of the app.
    *
-   * @param option The parameters of the do-not-disturb mode.
+   * @param option The offline push parameters.
    *
    * @throws A description of the exception. See {@link ChatError}.
    */

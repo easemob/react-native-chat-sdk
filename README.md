@@ -91,12 +91,9 @@ Please refer to the corresponding example or method description.
 
 ## quick start
 
-See the Quick Start documentation for details. [Portal](./docs/quick-start.md)
+See the Quick Start documentation for details. [Portal](https://docs-im.easemob.com/ccim/rn/quickstart)
 
-## demo experience
-
-For details, see the demo of running the experience api. [portal](./example/package.json).
-For details, see the demo of running experience login, logout, sending and receiving messages. [portal](./examples/simple_demo/package.json).
+For more examples, see here.[Portal](https://github.com/easemob/react-native-chat-sdk/tree/dev/examples)
 
 ## Contributors
 
@@ -128,5 +125,4 @@ If you encounter problems, please refer to here. [Portal](./docs/others.md).
 
 ## References
 
-[Github repository address](https://github.com/easemob/react-native-chat-sdk)
-[Official website document address](https://docs-im.easemob.com/ccim/rn/quickstart)
+[Official website document address](https://docs.agora.io/en/agora-chat/landing-page?platform=React%20Native)
