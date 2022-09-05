@@ -73,5 +73,6 @@ repositories {
 dependencies {
     //noinspection GradleDynamicVersion
     implementation "com.facebook.react:react-native:+"  // From node_modules
+    // implementation files('/Users/asterisk/Tmp/ssss/aar/hyphenate-chat-release.aar')
     implementation 'io.hyphenate:hyphenate-chat:3.9.5'
 }
