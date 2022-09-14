@@ -50,6 +50,8 @@ export class QuickTestScreenChat extends QuickTestScreenBase<
       group_listener: '',
       room_listener: '',
       presence_listener: '',
+      server_listener: '',
+      channel_listener: '',
       sendResult: '',
       recvResult: '',
       exceptResult: '',

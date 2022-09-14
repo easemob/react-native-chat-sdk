@@ -40,7 +40,7 @@ export class ChatCircleChannel {
 export function ChatCircleChannelTypeFromNumber(
   type?: number
 ): ChatCircleChannelType | undefined {
-  if (type) {
+  if (type !== null || type !== undefined) {
     let ret: ChatCircleChannelType = ChatCircleChannelType.Public;
     switch (type) {
       case 0:
@@ -60,7 +60,7 @@ export function ChatCircleChannelTypeFromNumber(
 export function ChatCircleChannelRankFromNumber(
   rank?: number
 ): ChatCircleChannelRank | undefined {
-  if (rank) {
+  if (rank !== null || rank !== undefined) {
     let ret: ChatCircleChannelRank = ChatCircleChannelRank.R2000;
     switch (rank) {
       case 0:

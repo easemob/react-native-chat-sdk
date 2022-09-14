@@ -5,6 +5,7 @@ import {
   NativeModules,
   Platform,
 } from 'react-native';
+import { ChatCircleManager } from './ChatCircleManager';
 import { ChatContactManager } from './ChatContactManager';
 import {
   ChatConnectEventListener,
@@ -97,10 +98,10 @@ export class ChatClient extends BaseManager {
     this._chatManager.setNativeListener(this.getEventEmitter());
     this._groupManager.setNativeListener(this.getEventEmitter());
     this._contactManager.setNativeListener(this.getEventEmitter());
-    this._chatManager.setNativeListener(this.getEventEmitter());
     this._pushManager.setNativeListener(this.getEventEmitter());
     this._chatRoomManager.setNativeListener(this.getEventEmitter());
     this._presenceManager.setNativeListener(this.getEventEmitter());
+    this._circleManager.setNativeListener(this.getEventEmitter());
     chatlog.log('eventEmitter has finished.');
   }
 
@@ -115,6 +116,7 @@ export class ChatClient extends BaseManager {
   private _pushManager: ChatPushManager;
   private _userInfoManager: ChatUserInfoManager;
   private _presenceManager: ChatPresenceManager;
+  private _circleManager: ChatCircleManager;
 
   private _connectionListeners: Set<ChatConnectEventListener>;
   private _multiDeviceListeners: Set<ChatMultiDeviceEventListener>;
@@ -136,6 +138,7 @@ export class ChatClient extends BaseManager {
     this._pushManager = new ChatPushManager();
     this._userInfoManager = new ChatUserInfoManager();
     this._presenceManager = new ChatPresenceManager();
+    this._circleManager = new ChatCircleManager();
 
     this._connectionListeners = new Set<ChatConnectEventListener>();
     this._connectionSubscriptions = new Map<string, EmitterSubscription>();
@@ -287,12 +290,26 @@ export class ChatClient extends BaseManager {
           params.target,
           params.ext
         );
-      } else {
+      } else if (event >= 40 && event < 55) {
         element.onThreadEvent?.(
           ChatMultiDeviceEventFromNumber(event),
           params.target,
           params.ext
         );
+      } else if (event >= 55 && event < 70) {
+        element.onCircleServerEvent?.(
+          ChatMultiDeviceEventFromNumber(event),
+          params.target,
+          params.ext
+        );
+      } else if (event >= 70 && event < 81) {
+        element.onCircleChannelEvent?.(
+          ChatMultiDeviceEventFromNumber(event),
+          params.target,
+          params.ext
+        );
+      } else {
+        chatlog.log(`${ChatClient.TAG}: onMultiDeviceEvent:`, event);
       }
     });
   }
@@ -955,5 +972,16 @@ export class ChatClient extends BaseManager {
    */
   public get presenceManager(): ChatPresenceManager {
     return this._presenceManager;
+  }
+
+  /**
+   * Gets the circle manager class.
+   *
+   * This method can be called only after the chat client is initialized.
+   *
+   * @return The circle manager class.
+   */
+  public get circleManager(): ChatCircleManager {
+    return this._circleManager;
   }
 }

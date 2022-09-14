@@ -157,6 +157,48 @@ export enum ChatMultiDeviceEvent {
    * If user A kicks a user from a message thread on Device A1, this event is triggered on Device A2.
    */
   THREAD_KICK,
+
+  SERVER_CREATE = 55,
+
+  SERVER_DELETE,
+
+  SERVER_UPDATE,
+
+  SERVER_JOIN,
+
+  SERVER_LEAVE,
+
+  SERVER_INVITE_ACCEPT,
+
+  SERVER_INVITE_DECLINE,
+
+  CIRCLE_SERVER_SET_ROLE,
+
+  CIRCLE_SERVER_REMOVE_USER,
+
+  CIRCLE_SERVER_INVITE_USER,
+
+  CHANNEL_CREATE = 70,
+
+  CHANNEL_DELETE,
+
+  CHANNEL_UPDATE,
+
+  CHANNEL_JOIN,
+
+  CHANNEL_INVITATION_ACCEPT,
+
+  CHANNEL_INVITATION_DECLINE,
+
+  CHANNEL_LEAVE,
+
+  CIRCLE_CHANNEL_REMOVE_USER,
+
+  CIRCLE_CHANNEL_INVITE_USER,
+
+  CIRCLE_CHANNEL_MEMBER_ADD_MUTE,
+
+  CIRCLE_CHANNEL_MEMBER_REMOVE_MUTE,
 }
 
 /**
@@ -241,6 +283,50 @@ export function ChatMultiDeviceEventFromNumber(
       return ChatMultiDeviceEvent.THREAD_UPDATE;
     case 45:
       return ChatMultiDeviceEvent.THREAD_KICK;
+
+    case 55:
+      return ChatMultiDeviceEvent.SERVER_CREATE;
+    case 56:
+      return ChatMultiDeviceEvent.SERVER_DELETE;
+    case 57:
+      return ChatMultiDeviceEvent.SERVER_UPDATE;
+    case 58:
+      return ChatMultiDeviceEvent.SERVER_JOIN;
+    case 59:
+      return ChatMultiDeviceEvent.SERVER_LEAVE;
+    case 60:
+      return ChatMultiDeviceEvent.SERVER_INVITE_ACCEPT;
+    case 61:
+      return ChatMultiDeviceEvent.SERVER_INVITE_DECLINE;
+    case 62:
+      return ChatMultiDeviceEvent.CIRCLE_SERVER_SET_ROLE;
+    case 63:
+      return ChatMultiDeviceEvent.CIRCLE_SERVER_REMOVE_USER;
+    case 64:
+      return ChatMultiDeviceEvent.CIRCLE_SERVER_INVITE_USER;
+
+    case 70:
+      return ChatMultiDeviceEvent.CHANNEL_CREATE;
+    case 71:
+      return ChatMultiDeviceEvent.CHANNEL_DELETE;
+    case 72:
+      return ChatMultiDeviceEvent.CHANNEL_UPDATE;
+    case 73:
+      return ChatMultiDeviceEvent.CHANNEL_JOIN;
+    case 74:
+      return ChatMultiDeviceEvent.CHANNEL_INVITATION_ACCEPT;
+    case 75:
+      return ChatMultiDeviceEvent.CHANNEL_INVITATION_DECLINE;
+    case 76:
+      return ChatMultiDeviceEvent.CHANNEL_LEAVE;
+    case 77:
+      return ChatMultiDeviceEvent.CIRCLE_CHANNEL_REMOVE_USER;
+    case 78:
+      return ChatMultiDeviceEvent.CIRCLE_CHANNEL_INVITE_USER;
+    case 79:
+      return ChatMultiDeviceEvent.CIRCLE_CHANNEL_MEMBER_ADD_MUTE;
+    case 80:
+      return ChatMultiDeviceEvent.CIRCLE_CHANNEL_MEMBER_REMOVE_MUTE;
 
     default:
       throw new ChatError({
@@ -352,6 +438,18 @@ export interface ChatMultiDeviceEventListener {
    * @param usernames The array of user IDs.
    */
   onThreadEvent?(
+    event?: ChatMultiDeviceEvent,
+    target?: string,
+    usernames?: Array<string>
+  ): void;
+
+  onCircleServerEvent?(
+    event?: ChatMultiDeviceEvent,
+    target?: string,
+    usernames?: Array<string>
+  ): void;
+
+  onCircleChannelEvent?(
     event?: ChatMultiDeviceEvent,
     target?: string,
     usernames?: Array<string>

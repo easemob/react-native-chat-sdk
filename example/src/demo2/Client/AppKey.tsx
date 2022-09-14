@@ -21,7 +21,7 @@ export class AppKeyScreen extends Component<{ navigation: any }, State, any> {
     this.navigation = props.navigation;
     this.state = {
       result: '',
-      appKey: datasheet.AppKey[1],
+      appKey: datasheet.AppKey[5],
       enablePush: '0',
     };
   }

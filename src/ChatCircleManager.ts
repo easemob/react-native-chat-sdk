@@ -1,4 +1,3 @@
-import { ChatCursorResult } from 'lib/typescript/src';
 import type { EmitterSubscription, NativeEventEmitter } from 'react-native';
 import type {
   ChatCircleChannelListener,
@@ -18,6 +17,7 @@ import {
   ChatCircleUserRole,
   ChatCircleUserRoleFromNumber,
 } from './common/ChatCircleUser';
+import { ChatCursorResult } from './common/ChatCursorResult';
 import { chatlog } from './common/ChatLog';
 import { BaseManager } from './__internal__/Base';
 import {
@@ -342,7 +342,10 @@ export class ChatCircleManager extends BaseManager {
     chatlog.log(`${ChatCircleManager.TAG}: ${this.createServer.name}`);
     let r: any = await Native._callMethod(MTcreateCircleServer, {
       [MTcreateCircleServer]: {
-        params,
+        serverName: params.serverName,
+        serverIcon: params.serverIcon,
+        serverDescription: params.serverDescription,
+        serverExtension: params.serverExtension,
       },
     });
     ChatCircleManager.checkErrorFromResult(r);
@@ -369,7 +372,11 @@ export class ChatCircleManager extends BaseManager {
     chatlog.log(`${ChatCircleManager.TAG}: ${this.updateServer.name}`);
     let r: any = await Native._callMethod(MTupdateCircleServer, {
       [MTupdateCircleServer]: {
-        params,
+        serverId: params.serverId,
+        serverName: params.serverName,
+        serverIcon: params.serverIcon,
+        serverDescription: params.serverDescription,
+        serverExtension: params.serverExtension,
       },
     });
     ChatCircleManager.checkErrorFromResult(r);
@@ -554,13 +561,15 @@ export class ChatCircleManager extends BaseManager {
     return ChatCircleUserRoleFromNumber(r?.[MTfetchSelfCircleServerRole]);
   }
 
-  public async fetchJoinedServers(
-    serverId: string
-  ): Promise<ChatCursorResult<ChatCircleServer>> {
+  public async fetchJoinedServers(params: {
+    cursor?: string;
+    pageSize?: number;
+  }): Promise<ChatCursorResult<ChatCircleServer>> {
     chatlog.log(`${ChatCircleManager.TAG}: ${this.fetchJoinedServers.name}`);
     let r: any = await Native._callMethod(MTfetchJoinedCircleServers, {
       [MTfetchJoinedCircleServers]: {
-        serverId: serverId,
+        cursor: params.cursor ?? '',
+        pageSize: params.pageSize ?? 20,
       },
     });
     ChatCircleManager.checkErrorFromResult(r);
@@ -984,6 +993,7 @@ export class ChatCircleManager extends BaseManager {
       },
     });
     ChatCircleManager.checkErrorFromResult(r);
+    console.log('test:', r);
     const ret = new Map<string, number>();
     Object.entries(r?.[MTfetchCircleChannelMuteUsers]).forEach(
       (value: [string, any]) => {

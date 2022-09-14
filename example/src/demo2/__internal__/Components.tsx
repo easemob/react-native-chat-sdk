@@ -42,6 +42,9 @@ import { QuickTestScreenPresence } from '../Test/QuickTestPresence';
 import { QuickTestScreenPush } from '../Test/QuickTestPush';
 import { PushManagerRoute, PushManagerScreen } from '../PushManager';
 import { PushManagerLeafScreen } from '../PushManager/PushManagerItem';
+import { CircleManagerRoute, CircleManagerScreen } from '../CircleManager';
+import { CircleManagerLeafScreen } from '../CircleManager/CircleManagerItem';
+import { QuickTestScreenCircle } from '../Test/QuickTestCircle';
 
 export const screenComponents: ScreenComponent[] = [
   // root navigator
@@ -71,6 +74,11 @@ export const screenComponents: ScreenComponent[] = [
   {
     route: PushManagerRoute,
     screen: PushManagerScreen,
+    isNavigation: true,
+  },
+  {
+    route: CircleManagerRoute,
+    screen: CircleManagerScreen,
     isNavigation: true,
   },
   {
@@ -185,6 +193,14 @@ export const screenComponents: ScreenComponent[] = [
     parentScreen: PushManagerRoute,
   },
 
+  // CircleManagerRoute navigator
+  {
+    route: CircleManagerLeafScreen.route,
+    screen: CircleManagerLeafScreen,
+    isNavigation: false,
+    parentScreen: CircleManagerRoute,
+  },
+
   // QuickTestManagerRoute navigator
   {
     route: QuickTestScreenChat.route,
@@ -225,6 +241,12 @@ export const screenComponents: ScreenComponent[] = [
   {
     route: QuickTestScreenPush.route,
     screen: QuickTestScreenPush,
+    isNavigation: false,
+    parentScreen: QuickTestManagerRoute,
+  },
+  {
+    route: QuickTestScreenCircle.route,
+    screen: QuickTestScreenCircle,
     isNavigation: false,
     parentScreen: QuickTestManagerRoute,
   },

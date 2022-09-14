@@ -16,6 +16,8 @@ import type {
   ChatContactEventListener,
   ChatRoomEventListener,
   ChatPresenceEventListener,
+  ChatCircleServerListener,
+  ChatCircleChannelListener,
   ChatMultiDeviceEventFromNumber,
 } from './ChatEvents';
 import {
@@ -101,6 +103,20 @@ import {
   ChatSilentModeTime,
   ChatSilentModeResult,
 } from './common/ChatSilentMode';
+import {
+  ChatCircleChannelType,
+  ChatCircleChannelRank,
+  ChatCircleChannel,
+  ChatCircleChannelTypeFromNumber,
+  ChatCircleChannelRankFromNumber,
+} from './common/ChatCircleChannel';
+import { ChatCircleServer } from './common/ChatCircleServer';
+import { ChatCircleTag } from './common/ChatCircleTag';
+import {
+  ChatCircleUserRole,
+  ChatCircleUser,
+  ChatCircleUserRoleFromNumber,
+} from './common/ChatCircleUser';
 
 /**
  * export manager
@@ -128,6 +144,8 @@ export {
   ChatContactEventListener,
   ChatRoomEventListener,
   ChatPresenceEventListener,
+  ChatCircleServerListener,
+  ChatCircleChannelListener,
 };
 
 /**
@@ -147,6 +165,9 @@ export {
   ChatMessageThreadOperation,
   ChatSilentModeParamType,
   ChatPushRemindType,
+  ChatCircleChannelType,
+  ChatCircleChannelRank,
+  ChatCircleUserRole,
 };
 
 /**
@@ -189,6 +210,10 @@ export {
   ChatSilentModeTime,
   ChatSilentModeParam,
   ChatSilentModeResult,
+  ChatCircleChannel,
+  ChatCircleServer,
+  ChatCircleTag,
+  ChatCircleUser,
 };
 
 /**
@@ -215,4 +240,7 @@ export {
   ChatSilentModeParamTypeToNumber,
   ChatPushRemindTypeFromNumber,
   ChatPushRemindTypeToNumber,
+  ChatCircleChannelTypeFromNumber,
+  ChatCircleChannelRankFromNumber,
+  ChatCircleUserRoleFromNumber,
 };

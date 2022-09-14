@@ -18,6 +18,9 @@ import {
   ChatPresenceEventListener,
   ChatPresence,
   ChatCmdMessageBody,
+  ChatCircleUserRole,
+  ChatCircleServerListener,
+  ChatCircleChannelListener,
 } from 'react-native-chat-sdk';
 import { styleValues } from '../__internal__/Css';
 import {
@@ -48,6 +51,8 @@ export interface QuickTestState extends StateBase {
   group_listener: string;
   room_listener: string;
   presence_listener: string;
+  server_listener: string;
+  channel_listener: string;
   cb_result: string;
 }
 
@@ -903,6 +908,312 @@ export abstract class QuickTestScreenBase<
     ChatClient.getInstance().presenceManager.addPresenceListener(
       presence_listener
     );
+
+    ChatClient.getInstance().circleManager.clearChannelListener();
+    ChatClient.getInstance().circleManager.addChannelListener(
+      new (class implements ChatCircleChannelListener {
+        private that: QuickTestScreenBase<S, SL>;
+        constructor(parent: QuickTestScreenBase<S, SL>) {
+          this.that = parent;
+        }
+        onChannelCreated?(params: {
+          serverId: string;
+          channelId: string;
+          creator: string;
+        }): void {
+          console.log(
+            `${QuickTestScreenBase.TAG}: ${this.onChannelCreated?.name}:`,
+            params
+          );
+          this.that.setState({
+            channel_listener:
+              `${this.onChannelCreated?.name}:` + JSON.stringify(params),
+          });
+        }
+        onChannelDestroyed?(params: {
+          serverId: string;
+          channelId: string;
+          initiator: string;
+        }): void {
+          console.log(
+            `${QuickTestScreenBase.TAG}: ${this.onChannelDestroyed?.name}:`,
+            params
+          );
+          this.that.setState({
+            channel_listener:
+              `${this.onChannelDestroyed?.name}:` + JSON.stringify(params),
+          });
+        }
+        onChannelUpdated?(params: {
+          serverId: string;
+          channelId: string;
+          channelName: string;
+          channelDescription: string;
+          initiator: string;
+        }): void {
+          console.log(
+            `${QuickTestScreenBase.TAG}: ${this.onChannelUpdated?.name}:`,
+            params
+          );
+          this.that.setState({
+            channel_listener:
+              `${this.onChannelUpdated?.name}:` + JSON.stringify(params),
+          });
+        }
+        onMemberJoinedChannel?(params: {
+          serverId: string;
+          channelId: string;
+          memberId: string;
+        }): void {
+          console.log(
+            `${QuickTestScreenBase.TAG}: ${this.onMemberJoinedChannel?.name}:`,
+            params
+          );
+          this.that.setState({
+            channel_listener:
+              `${this.onMemberJoinedChannel?.name}:` + JSON.stringify(params),
+          });
+        }
+        onMemberLeftChannel?(params: {
+          serverId: string;
+          channelId: string;
+          memberId: string;
+        }): void {
+          console.log(
+            `${QuickTestScreenBase.TAG}: ${this.onMemberLeftChannel?.name}:`,
+            params
+          );
+          this.that.setState({
+            channel_listener:
+              `${this.onMemberLeftChannel?.name}:` + JSON.stringify(params),
+          });
+        }
+        onMemberRemovedFromChannel?(params: {
+          serverId: string;
+          channelId: string;
+          memberId: string;
+          initiator: string;
+        }): void {
+          console.log(
+            `${QuickTestScreenBase.TAG}: ${this.onMemberRemovedFromChannel?.name}:`,
+            params
+          );
+          this.that.setState({
+            channel_listener:
+              `${this.onMemberRemovedFromChannel?.name}:` +
+              JSON.stringify(params),
+          });
+        }
+        onReceiveChannelInvitation?(params: {
+          serverId: string;
+          serverName: string;
+          serverIcon: string;
+          channelId: string;
+          channelName: string;
+          channelDescription: string;
+          inviter: string;
+        }): void {
+          console.log(
+            `${QuickTestScreenBase.TAG}: ${this.onReceiveChannelInvitation?.name}:`,
+            params
+          );
+          this.that.setState({
+            channel_listener:
+              `${this.onReceiveChannelInvitation?.name}:` +
+              JSON.stringify(params),
+          });
+        }
+        onChannelInvitationBeAccepted?(params: {
+          serverId: string;
+          channelId: string;
+          invitee: string;
+        }): void {
+          console.log(
+            `${QuickTestScreenBase.TAG}: ${this.onChannelInvitationBeAccepted?.name}:`,
+            params
+          );
+          this.that.setState({
+            channel_listener:
+              `${this.onChannelInvitationBeAccepted?.name}:` +
+              JSON.stringify(params),
+          });
+        }
+        onChannelInvitationBeDeclined?(params: {
+          serverId: string;
+          channelId: string;
+          invitee: string;
+        }): void {
+          console.log(
+            `${QuickTestScreenBase.TAG}: ${this.onChannelInvitationBeDeclined?.name}:`,
+            params
+          );
+          this.that.setState({
+            channel_listener:
+              `${this.onChannelInvitationBeDeclined?.name}:` +
+              JSON.stringify(params),
+          });
+        }
+        onMemberMuteChangeInChannel?(params: {
+          serverId: string;
+          channelId: string;
+          isMuted: boolean;
+          memberIds: string;
+        }): void {
+          console.log(
+            `${QuickTestScreenBase.TAG}: ${this.onMemberMuteChangeInChannel?.name}:`,
+            params
+          );
+          this.that.setState({
+            channel_listener:
+              `${this.onMemberMuteChangeInChannel?.name}:` +
+              JSON.stringify(params),
+          });
+        }
+      })(this)
+    );
+    ChatClient.getInstance().circleManager.clearServerListener();
+    ChatClient.getInstance().circleManager.addServerListener(
+      new (class implements ChatCircleServerListener {
+        private that: QuickTestScreenBase<S, SL>;
+        constructor(parent: QuickTestScreenBase<S, SL>) {
+          this.that = parent;
+        }
+        onServerDestroyed?(params: {
+          serverId: string;
+          initiator: string;
+        }): void {
+          console.log(
+            `${QuickTestScreenBase.TAG}: ${this.onServerDestroyed?.name}:`,
+            params
+          );
+          this.that.setState({
+            server_listener:
+              `${this.onServerDestroyed?.name}:` + JSON.stringify(params),
+          });
+        }
+        onServerUpdated?(params: {
+          serverId: string;
+          serverName: string;
+          serverDescription: string;
+          serverCustom: string;
+          serverIconUrl: string;
+          eventSenderId: string;
+          eventReceiveIds: Array<string>;
+          timestamp: number;
+        }): void {
+          console.log(
+            `${QuickTestScreenBase.TAG}: ${this.onServerUpdated?.name}:`,
+            params
+          );
+          this.that.setState({
+            server_listener:
+              `${this.onServerUpdated?.name}:` + JSON.stringify(params),
+          });
+        }
+        onMemberJoinedServer?(params: {
+          serverId: string;
+          memberId: string;
+        }): void {
+          console.log(
+            `${QuickTestScreenBase.TAG}: ${this.onMemberJoinedServer?.name}:`,
+            params
+          );
+          this.that.setState({
+            server_listener:
+              `${this.onMemberJoinedServer?.name}:` + JSON.stringify(params),
+          });
+        }
+        onMemberLeftServer?(params: {
+          serverId: string;
+          memberId: string;
+        }): void {
+          console.log(
+            `${QuickTestScreenBase.TAG}: ${this.onMemberLeftServer?.name}:`,
+            params
+          );
+          this.that.setState({
+            server_listener:
+              `${this.onMemberLeftServer?.name}:` + JSON.stringify(params),
+          });
+        }
+        onMemberRemovedFromServer?(params: {
+          serverId: string;
+          memberIds: string[];
+        }): void {
+          console.log(
+            `${QuickTestScreenBase.TAG}: ${this.onMemberRemovedFromServer?.name}:`,
+            params
+          );
+          this.that.setState({
+            server_listener:
+              `${this.onMemberRemovedFromServer?.name}:` +
+              JSON.stringify(params),
+          });
+        }
+        onReceiveServerInvitation?(params: {
+          serverId: string;
+          serverName: string;
+          serverDescription: string;
+          serverCustom: string;
+          serverIconUrl: string;
+          eventSenderId: string;
+          eventReceiveIds: Array<string>;
+          timestamp: number;
+        }): void {
+          console.log(
+            `${QuickTestScreenBase.TAG}: ${this.onReceiveServerInvitation?.name}:`,
+            params
+          );
+          this.that.setState({
+            server_listener:
+              `${this.onReceiveServerInvitation?.name}:` +
+              JSON.stringify(params),
+          });
+        }
+        onServerInvitationBeAccepted?(params: {
+          serverId: string;
+          invitee: string;
+        }): void {
+          console.log(
+            `${QuickTestScreenBase.TAG}: ${this.onServerInvitationBeAccepted?.name}:`,
+            params
+          );
+          this.that.setState({
+            server_listener:
+              `${this.onServerInvitationBeAccepted?.name}:` +
+              JSON.stringify(params),
+          });
+        }
+        onServerInvitationBeDeclined?(params: {
+          serverId: string;
+          invitee: string;
+        }): void {
+          console.log(
+            `${QuickTestScreenBase.TAG}: ${this.onServerInvitationBeDeclined?.name}:`,
+            params
+          );
+          this.that.setState({
+            server_listener:
+              `${this.onServerInvitationBeDeclined?.name}:` +
+              JSON.stringify(params),
+          });
+        }
+        onServerRoleAssigned?(params: {
+          serverId: string;
+          memberId: string;
+          role: ChatCircleUserRole;
+        }): void {
+          console.log(
+            `${QuickTestScreenBase.TAG}: ${this.onServerRoleAssigned?.name}:`,
+            params
+          );
+          this.that.setState({
+            server_listener:
+              `${this.onServerRoleAssigned?.name}:` + JSON.stringify(params),
+          });
+        }
+      })(this)
+    );
   }
 
   protected removeListener?(): void {
@@ -955,6 +1266,12 @@ export abstract class QuickTestScreenBase<
         {this.renderParamWithText('room_listener: ' + this.state.room_listener)}
         {this.renderParamWithText(
           'pre_listener: ' + this.state.presence_listener
+        )}
+        {this.renderParamWithText(
+          'server_listener: ' + this.state.server_listener
+        )}
+        {this.renderParamWithText(
+          'channel_listener: ' + this.state.channel_listener
         )}
         {this.renderParamWithText('cb_result: ' + this.state.cb_result)}
         {this.addSpaces()}

@@ -16,7 +16,7 @@ export class ChatCircleUser {
 export function ChatCircleUserRoleFromNumber(
   value: number
 ): ChatCircleUserRole | undefined {
-  if (value) {
+  if (value !== null || value !== undefined) {
     let ret = ChatCircleUserRole.Owner;
     switch (value) {
       case 0:
