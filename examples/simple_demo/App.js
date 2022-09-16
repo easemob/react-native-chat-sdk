@@ -203,6 +203,50 @@ const App = () => {
       });
   };
 
+  // 发送图文消息，图片需要用户自行上传和下载
+  // 下载需要在接收到消息之后进行处理
+  // 上传需要在发送消息之前保证上传成功
+  const sendTuWenMsg = () => {
+    if (this.isInitialized === false || this.isInitialized === undefined) {
+      rollLog('Perform initialization first.');
+      return;
+    }
+    let msg = ChatMessage.createCustomMessage(
+      userId,
+      'tw',
+      ChatMessageChatType.PeerChat,
+      {
+        params: {
+          title: '标题', // 图文消息的标题
+          firstImage: 'url1', // 图文消息的第一张图片，图片需要用户自行上传下载
+          secondImage: 'url2', // 图文消息的第二张图片
+          thirdImage: 'url3', // 图文消息的第三张图片
+        },
+        isChatThread: false,
+      },
+    );
+    const callback = new (class {
+      onProgress(locaMsgId, progress) {
+        rollLog(`send message process: ${locaMsgId}, ${progress}`);
+      }
+      onError(locaMsgId, error) {
+        rollLog(`send message fail: ${locaMsgId}, ${JSON.stringify(error)}`);
+      }
+      onSuccess(message) {
+        rollLog('send message success: ' + message.localMsgId);
+      }
+    })();
+    rollLog('start send message ...');
+    ChatClient.getInstance()
+      .chatManager.sendMessage(msg, callback)
+      .then(() => {
+        rollLog('send message: ' + msg.localMsgId);
+      })
+      .catch(reason => {
+        rollLog('send fail: ' + JSON.stringify(reason));
+      });
+  };
+
   // ui render.
   return (
     <SafeAreaView>
