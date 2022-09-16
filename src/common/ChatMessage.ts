@@ -1,10 +1,8 @@
 import { generateMessageId, getNowTimestamp } from '../__internal__/Utils';
 import { ChatClient } from '../ChatClient';
 import { ChatError } from './ChatError';
-import type {
-  ChatMessageReaction,
-  ChatMessageThread,
-} from 'react-native-chat-sdk';
+import type { ChatMessageReaction } from './ChatMessageReaction';
+import type { ChatMessageThread } from './ChatMessageThread';
 
 /**
  * The conversation types.
