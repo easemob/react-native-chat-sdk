@@ -427,7 +427,7 @@
 			);
 			inputPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-ChatSdkExample/Pods-ChatSdkExample-frameworks.sh",
-				"${PODS_ROOT}/HyphenateChat/HyphenateChat.framework",
+				"${PODS_ROOT}/HyphenateChat_Circle/HyphenateChat.framework",
 				"${PODS_XCFRAMEWORKS_BUILD_DIR}/Flipper-DoubleConversion/double-conversion.framework/double-conversion",
 				"${PODS_XCFRAMEWORKS_BUILD_DIR}/OpenSSL-Universal/OpenSSL.framework/OpenSSL",
 			);

@@ -62,7 +62,7 @@ export interface StateCircle extends StateBase {
   };
   removeTagsFromServer: {
     serverId: string;
-    serverTags: string[];
+    serverTagIds: string[];
   };
   fetchServerTags: {
     serverId: string;
@@ -693,11 +693,11 @@ export class CircleManagerLeafScreen extends LeafScreenBase<StateCircle> {
         break;
       case MN.removeTagsFromServer:
         {
-          const { serverId, serverTags } = this.state.removeTagsFromServer;
+          const { serverId, serverTagIds } = this.state.removeTagsFromServer;
           this.tryCatch(
             ChatClient.getInstance().circleManager.removeTagsFromServer({
               serverId,
-              serverTags,
+              serverTagIds,
             }),
             CircleManagerLeafScreen.TAG,
             name

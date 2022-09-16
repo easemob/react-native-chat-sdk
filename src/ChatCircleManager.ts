@@ -87,6 +87,9 @@ export class ChatCircleManager extends BaseManager {
   private _channelListeners: Set<ChatCircleChannelListener>;
   private _circleSubscriptions: Map<string, EmitterSubscription>;
 
+  /**
+   * Constructs a circle management object.
+   */
   constructor() {
     super();
     this._serverListeners = new Set();
@@ -94,6 +97,11 @@ export class ChatCircleManager extends BaseManager {
     this._circleSubscriptions = new Map();
   }
 
+  /**
+   * Set the listener for event reception.
+   *
+   * @param event The native event emitter.
+   */
   public setNativeListener(event: NativeEventEmitter) {
     this._eventEmitter = event;
     chatlog.log(`${ChatCircleManager.TAG}: setNativeListener`);
@@ -283,22 +291,48 @@ export class ChatCircleManager extends BaseManager {
     );
   }
 
+  /**
+   * Add a circle listener.
+   *
+   * @param listener The circle listener.
+   */
   public addServerListener(listener: ChatCircleServerListener): void {
     this._serverListeners.add(listener);
   }
+  /**
+   * Remove a circle listener.
+   *
+   * @param listener The circle listener.
+   */
   public removeServerListener(listener: ChatCircleServerListener): void {
     this._serverListeners.delete(listener);
   }
+  /**
+   * Clear all circle listeners.
+   */
   public clearServerListener(): void {
     this._serverListeners.clear();
   }
 
+  /**
+   * Add a channel listener.
+   *
+   * @param listener The channel listener.
+   */
   public addChannelListener(listener: ChatCircleChannelListener): void {
     this._channelListeners.add(listener);
   }
+  /**
+   * Remove a channel listener.
+   *
+   * @param listener The channel listener.
+   */
   public removeChannelListener(listener: ChatCircleChannelListener): void {
     this._channelListeners.delete(listener);
   }
+  /**
+   * Clear all channel listeners.
+   */
   public clearChannelListener(): void {
     this._channelListeners.clear();
   }
@@ -333,6 +367,19 @@ export class ChatCircleManager extends BaseManager {
     });
   }
 
+  /**
+   * Create a server.
+   *
+   * @param params -
+   * - serverName: The server name.
+   * - serverIcon: The server icon url.
+   * - serverDescription: The server description.
+   * - serverExtension: Use custom parameters in string format.
+   *
+   * @returns Created server and throws an exception if it fails.
+   *
+   * @throws A description of the exception. See {@link ChatError}.
+   */
   public async createServer(params: {
     serverName: string;
     serverIcon?: string;
@@ -352,6 +399,13 @@ export class ChatCircleManager extends BaseManager {
     return this.parseChatServer(r?.[MTcreateCircleServer]);
   }
 
+  /**
+   * Destroy a server.
+   *
+   * @param serverId The server ID.
+   *
+   * @throws A description of the exception. See {@link ChatError}.
+   */
   public async destroyServer(serverId: string): Promise<void> {
     chatlog.log(`${ChatCircleManager.TAG}: ${this.destroyServer.name}`);
     let r: any = await Native._callMethod(MTdestroyCircleServer, {
@@ -362,6 +416,20 @@ export class ChatCircleManager extends BaseManager {
     ChatCircleManager.checkErrorFromResult(r);
   }
 
+  /**
+   * Update a server attribute.
+   *
+   * @param params -
+   * - serverId: The server ID generated when created.
+   * - serverName: The server name.
+   * - serverIcon: The server icon url.
+   * - serverDescription: The server description.
+   * - serverExtension: Use custom parameters in string format.
+   *
+   * @returns Updated server and throws an exception if it fails.
+   *
+   * @throws A description of the exception. See {@link ChatError}.
+   */
   public async updateServer(params: {
     serverId: string;
     serverName?: string;
@@ -383,6 +451,13 @@ export class ChatCircleManager extends BaseManager {
     return this.parseChatServer(r?.[MTupdateCircleServer]);
   }
 
+  /**
+   * Join the specified server.
+   *
+   * @param serverId The server ID.
+   *
+   * @throws A description of the exception. See {@link ChatError}.
+   */
   public async joinServer(serverId: string): Promise<void> {
     chatlog.log(`${ChatCircleManager.TAG}: ${this.joinServer.name}`);
     let r: any = await Native._callMethod(MTjoinCircleServer, {
@@ -393,6 +468,13 @@ export class ChatCircleManager extends BaseManager {
     ChatCircleManager.checkErrorFromResult(r);
   }
 
+  /**
+   * Leave the specified server.
+   *
+   * @param serverId The server ID.
+   *
+   * @throws A description of the exception. See {@link ChatError}.
+   */
   public async leaveServer(serverId: string): Promise<void> {
     chatlog.log(`${ChatCircleManager.TAG}: ${this.leaveServer.name}`);
     let r: any = await Native._callMethod(MTleaveCircleServer, {
@@ -403,6 +485,15 @@ export class ChatCircleManager extends BaseManager {
     ChatCircleManager.checkErrorFromResult(r);
   }
 
+  /**
+   * Remove a member from the server.
+   *
+   * @param params -
+   * - serverId: The server ID generated when created.
+   * - userId: The member ID.
+   *
+   * @throws A description of the exception. See {@link ChatError}.
+   */
   public async removeUserFromServer(params: {
     serverId: string;
     userId: string;
@@ -417,6 +508,16 @@ export class ChatCircleManager extends BaseManager {
     ChatCircleManager.checkErrorFromResult(r);
   }
 
+  /**
+   * Invite a member to the server.
+   *
+   * @param params -
+   * - serverId: The server ID generated when created.
+   * - userId: The member ID.
+   * - welcome: The welcome greeting.
+   *
+   * @throws A description of the exception. See {@link ChatError}.
+   */
   public async inviteUserToServer(params: {
     serverId: string;
     userId: string;
@@ -433,6 +534,17 @@ export class ChatCircleManager extends BaseManager {
     ChatCircleManager.checkErrorFromResult(r);
   }
 
+  /**
+   * Invitee accept invitation from server.
+   *
+   * @param params -
+   * - serverId: The server ID generated when created.
+   * - inviter: The inviter ID who invited user to join the server.
+   *
+   * @returns The server and throws an exception if it fails.
+   *
+   * @throws A description of the exception. See {@link ChatError}.
+   */
   public async acceptServerInvitation(params: {
     serverId: string;
     inviter: string;
@@ -450,6 +562,15 @@ export class ChatCircleManager extends BaseManager {
     return this.parseChatServer(r?.[MTacceptCircleServerInvitation]);
   }
 
+  /**
+   * Invitee decline invitation from server.
+   *
+   * @param params -
+   * - serverId: The server ID generated when created.
+   * - inviter: The inviter ID who invited user to join the server.
+   *
+   * @throws A description of the exception. See {@link ChatError}.
+   */
   public async declineServerInvitation(params: {
     serverId: string;
     inviter: string;
@@ -466,6 +587,17 @@ export class ChatCircleManager extends BaseManager {
     ChatCircleManager.checkErrorFromResult(r);
   }
 
+  /**
+   * Add tag list to server.
+   *
+   * @param params -
+   * - serverId: The server ID generated when created.
+   * - serverTags: A list of string tag.
+   *
+   * @returns The server tags and throws an exception if it fails.
+   *
+   * @throws A description of the exception. See {@link ChatError}.
+   */
   public async addTagsToServer(params: {
     serverId: string;
     serverTags: string[];
@@ -487,20 +619,38 @@ export class ChatCircleManager extends BaseManager {
     return ret;
   }
 
+  /**
+   * Remove tag list to server.
+   *
+   * @param params -
+   * - serverId: The server ID generated when created.
+   * - serverTagIds: A list of tag ID generated when created.
+   *
+   * @throws A description of the exception. See {@link ChatError}.
+   */
   public async removeTagsFromServer(params: {
     serverId: string;
-    serverTags: string[];
+    serverTagIds: string[];
   }): Promise<void> {
     chatlog.log(`${ChatCircleManager.TAG}: ${this.removeTagsFromServer.name}`);
     let r: any = await Native._callMethod(MTremoveTagsFromCircleServer, {
       [MTremoveTagsFromCircleServer]: {
         serverId: params.serverId,
-        serverTags: params.serverTags,
+        serverTags: params.serverTagIds,
       },
     });
     ChatCircleManager.checkErrorFromResult(r);
   }
 
+  /**
+   * Fetch a list of server tags.
+   *
+   * @param serverId The server ID generated when created.
+   *
+   * @returns The list of server tags and throws an exception if it fails.
+   *
+   * @throws A description of the exception. See {@link ChatError}.
+   */
   public async fetchServerTags(serverId: string): Promise<ChatCircleTag[]> {
     chatlog.log(`${ChatCircleManager.TAG}: ${this.fetchServerTags.name}`);
     let r: any = await Native._callMethod(MTfetchCircleServerTags, {
@@ -518,6 +668,15 @@ export class ChatCircleManager extends BaseManager {
     return ret;
   }
 
+  /**
+   * Change the server member role to moderator.
+   *
+   * @param params -
+   * - serverId: The server ID generated when created.
+   * - userId: The member ID.
+   *
+   * @throws A description of the exception. See {@link ChatError}.
+   */
   public async addModeratorToServer(params: {
     serverId: string;
     userId: string;
@@ -532,6 +691,15 @@ export class ChatCircleManager extends BaseManager {
     ChatCircleManager.checkErrorFromResult(r);
   }
 
+  /**
+   * Change the server member role to user.
+   *
+   * @param params -
+   * - serverId: The server ID generated when created.
+   * - userId: The member ID.
+   *
+   * @throws A description of the exception. See {@link ChatError}.
+   */
   public async removeModeratorFromServer(params: {
     serverId: string;
     userId: string;
@@ -548,6 +716,15 @@ export class ChatCircleManager extends BaseManager {
     ChatCircleManager.checkErrorFromResult(r);
   }
 
+  /**
+   * Fetch self role for the server.
+   *
+   * @param serverId The server ID generated when created.
+   *
+   * @returns The server role and throws an exception if it fails.
+   *
+   * @throws A description of the exception. See {@link ChatError}.
+   */
   public async fetchSelfServerRole(
     serverId: string
   ): Promise<ChatCircleUserRole | undefined> {
@@ -561,6 +738,17 @@ export class ChatCircleManager extends BaseManager {
     return ChatCircleUserRoleFromNumber(r?.[MTfetchSelfCircleServerRole]);
   }
 
+  /**
+   * Fetch list of joined server.
+   *
+   * @param params -
+   * - cursor: The query cursor, pointing to the starting position of the query. After this parameter is set, the SDK will query from the specified cursor position in the positive order of users joining the community. For the first query, pass in `null` or an empty string, and the SDK will start the query from the earliest joined community.
+   * - pageSize: The maximum amount to expect to fetch each time. The value range is [1,20].
+   *
+   * @returns The result of server and throws an exception if it fails.
+   *
+   * @throws A description of the exception. See {@link ChatError}.
+   */
   public async fetchJoinedServers(params: {
     cursor?: string;
     pageSize?: number;
@@ -585,6 +773,15 @@ export class ChatCircleManager extends BaseManager {
     return ret;
   }
 
+  /**
+   * Fetch server information.
+   *
+   * @param serverId The server ID generated when created.
+   *
+   * @returns The server and throws an exception if it fails.
+   *
+   * @throws A description of the exception. See {@link ChatError}.
+   */
   public async fetchServerDetail(
     serverId: string
   ): Promise<ChatCircleServer | undefined> {
@@ -601,6 +798,15 @@ export class ChatCircleManager extends BaseManager {
     return undefined;
   }
 
+  /**
+   * Fetch list of server with keyword.
+   *
+   * @param keyword Specifies the keyword for the search.
+   *
+   * @returns The server list and throws an exception if it fails.
+   *
+   * @throws A description of the exception. See {@link ChatError}.
+   */
   public async fetchServersWithKeyword(
     keyword: string
   ): Promise<ChatCircleServer[]> {
@@ -622,6 +828,18 @@ export class ChatCircleManager extends BaseManager {
     return ret;
   }
 
+  /**
+   * Fetch list of server members.
+   *
+   * @param params -
+   * - serverId: The server ID generated when created.
+   * - cursor: The query cursor, pointing to the starting position of the query. After this parameter is set, the SDK will query from the specified cursor position in the positive order of users joining the community. For the first query, pass in `null` or an empty string, and the SDK will start the query from the earliest joined community.
+   * - pageSize: The maximum amount to expect to fetch each time. The value range is [1,20].
+   *
+   * @returns The result of server members and throws an exception if it fails.
+   *
+   * @throws A description of the exception. See {@link ChatError}.
+   */
   public async fetchServerMembers(params: {
     serverId: string;
     pageSize: number;
@@ -651,6 +869,15 @@ export class ChatCircleManager extends BaseManager {
     return ret;
   }
 
+  /**
+   * Check if self is in the server.
+   *
+   * @param serverId The server ID generated when created.
+   *
+   * @returns Returns true if it is on the server, otherwise returns false.
+   *
+   * @throws A description of the exception. See {@link ChatError}.
+   */
   public async checkSelfInServer(serverId: string): Promise<boolean> {
     chatlog.log(`${ChatCircleManager.TAG}: ${this.checkSelfInServer.name}`);
     let r: any = await Native._callMethod(MTcheckSelfInCircleServer, {
@@ -662,6 +889,21 @@ export class ChatCircleManager extends BaseManager {
     return r?.[MTcheckSelfInCircleServer];
   }
 
+  /**
+   * Create a channel.
+   *
+   * @param params -
+   * - serverId: The server ID generated when created.
+   * - channelName: The channel name.
+   * - channelDescription: The channel description.
+   * - channelExtension: Use custom parameters in string format.
+   * - channelRank: The channel member max count range. see {@link ChatCircleChannelRank}
+   * - channelType: The channel type. see {@link ChatCircleChannelType}
+   *
+   * @returns The created channel and throws an exception if it fails.
+   *
+   * @throws A description of the exception. See {@link ChatError}.
+   */
   public async createChannel(params: {
     serverId: string;
     channelName: string;
@@ -687,6 +929,15 @@ export class ChatCircleManager extends BaseManager {
     return this.parseChatChannel(r?.[MTcreateCircleChannel]);
   }
 
+  /**
+   * Destroy a special channel.
+   *
+   * @param params -
+   * - serverId: The server ID generated when created.
+   * - channelId: The channel ID generated when created.
+   *
+   * @throws A description of the exception. See {@link ChatError}.
+   */
   public async destroyChannel(params: {
     serverId: string;
     channelId: string;
@@ -701,6 +952,21 @@ export class ChatCircleManager extends BaseManager {
     ChatCircleManager.checkErrorFromResult(r);
   }
 
+  /**
+   * Update the special channel.
+   *
+   * @param params -
+   * - serverId: The server ID generated when created.
+   * - channelId: The channel ID generated when created.
+   * - channelName: The channel name.
+   * - channelDescription: The channel description.
+   * - channelExtension: Use custom parameters in string format.
+   * - channelRank: The channel member max count range. see {@link ChatCircleChannelRank}
+   *
+   * @returns The updated channel and throws an exception if it fails.
+   *
+   * @throws A description of the exception. See {@link ChatError}.
+   */
   public async updateChannel(params: {
     serverId: string;
     channelId: string;
@@ -724,6 +990,17 @@ export class ChatCircleManager extends BaseManager {
     return this.parseChatChannel(r?.[MTupdateCircleChannel]);
   }
 
+  /**
+   * Join a special channel.
+   *
+   * @param params -
+   * - serverId: The server ID generated when created.
+   * - channelId: The channel ID generated when created.
+   *
+   * @returns The joined channel and throws an exception if it fails.
+   *
+   * @throws A description of the exception. See {@link ChatError}.
+   */
   public async joinChannel(params: {
     serverId: string;
     channelId: string;
@@ -739,6 +1016,15 @@ export class ChatCircleManager extends BaseManager {
     return this.parseChatChannel(r?.[MTjoinCircleChannel]);
   }
 
+  /**
+   * Leave a special channel.
+   *
+   * @param params -
+   * - serverId: The server ID generated when created.
+   * - channelId: The channel ID generated when created.
+   *
+   * @throws A description of the exception. See {@link ChatError}.
+   */
   public async leaveChannel(params: {
     serverId: string;
     channelId: string;
@@ -753,6 +1039,16 @@ export class ChatCircleManager extends BaseManager {
     ChatCircleManager.checkErrorFromResult(r);
   }
 
+  /**
+   * Remove a member from the channel.
+   *
+   * @param params -
+   * - serverId: The server ID generated when created.
+   * - channelId: The channel ID generated when created.
+   * - userId: The member ID.
+   *
+   * @throws A description of the exception. See {@link ChatError}.
+   */
   public async removeUserFromChannel(params: {
     serverId: string;
     channelId: string;
@@ -769,6 +1065,17 @@ export class ChatCircleManager extends BaseManager {
     ChatCircleManager.checkErrorFromResult(r);
   }
 
+  /**
+   * Invite a member to the channel.
+   *
+   * @param params -
+   * - serverId: The server ID generated when created.
+   * - channelId: The channel ID generated when created.
+   * - userId: The member ID.
+   * - welcome: The welcome greeting.
+   *
+   * @throws A description of the exception. See {@link ChatError}.
+   */
   public async inviteUserToChannel(params: {
     serverId: string;
     channelId: string;
@@ -787,6 +1094,18 @@ export class ChatCircleManager extends BaseManager {
     ChatCircleManager.checkErrorFromResult(r);
   }
 
+  /**
+   * Invitee accept invitation from channel.
+   *
+   * @param params -
+   * - serverId: The server ID generated when created.
+   * - channelId: The channel ID generated when created.
+   * - inviter: The inviter ID who invited user to join the channel.
+   *
+   * @returns The joined channel and throws an exception if it fails.
+   *
+   * @throws A description of the exception. See {@link ChatError}.
+   */
   public async acceptChannelInvitation(params: {
     serverId: string;
     channelId: string;
@@ -806,6 +1125,16 @@ export class ChatCircleManager extends BaseManager {
     return this.parseChatChannel(r?.[MTacceptCircleChannelInvitation]);
   }
 
+  /**
+   * Invitee decline invitation from channel.
+   *
+   * @param params -
+   * - serverId: The server ID generated when created.
+   * - channelId: The channel ID generated when created.
+   * - inviter: The inviter ID who invited user to join the channel.
+   *
+   * @throws A description of the exception. See {@link ChatError}.
+   */
   public async declineChannelInvitation(params: {
     serverId: string;
     channelId: string;
@@ -824,6 +1153,17 @@ export class ChatCircleManager extends BaseManager {
     ChatCircleManager.checkErrorFromResult(r);
   }
 
+  /**
+   * Mute member in the special channel.
+   *
+   * @param params -
+   * - serverId: The server ID generated when created.
+   * - channelId: The channel ID generated when created.
+   * - userId: The member ID.
+   * - duration: The duration. The unit is milliseconds.
+   *
+   * @throws A description of the exception. See {@link ChatError}.
+   */
   public async muteUserInChannel(params: {
     serverId: string;
     channelId: string;
@@ -842,6 +1182,16 @@ export class ChatCircleManager extends BaseManager {
     ChatCircleManager.checkErrorFromResult(r);
   }
 
+  /**
+   * Unmute member in the special channel.
+   *
+   * @param params -
+   * - serverId: The server ID generated when created.
+   * - channelId: The channel ID generated when created.
+   * - userId: The member ID.
+   *
+   * @throws A description of the exception. See {@link ChatError}.
+   */
   public async unmuteUserInChannel(params: {
     serverId: string;
     channelId: string;
@@ -858,6 +1208,17 @@ export class ChatCircleManager extends BaseManager {
     ChatCircleManager.checkErrorFromResult(r);
   }
 
+  /**
+   * Fetch the special channel information.
+   *
+   * @param params -
+   * - serverId: The server ID generated when created.
+   * - channelId: The channel ID generated when created.
+   *
+   * @returns The channel and throws an exception if it fails.
+   *
+   * @throws A description of the exception. See {@link ChatError}.
+   */
   public async fetchChannelDetail(params: {
     serverId: string;
     channelId: string;
@@ -876,6 +1237,18 @@ export class ChatCircleManager extends BaseManager {
     return undefined;
   }
 
+  /**
+   * Fetch public channel list in the special server.
+   *
+   * @param params -
+   * - serverId: The server ID generated when created.
+   * - cursor: The query cursor, pointing to the starting position of the query. After this parameter is set, the SDK will query from the specified cursor position in the positive order of users joining the community. For the first query, pass in `null` or an empty string, and the SDK will start the query from the earliest joined community.
+   * - pageSize: The maximum amount to expect to fetch each time. The value range is [1,20].
+   *
+   * @returns The result of channel and throws an exception if it fails.
+   *
+   * @throws A description of the exception. See {@link ChatError}.
+   */
   public async fetchPublicChannelInServer(params: {
     serverId: string;
     pageSize: number;
@@ -904,6 +1277,19 @@ export class ChatCircleManager extends BaseManager {
     return ret;
   }
 
+  /**
+   * Fetch the channel members.
+   *
+   * @param params -
+   * - serverId: The server ID generated when created.
+   * - channelId: The channel ID generated when created.
+   * - cursor: The query cursor, pointing to the starting position of the query. After this parameter is set, the SDK will query from the specified cursor position in the positive order of users joining the community. For the first query, pass in `null` or an empty string, and the SDK will start the query from the earliest joined community.
+   * - pageSize: The maximum amount to expect to fetch each time. The value range is [1,20].
+   *
+   * @returns The result of channel members and throws an exception if it fails.
+   *
+   * @throws A description of the exception. See {@link ChatError}.
+   */
   public async fetchChannelMembers(params: {
     serverId: string;
     channelId: string;
@@ -935,6 +1321,18 @@ export class ChatCircleManager extends BaseManager {
     return ret;
   }
 
+  /**
+   * Fetch visible private type channels in the special server.
+   *
+   * @param params -
+   * - serverId: The server ID generated when created.
+   * - cursor: The query cursor, pointing to the starting position of the query. After this parameter is set, the SDK will query from the specified cursor position in the positive order of users joining the community. For the first query, pass in `null` or an empty string, and the SDK will start the query from the earliest joined community.
+   * - pageSize: The maximum amount to expect to fetch each time. The value range is [1,20].
+   *
+   * @returns The result of channel and throws an exception if it fails.
+   *
+   * @throws A description of the exception. See {@link ChatError}.
+   */
   public async fetchVisiblePrivateChannelInServer(params: {
     serverId: string;
     pageSize: number;
@@ -966,6 +1364,17 @@ export class ChatCircleManager extends BaseManager {
     return ret;
   }
 
+  /**
+   * Check if self is in the channel.
+   *
+   * @param params -
+   * - serverId: The server ID generated when created.
+   * - channelId: The channel ID generated when created.
+   *
+   * @returns Returns true if it is on the channel, otherwise returns false.
+   *
+   * @throws A description of the exception. See {@link ChatError}.
+   */
   public async checkSelfIsInChannel(params: {
     serverId: string;
     channelId: string;
@@ -981,6 +1390,17 @@ export class ChatCircleManager extends BaseManager {
     return r?.[MTcheckSelfIsInCircleChannel];
   }
 
+  /**
+   * Fetch the muted members in the special channel.
+   *
+   * @param params -
+   * - serverId: The server ID generated when created.
+   * - channelId: The channel ID generated when created.
+   *
+   * @returns The map of mute members and throws an exception if it fails.
+   *
+   * @throws A description of the exception. See {@link ChatError}.
+   */
   public async fetchChannelMuteUsers(params: {
     serverId: string;
     channelId: string;

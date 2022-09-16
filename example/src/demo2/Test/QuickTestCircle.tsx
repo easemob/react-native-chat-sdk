@@ -224,12 +224,12 @@ export class QuickTestScreenCircle extends QuickTestScreenBase<
       case MN.removeTagsFromServer:
         {
           const serverId = this.metaData.get(name)!.params[0].paramDefaultValue;
-          const serverTags =
+          const serverTagIds =
             this.metaData.get(name)!.params[1].paramDefaultValue;
           this.tryCatch(
             ChatClient.getInstance().circleManager.removeTagsFromServer({
               serverId,
-              serverTags,
+              serverTagIds,
             }),
             QuickTestScreenCircle.TAG,
             name

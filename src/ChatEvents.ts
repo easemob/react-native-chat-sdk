@@ -158,46 +158,89 @@ export enum ChatMultiDeviceEvent {
    */
   THREAD_KICK,
 
+  /**
+   * On other devices, Notification when the current user creates a server.
+   */
   SERVER_CREATE = 55,
-
+  /**
+   * On other devices, Notification when the current user destroy a server.
+   */
   SERVER_DELETE,
-
+  /**
+   * On other devices, Notification when the current user update a server.
+   */
   SERVER_UPDATE,
-
+  /**
+   * On other devices, Notification when the current user join a server.
+   */
   SERVER_JOIN,
-
+  /**
+   * On other devices, Notification when the current user leave a server.
+   */
   SERVER_LEAVE,
-
+  /**
+   * On other devices, Notification when the current user accept invitation from server.
+   */
   SERVER_INVITE_ACCEPT,
-
+  /**
+   * On other devices, Notification when the current user decline invitation from server.
+   */
   SERVER_INVITE_DECLINE,
-
+  /**
+   * On other devices, Notification when the current user set member role in server.
+   */
   CIRCLE_SERVER_SET_ROLE,
-
+  /**
+   * On other devices, Notification when the current user remove member from server.
+   */
   CIRCLE_SERVER_REMOVE_USER,
-
+  /**
+   * On other devices, Notification when the current user invite user to server.
+   */
   CIRCLE_SERVER_INVITE_USER,
-
+  /**
+   * On other devices, Notification when the current user creates a channel.
+   */
   CHANNEL_CREATE = 70,
-
+  /**
+   * On other devices, Notification when the current user destroy a channel.
+   */
   CHANNEL_DELETE,
-
+  /**
+   * On other devices, Notification when the current user update a channel.
+   */
   CHANNEL_UPDATE,
-
+  /**
+   * On other devices, Notification when the current user join a channel.
+   */
   CHANNEL_JOIN,
-
+  /**
+   * On other devices, Notification when the current user accept invitation from channel.
+   */
   CHANNEL_INVITATION_ACCEPT,
-
+  /**
+   * On other devices, Notification when the current user decline invitation from channel.
+   */
   CHANNEL_INVITATION_DECLINE,
-
+  /**
+   * On other devices, Notification when the current user leave a channel.
+   */
   CHANNEL_LEAVE,
-
+  /**
+   * On other devices, Notification when the current user remove member from channel.
+   */
   CIRCLE_CHANNEL_REMOVE_USER,
-
+  /**
+   * On other devices, Notification when the current user invite user to channel.
+   */
   CIRCLE_CHANNEL_INVITE_USER,
-
+  /**
+   * On other devices, Notification when the current user set member mute in channel.
+   */
   CIRCLE_CHANNEL_MEMBER_ADD_MUTE,
-
+  /**
+   * On other devices, Notification when the current user set member unmute in channel.
+   */
   CIRCLE_CHANNEL_MEMBER_REMOVE_MUTE,
 }
 
@@ -422,7 +465,7 @@ export interface ChatMultiDeviceEventListener {
    *
    * @param event The event type.
    * @param target The group ID.
-   * @param usernames The array of user IDs.
+   * @param usernames The array of user ID list.
    */
   onGroupEvent?(
     event?: ChatMultiDeviceEvent,
@@ -435,7 +478,7 @@ export interface ChatMultiDeviceEventListener {
    *
    * @param event The event type.
    * @param target The group ID.
-   * @param usernames The array of user IDs.
+   * @param usernames The array of user ID list.
    */
   onThreadEvent?(
     event?: ChatMultiDeviceEvent,
@@ -858,7 +901,7 @@ export interface ChatGroupEventListener {
    *
    * @param params The parameter set.
    * - Param [groupId] The group ID.
-   * - Param [members] The user IDs of members that are added to the allow list of the group.
+   * - Param [members] The user ID list of members that are added to the allow list of the group.
    */
   onAllowListAdded?(params: { groupId: string; members: Array<string> }): void;
   /**
@@ -866,7 +909,7 @@ export interface ChatGroupEventListener {
    *
    * @param params The parameter set.
    * - Param [groupId] The group ID.
-   * - Param [members] The user IDs of members that are removed from the allow list of the group.
+   * - Param [members] The user ID list of members that are removed from the allow list of the group.
    */
   onAllowListRemoved?(params: {
     groupId: string;
@@ -1087,8 +1130,31 @@ export interface ChatPresenceEventListener {
   onPresenceStatusChanged(list: Array<ChatPresence>): void;
 }
 
+/**
+ * The circle server listener.
+ */
 export interface ChatCircleServerListener {
+  /**
+   * Notification when the server is destroyed.
+   *
+   * @param params -
+   * - serverId: The server ID.
+   * - initiator: The initiator ID.
+   */
   onServerDestroyed?(params: { serverId: string; initiator: string }): void;
+  /**
+   * Notification when the server is updated.
+   *
+   * @param params -
+   * - serverId: The server ID.
+   * - serverName: The server name.
+   * - serverIconUrl: The server icon url.
+   * - serverDescription: The server description.
+   * - serverCustom: Use custom parameters in string format.
+   * - eventSenderId: The notification sender ID.
+   * - eventReceiveIds: The notification received ID list.
+   * - timestamp: The notification timestamp.
+   */
   onServerUpdated?(params: {
     serverId: string;
     serverName: string;
@@ -1099,12 +1165,46 @@ export interface ChatCircleServerListener {
     eventReceiveIds: Array<string>;
     timestamp: number;
   }): void;
+  /**
+   * Notification when the user joins a server.
+   *
+   * @param params -
+   * - serverId: The server ID.
+   * - memberId: The joined user ID.
+   */
   onMemberJoinedServer?(params: { serverId: string; memberId: string }): void;
+  /**
+   * Notification when the user Leaves a server.
+   *
+   * @param params -
+   * - serverId: The server ID.
+   * - memberId: The joined user ID.
+   */
   onMemberLeftServer?(params: { serverId: string; memberId: string }): void;
+  /**
+   * Notification when a member is removed from the server.
+   *
+   * @param params -
+   * - serverId: The server ID.
+   * - memberIds: The list of members to be removed.
+   */
   onMemberRemovedFromServer?(params: {
     serverId: string;
     memberIds: string[];
   }): void;
+  /**
+   * Notification when current user receives server invitation.
+   *
+   * @param params -
+   * - serverId: The server ID.
+   * - serverName: The server name.
+   * - serverIconUrl: The server icon url.
+   * - serverDescription: The server description.
+   * - serverCustom: Use custom parameters in string format.
+   * - eventSenderId: The notification sender ID.
+   * - eventReceiveIds: The notification receiver ID list.
+   * - timestamp: The notification timestamp.
+   */
   onReceiveServerInvitation?(params: {
     serverId: string;
     serverName: string;
@@ -1115,14 +1215,36 @@ export interface ChatCircleServerListener {
     eventReceiveIds: Array<string>;
     timestamp: number;
   }): void;
+  /**
+   * Notification when the server invitation is accepted.
+   *
+   * @param params -
+   * - serverId: The server ID.
+   * - invitee: The invitee ID.
+   */
   onServerInvitationBeAccepted?(params: {
     serverId: string;
     invitee: string;
   }): void;
+  /**
+   * Notification when the server invitation is declined.
+   *
+   * @param params -
+   * - serverId: The server ID.
+   * - invitee: The invitee ID.
+   */
   onServerInvitationBeDeclined?(params: {
     serverId: string;
     invitee: string;
   }): void;
+  /**
+   * Notification when member roles are adjusted.
+   *
+   * @param params -
+   * - serverId: The server ID.
+   * - memberId: The member ID.
+   * - role: The user role.
+   */
   onServerRoleAssigned?(params: {
     serverId: string;
     memberId: string;
@@ -1130,17 +1252,46 @@ export interface ChatCircleServerListener {
   }): void;
 }
 
+/**
+ * The circle channel listener.
+ */
 export interface ChatCircleChannelListener {
+  /**
+   * Notification when the channel is created.
+   *
+   * @param params -
+   * - serverId: The server ID.
+   * - channelId: The channel ID.
+   * - creator: The user ID who created the channel.
+   */
   onChannelCreated?(params: {
     serverId: string;
     channelId: string;
     creator: string;
   }): void;
+  /**
+   * Notification when the channel is destroyed.
+   *
+   * @param params -
+   * - serverId: The server ID.
+   * - channelId: The channel ID.
+   * - initiator: The user ID who destroy the channel.
+   */
   onChannelDestroyed?(params: {
     serverId: string;
     channelId: string;
     initiator: string;
   }): void;
+  /**
+   * Notification when the channel is updated.
+   *
+   * @param params -
+   * - serverId: The server ID.
+   * - channelId: The channel ID.
+   * - channelName: The channel name.
+   * - channelDescription: The channel description.
+   * - initiator: The user ID who update the channel.
+   */
   onChannelUpdated?(params: {
     serverId: string;
     channelId: string;
@@ -1148,22 +1299,59 @@ export interface ChatCircleChannelListener {
     channelDescription: string;
     initiator: string;
   }): void;
+  /**
+   * Notification when a user joins to the channel.
+   *
+   * @param params -
+   * - serverId: The server ID.
+   * - channelId: The channel ID.
+   * - memberId: The user ID who joined the channel.
+   */
   onMemberJoinedChannel?(params: {
     serverId: string;
     channelId: string;
     memberId: string;
   }): void;
+  /**
+   * Notification when a user leaves from the channel.
+   *
+   * @param params -
+   * - serverId: The server ID.
+   * - channelId: The channel ID.
+   * - memberId: The user ID who leave from the channel.
+   */
   onMemberLeftChannel?(params: {
     serverId: string;
     channelId: string;
     memberId: string;
   }): void;
+  /**
+   * Notification when a member is removed from the channel.
+   *
+   * @param params -
+   * - serverId: The server ID.
+   * - channelId: The channel ID.
+   * - memberId: The member ID.
+   * - initiator: The user ID who is removed from the channel.
+   */
   onMemberRemovedFromChannel?(params: {
     serverId: string;
     channelId: string;
     memberId: string;
     initiator: string;
   }): void;
+  /**
+   * Notification when current user receives channel invitation.
+   *
+   * @param params -
+   * - serverId: The server ID.
+   * - serverName: The server name.
+   * - serverIcon: The server icon url.
+   * - channelId: The channel ID.
+   * - channelName: The channel name.
+   * - channelDescription: The channel description.
+   * - inviter: The user who invites the user to join the channel.
+   */
   onReceiveChannelInvitation?(params: {
     serverId: string;
     serverName: string;
@@ -1173,16 +1361,41 @@ export interface ChatCircleChannelListener {
     channelDescription: string;
     inviter: string;
   }): void;
+  /**
+   * Notification when the channel invitation is accepted.
+   *
+   * @param params -
+   * - serverId: The channel ID.
+   * - channelId: The channel ID.
+   * - invitee: The invitee ID.
+   */
   onChannelInvitationBeAccepted?(params: {
     serverId: string;
     channelId: string;
     invitee: string;
   }): void;
+  /**
+   * Notification when the channel invitation is declined.
+   *
+   * @param params -
+   * - serverId: The channel ID.
+   * - channelId: The channel ID.
+   * - invitee: The invitee ID.
+   */
   onChannelInvitationBeDeclined?(params: {
     serverId: string;
     channelId: string;
     invitee: string;
   }): void;
+  /**
+   * Notification when the channel member mute statue switched.
+   *
+   * @param params -
+   * - serverId: The channel ID.
+   * - channelId: The channel ID.
+   * - isMuted: Whether to be muted.
+   * - memberIds: The list of members to be muted.
+   */
   onMemberMuteChangeInChannel?(params: {
     serverId: string;
     channelId: string;

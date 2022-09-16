@@ -1,21 +1,74 @@
+/**
+ * The channel type.
+ */
 export enum ChatCircleChannelType {
+  /**
+   * Public type.
+   */
   Public = 0,
+  /**
+   * Private type.
+   */
   Private,
 }
+
+/**
+ * The channel rank type.
+ */
 export enum ChatCircleChannelRank {
+  /**
+   * The maximum number is 2000
+   */
   R2000 = 0,
+  /**
+   * The maximum number is 20000
+   */
   R20000,
+  /**
+   * The maximum number is 100000
+   */
   R100000,
 }
+
+/**
+ * The channel data.
+ */
 export class ChatCircleChannel {
+  /**
+   * The server ID generated when created. see {@link ChatCircleManager#createServer}
+   */
   serverId: string;
+  /**
+   * The channel ID generated when created. see {@link ChatCircleManager#createChannel}
+   */
   channelId: string;
+  /**
+   * The channel name.
+   */
   channelName: string;
+  /**
+   * The channel description.
+   */
   channelDescription?: string;
+  /**
+   * The custom string type parameter.
+   */
   channelExtension?: string;
+  /**
+   * Whether it is the default channel.
+   */
   isDefaultChannel: boolean;
+  /**
+   * The channel type.
+   */
   channelType: ChatCircleChannelType;
+  /**
+   * The channel rank type.
+   */
   channelRank: ChatCircleChannelRank;
+  /**
+   * The construct a channel data object.
+   */
   constructor(params: {
     serverId: string;
     channelId: string;
@@ -37,6 +90,13 @@ export class ChatCircleChannel {
   }
 }
 
+/**
+ * The converter from number to channel type.
+ *
+ * @param type Number type.
+ *
+ * @returns Channel type.
+ */
 export function ChatCircleChannelTypeFromNumber(
   type?: number
 ): ChatCircleChannelType | undefined {
@@ -57,6 +117,13 @@ export function ChatCircleChannelTypeFromNumber(
   return undefined;
 }
 
+/**
+ * The converter from number to channel rank type.
+ *
+ * @param rank Number type.
+ *
+ * @returns Rank type.
+ */
 export function ChatCircleChannelRankFromNumber(
   rank?: number
 ): ChatCircleChannelRank | undefined {

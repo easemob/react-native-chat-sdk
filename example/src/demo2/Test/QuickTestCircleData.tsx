@@ -276,7 +276,7 @@ export const metaDataList = new Map<string, ApiParams>([
           domType: 'input',
         },
         {
-          paramName: 'serverTags',
+          paramName: 'serverTagIds',
           paramType: 'string',
           paramDefaultValue: ['40', '41'],
           domType: 'input',
