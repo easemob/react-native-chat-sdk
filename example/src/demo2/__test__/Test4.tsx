@@ -12,7 +12,7 @@ import {
   ChatImageMessageBody,
   ChatMessageChatType,
   ChatTextMessageBody,
-} from 'react-native-chat-sdk';
+} from 'react-native-chat-circle-sdk';
 import { ChatManagerCache } from '../Test/ChatManagerCache';
 
 function demo(this: any): void {

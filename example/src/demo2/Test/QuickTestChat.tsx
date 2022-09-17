@@ -17,7 +17,7 @@ import {
   ChatMessageType,
   ChatMessageChatType,
   ChatCmdMessageBody,
-} from 'react-native-chat-sdk';
+} from 'react-native-chat-circle-sdk';
 import { ChatManagerCache } from './ChatManagerCache';
 
 export interface QuickTestChatState extends QuickTestState {}

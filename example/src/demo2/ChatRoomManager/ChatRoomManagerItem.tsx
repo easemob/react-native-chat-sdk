@@ -4,7 +4,7 @@ import { styleValues } from '../__internal__/Css';
 import { LeafScreenBase, StateBase } from '../__internal__/LeafScreenBase';
 import { metaDataList, MN } from './ChatRoomManagerData';
 import type { ApiParams } from '../__internal__/DataTypes';
-import { ChatClient, ChatRoomEventListener } from 'react-native-chat-sdk';
+import { ChatClient, ChatRoomEventListener } from 'react-native-chat-circle-sdk';
 import { generateData } from '../__internal__/Utils';
 export interface StateChatRoomMessage extends StateBase {
   createChatRoom: {

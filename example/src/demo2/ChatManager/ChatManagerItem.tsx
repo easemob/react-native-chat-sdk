@@ -1,6 +1,6 @@
 import React, { ReactNode } from 'react';
 import { Text, View } from 'react-native';
-import type { ChatMessageStatusCallback } from 'react-native-chat-sdk';
+import type { ChatMessageStatusCallback } from 'react-native-chat-circle-sdk';
 import {
   ChatClient,
   ChatMessage,
@@ -12,7 +12,7 @@ import {
   ChatMessageThreadEvent,
   ChatMessageReactionEvent,
   ChatMessageChatTypeFromNumber,
-} from 'react-native-chat-sdk';
+} from 'react-native-chat-circle-sdk';
 import { styleValues } from '../__internal__/Css';
 import {
   LeafScreenBase,

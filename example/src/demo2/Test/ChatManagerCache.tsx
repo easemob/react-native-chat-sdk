@@ -3,7 +3,7 @@ import {
   type ChatMessageStatusCallback,
   type ChatError,
   ChatMessageChatType,
-} from 'react-native-chat-sdk';
+} from 'react-native-chat-circle-sdk';
 import { datasheet } from '../__default__/Datasheet';
 import { metaDataList, MN } from './QuickTestChatData';
 

@@ -13,7 +13,7 @@ import {
   ChatConnectEventListener,
   ChatMultiDeviceEvent,
   ChatMultiDeviceEventListener,
-} from 'react-native-chat-sdk';
+} from 'react-native-chat-circle-sdk';
 import { datasheet } from '../__default__/Datasheet';
 import { styleValues } from '../__internal__/Css';
 

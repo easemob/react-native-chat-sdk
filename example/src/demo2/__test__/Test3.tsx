@@ -1,4 +1,4 @@
-import { ChatMessageChatType, ChatMessageType } from 'react-native-chat-sdk';
+import { ChatMessageChatType, ChatMessageType } from 'react-native-chat-circle-sdk';
 
 export function test3() {
   console.log('test3: ', ChatMessageChatType.PeerChat);

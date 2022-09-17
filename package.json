@@ -1,5 +1,5 @@
 {
-  "name": "react-native-chat-sdk",
+  "name": "react-native-chat-circle-sdk",
   "version": "1.0.7",
   "description": "react native chat sdk",
   "main": "lib/commonjs/index",

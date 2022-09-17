@@ -21,7 +21,7 @@ import {
   ChatSearchDirection,
   ChatMessageThreadEvent,
   ChatMessageReactionEvent,
-} from 'react-native-chat-sdk';
+} from 'react-native-chat-circle-sdk';
 import DocumentPicker, {
   DocumentPickerResponse,
 } from 'react-native-document-picker';

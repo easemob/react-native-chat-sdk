@@ -8,7 +8,7 @@ import {
   ChatClient,
   ChatConversation,
   ChatSilentModeParam,
-} from 'react-native-chat-sdk';
+} from 'react-native-chat-circle-sdk';
 import { generateData } from '../__internal__/Utils';
 export interface StatePushMessage extends StateBase {
   setSilentModeForConversation: {

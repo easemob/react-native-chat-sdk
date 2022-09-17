@@ -1,6 +1,6 @@
 import React, { Component, ReactNode } from 'react';
 import { View, Button, Text, TextInput, ScrollView, Alert } from 'react-native';
-import { ChatClient, ChatOptions, ChatPushConfig } from 'react-native-chat-sdk';
+import { ChatClient, ChatOptions, ChatPushConfig } from 'react-native-chat-circle-sdk';
 import { datasheet } from '../__default__/Datasheet';
 import { styleValues } from '../__internal__/Css';
 import messaging from '@react-native-firebase/messaging';

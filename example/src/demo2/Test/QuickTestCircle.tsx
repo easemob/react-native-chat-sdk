@@ -9,7 +9,7 @@ import {
   ChatClient,
   ChatCircleChannelRankFromNumber,
   ChatCircleChannelTypeFromNumber,
-} from 'react-native-chat-sdk';
+} from 'react-native-chat-circle-sdk';
 
 export interface QuickTestCircleState extends QuickTestState {}
 

@@ -21,7 +21,7 @@ import {
   launchImageLibrary,
 } from 'react-native-image-picker';
 import type { MediaType } from '../__internal__/Types';
-import { ChatClient, ChatConnectEventListener } from 'react-native-chat-sdk';
+import { ChatClient, ChatConnectEventListener } from 'react-native-chat-circle-sdk';
 
 export interface StateBase {
   sendResult: string;

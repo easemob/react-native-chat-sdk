@@ -21,7 +21,7 @@ import {
   ChatCircleUserRole,
   ChatCircleServerListener,
   ChatCircleChannelListener,
-} from 'react-native-chat-sdk';
+} from 'react-native-chat-circle-sdk';
 import { styleValues } from '../__internal__/Css';
 import {
   LeafScreenBase,

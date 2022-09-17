@@ -2,7 +2,7 @@ import {
   ChatMessageType,
   ChatMessageChatType,
   ChatConversationType,
-} from 'react-native-chat-sdk';
+} from 'react-native-chat-circle-sdk';
 import { datasheet } from '../__default__/Datasheet';
 import type { ApiParams } from '../__internal__/DataTypes';
 import { ChatManagerCache } from './ChatManagerCache';

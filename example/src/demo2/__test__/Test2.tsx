@@ -10,7 +10,7 @@ import {
   ChatTextMessageBody,
   ChatMessageReactionEvent,
   ChatMessageThreadEvent,
-} from 'react-native-chat-sdk';
+} from 'react-native-chat-circle-sdk';
 import { ChatGroupManager } from 'src/ChatGroupManager';
 import { styleValues } from '../__internal__/Css';
 import { ApiParams, LeafScreenBase, StateBase } from './Test1';

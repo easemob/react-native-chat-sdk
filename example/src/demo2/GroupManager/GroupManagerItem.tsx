@@ -10,7 +10,7 @@ import {
   ChatError,
   ChatGroupEventListener,
   ChatGroupFileStatusCallback,
-} from 'react-native-chat-sdk';
+} from 'react-native-chat-circle-sdk';
 import { generateData } from '../__internal__/Utils';
 export interface StateGroupMessage extends StateBase {
   cbResult: string;

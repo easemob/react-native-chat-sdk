@@ -5,7 +5,7 @@ import {
   registerStateDataList,
 } from './QuickTestScreenBase';
 import { MN, metaDataList } from './QuickTestPresenceData';
-import { ChatClient, ChatMessage } from 'react-native-chat-sdk';
+import { ChatClient, ChatMessage } from 'react-native-chat-circle-sdk';
 
 export interface QuickTestPresenceState extends QuickTestState {}
 
