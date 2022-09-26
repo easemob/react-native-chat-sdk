@@ -1,9 +1,9 @@
 /**
- * The server tag data.
+ * The server tag class.
  */
 export class ChatCircleTag {
   /**
-   * The server tag ID generated when created. See {@link ChatCircleManager#addTagsToServer}
+   * The server tag ID. See {@link ChatCircleManager#addTagsToServer}.
    */
   tagId: string;
   /**
@@ -11,7 +11,7 @@ export class ChatCircleTag {
    */
   tagName: string;
   /**
-   * Construct a server tag object.
+   * Constructs a server tag object.
    */
   constructor(params: { tagId: string; tagName: string }) {
     this.tagId = params.tagId;

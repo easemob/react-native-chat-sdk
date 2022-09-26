@@ -7,7 +7,7 @@ import type { ChatMessageThreadEvent } from './common/ChatMessageThread';
 import type { ChatPresence } from './common/ChatPresence';
 
 /**
- *  The event types in multi-device login scenarios.
+ * The event types in multi-device login scenarios.
  *
  * This class takes user A that uses both Device A1 and Device A2 as an example to describe when the various types of multi-device events are triggered.
  */
@@ -159,87 +159,87 @@ export enum ChatMultiDeviceEvent {
   THREAD_KICK,
 
   /**
-   * On other devices, Notification when the current user creates a server.
+   * If user A creates a server, this event is triggered on Device A2.
    */
   SERVER_CREATE = 55,
   /**
-   * On other devices, Notification when the current user destroy a server.
+   * If user A destroys a server, this event is triggered on Device A2.
    */
   SERVER_DELETE,
   /**
-   * On other devices, Notification when the current user update a server.
+   * If user A updates a server, this event is triggered on Device A2.
    */
   SERVER_UPDATE,
   /**
-   * On other devices, Notification when the current user join a server.
+   * If user A joins a server, this event is triggered on Device A2.
    */
   SERVER_JOIN,
   /**
-   * On other devices, Notification when the current user leave a server.
+   * If user A leaves a server, this event is triggered on Device A2.
    */
   SERVER_LEAVE,
   /**
-   * On other devices, Notification when the current user accept invitation from server.
+   * If user A accepts a server invitation, this event is triggered on Device A2.
    */
   SERVER_INVITE_ACCEPT,
   /**
-   * On other devices, Notification when the current user decline invitation from server.
+   * If user A declines a server invitation, this event is triggered on Device A2.
    */
   SERVER_INVITE_DECLINE,
   /**
-   * On other devices, Notification when the current user set member role in server.
+   * If user A sets the role of a server member, this event is triggered on Device A2.
    */
   CIRCLE_SERVER_SET_ROLE,
   /**
-   * On other devices, Notification when the current user remove member from server.
+   * If user A removes a server member, this event is triggered on Device A2.
    */
   CIRCLE_SERVER_REMOVE_USER,
   /**
-   * On other devices, Notification when the current user invite user to server.
+   * If user A invites a user to join a server, this event is triggered on Device A2.
    */
   CIRCLE_SERVER_INVITE_USER,
   /**
-   * On other devices, Notification when the current user creates a channel.
+   * If user A creates a channel, this event is triggered on Device A2.
    */
   CHANNEL_CREATE = 70,
   /**
-   * On other devices, Notification when the current user destroy a channel.
+   * If user A destroys a channel, this event is triggered on Device A2.
    */
   CHANNEL_DELETE,
   /**
-   * On other devices, Notification when the current user update a channel.
+   * If user A updates a channel, this event is triggered on Device A2.
    */
   CHANNEL_UPDATE,
   /**
-   * On other devices, Notification when the current user join a channel.
+   * If user A joins a channel, this event is triggered on Device A2.
    */
   CHANNEL_JOIN,
   /**
-   * On other devices, Notification when the current user accept invitation from channel.
+   * If user A accepts a channel invitation, this event is triggered on Device A2.
    */
   CHANNEL_INVITATION_ACCEPT,
   /**
-   * On other devices, Notification when the current user decline invitation from channel.
+   * If user A declines a channel invitation, this event is triggered on Device A2.
    */
   CHANNEL_INVITATION_DECLINE,
   /**
-   * On other devices, Notification when the current user leave a channel.
+   * If user A leaves a channel, this event is triggered on Device A2.
    */
   CHANNEL_LEAVE,
   /**
-   * On other devices, Notification when the current user remove member from channel.
+   * If user A removes a channel member, this event is triggered on Device A2.
    */
   CIRCLE_CHANNEL_REMOVE_USER,
   /**
-   * On other devices, Notification when the current user invite user to channel.
+   * If user A invites a user to join a channel, this event is triggered on Device A2.
    */
   CIRCLE_CHANNEL_INVITE_USER,
   /**
-   * On other devices, Notification when the current user set member mute in channel.
+   * If user A mutes a channel member, this event is triggered on Device A2.
    */
   CIRCLE_CHANNEL_MEMBER_ADD_MUTE,
   /**
-   * On other devices, Notification when the current user set member unmute in channel.
+   * If user A unmutes a channel member, this event is triggered on Device A2.
    */
   CIRCLE_CHANNEL_MEMBER_REMOVE_MUTE,
 }
@@ -247,7 +247,7 @@ export enum ChatMultiDeviceEvent {
 /**
  * Converts the multi-device event from Int to enum.
  *
- * @param params The multi-device event of the int type.
+ * @param params The multi-device event of the Int type.
  * @returns The multi-device event of the enum type.
  */
 export function ChatMultiDeviceEventFromNumber(
@@ -386,7 +386,7 @@ export function ChatMultiDeviceEventFromNumber(
  *
  * You do not need to reconnect manually as the chat SDK will handle it automatically.
  *
- * There are two connection-related callbacks:
+ * There are two connection callbacks:
  * - `onConnected`: Occurs when the connection is set up.
  * - `onDisconnected`: Occurs when the connection breaks down.
  *
@@ -465,7 +465,7 @@ export interface ChatMultiDeviceEventListener {
    *
    * @param event The event type.
    * @param target The group ID.
-   * @param usernames The array of user ID list.
+   * @param usernames The array of user IDs.
    */
   onGroupEvent?(
     event?: ChatMultiDeviceEvent,
@@ -478,7 +478,7 @@ export interface ChatMultiDeviceEventListener {
    *
    * @param event The event type.
    * @param target The group ID.
-   * @param usernames The array of user ID list.
+   * @param usernames The array of user IDs.
    */
   onThreadEvent?(
     event?: ChatMultiDeviceEvent,
@@ -673,7 +673,7 @@ export interface ChatMessageEventListener {
  */
 export interface ChatGroupEventListener {
   /**
-   * Occurs when the current user receives a group invitation.
+   * Occurs when a group invitation is received.
    *
    * For example, after user B sends user A a group invitation, user A receives this callback.
    *
@@ -691,7 +691,7 @@ export interface ChatGroupEventListener {
   }): void;
 
   /**
-   * Occurs when a join request from the current user is received by the peer user.
+   * Occurs when a join request is received.
    *
    * For example, after user A sends a join request to user B, user B receives this callback.
    *
@@ -708,7 +708,7 @@ export interface ChatGroupEventListener {
     reason?: string;
   }): void;
   /**
-   * Occurs when a join request from the current user is accepted by the peer user.
+   * Occurs when a join request is accepted.
    *
    * For a group of the `PublicJoinNeedApproval` style, after user B accepts a join request from user A, user A receives this callback.
    *
@@ -723,7 +723,7 @@ export interface ChatGroupEventListener {
     groupName?: string;
   }): void;
   /**
-   * Occurs when a join request from the current user is declined by the peer user.
+   * Occurs when a join request is declined.
    *
    * For example, for a group of the `PublicJoinNeedApproval` style, after user B declines a join request from user A, user A receives this callback.
    *
@@ -740,9 +740,9 @@ export interface ChatGroupEventListener {
     reason?: string;
   }): void;
   /**
-   * Occurs when a group invitation from the current user is accepted by the peer user.
+   * Occurs when a group invitation is accepted manually.
    *
-   * For example, after user B accepts a group invitation from user A, user A receives this callback.
+   * For example, after user B manually accepts a group invitation from user A, user A receives this callback.
    *
    * @param params The parameter set.
    * - Param [groupId] The group ID.
@@ -756,7 +756,7 @@ export interface ChatGroupEventListener {
     reason?: string;
   }): void;
   /**
-   * Occurs when a group invitation from the current user is declined by the peer user.
+   * Occurs when a group invitation is declined.
    *
    * For example, after user B declines a group invitation from user A, user A receives this callback.
    *
@@ -771,7 +771,9 @@ export interface ChatGroupEventListener {
     reason?: string;
   }): void;
   /**
-   * Occurs when the current user is removed from the group.
+   * Occurs when a member is removed from the group.
+   *
+   * The member removed from the group receives this callback.
    *
    * @param params The parameter set.
    * - Param [groupId] The group ID.
@@ -781,13 +783,15 @@ export interface ChatGroupEventListener {
   /**
    * Occurs when a group is destroyed.
    *
+   * All members in the group receive this callback.
+   *
    * @param params The parameter set.
    * - Param [groupId] The group ID.
    * - Param [groupName] The group name.
    */
   onGroupDestroyed?(params: { groupId: string; groupName?: string }): void;
   /**
-   * Occurs when the group invitation is accepted automatically by the current user.
+   * Occurs when the group invitation is accepted automatically.
    *
    * For example, after user B invites user A to join the group, as user A sets {@link ChatOptions#autoAcceptGroupInvitation} to `true`, the invitee joins the group automatically and receives this callback.
    *
@@ -802,9 +806,11 @@ export interface ChatGroupEventListener {
     inviteMessage?: string;
   }): void;
   /**
-   * Occurs when one or more members are added to the mute list of the group.
+   * Occurs when a member(s) is/are added to the mute list of the group.
    *
-   * A user, when muted, can still see group messages, but cannot send messages in the group. However, a user on the block list can neither see nor send group messages.
+   * The members added to the mute list, the group owner, and the group admins, except the operator, receive this callback.
+   *
+   * A member, when muted, can still see group messages, but cannot send messages in the group. However, a user on the block list can neither see nor send group messages.
    *
    * @param params The parameter set.
    * - Param [groupId] The group ID.
@@ -817,15 +823,19 @@ export interface ChatGroupEventListener {
     muteExpire?: number;
   }): void;
   /**
-   * Occurs when one or more members are removed from the mute list of the group.
+   * Occurs when a member(s) is/are removed from the mute list of the group.
+   *
+   * The members removed from the mute list, the group owner, and the group admins, except the operator, receive this callback.
    *
    * @param params The parameter set.
    * - Param [groupId] The group ID.
-   * - Param [mutes] The user ID(s) of member(s) that is removed from the mute list.
+   * - Param [mutes] The user ID(s) of member(s) that is/are removed from the mute list.
    */
   onMuteListRemoved?(params: { groupId: string; mutes: Array<string> }): void;
   /**
    * Occurs when a member is set as an admin.
+   *
+   * The group owner, new admin, and other group admins receive this callback.
    *
    * @param params The parameter set.
    * - Param [groupId] The group ID.
@@ -835,6 +845,8 @@ export interface ChatGroupEventListener {
   /**
    * Occurs when the administrative privileges of an admin are removed.
    *
+   * The group owner, the admin with administrative privileges removed, and other group admins, except the operator, receive this callback.
+   *
    * @param params The parameter set.
    * - Param [groupId] The group ID.
    * - Param [admin] The user ID of the admin whose administrative privileges are removed.
@@ -842,6 +854,8 @@ export interface ChatGroupEventListener {
   onAdminRemoved?(params: { groupId: string; admin: string }): void;
   /**
    * Occurs when the group ownership is transferred.
+   *
+   * The new group owner and previous group owner receive this callback.
    *
    * @param params The parameter set.
    * - Param [groupId] The group ID.
@@ -856,6 +870,8 @@ export interface ChatGroupEventListener {
   /**
    * Occurs when a user joins a group.
    *
+   * All members in the group, except the new member, receive this callback.
+   *
    * @param params The parameter set.
    * - Param [groupId] The group ID.
    * - Param [member] The user ID of the new member.
@@ -864,6 +880,8 @@ export interface ChatGroupEventListener {
   /**
    * Occurs when a member voluntarily leaves the group.
    *
+   * All members in the group, except the member leaving the group, receive this callback.
+   *
    * @param params The parameter set.
    * - Param [groupId] The group ID.
    * - Param [member] The user ID of the member leaving the group.
@@ -871,6 +889,8 @@ export interface ChatGroupEventListener {
   onMemberExited?(params: { groupId: string; member: string }): void;
   /**
    * Occurs when the group announcement is updated.
+   *
+   * All members in the group receive the callback.
    *
    * @param params The parameter set.
    * - Param [groupId] The group ID.
@@ -883,6 +903,8 @@ export interface ChatGroupEventListener {
   /**
    * Occurs when a shared file is added to the group.
    *
+   * All members in the group receive the callback.
+   *
    * @param params The parameter set.
    * - Param [groupId] The group ID.
    * - Param [sharedFile] The ID of the new shared file.
@@ -891,25 +913,31 @@ export interface ChatGroupEventListener {
   /**
    * Occurs when a shared file is removed from a group.
    *
+   * All members in the group receive the callback.
+   *
    * @param params The parameter set.
    * - Param [groupId] The group ID.
    * - Param [fileId] The ID of the shared file that is deleted.
    */
   onSharedFileDeleted?(params: { groupId: string; fileId: string }): void;
   /**
-   * Occurs when one or more group members are added to the allow list.
+   * Occurs when a group member(s) is/are added to the allow list.
+   *
+   * The member added to the allow list, the group owner, and group admins, except the operator, receive this callback.
    *
    * @param params The parameter set.
    * - Param [groupId] The group ID.
-   * - Param [members] The user ID list of members that are added to the allow list of the group.
+   * - Param [members] The user ID(s) of members(s) that is/are added to the allow list of the group.
    */
   onAllowListAdded?(params: { groupId: string; members: Array<string> }): void;
   /**
-   * Occurs when one or more group members are removed from the allow list.
+   * Occurs when a group member(s) is/are removed from the allow list.
+   *
+   * The member removed from the allow list, the group owner, and group admins, except the operator, receive this callback.
    *
    * @param params The parameter set.
    * - Param [groupId] The group ID.
-   * - Param [members] The user ID list of members that are removed from the allow list of the group.
+   * - Param [members] The user ID(s) of member(s) that is/are removed from the allow list of the group.
    */
   onAllowListRemoved?(params: {
     groupId: string;
@@ -917,6 +945,8 @@ export interface ChatGroupEventListener {
   }): void;
   /**
    * Occurs when all group members are muted or unmuted.
+   *
+   * All members in the group, except the operator, receive this callback.
    *
    * @param params The parameter set.
    * - Param [groupId] The group ID.
@@ -988,13 +1018,17 @@ export interface ChatRoomEventListener {
   /**
    * Occurs when the chat room is destroyed.
    *
+   * All members in the chat room receive this callback.
+   *
    * @param params The parameter set.
    * - Param [roomId] The chat room ID.
-   * - Param [roomName] The name of the chat room.
+   * - Param [roomName] The chat room name.
    */
   onChatRoomDestroyed?(params: { roomId: string; roomName?: string }): void;
   /**
    * Occurs when a user joins the chat room.
+   *
+   * All members in the chat room, except the new member, receive this callback.
    *
    * @param params The parameter set.
    * - Param [roomId] The chat room ID.
@@ -1003,6 +1037,8 @@ export interface ChatRoomEventListener {
   onMemberJoined?(params: { roomId: string; participant: string }): void;
   /**
    * Occurs when a member voluntarily leaves the chat room.
+   *
+   * All members in the chat room, except the member leaving the chat room, receive this callback.
    *
    * @param params The parameter set.
    * - Param [roomId] The chat room ID.
@@ -1016,9 +1052,11 @@ export interface ChatRoomEventListener {
   /**
    *  Occurs when a member is removed from a chat room.
    *
+   * The member removed from the chat room receives this callback.
+   *
    * @param params The parameter set.
    * - Param [roomId] The chat room ID.
-   * - Param [roomName] The name of the chat room.
+   * - Param [roomName] The chat room name.
    * - Param [participant] The user ID of the member that is removed from a chat room.
    */
   onRemoved?(params: {
@@ -1027,7 +1065,9 @@ export interface ChatRoomEventListener {
     roomName?: string;
   }): void;
   /**
-   * Occurs when a chat room member is added to the mute list.
+   * Occurs when a member(s) is/are added to the mute list of the chat room.
+   *
+   * The members added to the mute list receive this callback.
    *
    * @param params The parameter set.
    * - Param [roomId] The chat room ID.
@@ -1040,7 +1080,9 @@ export interface ChatRoomEventListener {
     expireTime?: string;
   }): void;
   /**
-   * Occurs when one or more chat room members are removed from the mute list.
+   * Occurs when a chat room member(s) is/are removed from the mute list.
+   *
+   * The members removed from the mute list receive this callback.
    *
    * @param params The parameter set.
    * - Param [roomId] The chat room ID.
@@ -1048,7 +1090,9 @@ export interface ChatRoomEventListener {
    */
   onMuteListRemoved?(params: { roomId: string; mutes: Array<string> }): void;
   /**
-   *Occurs when a chat room member is set as an admin.
+   * Occurs when a chat room member is set as an admin.
+   *
+   * The member set as a chat room admin receives this callback.
    *
    * @param params The parameter set.
    * - Param [roomId] The chat room ID.
@@ -1058,6 +1102,8 @@ export interface ChatRoomEventListener {
   /**
    * Occurs when the administrative privileges of a chat room admin are removed.
    *
+   * The admin whose administrative privileges are removed receives this callback.
+   *
    * @param params The parameter set.
    * - Param [roomId] The chat room ID.
    * - Param [admin] The user ID of the admin whose administrative privileges are removed.
@@ -1065,6 +1111,8 @@ export interface ChatRoomEventListener {
   onAdminRemoved?(params: { roomId: string; admin: string }): void;
   /**
    * Occurs when the chat room ownership is transferred.
+   *
+   * All members in the chat room receive this callback.
    *
    * @param params The parameter set.
    * - Param [roomId] The chat room ID.
@@ -1079,6 +1127,8 @@ export interface ChatRoomEventListener {
   /**
    * Occurs when the chat room announcement changes.
    *
+   * All members in the chat room receive the callback.
+   *
    * @param params The parameter set.
    * - Param [roomId] The chat room ID.
    * - Param [announcement] The new announcement.
@@ -1088,7 +1138,9 @@ export interface ChatRoomEventListener {
     announcement: string;
   }): void;
   /**
-   * Occurs when one or more chat room members are added to the allow list.
+   * Occurs when a chat room member(s) is/are added to the allow list.
+   *
+   * The members added to the allow list receive this callback.
    *
    * @param params The parameter set.
    * - Param [roomId] The chat room ID.
@@ -1096,7 +1148,9 @@ export interface ChatRoomEventListener {
    */
   onAllowListAdded?(params: { roomId: string; members: Array<string> }): void;
   /**
-   * Occurs when one or more chat room members are removed from the allow list.
+   * Occurs when a chat room member(s) is/are removed from the allow list.
+   *
+   * The members removed from the allow list receive the callback.
    *
    * @param params The parameter set.
    * - Param [roomId] The chat room ID.
@@ -1105,6 +1159,8 @@ export interface ChatRoomEventListener {
   onAllowListRemoved?(params: { roomId: string; members: Array<string> }): void;
   /**
    * Occurs when all members in the chat room are muted or unmuted.
+   *
+   * All members in the chat room, except the operator, receive this callback.
    *
    * @param params The parameter set.
    * - Param [roomId] The chat room ID.
@@ -1131,11 +1187,13 @@ export interface ChatPresenceEventListener {
 }
 
 /**
- * The circle server listener.
+ * The server listener.
  */
 export interface ChatCircleServerListener {
   /**
-   * Notification when the server is destroyed.
+   * Occurs when a server is destroyed.
+   *
+   * All members in the server, except the operator, receive this callback.
    *
    * @param params -
    * - serverId: The server ID.
@@ -1143,17 +1201,19 @@ export interface ChatCircleServerListener {
    */
   onServerDestroyed?(params: { serverId: string; initiator: string }): void;
   /**
-   * Notification when the server is updated.
+   * Occurs when a server is updated.
+   *
+   * All members in the server, except the operator, receive this callback.
    *
    * @param params -
    * - serverId: The server ID.
    * - serverName: The server name.
-   * - serverIconUrl: The server icon url.
+   * - serverIconUrl: The server icon URL.
    * - serverDescription: The server description.
-   * - serverCustom: Use custom parameters in string format.
-   * - eventSenderId: The notification sender ID.
-   * - eventReceiveIds: The notification received ID list.
-   * - timestamp: The notification timestamp.
+   * - serverCustom: The custom server extension parameter in string format.
+   * - eventSenderId: The user ID of the member that updates the server.
+   * - eventReceiveIds: The user ID(s) of the event recipient(s).
+   * - timestamp: The Unix timestamp when the event occurs. The unit is millisecond.
    */
   onServerUpdated?(params: {
     serverId: string;
@@ -1166,44 +1226,52 @@ export interface ChatCircleServerListener {
     timestamp: number;
   }): void;
   /**
-   * Notification when the user joins a server.
+   * Occurs when a user joins a server.
+   *
+   * All members in the server, except the new member, receive this callback.
    *
    * @param params -
    * - serverId: The server ID.
-   * - memberId: The joined user ID.
+   * - memberId: The user ID of the new member.
    */
   onMemberJoinedServer?(params: { serverId: string; memberId: string }): void;
   /**
-   * Notification when the user Leaves a server.
+   * Occurs when a members leaves a server.
+   *
+   * The server owner and moderators receive this callback.
    *
    * @param params -
    * - serverId: The server ID.
-   * - memberId: The joined user ID.
+   * - memberId: The user ID of the members that leaves the server.
    */
   onMemberLeftServer?(params: { serverId: string; memberId: string }): void;
   /**
-   * Notification when a member is removed from the server.
+   * Occurs when a member(s) is/are removed from a server.
+   *
+   * The member(s) removed from the server, the server owner, and moderators, except the operator, receive this callback.
    *
    * @param params -
    * - serverId: The server ID.
-   * - memberIds: The list of members to be removed.
+   * - memberIds: The user ID(s) of the member(s) removed from the server.
    */
   onMemberRemovedFromServer?(params: {
     serverId: string;
     memberIds: string[];
   }): void;
   /**
-   * Notification when current user receives server invitation.
+   * Occurs when a user receives a server invitation.
+   *
+   * For example, after user B sends user A a server invitation, user A receives this callback.
    *
    * @param params -
    * - serverId: The server ID.
    * - serverName: The server name.
-   * - serverIconUrl: The server icon url.
+   * - serverIconUrl: The server icon URL.
    * - serverDescription: The server description.
-   * - serverCustom: Use custom parameters in string format.
-   * - eventSenderId: The notification sender ID.
-   * - eventReceiveIds: The notification receiver ID list.
-   * - timestamp: The notification timestamp.
+   * - serverCustom: The custom server extension parameter in string format.
+   * - eventSenderId: The user ID of the event sender.
+   * - eventReceiveIds: The user ID(s) of the event recipient(s).
+   * - timestamp: The Unix timestamp when the event occurs. The unit is millisecond.
    */
   onReceiveServerInvitation?(params: {
     serverId: string;
@@ -1216,34 +1284,40 @@ export interface ChatCircleServerListener {
     timestamp: number;
   }): void;
   /**
-   * Notification when the server invitation is accepted.
+   * Occurs when a server invitation is accepted.
+   *
+   * For example, after user B accepts a server invitation from user A, user A receives this callback.
    *
    * @param params -
    * - serverId: The server ID.
-   * - invitee: The invitee ID.
+   * - invitee: The user ID of the invitee.
    */
   onServerInvitationBeAccepted?(params: {
     serverId: string;
     invitee: string;
   }): void;
   /**
-   * Notification when the server invitation is declined.
+   * Occurs when a server invitation is declined.
+   *
+   * For example, after user B declines a server invitation from user A, user A receives this callback.
    *
    * @param params -
    * - serverId: The server ID.
-   * - invitee: The invitee ID.
+   * - invitee: The user ID of the invitee.
    */
   onServerInvitationBeDeclined?(params: {
     serverId: string;
     invitee: string;
   }): void;
   /**
-   * Notification when member roles are adjusted.
+   * Occurs when the role of a server member is changed.
+   *
+   * All members in the server, except the operator, receive this callback.
    *
    * @param params -
    * - serverId: The server ID.
-   * - memberId: The member ID.
-   * - role: The user role.
+   * - memberId: The user ID of the server member whose role is changed.
+   * - role: The new role of the server member.
    */
   onServerRoleAssigned?(params: {
     serverId: string;
@@ -1253,16 +1327,18 @@ export interface ChatCircleServerListener {
 }
 
 /**
- * The circle channel listener.
+ * The channel listener.
  */
 export interface ChatCircleChannelListener {
   /**
-   * Notification when the channel is created.
+   * Occurs when a channel is created.
+   *
+   * All users involved in channel creation receive this callback.
    *
    * @param params -
    * - serverId: The server ID.
    * - channelId: The channel ID.
-   * - creator: The user ID who created the channel.
+   * - creator: The user ID of the channel creator.
    */
   onChannelCreated?(params: {
     serverId: string;
@@ -1270,12 +1346,14 @@ export interface ChatCircleChannelListener {
     creator: string;
   }): void;
   /**
-   * Notification when the channel is destroyed.
+   * Occurs when a channel is destroyed.
+   *
+   * All members in the channel, excluding the operator, receive this callback.
    *
    * @param params -
    * - serverId: The server ID.
    * - channelId: The channel ID.
-   * - initiator: The user ID who destroy the channel.
+   * - initiator: The user that destroys the channel.
    */
   onChannelDestroyed?(params: {
     serverId: string;
@@ -1283,14 +1361,16 @@ export interface ChatCircleChannelListener {
     initiator: string;
   }): void;
   /**
-   * Notification when the channel is updated.
+   * Occurs when a channel is updated.
+   *
+   * All members in the channel, excluding the operator, receive this callback.
    *
    * @param params -
    * - serverId: The server ID.
    * - channelId: The channel ID.
    * - channelName: The channel name.
    * - channelDescription: The channel description.
-   * - initiator: The user ID who update the channel.
+   * - initiator: The user that updates the channel.
    */
   onChannelUpdated?(params: {
     serverId: string;
@@ -1300,12 +1380,14 @@ export interface ChatCircleChannelListener {
     initiator: string;
   }): void;
   /**
-   * Notification when a user joins to the channel.
+   * Occurs when a user joins the channel.
+   *
+   * All members in the channel, except the new member, receive this callback.
    *
    * @param params -
    * - serverId: The server ID.
    * - channelId: The channel ID.
-   * - memberId: The user ID who joined the channel.
+   * - memberId: The user ID of the new member.
    */
   onMemberJoinedChannel?(params: {
     serverId: string;
@@ -1313,12 +1395,14 @@ export interface ChatCircleChannelListener {
     memberId: string;
   }): void;
   /**
-   * Notification when a user leaves from the channel.
+   * Occurs when a member voluntarily leaves the channel.
+   *
+   * All members in the channel, except the one leaving the channel, receive this callback.
    *
    * @param params -
    * - serverId: The server ID.
    * - channelId: The channel ID.
-   * - memberId: The user ID who leave from the channel.
+   * - memberId: The user ID of the member leaving the channel.
    */
   onMemberLeftChannel?(params: {
     serverId: string;
@@ -1326,13 +1410,15 @@ export interface ChatCircleChannelListener {
     memberId: string;
   }): void;
   /**
-   * Notification when a member is removed from the channel.
+   * Occurs when a member is removed from the channel.
+   *
+   * The member that is removed from the channel receives this callback.
    *
    * @param params -
    * - serverId: The server ID.
    * - channelId: The channel ID.
-   * - memberId: The member ID.
-   * - initiator: The user ID who is removed from the channel.
+   * - memberId: The user ID of the member that is removed from the channel.
+   * - initiator: The user ID of the member that removes a member from the channel.
    */
   onMemberRemovedFromChannel?(params: {
     serverId: string;
@@ -1341,16 +1427,18 @@ export interface ChatCircleChannelListener {
     initiator: string;
   }): void;
   /**
-   * Notification when current user receives channel invitation.
+   * Occurs when a user receives a channel invitation.
+   *
+   * For example, after user B sends user A a channel invitation, user A receives this callback.
    *
    * @param params -
    * - serverId: The server ID.
    * - serverName: The server name.
-   * - serverIcon: The server icon url.
+   * - serverIcon: The server icon URL.
    * - channelId: The channel ID.
    * - channelName: The channel name.
    * - channelDescription: The channel description.
-   * - inviter: The user who invites the user to join the channel.
+   * - inviter: The user ID of the inviter.
    */
   onReceiveChannelInvitation?(params: {
     serverId: string;
@@ -1362,12 +1450,14 @@ export interface ChatCircleChannelListener {
     inviter: string;
   }): void;
   /**
-   * Notification when the channel invitation is accepted.
+   * Occurs when a channel invitation is accepted.
+   *
+   * For example, after user B accepts a channel invitation from user A, user A receives this callback.
    *
    * @param params -
-   * - serverId: The channel ID.
+   * - serverId: The server ID.
    * - channelId: The channel ID.
-   * - invitee: The invitee ID.
+   * - invitee: The user ID of the invitee.
    */
   onChannelInvitationBeAccepted?(params: {
     serverId: string;
@@ -1375,12 +1465,14 @@ export interface ChatCircleChannelListener {
     invitee: string;
   }): void;
   /**
-   * Notification when the channel invitation is declined.
+   * Occurs when a channel invitation is declined.
+   *
+   * For example, after user B declines a channel invitation from user A, user A receives this callback.
    *
    * @param params -
-   * - serverId: The channel ID.
+   * - serverId: The server ID.
    * - channelId: The channel ID.
-   * - invitee: The invitee ID.
+   * - invitee: The user ID of the invitee.
    */
   onChannelInvitationBeDeclined?(params: {
     serverId: string;
@@ -1388,13 +1480,15 @@ export interface ChatCircleChannelListener {
     invitee: string;
   }): void;
   /**
-   * Notification when the channel member mute statue switched.
+   * Occurs when a channel member(s) is/are added to or removed from the mute list.
+   *
+   * The members whose mute status changes, the server owner, moderators, except the operator, receive this callback.
    *
    * @param params -
-   * - serverId: The channel ID.
+   * - serverId: The server ID.
    * - channelId: The channel ID.
-   * - isMuted: Whether to be muted.
-   * - memberIds: The list of members to be muted.
+   * - isMuted: Whether the channel member(s) is/are muted.
+   * - memberIds: The user ID(s) of the member(s) whose mute status changes.
    */
   onMemberMuteChangeInChannel?(params: {
     serverId: string;

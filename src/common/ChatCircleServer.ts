@@ -1,11 +1,11 @@
 import type { ChatCircleTag } from './ChatCircleTag';
 
 /**
- * The server data.
+ * The server details class.
  */
 export class ChatCircleServer {
   /**
-   * The server ID generated when created. see {@link ChatCircleManager#createServer}
+   * The server ID. See {@link ChatCircleManager#createServer}.
    */
   serverId: string;
   /**
@@ -13,7 +13,7 @@ export class ChatCircleServer {
    */
   serverName: string;
   /**
-   * The server icon url.
+   * The server icon URL.
    */
   serverIcon?: string;
   /**
@@ -21,7 +21,7 @@ export class ChatCircleServer {
    */
   serverDescription?: string;
   /**
-   * The custom string type parameter.
+   * The custom server extension parameter in string format.
    */
   serverExtension?: string;
   /**
@@ -29,17 +29,17 @@ export class ChatCircleServer {
    */
   serverOwner?: string;
   /**
-   * When creating a server, create a default channel at the same time.
+   * The ID of the default channel. See {@link ChatCircleManager#createServer}.
    *
-   * The channel ID generated when created. See {@link ChatCircleManager#createServer}
+   * The default channel is created during server creation.
    */
   defaultChannelId?: string;
   /**
-   * The server tags generated when created. See {@link ChatCircleManager#addTagsToServer}
+   * The server tags. See {@link ChatCircleManager#addTagsToServer}
    */
   tags?: Array<ChatCircleTag>;
   /**
-   * The construct a server data object.
+   * Constructs a server object.
    */
   constructor(params: {
     serverId: string;

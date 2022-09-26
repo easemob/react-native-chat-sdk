@@ -1,45 +1,45 @@
 /**
- * The channel type.
+ * The channel types.
  */
 export enum ChatCircleChannelType {
   /**
-   * Public type.
+   * Public channel.
    */
   Public = 0,
   /**
-   * Private type.
+   * Private channel.
    */
   Private,
 }
 
 /**
- * The channel rank type.
+ * The channel member capacity ranks.
  */
 export enum ChatCircleChannelRank {
   /**
-   * The maximum number is 2000
+   * The maximum number of members allowed in a channel is 2000.
    */
   R2000 = 0,
   /**
-   * The maximum number is 20000
+   * The maximum number of members allowed in a channel is 20000.
    */
   R20000,
   /**
-   * The maximum number is 100000
+   * The maximum number of members allowed in a channel is 100000.
    */
   R100000,
 }
 
 /**
- * The channel data.
+ * The channel details class.
  */
 export class ChatCircleChannel {
   /**
-   * The server ID generated when created. see {@link ChatCircleManager#createServer}
+   * The server ID. See {@link ChatCircleManager#createServer}.
    */
   serverId: string;
   /**
-   * The channel ID generated when created. see {@link ChatCircleManager#createChannel}
+   * The channel ID. See {@link ChatCircleManager#createChannel}.
    */
   channelId: string;
   /**
@@ -51,11 +51,13 @@ export class ChatCircleChannel {
    */
   channelDescription?: string;
   /**
-   * The custom string type parameter.
+   * The custom channel extension parameter.
    */
   channelExtension?: string;
   /**
-   * Whether it is the default channel.
+   * Whether it is the default channel:
+   * - `true`: Yes;
+   * - `false`: No.
    */
   isDefaultChannel: boolean;
   /**
@@ -63,11 +65,11 @@ export class ChatCircleChannel {
    */
   channelType: ChatCircleChannelType;
   /**
-   * The channel rank type.
+   * The channel member capacity rank.
    */
   channelRank: ChatCircleChannelRank;
   /**
-   * The construct a channel data object.
+   * Constructs a channel object.
    */
   constructor(params: {
     serverId: string;
@@ -91,11 +93,11 @@ export class ChatCircleChannel {
 }
 
 /**
- * The converter from number to channel type.
+ * Converts the channel type from Int to the enum type.
  *
- * @param type Number type.
+ * @param type The channel type of the Int type.
  *
- * @returns Channel type.
+ * @returns The channel type of the enum type.
  */
 export function ChatCircleChannelTypeFromNumber(
   type?: number
@@ -118,11 +120,11 @@ export function ChatCircleChannelTypeFromNumber(
 }
 
 /**
- * The converter from number to channel rank type.
+ * Converts the channel member capacity rank from Int to the enum type.
  *
- * @param rank Number type.
+ * @param rank The channel member capacity rank of the Int type.
  *
- * @returns Rank type.
+ * @returns The channel member capacity rank of the enum type.
  */
 export function ChatCircleChannelRankFromNumber(
   rank?: number

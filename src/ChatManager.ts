@@ -658,7 +658,7 @@ export class ChatManager extends BaseManager {
   /**
    * Inserts a message to the conversation in the local database.
    *
-   * For example, when a notification messages is received, a message can be constructed and written to the conversation. If the message to insert already exits (msgId or localMsgId is existed), the insertion fails.
+   * For example, when a notification messages is received, a message can be constructed and written to the conversation. If the message to insert already exits (msgId or localMsgId exists), the insertion fails.
    *
    * The message will be inserted based on the Unix timestamp included in it. Upon message insertion, the SDK will automatically update attributes of the conversation, including `latestMessage`.
    *

@@ -1,5 +1,5 @@
 /**
- * The circle user role type.
+ * The Circle user roles.
  */
 export enum ChatCircleUserRole {
   /**
@@ -17,7 +17,7 @@ export enum ChatCircleUserRole {
 }
 
 /**
- * The circle user data.
+ * The Circle user data.
  */
 export class ChatCircleUser {
   /**
@@ -25,11 +25,11 @@ export class ChatCircleUser {
    */
   userId: string;
   /**
-   * The user role type. See {@link ChatCircleUserRole}
+   * The user role. See {@link ChatCircleUserRole}.
    */
   userRole: ChatCircleUserRole;
   /**
-   * Construct a circle user object.
+   * Constructs a Circle user object.
    */
   constructor(params: { userId: string; userRole: ChatCircleUserRole }) {
     this.userId = params.userId;
@@ -38,11 +38,12 @@ export class ChatCircleUser {
 }
 
 /**
- * The converter from number to user role.
+ * Converts a user role from Int to the enum type.
  *
- * @param value Number type.
  *
- * @returns Role type.
+ * @param value The user role of the Int type.
+ *
+ * @returns The user role of the enum type.
  */
 export function ChatCircleUserRoleFromNumber(
   value: number

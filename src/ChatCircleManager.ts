@@ -88,7 +88,7 @@ export class ChatCircleManager extends BaseManager {
   private _circleSubscriptions: Map<string, EmitterSubscription>;
 
   /**
-   * Constructs a circle management object.
+   * Constructs a Circle manager object.
    */
   constructor() {
     super();
@@ -98,7 +98,7 @@ export class ChatCircleManager extends BaseManager {
   }
 
   /**
-   * Set the listener for event reception.
+   * Sets the event listener.
    *
    * @param event The native event emitter.
    */
@@ -292,46 +292,46 @@ export class ChatCircleManager extends BaseManager {
   }
 
   /**
-   * Add a circle listener.
+   * Adds a server listener.
    *
-   * @param listener The circle listener.
+   * @param listener The server listener to add.
    */
   public addServerListener(listener: ChatCircleServerListener): void {
     this._serverListeners.add(listener);
   }
   /**
-   * Remove a circle listener.
+   * Removes a server listener.
    *
-   * @param listener The circle listener.
+   * @param listener The server listener to remove.
    */
   public removeServerListener(listener: ChatCircleServerListener): void {
     this._serverListeners.delete(listener);
   }
   /**
-   * Clear all circle listeners.
+   * Clears all server listeners.
    */
   public clearServerListener(): void {
     this._serverListeners.clear();
   }
 
   /**
-   * Add a channel listener.
+   * Adds a channel listener.
    *
-   * @param listener The channel listener.
+   * @param listener The channel listener to add.
    */
   public addChannelListener(listener: ChatCircleChannelListener): void {
     this._channelListeners.add(listener);
   }
   /**
-   * Remove a channel listener.
+   * Removes a channel listener.
    *
-   * @param listener The channel listener.
+   * @param listener The channel listener to remove.
    */
   public removeChannelListener(listener: ChatCircleChannelListener): void {
     this._channelListeners.delete(listener);
   }
   /**
-   * Clear all channel listeners.
+   * Clears all channel listeners.
    */
   public clearChannelListener(): void {
     this._channelListeners.clear();
@@ -368,15 +368,15 @@ export class ChatCircleManager extends BaseManager {
   }
 
   /**
-   * Create a server.
+   * Creates a server.
    *
    * @param params -
-   * - serverName: The server name.
-   * - serverIcon: The server icon url.
-   * - serverDescription: The server description.
-   * - serverExtension: Use custom parameters in string format.
+   * - serverName: The server name. The server name can contain at most 50 characters.
+   * - serverIcon: The server icon URL.
+   * - serverDescription: The server description. The server description can contain at most 500 characters.
+   * - serverExtension: The custom server extension parameter in string format. The server extension information can contain at most 500 characters
    *
-   * @returns Created server and throws an exception if it fails.
+   * @returns The SDK returns the created server or throws an exception if the method call fails.
    *
    * @throws A description of the exception. See {@link ChatError}.
    */
@@ -400,9 +400,11 @@ export class ChatCircleManager extends BaseManager {
   }
 
   /**
-   * Destroy a server.
+   * Destroys a server.
    *
-   * @param serverId The server ID.
+   * Only the server owner can call this method.
+   *
+   * @param serverId The ID of the server to destroy.
    *
    * @throws A description of the exception. See {@link ChatError}.
    */
@@ -417,16 +419,18 @@ export class ChatCircleManager extends BaseManager {
   }
 
   /**
-   * Update a server attribute.
+   * Modifies attributes of a server.
+   *
+   * Only the server owner and moderators can call this method.
    *
    * @param params -
-   * - serverId: The server ID generated when created.
+   * - serverId: The server ID.
    * - serverName: The server name.
-   * - serverIcon: The server icon url.
+   * - serverIcon: The server icon URL.
    * - serverDescription: The server description.
-   * - serverExtension: Use custom parameters in string format.
+   * - serverExtension: The custom server extension parameter in string format.
    *
-   * @returns Updated server and throws an exception if it fails.
+   * @returns The SDK returns the updated server or throws an exception if the method call fails.
    *
    * @throws A description of the exception. See {@link ChatError}.
    */
@@ -452,7 +456,7 @@ export class ChatCircleManager extends BaseManager {
   }
 
   /**
-   * Join the specified server.
+   * Joins a server.
    *
    * @param serverId The server ID.
    *
@@ -469,7 +473,9 @@ export class ChatCircleManager extends BaseManager {
   }
 
   /**
-   * Leave the specified server.
+   * Leaves a server.
+   *
+   * The server owner cannot leave the server, but can destroy the server.
    *
    * @param serverId The server ID.
    *
@@ -486,11 +492,13 @@ export class ChatCircleManager extends BaseManager {
   }
 
   /**
-   * Remove a member from the server.
+   * Removes a member from the server.
+   *
+   * The server owner can remove all members from the server; a server moderator can only remove common members from the server.
    *
    * @param params -
-   * - serverId: The server ID generated when created.
-   * - userId: The member ID.
+   * - serverId: The server ID.
+   * - userId: The user ID of the member to be removed from the server.
    *
    * @throws A description of the exception. See {@link ChatError}.
    */
@@ -509,12 +517,12 @@ export class ChatCircleManager extends BaseManager {
   }
 
   /**
-   * Invite a member to the server.
+   * Invites a user to join the server.
    *
    * @param params -
-   * - serverId: The server ID generated when created.
-   * - userId: The member ID.
-   * - welcome: The welcome greeting.
+   * - serverId: The server ID.
+   * - userId: The user that is invited to join the server.
+   * - welcome: The welcome message for inviting the user to join the server.
    *
    * @throws A description of the exception. See {@link ChatError}.
    */
@@ -535,13 +543,13 @@ export class ChatCircleManager extends BaseManager {
   }
 
   /**
-   * Invitee accept invitation from server.
+   * Accepts the invitation to join the server.
    *
    * @param params -
-   * - serverId: The server ID generated when created.
-   * - inviter: The inviter ID who invited user to join the server.
+   * - serverId: The server ID.
+   * - inviter: The user ID of the inviter.
    *
-   * @returns The server and throws an exception if it fails.
+   * @returns The SDK returns the server that the user joins or throws an exception if the method call fails.
    *
    * @throws A description of the exception. See {@link ChatError}.
    */
@@ -563,11 +571,11 @@ export class ChatCircleManager extends BaseManager {
   }
 
   /**
-   * Invitee decline invitation from server.
+   * Declines the invitation to join the server.
    *
    * @param params -
-   * - serverId: The server ID generated when created.
-   * - inviter: The inviter ID who invited user to join the server.
+   * - serverId: The server ID.
+   * - inviter: The user ID of the inviter.
    *
    * @throws A description of the exception. See {@link ChatError}.
    */
@@ -588,13 +596,15 @@ export class ChatCircleManager extends BaseManager {
   }
 
   /**
-   * Add tag list to server.
+   * Adds a list of tags for the server.
+   *
+   * A server can have 10 tags at most.
    *
    * @param params -
-   * - serverId: The server ID generated when created.
-   * - serverTags: A list of string tag.
+   * - serverId: The server ID.
+   * - serverTags: A list of server tags to add.
    *
-   * @returns The server tags and throws an exception if it fails.
+   * @returns The SDK returns the added server tags or throws an exception if the method call fails.
    *
    * @throws A description of the exception. See {@link ChatError}.
    */
@@ -620,11 +630,11 @@ export class ChatCircleManager extends BaseManager {
   }
 
   /**
-   * Remove tag list to server.
+   * Removes a list of server tags.
    *
    * @param params -
-   * - serverId: The server ID generated when created.
-   * - serverTagIds: A list of tag ID generated when created.
+   * - serverId: The server ID.
+   * - serverTagIds: A list of server tag IDs to remove.
    *
    * @throws A description of the exception. See {@link ChatError}.
    */
@@ -643,11 +653,11 @@ export class ChatCircleManager extends BaseManager {
   }
 
   /**
-   * Fetch a list of server tags.
+   * Gets the list of server tags.
    *
-   * @param serverId The server ID generated when created.
+   * @param serverId The server ID.
    *
-   * @returns The list of server tags and throws an exception if it fails.
+   * @returns The SDK returns the list of server tags or throws an exception if the method call fails.
    *
    * @throws A description of the exception. See {@link ChatError}.
    */
@@ -669,11 +679,13 @@ export class ChatCircleManager extends BaseManager {
   }
 
   /**
-   * Change the server member role to moderator.
+   * Sets a server member as a moderator.
+   *
+   * Only the server owner can call this method.
    *
    * @param params -
-   * - serverId: The server ID generated when created.
-   * - userId: The member ID.
+   * - serverId: The server ID.
+   * - userId: The user ID of the member set as a server moderator.
    *
    * @throws A description of the exception. See {@link ChatError}.
    */
@@ -692,11 +704,13 @@ export class ChatCircleManager extends BaseManager {
   }
 
   /**
-   * Change the server member role to user.
+   * Removes the administrative privileges of a server moderator.
+   *
+   * Only the server owner can call this method.
    *
    * @param params -
-   * - serverId: The server ID generated when created.
-   * - userId: The member ID.
+   * - serverId: The server ID.
+   * - userId: The user ID of the server moderator whose administrative privileges are to be removed.
    *
    * @throws A description of the exception. See {@link ChatError}.
    */
@@ -717,11 +731,11 @@ export class ChatCircleManager extends BaseManager {
   }
 
   /**
-   * Fetch self role for the server.
+   * Gets the server role of the current user.
    *
-   * @param serverId The server ID generated when created.
+   * @param serverId The server ID.
    *
-   * @returns The server role and throws an exception if it fails.
+   * @returns The SDK returns the server role of the current user or throws an exception if the method call fails.
    *
    * @throws A description of the exception. See {@link ChatError}.
    */
@@ -739,13 +753,15 @@ export class ChatCircleManager extends BaseManager {
   }
 
   /**
-   * Fetch list of joined server.
+   * Uses the pagination to get a list of servers that the current user joined.
    *
    * @param params -
-   * - cursor: The query cursor, pointing to the starting position of the query. After this parameter is set, the SDK will query from the specified cursor position in the positive order of users joining the community. For the first query, pass in `null` or an empty string, and the SDK will start the query from the earliest joined community.
-   * - pageSize: The maximum amount to expect to fetch each time. The value range is [1,20].
+   * - cursor: The position from which to start getting data.
+   * After this parameter is set, the SDK gets data from the specified position in the chronological order of when the user joined servers.
+   * At the first method call, if you set `cursor` as `null`, the SDK gets data starting from the first server that the user joined.
+   * - pageSize: The number of servers that you expect to get on each page. The value range is [1,20].
    *
-   * @returns The result of server and throws an exception if it fails.
+   * @returns The SDK returns a list of servers or throws an exception if the method call fails.
    *
    * @throws A description of the exception. See {@link ChatError}.
    */
@@ -774,11 +790,11 @@ export class ChatCircleManager extends BaseManager {
   }
 
   /**
-   * Fetch server information.
+   * Gets details of a server.
    *
-   * @param serverId The server ID generated when created.
+   * @param serverId The server ID.
    *
-   * @returns The server and throws an exception if it fails.
+   * @returns The SDK returns the server details or throws an exception if the method call fails.
    *
    * @throws A description of the exception. See {@link ChatError}.
    */
@@ -799,11 +815,11 @@ export class ChatCircleManager extends BaseManager {
   }
 
   /**
-   * Fetch list of server with keyword.
+   * Gets a list of servers by keyword.
    *
-   * @param keyword Specifies the keyword for the search.
+   * @param keyword The keyword for search.
    *
-   * @returns The server list and throws an exception if it fails.
+   * @returns The SDK returns a server list or throws an exception if the method call fails.
    *
    * @throws A description of the exception. See {@link ChatError}.
    */
@@ -829,14 +845,16 @@ export class ChatCircleManager extends BaseManager {
   }
 
   /**
-   * Fetch list of server members.
+   * Gets the list of server members with pagination.
    *
    * @param params -
-   * - serverId: The server ID generated when created.
-   * - cursor: The query cursor, pointing to the starting position of the query. After this parameter is set, the SDK will query from the specified cursor position in the positive order of users joining the community. For the first query, pass in `null` or an empty string, and the SDK will start the query from the earliest joined community.
-   * - pageSize: The maximum amount to expect to fetch each time. The value range is [1,20].
+   * - serverId: The server ID.
+   * - cursor: The position from which to start getting data.
+   * After this parameter is set, the SDK gets data from the specified position in the chronological order of when members joined the server.
+   * At the first method call, if you set `cursor` as `null`, the SDK gets data starting from the first member to join the server.
+   * - pageSize: The number of members that you expect to get on each page. The value range is [1,20].
    *
-   * @returns The result of server members and throws an exception if it fails.
+   * @returns The SDK returns a list of server members or throws an exception if the method call fails.
    *
    * @throws A description of the exception. See {@link ChatError}.
    */
@@ -870,11 +888,11 @@ export class ChatCircleManager extends BaseManager {
   }
 
   /**
-   * Check if self is in the server.
+   * Checks whether the current user is in the server.
    *
-   * @param serverId The server ID generated when created.
+   * @param serverId The server ID.
    *
-   * @returns Returns true if it is on the server, otherwise returns false.
+   * @returns The SDK returns `true` if the current user is in the server; otherwise, `false` is returned.
    *
    * @throws A description of the exception. See {@link ChatError}.
    */
@@ -890,17 +908,19 @@ export class ChatCircleManager extends BaseManager {
   }
 
   /**
-   * Create a channel.
+   * Creates a channel.
+   *
+   * Only the server owner can call this method.
    *
    * @param params -
-   * - serverId: The server ID generated when created.
-   * - channelName: The channel name.
-   * - channelDescription: The channel description.
-   * - channelExtension: Use custom parameters in string format.
-   * - channelRank: The channel member max count range. see {@link ChatCircleChannelRank}
-   * - channelType: The channel type. see {@link ChatCircleChannelType}
+   * - serverId: The server ID to which the channel belongs.
+   * - channelName: The channel name. The channel name can contain at most 50 characters.
+   * - channelDescription: The channel description. The channel description can contain at most 500 characters.
+   * - channelExtension: The custom channel extension parameter in string format. The channel extension information can contain at most 500 characters.
+   * - channelRank: The member capacity rank. By default, the channel can have a maximum of 2000 members. See {@link ChatCircleChannelRank}.
+   * - channelType: The channel type. By default, a public channel is created. See {@link ChatCircleChannelType}.
    *
-   * @returns The created channel and throws an exception if it fails.
+   * @returns The SDK returns the created channel or throws an exception if the method call fails.
    *
    * @throws A description of the exception. See {@link ChatError}.
    */
@@ -930,11 +950,13 @@ export class ChatCircleManager extends BaseManager {
   }
 
   /**
-   * Destroy a special channel.
+   * Destroys a channel.
+   *
+   * Only the server owner can call this method.
    *
    * @param params -
-   * - serverId: The server ID generated when created.
-   * - channelId: The channel ID generated when created.
+   * - serverId: The server ID to which the channel belongs.
+   * - channelId: The ID of the channel to destroy.
    *
    * @throws A description of the exception. See {@link ChatError}.
    */
@@ -953,17 +975,19 @@ export class ChatCircleManager extends BaseManager {
   }
 
   /**
-   * Update the special channel.
+   * Modifies attributes of a channel.
+   *
+   * Only the server owner and moderators can call this method.
    *
    * @param params -
-   * - serverId: The server ID generated when created.
-   * - channelId: The channel ID generated when created.
+   * - serverId: The server ID to which the channel belongs.
+   * - channelId: The channel ID.
    * - channelName: The channel name.
    * - channelDescription: The channel description.
-   * - channelExtension: Use custom parameters in string format.
-   * - channelRank: The channel member max count range. see {@link ChatCircleChannelRank}
+   * - channelExtension: The custom channel extension parameter in string format.
+   * - channelRank: The maximum number of members allowed in a channel. see {@link ChatCircleChannelRank}.
    *
-   * @returns The updated channel and throws an exception if it fails.
+   * @returns The SDK returns the updated channel or throws an exception if the method call fails.
    *
    * @throws A description of the exception. See {@link ChatError}.
    */
@@ -991,13 +1015,13 @@ export class ChatCircleManager extends BaseManager {
   }
 
   /**
-   * Join a special channel.
+   * Joins a channel.
    *
    * @param params -
-   * - serverId: The server ID generated when created.
-   * - channelId: The channel ID generated when created.
+   * - serverId: The server ID to which the channel belongs.
+   * - channelId: The channel ID.
    *
-   * @returns The joined channel and throws an exception if it fails.
+   * @returns The SDK returns the channel the user joins or throws an exception if the method call fails.
    *
    * @throws A description of the exception. See {@link ChatError}.
    */
@@ -1017,11 +1041,11 @@ export class ChatCircleManager extends BaseManager {
   }
 
   /**
-   * Leave a special channel.
+   * Leaves a channel.
    *
    * @param params -
-   * - serverId: The server ID generated when created.
-   * - channelId: The channel ID generated when created.
+   * - serverId: The server ID to which the channel belongs.
+   * - channelId: The ID of the channel that the user leaves.
    *
    * @throws A description of the exception. See {@link ChatError}.
    */
@@ -1040,12 +1064,14 @@ export class ChatCircleManager extends BaseManager {
   }
 
   /**
-   * Remove a member from the channel.
+   * Removes a member from the channel.
+   *
+   * The server owner can remove all members from a channel. A server moderator can only remove common members from a channel.
    *
    * @param params -
-   * - serverId: The server ID generated when created.
-   * - channelId: The channel ID generated when created.
-   * - userId: The member ID.
+   * - serverId: The server ID to which the channel belongs.
+   * - channelId: The channel ID.
+   * - userId: The user ID of the member to be removed from the channel.
    *
    * @throws A description of the exception. See {@link ChatError}.
    */
@@ -1066,13 +1092,13 @@ export class ChatCircleManager extends BaseManager {
   }
 
   /**
-   * Invite a member to the channel.
+   * Invites a user to join the channel.
    *
    * @param params -
-   * - serverId: The server ID generated when created.
-   * - channelId: The channel ID generated when created.
-   * - userId: The member ID.
-   * - welcome: The welcome greeting.
+   * - serverId: The server ID to which the channel belongs.
+   * - channelId: The channel ID.
+   * - userId: The user ID of the invitee.
+   * - welcome: The welcome message for inviting a user to join the channel.
    *
    * @throws A description of the exception. See {@link ChatError}.
    */
@@ -1095,14 +1121,14 @@ export class ChatCircleManager extends BaseManager {
   }
 
   /**
-   * Invitee accept invitation from channel.
+   * Accepts an invitation to join a channel.
    *
    * @param params -
-   * - serverId: The server ID generated when created.
-   * - channelId: The channel ID generated when created.
-   * - inviter: The inviter ID who invited user to join the channel.
+   * - serverId: The server ID to which the channel belongs.
+   * - channelId: The channel ID.
+   * - inviter: The user ID of the inviter.
    *
-   * @returns The joined channel and throws an exception if it fails.
+   * @returns The SDK returns the channel that the user joins or throws an exception if the method call fails.
    *
    * @throws A description of the exception. See {@link ChatError}.
    */
@@ -1126,12 +1152,12 @@ export class ChatCircleManager extends BaseManager {
   }
 
   /**
-   * Invitee decline invitation from channel.
+   * Declines an invitation to join a channel.
    *
    * @param params -
-   * - serverId: The server ID generated when created.
-   * - channelId: The channel ID generated when created.
-   * - inviter: The inviter ID who invited user to join the channel.
+   * - serverId: The server ID to which the channel belongs.
+   * - channelId: The channel ID.
+   * - inviter: The user ID of the inviter.
    *
    * @throws A description of the exception. See {@link ChatError}.
    */
@@ -1154,13 +1180,15 @@ export class ChatCircleManager extends BaseManager {
   }
 
   /**
-   * Mute member in the special channel.
+   * Mutes a member in the channel.
+   *
+   * Only the server owner and moderators can call this method.
    *
    * @param params -
-   * - serverId: The server ID generated when created.
-   * - channelId: The channel ID generated when created.
-   * - userId: The member ID.
-   * - duration: The duration. The unit is milliseconds.
+   * - serverId: The server ID to which the channel belongs.
+   * - channelId: The channel ID.
+   * - userId: The user ID of the member to mute.
+   * - duration: The mute duration in milliseconds.
    *
    * @throws A description of the exception. See {@link ChatError}.
    */
@@ -1183,12 +1211,14 @@ export class ChatCircleManager extends BaseManager {
   }
 
   /**
-   * Unmute member in the special channel.
+   * Unmutes a member in the channel.
+   *
+   * Only the server owner and moderators can call this method.
    *
    * @param params -
-   * - serverId: The server ID generated when created.
-   * - channelId: The channel ID generated when created.
-   * - userId: The member ID.
+   * - serverId: The server ID to which the channel belongs.
+   * - channelId: The channel ID.
+   * - userId: The user ID of the member to unmute.
    *
    * @throws A description of the exception. See {@link ChatError}.
    */
@@ -1209,13 +1239,13 @@ export class ChatCircleManager extends BaseManager {
   }
 
   /**
-   * Fetch the special channel information.
+   * Gets the details of a channel.
    *
    * @param params -
-   * - serverId: The server ID generated when created.
-   * - channelId: The channel ID generated when created.
+   * - serverId: The server ID to which the channel belongs.
+   * - channelId: The channel ID.
    *
-   * @returns The channel and throws an exception if it fails.
+   * @returns The SDK returns channel details or throws an exception if the method call fails.
    *
    * @throws A description of the exception. See {@link ChatError}.
    */
@@ -1238,14 +1268,16 @@ export class ChatCircleManager extends BaseManager {
   }
 
   /**
-   * Fetch public channel list in the special server.
+   * Uses the pagination to get a list of public channels in a server.
    *
    * @param params -
-   * - serverId: The server ID generated when created.
-   * - cursor: The query cursor, pointing to the starting position of the query. After this parameter is set, the SDK will query from the specified cursor position in the positive order of users joining the community. For the first query, pass in `null` or an empty string, and the SDK will start the query from the earliest joined community.
-   * - pageSize: The maximum amount to expect to fetch each time. The value range is [1,20].
+   * - serverId: The server ID to which the channels belong.
+   * - cursor: The position from which to start getting data.
+   * After this parameter is set, the SDK gets data from the specified position in the chronological order of when channels were created.
+   * At the first method call, if you set `cursor` as `null`, the SDK gets data starting from the first created channel.
+   * - pageSize: The number of public servers that you expect to get on each page. The value range is [1,20].
    *
-   * @returns The result of channel and throws an exception if it fails.
+   * @returns The SDK returns a list of public channels or throws an exception if the method call fails.
    *
    * @throws A description of the exception. See {@link ChatError}.
    */
@@ -1278,15 +1310,17 @@ export class ChatCircleManager extends BaseManager {
   }
 
   /**
-   * Fetch the channel members.
+   * Gets members in a channel.
    *
    * @param params -
-   * - serverId: The server ID generated when created.
-   * - channelId: The channel ID generated when created.
-   * - cursor: The query cursor, pointing to the starting position of the query. After this parameter is set, the SDK will query from the specified cursor position in the positive order of users joining the community. For the first query, pass in `null` or an empty string, and the SDK will start the query from the earliest joined community.
-   * - pageSize: The maximum amount to expect to fetch each time. The value range is [1,20].
+   * - serverId: The server ID to which the channel belongs.
+   * - channelId: The channel ID.
+   * - cursor: The position from which to start getting data.
+   * After this parameter is set, the SDK gets data from the specified position in the chronological order of when members joined the channel.
+   * At the first method call, if you set `cursor` as `null`, the SDK gets data starting from the first member to join the channel.
+   * - pageSize: The number of channel members that you expect to get on each page. The value range is [1,20].
    *
-   * @returns The result of channel members and throws an exception if it fails.
+   * @returns The SDK returns a list of channel members or throws an exception if the method call fails.
    *
    * @throws A description of the exception. See {@link ChatError}.
    */
@@ -1322,14 +1356,16 @@ export class ChatCircleManager extends BaseManager {
   }
 
   /**
-   * Fetch visible private type channels in the special server.
+   * Gets accessible private channels in a server.
    *
    * @param params -
-   * - serverId: The server ID generated when created.
-   * - cursor: The query cursor, pointing to the starting position of the query. After this parameter is set, the SDK will query from the specified cursor position in the positive order of users joining the community. For the first query, pass in `null` or an empty string, and the SDK will start the query from the earliest joined community.
-   * - pageSize: The maximum amount to expect to fetch each time. The value range is [1,20].
+   * - serverId: The server ID to which the channels belong.
+   * - cursor: The position from which to start getting data.
+   * After this parameter is set, the SDK gets data from the specified position in the chronological order of when the channels were created.
+   * At the first method call, if you set `cursor` as `null`, the SDK gets data starting from the first created channel.
+   * - pageSize: The number of channels that you expect to get on each page. The value range is [1,20].
    *
-   * @returns The result of channel and throws an exception if it fails.
+   * @returns The SDK returns a list of private channels or throws an exception if the method call fails.
    *
    * @throws A description of the exception. See {@link ChatError}.
    */
@@ -1365,13 +1401,13 @@ export class ChatCircleManager extends BaseManager {
   }
 
   /**
-   * Check if self is in the channel.
+   * Checks whether the current user is in the channel.
    *
    * @param params -
-   * - serverId: The server ID generated when created.
-   * - channelId: The channel ID generated when created.
+   * - serverId: The server ID to which the channel belongs.
+   * - channelId: The channel ID.
    *
-   * @returns Returns true if it is on the channel, otherwise returns false.
+   * @returns The SDK returns `true` if the current user is in the channel; otherwise, `false` is returned.
    *
    * @throws A description of the exception. See {@link ChatError}.
    */
@@ -1391,13 +1427,15 @@ export class ChatCircleManager extends BaseManager {
   }
 
   /**
-   * Fetch the muted members in the special channel.
+   * Gets the muted members in a channel.
+   *
+   * Only the server owner and moderator can call this method.
    *
    * @param params -
-   * - serverId: The server ID generated when created.
-   * - channelId: The channel ID generated when created.
+   * - serverId: The server ID to which the channel belongs.
+   * - channelId: The channel ID.
    *
-   * @returns The map of mute members and throws an exception if it fails.
+   * @returns The SDK returns muted members in map format or throws an exception if the method call fails.
    *
    * @throws A description of the exception. See {@link ChatError}.
    */
