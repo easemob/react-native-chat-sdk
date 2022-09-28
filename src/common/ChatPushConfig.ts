@@ -1,6 +1,20 @@
 import { Platform } from 'react-native';
 
 /**
+ * The push styles.
+ */
+export enum ChatPushDisplayStyle {
+  /**
+   * The push message presentation style: SimpleBanner represents the presentation of a simple message.
+   */
+  Simple = 0,
+  /**
+   * The push message presentation style: MessageSummary represents the presentation of message content.
+   */
+  Summary,
+}
+
+/**
  * The push configuration class.
  *
  * For Google Firebase Cloud Messaging (FCM), see {@url https://firebase.google.com/docs/cloud-messaging/concept-options}.
@@ -44,5 +58,26 @@ export class ChatPushConfig {
         Platform as any
       ).constants.Manufacturer.toLowerCase();
     }
+  }
+}
+
+/**
+ * The push option class.
+ */
+export class ChatPushOption {
+  /**
+   * The display type of push notifications.
+   */
+  displayStyle?: ChatPushDisplayStyle;
+  /**
+   * The user's nickname to be displayed in the notification.
+   */
+  displayName?: string;
+  constructor(params: {
+    displayStyle?: ChatPushDisplayStyle;
+    displayName?: string;
+  }) {
+    this.displayStyle = params?.displayStyle;
+    this.displayName = params?.displayName;
   }
 }

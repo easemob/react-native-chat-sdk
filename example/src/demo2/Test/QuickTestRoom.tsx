@@ -608,6 +608,71 @@ export class QuickTestScreenRoom extends QuickTestScreenBase<
           );
         }
         break;
+      case MN.fetchChatRoomAttributes:
+        {
+          const methodName = this.metaData.get(
+            MN.fetchChatRoomAttributes
+          )!.methodName;
+          console.log(`${MN.fetchChatRoomAttributes} === ${methodName}`);
+          const roomId = this.metaData.get(MN.fetchChatRoomAttributes)!
+            .params[0].paramDefaultValue;
+          const keys = this.metaData.get(MN.fetchChatRoomAttributes)!.params[1]
+            .paramDefaultValue;
+          this.tryCatch(
+            ChatClient.getInstance().roomManager.fetchChatRoomAttributes(
+              roomId,
+              keys
+            ),
+            QuickTestScreenRoom.TAG,
+            name
+          );
+        }
+        break;
+      case MN.addAttributes:
+        {
+          const methodName = this.metaData.get(MN.addAttributes)!.methodName;
+          console.log(`${MN.addAttributes} === ${methodName}`);
+          const roomId = this.metaData.get(MN.addAttributes)!.params[0]
+            .paramDefaultValue;
+          const attributes = this.metaData.get(MN.addAttributes)!.params[1]
+            .paramDefaultValue;
+          const deleteWhenLeft = this.metaData.get(MN.addAttributes)!.params[2]
+            .paramDefaultValue;
+          const overwrite = this.metaData.get(MN.addAttributes)!.params[3]
+            .paramDefaultValue;
+          this.tryCatch(
+            ChatClient.getInstance().roomManager.addAttributes({
+              roomId,
+              attributes,
+              deleteWhenLeft,
+              overwrite,
+            }),
+            QuickTestScreenRoom.TAG,
+            name
+          );
+        }
+        break;
+      case MN.removeAttributes:
+        {
+          const methodName = this.metaData.get(MN.removeAttributes)!.methodName;
+          console.log(`${MN.removeAttributes} === ${methodName}`);
+          const roomId = this.metaData.get(MN.removeAttributes)!.params[0]
+            .paramDefaultValue;
+          const keys = this.metaData.get(MN.removeAttributes)!.params[1]
+            .paramDefaultValue;
+          const forced = this.metaData.get(MN.removeAttributes)!.params[2]
+            .paramDefaultValue;
+          this.tryCatch(
+            ChatClient.getInstance().roomManager.removeAttributes({
+              roomId,
+              keys,
+              forced,
+            }),
+            QuickTestScreenRoom.TAG,
+            name
+          );
+        }
+        break;
       default:
         break;
     }

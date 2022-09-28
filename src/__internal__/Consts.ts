@@ -174,6 +174,11 @@ export const MTisMemberInChatRoomAllowListFromServer =
 export const MTmuteAllChatRoomMembers = 'muteAllChatRoomMembers';
 export const MTunMuteAllChatRoomMembers = 'unMuteAllChatRoomMembers';
 
+export const MTfetchChatRoomAttributes = 'fetchChatRoomAttributes';
+export const MTfetchChatRoomAllAttributes = 'fetchChatRoomAllAttributes';
+export const MTsetChatRoomAttributes = 'setChatRoomAttributes';
+export const MTremoveChatRoomAttributes = 'removeChatRoomAttributes';
+
 // ChatRoomManager listener
 export const MTchatRoomChange = 'onChatRoomChanged';
 

@@ -4,6 +4,7 @@ import type { ChatMessage } from './common/ChatMessage';
 import type { ChatMessageReactionEvent } from './common/ChatMessageReaction';
 import type { ChatMessageThreadEvent } from './common/ChatMessageThread';
 import type { ChatPresence } from './common/ChatPresence';
+import type { ChatRoom } from './common/ChatRoom';
 
 /**
  *  The event types in multi-device login scenarios.
@@ -544,7 +545,7 @@ export interface ChatGroupEventListener {
   onInvitationReceived?(params: {
     groupId: string;
     inviter: string;
-    groupName?: string;
+    groupName: string;
     reason?: string;
   }): void;
 
@@ -973,6 +974,40 @@ export interface ChatRoomEventListener {
   onAllChatRoomMemberMuteStateChanged?(params: {
     roomId: string;
     isAllMuted: boolean;
+  }): void;
+
+  /**
+   * Occurs when the chat room specifications changes. All chat room members receive this event.
+   *
+   * @param room The chat room.
+   */
+  onSpecificationChanged?(room: ChatRoom): void;
+
+  /**
+   * Occurs when the custom chat room attributes (key-value) are updated.
+   *
+   * @param params -
+   * - roomId: The chat room ID.
+   * - attributes: The key-value list.
+   * - from: The from ID.
+   */
+  onAttributesUpdated?(params: {
+    roomId: string;
+    attributes: Map<string, string>;
+    from: string;
+  }): void;
+
+  /**
+   * Occurs when the custom chat room attributes (key-value) are removed.
+   * @param params -
+   * - roomId: The chat room ID.
+   * - removedKeys: The key list.
+   * - from: The from ID.
+   */
+  onAttributesRemoved?(params: {
+    roomId: string;
+    removedKeys: Array<string>;
+    from: string;
   }): void;
 }
 

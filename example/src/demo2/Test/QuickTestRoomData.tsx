@@ -30,6 +30,9 @@ export const MN = {
   removeMembersFromChatRoomAllowList: 'removeMembersFromChatRoomAllowList',
   muteAllChatRoomMembers: 'muteAllChatRoomMembers',
   unMuteAllChatRoomMembers: 'unMuteAllChatRoomMembers',
+  fetchChatRoomAttributes: 'fetchChatRoomAttributes',
+  addAttributes: 'addAttributes',
+  removeAttributes: 'removeAttributes',
 };
 
 export const metaDataList = new Map<string, ApiParams>([
@@ -577,6 +580,84 @@ export const metaDataList = new Map<string, ApiParams>([
           paramName: 'roomId',
           paramType: 'string',
           paramDefaultValue: '180456077197313',
+          domType: 'input',
+        },
+      ],
+    },
+  ],
+  [
+    MN.fetchChatRoomAttributes,
+    {
+      methodName: MN.fetchChatRoomAttributes,
+      params: [
+        {
+          paramName: 'roomId',
+          paramType: 'string',
+          paramDefaultValue: '187507809517570',
+          domType: 'input',
+        },
+        {
+          paramName: 'keys',
+          paramType: 'json',
+          paramDefaultValue: ['key1', 'key2', 'key3', 'key4'],
+          domType: 'input',
+        },
+      ],
+    },
+  ],
+  [
+    MN.addAttributes,
+    {
+      methodName: MN.addAttributes,
+      params: [
+        {
+          paramName: 'roomId',
+          paramType: 'string',
+          paramDefaultValue: '187507809517570',
+          domType: 'input',
+        },
+        {
+          paramName: 'attributes',
+          paramType: 'json',
+          paramDefaultValue: [{ key3: 'value' }, { key4: 'value2' }],
+          domType: 'input',
+        },
+        {
+          paramName: 'deleteWhenLeft',
+          paramType: 'boolean',
+          paramDefaultValue: false,
+          domType: 'input',
+        },
+        {
+          paramName: 'overwrite',
+          paramType: 'boolean',
+          paramDefaultValue: false,
+          domType: 'input',
+        },
+      ],
+    },
+  ],
+  [
+    MN.removeAttributes,
+    {
+      methodName: MN.removeAttributes,
+      params: [
+        {
+          paramName: 'roomId',
+          paramType: 'string',
+          paramDefaultValue: '187507809517570',
+          domType: 'input',
+        },
+        {
+          paramName: 'keys',
+          paramType: 'json',
+          paramDefaultValue: ['key1', 'key2'],
+          domType: 'input',
+        },
+        {
+          paramName: 'forced',
+          paramType: 'boolean',
+          paramDefaultValue: false,
           domType: 'input',
         },
       ],

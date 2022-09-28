@@ -1355,3 +1355,14 @@ export class LeafScreenClient extends LeafScreenBase<StateClient> {
 
 // export const ReactComponent3: React.ComponentClass =
 //   LeafComponentScreenFactory8();
+
+const key: string = '';
+const value: string = '';
+const KV = { [key]: value };
+const kv: typeof KV = { '1': '2' };
+let kv2: typeof KV;
+kv2 = { '2': '3' };
+console.log(kv, kv2);
+
+let kv3: { [x: string]: string }[] = [{ key1: 'value1' }, { key2: 'value2' }];
+console.log(kv3);

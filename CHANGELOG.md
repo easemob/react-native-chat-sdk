@@ -2,6 +2,41 @@
 
 ---
 
+## 1.0.8
+
+Improvements
+
+- The dependent native SDK (iOS and Android) is upgraded to V3.9.6.1.
+- Added chat room custom attribute function.
+- Added group disabled status in group details: isDisabled property, which needs to be set by the developer on the server side.
+- Optimized the performance of getting roaming messages.
+
+Issues fixed
+
+- Fixed the problem that in a few scenarios, when the message volume is large when synchronizing or pulling messages, the collection fails.
+
+The following APIs are added:
+
+- `updatePushNickname`: 
+- `updatePushDisplayStyle`:
+- `fetchPushOptionFromServer`:
+- `fetchChatRoomAttributes`:
+- `addAttributes`:
+- `removeAttributes`:
+- `ChatPushDisplayStyle`:
+- `ChatPushOption`:
+
+The following APIs are renamed:
+
+- `ChatGroupPermissionType` is renamed `ChatGroupType`.
+
+The following Object are updated:
+
+- `ChatGroupOptions` add `isDisabled` attribute.
+- `ChatRoomEventListener` add `onSpecificationChanged`, `onAttributesUpdated`, `onAttributesRemoved` attribute.
+
+---
+
 ## 1.0.7
 
 Improvements
