@@ -114,6 +114,21 @@ export interface StateChatRoomMessage extends StateBase {
   destroyChatRoom: {
     roomId: string;
   };
+  fetchChatRoomAttributes: {
+    roomId: string;
+    keys: string[];
+  };
+  addAttributes: {
+    roomId: string;
+    attributes: [];
+    deleteWhenLeft: boolean;
+    overwrite: boolean;
+  };
+  removeAttributes: {
+    roomId: string;
+    keys: string[];
+    forced: boolean;
+  };
 }
 export class ChatRoomManagerLeafScreen extends LeafScreenBase<StateChatRoomMessage> {
   protected static TAG = 'ChatRoomManagerLeafScreen';
@@ -166,6 +181,9 @@ export class ChatRoomManagerLeafScreen extends LeafScreenBase<StateChatRoomMessa
       'removeMembersFromChatRoomAllowList',
       'muteAllChatRoomMembers',
       'unMuteAllChatRoomMembers',
+      'fetchChatRoomAttributes',
+      'addAttributes',
+      'removeAttributes',
     ];
     let renderDomAry: ({} | null | undefined)[] = [];
     const data = this.metaDataList;
@@ -523,6 +541,46 @@ export class ChatRoomManagerLeafScreen extends LeafScreenBase<StateChatRoomMessa
         const { roomId } = this.state.destroyChatRoom;
         this.tryCatch(
           ChatClient.getInstance().roomManager.destroyChatRoom(roomId),
+          ChatRoomManagerLeafScreen.TAG,
+          name
+        );
+        break;
+      }
+      case MN.fetchChatRoomAttributes: {
+        const { roomId, keys } = this.state.fetchChatRoomAttributes;
+        this.tryCatch(
+          ChatClient.getInstance().roomManager.fetchChatRoomAttributes(
+            roomId,
+            keys
+          ),
+          ChatRoomManagerLeafScreen.TAG,
+          name
+        );
+        break;
+      }
+      case MN.addAttributes: {
+        const { roomId, attributes, deleteWhenLeft, overwrite } =
+          this.state.addAttributes;
+        this.tryCatch(
+          ChatClient.getInstance().roomManager.addAttributes({
+            roomId,
+            attributes,
+            deleteWhenLeft,
+            overwrite,
+          }),
+          ChatRoomManagerLeafScreen.TAG,
+          name
+        );
+        break;
+      }
+      case MN.removeAttributes: {
+        const { roomId, keys, forced } = this.state.removeAttributes;
+        this.tryCatch(
+          ChatClient.getInstance().roomManager.removeAttributes({
+            roomId,
+            keys,
+            forced,
+          }),
           ChatRoomManagerLeafScreen.TAG,
           name
         );

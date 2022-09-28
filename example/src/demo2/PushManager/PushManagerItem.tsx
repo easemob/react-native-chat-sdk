@@ -7,6 +7,7 @@ import type { ApiParams } from '../__internal__/DataTypes';
 import {
   ChatClient,
   ChatConversation,
+  ChatPushDisplayStyle,
   ChatSilentModeParam,
 } from 'react-native-chat-sdk';
 import { generateData } from '../__internal__/Utils';
@@ -35,6 +36,13 @@ export interface StatePushMessage extends StateBase {
     languageCode: string;
   };
   fetchPreferredNotificationLanguage: {};
+  updatePushNickname: {
+    nickname: string;
+  };
+  updatePushDisplayStyle: {
+    displayStyle: ChatPushDisplayStyle;
+  };
+  fetchPushOptionFromServer: {};
 }
 export class PushManagerLeafScreen extends LeafScreenBase<StatePushMessage> {
   protected static TAG = 'PushManagerLeafScreen';
@@ -66,6 +74,9 @@ export class PushManagerLeafScreen extends LeafScreenBase<StatePushMessage> {
       'fetchSilentModeForConversations',
       'setPreferredNotificationLanguage',
       'fetchPreferredNotificationLanguage',
+      'updatePushNickname',
+      'updatePushDisplayStyle',
+      'fetchPushOptionFromServer',
     ];
     let renderDomAry: ({} | null | undefined)[] = [];
     const data = this.metaDataList;
@@ -194,6 +205,34 @@ export class PushManagerLeafScreen extends LeafScreenBase<StatePushMessage> {
       case MN.fetchPreferredNotificationLanguage: {
         this.tryCatch(
           ChatClient.getInstance().pushManager.fetchPreferredNotificationLanguage(),
+          PushManagerLeafScreen.TAG,
+          name
+        );
+        break;
+      }
+      case MN.updatePushNickname: {
+        const { nickname } = this.state.updatePushNickname;
+        this.tryCatch(
+          ChatClient.getInstance().pushManager.updatePushNickname(nickname),
+          PushManagerLeafScreen.TAG,
+          name
+        );
+        break;
+      }
+      case MN.updatePushDisplayStyle: {
+        const { displayStyle } = this.state.updatePushDisplayStyle;
+        this.tryCatch(
+          ChatClient.getInstance().pushManager.updatePushDisplayStyle(
+            displayStyle
+          ),
+          PushManagerLeafScreen.TAG,
+          name
+        );
+        break;
+      }
+      case MN.fetchPushOptionFromServer: {
+        this.tryCatch(
+          ChatClient.getInstance().pushManager.fetchPushOptionFromServer(),
           PushManagerLeafScreen.TAG,
           name
         );

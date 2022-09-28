@@ -4,6 +4,7 @@ import type {
   ChatConversationType,
 } from './common/ChatConversation';
 import { chatlog } from './common/ChatLog';
+import { ChatPushDisplayStyle, ChatPushOption } from './common/ChatPushConfig';
 import {
   ChatSilentModeResult,
   ChatSilentModeParam,
@@ -13,10 +14,13 @@ import {
   MTfetchPreferredNotificationLanguage,
   MTfetchSilentModeForAll,
   MTfetchSilentModeForConversations,
+  MTgetImPushConfigFromServer,
   MTremoveConversationSilentMode,
   MTsetConversationSilentMode,
   MTsetPreferredNotificationLanguage,
   MTsetSilentModeForAll,
+  MTupdateImPushStyle,
+  MTupdatePushNickname,
 } from './__internal__/Consts';
 import { Native } from './__internal__/Native';
 
@@ -225,5 +229,58 @@ export class ChatPushManager extends Native {
     ChatPushManager.checkErrorFromResult(r);
     const rr = r?.[MTfetchPreferredNotificationLanguage];
     return rr as string;
+  }
+
+  /**
+   * Updates the push display nickname of the current user.
+   *
+   * This method can be used to set a push display nickname, the push display nickname will be used to show for offline push notification.
+   * When the app user changes the nickname in the user profile use {@link ChatUserInfoManager#updateOwnUserInfo} be sure to also call this method to update to prevent the display differences.
+   *
+   * @param nickname The push display nickname, which is different from the nickname in the user profile.
+   *
+   * @throws A description of the exception. See {@link ChatError}.
+   */
+  public async updatePushNickname(nickname: string): Promise<void> {
+    chatlog.log(`${ChatPushManager.TAG}: ${this.updatePushNickname.name}`);
+    let r: any = await Native._callMethod(MTupdatePushNickname, {
+      [MTupdatePushNickname]: {
+        nickname: nickname,
+      },
+    });
+    ChatPushManager.checkErrorFromResult(r);
+  }
+
+  /**
+   * Updates the push message style. The default value is {@link ChatPushDisplayStyle#Simple}.
+   *
+   * @param displayStyle The push message display style.
+   *
+   * @throws A description of the exception. See {@link ChatError}.
+   */
+  public async updatePushDisplayStyle(
+    displayStyle: ChatPushDisplayStyle = ChatPushDisplayStyle.Simple
+  ): Promise<void> {
+    chatlog.log(`${ChatPushManager.TAG}: ${this.updatePushDisplayStyle.name}`);
+    let r: any = await Native._callMethod(MTupdateImPushStyle, {
+      [MTupdateImPushStyle]: {
+        pushStyle: displayStyle as number,
+      },
+    });
+    ChatPushManager.checkErrorFromResult(r);
+  }
+
+  /**
+   * Gets the push configurations from the server.
+   *
+   * @returns The push option.
+   */
+  public async fetchPushOptionFromServer(): Promise<ChatPushOption> {
+    chatlog.log(
+      `${ChatPushManager.TAG}: ${this.fetchPushOptionFromServer.name}`
+    );
+    let r: any = await Native._callMethod(MTgetImPushConfigFromServer);
+    ChatPushManager.checkErrorFromResult(r);
+    return new ChatPushOption(r?.[MTgetImPushConfigFromServer]);
   }
 }

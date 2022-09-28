@@ -28,7 +28,7 @@ import { ChatDeviceInfo } from './common/ChatDeviceInfo';
 import { ChatError } from './common/ChatError';
 import {
   ChatGroupStyle,
-  ChatGroupType,
+  ChatGroupPermissionType,
   ChatGroupMessageAck,
   ChatGroupOptions,
   ChatGroup,
@@ -37,8 +37,8 @@ import {
   ChatGroupSharedFile,
   ChatGroupStyleFromNumber,
   ChatGroupStyleToString,
-  ChatGroupTypeFromNumber,
-  ChatGroupTypeToString,
+  ChatGroupPermissionTypeFromNumber,
+  ChatGroupPermissionTypeToString,
 } from './common/ChatGroup';
 import {
   ChatMessageChatType,
@@ -89,7 +89,11 @@ import {
 } from './common/ChatMessageThread';
 import { ChatPresence } from './common/ChatPresence';
 import { ChatTranslateLanguage } from './common/ChatTranslateLanguage';
-import { ChatPushConfig } from './common/ChatPushConfig';
+import {
+  ChatPushDisplayStyle,
+  ChatPushConfig,
+  ChatPushOption,
+} from './common/ChatPushConfig';
 import {
   ChatPushRemindType,
   ChatPushRemindTypeFromNumber,
@@ -137,7 +141,7 @@ export {
   ChatSearchDirection,
   ChatConversationType,
   ChatGroupStyle,
-  ChatGroupType,
+  ChatGroupPermissionType,
   ChatMessageChatType,
   ChatMessageDirection,
   ChatMessageStatus,
@@ -147,6 +151,7 @@ export {
   ChatMessageThreadOperation,
   ChatSilentModeParamType,
   ChatPushRemindType,
+  ChatPushDisplayStyle,
 };
 
 /**
@@ -186,6 +191,7 @@ export {
   ChatMessageThreadEvent,
   ChatMessageReactionEvent,
   ChatPushConfig,
+  ChatPushOption,
   ChatSilentModeTime,
   ChatSilentModeParam,
   ChatSilentModeResult,
@@ -207,8 +213,8 @@ export {
   ChatConversationTypeToString,
   ChatGroupStyleFromNumber,
   ChatGroupStyleToString,
-  ChatGroupTypeFromNumber,
-  ChatGroupTypeToString,
+  ChatGroupPermissionTypeFromNumber,
+  ChatGroupPermissionTypeToString,
   ChatRoomPermissionTypeFromNumber,
   ChatRoomPermissionTypeToString,
   ChatSilentModeParamTypeFromNumber,

@@ -1,8 +1,16 @@
 export const datasheet = {
-  AppKey: ['1', '2', '3', '4', '5', '6', '7'],
+  AppKey: [
+    'easemob-demo#easeim', // easemob demo
+    '1135220126133718#demo', // asterisk's
+    '81446724#514456', // agora token app key.
+    '41117440#383391',
+    '5101220107132865#test', // microsoft test box
+    'easemob-demo#jzz1', // for circle
+  ],
   PushInfo: {
-    sendId: '1',
-    KeyId: '2',
+    sendId: '1068131238942',
+    KeyId:
+      'AAAA-LGVRB4:APA91bHLX0GeBZn4rJeSY9KyTSJYpTJr-vBMPdwA3G6zE7Y0gIBXLNkoNPqsRgROOvUAHm4zWpnxM4jV_A0QTD62B5Hco8smkJ_KefS-izFwsip1sVhYnA4ZeojtI-yEtxxnGx9hzIGF',
   },
   ChatManager: {
     SendMessage: {
@@ -17,65 +25,65 @@ export const datasheet = {
   },
   accounts: [
     {
-      id: '001', // zuoyu
-      mm: '1',
+      id: 'asterisk001', // zuoyu
+      mm: 'qwer',
     },
     {
-      id: '002', // zuoyu
-      mm: '1',
+      id: 'asterisk002', // zuoyu
+      mm: 'qwer',
     },
     {
-      id: '003', // zuoyu
-      mm: '1',
+      id: 'asterisk003', // zuoyu
+      mm: 'qwer',
     },
     {
-      id: '004', // zuoyu
-      mm: '1',
+      id: 'asterisk004', // zuoyu
+      mm: 'qwer',
     },
     {
-      id: '005', // jinan
-      mm: '1',
+      id: 'asterisk005', // jinan
+      mm: 'qwer',
     },
     {
-      id: '006', // jinan
-      mm: '1',
+      id: 'asterisk006', // jinan
+      mm: 'qwer',
     },
     {
-      id: '007', // zhangchong
-      mm: '1',
+      id: 'asterisk007', // zhangchong
+      mm: 'qwer',
     },
     {
-      id: '008', // zhangchong
-      mm: '1',
+      id: 'asterisk008', // zhangchong
+      mm: 'qwer',
     },
     {
-      id: '009', // wangying
-      mm: '1',
+      id: 'asterisk009', // wangying
+      mm: 'qwer',
     },
     {
-      id: '010', // wangying
-      mm: '1',
+      id: 'asterisk010', // wangying
+      mm: 'qwer',
     },
   ],
   groups: [
     {
-      id: '1',
-      owner: '001',
+      id: '179992049811458',
+      owner: 'asterisk001',
       name: 'groupgkbyz',
     },
     {
-      id: '2',
-      owner: '002',
+      id: '179992314052610',
+      owner: 'asterisk002',
       name: 'groupbgkbyz',
     },
     {
-      id: '3',
-      owner: '003',
+      id: '179992358092801',
+      owner: 'asterisk003',
       name: 'groupgkxyz',
     },
     {
-      id: '4',
-      owner: '004',
+      id: '179992429395969',
+      owner: 'asterisk004',
       name: 'groupbgkxyz',
     },
   ],

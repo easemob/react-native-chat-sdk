@@ -1,6 +1,7 @@
 import {
   ChatConversation,
   ChatConversationType,
+  ChatPushDisplayStyle,
   ChatPushRemindType,
   ChatSilentModeParam,
   ChatSilentModeParamType,
@@ -18,6 +19,9 @@ export const MN = {
   fetchSilentModeForConversations: 'fetchSilentModeForConversations',
   setPreferredNotificationLanguage: 'setPreferredNotificationLanguage',
   fetchPreferredNotificationLanguage: 'fetchPreferredNotificationLanguage',
+  updatePushNickname: 'updatePushNickname',
+  updatePushDisplayStyle: 'updatePushDisplayStyle',
+  fetchPushOptionFromServer: 'fetchPushOptionFromServer',
 };
 
 export const metaDataList = new Map<string, ApiParams>([
@@ -157,6 +161,41 @@ export const metaDataList = new Map<string, ApiParams>([
     MN.fetchPreferredNotificationLanguage,
     {
       methodName: MN.fetchPreferredNotificationLanguage,
+      params: [],
+    },
+  ],
+  [
+    MN.updatePushNickname,
+    {
+      methodName: MN.updatePushNickname,
+      params: [
+        {
+          paramName: 'nickname',
+          paramType: 'string',
+          paramDefaultValue: 'new_name2',
+          domType: 'input',
+        },
+      ],
+    },
+  ],
+  [
+    MN.updatePushDisplayStyle,
+    {
+      methodName: MN.updatePushDisplayStyle,
+      params: [
+        {
+          paramName: 'displayStyle',
+          paramType: 'number',
+          paramDefaultValue: ChatPushDisplayStyle.Simple,
+          domType: 'input',
+        },
+      ],
+    },
+  ],
+  [
+    MN.fetchPushOptionFromServer,
+    {
+      methodName: MN.fetchPushOptionFromServer,
       params: [],
     },
   ],

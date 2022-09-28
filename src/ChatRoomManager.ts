@@ -31,6 +31,9 @@ import {
   MTunMuteAllChatRoomMembers,
   MTunMuteChatRoomMembers,
   MTupdateChatRoomAnnouncement,
+  MTfetchChatRoomAttributes,
+  MTsetChatRoomAttributes,
+  MTremoveChatRoomAttributes,
 } from './__internal__/Consts';
 import { Native } from './__internal__/Native';
 import { ChatPageResult } from './common/ChatPageResult';
@@ -150,6 +153,27 @@ export class ChatRoomManager extends Native {
           listener.onAllChatRoomMemberMuteStateChanged?.({
             roomId: params.roomId,
             isAllMuted: params.isAllMuted,
+          });
+          break;
+        case 'onSpecificationChanged':
+          listener.onSpecificationChanged?.(new ChatRoom(params.room));
+          break;
+        case 'onAttributesUpdated':
+          const attributes: Map<string, string> = new Map();
+          Object.entries(params).forEach((v: [string, any]) => {
+            attributes.set(v[0], v[1]);
+          });
+          listener.onAttributesUpdated?.({
+            roomId: params.roomId,
+            attributes: attributes,
+            from: params.from,
+          });
+          break;
+        case 'onAttributesRemoved':
+          listener.onAttributesRemoved?.({
+            roomId: params.roomId,
+            removedKeys: params.removedKeys,
+            from: params.from,
           });
           break;
 
@@ -954,5 +978,120 @@ export class ChatRoomManager extends Native {
       },
     });
     ChatRoomManager.checkErrorFromResult(r);
+  }
+
+  /**
+   * Fetch the properties of chatroom form server.
+   *
+   * @param roomId The chatroom ID.
+   * @param keys Chat room attribute keys.Empty callback all.
+   *
+   * @returns Chat room attributes key-values
+   *
+   * @throws A description of the exception. See {@link ChatError}.
+   */
+  public async fetchChatRoomAttributes(
+    roomId: string,
+    keys?: Array<string>
+  ): Promise<Map<string, string>> {
+    chatlog.log(`${ChatRoomManager.TAG}: ${this.fetchChatRoomAttributes.name}`);
+    let r: any = await Native._callMethod(MTfetchChatRoomAttributes, {
+      [MTfetchChatRoomAttributes]: {
+        roomId,
+        keys,
+      },
+    });
+    ChatRoomManager.checkErrorFromResult(r);
+    const ret: Map<string, string> = new Map();
+    Object.entries(r?.[MTfetchChatRoomAttributes]).forEach(
+      (v: [string, any]) => {
+        ret.set(v[0], v[1]);
+      }
+    );
+    return ret;
+  }
+
+  /**
+   * Sets a custom chat room attribute.
+   *
+   * @param params -
+   * - roomId: The chat room ID.
+   * - attributes:The custom chat room attributes in key-value pairs, where the key is the attribute name and the value is the attribute value.
+   * **Note** The chat room attribute key that specifies the attribute name. The attribute name can contain 128 characters at most.
+   * A chat room can have a maximum of 100 custom attributes. The following character sets are supported:
+   * - - 26 lowercase English letters (a-z)
+   * - - 26 uppercase English letters (A-Z)
+   * - - 10 numbers (0-9)
+   * - - "_", "-", "."
+   * The chat room attribute value. The attribute value can contain a maximum of 4096 characters. The total length of custom chat room attributes cannot exceed 10 GB for each app.
+   * - deleteWhenLeft: Delete when leaving the chat room.
+   * - overwrite: Whether properties set by others are allowed to be overridden.
+   *
+   * @returns `failureKeys map` in key-value format, where the key is the attribute key and the value is the reason for the failure.
+   *
+   * @throws A description of the exception. See {@link ChatError}.
+   */
+  public async addAttributes(params: {
+    roomId: string;
+    attributes: { [x: string]: string }[];
+    deleteWhenLeft?: boolean;
+    overwrite?: boolean;
+  }): Promise<Map<string, string>> {
+    chatlog.log(`${ChatRoomManager.TAG}: ${this.addAttributes.name}`);
+    let r: any = await Native._callMethod(MTsetChatRoomAttributes, {
+      [MTsetChatRoomAttributes]: {
+        roomId: params.roomId,
+        attributes: params.attributes,
+        autoDelete: params.deleteWhenLeft ?? false,
+        forced: params.overwrite ?? false,
+      },
+    });
+    ChatRoomManager.checkErrorFromResult(r);
+    const ret: Map<string, string> = new Map();
+    if (r?.[MTsetChatRoomAttributes]) {
+      Object.entries(r?.[MTsetChatRoomAttributes]).forEach(
+        (v: [string, any]) => {
+          ret.set(v[0], v[1]);
+        }
+      );
+    }
+    return ret;
+  }
+
+  /**
+   * Removes custom chat room attributes.
+   *
+   * @param params -
+   * - roomId: The chat room ID.
+   * - keys: The keys of the chat room attributes to remove.
+   * - forced: force implement, When true, you can delete properties that you did not set.
+   *
+   * @returns `failureKeys map` in key-value format, where the key is the attribute key and the value is the reason for the failure.
+   *
+   * @throws A description of the exception. See {@link ChatError}.
+   */
+  public async removeAttributes(params: {
+    roomId: string;
+    keys: Array<string>;
+    forced?: boolean;
+  }): Promise<Map<string, string>> {
+    chatlog.log(`${ChatRoomManager.TAG}: ${this.removeAttributes.name}`);
+    let r: any = await Native._callMethod(MTremoveChatRoomAttributes, {
+      [MTremoveChatRoomAttributes]: {
+        roomId: params.roomId,
+        keys: params.keys,
+        forced: params.forced ?? false,
+      },
+    });
+    ChatRoomManager.checkErrorFromResult(r);
+    const ret: Map<string, string> = new Map();
+    if (r?.[MTremoveChatRoomAttributes]) {
+      Object.entries(r?.[MTremoveChatRoomAttributes]).forEach(
+        (v: [string, any]) => {
+          ret.set(v[0], v[1]);
+        }
+      );
+    }
+    return ret;
   }
 }

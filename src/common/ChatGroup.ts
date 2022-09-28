@@ -25,7 +25,7 @@ export enum ChatGroupStyle {
 /**
  * The group role types.
  */
-export enum ChatGroupType {
+export enum ChatGroupPermissionType {
   /**
    * Unknown.
    */
@@ -84,16 +84,18 @@ export function ChatGroupStyleToString(params: ChatGroupStyle): string {
  * @param params The group role of the Int type.
  * @returns The group role of the enum type.
  */
-export function ChatGroupTypeFromNumber(params: number): ChatGroupType {
+export function ChatGroupPermissionTypeFromNumber(
+  params: number
+): ChatGroupPermissionType {
   switch (params) {
     case -1:
-      return ChatGroupType.None;
+      return ChatGroupPermissionType.None;
     case 0:
-      return ChatGroupType.Member;
+      return ChatGroupPermissionType.Member;
     case 1:
-      return ChatGroupType.Admin;
+      return ChatGroupPermissionType.Admin;
     case 2:
-      return ChatGroupType.Owner;
+      return ChatGroupPermissionType.Owner;
     default:
       throw new ChatError({
         code: 1,
@@ -108,8 +110,10 @@ export function ChatGroupTypeFromNumber(params: number): ChatGroupType {
  * @param params The group role of the enum type.
  * @returns The group role of the string type.
  */
-export function ChatGroupTypeToString(params: ChatGroupType): string {
-  return ChatGroupType[params];
+export function ChatGroupPermissionTypeToString(
+  params: ChatGroupPermissionType
+): string {
+  return ChatGroupPermissionType[params];
 }
 
 /**
@@ -220,7 +224,7 @@ export class ChatGroup {
   /**
    * The role of the current user in the group.
    */
-  permissionType: ChatGroupType;
+  permissionType: ChatGroupPermissionType;
   /**
    * The group options.
    */
@@ -261,8 +265,8 @@ export class ChatGroup {
     this.messageBlocked = params.messageBlocked ?? false;
     this.isAllMemberMuted = params.isAllMemberMuted ?? false;
     this.permissionType = params.permissionType
-      ? ChatGroupTypeFromNumber(params.permissionType)
-      : ChatGroupType.None;
+      ? ChatGroupPermissionTypeFromNumber(params.permissionType)
+      : ChatGroupPermissionType.None;
     if (params.options) {
       this.options = new ChatGroupOptions(params.options);
     }
@@ -301,11 +305,19 @@ export class ChatGroupOptions {
    * The group extension information.
    */
   ext?: string;
+  /**
+   * Whether the group is disabled. The default value for reading or pulling roaming messages from the database is NO
+   */
+  isDisabled: boolean;
+  /**
+   * Construct a group option.
+   */
   constructor(params: {
     style?: number;
     maxCount?: number;
     inviteNeedConfirm?: boolean;
     ext?: string;
+    isDisabled?: boolean;
   }) {
     this.style = params.style
       ? ChatGroupStyleFromNumber(params.style)
@@ -313,6 +325,7 @@ export class ChatGroupOptions {
     this.maxCount = params.maxCount ?? 200;
     this.inviteNeedConfirm = params.inviteNeedConfirm ?? false;
     this.ext = params.ext;
+    this.isDisabled = params.isDisabled ?? false;
   }
 }
 
