@@ -105,6 +105,7 @@ import {
   ChatSilentModeTime,
   ChatSilentModeResult,
 } from './common/ChatSilentMode';
+import type { ChatAreaCode } from './common/ChatAreaCode';
 
 /**
  * export manager
@@ -152,6 +153,7 @@ export {
   ChatSilentModeParamType,
   ChatPushRemindType,
   ChatPushDisplayStyle,
+  ChatAreaCode,
 };
 
 /**
