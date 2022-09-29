@@ -4,7 +4,11 @@ import { styleValues } from '../__internal__/Css';
 import { LeafScreenBase, StateBase } from '../__internal__/LeafScreenBase';
 import { metaDataList, MN } from './ChatRoomManagerData';
 import type { ApiParams } from '../__internal__/DataTypes';
-import { ChatClient, ChatRoomEventListener } from 'react-native-chat-sdk';
+import {
+  ChatClient,
+  ChatRoom,
+  ChatRoomEventListener,
+} from 'react-native-chat-sdk';
 import { generateData } from '../__internal__/Utils';
 export interface StateChatRoomMessage extends StateBase {
   createChatRoom: {
@@ -787,6 +791,48 @@ export class ChatRoomManagerLeafScreen extends LeafScreenBase<StateChatRoomMessa
             params.isAllMuted
               ? 'true'
               : 'false',
+        });
+      }
+
+      onSpecificationChanged?(room: ChatRoom): void {
+        console.log(
+          `${ChatRoomManagerLeafScreen.TAG}: onSpecificationChanged:`,
+          room
+        );
+        this.that.setState({
+          recvResult: `onSpecificationChanged: ` + room,
+        });
+      }
+
+      onAttributesUpdated?(params: {
+        roomId: string;
+        attributes: Map<string, string>;
+        from: string;
+      }): void {
+        console.log(
+          `${ChatRoomManagerLeafScreen.TAG}: onAttributesUpdated:`,
+          params.roomId,
+          params.attributes,
+          params.from
+        );
+        this.that.setState({
+          recvResult: `onAttributesUpdated: ${params.roomId}, ${params.attributes}, ${params.from}`,
+        });
+      }
+
+      onAttributesRemoved?(params: {
+        roomId: string;
+        removedKeys: Array<string>;
+        from: string;
+      }): void {
+        console.log(
+          `${ChatRoomManagerLeafScreen.TAG}: onAttributesRemoved:`,
+          params.roomId,
+          params.removedKeys,
+          params.from
+        );
+        this.that.setState({
+          recvResult: `onAttributesRemoved: ${params.roomId}, ${params.removedKeys}, ${params.from}`,
         });
       }
     })(this);

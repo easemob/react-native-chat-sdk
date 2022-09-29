@@ -18,6 +18,7 @@ import {
   ChatPresenceEventListener,
   ChatPresence,
   ChatCmdMessageBody,
+  ChatRoom,
 } from 'react-native-chat-sdk';
 import { styleValues } from '../__internal__/Css';
 import {
@@ -876,6 +877,48 @@ export abstract class QuickTestScreenBase<
             params.isAllMuted
               ? 'true'
               : 'false',
+        });
+      }
+
+      onSpecificationChanged?(room: ChatRoom): void {
+        console.log(
+          `${QuickTestScreenBase.TAG}: onSpecificationChanged:`,
+          room
+        );
+        this.that.setState({
+          room_listener: `onSpecificationChanged: ` + room,
+        });
+      }
+
+      onAttributesUpdated?(params: {
+        roomId: string;
+        attributes: Map<string, string>;
+        from: string;
+      }): void {
+        console.log(
+          `${QuickTestScreenBase.TAG}: onAttributesUpdated:`,
+          params.roomId,
+          params.attributes,
+          params.from
+        );
+        this.that.setState({
+          room_listener: `onAttributesUpdated: ${params.roomId}, ${params.attributes}, ${params.from}`,
+        });
+      }
+
+      onAttributesRemoved?(params: {
+        roomId: string;
+        removedKeys: Array<string>;
+        from: string;
+      }): void {
+        console.log(
+          `${QuickTestScreenBase.TAG}: onAttributesRemoved:`,
+          params.roomId,
+          params.removedKeys,
+          params.from
+        );
+        this.that.setState({
+          room_listener: `onAttributesRemoved: ${params.roomId}, ${params.removedKeys}, ${params.from}`,
         });
       }
     })(this);
