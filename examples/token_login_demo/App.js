@@ -184,7 +184,7 @@ const App = () => {
       }
     })();
     rollLog('start send message ...');
-    chatClient.chatManager
+    chatManager
       .sendMessage(msg, callback)
       .then(() => {
         rollLog('send message: ' + msg.localMsgId);

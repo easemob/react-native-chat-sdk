@@ -10,6 +10,7 @@ Improvements
 - Added chat room custom attribute function.
 - Added group disabled status in group details: isDisabled property, which needs to be set by the developer on the server side.
 - Optimized the performance of getting roaming messages.
+- Added area code for server.
 
 Issues fixed
 
@@ -17,14 +18,15 @@ Issues fixed
 
 The following APIs are added:
 
-- `updatePushNickname`: 
-- `updatePushDisplayStyle`:
-- `fetchPushOptionFromServer`:
-- `fetchChatRoomAttributes`:
-- `addAttributes`:
-- `removeAttributes`:
-- `ChatPushDisplayStyle`:
-- `ChatPushOption`:
+- `updatePushNickname`: update push display name.
+- `updatePushDisplayStyle`: update push display style.
+- `fetchPushOptionFromServer`: get push option from server.
+- `fetchChatRoomAttributes`: get chat room custom attributes.
+- `addAttributes`: add chat room custom attributes.
+- `removeAttributes`: remove chat rom custom attributes.
+- `ChatPushDisplayStyle`: the push display style.
+- `ChatPushOption`: the push display option.
+- `ChatAreaCode`: the area code.
 
 The following APIs are renamed:
 

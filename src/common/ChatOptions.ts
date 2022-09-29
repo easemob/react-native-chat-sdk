@@ -1,3 +1,4 @@
+import { ChatAreaCode } from './ChatAreaCode';
 import type { ChatPushConfig } from './ChatPushConfig';
 
 /**
@@ -140,6 +141,12 @@ export class ChatOptions {
    * If you need the port, contact our business manager.
    */
   imPort: number;
+  /**
+   * The area code.
+   * This attribute is used to restrict the scope of accessible edge nodes. The default value is `GLOB`. See {@link ChatAreaCode}.
+   * This attribute can be set only when you call {@link ChatClient#init}. The attribute setting cannot be changed during the app runtime.
+   */
+  areaCode: ChatAreaCode;
 
   constructor(params: {
     appKey: string;
@@ -157,6 +164,7 @@ export class ChatOptions {
     serverTransfer?: boolean;
     isAutoDownload?: boolean;
     pushConfig?: ChatPushConfig;
+    areaCode?: ChatAreaCode;
   }) {
     this.appKey = params.appKey;
     this.autoLogin = params.autoLogin ?? true;
@@ -180,5 +188,6 @@ export class ChatOptions {
     this.restServer = '';
     this.imServer = '';
     this.imPort = 0;
+    this.areaCode = params.areaCode ?? ChatAreaCode.GLOB;
   }
 }
