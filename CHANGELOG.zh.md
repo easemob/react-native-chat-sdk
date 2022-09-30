@@ -1,4 +1,4 @@
-_English | [Chinese](./CHANGELOG.zh.md)_
+_Chinese | [English](./CHANGELOG.md)_
 
 # Update Log
 
@@ -6,40 +6,39 @@ _English | [Chinese](./CHANGELOG.zh.md)_
 
 ## 1.0.8
 
-Improvements
+主要变更:
 
-- The dependent native SDK (iOS and Android) is upgraded to V3.9.6.1.
-- Added chat room custom attribute function.
-- Added group disabled status in group details: isDisabled property, which needs to be set by the developer on the server side.
-- Optimized the performance of getting roaming messages.
-- Added area code for server.
+- 依赖的原生 SDK 升级为 1.0.8 版本。
+- 新增聊天室自定义属性功能。
+- 新增限制连接边缘节点的范围。
+- `Group` 中增加 `isDisabled()` 属性显示群组禁用状态，需要开发者在服务端设置。该属性在调用 `GroupManager` 中的 `getGroupFromServer()` 方法获取群组详情时返回。
 
-Issues fixed
+修复内容:
 
-- Fixed the problem that in a few scenarios, when the message volume is large when synchronizing or pulling messages, the collection fails.
-- Fixed incorrect data statistics.
-- Fixed a crash caused by printing logs on rare occasions.
+- 修复极少数场景下，从服务器获取较大数量的消息时失败的问题。
+- 修复数据统计不正确的问题。
+- 修复极少数场景下打印日志导致的崩溃。
 
-The following APIs are added:
+增加内容:
 
-- `updatePushNickname`: update push display name.
-- `updatePushDisplayStyle`: update push display style.
-- `fetchPushOptionFromServer`: get push option from server.
-- `fetchChatRoomAttributes`: get chat room custom attributes.
-- `addAttributes`: add chat room custom attributes.
-- `removeAttributes`: remove chat rom custom attributes.
-- `ChatPushDisplayStyle`: the push display style.
-- `ChatPushOption`: the push display option.
-- `ChatAreaCode`: the area code.
+- `updatePushNickname`: 更新推送显示标题。
+- `updatePushDisplayStyle`: 更新推送显示的样式。
+- `fetchPushOptionFromServer`: 获取推送样式配置信息。
+- `fetchChatRoomAttributes`: 获取聊天室自定义属性。
+- `addAttributes`: 添加聊天室自定义属性。
+- `removeAttributes`: 删除聊天室自定义属性。
+- `ChatPushDisplayStyle`: 推送显示样式类型。
+- `ChatPushOption`: 推送选项类型。
+- `ChatAreaCode`: 区域代码类型。
 
-The following APIs are renamed:
+重命名内容:
 
-- `ChatGroupPermissionType` is renamed `ChatGroupType`.
+- `ChatGroupPermissionType` 是 `ChatGroupType` 的新名字。
 
-The following Object are updated:
+更新内容:
 
-- `ChatGroupOptions` add `isDisabled` attribute.
-- `ChatRoomEventListener` add `onSpecificationChanged`, `onAttributesUpdated`, `onAttributesRemoved` attribute.
+- `ChatGroupOptions` 增加 `isDisabled` 属性。
+- `ChatRoomEventListener` 增加 `onSpecificationChanged`, `onAttributesUpdated`, `onAttributesRemoved` 通知。
 
 ---
 
