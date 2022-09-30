@@ -43,7 +43,7 @@ export class ChatPushConfig {
    */
   deviceToken?: string;
   /**
-   * The device vendor. See {@link Platform#constants#Manufacturer}
+   * The device vendor. See {@link Platform.constants.Manufacturer}
    */
   manufacturer?: string;
   /**

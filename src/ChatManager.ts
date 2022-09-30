@@ -503,11 +503,11 @@ export class ChatManager extends BaseManager {
    *
    * **Note**
    *
-   * This method takes effect only when you set {@link ChatOptions#requireAck(bool)} as `true`.
+   * This method takes effect only when you set {@link ChatOptions.requireAck} as `true`.
    *
-   * To send a group message read receipt, you can call {@link #sendGroupMessageReadAck(String, String, String)}.
+   * To send a group message read receipt, you can call {@link sendGroupMessageReadAck}.
    *
-   * We recommend that you call {@link #sendConversationReadAck(String)} when opening the chat page. In other cases, you can call this method to reduce the number of method calls.
+   * We recommend that you call {@link sendConversationReadAck} when opening the chat page. In other cases, you can call this method to reduce the number of method calls.
    *
    * @param message The message for which the read receipt is to be sent.
    *
@@ -532,7 +532,7 @@ export class ChatManager extends BaseManager {
    *
    * **Note**
    *
-   * - This method takes effect only after you set {@link ChatOptions#requireAck(bool)} and {@link ChatMessage#needGroupAck(bool)} as `true`.
+   * - This method takes effect only after you set {@link ChatOptions.requireAck} and {@link ChatMessage.needGroupAck} as `true`.
    * - This method applies to group messages only. To send a read receipt for a one-to-one chat message, you can call {@link sendMessageReadAck}; to send a conversation read receipt, you can call {@link sendConversationReadAck}.
    *
    * @param msgId The message ID.
@@ -572,7 +572,7 @@ export class ChatManager extends BaseManager {
    *
    * - This method is valid only for one-to-one conversations.
    * - After this method is called, the sever will set the message status from unread to read.
-   * - The SDK triggers the {@link ChatMessageEventListener#onConversationRead(String, String)} callback on the client of the message sender, notifying that the messages are read. This also applies to multi-device scenarios.
+   * - The SDK triggers the {@link ChatMessageEventListener.onConversationRead} callback on the client of the message sender, notifying that the messages are read. This also applies to multi-device scenarios.
    *
    * @param convId The conversation ID.
    *
@@ -863,7 +863,7 @@ export class ChatManager extends BaseManager {
   /**
    * Uses the pagination to get read receipts for group messages from the server.
    *
-   * For how to send read receipts for group messages, see {@link {@link #sendConversationReadAck(String)}.
+   * For how to send read receipts for group messages, see {@link sendConversationReadAck}.
    *
    * @param msgId The message ID.
    * @param startAckId The starting read receipt ID for query. After this parameter is set, the SDK retrieves read receipts, from the specified one, in the reverse chronological order of when the server receives them.
@@ -1815,10 +1815,10 @@ export class ChatManager extends BaseManager {
    *
    * Upon the creation of a message thread, the following will occur:
    *
-   *  - In a single-device login scenario, each member of the group to which the message thread belongs will receive the {@link ChatMessageEventListener#onChatMessageThreadCreated} callback.
+   *  - In a single-device login scenario, each member of the group to which the message thread belongs will receive the {@link ChatMessageEventListener.onChatMessageThreadCreated} callback.
    *   You can listen for message thread events by setting {@link ChatMessageEventListener}.
    *
-   * - In a multi-device login scenario, the devices will receive the {@link ChatMultiDeviceEventListener#onThreadEvent} callback.
+   * - In a multi-device login scenario, the devices will receive the {@link ChatMultiDeviceEventListener.onThreadEvent} callback.
    *   You can listen for message thread events by setting {@link ChatMultiDeviceEventListener}.
    *
    * @param name The name of the new message thread. It can contain a maximum of 64 characters.
@@ -1857,7 +1857,7 @@ export class ChatManager extends BaseManager {
    *
    * In a multi-device login scenario, note the following:
    *
-   * - The devices will receive the {@link ChatMultiDeviceEventListener#onThreadEvent} callback.
+   * - The devices will receive the {@link ChatMultiDeviceEventListener.onThreadEvent} callback.
    *
    * - You can listen for message thread events by setting {@link ChatMultiDeviceEventListener}.
    *
@@ -1886,7 +1886,7 @@ export class ChatManager extends BaseManager {
    *
    * In a multi-device login scenario, note the following:
    *
-   * - The devices will receive the {@link ChatMultiDeviceEventListener#onThreadEvent} callback.
+   * - The devices will receive the {@link ChatMultiDeviceEventListener.onThreadEvent} callback.
    *
    * - You can listen for message thread events by setting {@link ChatMultiDeviceEventListener}.
    *
@@ -1911,10 +1911,10 @@ export class ChatManager extends BaseManager {
    *
    * **Note**
    *
-   * - In a single-device login scenario, each member of the group to which the message thread belongs will receive the {@link ChatMessageEventListener#onChatMessageThreadDestroyed} callback.
+   * - In a single-device login scenario, each member of the group to which the message thread belongs will receive the {@link ChatMessageEventListener.onChatMessageThreadDestroyed} callback.
    *   You can listen for message thread events by setting {@link ChatMessageEventListener}.
    *
-   * - In a multi-device login scenario, the devices will receive the {@link ChatMultiDeviceEventListener#onThreadEvent} callback.
+   * - In a multi-device login scenario, the devices will receive the {@link ChatMultiDeviceEventListener.onThreadEvent} callback.
    *   You can listen for message thread events by setting {@link ChatMultiDeviceEventListener}.
    *
    * @param chatThreadId The message thread ID.
@@ -1936,7 +1936,7 @@ export class ChatManager extends BaseManager {
    *
    * Only the owner or admins of the group where the message thread belongs and the message thread creator can call this method.
    *
-   * Each member of the group to which the message thread belongs will receive the {@link ChatMessageEventListener#onChatMessageThreadUpdated} callback.
+   * Each member of the group to which the message thread belongs will receive the {@link ChatMessageEventListener.onChatMessageThreadUpdated} callback.
    *
    * You can listen for message thread events by setting {@link ChatMessageEventListener}.
    *
@@ -1968,7 +1968,7 @@ export class ChatManager extends BaseManager {
    *
    * Only the owner or admins of the group where the message thread belongs and the message thread creator can call this method.
    *
-   * The removed member will receive the {@link ChatMessageEventListener#onChatMessageThreadUserRemoved} callback.
+   * The removed member will receive the {@link ChatMessageEventListener.onChatMessageThreadUserRemoved} callback.
    *
    * You can listen for message thread events by setting {@link ChatMessageEventListener}.
    *

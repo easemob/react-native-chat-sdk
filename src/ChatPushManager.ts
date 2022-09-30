@@ -71,7 +71,7 @@ export class ChatPushManager extends Native {
   /**
    * Clears the offline push settings of the conversation.
    *
-   * After clearing, the conversation uses the offline push settings of the app. See {@link EMPushManager#setSilentModeForAll(ChatSilentModeParam)}.
+   * After clearing, the conversation uses the offline push settings of the app. See {@link EMPushManager.setSilentModeForAll}.
    *
    * @param params -
    * - convId: The conversation ID.
@@ -236,7 +236,7 @@ export class ChatPushManager extends Native {
    *
    * This nickname can be different from the nickname in the user profile; however, we recommend that you use the same nickname for both. Therefore, if either nickname is updated, the other should be changed at the same time.
    *
-   * To update the nickname in the user profile, you can call {@link ChatUserInfoManager#updateOwnUserInfo}.
+   * To update the nickname in the user profile, you can call {@link ChatUserInfoManager.updateOwnUserInfo}.
    *
    * @param nickname  The nickname of the sender displayed in push notifications.
    *
@@ -255,7 +255,7 @@ export class ChatPushManager extends Native {
   /**
    * Updates the display style of push notifications.
    *
-   * The default value is {@link ChatPushDisplayStyle#Simple}.
+   * The default value is {@link ChatPushDisplayStyle.Simple}.
    *
    * @param displayStyle The display style of push notifications.
    *

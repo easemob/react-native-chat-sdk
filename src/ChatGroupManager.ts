@@ -325,7 +325,7 @@ export class ChatGroupManager extends BaseManager {
    *
    * This method gets data from the server.
    *
-   * This method returns a group list which does not contain member information. If you want to update information of a group to include its member information, call {@link #fetchMemberListFromServer}.
+   * This method returns a group list which does not contain member information. If you want to update information of a group to include its member information, call {@link fetchMemberListFromServer}.
    *
    * @param pageSize The number of groups that you expect to return on each page.
    * @param pageNum The page number, starting from 1.
@@ -405,7 +405,7 @@ export class ChatGroupManager extends BaseManager {
    * @param options The options for creating a group. They are optional and cannot be `null`. See {@link ChatGroupOptions}.
    * The options are as follows:
    * - The maximum number of members allowed in the group. The default value is 200.
-   * - The group style. See {@link ChatGroupStyle}. The default value is {@link ChatGroupStyle#PrivateOnlyOwnerInvite}.
+   * - The group style. See {@link ChatGroupStyle}. The default value is {@link ChatGroupStyle.PrivateOnlyOwnerInvite}.
    * - Whether to ask for permission when inviting a user to join the group. The default value is `false`, indicating that invitees are automatically added to the group without their permission.
    * - The extension of group details.
    * @param groupName The group name. It is optional. Pass `null` if you do not want to set this parameter.
@@ -449,7 +449,7 @@ export class ChatGroupManager extends BaseManager {
    *
    * @param groupId The group ID.
    * @param isFetchMembers Whether to get group member information:
-   *                       - `true`: Yes. This method can return information of at most 200 group members. To get information of all group members, you can call {@link #fetchMemberListFromServer}.
+   *                       - `true`: Yes. This method can return information of at most 200 group members. To get information of all group members, you can call {@link fetchMemberListFromServer}.
    *                       - `false`: No.
    * @returns The group instance. The SDK returns `undefined` if the group does not exist.
    *
@@ -1355,7 +1355,7 @@ export class ChatGroupManager extends BaseManager {
   /**
    * Requests to join a group.
    *
-   * You can call this method to only join public groups requiring authentication, i.e., groups with the style of {@link ChatGroupStyle#PublicJoinNeedApproval}.
+   * You can call this method to only join public groups requiring authentication, i.e., groups with the style of {@link ChatGroupStyle.PublicJoinNeedApproval}.
    *
    * @param groupId The group ID.
    * @param reason The reason for requesting to join the group.

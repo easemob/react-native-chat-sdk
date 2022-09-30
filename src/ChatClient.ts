@@ -526,7 +526,7 @@ export class ChatClient extends BaseManager {
    * - Through an SDK API. See {@link createAccount} or {@link getAccessToken}.
    * - Through the console. See {@url https://console.easemob.com/app/applicationOverview/userManagement}.
    *
-   * The token expiration reminder is notified by the two callback methods: {@link ChatConnectEventListener#onTokenWillExpire} and {@link ChatConnectEventListener#onTokenDidExpire}.
+   * The token expiration reminder is notified by the two callback methods: {@link ChatConnectEventListener.onTokenWillExpire} and {@link ChatConnectEventListener.onTokenDidExpire}.
    *
    * @param userName    The user ID. See {@link createAccount}.
    * @param pwdOrToken  The password or token. See {@link createAccount} or {@link getAccessToken}
@@ -562,7 +562,7 @@ export class ChatClient extends BaseManager {
    *
    * **Note**
    *
-   * The Agora token is different from token {@link login#token} provided by Easemob.
+   * The Agora token is different from token {@link login.token} provided by Easemob.
    *
    * This method supports automatic login.
    *
@@ -642,7 +642,7 @@ export class ChatClient extends BaseManager {
    *
    * - You can retrieve the new App Key from the Console.
    *
-   * - You can also set an App Key by using the {@link ChatOptions#appKey} method when logged out.
+   * - You can also set an App Key by using the {@link ChatOptions.appKey} method when logged out.
    *
    * @param newAppKey The new App Key. Ensure that you set this parameter.
    *
@@ -712,11 +712,11 @@ export class ChatClient extends BaseManager {
   /**
    * Logs out from a specified account on a device.
    *
-   * For how to get the device ID, see {@link ChatDeviceInfo#resource}.
+   * For how to get the device ID, see {@link ChatDeviceInfo.resource}.
    *
    * @param username The user ID.
    * @param password The password.
-   * @param resource The device ID. See {@link ChatDeviceInfo#resource}.
+   * @param resource The device ID. See {@link ChatDeviceInfo.resource}.
    *
    * @throws A description of the exception. See {@link ChatError}.
    */
@@ -767,7 +767,7 @@ export class ChatClient extends BaseManager {
    * Update push configurations.
    *
    * **Note**
-   * For the iOS platform, you need to pass the device ID during initialization. Otherwise, the push function cannot be used properly. See {@link ChatClient#init}
+   * For the iOS platform, you need to pass the device ID during initialization. Otherwise, the push function cannot be used properly. See {@link ChatClient.init}
    *
    * @param config The push config, See {@link ChatPushConfig}
    *

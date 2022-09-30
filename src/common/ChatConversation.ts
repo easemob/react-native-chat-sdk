@@ -85,9 +85,9 @@ export function ChatConversationTypeToString(
  * Each type of conversation involves messages that are sent and received.
  *
  * You can get the conversation name by conversation type:
- * - One-to-one chat: See {@link ChatUserInfoManager#fetchUserInfoById}.
- * - Group chat: See {@link ChatGroup#getGroupWithId}.
- * - Chat room: See {@link ChatRoom#fetchChatRoomInfoFromServer}.
+ * - One-to-one chat: See {@link ChatUserInfoManager.fetchUserInfoById}.
+ * - Group chat: See {@link ChatGroup.getGroupWithId}.
+ * - Chat room: See {@link ChatRoom.fetchChatRoomInfoFromServer}.
  */
 export class ChatConversation {
   /**

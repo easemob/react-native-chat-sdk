@@ -217,7 +217,7 @@ export class ChatRoomManager extends Native {
   /**
    * Joins the chat room.
    *
-   * To leave the chat room, you can call {@link #leaveChatRoom(String)}.
+   * To leave the chat room, you can call {@link leaveChatRoom}.
    *
    * @param roomId The ID of the chat room to join.
    *

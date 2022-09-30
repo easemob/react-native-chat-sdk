@@ -63,7 +63,7 @@ export function ChatRoomPermissionTypeToString(
 /**
  * The chat room instance class.
  *
- * To get the correct value, ensure that you call {@link ChatRoomManager#fetchChatRoomInfoFromServer(String)} to get chat room details before calling this method.
+ * To get the correct value, ensure that you call {@link ChatRoomManager.fetchChatRoomInfoFromServer} to get chat room details before calling this method.
  */
 export class ChatRoom {
   /**

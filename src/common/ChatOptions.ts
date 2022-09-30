@@ -22,7 +22,7 @@ export class ChatOptions {
    * - (Default) `false`: No.
    *
    * **Note**
-   * You can call {@link #init(Context, ChatOptions)} to set this attribute after `ChatClient` is initialized.
+   * You can call {@link ChatClient.init} to set this attribute after `ChatClient` is initialized.
    */
   debugModel: boolean;
   /**
@@ -144,7 +144,7 @@ export class ChatOptions {
   /**
    * The area code.
    * This attribute is used to restrict the scope of accessible edge nodes. The default value is `GLOB`. See {@link ChatAreaCode}.
-   * This attribute can be set only when you call {@link ChatClient#init}. The attribute setting cannot be changed during the app runtime.
+   * This attribute can be set only when you call {@link ChatClient.init}. The attribute setting cannot be changed during the app runtime.
    */
   areaCode: ChatAreaCode;
 
