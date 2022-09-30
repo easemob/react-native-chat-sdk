@@ -11,7 +11,7 @@ _Chinese | [English](./CHANGELOG.md)_
 - 依赖的原生 SDK 升级为 1.0.8 版本。
 - 新增聊天室自定义属性功能。
 - 新增限制连接边缘节点的范围。
-- `Group` 中增加 `isDisabled()` 属性显示群组禁用状态，需要开发者在服务端设置。该属性在调用 `GroupManager` 中的 `getGroupFromServer()` 方法获取群组详情时返回。
+- 群组属性添加禁用状态，需要开发者在服务端设置。
 
 修复内容:
 
