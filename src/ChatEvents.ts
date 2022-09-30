@@ -977,7 +977,7 @@ export interface ChatRoomEventListener {
   }): void;
 
   /**
-   * Occurs when the chat room specifications changes. All chat room members receive this event.
+   * Occurs when the chat room specifications change. All chat room members receive this event.
    *
    * @param room The chat room.
    */
@@ -988,8 +988,8 @@ export interface ChatRoomEventListener {
    *
    * @param params -
    * - roomId: The chat room ID.
-   * - attributes: The key-value list.
-   * - from: The from ID.
+   * - attributes: The list of custom chat room attributes (key-value) that are updated.
+   * - from: The user ID of the operator.
    */
   onAttributesUpdated?(params: {
     roomId: string;
@@ -1001,8 +1001,8 @@ export interface ChatRoomEventListener {
    * Occurs when the custom chat room attributes (key-value) are removed.
    * @param params -
    * - roomId: The chat room ID.
-   * - removedKeys: The key list.
-   * - from: The from ID.
+   * - removedKeys: The key list of custom chat room attributes that are removed.
+   * - from: The user ID of the operator.
    */
   onAttributesRemoved?(params: {
     roomId: string;
