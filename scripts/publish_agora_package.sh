@@ -78,6 +78,8 @@ sed -i '' 's/https:\/\/docs-im.easemob.com\/ccim\/rn\/quickstart/https:\/\/docs.
 # 
 sed -i '' 's/For more examples, see here.\[Portal\](https:\/\/github.com\/easemob\/react-native-chat-sdk\/tree\/dev\/examples)//g' ${current_dir}/Output/node_modules/${new_package_name}/README.md
 
+sed -i '' 's/react-native-chat-sdk/react-native-agora-chat/g' ${current_dir}/Output/node_modules/${new_package_name}/tsconfig.json
+
 mv ${current_dir}/Output/node_modules/${new_package_name}/native_src/cpp/CMakeLists.txt.rn ${current_dir}/Output/node_modules/${new_package_name}/native_src/cpp/CMakeLists.txt
 
 rm -rf ${current_dir}/Output/node_modules/${new_package_name}/native_src/cpp/CMakeLists.txt.flutter
