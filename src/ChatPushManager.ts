@@ -232,12 +232,13 @@ export class ChatPushManager extends Native {
   }
 
   /**
-   * Updates the push display nickname of the current user.
+   * Updates nickname of the sender displayed in push notifications.
    *
-   * This method can be used to set a push display nickname, the push display nickname will be used to show for offline push notification.
-   * When the app user changes the nickname in the user profile use {@link ChatUserInfoManager#updateOwnUserInfo} be sure to also call this method to update to prevent the display differences.
+   * This nickname can be different from the nickname in the user profile; however, we recommend that you use the same nickname for both. Therefore, if either nickname is updated, the other should be changed at the same time.
    *
-   * @param nickname The push display nickname, which is different from the nickname in the user profile.
+   * To update the nickname in the user profile, you can call {@link ChatUserInfoManager#updateOwnUserInfo}.
+   *
+   * @param nickname  The nickname of the sender displayed in push notifications.
    *
    * @throws A description of the exception. See {@link ChatError}.
    */
@@ -252,9 +253,11 @@ export class ChatPushManager extends Native {
   }
 
   /**
-   * Updates the push message style. The default value is {@link ChatPushDisplayStyle#Simple}.
+   * Updates the display style of push notifications.
    *
-   * @param displayStyle The push message display style.
+   * The default value is {@link ChatPushDisplayStyle#Simple}.
+   *
+   * @param displayStyle The display style of push notifications.
    *
    * @throws A description of the exception. See {@link ChatError}.
    */
@@ -273,7 +276,7 @@ export class ChatPushManager extends Native {
   /**
    * Gets the push configurations from the server.
    *
-   * @returns The push option.
+   * @returns The push options.
    */
   public async fetchPushOptionFromServer(): Promise<ChatPushOption> {
     chatlog.log(

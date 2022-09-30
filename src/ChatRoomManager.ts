@@ -981,12 +981,12 @@ export class ChatRoomManager extends Native {
   }
 
   /**
-   * Fetch the properties of chatroom form server.
+   * Gets custom chat room attributes from the server.
    *
-   * @param roomId The chatroom ID.
-   * @param keys Chat room attribute keys.Empty callback all.
+   * @param roomId The chat room ID.
+   * @param keys The key list of custom attributes to get. If you set it as `null` or leave it empty, this method retrieves all custom attributes.
    *
-   * @returns Chat room attributes key-values
+   * @returns Custom chat room attributes in key-value format.
    *
    * @throws A description of the exception. See {@link ChatError}.
    */
@@ -1012,22 +1012,25 @@ export class ChatRoomManager extends Native {
   }
 
   /**
-   * Sets a custom chat room attribute.
+   * Sets custom chat room attributes.
    *
    * @param params -
-   * - roomId: The chat room ID.
-   * - attributes:The custom chat room attributes in key-value pairs, where the key is the attribute name and the value is the attribute value.
-   * **Note** The chat room attribute key that specifies the attribute name. The attribute name can contain 128 characters at most.
-   * A chat room can have a maximum of 100 custom attributes. The following character sets are supported:
-   * - - 26 lowercase English letters (a-z)
-   * - - 26 uppercase English letters (A-Z)
-   * - - 10 numbers (0-9)
-   * - - "_", "-", "."
-   * The chat room attribute value. The attribute value can contain a maximum of 4096 characters. The total length of custom chat room attributes cannot exceed 10 GB for each app.
-   * - deleteWhenLeft: Delete when leaving the chat room.
-   * - overwrite: Whether properties set by others are allowed to be overridden.
+   * - roomId The chat room ID.
+   * - attributes The chat room attributes to add. The attributes are in key-value format.
+   * In a key-value pair, the key is the attribute name that can contain 128 characters at most; the value is the attribute value that cannot exceed 4096 characters.
+   * A chat room can have a maximum of 100 custom attributes and the total length of custom chat room attributes cannot exceed 10 GB for each app. Attribute keys support the following character sets:
+   *   - 26 lowercase English letters (a-z)
+   *   - 26 uppercase English letters (A-Z)
+   *   - 10 numbers (0-9)
+   *   - "_", "-", "."
+   * - deleteWhenLeft: Whether to delete the chat room attributes set by the member when he or she exits the chat room.
+   *   - (Default)`true`: Yes.
+   *   - `false`: No.
+   * - overwrite: Whether to overwrite the attributes with same key set by others.
+   *   - `true`: Yes.
+   *   - (Default)`false`: No.
    *
-   * @returns `failureKeys map` in key-value format, where the key is the attribute key and the value is the reason for the failure.
+   * @returns If certain attributes fail to be set, the SDK returns a map of the attributes in key-value format, where the key is the attribute key and the value is the reason for the failure.
    *
    * @throws A description of the exception. See {@link ChatError}.
    */
@@ -1064,9 +1067,11 @@ export class ChatRoomManager extends Native {
    * @param params -
    * - roomId: The chat room ID.
    * - keys: The keys of the chat room attributes to remove.
-   * - forced: force implement, When true, you can delete properties that you did not set.
+   * - forced: Whether to remove the attributes with same key set by others.
+   *   - `true`: Yes.
+   *   - (Default)`false`: No.
    *
-   * @returns `failureKeys map` in key-value format, where the key is the attribute key and the value is the reason for the failure.
+   * @returns If certain attributes fail to be removed, the SDK returns a map of the attributes in key-value format, where the key is the attribute key and the value is the reason for the failure.
    *
    * @throws A description of the exception. See {@link ChatError}.
    */

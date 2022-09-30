@@ -1,15 +1,15 @@
 import { Platform } from 'react-native';
 
 /**
- * The push styles.
+ * The display style of offline push notifications.
  */
 export enum ChatPushDisplayStyle {
   /**
-   * The push message presentation style: SimpleBanner represents the presentation of a simple message.
+   * Only displays "You have a new message". It is the default display of offline push notifications.
    */
   Simple = 0,
   /**
-   * The push message presentation style: MessageSummary represents the presentation of message content.
+   * Displays the content of the offline push notifications.
    */
   Summary,
 }
@@ -70,7 +70,7 @@ export class ChatPushOption {
    */
   displayStyle?: ChatPushDisplayStyle;
   /**
-   * The user's nickname to be displayed in the notification.
+   * The nickname of the sender displayed in push notifications.
    */
   displayName?: string;
   constructor(params: {

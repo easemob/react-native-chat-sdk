@@ -306,7 +306,9 @@ export class ChatGroupOptions {
    */
   ext?: string;
   /**
-   * Whether the group is disabled. The default value for reading or pulling roaming messages from the database is NO
+   * Whether the group is disabled:
+   * - `true`: Yes.
+   * - `false`: No.
    */
   isDisabled: boolean;
   /**
