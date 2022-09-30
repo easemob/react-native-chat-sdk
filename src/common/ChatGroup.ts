@@ -166,7 +166,7 @@ export class ChatGroupMessageAck {
 /**
  * The group information class, which contains the information of the chat group.
  *
- * You can call the {@link ChatGroupManager#fetchGroupInfoFromServer} method to obtain group information.
+ * You can call the {@link ChatGroupManager.fetchGroupInfoFromServer} method to obtain group information.
  */
 export class ChatGroup {
   /**
@@ -290,14 +290,14 @@ export class ChatGroupOptions {
    *
    * Whether to automatically accept the invitation to join a group depends on two settings:
    *
-   * - {@link GroupOptions#inviteNeedConfirm}, an option for group creation.
-   * - {@link ChatOptions#autoAcceptGroupInvitation}: Determines whether to automatically accept an invitation to join the group.
+   * - {@link GroupOptions.inviteNeedConfirm}, an option for group creation.
+   * - {@link ChatOptions.autoAcceptGroupInvitation}: Determines whether to automatically accept an invitation to join the group.
    *
    * There are two cases:
-   * - If `inviteNeedConfirm` is set to `false`, the SDK adds the invitee directly to the group on the server side, regardless of the setting of {@link ChatOptions#autoAcceptGroupInvitation} on the invitee side.
-   * - If `inviteNeedConfirm` is set to `true`, whether the invitee automatically joins the chat group or not depends on the settings of {@link ChatOptions#autoAcceptGroupInvitation}.
+   * - If `inviteNeedConfirm` is set to `false`, the SDK adds the invitee directly to the group on the server side, regardless of the setting of {@link ChatOptions.autoAcceptGroupInvitation} on the invitee side.
+   * - If `inviteNeedConfirm` is set to `true`, whether the invitee automatically joins the chat group or not depends on the settings of {@link ChatOptions.autoAcceptGroupInvitation}.
    *
-   * {@link ChatOptions#autoAcceptGroupInvitation} is an SDK-level operation. If it is set to `true`, the invitee automatically joins the chat group; if it is set to `false`, the invitee can manually accept or decline the group invitation instead of joining the group automatically.
+   * {@link ChatOptions.autoAcceptGroupInvitation} is an SDK-level operation. If it is set to `true`, the invitee automatically joins the chat group; if it is set to `false`, the invitee can manually accept or decline the group invitation instead of joining the group automatically.
    *
    */
   inviteNeedConfirm: boolean;

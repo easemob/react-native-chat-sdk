@@ -376,7 +376,7 @@ export class ChatMessage {
   /**
    * Whether it is a message in a message thread.
    * 
-   * - `true`: Yes. In this case, you need to set the user ID of the message recipient to the message thread ID. See {@link #to}.
+   * - `true`: Yes. In this case, you need to set the user ID of the message recipient to the message thread ID. See {@link to}.
    * - `false`: No.
    *
    * **Note**
@@ -501,7 +501,7 @@ export class ChatMessage {
    * @param content The text content.
    * @param chatType The conversation type. See {@link ChatType}.
    * @param opt The extension parameters of the message.
-   * - targetLanguageCodes: The language code. See {@link ChatTextMessageBody#targetLanguageCodes}.
+   * - targetLanguageCodes: The language code. See {@link ChatTextMessageBody.targetLanguageCodes}.
    * - isChatThread: Whether this message is a threaded message.
    *   - `true`: Yes.
    *   - (Default) `false`: No.
