@@ -1,5 +1,5 @@
 import { ChatError } from './common/ChatError';
-import type { ChatGroupMessageAck } from './common/ChatGroup';
+import type { ChatGroup, ChatGroupMessageAck } from './common/ChatGroup';
 import type { ChatMessage } from './common/ChatMessage';
 import type { ChatMessageReactionEvent } from './common/ChatMessageReaction';
 import type { ChatMessageThreadEvent } from './common/ChatMessageThread';
@@ -787,6 +787,20 @@ export interface ChatGroupEventListener {
     groupId: string;
     isAllMuted: boolean;
   }): void;
+
+  /**
+   * Occurs when the chat group detail change. All chat group members receive this event.
+   *
+   * @param group The chat group.
+   */
+  onDetailChanged?(group: ChatGroup): void;
+
+  /**
+   * Occurs when the disabled state of group changes.
+   *
+   * @param group The chat group.
+   */
+  onStateChanged?(group: ChatGroup): void;
 }
 
 /**

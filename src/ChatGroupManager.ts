@@ -238,6 +238,12 @@ export class ChatGroupManager extends BaseManager {
             isAllMuted: params.isAllMuted,
           });
           break;
+        case 'onStateChanged':
+          listener.onStateChanged?.(new ChatGroup(params.group));
+          break;
+        case 'onSpecificationChanged':
+          listener.onDetailChanged?.(new ChatGroup(params.group));
+          break;
         default:
           throw new ChatError({
             code: 1,
@@ -1501,7 +1507,7 @@ export class ChatGroupManager extends BaseManager {
    *
    * @param listener The group listener to add.
    */
-  addGroupListener(listener: ChatGroupEventListener): void {
+  public addGroupListener(listener: ChatGroupEventListener): void {
     chatlog.log(`${ChatGroupManager.TAG}: addGroupListener: `);
     this._groupListeners.add(listener);
   }
@@ -1511,7 +1517,7 @@ export class ChatGroupManager extends BaseManager {
    *
    * @param listener The group listener to remove.
    */
-  removeGroupListener(listener: ChatGroupEventListener): void {
+  public removeGroupListener(listener: ChatGroupEventListener): void {
     chatlog.log(`${ChatGroupManager.TAG}: removeGroupListener: `);
     this._groupListeners.delete(listener);
   }
@@ -1519,7 +1525,7 @@ export class ChatGroupManager extends BaseManager {
   /**
    * Clears all group listeners.
    */
-  removeAllGroupListener(): void {
+  public removeAllGroupListener(): void {
     chatlog.log(`${ChatGroupManager.TAG}: removeAllGroupListener: `);
     this._groupListeners.clear();
   }
