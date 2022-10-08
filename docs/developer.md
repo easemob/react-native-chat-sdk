@@ -176,7 +176,7 @@ sh scripts/publish_agora_package.sh 1.0.5-rc.1 rc ~/Output/agora
 ## generate docs
 
 ```sh
-npx typedoc --out ./docs/typedoc --json ./docs/typedoc/typedoc.json --tsconfig ./tsconfig.json ./src/index.ts
+npx typedoc --out ./docs/typedoc --json ./docs/typedoc/typedoc.json --tsconfig ./tsconfig.json --readme ./docs/rn_api_overview.md ./src/index.ts
 ```
 
 The solution to the problem that uploading to the server causes the icon to be too large:
