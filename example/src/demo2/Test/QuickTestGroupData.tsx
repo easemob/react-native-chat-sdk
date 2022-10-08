@@ -114,7 +114,7 @@ export const metaDataList = new Map<string, ApiParams>([
         {
           paramName: 'groupName',
           paramType: 'string',
-          paramDefaultValue: '2022060507',
+          paramDefaultValue: '2022010801',
         },
         {
           paramName: 'desc',
@@ -406,12 +406,12 @@ export const metaDataList = new Map<string, ApiParams>([
         {
           paramName: 'groupId',
           paramType: 'string',
-          paramDefaultValue: '180804431970306',
+          paramDefaultValue: '194827420499970',
         },
         {
           paramName: 'name',
           paramType: 'string',
-          paramDefaultValue: 'newName',
+          paramDefaultValue: 'newName2',
         },
       ],
     },
@@ -424,7 +424,7 @@ export const metaDataList = new Map<string, ApiParams>([
         {
           paramName: 'groupId',
           paramType: 'string',
-          paramDefaultValue: '180804431970306',
+          paramDefaultValue: '194827420499970',
         },
         {
           paramName: 'desc',

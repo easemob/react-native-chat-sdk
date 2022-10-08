@@ -53,7 +53,7 @@ export class ChatPresenceManager extends Native {
    *
    * @param listener The presence listener to add.
    */
-  addPresenceListener(listener: ChatPresenceEventListener): void {
+  public addPresenceListener(listener: ChatPresenceEventListener): void {
     this._presenceListeners.add(listener);
   }
 
@@ -62,14 +62,14 @@ export class ChatPresenceManager extends Native {
    *
    * @param listener The presence listener to remove.
    */
-  removePresenceListener(listener: ChatPresenceEventListener): void {
+  public removePresenceListener(listener: ChatPresenceEventListener): void {
     this._presenceListeners.delete(listener);
   }
 
   /**
    * Clears all presence listeners.
    */
-  removeAllPresenceListener(): void {
+  public removeAllPresenceListener(): void {
     this._presenceListeners.clear();
   }
 

@@ -10,6 +10,7 @@ import {
   ChatError,
   ChatGroupEventListener,
   ChatGroupFileStatusCallback,
+  ChatGroup,
 } from 'react-native-chat-sdk';
 import { generateData } from '../__internal__/Utils';
 export interface StateGroupMessage extends StateBase {
@@ -1212,6 +1213,18 @@ export class GroupManagerLeafScreen extends LeafScreenBase<StateGroupMessage> {
             `onAllGroupMemberMuteStateChanged: ` +
             params.groupId +
             params.isAllMuted,
+        });
+      }
+      onDetailChanged(group: ChatGroup): void {
+        console.log(`${GroupManagerLeafScreen.TAG}: onDetailChanged:`, group);
+        this.that.setState({
+          recvResult: `onDetailChanged: ` + group,
+        });
+      }
+      onStateChanged(group: ChatGroup): void {
+        console.log(`${GroupManagerLeafScreen.TAG}: onStateChanged:`, group);
+        this.that.setState({
+          recvResult: `onStateChanged: ` + group,
         });
       }
     })(this);

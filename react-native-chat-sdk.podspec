@@ -18,7 +18,7 @@ Pod::Spec.new do |s|
   s.exclude_files = ['native_src/cpp/java/**/*', 'native_src/cpp/android/**/*', 'native_src/objc/flutter/**/*']
 
   s.dependency "React-Core"
-  s.dependency 'HyphenateChat','3.9.7'
+  s.dependency 'HyphenateChat','3.9.7.1'
 
   s.pod_target_xcconfig = {
     'DEFINES_MODULE' => 'YES',

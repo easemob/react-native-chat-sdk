@@ -19,6 +19,7 @@ import {
   ChatPresence,
   ChatCmdMessageBody,
   ChatRoom,
+  ChatGroup,
 } from 'react-native-chat-sdk';
 import { styleValues } from '../__internal__/Css';
 import {
@@ -682,6 +683,18 @@ export abstract class QuickTestScreenBase<
             `onAllGroupMemberMuteStateChanged: ` +
             params.groupId +
             params.isAllMuted,
+        });
+      }
+      onDetailChanged(group: ChatGroup): void {
+        console.log(`${QuickTestScreenBase.TAG}: onDetailChanged:`, group);
+        this.that.setState({
+          recvResult: `onDetailChanged: ` + group,
+        });
+      }
+      onStateChanged(group: ChatGroup): void {
+        console.log(`${QuickTestScreenBase.TAG}: onStateChanged:`, group);
+        this.that.setState({
+          recvResult: `onStateChanged: ` + group,
         });
       }
     })(this);
