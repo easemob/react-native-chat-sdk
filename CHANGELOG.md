@@ -4,11 +4,29 @@ _English | [Chinese](./CHANGELOG.zh.md)_
 
 ---
 
+## 1.0.9
+
+Improvements
+
+- The dependent native SDK iOS is upgraded to V3.9.7.1.
+
+Issues fixed
+
+- Fixed the chat room attribute bug.
+- Updated the group listener.
+
+The following Object are updated:
+
+- `ChatGroupEventListener` add `onDetailChanged` notification.
+- `ChatGroupEventListener` add `onStateChanged` notification.
+
+---
+
 ## 1.0.8
 
 Improvements
 
-- The dependent native SDK (iOS and Android) is upgraded to V3.9.6.1.
+- The dependent native SDK (iOS and Android) is upgraded to V3.9.7.
 - Added chat room custom attribute function.
 - Added group disabled status in group details: isDisabled property, which needs to be set by the developer on the server side.
 - Optimized the performance of getting roaming messages.

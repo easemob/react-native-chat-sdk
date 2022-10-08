@@ -4,11 +4,29 @@ _Chinese | [English](./CHANGELOG.md)_
 
 ---
 
+## 1.0.9
+
+主要变更：
+
+- 依赖的原生 SDK 升级为 3.9.7.1 版本 (仅升级 `iOS` 版本)。
+
+修复内容：
+
+- 修复聊天室属性相关问题。
+- 更新群组监听器。
+
+更新内容：
+
+- `ChatGroupEventListener` add `onDetailChanged` notification.
+- `ChatGroupEventListener` add `onStateChanged` notification.
+
+---
+
 ## 1.0.8
 
 主要变更:
 
-- 依赖的原生 SDK 升级为 1.0.8 版本。
+- 依赖的原生 SDK 升级为 3.9.7 版本。
 - 新增聊天室自定义属性功能。
 - 新增限制连接边缘节点的范围。
 - 群组属性添加禁用状态，需要开发者在服务端设置。
