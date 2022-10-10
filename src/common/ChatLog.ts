@@ -1,6 +1,8 @@
 import type { InspectOptions } from 'util';
 
-// This needs to be global to avoid TS2403 in case lib.dom.d.ts is present in the same build
+/**
+ * This needs to be global to avoid TS2403 in case lib.dom.d.ts is present in the same build
+ */
 export class ChatLog {
   /**
    * `console.assert()` writes a message if `value` is [falsy](https://developer.mozilla.org/en-US/docs/Glossary/Falsy) or omitted. It only

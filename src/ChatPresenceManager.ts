@@ -12,6 +12,9 @@ import {
 } from './__internal__/Consts';
 import { Native } from './__internal__/Native';
 
+/**
+ * The presence manager class.
+ */
 export class ChatPresenceManager extends Native {
   private static TAG = 'ChatPresenceManager';
 
