@@ -1,5 +1,8 @@
 import { ChatMessage } from './ChatMessage';
 
+/**
+ * The chat message thread class.
+ */
 export class ChatMessageThread {
   /**
    * The message thread ID.
