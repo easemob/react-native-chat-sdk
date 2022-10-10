@@ -257,7 +257,7 @@ export const metaDataList = new Map<string, ApiParams>([
         },
         {
           paramName: 'serverTags',
-          paramType: 'string',
+          paramType: 'json',
           paramDefaultValue: ['tag3', 'tag4'],
           domType: 'input',
         },
@@ -277,7 +277,7 @@ export const metaDataList = new Map<string, ApiParams>([
         },
         {
           paramName: 'serverTagIds',
-          paramType: 'string',
+          paramType: 'json',
           paramDefaultValue: ['40', '41'],
           domType: 'input',
         },
@@ -465,7 +465,7 @@ export const metaDataList = new Map<string, ApiParams>([
         },
         {
           paramName: 'channelExtension',
-          paramType: 'string',
+          paramType: 'json',
           paramDefaultValue: JSON.stringify({ key: 'value' }),
           domType: 'input',
         },
@@ -535,7 +535,7 @@ export const metaDataList = new Map<string, ApiParams>([
         },
         {
           paramName: 'channelExtension',
-          paramType: 'string',
+          paramType: 'json',
           paramDefaultValue: JSON.stringify({ key: 'new_value' }),
           domType: 'input',
         },
