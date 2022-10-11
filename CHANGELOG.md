@@ -4,6 +4,14 @@ _English | [Chinese](./CHANGELOG.zh.md)_
 
 ---
 
+## 1.0.10
+
+Issues fixed
+
+- json conversion on the android platform may have an overlimit problem. If more than 50 data elements are returned, an exception will be thrown. An interface that involves returning arrays.
+
+---
+
 ## 1.0.9
 
 Improvements
