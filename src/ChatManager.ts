@@ -107,7 +107,7 @@ import {
 /**
  * The chat manager class, responsible for sending and receiving messages, managing conversations (including loading and deleting conversations), and downloading attachments.
  *
- * The sample code for sending a text message is as follows:
+ * The sample code for sending a text message is as follows:     
  *
  *  ```typescript
  *  let msg = ChatMessage.createTextMessage(
