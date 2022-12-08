@@ -140,7 +140,7 @@ PODS:
     - GoogleUtilities/MethodSwizzler
   - GoogleUtilities/UserDefaults (7.7.0):
     - GoogleUtilities/Logger
-  - HyphenateChat (3.9.7.1)
+  - HyphenateChat (3.9.9)
   - libevent (2.1.12)
   - nanopb (2.30909.0):
     - nanopb/decode (= 2.30909.0)
@@ -348,7 +348,7 @@ PODS:
   - React-logger (0.66.5):
     - glog
   - react-native-chat-sdk (1.0.10):
-    - HyphenateChat (= 3.9.7.1)
+    - HyphenateChat (= 3.9.9)
     - React-Core
   - react-native-document-picker (8.1.0):
     - React-Core
@@ -649,7 +649,7 @@ SPEC CHECKSUMS:
   glog: 5337263514dd6f09803962437687240c5dc39aa4
   GoogleDataTransport: 5fffe35792f8b96ec8d6775f5eccd83c998d5a3b
   GoogleUtilities: e0913149f6b0625b553d70dae12b49fc62914fd1
-  HyphenateChat: 83d34c3edbd9f2dbdc3e48e222dd2ae4ea62bd9f
+  HyphenateChat: 2237c9ece3f1bb54645dea0a9918f08e03e1516d
   libevent: 4049cae6c81cdb3654a443be001fb9bdceff7913
   nanopb: b552cce312b6c8484180ef47159bc0f65a1f0431
   OpenSSL-Universal: 1aa4f6a6ee7256b83db99ec1ccdaa80d10f9af9b
@@ -666,7 +666,7 @@ SPEC CHECKSUMS:
   React-jsiexecutor: 50a73168582868421112609d2fb155e607e34ec8
   React-jsinspector: 953260b8580780a6e81f2a6d319a8d42fd5028d8
   React-logger: fa4ff1e9c7e115648f7c5dafb7c20822ab4f7a7e
-  react-native-chat-sdk: d4e5ecdecdb1194e73d25fde43960c06bca3b52a
+  react-native-chat-sdk: 7ef5b3f61c7845f94f360e9da15187229be26caa
   react-native-document-picker: 5663fe4bcdb646200683a41790464d2793307ac8
   react-native-image-picker: 4e6008ad8c2321622affa2c85432a5ebd02d480c
   react-native-safe-area-context: f98b0b16d1546d208fc293b4661e3f81a895afd9

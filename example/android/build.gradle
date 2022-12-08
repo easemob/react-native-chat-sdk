@@ -7,7 +7,7 @@ buildscript {
         targetSdkVersion = 31
         ndkVersion = '24.0.8215888'
         kotlinVersion = '1.4.0'
-        demoVersion = '1.0.7'
+        demoVersion = '1.0.10'
 
         if (findProperty('android.kotlinVersion')) {
             kotlinVersion = findProperty('android.kotlinVersion')
