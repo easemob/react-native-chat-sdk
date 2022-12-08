@@ -9,8 +9,6 @@ _English | [Chinese](./CHANGELOG.zh.md)_
 What's new
 
 - Dependent native SDK upgraded to version 3.9.9 ('iOS' and 'Android').
-- Added message traffic statistics function.
-- Added chat room message priority.
 
 Issues fixed
 
