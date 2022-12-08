@@ -18,6 +18,7 @@ import { datasheet } from '../__default__/Datasheet';
 import { styleValues } from '../__internal__/Css';
 
 interface State {
+  loginStatus: string;
   connectStatus: string;
   listenerStatus: string;
   useName: string;
@@ -37,6 +38,7 @@ export class LoginAndLogoutScreen extends Component<
     super(props);
     this.navigation = props.navigation;
     this.state = {
+      loginStatus: '',
       connectStatus: '...',
       listenerStatus: '...',
       useName: datasheet.accounts[0].id,
@@ -178,7 +180,8 @@ export class LoginAndLogoutScreen extends Component<
   }
 
   render(): ReactNode {
-    const { connectStatus, listenerStatus, useName, password } = this.state;
+    const { connectStatus, listenerStatus, useName, password, loginStatus } =
+      this.state;
     return (
       <ScrollView>
         <View style={styleValues.containerColumn}>
@@ -250,6 +253,39 @@ export class LoginAndLogoutScreen extends Component<
               logout
             </Button>
           </View>
+          <View style={styleValues.containerRow}>
+            <Button
+              title="get login state"
+              onPress={() => {
+                // console.log(`${LoginAndLogoutScreen.TAG}`);
+                this.getLoginState();
+              }}
+            >
+              get login state
+            </Button>
+          </View>
+          <View style={styleValues.containerRow}>
+            <Button
+              title="get connect state"
+              onPress={() => {
+                // console.log(`${LoginAndLogoutScreen.TAG}`);
+                this.getConnectState();
+              }}
+            >
+              get connect state
+            </Button>
+          </View>
+          <View style={styleValues.containerRow}>
+            <Button
+              title="get user name"
+              onPress={() => {
+                // console.log(`${LoginAndLogoutScreen.TAG}`);
+                this.getUserName();
+              }}
+            >
+              get user name
+            </Button>
+          </View>
           <View style={styleValues.containerColumn}>
             <Text style={styleValues.textTipStyle}>
               click button result: {connectStatus}
@@ -260,8 +296,54 @@ export class LoginAndLogoutScreen extends Component<
               listener result: {listenerStatus}
             </Text>
           </View>
+          <View style={styleValues.containerColumn}>
+            <Text style={styleValues.textTipStyle}>
+              login status: {loginStatus}
+            </Text>
+          </View>
+          <View style={styleValues.containerColumn}>
+            <Text style={styleValues.textTipStyle}>
+              user name status: {useName}
+            </Text>
+          </View>
         </View>
       </ScrollView>
     );
+  }
+  getLoginState() {
+    ChatClient.getInstance()
+      .isLoginBefore()
+      .then(
+        (value) => {
+          this.setState({ loginStatus: value ? 'true' : 'false' });
+        },
+        (reason) => {
+          this.setState({ loginStatus: JSON.stringify(reason) });
+        }
+      );
+  }
+  getConnectState() {
+    ChatClient.getInstance()
+      .isConnected()
+      .then(
+        (value) => {
+          this.setState({ connectStatus: value ? 'true' : 'false' });
+        },
+        (reason) => {
+          this.setState({ connectStatus: JSON.stringify(reason) });
+        }
+      );
+  }
+  getUserName() {
+    ChatClient.getInstance()
+      .getCurrentUsername()
+      .then(
+        (value) => {
+          this.setState({ useName: value });
+        },
+        (reason) => {
+          this.setState({ useName: JSON.stringify(reason) });
+        }
+      );
   }
 }

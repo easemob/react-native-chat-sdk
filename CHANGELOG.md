@@ -4,6 +4,21 @@ _English | [Chinese](./CHANGELOG.zh.md)_
 
 ---
 
+## 1.0.11
+
+What's new
+
+- Dependent native SDK upgraded to version 3.9.9 ('iOS' and 'Android').
+- Added message traffic statistics function.
+- Added chat room message priority.
+
+Issues fixed
+
+- Fixed SDK crash in extreme cases.
+- Other fixes, see versions 3.9.8 and 3.9.9 ('iOS' and 'Android').
+
+---
+
 ## 1.0.10
 
 Issues fixed
