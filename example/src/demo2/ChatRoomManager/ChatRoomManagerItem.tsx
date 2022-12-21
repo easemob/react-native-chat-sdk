@@ -36,7 +36,7 @@ export interface StateChatRoomMessage extends StateBase {
     cursor: string;
     pageSize: number;
   };
-  getChatRoom: {
+  getChatRoomWithId: {
     roomId: string;
   };
   changeChatRoomSubject: {
@@ -47,11 +47,11 @@ export interface StateChatRoomMessage extends StateBase {
     roomId: string;
     description: string;
   };
-  changeChatRoomOwner: {
+  changeOwner: {
     roomId: string;
     newOwner: string;
   };
-  isMemberInChatRoomAllowListFromServer: {
+  isMemberInChatRoomAllowList: {
     roomId: string;
   };
   updateChatRoomAnnouncement: {
@@ -161,7 +161,6 @@ export class ChatRoomManagerLeafScreen extends LeafScreenBase<StateChatRoomMessa
       'fetchPublicChatRoomsFromServer',
       'fetchChatRoomInfoFromServer',
       'getChatRoomWithId',
-      'getAllChatRooms',
       'createChatRoom',
       'destroyChatRoom',
       'changeChatRoomSubject',
@@ -307,7 +306,7 @@ export class ChatRoomManagerLeafScreen extends LeafScreenBase<StateChatRoomMessa
         break;
       }
       case MN.getChatRoomWithId: {
-        const { roomId } = this.state.getChatRoom;
+        const { roomId } = this.state.getChatRoomWithId;
         this.tryCatch(
           ChatClient.getInstance().roomManager.getChatRoomWithId(roomId),
           ChatRoomManagerLeafScreen.TAG,
@@ -340,7 +339,7 @@ export class ChatRoomManagerLeafScreen extends LeafScreenBase<StateChatRoomMessa
         break;
       }
       case MN.changeOwner: {
-        const { roomId, newOwner } = this.state.changeChatRoomOwner;
+        const { roomId, newOwner } = this.state.changeOwner;
         this.tryCatch(
           ChatClient.getInstance().roomManager.changeOwner(roomId, newOwner),
           ChatRoomManagerLeafScreen.TAG,
@@ -349,7 +348,7 @@ export class ChatRoomManagerLeafScreen extends LeafScreenBase<StateChatRoomMessa
         break;
       }
       case MN.isMemberInChatRoomAllowList: {
-        const { roomId } = this.state.isMemberInChatRoomAllowListFromServer;
+        const { roomId } = this.state.isMemberInChatRoomAllowList;
         this.tryCatch(
           ChatClient.getInstance().roomManager.isMemberInChatRoomAllowList(
             roomId
