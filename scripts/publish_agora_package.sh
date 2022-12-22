@@ -69,6 +69,7 @@ mv ${current_dir}/Output/node_modules/${old_package_name} ${current_dir}/Output/
 
 sed -i '' 's/: \"react-native-chat-sdk/: \"react-native-agora-chat/g' ${current_dir}/Output/node_modules/${new_package_name}/package.json
 sed -i '' 's/lib\/typescript\/src\/index.d.ts/lib\/typescript\/index.d.ts/g' ${current_dir}/Output/node_modules/${new_package_name}/package.json
+sed -i '' 's/\"prepare\": \"bob build\",/\"prepare\": \"\",/g' ${current_dir}/Output/node_modules/${new_package_name}/package.json
 
 sed -i '' 's/react-native-chat-sdk/react-native-agora-chat/g' ${current_dir}/Output/node_modules/${new_package_name}/README.md
 # https://docs-im.easemob.com/ccim/rn/quickstart
@@ -86,6 +87,8 @@ rm -rf ${current_dir}/Output/node_modules/${new_package_name}/native_src/cpp/CMa
 rm -rf ${current_dir}/Output/node_modules/${new_package_name}/native_src/cpp/generate.ps1
 rm -rf ${current_dir}/Output/node_modules/${new_package_name}/native_src/cpp/generate.sh
 rm -rf ${current_dir}/Output/node_modules/${new_package_name}/README.zh.md
+
+git log -1 > ${current_dir}/Output/node_modules/${new_package_name}/git.log
 
 pushd ${current_dir}/Output/node_modules
 

@@ -173,6 +173,10 @@ git push --tags
 sh scripts/publish_agora_package.sh 1.0.5-rc.1 rc ~/Output/agora
 ```
 
+**Note** Keep the same name as the compressed package and folder. It is recommended that there be no space.
+
+[deploy site](https://rehoboam.gz3.agoralab.co/portal/release)
+
 ## generate docs
 
 ```sh
