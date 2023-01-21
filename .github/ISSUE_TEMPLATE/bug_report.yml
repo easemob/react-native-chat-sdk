@@ -82,6 +82,7 @@ body:
         - label: iOS 15
         - label: iOS 16 or above
         - label: Android Earlier than API Level 23
+        - label: Android API Level 23
         - label: Android API Level 24
         - label: Android API Level 25
         - label: Android API Level 26
