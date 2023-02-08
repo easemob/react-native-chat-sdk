@@ -5,8 +5,8 @@
 [submodule "native_src/java"]
 	path = native_src/java
 	url = git@github.com:AsteriskZuo/im_ext_sdk_java.git
-	branch = dev
+	branch = circle
 [submodule "native_src/objc"]
 	path = native_src/objc
 	url = git@github.com:AsteriskZuo/im_ext_sdk_objc.git
-	branch = dev
+	branch = circle
