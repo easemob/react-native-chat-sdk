@@ -26,6 +26,7 @@ import {
 import { ChatCursorResult } from './common/ChatCursorResult';
 import { ChatDeviceInfo } from './common/ChatDeviceInfo';
 import { ChatError } from './common/ChatError';
+import { ChatLog } from './common/ChatLog';
 import {
   ChatGroupStyle,
   ChatGroupPermissionType,
@@ -164,6 +165,7 @@ export {
   ChatCursorResult,
   ChatDeviceInfo,
   ChatError,
+  ChatLog,
   ChatGroupMessageAck,
   ChatGroupOptions,
   ChatGroup,
