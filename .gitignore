@@ -684,3 +684,5 @@ FodyWeavers.xsd
 # End of https://www.toptal.com/developers/gitignore/api/windows,macos,xcode,visualstudio,androidstudio,visualstudiocode
 
 native_src/output/**
+
+env.ts

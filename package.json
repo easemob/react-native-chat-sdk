@@ -37,6 +37,7 @@
     "prepare": "bob build",
     "release": "release-it",
     "example": "yarn --cwd example",
+    "env": "cd scripts && node generate-env.js",
     "pods": "cd example && pod-install --quiet",
     "cpp": "cd native_src/cpp && sh generate.sh --type rn && cd ../..",
     "cpp_win": "cd native_src/cpp && generate.ps1 --type rn && cd ../..",
