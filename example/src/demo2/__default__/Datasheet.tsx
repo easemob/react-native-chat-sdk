@@ -17,6 +17,17 @@ export const datasheet = {
       name: '',
     },
   ],
+  ChatManager: {
+    SendMessage: {
+      latitude: '0.0',
+      longitude: '0.0',
+      address: 'beijing',
+      action: 'action',
+      event: 'event',
+      ext: '{ "key": "value" }',
+      duration: 20,
+    },
+  },
 };
 
 let env;
