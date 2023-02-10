@@ -86,6 +86,13 @@ export const MTfetchReactionList = 'fetchReactionList';
 export const MTfetchReactionDetail = 'fetchReactionDetail';
 export const MTreportMessage = 'reportMessage';
 
+export const MTfetchConversationsFromServerWithPage =
+  'fetchConversationsFromServerWithPage';
+export const MTremoveMessagesFromServerWithMsgIds =
+  'removeMessagesFromServerWithMsgIds';
+export const MTremoveMessagesFromServerWithTs =
+  'removeMessagesFromServerWithTs';
+
 /// ChatManager listener
 export const MTonMessagesReceived = 'onMessagesReceived';
 export const MTonCmdMessagesReceived = 'onCmdMessagesReceived';

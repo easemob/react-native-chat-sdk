@@ -65,6 +65,7 @@ import {
   ChatMessageStatusToString,
   ChatDownloadStatusFromNumber,
   ChatDownloadStatusToString,
+  ChatRoomMessagePriority,
 } from './common/ChatMessage';
 import {
   ChatConversationTypeFromNumber,
@@ -155,6 +156,7 @@ export {
   ChatPushRemindType,
   ChatPushDisplayStyle,
   ChatAreaCode,
+  ChatRoomMessagePriority,
 };
 
 /**

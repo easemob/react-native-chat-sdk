@@ -68,6 +68,10 @@ export const MN = {
   insertMessage: 'insertMessage',
   deleteMessagesBeforeTimestamp: 'deleteMessagesBeforeTimestamp',
   getThreadConversation: 'getThreadConversation',
+  fetchConversationsFromServerWithPage: 'fetchConversationsFromServerWithPage',
+  removeMessagesFromServerWithMsgIds: 'removeMessagesFromServerWithMsgIds',
+  removeMessagesFromServerWithTimestamp:
+    'removeMessagesFromServerWithTimestamp',
 };
 
 export const metaDataList = new Map<string, ApiParams>([
@@ -1214,6 +1218,70 @@ export const metaDataList = new Map<string, ApiParams>([
           paramType: 'boolean',
           paramDefaultValue: true,
           domType: 'select',
+        },
+      ],
+    },
+  ],
+  [
+    MN.fetchConversationsFromServerWithPage,
+    {
+      methodName: MN.fetchConversationsFromServerWithPage,
+      params: [
+        {
+          paramName: 'pageSize', // 使用发送成功或者失败的数据测试，依赖sendMessage
+          paramType: 'number',
+          paramDefaultValue: 10,
+        },
+        {
+          paramName: 'pageNum', // 使用发送成功或者失败的数据测试，依赖sendMessage
+          paramType: 'number',
+          paramDefaultValue: 1,
+        },
+      ],
+    },
+  ],
+  [
+    MN.removeMessagesFromServerWithMsgIds,
+    {
+      methodName: MN.removeMessagesFromServerWithMsgIds,
+      params: [
+        {
+          paramName: 'convId', // 使用发送成功或者失败的数据测试，依赖sendMessage
+          paramType: 'string',
+          paramDefaultValue: datasheet.accounts[2].id,
+        },
+        {
+          paramName: 'convType',
+          paramType: 'number',
+          paramDefaultValue: 0,
+        },
+        {
+          paramName: 'msgIds',
+          paramType: 'json',
+          paramDefaultValue: ['1109957101259588964'],
+        },
+      ],
+    },
+  ],
+  [
+    MN.removeMessagesFromServerWithTimestamp,
+    {
+      methodName: MN.removeMessagesFromServerWithTimestamp,
+      params: [
+        {
+          paramName: 'convId', // 使用发送成功或者失败的数据测试，依赖sendMessage
+          paramType: 'string',
+          paramDefaultValue: '206054790070283',
+        },
+        {
+          paramName: 'convType',
+          paramType: 'number',
+          paramDefaultValue: 1,
+        },
+        {
+          paramName: 'timestamp',
+          paramType: 'number',
+          paramDefaultValue: 1675997166172,
         },
       ],
     },

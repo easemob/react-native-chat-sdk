@@ -93,6 +93,9 @@ import {
   MTinsertMessage,
   MTdeleteMessagesBeforeTimestamp,
   MTgetThreadConversation,
+  MTfetchConversationsFromServerWithPage,
+  MTremoveMessagesFromServerWithMsgIds,
+  MTremoveMessagesFromServerWithTs,
 } from './__internal__/Consts';
 import { Native } from './__internal__/Native';
 import {
@@ -2271,5 +2274,79 @@ export class ChatManager extends BaseManager {
       return new ChatConversation(rr);
     }
     return undefined;
+  }
+
+  public async fetchConversationsFromServerWithPage(
+    pageSize: number,
+    pageNum: number
+  ): Promise<Array<ChatConversation>> {
+    chatlog.log(
+      `${ChatManager.TAG}: fetchConversationsFromServerWithPage: `,
+      pageSize,
+      pageNum
+    );
+    let r: any = await Native._callMethod(
+      MTfetchConversationsFromServerWithPage,
+      {
+        [MTfetchConversationsFromServerWithPage]: {
+          pageSize: pageSize,
+          pageNum: pageNum,
+        },
+      }
+    );
+    Native.checkErrorFromResult(r);
+    let ret = [] as ChatConversation[];
+    const rr: Array<any> = r?.[MTfetchConversationsFromServerWithPage];
+    if (rr) {
+      rr.forEach((element) => {
+        ret.push(new ChatConversation(element));
+      });
+    }
+    return ret;
+  }
+
+  public async removeMessagesFromServerWithMsgIds(
+    convId: string,
+    convType: ChatConversationType,
+    msgIds: string[]
+  ): Promise<void> {
+    chatlog.log(
+      `${ChatManager.TAG}: removeMessagesFromServerWithMsgIds: `,
+      convId,
+      convType,
+      msgIds
+    );
+    let r: any = await Native._callMethod(
+      MTremoveMessagesFromServerWithMsgIds,
+      {
+        [MTremoveMessagesFromServerWithMsgIds]: {
+          convId: convId,
+          convType: convType,
+          msgIds: msgIds,
+        },
+      }
+    );
+    Native.checkErrorFromResult(r);
+  }
+
+  public async removeMessagesFromServerWithTimestamp(
+    convId: string,
+    convType: ChatConversationType,
+    timestamp: number
+  ): Promise<void> {
+    chatlog.log(
+      `${ChatManager.TAG}: removeMessagesFromServerWithTimestamp: `,
+      convId,
+      convType,
+      timestamp
+    );
+    let r: any = await Native._callMethod(MTremoveMessagesFromServerWithTs, {
+      [MTremoveMessagesFromServerWithTs]: {
+        convId: convId,
+        convType: convType,
+        timestamp: timestamp,
+      },
+    });
+    Native.checkErrorFromResult(r);
   }
 }

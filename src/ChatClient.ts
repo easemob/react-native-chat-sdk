@@ -121,8 +121,8 @@ export class ChatClient extends BaseManager {
   private _customListeners: Set<ChatCustomEventListener>;
 
   private _options?: ChatOptions;
-  private _sdkVersion: string = '3.9.1.1';
-  private _rnSdkVersion: string = '1.0.0';
+  private _sdkVersion: string = '4.0.0';
+  private _rnSdkVersion: string = '1.1.0';
   private _isInit: boolean = false;
   private _currentUsername: string = '';
 

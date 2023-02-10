@@ -119,6 +119,24 @@ export enum ChatMessageType {
 }
 
 /**
+ * The delivery priorities of chat room messages.
+ */
+export enum ChatRoomMessagePriority {
+  /**
+   * High priority
+   */
+  PriorityHigh = 0,
+  /**
+   * Normal priority
+   */
+  PriorityNormal,
+  /**
+   * Low priority
+   */
+  PriorityLow,
+}
+
+/**
  * Converts the conversation type from int to string.
  *
  * @param params The conversation type of the int type.
@@ -392,6 +410,12 @@ export class ChatMessage {
    * - `false`: No.
    */
   isOnline: boolean;
+
+  /**
+   * The delivery priorities of chat room messages.
+   * **Note** Only for chat rooms.
+   */
+  private priority?: ChatRoomMessagePriority;
 
   /**
    * Constructs a message.
@@ -849,6 +873,13 @@ export class ChatMessage {
    */
   public get threadInfo(): Promise<ChatMessageThread | undefined> {
     return ChatClient.getInstance().chatManager.getMessageThread(this.msgId);
+  }
+
+  /**
+   * Set chat room message delivery priority.
+   */
+  public set messagePriority(p: ChatRoomMessagePriority) {
+    this.priority = p;
   }
 }
 

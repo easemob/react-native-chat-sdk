@@ -1442,6 +1442,86 @@ export class QuickTestScreenChat extends QuickTestScreenBase<
           );
         }
         break;
+      case MN.fetchConversationsFromServerWithPage:
+        {
+          const methodName = this.metaData.get(
+            MN.fetchConversationsFromServerWithPage
+          )!.methodName;
+          console.log(
+            `${MN.fetchConversationsFromServerWithPage} === ${methodName}`
+          );
+          const pageSize = this.metaData.get(
+            MN.fetchConversationsFromServerWithPage
+          )?.params[0].paramDefaultValue;
+          const pageNum = this.metaData.get(
+            MN.fetchConversationsFromServerWithPage
+          )?.params[1].paramDefaultValue;
+          this.tryCatch(
+            ChatClient.getInstance().chatManager.fetchConversationsFromServerWithPage(
+              pageSize,
+              pageNum
+            ),
+            QuickTestScreenChat.TAG,
+            name
+          );
+        }
+        break;
+      case MN.removeMessagesFromServerWithMsgIds:
+        {
+          const methodName = this.metaData.get(
+            MN.removeMessagesFromServerWithMsgIds
+          )!.methodName;
+          console.log(
+            `${MN.removeMessagesFromServerWithMsgIds} === ${methodName}`
+          );
+          const convId = this.metaData.get(
+            MN.removeMessagesFromServerWithMsgIds
+          )?.params[0].paramDefaultValue;
+          const convType = this.metaData.get(
+            MN.removeMessagesFromServerWithMsgIds
+          )?.params[1].paramDefaultValue;
+          const msgIds = this.metaData.get(
+            MN.removeMessagesFromServerWithMsgIds
+          )?.params[2].paramDefaultValue;
+          this.tryCatch(
+            ChatClient.getInstance().chatManager.removeMessagesFromServerWithMsgIds(
+              convId,
+              convType,
+              msgIds
+            ),
+            QuickTestScreenChat.TAG,
+            name
+          );
+        }
+        break;
+      case MN.removeMessagesFromServerWithTimestamp:
+        {
+          const methodName = this.metaData.get(
+            MN.removeMessagesFromServerWithTimestamp
+          )!.methodName;
+          console.log(
+            `${MN.removeMessagesFromServerWithTimestamp} === ${methodName}`
+          );
+          const convId = this.metaData.get(
+            MN.removeMessagesFromServerWithTimestamp
+          )?.params[0].paramDefaultValue;
+          const convType = this.metaData.get(
+            MN.removeMessagesFromServerWithTimestamp
+          )?.params[1].paramDefaultValue;
+          const timestamp = this.metaData.get(
+            MN.removeMessagesFromServerWithTimestamp
+          )?.params[2].paramDefaultValue;
+          this.tryCatch(
+            ChatClient.getInstance().chatManager.removeMessagesFromServerWithTimestamp(
+              convId,
+              convType,
+              timestamp
+            ),
+            QuickTestScreenChat.TAG,
+            name
+          );
+        }
+        break;
       default:
         break;
     }
