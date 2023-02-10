@@ -4,6 +4,24 @@ _English | [Chinese](./CHANGELOG.zh.md)_
 
 ---
 
+## 1.1.0
+
+New features
+
+- Upgrades the native platforms `iOS` and `Android` to 1.1.0.
+- Adds the function of managing custom chat room attributes.
+- Adds the `fetchConversationsFromServerWithPage` method to allow users to get the conversation list from the server with pagination.
+- Adds the `ChatMessage#messagePriority` method to implement the chat room message priority.
+- Adds the `removeMessagesFromServerWithTimestamp` and `removeMessagesFromServerWithMsgIds` methods to allow users to delete messages on the server in a unidirectional way.
+
+Improvements
+
+Removed the sensitive information from the test data.
+
+Issues fixed
+
+Some insecure code of native platforms was fixed.
+
 ## 1.0.11
 
 What's new
