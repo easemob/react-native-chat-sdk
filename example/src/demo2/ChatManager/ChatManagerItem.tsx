@@ -264,6 +264,20 @@ export interface StateChatMessage extends StateBase {
     convId: string;
     createIfNeed: boolean;
   };
+  fetchConversationsFromServerWithPage: {
+    pageSize: number;
+    pageNum: number;
+  };
+  removeMessagesFromServerWithMsgIds: {
+    convId: string;
+    convType: number;
+    msgIds: string[];
+  };
+  removeMessagesFromServerWithTimestamp: {
+    convId: string;
+    convType: number;
+    timestamp: number;
+  };
 }
 
 export interface StatelessChatMessage extends StatelessBase {
@@ -552,6 +566,9 @@ export class ChatManagerLeafScreen extends LeafScreenBase<StateChatMessage> {
       'getMessageThread',
       'setConversationExtension',
       'insertMessage',
+      'fetchConversationsFromServerWithPage',
+      'removeMessagesFromServerWithMsgIds',
+      'removeMessagesFromServerWithTimestamp',
     ];
     let renderDomAry: ({} | null | undefined)[] = [];
     const data = this.metaData;
@@ -1194,6 +1211,41 @@ export class ChatManagerLeafScreen extends LeafScreenBase<StateChatMessage> {
         ChatClient.getInstance().chatManager.getThreadConversation(
           convId,
           createIfNeed
+        ),
+        ChatManagerLeafScreen.TAG,
+        name
+      );
+    } else if (name === MN.fetchConversationsFromServerWithPage) {
+      const { pageNum, pageSize } =
+        this.state.fetchConversationsFromServerWithPage;
+      this.tryCatch(
+        ChatClient.getInstance().chatManager.fetchConversationsFromServerWithPage(
+          pageSize,
+          pageNum
+        ),
+        ChatManagerLeafScreen.TAG,
+        name
+      );
+    } else if (name === MN.removeMessagesFromServerWithMsgIds) {
+      const { convId, convType, msgIds } =
+        this.state.removeMessagesFromServerWithMsgIds;
+      this.tryCatch(
+        ChatClient.getInstance().chatManager.removeMessagesFromServerWithMsgIds(
+          convId,
+          convType,
+          msgIds
+        ),
+        ChatManagerLeafScreen.TAG,
+        name
+      );
+    } else if (name === MN.removeMessagesFromServerWithTimestamp) {
+      const { convId, convType, timestamp } =
+        this.state.removeMessagesFromServerWithTimestamp;
+      this.tryCatch(
+        ChatClient.getInstance().chatManager.removeMessagesFromServerWithTimestamp(
+          convId,
+          convType,
+          timestamp
         ),
         ChatManagerLeafScreen.TAG,
         name

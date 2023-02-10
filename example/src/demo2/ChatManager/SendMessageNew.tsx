@@ -11,6 +11,7 @@ import {
   ChatError,
   ChatMessageThreadEvent,
   ChatMessageReactionEvent,
+  ChatRoomMessagePriority,
 } from 'react-native-chat-sdk';
 import { styleValues } from '../__internal__/Css';
 import {
@@ -60,6 +61,8 @@ export interface StateSendMessage extends StateBase {
   isChatThread: boolean;
 
   cb_result: string;
+
+  priority: number;
 }
 
 export interface StatelessSendMessage extends StatelessBase {}
@@ -102,6 +105,11 @@ export class SendMessageLeafScreen extends LeafScreenBase<StateSendMessage> {
               paramType: 'boolean',
               paramDefaultValue: false,
             },
+            {
+              paramName: 'priority',
+              paramType: 'number',
+              paramDefaultValue: 1,
+            },
           ],
         },
       ],
@@ -143,6 +151,7 @@ export class SendMessageLeafScreen extends LeafScreenBase<StateSendMessage> {
       // is thread message
       isChatThread: this.metaData.get(MN.sendMessage)?.params[4]
         .paramDefaultValue,
+      priority: 1,
     };
     this.statelessData = {};
   }
@@ -513,10 +522,52 @@ export class SendMessageLeafScreen extends LeafScreenBase<StateSendMessage> {
     }
   }
 
+  protected renderPriority(
+    isShow: boolean,
+    priority?: ChatRoomMessagePriority
+  ): ReactNode {
+    if (isShow === false) {
+      // this.setState({ priority: undefined });
+      return null;
+    }
+    const data = this.metaData.get(MN.sendMessage)!;
+    const getPriority = (tt: ChatRoomMessagePriority): string => {
+      if (tt === ChatRoomMessagePriority.PriorityHigh) {
+        return 'High';
+      } else if (tt === ChatRoomMessagePriority.PriorityNormal) {
+        return 'Normal';
+      } else if (tt === ChatRoomMessagePriority.PriorityLow) {
+        return 'Low';
+      }
+      throw new Error('error: ' + tt);
+    };
+    return this.renderParamWithEnum(
+      data.params[5].paramName,
+      ['High', 'Normal', 'Low'],
+      getPriority(priority ?? ChatRoomMessagePriority.PriorityNormal),
+      (index: string, option: any) => {
+        let tt = ChatRoomMessagePriority.PriorityNormal;
+        if (option === 'High') {
+          tt = ChatRoomMessagePriority.PriorityHigh;
+        } else if (option === 'Normal') {
+          tt = ChatRoomMessagePriority.PriorityNormal;
+        } else if (option === 'Low') {
+          tt = ChatRoomMessagePriority.PriorityLow;
+        } else {
+          throw new Error('error: ' + option);
+        }
+        this.setState({
+          priority: tt,
+        });
+      }
+    );
+  }
+
   protected sendMessage(): ReactNode[] {
     this.setKeyPrefix(MN.sendMessage);
     const data = this.metaData.get(MN.sendMessage)!;
-    const { targetId, targetType, messageType, isChatThread } = this.state;
+    const { targetId, targetType, messageType, isChatThread, priority } =
+      this.state;
 
     const getTargetId = (tt: ChatMessageChatType): string => {
       if (tt === ChatMessageChatType.PeerChat) {
@@ -606,6 +657,10 @@ export class SendMessageLeafScreen extends LeafScreenBase<StateSendMessage> {
           });
         }
       ),
+      this.renderPriority(
+        targetType === ChatMessageChatType.ChatRoom,
+        priority
+      ),
       this.renderSendMessageBody(messageType),
       this.renderButton(data.methodName, () => {
         this.callApi(data.methodName);
@@ -616,7 +671,9 @@ export class SendMessageLeafScreen extends LeafScreenBase<StateSendMessage> {
 
   private createMessage(): ChatMessage {
     let ret: ChatMessage;
-    const { targetId, targetType, messageType, isChatThread } = this.state;
+    const { targetId, targetType, messageType, isChatThread, priority } =
+      this.state;
+    console.log('test:priority:', priority);
     switch (messageType) {
       case ChatMessageType.TXT:
         {
@@ -712,6 +769,9 @@ export class SendMessageLeafScreen extends LeafScreenBase<StateSendMessage> {
         break;
       default:
         throw new Error('This type is not find. ', messageType);
+    }
+    if (ret.chatType === ChatMessageChatType.ChatRoom) {
+      ret.messagePriority = priority;
     }
     ChatManagerCache.getInstance().addSendMessage(ret);
     return ret;
