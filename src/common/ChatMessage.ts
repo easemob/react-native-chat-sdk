@@ -511,6 +511,7 @@ export class ChatMessage {
       hasRead: true,
       chatType: params.chatType,
       isChatThread: params.isChatThread,
+      conversationId: params.targetId,
     });
     return r;
   }
