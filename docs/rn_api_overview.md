@@ -1,383 +1,381 @@
-Agora Chat is a highly reliable global communication platform where your users can chat one-to-one, in groups or in chat rooms. Users communicate with text messages, share images, audios, videos, files, emojis, and locations. Agora Chat supplies typing indicators out-of-the-box.
+Agora Chat 是一个高度可靠的全球交流平台，您的用户可以在其中进行一对一、群组或聊天室聊天。用户通过短信进行交流，共享图像、音频、视频、文件、表情符号和位置。 Agora Chat 提供开箱即用的打字指示器。
 
-- The ChatClient class is the entry of the chat SDK. It provides methods to allow you to log in to and log out of the chat app and manage the connection between the SDK and the chat server.
-- The ChatManager class provides methods to allow you to send and receive messages, manage conversations , and download attachments.
-- The ChatMessage class defines message attributes .
-- The ChatConversation class provides methods for conversation management.
-- The ChatContactManager class provides methods for chat contact management such as adding, retrieving, modifying, and deleting contacts.
-- The ChatGroupManager class provides methods for group management, like group creation and destruction and member management.
-- The ChatRoomManager class provides methods for chat room management, like joining and leaving the chat room and retrieving the chat room list, and manages member privileges.
-- The ChatPresenceManager class provides methods for you to set message push configuration options.
-- The ChatPushManager class provides methods to allow you to manage offline push services.
-- The ChatUserInfoManager class provides methods for user attribute management, including getting and updating user attributes.
+- ChatClient类是聊天SDK的入口。它提供了允许您登录和注销聊天应用程序以及管理 SDK 和聊天服务器之间的连接的方法。
+- ChatManager 类提供允许您发送和接收消息、管理对话和下载附件的方法。
+- ChatMessage 类定义消息属性。
+- ChatConversation 类提供对话管理方法。
+- ChatContactManager 类提供聊天联系人管理方法，例如添加、检索、修改和删除联系人。
+- ChatGroupManager 类提供群组管理方法，如群组创建和销毁以及成员管理。
+- ChatRoomManager 类提供聊天室管理方法，如加入和离开聊天室和检索聊天室列表，并管理成员权限。
+- ChatPresenceManager 类提供了设置消息推送配置选项的方法。
+- ChatPushManager 类提供了允许您管理离线推送服务的方法。
+- ChatUserInfoManager 类提供了用户属性管理方法，包括获取和更新用户属性。
 
 ## ChatClient
 | Method | Description |
 | :----- | :---------- |
-| {@link ChatClient.getInstance getInstance} | The chat client class, which is the entry of the chat SDK. It defines how to log in to and log out of the chat app and how to manage the connection between the SDK and the chat server. |
-| {@link ChatClient.getEventEmitter getEventEmitter} | The chat client class, which is the entry of the chat SDK. It defines how to log in to and log out of the chat app and how to manage the connection between the SDK and the chat server. |
-| {@link ChatClient.setNativeListener setNativeListener} | The chat client class, which is the entry of the chat SDK. It defines how to log in to and log out of the chat app and how to manage the connection between the SDK and the chat server. |
-| {@link ChatClient.options options} | Gets the SDK configurations. |
-| {@link ChatClient.currentUserName currentUserName} | Gets the current logged-in user ID. |
-| {@link ChatClient.init init} | Initializes the SDK. |
-| {@link ChatClient.isConnected isConnected} | Checks whether the SDK is connected to the chat server. |
-| {@link ChatClient.getCurrentUsername getCurrentUsername} | Gets the current logged-in user ID from the server. |
-| {@link ChatClient.isLoginBefore isLoginBefore} | Checks whether the current user is logged in to the app. |
-| {@link ChatClient.getAccessToken getAccessToken} | Gets the token for login. |
-| {@link ChatClient.createAccount createAccount} | Creates a new user (open registration). |
-| {@link ChatClient.login login} | Logs in to the chat server with a password or an Easemob token. |
-| {@link ChatClient.loginWithAgoraToken loginWithAgoraToken} | Logs in to the chat server with the user ID and an Agora token. |
-| {@link ChatClient.renewAgoraToken renewAgoraToken} | Renews the Agora token. |
-| {@link ChatClient.logout logout} | Logs out of the chat app. |
-| {@link ChatClient.changeAppKey changeAppKey} | Updates the App Key, which is the unique identifier used to access the chat service. |
-| {@link ChatClient.compressLogs compressLogs} | Compresses the debug log file into a gzip archive. |
-| {@link ChatClient.getLoggedInDevicesFromServer getLoggedInDevicesFromServer} | Gets the list of online devices to which you have logged in with a specified account. |
-| {@link ChatClient.kickDevice kickDevice} | Logs out from a specified account on a device. |
-| {@link ChatClient.kickAllDevices kickAllDevices} | Logs out from a specified account on all devices. |
-| {@link ChatClient.updatePushConfig updatePushConfig} | Update push configurations. |
-| {@link ChatClient.addConnectionListener addConnectionListener} | Adds the connection status listener. |
-| {@link ChatClient.removeConnectionListener removeConnectionListener} | Removes the connection status listener. |
-| {@link ChatClient.removeAllConnectionListener removeAllConnectionListener} | Removes all the connection status listeners for the chat server. |
-| {@link ChatClient.addMultiDeviceListener addMultiDeviceListener} | Adds the multi-device listener. |
-| {@link ChatClient.removeMultiDeviceListener removeMultiDeviceListener} | Removes the specified multi-device listener. |
-| {@link ChatClient.removeAllMultiDeviceListener removeAllMultiDeviceListener} | Removes all the multi-device listeners. |
-| {@link ChatClient.addCustomListener addCustomListener} | Adds a custom listener to receive data that the iOS or Android devices send to the React Native layer. |
-| {@link ChatClient.removeCustomListener removeCustomListener} | Removes a custom listener to stop receiving data that the iOS or Android devices send to the React Native layer. |
-| {@link ChatClient.removeAllCustomListener removeAllCustomListener} | Removes all the custom listeners. |
-| {@link ChatClient.chatManager chatManager} | Gets the chat manager class. |
-| {@link ChatClient.groupManager groupManager} | Gets the chat group manager class. |
-| {@link ChatClient.contactManager contactManager} | Gets the contact manager class. |
-| {@link ChatClient.pushManager pushManager} | Gets the push manager class. |
-| {@link ChatClient.userManager userManager} | Gets the user information manager class. |
-| {@link ChatClient.roomManager roomManager} | Gets the chat room manager class. |
-| {@link ChatClient.presenceManager presenceManager} | Gets the presence manager class. |
+| {@link ChatClient.getInstance getInstance} | Chat 客户端类。该类是 Chat SDK 的入口，负责登录、登出及管理 SDK 与 chat 服务器之间的连接。 |
+| {@link ChatClient.getEventEmitter getEventEmitter} | Chat 客户端类。该类是 Chat SDK 的入口，负责登录、登出及管理 SDK 与 chat 服务器之间的连接。 |
+| {@link ChatClient.setNativeListener setNativeListener} | Chat 客户端类。该类是 Chat SDK 的入口，负责登录、登出及管理 SDK 与 chat 服务器之间的连接。 |
+| {@link ChatClient.options options} | 获取 SDK 配置项。 |
+| {@link ChatClient.currentUserName currentUserName} | 获取当前登录用户的用户 ID。 |
+| {@link ChatClient.init init} | 初始化 SDK。 |
+| {@link ChatClient.isConnected isConnected} | 检查 SDK 是否连接到 Chat 服务器。 |
+| {@link ChatClient.getCurrentUsername getCurrentUsername} | 从服务器获取当前登录用户的用户 ID。 |
+| {@link ChatClient.isLoginBefore isLoginBefore} | 检查当前用户是否登录。 |
+| {@link ChatClient.getAccessToken getAccessToken} | 获取登录 token。 |
+| {@link ChatClient.createAccount createAccount} | 注册新用户（开放注册）。 |
+| {@link ChatClient.login login} | 通过密码或环信 token 登录 Chat 服务器。 |
+| {@link ChatClient.loginWithAgoraToken loginWithAgoraToken} | 使用用户 ID 和声网 token 登录。 |
+| {@link ChatClient.renewAgoraToken renewAgoraToken} | 更新声网 token。 |
+| {@link ChatClient.logout logout} | 退出登录。 |
+| {@link ChatClient.changeAppKey changeAppKey} | 修改 App Key。 |
+| {@link ChatClient.compressLogs compressLogs} | 压缩日志文件。 |
+| {@link ChatClient.getLoggedInDevicesFromServer getLoggedInDevicesFromServer} | 获取指定账号下登录的在线设备列表。 |
+| {@link ChatClient.kickDevice kickDevice} | 将特定账号登录的指定设备下线。 |
+| {@link ChatClient.kickAllDevices kickAllDevices} | 将指定账号登录的所有设备都踢下线。 |
+| {@link ChatClient.updatePushConfig updatePushConfig} | 更新推送设置。 |
+| {@link ChatClient.addConnectionListener addConnectionListener} | 设置连接状态监听器。 |
+| {@link ChatClient.removeConnectionListener removeConnectionListener} | 移除连接状态监听器。 |
+| {@link ChatClient.removeAllConnectionListener removeAllConnectionListener} | 移除所有连接状态监听器。 |
+| {@link ChatClient.addMultiDeviceListener addMultiDeviceListener} | 添加多设备监听器。 |
+| {@link ChatClient.removeMultiDeviceListener removeMultiDeviceListener} | 移除指定多设备监听器。 |
+| {@link ChatClient.removeAllMultiDeviceListener removeAllMultiDeviceListener} | 移除所有多设备监听器。 |
+| {@link ChatClient.addCustomListener addCustomListener} | 添加自定义监听器，接收 Android 或者 iOS 设备发到 React Native 层的数据。 |
+| {@link ChatClient.removeCustomListener removeCustomListener} | 移除自定义监听，不再接收 Android 或者 iOS 设备发到 React Native 层的数据。 |
+| {@link ChatClient.removeAllCustomListener removeAllCustomListener} | 移除所有自定义监听器。 |
+| {@link ChatClient.chatManager chatManager} | 获取聊天管理器类。 |
+| {@link ChatClient.groupManager groupManager} | 获取群组管理器类。 |
+| {@link ChatClient.contactManager contactManager} | 获取联系人管理器类。 |
+| {@link ChatClient.pushManager pushManager} | 获取推送管理器类。 |
+| {@link ChatClient.userManager userManager} | 获取用户信息管理器类。 |
+| {@link ChatClient.roomManager roomManager} | 获取聊天室管理器类。 |
+| {@link ChatClient.presenceManager presenceManager} | 获取在线状态管理器类。 |
 
 | Event | Description |
 | :----- | :---------- |
-| {@link ChatConnectEventListener.onConnected onConnected} | Occurs when the SDK connects to the chat server successfully. |
-| {@link ChatConnectEventListener.onDisconnected onDisconnected} | Occurs when the SDK disconnects from the chat server. |
-| {@link ChatConnectEventListener.onTokenWillExpire onTokenWillExpire} | Occurs when the Agora token is about to expire. |
-| {@link ChatConnectEventListener.onTokenDidExpire onTokenDidExpire} | Occurs when the Agora token has expired. |
+| {@link ChatConnectEventListener.onConnected onConnected} | 成功连接到 chat 服务器时触发的回调。 |
+| {@link ChatConnectEventListener.onDisconnected onDisconnected} | 和 chat 服务器断开连接时触发的回调。 |
+| {@link ChatConnectEventListener.onTokenWillExpire onTokenWillExpire} | Agora token 即将过期时触发。 |
+| {@link ChatConnectEventListener.onTokenDidExpire onTokenDidExpire} | Agora token 已过期时触发。 |
 
 | Event | Description |
 | :----- | :---------- |
-| {@link ChatMultiDeviceEventListener.onContactEvent onContactEvent} | Occurs when a contact event occurs. |
-| {@link ChatMultiDeviceEventListener.onGroupEvent onGroupEvent} | Occurs when a group event occurs. |
-| {@link ChatMultiDeviceEventListener.onThreadEvent onThreadEvent} | Occurs when a thread event occurs. |
+| {@link ChatMultiDeviceEventListener.onContactEvent onContactEvent} | 联系人事件监听回调。 |
+| {@link ChatMultiDeviceEventListener.onGroupEvent onGroupEvent} | 群组事件监听回调。 |
+| {@link ChatMultiDeviceEventListener.onThreadEvent onThreadEvent} | 子区事件监听回调。 |
 
 | Event | Description |
 | :----- | :---------- |
-| {@link ChatCustomEventListener.onDataReceived onDataReceived} | The custom event listener. |
+| {@link ChatCustomEventListener.onDataReceived onDataReceived} | 自定义事件监听器。 |
 ## ChatManager
 | Method | Description |
 | :----- | :---------- |
-| {@link ChatManager.setNativeListener setNativeListener} | The chat manager class, responsible for sending and receiving messages, managing conversations (including loading and deleting conversations), and downloading attachments. |
-| {@link ChatManager.addMessageListener addMessageListener} | Adds a message listener. |
-| {@link ChatManager.removeMessageListener removeMessageListener} | Removes the message listener. |
-| {@link ChatManager.removeAllMessageListener removeAllMessageListener} | Removes all message listeners. |
-| {@link ChatManager.sendMessage sendMessage} | Sends a message. |
-| {@link ChatManager.resendMessage resendMessage} | Resends a message. |
-| {@link ChatManager.sendMessageReadAck sendMessageReadAck} | Sends the read receipt to the server. |
-| {@link ChatManager.sendGroupMessageReadAck sendGroupMessageReadAck} | Sends the group message receipt to the server. |
-| {@link ChatManager.sendConversationReadAck sendConversationReadAck} | Sends the conversation read receipt to the server. |
-| {@link ChatManager.recallMessage recallMessage} | Recalls the sent message. |
-| {@link ChatManager.getMessage getMessage} | Gets a message from the local database by message ID. |
-| {@link ChatManager.markAllConversationsAsRead markAllConversationsAsRead} | Marks all conversations as read. |
-| {@link ChatManager.getUnreadCount getUnreadCount} | Gets the count of the unread messages. |
-| {@link ChatManager.insertMessage insertMessage} | Inserts a message to the conversation in the local database. |
-| {@link ChatManager.updateMessage updateMessage} | Updates the local message. |
-| {@link ChatManager.importMessages importMessages} | Imports messages to the local database. |
-| {@link ChatManager.downloadAttachment downloadAttachment} | Downloads the message attachment. |
-| {@link ChatManager.downloadThumbnail downloadThumbnail} | Downloads the message thumbnail. |
-| {@link ChatManager.fetchHistoryMessages fetchHistoryMessages} | Uses the pagination to get messages in the specified conversation from the server. |
-| {@link ChatManager.searchMsgFromDB searchMsgFromDB} | Retrieves messages with keywords in a conversation from the local database. |
-| {@link ChatManager.fetchGroupAcks fetchGroupAcks} | Uses the pagination to get read receipts for group messages from the server. |
-| {@link ChatManager.removeConversationFromServer removeConversationFromServer} | Deletes the specified conversation and its historical messages from the server. |
-| {@link ChatManager.getConversation getConversation} | Gets the conversation by conversation ID and conversation type. |
-| {@link ChatManager.getAllConversations getAllConversations} | Gets all conversations from the local database. |
-| {@link ChatManager.fetchAllConversations fetchAllConversations} | Gets the conversation list from the server. |
-| {@link ChatManager.deleteConversation deleteConversation} | Deletes a conversation and its local messages from the local database. |
-| {@link ChatManager.getLatestMessage getLatestMessage} | Gets the latest message from the conversation. |
-| {@link ChatManager.getLatestReceivedMessage getLatestReceivedMessage} | Gets the latest received message from the conversation. |
-| {@link ChatManager.getConversationUnreadCount getConversationUnreadCount} | Gets the unread message count of the conversation. |
-| {@link ChatManager.markMessageAsRead markMessageAsRead} | Marks a message as read. |
-| {@link ChatManager.markAllMessagesAsRead markAllMessagesAsRead} | Marks all messages as read. |
-| {@link ChatManager.updateConversationMessage updateConversationMessage} | Updates a message in the local database. |
-| {@link ChatManager.deleteMessage deleteMessage} | Deletes a message from the local database. |
-| {@link ChatManager.deleteAllMessages deleteAllMessages} | Deletes all messages in the conversation from both the memory and local database. |
-| {@link ChatManager.deleteMessagesBeforeTimestamp deleteMessagesBeforeTimestamp} | Deletes local messages with timestamp that is before the specified one. |
-| {@link ChatManager.getMessagesWithMsgType getMessagesWithMsgType} | Retrieves messages of a certain type in the conversation from the local database. |
-| {@link ChatManager.getMessages getMessages} | Retrieves messages of a specified quantity in a conversation from the local database. |
-| {@link ChatManager.getMessagesWithKeyword getMessagesWithKeyword} | Gets messages that the specified user sends in a conversation in a certain period. |
-| {@link ChatManager.getMessageWithTimestamp getMessageWithTimestamp} | Retrieves messages that are sent and received in a certain period in a conversation in the local database. |
-| {@link ChatManager.translateMessage translateMessage} | Translates a text message. |
-| {@link ChatManager.fetchSupportedLanguages fetchSupportedLanguages} | Gets all languages supported by the translation service. |
-| {@link ChatManager.setConversationExtension setConversationExtension} | Sets the extension information of the conversation. |
-| {@link ChatManager.addReaction addReaction} | Adds a Reaction. |
-| {@link ChatManager.removeReaction removeReaction} | Deletes a Reaction. |
-| {@link ChatManager.fetchReactionList fetchReactionList} | Gets the list of Reactions. |
-| {@link ChatManager.fetchReactionDetail fetchReactionDetail} | Gets the Reaction details. |
-| {@link ChatManager.reportMessage reportMessage} | Reports an inappropriate message. |
-| {@link ChatManager.getReactionList getReactionList} | Gets the list of Reactions from a message. |
-| {@link ChatManager.groupAckCount groupAckCount} | Gets the number of members that have read the group message. |
-| {@link ChatManager.createChatThread createChatThread} | Creates a message thread. |
-| {@link ChatManager.joinChatThread joinChatThread} | Joins a message thread. |
-| {@link ChatManager.leaveChatThread leaveChatThread} | Leaves a message thread. |
-| {@link ChatManager.destroyChatThread destroyChatThread} | Destroys the message thread. |
-| {@link ChatManager.updateChatThreadName updateChatThreadName} | Changes the name of the message thread. |
-| {@link ChatManager.removeMemberWithChatThread removeMemberWithChatThread} | Removes a member from the message thread. |
-| {@link ChatManager.fetchMembersWithChatThreadFromServer fetchMembersWithChatThreadFromServer} | Uses the pagination to get a list of members in the message thread. |
-| {@link ChatManager.fetchJoinedChatThreadFromServer fetchJoinedChatThreadFromServer} | Uses the pagination to get the list of message threads that the current user has joined. |
-| {@link ChatManager.fetchJoinedChatThreadWithParentFromServer fetchJoinedChatThreadWithParentFromServer} | Uses the pagination to get the list of message threads that the current user has joined in the specified group. |
-| {@link ChatManager.fetchChatThreadWithParentFromServer fetchChatThreadWithParentFromServer} | Uses the pagination to get the list of message threads in the specified group. |
-| {@link ChatManager.fetchLastMessageWithChatThread fetchLastMessageWithChatThread} | Gets the last reply in the specified message threads from the server. |
-| {@link ChatManager.fetchChatThreadFromServer fetchChatThreadFromServer} | Gets the details of the message thread from the server. |
-| {@link ChatManager.getMessageThread getMessageThread} | Gets the details of the message thread from the memory. |
-| {@link ChatManager.getThreadConversation getThreadConversation} | Gets the thread conversation by conversation ID. |
+| {@link ChatManager.setNativeListener setNativeListener} | 聊天管理类，该类负责收发消息、管理会话（加载，删除等）、下载消息附件等。 |
+| {@link ChatManager.addMessageListener addMessageListener} | 添加消息监听器。 |
+| {@link ChatManager.removeMessageListener removeMessageListener} | 移除消息监听器。 |
+| {@link ChatManager.removeAllMessageListener removeAllMessageListener} | 移除所有消息监听器。 |
+| {@link ChatManager.sendMessage sendMessage} | 发送一条消息。 |
+| {@link ChatManager.resendMessage resendMessage} | 重发消息。 |
+| {@link ChatManager.sendMessageReadAck sendMessageReadAck} | 发送消息的已读回执。 |
+| {@link ChatManager.sendGroupMessageReadAck sendGroupMessageReadAck} | 发送群消息已读回执。 |
+| {@link ChatManager.sendConversationReadAck sendConversationReadAck} | 发送会话的已读回执。 |
+| {@link ChatManager.recallMessage recallMessage} | 撤回发送成功的消息。 |
+| {@link ChatManager.getMessage getMessage} | 从本地数据库获取指定 ID 的消息对象。 |
+| {@link ChatManager.markAllConversationsAsRead markAllConversationsAsRead} | 将所有的会话都设成已读。 |
+| {@link ChatManager.getUnreadCount getUnreadCount} | 获取未读消息数。 |
+| {@link ChatManager.insertMessage insertMessage} | 在本地会话中插入一条消息。 |
+| {@link ChatManager.updateMessage updateMessage} | 更新本地消息。 |
+| {@link ChatManager.importMessages importMessages} | 将消息导入本地数据库。 |
+| {@link ChatManager.downloadAttachment downloadAttachment} | 下载消息的附件。 |
+| {@link ChatManager.downloadThumbnail downloadThumbnail} | 下载消息的缩略图。 |
+| {@link ChatManager.fetchHistoryMessages fetchHistoryMessages} | 分页获取指定会话的历史消息。 |
+| {@link ChatManager.searchMsgFromDB searchMsgFromDB} | 从本地数据库获取指定会话中一定数量的消息。 |
+| {@link ChatManager.fetchGroupAcks fetchGroupAcks} | 从服务器分页获取群组消息已读回执详情。 |
+| {@link ChatManager.removeConversationFromServer removeConversationFromServer} | 删除服务端的指定会话及其历史消息。 |
+| {@link ChatManager.getConversation getConversation} | 根据会话 ID 和会话类型获取会话。 |
+| {@link ChatManager.getAllConversations getAllConversations} | 获取本地数据库中所有会话。 |
+| {@link ChatManager.fetchAllConversations fetchAllConversations} | 从服务器获取会话列表。 |
+| {@link ChatManager.deleteConversation deleteConversation} | 删除指定会话及其本地历史消息。 |
+| {@link ChatManager.getLatestMessage getLatestMessage} | 获取指定会话的最新一条消息。 |
+| {@link ChatManager.getLatestReceivedMessage getLatestReceivedMessage} | 获取指定会话最新收到的一条消息。 |
+| {@link ChatManager.getConversationUnreadCount getConversationUnreadCount} | 获取指定会话中的未读消息数。 |
+| {@link ChatManager.markMessageAsRead markMessageAsRead} | 将指定消息标为已读。 |
+| {@link ChatManager.markAllMessagesAsRead markAllMessagesAsRead} | 将所有消息标为已读。 |
+| {@link ChatManager.updateConversationMessage updateConversationMessage} | 更新本地数据库的消息。 |
+| {@link ChatManager.deleteMessage deleteMessage} | 删除指定消息。 |
+| {@link ChatManager.deleteAllMessages deleteAllMessages} | 删除内存和本地数据库中指定会话的所有消息。 |
+| {@link ChatManager.deleteMessagesBeforeTimestamp deleteMessagesBeforeTimestamp} | 删除指定时间戳之前的所有本地消息。 |
+| {@link ChatManager.getMessagesWithMsgType getMessagesWithMsgType} | 从本地数据库获取会话中的指定用户发送的某些类型的消息。 |
+| {@link ChatManager.getMessages getMessages} | 从本地数据库获取指定会话中一定数量的消息。 |
+| {@link ChatManager.getMessagesWithKeyword getMessagesWithKeyword} | 从本地数据库获取会话中的指定用户在一定时间段内发送的特定消息。 |
+| {@link ChatManager.getMessageWithTimestamp getMessageWithTimestamp} | 从本地数据库获取指定会话在一段时间内的消息。 |
+| {@link ChatManager.translateMessage translateMessage} | 翻译一条文本消息。 |
+| {@link ChatManager.fetchSupportedLanguages fetchSupportedLanguages} | 查询翻译服务支持的语言。 |
+| {@link ChatManager.setConversationExtension setConversationExtension} | 设置会话的扩展属性。 |
+| {@link ChatManager.addReaction addReaction} | 添加 Reaction。 |
+| {@link ChatManager.removeReaction removeReaction} | 删除 Reaction。 |
+| {@link ChatManager.fetchReactionList fetchReactionList} | 获取 Reaction 列表。 |
+| {@link ChatManager.fetchReactionDetail fetchReactionDetail} | 获取 Reaction 详情。 |
+| {@link ChatManager.reportMessage reportMessage} | 举报非法消息。 |
+| {@link ChatManager.getReactionList getReactionList} | 获取指定消息的 Reaction 列表。 |
+| {@link ChatManager.groupAckCount groupAckCount} | 获取群组消息的已读人数。 |
+| {@link ChatManager.createChatThread createChatThread} | 创建子区。 |
+| {@link ChatManager.joinChatThread joinChatThread} | 加入子区。 |
+| {@link ChatManager.leaveChatThread leaveChatThread} | 退出子区。 |
+| {@link ChatManager.destroyChatThread destroyChatThread} | 解散子区。 |
+| {@link ChatManager.updateChatThreadName updateChatThreadName} | 修改子区名称。 |
+| {@link ChatManager.removeMemberWithChatThread removeMemberWithChatThread} | 移除子区成员。 |
+| {@link ChatManager.fetchMembersWithChatThreadFromServer fetchMembersWithChatThreadFromServer} | 分页获取子区成员。 |
+| {@link ChatManager.fetchJoinedChatThreadFromServer fetchJoinedChatThreadFromServer} | 分页从服务器获取当前用户加入的子区列表。 |
+| {@link ChatManager.fetchJoinedChatThreadWithParentFromServer fetchJoinedChatThreadWithParentFromServer} | 分页从服务器获取当前用户加入指定群组的子区列表。 |
+| {@link ChatManager.fetchChatThreadWithParentFromServer fetchChatThreadWithParentFromServer} | 分页从服务器端获取指定群组的子区列表。 |
+| {@link ChatManager.fetchLastMessageWithChatThread fetchLastMessageWithChatThread} | 从服务器批量获取指定子区中的最新一条消息。 |
+| {@link ChatManager.fetchChatThreadFromServer fetchChatThreadFromServer} | 从服务器获取子区详情。 |
+| {@link ChatManager.getMessageThread getMessageThread} | 获取本地子区详情。 |
+| {@link ChatManager.getThreadConversation getThreadConversation} | 根据指定会话 ID 获取本地子区会话对象。 |
+| {@link ChatManager.fetchConversationsFromServerWithPage fetchConversationsFromServerWithPage} | 根据指定会话 ID 获取本地子区会话对象。 |
+| {@link ChatManager.removeMessagesFromServerWithMsgIds removeMessagesFromServerWithMsgIds} | 根据指定会话 ID 获取本地子区会话对象。 |
+| {@link ChatManager.removeMessagesFromServerWithTimestamp removeMessagesFromServerWithTimestamp} | 根据指定会话 ID 获取本地子区会话对象。 |
 
 | Event | Description |
 | :----- | :---------- |
-| {@link ChatMessageEventListener.onMessagesReceived onMessagesReceived} | Occurs when a message is received. |
-| {@link ChatMessageEventListener.onCmdMessagesReceived onCmdMessagesReceived} | Occurs when a command message is received. |
-| {@link ChatMessageEventListener.onMessagesRead onMessagesRead} | Occurs when a read receipt is received for a message. |
-| {@link ChatMessageEventListener.onGroupMessageRead onGroupMessageRead} | Occurs when a read receipt is received for a group message. |
-| {@link ChatMessageEventListener.onMessagesDelivered onMessagesDelivered} | Occurs when a delivery receipt is received. |
-| {@link ChatMessageEventListener.onMessagesRecalled onMessagesRecalled} | Occurs when a received message is recalled. |
-| {@link ChatMessageEventListener.onConversationsUpdate onConversationsUpdate} | Occurs when the conversation is updated. |
-| {@link ChatMessageEventListener.onConversationRead onConversationRead} | Occurs when a conversation read receipt is received. |
-| {@link ChatMessageEventListener.onMessageReactionDidChange onMessageReactionDidChange} | Occurs when a message reaction changes. |
-| {@link ChatMessageEventListener.onChatMessageThreadCreated onChatMessageThreadCreated} | Occurs when a message thread is created. |
-| {@link ChatMessageEventListener.onChatMessageThreadUpdated onChatMessageThreadUpdated} | Occurs when a message thread is updated. |
-| {@link ChatMessageEventListener.onChatMessageThreadDestroyed onChatMessageThreadDestroyed} | Occurs when a message thread is destroyed. |
-| {@link ChatMessageEventListener.onChatMessageThreadUserRemoved onChatMessageThreadUserRemoved} | Occurs when the current user is removed from the message thread by the admin. |
+| {@link ChatMessageEventListener.onMessagesReceived onMessagesReceived} | 收到消息回调。 |
+| {@link ChatMessageEventListener.onCmdMessagesReceived onCmdMessagesReceived} | 收到命令消息回调。 |
+| {@link ChatMessageEventListener.onMessagesRead onMessagesRead} | 收到单聊消息已读回执的回调。 |
+| {@link ChatMessageEventListener.onGroupMessageRead onGroupMessageRead} | 收到群组消息的已读回执的回调。 |
+| {@link ChatMessageEventListener.onMessagesDelivered onMessagesDelivered} | 收到消息已送达回执的回调。 |
+| {@link ChatMessageEventListener.onMessagesRecalled onMessagesRecalled} | 已收到的消息被撤回的回调。 |
+| {@link ChatMessageEventListener.onConversationsUpdate onConversationsUpdate} | 会话更新事件回调。 |
+| {@link ChatMessageEventListener.onConversationRead onConversationRead} | 收到会话已读回执的回调。 |
+| {@link ChatMessageEventListener.onMessageReactionDidChange onMessageReactionDidChange} | 消息表情回复（Reaction）变化监听器。 |
+| {@link ChatMessageEventListener.onChatMessageThreadCreated onChatMessageThreadCreated} | 子区创建回调。 |
+| {@link ChatMessageEventListener.onChatMessageThreadUpdated onChatMessageThreadUpdated} | 子区更新回调。 |
+| {@link ChatMessageEventListener.onChatMessageThreadDestroyed onChatMessageThreadDestroyed} | 子区移除回调。 |
+| {@link ChatMessageEventListener.onChatMessageThreadUserRemoved onChatMessageThreadUserRemoved} | 管理员移除子区用户的回调。 |
 ## ChatContactManager
 | Method | Description |
 | :----- | :---------- |
-| {@link ChatContactManager.setNativeListener setNativeListener} | The contact manager class, which manages chat contacts such as adding, retrieving, modifying, and deleting contacts. |
-| {@link ChatContactManager.addContactListener addContactListener} | Adds a contact listener. |
-| {@link ChatContactManager.removeContactListener removeContactListener} | Removes the contact listener. |
-| {@link ChatContactManager.removeAllContactListener removeAllContactListener} | Removes all contact listeners. |
-| {@link ChatContactManager.addContact addContact} | Adds a new contact. |
-| {@link ChatContactManager.deleteContact deleteContact} | Deletes a contact and all the related conversations. |
-| {@link ChatContactManager.getAllContactsFromServer getAllContactsFromServer} | Gets the contact list from the server. |
-| {@link ChatContactManager.getAllContactsFromDB getAllContactsFromDB} | Gets the contact list from the local database. |
-| {@link ChatContactManager.addUserToBlockList addUserToBlockList} | Adds a contact to the block list. |
-| {@link ChatContactManager.removeUserFromBlockList removeUserFromBlockList} | Removes the contact from the block list. |
-| {@link ChatContactManager.getBlockListFromServer getBlockListFromServer} | Gets the block list from the server. |
-| {@link ChatContactManager.getBlockListFromDB getBlockListFromDB} | Gets the block list from the local database. |
-| {@link ChatContactManager.acceptInvitation acceptInvitation} | Accepts a friend invitation。 |
-| {@link ChatContactManager.declineInvitation declineInvitation} | Declines a friend invitation. |
-| {@link ChatContactManager.getSelfIdsOnOtherPlatform getSelfIdsOnOtherPlatform} | Gets the unique IDs of the current user on the other devices. The ID is in the format of `{user_ID} + "/" + {resource_ID}`. |
+| {@link ChatContactManager.setNativeListener setNativeListener} | 联系人管理类，用于添加、查询和删除联系人。 |
+| {@link ChatContactManager.addContactListener addContactListener} | 添加联系人监听器。 |
+| {@link ChatContactManager.removeContactListener removeContactListener} | 移除联系人监听器。 |
+| {@link ChatContactManager.removeAllContactListener removeAllContactListener} | 移除所有联系人监听器。 |
+| {@link ChatContactManager.addContact addContact} | 添加好友。 |
+| {@link ChatContactManager.deleteContact deleteContact} | 删除联系人及其相关的会话。 |
+| {@link ChatContactManager.getAllContactsFromServer getAllContactsFromServer} | 从服务器获取联系人列表。 |
+| {@link ChatContactManager.getAllContactsFromDB getAllContactsFromDB} | 从本地数据库获取联系人列表。 |
+| {@link ChatContactManager.addUserToBlockList addUserToBlockList} | 将指定用户加入黑名单。 |
+| {@link ChatContactManager.removeUserFromBlockList removeUserFromBlockList} | 将指定用户移除黑名单。 |
+| {@link ChatContactManager.getBlockListFromServer getBlockListFromServer} | 从服务器获取黑名单列表。 |
+| {@link ChatContactManager.getBlockListFromDB getBlockListFromDB} | 从本地数据库获取黑名单列表。 |
+| {@link ChatContactManager.acceptInvitation acceptInvitation} | 接受加好友的邀请。 |
+| {@link ChatContactManager.declineInvitation declineInvitation} | 拒绝加好友的邀请。 |
+| {@link ChatContactManager.getSelfIdsOnOtherPlatform getSelfIdsOnOtherPlatform} | 获取登录用户在其他登录设备上唯一 ID，该 ID 由 user ID + "/" + resource 组成。 |
 
 | Event | Description |
 | :----- | :---------- |
-| {@link ChatContactEventListener.onContactAdded onContactAdded} | Occurs when a friend request from the current user is accepted by the peer user. |
-| {@link ChatContactEventListener.onContactDeleted onContactDeleted} | Occurs when a friend request from the current user is declined by the peer user. |
-| {@link ChatContactEventListener.onContactInvited onContactInvited} | Occurs when a friend request is received by the current user. |
-| {@link ChatContactEventListener.onFriendRequestAccepted onFriendRequestAccepted} | Occurs when a friend request is accepted by the current user. |
-| {@link ChatContactEventListener.onFriendRequestDeclined onFriendRequestDeclined} | Occurs when a friend request is declined by the current user. |
+| {@link ChatContactEventListener.onContactAdded onContactAdded} | 好友请求被接受的回调。 |
+| {@link ChatContactEventListener.onContactDeleted onContactDeleted} | 好友请求被拒绝的回调。 |
+| {@link ChatContactEventListener.onContactInvited onContactInvited} | 当前用户收到好友请求的回调。 |
+| {@link ChatContactEventListener.onFriendRequestAccepted onFriendRequestAccepted} | 当前用户同意好友请求的回调。 |
+| {@link ChatContactEventListener.onFriendRequestDeclined onFriendRequestDeclined} | 拒绝好友请求的回调。 |
 ## ChatGroupManager
 | Method | Description |
 | :----- | :---------- |
-| {@link ChatGroupManager.setNativeListener setNativeListener} | The group manager class, which defines how to manage groups, like group creation and destruction and member management. |
-| {@link ChatGroupManager.getGroupWithId getGroupWithId} | Gets the group instance from the memory by group ID. |
-| {@link ChatGroupManager.getJoinedGroups getJoinedGroups} | Gets the list of groups that the current user has joined. |
-| {@link ChatGroupManager.fetchJoinedGroupsFromServer fetchJoinedGroupsFromServer} | Gets the list of groups that the current user has joined. |
-| {@link ChatGroupManager.fetchPublicGroupsFromServer fetchPublicGroupsFromServer} | Gets public groups from the server with pagination. |
-| {@link ChatGroupManager.createGroup createGroup} | Creates a group instance. |
-| {@link ChatGroupManager.fetchGroupInfoFromServer fetchGroupInfoFromServer} | Gets the group information from the server. |
-| {@link ChatGroupManager.fetchMemberListFromServer fetchMemberListFromServer} | Uses the pagination to get the member list of the group from the server. |
-| {@link ChatGroupManager.fetchBlockListFromServer fetchBlockListFromServer} | Uses the pagination to get the group block list from the server. |
-| {@link ChatGroupManager.fetchMuteListFromServer fetchMuteListFromServer} | Uses the pagination to get the mute list of the group from the server. |
-| {@link ChatGroupManager.fetchAllowListFromServer fetchAllowListFromServer} | Uses the pagination to get the allow list of the group from the server. |
-| {@link ChatGroupManager.isMemberInAllowListFromServer isMemberInAllowListFromServer} | Gets whether the member is on the allow list of the group. |
-| {@link ChatGroupManager.fetchGroupFileListFromServer fetchGroupFileListFromServer} | Uses the pagination to get the shared files of the group from the server. |
-| {@link ChatGroupManager.fetchAnnouncementFromServer fetchAnnouncementFromServer} | Gets the group announcement from the server. |
-| {@link ChatGroupManager.addMembers addMembers} | Adds users to the group. |
-| {@link ChatGroupManager.inviterUser inviterUser} | Invites users to join the group. |
-| {@link ChatGroupManager.removeMembers removeMembers} | Removes a member from the group. |
-| {@link ChatGroupManager.blockMembers blockMembers} | Adds the user to the block list of the group. |
-| {@link ChatGroupManager.unblockMembers unblockMembers} | Removes users from the group block list. |
-| {@link ChatGroupManager.changeGroupName changeGroupName} | Changes the group name. |
-| {@link ChatGroupManager.changeGroupDescription changeGroupDescription} | Modifies the group description. |
-| {@link ChatGroupManager.leaveGroup leaveGroup} | Leaves a group. |
-| {@link ChatGroupManager.destroyGroup destroyGroup} | Destroys the group instance. |
-| {@link ChatGroupManager.blockGroup blockGroup} | Blocks group messages. |
-| {@link ChatGroupManager.unblockGroup unblockGroup} | Unblocks group messages. |
-| {@link ChatGroupManager.changeOwner changeOwner} | Transfers the group ownership. |
-| {@link ChatGroupManager.addAdmin addAdmin} | Adds a group admin. |
-| {@link ChatGroupManager.removeAdmin removeAdmin} | Removes a group admin. |
-| {@link ChatGroupManager.muteMembers muteMembers} | Mutes group members. |
-| {@link ChatGroupManager.unMuteMembers unMuteMembers} | Unmutes group members. |
-| {@link ChatGroupManager.muteAllMembers muteAllMembers} | Mutes all members. |
-| {@link ChatGroupManager.unMuteAllMembers unMuteAllMembers} | Unmutes all group members. |
-| {@link ChatGroupManager.addAllowList addAllowList} | Adds members to the allow list of the group. |
-| {@link ChatGroupManager.removeAllowList removeAllowList} | Removes members from the allow list of the group. |
-| {@link ChatGroupManager.uploadGroupSharedFile uploadGroupSharedFile} | Uploads the shared file to the group. |
-| {@link ChatGroupManager.downloadGroupSharedFile downloadGroupSharedFile} | Downloads the shared file of the group. |
-| {@link ChatGroupManager.removeGroupSharedFile removeGroupSharedFile} | Removes a shared file of the group. |
-| {@link ChatGroupManager.updateGroupAnnouncement updateGroupAnnouncement} | Updates the group announcement. |
-| {@link ChatGroupManager.updateGroupExtension updateGroupExtension} | Updates the group extension field. |
-| {@link ChatGroupManager.joinPublicGroup joinPublicGroup} | Joins a public group. |
-| {@link ChatGroupManager.requestToJoinPublicGroup requestToJoinPublicGroup} | Requests to join a group. |
-| {@link ChatGroupManager.acceptJoinApplication acceptJoinApplication} | Accepts a join request. |
-| {@link ChatGroupManager.declineJoinApplication declineJoinApplication} | Declines a join request. |
-| {@link ChatGroupManager.acceptInvitation acceptInvitation} | Accepts a group invitation. |
-| {@link ChatGroupManager.declineInvitation declineInvitation} | Declines a group invitation. |
-| {@link ChatGroupManager.addGroupListener addGroupListener} | Adds a group listener. |
-| {@link ChatGroupManager.removeGroupListener removeGroupListener} | Removes the group listener. |
-| {@link ChatGroupManager.removeAllGroupListener removeAllGroupListener} | Clears all group listeners. |
+| {@link ChatGroupManager.setNativeListener setNativeListener} | 群组管理类，用于管理群组的创建，删除及成员管理等操作。 |
+| {@link ChatGroupManager.getGroupWithId getGroupWithId} | 根据群组 ID，从内存中获取群组对象。 |
+| {@link ChatGroupManager.getJoinedGroups getJoinedGroups} | 从本地数据库获取当前用户已加入的群组。 |
+| {@link ChatGroupManager.fetchJoinedGroupsFromServer fetchJoinedGroupsFromServer} | 以分页方式从服务器获取当前用户已加入的群组。 |
+| {@link ChatGroupManager.fetchPublicGroupsFromServer fetchPublicGroupsFromServer} | 分页从服务器获取公开群组。 |
+| {@link ChatGroupManager.createGroup createGroup} | 创建群组。 |
+| {@link ChatGroupManager.fetchGroupInfoFromServer fetchGroupInfoFromServer} | 从服务器获取群组详情。 |
+| {@link ChatGroupManager.fetchMemberListFromServer fetchMemberListFromServer} | 从服务器分页获取群组成员。 |
+| {@link ChatGroupManager.fetchBlockListFromServer fetchBlockListFromServer} | 从服务器分页获取群组黑名单列表。 |
+| {@link ChatGroupManager.fetchMuteListFromServer fetchMuteListFromServer} | 从服务器分页获取群组禁言列表。 |
+| {@link ChatGroupManager.fetchAllowListFromServer fetchAllowListFromServer} | 从服务器分页获取群组白名单列表。 |
+| {@link ChatGroupManager.isMemberInAllowListFromServer isMemberInAllowListFromServer} | 从服务器查询该用户是否在群组白名单上。 |
+| {@link ChatGroupManager.fetchGroupFileListFromServer fetchGroupFileListFromServer} | 从服务器分页获取群共享文件。 |
+| {@link ChatGroupManager.fetchAnnouncementFromServer fetchAnnouncementFromServer} | 从服务器获取群组公告。 |
+| {@link ChatGroupManager.addMembers addMembers} | 向群组中添加新成员。 |
+| {@link ChatGroupManager.inviterUser inviterUser} | 邀请用户加入群组。 |
+| {@link ChatGroupManager.removeMembers removeMembers} | 从群组中移除用户。 |
+| {@link ChatGroupManager.blockMembers blockMembers} | 将成员加入群组的黑名单列表。 |
+| {@link ChatGroupManager.unblockMembers unblockMembers} | 将用户从群组黑名单中移除。 |
+| {@link ChatGroupManager.changeGroupName changeGroupName} | 修改群组名称。 |
+| {@link ChatGroupManager.changeGroupDescription changeGroupDescription} | 修改群组描述。 |
+| {@link ChatGroupManager.leaveGroup leaveGroup} | 主动退出群组。 |
+| {@link ChatGroupManager.destroyGroup destroyGroup} | 解散群组。 |
+| {@link ChatGroupManager.blockGroup blockGroup} | 屏蔽群消息。 |
+| {@link ChatGroupManager.unblockGroup unblockGroup} | 解除屏蔽群消息。 |
+| {@link ChatGroupManager.changeOwner changeOwner} | 转移群主权限。 |
+| {@link ChatGroupManager.addAdmin addAdmin} | 添加群组管理员。 |
+| {@link ChatGroupManager.removeAdmin removeAdmin} | 移除群组管理员权限。 |
+| {@link ChatGroupManager.muteMembers muteMembers} | 禁言群组成员。 |
+| {@link ChatGroupManager.unMuteMembers unMuteMembers} | 将成员移除群组禁言名单。 |
+| {@link ChatGroupManager.muteAllMembers muteAllMembers} | 禁言全体群成员。 |
+| {@link ChatGroupManager.unMuteAllMembers unMuteAllMembers} | 解除全体成员禁言。 |
+| {@link ChatGroupManager.addAllowList addAllowList} | 将成员加入群组白名单。 |
+| {@link ChatGroupManager.removeAllowList removeAllowList} | 从群白名单中移出成员。 |
+| {@link ChatGroupManager.uploadGroupSharedFile uploadGroupSharedFile} | 上传群组共享文件。 |
+| {@link ChatGroupManager.downloadGroupSharedFile downloadGroupSharedFile} | 下载群共享文件。 |
+| {@link ChatGroupManager.removeGroupSharedFile removeGroupSharedFile} | 删除指定群共享文件。 |
+| {@link ChatGroupManager.updateGroupAnnouncement updateGroupAnnouncement} | 更新群公告。 |
+| {@link ChatGroupManager.updateGroupExtension updateGroupExtension} | 更新群组扩展字段信息。 |
+| {@link ChatGroupManager.joinPublicGroup joinPublicGroup} | 加入公开群组。 |
+| {@link ChatGroupManager.requestToJoinPublicGroup requestToJoinPublicGroup} | 申请加入群组。 |
+| {@link ChatGroupManager.acceptJoinApplication acceptJoinApplication} | 同意入群申请。 |
+| {@link ChatGroupManager.declineJoinApplication declineJoinApplication} | 拒绝用户的入群申请。 |
+| {@link ChatGroupManager.acceptInvitation acceptInvitation} | 接受入群邀请。 |
+| {@link ChatGroupManager.declineInvitation declineInvitation} | 拒绝入群邀请。 |
 
 | Event | Description |
 | :----- | :---------- |
-| {@link ChatGroupEventListener.onInvitationReceived onInvitationReceived} | Occurs when the current user receives a group invitation. |
-| {@link ChatGroupEventListener.onRequestToJoinReceived onRequestToJoinReceived} | Occurs when a join request from the current user is received by the peer user. |
-| {@link ChatGroupEventListener.onRequestToJoinAccepted onRequestToJoinAccepted} | Occurs when a join request from the current user is accepted by the peer user. |
-| {@link ChatGroupEventListener.onRequestToJoinDeclined onRequestToJoinDeclined} | Occurs when a join request from the current user is declined by the peer user. |
-| {@link ChatGroupEventListener.onInvitationAccepted onInvitationAccepted} | Occurs when a group invitation from the current user is accepted by the peer user. |
-| {@link ChatGroupEventListener.onInvitationDeclined onInvitationDeclined} | Occurs when a group invitation from the current user is declined by the peer user. |
-| {@link ChatGroupEventListener.onUserRemoved onUserRemoved} | Occurs when the current user is removed from the group. |
-| {@link ChatGroupEventListener.onGroupDestroyed onGroupDestroyed} | Occurs when a group is destroyed. |
-| {@link ChatGroupEventListener.onAutoAcceptInvitation onAutoAcceptInvitation} | Occurs when the group invitation is accepted automatically by the current user. |
-| {@link ChatGroupEventListener.onMuteListAdded onMuteListAdded} | Occurs when one or more members are added to the mute list of the group. |
-| {@link ChatGroupEventListener.onMuteListRemoved onMuteListRemoved} | Occurs when one or more members are removed from the mute list of the group. |
-| {@link ChatGroupEventListener.onAdminAdded onAdminAdded} | Occurs when a member is set as an admin. |
-| {@link ChatGroupEventListener.onAdminRemoved onAdminRemoved} | Occurs when the administrative privileges of an admin are removed. |
-| {@link ChatGroupEventListener.onOwnerChanged onOwnerChanged} | Occurs when the group ownership is transferred. |
-| {@link ChatGroupEventListener.onMemberJoined onMemberJoined} | Occurs when a user joins a group. |
-| {@link ChatGroupEventListener.onMemberExited onMemberExited} | Occurs when a member voluntarily leaves the group. |
-| {@link ChatGroupEventListener.onAnnouncementChanged onAnnouncementChanged} | Occurs when the group announcement is updated. |
-| {@link ChatGroupEventListener.onSharedFileAdded onSharedFileAdded} | Occurs when a shared file is added to the group. |
-| {@link ChatGroupEventListener.onSharedFileDeleted onSharedFileDeleted} | Occurs when a shared file is removed from a group. |
-| {@link ChatGroupEventListener.onAllowListAdded onAllowListAdded} | Occurs when one or more group members are added to the allow list. |
-| {@link ChatGroupEventListener.onAllowListRemoved onAllowListRemoved} | Occurs when one or more group members are removed from the allow list. |
-| {@link ChatGroupEventListener.onAllGroupMemberMuteStateChanged onAllGroupMemberMuteStateChanged} | Occurs when all group members are muted or unmuted. |
-| {@link ChatGroupEventListener.onDetailChanged onDetailChanged} | Occurs when the chat group detail change. All chat group members receive this event. |
-| {@link ChatGroupEventListener.onStateChanged onStateChanged} | Occurs when the disabled state of group changes. |
+| {@link ChatGroupEventListener.onInvitationReceived onInvitationReceived} | 当前用户收到入群邀请的回调。 |
+| {@link ChatGroupEventListener.onRequestToJoinReceived onRequestToJoinReceived} | 对端用户接收群组申请的回调。 |
+| {@link ChatGroupEventListener.onRequestToJoinAccepted onRequestToJoinAccepted} | 对端用户接受当前用户发送的群组申请的回调。 |
+| {@link ChatGroupEventListener.onRequestToJoinDeclined onRequestToJoinDeclined} | 对端用户拒绝群组申请的回调。 |
+| {@link ChatGroupEventListener.onInvitationAccepted onInvitationAccepted} | 当前用户收到对端用户同意入群邀请触发的回调。 |
+| {@link ChatGroupEventListener.onInvitationDeclined onInvitationDeclined} | 当前用户收到群组邀请被拒绝的回调。 |
+| {@link ChatGroupEventListener.onUserRemoved onUserRemoved} | 当前用户被移出群组时的回调。 |
+| {@link ChatGroupEventListener.onGroupDestroyed onGroupDestroyed} | 当前用户收到群组被解散的回调。 |
+| {@link ChatGroupEventListener.onAutoAcceptInvitation onAutoAcceptInvitation} | 当前用户自动同意入群邀请的回调。 |
+| {@link ChatGroupEventListener.onMuteListAdded onMuteListAdded} | 有成员被禁言回调。 |
+| {@link ChatGroupEventListener.onMuteListRemoved onMuteListRemoved} | 有成员被解除禁言的回调。 |
+| {@link ChatGroupEventListener.onAdminAdded onAdminAdded} | 成员设置为管理员的回调。 |
+| {@link ChatGroupEventListener.onAdminRemoved onAdminRemoved} | 取消成员的管理员权限的回调。 |
+| {@link ChatGroupEventListener.onOwnerChanged onOwnerChanged} | 转移群主权限的回调。 |
+| {@link ChatGroupEventListener.onMemberJoined onMemberJoined} | 新成员加入群组的回调。 |
+| {@link ChatGroupEventListener.onMemberExited onMemberExited} | 群组成员主动退出回调。 |
+| {@link ChatGroupEventListener.onAnnouncementChanged onAnnouncementChanged} | 群公告更新回调。 |
+| {@link ChatGroupEventListener.onSharedFileAdded onSharedFileAdded} | 群组添加共享文件回调。 |
+| {@link ChatGroupEventListener.onSharedFileDeleted onSharedFileDeleted} | 群组删除共享文件回调。 |
+| {@link ChatGroupEventListener.onAllowListAdded onAllowListAdded} | 成员加入群组白名单回调。 |
+| {@link ChatGroupEventListener.onAllowListRemoved onAllowListRemoved} | 成员移出群组白名单回调。 |
+| {@link ChatGroupEventListener.onAllGroupMemberMuteStateChanged onAllGroupMemberMuteStateChanged} | 全员禁言状态变化回调。 |
+| {@link ChatGroupEventListener.onDetailChanged onDetailChanged} | 群组详情变更回调。群组所有成员会收到该事件。 |
+| {@link ChatGroupEventListener.onStateChanged onStateChanged} | 群组状态变更回调。群组所有成员会收到该事件。 |
 ## ChatRoomManager
 | Method | Description |
 | :----- | :---------- |
-| {@link ChatRoomManager.setNativeListener setNativeListener} | The chat room manager class, which manages user operations, like joining and leaving the chat room and retrieving the chat room list, and manages member privileges. |
-| {@link ChatRoomManager.addRoomListener addRoomListener} | Adds a chat room listener. |
-| {@link ChatRoomManager.removeRoomListener removeRoomListener} | Removes the chat room listener. |
-| {@link ChatRoomManager.removeAllRoomListener removeAllRoomListener} | Removes all the chat room listeners. |
-| {@link ChatRoomManager.joinChatRoom joinChatRoom} | Joins the chat room. |
-| {@link ChatRoomManager.leaveChatRoom leaveChatRoom} | Leaves the chat room. |
-| {@link ChatRoomManager.fetchPublicChatRoomsFromServer fetchPublicChatRoomsFromServer} | Gets chat room data from the server with pagination. |
-| {@link ChatRoomManager.fetchChatRoomInfoFromServer fetchChatRoomInfoFromServer} | Gets the details of the chat room from the server. |
-| {@link ChatRoomManager.getChatRoomWithId getChatRoomWithId} | Gets the chat room by ID from the local database. |
-| {@link ChatRoomManager.createChatRoom createChatRoom} | Creates a chat room. |
-| {@link ChatRoomManager.destroyChatRoom destroyChatRoom} | Destroys a chat room. |
-| {@link ChatRoomManager.changeChatRoomSubject changeChatRoomSubject} | Changes the chat room name. |
-| {@link ChatRoomManager.changeChatRoomDescription changeChatRoomDescription} | Modifies the chat room description. |
-| {@link ChatRoomManager.fetchChatRoomMembers fetchChatRoomMembers} | Gets the chat room member list. |
-| {@link ChatRoomManager.muteChatRoomMembers muteChatRoomMembers} | Mutes the specified members in a chat room. |
-| {@link ChatRoomManager.unMuteChatRoomMembers unMuteChatRoomMembers} | Unmutes the specified members in a chat room. |
-| {@link ChatRoomManager.changeOwner changeOwner} | Transfers the chat room ownership. |
-| {@link ChatRoomManager.addChatRoomAdmin addChatRoomAdmin} | Adds a chat room admin. |
-| {@link ChatRoomManager.removeChatRoomAdmin removeChatRoomAdmin} | Removes administrative privileges of a chat room admin. |
-| {@link ChatRoomManager.fetchChatRoomMuteList fetchChatRoomMuteList} | Uses the pagination to get the list of members who are muted in the chat room. |
-| {@link ChatRoomManager.removeChatRoomMembers removeChatRoomMembers} | Removes the specified members from a chat room. |
-| {@link ChatRoomManager.blockChatRoomMembers blockChatRoomMembers} | Adds the specified members to the block list of the chat room. |
-| {@link ChatRoomManager.unBlockChatRoomMembers unBlockChatRoomMembers} | Removes the specified members from the block list of the chat room. |
-| {@link ChatRoomManager.fetchChatRoomBlockList fetchChatRoomBlockList} | Gets the chat room block list with pagination. |
-| {@link ChatRoomManager.updateChatRoomAnnouncement updateChatRoomAnnouncement} | Updates the chat room announcement. |
-| {@link ChatRoomManager.fetchChatRoomAnnouncement fetchChatRoomAnnouncement} | Gets the chat room announcement from the server. |
-| {@link ChatRoomManager.fetchChatRoomAllowListFromServer fetchChatRoomAllowListFromServer} | Gets the allow list from the server. |
-| {@link ChatRoomManager.isMemberInChatRoomAllowList isMemberInChatRoomAllowList} | Checks whether the member is on the allow list of the chat room. |
-| {@link ChatRoomManager.addMembersToChatRoomAllowList addMembersToChatRoomAllowList} | Adds members to the allow list of the chat room. |
-| {@link ChatRoomManager.removeMembersFromChatRoomAllowList removeMembersFromChatRoomAllowList} | Removes members from the allow list of the chat room. |
-| {@link ChatRoomManager.muteAllChatRoomMembers muteAllChatRoomMembers} | Mutes all members. |
-| {@link ChatRoomManager.unMuteAllChatRoomMembers unMuteAllChatRoomMembers} | Unmutes all members of the chat room. |
-| {@link ChatRoomManager.fetchChatRoomAttributes fetchChatRoomAttributes} | Gets custom chat room attributes from the server. |
-| {@link ChatRoomManager.addAttributes addAttributes} | Sets custom chat room attributes. |
-| {@link ChatRoomManager.removeAttributes removeAttributes} | Removes custom chat room attributes. |
+| {@link ChatRoomManager.setNativeListener setNativeListener} | 聊天室管理类，负责聊天室加入和退出、聊天室列表获取以及成员权限管理等。 |
+| {@link ChatRoomManager.addRoomListener addRoomListener} | 注册聊天室监听器。 |
+| {@link ChatRoomManager.removeRoomListener removeRoomListener} | 移除聊天室监听器。 |
+| {@link ChatRoomManager.removeAllRoomListener removeAllRoomListener} | 移除所有聊天室监听器。 |
+| {@link ChatRoomManager.joinChatRoom joinChatRoom} | 加入聊天室。 |
+| {@link ChatRoomManager.leaveChatRoom leaveChatRoom} | 退出聊天室。 |
+| {@link ChatRoomManager.fetchPublicChatRoomsFromServer fetchPublicChatRoomsFromServer} | 从服务器分页获取公开聊天室。 |
+| {@link ChatRoomManager.fetchChatRoomInfoFromServer fetchChatRoomInfoFromServer} | 从服务器获取聊天室详情。 |
+| {@link ChatRoomManager.getChatRoomWithId getChatRoomWithId} | 根据聊天室 ID 从本地数据库获取聊天室。 |
+| {@link ChatRoomManager.createChatRoom createChatRoom} | 创建聊天室。 |
+| {@link ChatRoomManager.destroyChatRoom destroyChatRoom} | 解散聊天室。 |
+| {@link ChatRoomManager.changeChatRoomSubject changeChatRoomSubject} | 修改聊天室名称。 |
+| {@link ChatRoomManager.changeChatRoomDescription changeChatRoomDescription} | 修改聊天室描述信息。 |
+| {@link ChatRoomManager.fetchChatRoomMembers fetchChatRoomMembers} | 获取聊天室成员用户 ID 列表。 |
+| {@link ChatRoomManager.muteChatRoomMembers muteChatRoomMembers} | 将聊天室中指定成员禁言。 |
+| {@link ChatRoomManager.unMuteChatRoomMembers unMuteChatRoomMembers} | 取消对指定聊天室成员的禁言。 |
+| {@link ChatRoomManager.changeOwner changeOwner} | 转让聊天室所有者权限。 |
+| {@link ChatRoomManager.addChatRoomAdmin addChatRoomAdmin} | 添加聊天室管理员。 |
+| {@link ChatRoomManager.removeChatRoomAdmin removeChatRoomAdmin} | 移除聊天室管理员权限。 |
+| {@link ChatRoomManager.fetchChatRoomMuteList fetchChatRoomMuteList} | 分页从服务器获取聊天室禁言名单。 |
+| {@link ChatRoomManager.removeChatRoomMembers removeChatRoomMembers} | 将成员移出聊天室。 |
+| {@link ChatRoomManager.blockChatRoomMembers blockChatRoomMembers} | 将指定成员加入聊天室黑名单。 |
+| {@link ChatRoomManager.unBlockChatRoomMembers unBlockChatRoomMembers} | 将指定用户从聊天室黑名单中移除。 |
+| {@link ChatRoomManager.fetchChatRoomBlockList fetchChatRoomBlockList} | 从服务器获取黑名单列表。 |
+| {@link ChatRoomManager.updateChatRoomAnnouncement updateChatRoomAnnouncement} | 更新聊天室公告。 |
+| {@link ChatRoomManager.fetchChatRoomAnnouncement fetchChatRoomAnnouncement} | 从服务器获取聊天室公告内容。 |
+| {@link ChatRoomManager.fetchChatRoomAllowListFromServer fetchChatRoomAllowListFromServer} | 从服务器获取白名单列表。 |
+| {@link ChatRoomManager.isMemberInChatRoomAllowList isMemberInChatRoomAllowList} | 查询指定成员是否在聊天室白名单中。 |
+| {@link ChatRoomManager.addMembersToChatRoomAllowList addMembersToChatRoomAllowList} | 将成员加入聊天室白名单。 |
+| {@link ChatRoomManager.removeMembersFromChatRoomAllowList removeMembersFromChatRoomAllowList} | 将聊天室成员从白名单中移除。 |
+| {@link ChatRoomManager.muteAllChatRoomMembers muteAllChatRoomMembers} | 禁言聊天室所有成员。 |
+| {@link ChatRoomManager.unMuteAllChatRoomMembers unMuteAllChatRoomMembers} | 解除聊天室全员禁言。 |
+| {@link ChatRoomManager.fetchChatRoomAttributes fetchChatRoomAttributes} | 从服务器获取聊天室数据。 |
+| {@link ChatRoomManager.addAttributes addAttributes} | 设置聊天室自定义属性。 |
+| {@link ChatRoomManager.removeAttributes removeAttributes} | 删除聊天室自定义属性。 |
 
 | Event | Description |
 | :----- | :---------- |
-| {@link ChatRoomEventListener.onChatRoomDestroyed onChatRoomDestroyed} | Occurs when the chat room is destroyed. |
-| {@link ChatRoomEventListener.onMemberJoined onMemberJoined} | Occurs when a user joins the chat room. |
-| {@link ChatRoomEventListener.onMemberExited onMemberExited} | Occurs when a member voluntarily leaves the chat room. |
-| {@link ChatRoomEventListener.onRemoved onRemoved} | Occurs when a member is removed from a chat room. |
-| {@link ChatRoomEventListener.onMuteListAdded onMuteListAdded} | Occurs when a chat room member is added to the mute list. |
-| {@link ChatRoomEventListener.onMuteListRemoved onMuteListRemoved} | Occurs when one or more chat room members are removed from the mute list. |
-| {@link ChatRoomEventListener.onAdminAdded onAdminAdded} | Occurs when a chat room member is set as an admin. |
-| {@link ChatRoomEventListener.onAdminRemoved onAdminRemoved} | Occurs when the administrative privileges of a chat room admin are removed. |
-| {@link ChatRoomEventListener.onOwnerChanged onOwnerChanged} | Occurs when the chat room ownership is transferred. |
-| {@link ChatRoomEventListener.onAnnouncementChanged onAnnouncementChanged} | Occurs when the chat room announcement changes. |
-| {@link ChatRoomEventListener.onAllowListAdded onAllowListAdded} | Occurs when one or more chat room members are added to the allow list. |
-| {@link ChatRoomEventListener.onAllowListRemoved onAllowListRemoved} | Occurs when one or more chat room members are removed from the allow list. |
-| {@link ChatRoomEventListener.onAllChatRoomMemberMuteStateChanged onAllChatRoomMemberMuteStateChanged} | Occurs when all members in the chat room are muted or unmuted. |
-| {@link ChatRoomEventListener.onSpecificationChanged onSpecificationChanged} | Occurs when the chat room specifications change. All chat room members receive this event. |
-| {@link ChatRoomEventListener.onAttributesUpdated onAttributesUpdated} | Occurs when the custom chat room attributes (key-value) are updated. |
-| {@link ChatRoomEventListener.onAttributesRemoved onAttributesRemoved} | Occurs when the custom chat room attributes (key-value) are removed. |
+| {@link ChatRoomEventListener.onChatRoomDestroyed onChatRoomDestroyed} | 聊天室解散的回调。 |
+| {@link ChatRoomEventListener.onMemberJoined onMemberJoined} | 聊天室加入新成员回调。 |
+| {@link ChatRoomEventListener.onMemberExited onMemberExited} | 聊天室成员主动退出回调。 |
+| {@link ChatRoomEventListener.onRemoved onRemoved} | 聊天室成员被移除回调。 |
+| {@link ChatRoomEventListener.onMuteListAdded onMuteListAdded} | 有成员被禁言回调。 |
+| {@link ChatRoomEventListener.onMuteListRemoved onMuteListRemoved} | 有成员从禁言列表中移除回调。 |
+| {@link ChatRoomEventListener.onAdminAdded onAdminAdded} | 有成员设置为聊天室管理员的回调。 |
+| {@link ChatRoomEventListener.onAdminRemoved onAdminRemoved} | 移除聊天室管理员权限的回调。 |
+| {@link ChatRoomEventListener.onOwnerChanged onOwnerChanged} | 转移聊天室的所有权的回调。 |
+| {@link ChatRoomEventListener.onAnnouncementChanged onAnnouncementChanged} | 聊天室公告更新回调。 |
+| {@link ChatRoomEventListener.onAllowListAdded onAllowListAdded} | 有成员被加入聊天室白名单的回调。 |
+| {@link ChatRoomEventListener.onAllowListRemoved onAllowListRemoved} | 有成员被移出聊天室白名单的回调。 |
+| {@link ChatRoomEventListener.onAllChatRoomMemberMuteStateChanged onAllChatRoomMemberMuteStateChanged} | 聊天室全员禁言状态变化回调。 |
+| {@link ChatRoomEventListener.onSpecificationChanged onSpecificationChanged} | 聊天室详情变更回调。聊天室所有成员会收到该事件。 |
+| {@link ChatRoomEventListener.onAttributesUpdated onAttributesUpdated} | 聊天室自定义属性（key-value）更新回调。聊天室所有成员会收到该事件。 |
+| {@link ChatRoomEventListener.onAttributesRemoved onAttributesRemoved} | 聊天室自定义属性（key-value）移除回调。聊天室所有成员会收到该事件。 |
 ## ChatPresenceManager
 | Method | Description |
 | :----- | :---------- |
-| {@link ChatPresenceManager.setNativeListener setNativeListener} |  |
-| {@link ChatPresenceManager.addPresenceListener addPresenceListener} | Adds a presence listener. |
-| {@link ChatPresenceManager.removePresenceListener removePresenceListener} | Removes a presence listener. |
-| {@link ChatPresenceManager.removeAllPresenceListener removeAllPresenceListener} | Clears all presence listeners. |
-| {@link ChatPresenceManager.publishPresence publishPresence} | Publishes a custom presence state. |
-| {@link ChatPresenceManager.subscribe subscribe} | Subscribes to the presence state of a user. |
-| {@link ChatPresenceManager.unsubscribe unsubscribe} | Unsubscribes from the presence state of the unspecified users. |
-| {@link ChatPresenceManager.fetchSubscribedMembers fetchSubscribedMembers} | Uses the pagination to get a list of users whose presence states you have subscribed to. |
-| {@link ChatPresenceManager.fetchPresenceStatus fetchPresenceStatus} | Gets the current presence state of specified users. |
+| {@link ChatPresenceManager.setNativeListener setNativeListener} | 在线状态管理器类。 |
+| {@link ChatPresenceManager.publishPresence publishPresence} | 发布自定义在线状态。 |
+| {@link ChatPresenceManager.subscribe subscribe} | 订阅指定用户的在线状态。 |
+| {@link ChatPresenceManager.unsubscribe unsubscribe} | 取消订阅指定用户的在线状态。 |
+| {@link ChatPresenceManager.fetchSubscribedMembers fetchSubscribedMembers} | 分页查询当前用户订阅了哪些用户的在线状态。 |
+| {@link ChatPresenceManager.fetchPresenceStatus fetchPresenceStatus} | 查询指定用户的当前在线状态。 |
 
 | Event | Description |
 | :----- | :---------- |
-| {@link ChatPresenceEventListener.onPresenceStatusChanged onPresenceStatusChanged} | Occurs when the presence state of a subscribed user changes. |
+| {@link ChatPresenceEventListener.onPresenceStatusChanged onPresenceStatusChanged} | 收到被订阅用户的在线状态发生变化。 |
 ## ChatPushManager
 | Method | Description |
 | :----- | :---------- |
-| {@link ChatPushManager.setNativeListener setNativeListener} | The class for message push configuration options. |
-| {@link ChatPushManager.setSilentModeForConversation setSilentModeForConversation} | Sets the offline push for the conversation. |
-| {@link ChatPushManager.removeSilentModeForConversation removeSilentModeForConversation} | Clears the offline push settings of the conversation. |
-| {@link ChatPushManager.fetchSilentModeForConversation fetchSilentModeForConversation} | Gets the offline push settings of the conversation. |
-| {@link ChatPushManager.setSilentModeForAll setSilentModeForAll} | Sets the offline push of the app. |
-| {@link ChatPushManager.fetchSilentModeForAll fetchSilentModeForAll} | Gets the do-not-disturb settings of the app. |
-| {@link ChatPushManager.fetchSilentModeForConversations fetchSilentModeForConversations} | Gets the do-not-disturb settings of the specified conversations. |
-| {@link ChatPushManager.setPreferredNotificationLanguage setPreferredNotificationLanguage} | Sets the target translation language of offline push notifications. |
-| {@link ChatPushManager.fetchPreferredNotificationLanguage fetchPreferredNotificationLanguage} | Gets the configured push translation language. |
-| {@link ChatPushManager.updatePushNickname updatePushNickname} | Updates nickname of the sender displayed in push notifications. |
-| {@link ChatPushManager.updatePushDisplayStyle updatePushDisplayStyle} | Updates the display style of push notifications. |
-| {@link ChatPushManager.fetchPushOptionFromServer fetchPushOptionFromServer} | Gets the push configurations from the server. |
+| {@link ChatPushManager.setNativeListener setNativeListener} | 消息推送设置管理类。 |
+| {@link ChatPushManager.setSilentModeForConversation setSilentModeForConversation} | 设置指定会话的消息推送模式。 |
+| {@link ChatPushManager.removeSilentModeForConversation removeSilentModeForConversation} | 清除指定会话的消息推送设置。 |
+| {@link ChatPushManager.fetchSilentModeForConversation fetchSilentModeForConversation} | 获取指定会话的离线推送设置。 |
+| {@link ChatPushManager.setSilentModeForAll setSilentModeForAll} | 设置 app 的离线推送模式。 |
+| {@link ChatPushManager.fetchSilentModeForAll fetchSilentModeForAll} | 获取 app 的离线推送设置。 |
+| {@link ChatPushManager.fetchSilentModeForConversations fetchSilentModeForConversations} | 获取指定的多个会话的离线推送设置。 |
+| {@link ChatPushManager.setPreferredNotificationLanguage setPreferredNotificationLanguage} | 设置推送通知的首选语言。 |
+| {@link ChatPushManager.fetchPreferredNotificationLanguage fetchPreferredNotificationLanguage} | 获取推送通知的首选语言。 |
+| {@link ChatPushManager.updatePushNickname updatePushNickname} | 修改推送通知中显示的消息发送方的昵称。 |
+| {@link ChatPushManager.updatePushDisplayStyle updatePushDisplayStyle} | 修改推送通知的展示方式。 |
+| {@link ChatPushManager.fetchPushOptionFromServer fetchPushOptionFromServer} | 从服务器获取推送配置。 |
 ## ChatUserInfoManager
 | Method | Description |
 | :----- | :---------- |
-| {@link ChatUserInfoManager.updateOwnUserInfo updateOwnUserInfo} | Modifies the user attributes of the current user. |
-| {@link ChatUserInfoManager.fetchUserInfoById fetchUserInfoById} | Gets the user attributes of the specified users. |
-| {@link ChatUserInfoManager.fetchOwnInfo fetchOwnInfo} | Gets attributes of the current user from the server. |
+| {@link ChatUserInfoManager.updateOwnUserInfo updateOwnUserInfo} | 修改当前用户的信息。 |
+| {@link ChatUserInfoManager.fetchUserInfoById fetchUserInfoById} | 获取指定用户的用户属性。 |
+| {@link ChatUserInfoManager.fetchOwnInfo fetchOwnInfo} | 从服务器获取当前用户的用户属性信息。 |
 ## ChatMessage
 | Method | Description |
 | :----- | :---------- |
-| {@link ChatMessage.constructor constructor} | Constructs a message. |
-| {@link ChatMessage.createTextMessage createTextMessage} | Creates a text message for sending. |
-| {@link ChatMessage.createFileMessage createFileMessage} | Creates a message with a file attachment for sending. |
-| {@link ChatMessage.createImageMessage createImageMessage} | Creates an image message for sending. |
-| {@link ChatMessage.createVideoMessage createVideoMessage} | Creates a video message for sending. |
-| {@link ChatMessage.createVoiceMessage createVoiceMessage} | Creates a voice message for sending. |
-| {@link ChatMessage.createLocationMessage createLocationMessage} | Creates a location message for sending. |
-| {@link ChatMessage.createCmdMessage createCmdMessage} | Creates a command message for sending. |
-| {@link ChatMessage.createCustomMessage createCustomMessage} | Creates a custom message for sending. |
-| {@link ChatMessage.createReceiveMessage createReceiveMessage} | Creates a received message instance. |
-| {@link ChatMessage.reactionList reactionList} | Gets the list of Reactions. |
-| {@link ChatMessage.groupReadCount groupReadCount} | Gets the count of read receipts of a group message. |
-| {@link ChatMessage.threadInfo threadInfo} | Gets details of a message thread. |
+| {@link ChatMessage.constructor constructor} | 构造一条消息。 |
+| {@link ChatMessage.createTextMessage createTextMessage} | 创建一条待发送的文本消息。 |
+| {@link ChatMessage.createFileMessage createFileMessage} | 创建一条待发送的文件类型消息。 |
+| {@link ChatMessage.createImageMessage createImageMessage} | 创建一条待发送的图片消息。 |
+| {@link ChatMessage.createVideoMessage createVideoMessage} | 创建一条待发送的视频消息。 |
+| {@link ChatMessage.createVoiceMessage createVoiceMessage} | 创建一条待发送的语音消息。 |
+| {@link ChatMessage.createLocationMessage createLocationMessage} | 创建一条待发送的位置消息。 |
+| {@link ChatMessage.createCmdMessage createCmdMessage} | 创建一条待发送的命令消息。 |
+| {@link ChatMessage.createCustomMessage createCustomMessage} | 创建一条待发送的自定义类型消息。 |
+| {@link ChatMessage.createReceiveMessage createReceiveMessage} | 创建一条接收消息。 |
+| {@link ChatMessage.reactionList reactionList} | 获取 Reaction 列表。 |
+| {@link ChatMessage.groupReadCount groupReadCount} | 获取群组消息的已读人数。 |
+| {@link ChatMessage.threadInfo threadInfo} | 获取指定子区的详情。 |
+| {@link ChatMessage.messagePriority messagePriority} | 设置聊天室消息投递优先级。 |
 ## ChatConversation
 | Method | Description |
 | :----- | :---------- |
-| {@link ChatConversation.name name} | Gets the conversation ID. |
-| {@link ChatConversation.getUnreadCount getUnreadCount} | Gets the count of unread messages in the conversation. |
-| {@link ChatConversation.getLatestMessage getLatestMessage} | Gets the latest message from the conversation. |
-| {@link ChatConversation.getLatestReceivedMessage getLatestReceivedMessage} | Gets the latest message received in the conversation. |
-| {@link ChatConversation.setConversationExtension setConversationExtension} | Sets the extension information of the conversation. |
-| {@link ChatConversation.markMessageAsRead markMessageAsRead} | Marks a message as read. |
-| {@link ChatConversation.markAllMessagesAsRead markAllMessagesAsRead} | Marks all messages as read. |
-| {@link ChatConversation.updateMessage updateMessage} | Updates a message in the local database. |
-| {@link ChatConversation.deleteMessage deleteMessage} | Deletes a message from the local database. |
-| {@link ChatConversation.deleteAllMessages deleteAllMessages} | Deletes all the messages of the conversation. |
-| {@link ChatConversation.getMessagesWithMsgType getMessagesWithMsgType} | Retrieves messages of a certain type that a specified user sends in a conversation. |
-| {@link ChatConversation.getMessages getMessages} | Retrieves messages of a certain quantity in a conversation from the local database. |
-| {@link ChatConversation.getMessagesWithKeyword getMessagesWithKeyword} | Retrieves messages with keywords in a conversation in the local database. |
-| {@link ChatConversation.getMessageWithTimestamp getMessageWithTimestamp} | Gets messages that are sent and received in a certain period in a conversation in the local database. |
+| {@link ChatConversation.name name} | 获取会话 ID。 |
+| {@link ChatConversation.getUnreadCount getUnreadCount} | 获取会话的未读消息数量。 |
+| {@link ChatConversation.getLatestMessage getLatestMessage} | 获取指定会话的最新消息。 |
+| {@link ChatConversation.getLatestReceivedMessage getLatestReceivedMessage} | 获取指定会话中最近接收到的消息。 |
+| {@link ChatConversation.setConversationExtension setConversationExtension} | 设置指定会话的自定义扩展信息。 |
+| {@link ChatConversation.markMessageAsRead markMessageAsRead} | 标记指定消息为已读。 |
+| {@link ChatConversation.markAllMessagesAsRead markAllMessagesAsRead} | 标记所有消息为已读。 |
+| {@link ChatConversation.updateMessage updateMessage} | 更新本地数据库的指定消息。 |
+| {@link ChatConversation.deleteMessage deleteMessage} | 删除本地数据库中的指定消息。 |
+| {@link ChatConversation.deleteAllMessages deleteAllMessages} | 删除指定会话中的消息。 |
+| {@link ChatConversation.getMessagesWithMsgType getMessagesWithMsgType} | 从本地数据库获取会话中的指定用户发送的某些类型的消息。 |
+| {@link ChatConversation.getMessages getMessages} | 从本地数据库获取指定会话中一定数量的消息。 |
+| {@link ChatConversation.getMessagesWithKeyword getMessagesWithKeyword} | 从本地数据库获取会话中的指定用户发送的一定数量的特定消息。 |
+| {@link ChatConversation.getMessageWithTimestamp getMessageWithTimestamp} | 从本地数据库获取指定会话在一段时间内的消息。 |
