@@ -1,46 +1,46 @@
 /**
- * The user information class, which contains the user attributes, such as the user ID and the nickname and avatar of a user.
+ * 用户属性类，包含用户属性信息，例如用户 ID，昵称，头像等。
  */
 export class ChatUserInfo {
   /**
-   * The user ID.
+   * 用户 ID。
    */
   userId: string;
   /**
-   * The nickname of the user.
+   * 用户的昵称。
    */
   nickName?: string;
   /**
-   * The avatar URL of the user.
+   * 用户的头像 URL。
    */
   avatarUrl?: string;
   /**
-   * The email address of the user.
+   * 用户的电子邮件地址。
    */
   mail?: string;
   /**
-   * The mobile phone number of the user.
+   * 用户的手机号码。
    */
   phone?: string;
   /**
-   * The gender of the user.
-   * - (Default) `0`: Unknown.
-   * - `1`: Male.
-   * - `2`: Female.
+   * 用户的性别。
+   * - （默认）`0`：未知；
+   * - `1`：男；
+   * - `2`：女。
    */
   gender?: number;
   /**
-   * The signature of the user.
+   * 用户的签名。
    */
   sign?: string;
   /**
-   * The birthday of the user.
+   * 用户的生日。
    */
   birth?: string;
   /**
-   * The extension information of the user.
+   * 用户属性的自定义扩展信息。
    *
-   * You can specify either an empty string or the custom information encapsulated as the JSON string.
+   * 用户可自行扩展，建议封装成 JSON 字符串，也可设置为空字符串。
    */
   ext?: string;
 

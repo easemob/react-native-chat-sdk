@@ -77,7 +77,7 @@ const eventEmitter = new NativeEventEmitter(ExtSdkApiRN);
 chatlog.log('eventEmitter: ', eventEmitter);
 
 /**
- * The chat client class, which is the entry of the chat SDK. It defines how to log in to and log out of the chat app and how to manage the connection between the SDK and the chat server.
+ * Chat 客户端类。该类是 Chat SDK 的入口，负责登录、登出及管理 SDK 与 chat 服务器之间的连接。
  */
 export class ChatClient extends BaseManager {
   public static eventType = 2; // 1.remove 2.subscription(suggested)
@@ -121,8 +121,8 @@ export class ChatClient extends BaseManager {
   private _customListeners: Set<ChatCustomEventListener>;
 
   private _options?: ChatOptions;
-  private _sdkVersion: string = '4.0.0';
-  private _rnSdkVersion: string = '1.1.0';
+  private _sdkVersion: string = '3.9.1.1';
+  private _rnSdkVersion: string = '1.0.0';
   private _isInit: boolean = false;
   private _currentUsername: string = '';
 
@@ -351,11 +351,12 @@ export class ChatClient extends BaseManager {
   }
 
   /**
-   * Gets the SDK configurations.
+   * 获取 SDK 配置项。
    *
-   * Ensure that you set the SDK options during initialization. See {@link ChatOptions}.
+   * SDK 选项必填，在初始化时设置。详见 {@link ChatOptions}。
    *
-   * @returns The SDK configurations.
+   *
+   * @returns SDK 配置信息。
    */
   public get options(): ChatOptions | undefined {
     chatlog.log(`${ChatClient.TAG}: options: `);
@@ -363,15 +364,15 @@ export class ChatClient extends BaseManager {
   }
 
   /**
-   * Gets the current logged-in user ID.
+   * 获取当前登录用户的用户 ID。
    *
-   * **Note**
+   * **注意**
    *
-   * The user ID for successful login is valid.
+   * 成功登录后有效。
    *
-   * The user ID is obtained from the memory and updated in the case of login, logout, and reconnection upon disconnection. You can call {@link getCurrentUsername} to get the latest data from the server.
+   * 该方法获取内存保存的用户 ID，该数据在登入、登出和断网重连时更新。你可以调用 {@link getCurrentUsername} 从服务器中获取最新数据。
    *
-   * @returns The current logged-in user ID.
+   * @returns 当前登录用户的用户 ID。
    */
   public get currentUserName(): string {
     chatlog.log(`${ChatClient.TAG}: currentUserName: `, this._currentUsername);
@@ -379,16 +380,16 @@ export class ChatClient extends BaseManager {
   }
 
   /**
-   * Initializes the SDK.
+   * 初始化 SDK。
    *
-   * **Note**
+   * **注意**
    *
-   * - Make sure to initialize the SDK in the main thread.
-   * - This method must be called before any other methods are called.
+   * - SDK 初始化需在主进程中进行；
+   * - 执行该方法后才能调用其他方法。
    *
-   * @param options The options for SDK initialization. Ensure that you set the options. See {@link ChatOptions}.
+   * @param options SDK 初始化选项，必填，详见 {@link ChatOptions}。
    *
-   * @throws A description of the exception. See {@link ChatError}.
+   * @throws 如果有异常会在这里抛出，包含错误码和错误描述，详见 {@link ChatError}。
    */
   public async init(options: ChatOptions): Promise<void> {
     chatlog.log(`${ChatClient.TAG}: init: `, options);
@@ -400,13 +401,13 @@ export class ChatClient extends BaseManager {
   }
 
   /**
-   * Checks whether the SDK is connected to the chat server.
+   * 检查 SDK 是否连接到 Chat 服务器。
    *
-   * @returns Whether the SDK is connected to the chat server.
-   *         - `true`: Yes.
-   *         - `false`: No.
+   * @returns SDK 是否连接到 Chat 服务器。
+   *         - `true`：是。
+   *         - `false`：否。
    *
-   * @throws A description of the exception. See {@link ChatError}.
+   * @throws 如果有异常会在这里抛出，包含错误码和错误描述，详见 {@link ChatError}。
    */
   public async isConnected(): Promise<boolean> {
     chatlog.log(`${ChatClient.TAG}: isConnected: `);
@@ -417,15 +418,15 @@ export class ChatClient extends BaseManager {
   }
 
   /**
-   * Gets the current logged-in user ID from the server.
+   * 从服务器获取当前登录用户的用户 ID。
    *
-   * **Note**
+   * **注意**
    *
-   * To get the current logged-in user ID from the memory, see {@link currentUserName}.
+   * 从内存中获取见 {@link currentUserName}。
    *
-   * @returns The logged-in user ID.
+   * @returns 当前登录用户的用户 ID。
    *
-   * @throws A description of the exception. See {@link ChatError}.
+   * @throws 如果有异常会在这里抛出，包含错误码和错误描述，详见 {@link ChatError}。
    */
   public async getCurrentUsername(): Promise<string> {
     let r: any = await Native._callMethod(MTgetCurrentUser);
@@ -444,17 +445,17 @@ export class ChatClient extends BaseManager {
   }
 
   /**
-   * Checks whether the current user is logged in to the app.
+   * 检查当前用户是否登录。
    *
-   * **Note**
+   * **注意**
    *
-   * This method needs to be called after initialization and before login.
+   * 在初始化之后和登录之前调用该方法。
    *
-   * @returns Whether the user is logged in to the app:
-   *          - `true`: The user is logged in to the app. In automatic login mode, the SDK returns `true` before successful login and `false` otherwise.
-   *          - `false`: The user is not logged in to the app. In non-automatic login mode, the SDK returns `false`.
+   * @returns 当前用户是否登录。
+   *         - `true`：已登录。自动登录时，成功登录前返回 `true`，其他情况下返回 `false`。
+   *         - `false`：未登录。非自动登录时，返回 `false`。
    *
-   * @throws A description of the exception. See {@link ChatError}.
+   * @throws 如果有异常会在这里抛出，包含错误码和错误描述，详见 {@link ChatError}。
    */
   public async isLoginBefore(): Promise<boolean> {
     chatlog.log(`${ChatClient.TAG}: isLoginBefore: `);
@@ -465,11 +466,11 @@ export class ChatClient extends BaseManager {
   }
 
   /**
-   * Gets the token for login.
+   * 获取登录 token。
    *
-   * @returns The token for login.
+   * @returns 登录 token。
    *
-   * @throws A description of the exception. See {@link ChatError}.
+   * @throws 如果有异常会在这里抛出，包含错误码和错误描述，详见 {@link ChatError}。
    */
   public async getAccessToken(): Promise<string> {
     chatlog.log(`${ChatClient.TAG}: getAccessToken: `);
@@ -480,28 +481,33 @@ export class ChatClient extends BaseManager {
   }
 
   /**
-   * Creates a new user (open registration).
+   * 注册新用户（开放注册）。
    *
-   * **Note**
+   * **注意**
    *
-   * There are two registration modes:
+   * 注册新用户有两种方式：
    *
-   * - Open registration: This mode is for testing use, but not recommended in a formal environment;
-   *   If a call failure occurs, you can contact our business manager.
+   * - 开放注册：客户端直接注册新用户，不建议在正式环境使用。
+   *   如调用失败可联系商务申请使用该接口。
    *
-   * - Authorized registration: You can create a new user through a REST API, and then save it to your server or return it to the client.
+   * - 授权注册：可调用 REST API 注册新用户，然后保存到服务器或者发送到客户端使用。
    *
-   * @param username The user ID.
-   *                 Ensure that you set this parameter. The user ID can be a maximum of 64 characters of the following types:
-   *                 - 26 English letters (a-z)
-   *                 - 10 numbers (0-9),
+   * @param username 用户 ID。
+   *                 该参数必填。用户 ID 不能超过 64 个字符，支持以下类型的字符：
+   *                 - 26 个小写英文字母 a-z
+   *                 - 26 个大写英文字母 A-Z
+   *                 - 10 个数字 0-9
    *                 - "_", "-", "."
-   *                 The user ID is case-insensitive, so Aa and aa are the same user ID.
-   *                 The email address or the UUID of the user cannot be used as the user ID.
-   *                 You can also set this parameter with the regular expression ^[a-zA-Z0-9_-]+$.
-   * @param password The password. Ensure that you set this parameter. The password can contain a maximum of 64 characters.
    *
-   * @throws A description of the exception. See {@link ChatError}.
+   *                 用户 ID 不区分大小写，大写字母会自动转换为小写字母。
+   *
+   *                 用户的电子邮件地址和 UUID 不能作为用户 ID。
+   *
+   *                 可通过以下格式的正则表达式设置用户 ID：^[a-zA-Z0-9_-]+$。
+   *
+   * @param password 密码，长度不超过 64 个字符。该参数必填。
+   *
+   * @throws 如果有异常会在这里抛出，包含错误码和错误描述，详见 {@link ChatError}。
    */
   public async createAccount(
     username: string,
@@ -518,23 +524,23 @@ export class ChatClient extends BaseManager {
   }
 
   /**
-   * Logs in to the chat server with a password or an Easemob token.
+   * 通过密码或环信 token 登录 Chat 服务器。
    *
-   * **Note**
+   * **注意**
    *
-   * If you use an Easemob token to log in to the server, you can get the token in either of the following ways:
-   * - Through an SDK API. See {@link createAccount} or {@link getAccessToken}.
-   * - Through the console. See {@url https://console.easemob.com/app/applicationOverview/userManagement}.
+   * 如果利用环信 token 登录，可通过以下方式获取 token：
+   * - SDK 接口：详见 {@link createAccount} 或 {@link getAccessToken}。
+   * - 环信 console 后台：{@url https://console.easemob.com/app/applicationOverview/userManagement}。
    *
-   * The token expiration reminder is notified by the two callback methods: {@link ChatConnectEventListener.onTokenWillExpire} and {@link ChatConnectEventListener.onTokenDidExpire}.
+   *  Token 过期提醒通过 {@link ChatConnectEventListener#onTokenWillExpire} 和 {@link ChatConnectEventListener#onTokenDidExpire} 通知。
    *
-   * @param userName    The user ID. See {@link createAccount}.
-   * @param pwdOrToken  The password or token. See {@link createAccount} or {@link getAccessToken}
-   * @param isPassword  Whether to log in with a password or a token.
-   *                    - `true`: A token is used.
-   *                    - (Default) `false`: A password is used.
+   * @param userName    用户 ID。详见 {@link createAccount}。
+   * @param pwdOrToken  密码或环信 token，详见 {@link createAccount} 或者 {@link getAccessToken}。
+   * @param isPassword  是否通过 token 登录。
+   *                    - `true`: 通过 token 登录。
+   *                    - （默认）`false`: 通过密码登录。
    *
-   * @throws A description of the exception. See {@link ChatError}.
+   * @throws 如果有异常会在这里抛出，包含错误码和错误描述，详见 {@link ChatError}。
    */
   public async login(
     userName: string,
@@ -558,18 +564,16 @@ export class ChatClient extends BaseManager {
   }
 
   /**
-   * Logs in to the chat server with the user ID and an Agora token.
+   * 使用用户 ID 和声网 token 登录。
    *
-   * **Note**
+   * **注意**
    *
-   * The Agora token is different from token {@link login.token} provided by Easemob.
+   * 该方法支持自动登录。
    *
-   * This method supports automatic login.
+   * @param userName 用户 ID，详见 {@link createAccount}。
+   * @param agoraToken 声网 token。
    *
-   * @param userName The user ID. See {@link createAccount}.
-   * @param agoraToken The Agora token.
-   *
-   * @throws A description of the exception. See {@link ChatError}.
+   * @throws 如果有异常会在这里抛出，包含错误码和错误描述，详见 {@link ChatError}。
    */
   public async loginWithAgoraToken(
     userName: string,
@@ -591,15 +595,15 @@ export class ChatClient extends BaseManager {
   }
 
   /**
-   * Renews the Agora token.
+   * 更新声网 token。
    *
-   * **Note**
+   * **注意**
    *
-   * If you log in with an Agora token and are notified by the callback method {@link ChatConnectEventListener} that the token is to expire, you can call this method to update the token to avoid unknown issues caused by an invalid token.
+   * 当用户利用声网 token 登录的情况下在 {@link ChatConnectEventListener} 实现类中收到 token 即将过期事件的回调通知时，可以调用该方法更新 token，避免因 token 失效产生的未知问题。
    *
-   * @param agoraToken The new Agora token.
+   * @param agoraToken 新的声网 token。
    *
-   * @throws A description of the exception. See {@link ChatError}.
+   * @throws 如果有异常会在这里抛出，包含错误码和错误描述，详见 {@link ChatError}。
    */
   public async renewAgoraToken(agoraToken: string): Promise<void> {
     chatlog.log(`${ChatClient.TAG}: renewAgoraToken: `, '******');
@@ -612,13 +616,13 @@ export class ChatClient extends BaseManager {
   }
 
   /**
-   * Logs out of the chat app.
+   * 退出登录。
    *
-   * @param unbindDeviceToken Whether to unbind the token upon logout. This parameter is available only to mobile platforms.
-   * - (Default) `true`: Yes.
-   * - `false`: No.
+   * @param unbindDeviceToken 登出时是否解绑 token。该参数仅对移动平台有效。
+   * - (默认) `true`：是。
+   * - `false`：否。
    *
-   * @throws A description of the exception. See {@link ChatError}.
+   * @throws 如果有异常会在这里抛出，包含错误码和错误描述，详见 {@link ChatError}。
    */
   public async logout(unbindDeviceToken: boolean = true): Promise<void> {
     chatlog.log(`${ChatClient.TAG}: logout: `, unbindDeviceToken);
@@ -632,21 +636,23 @@ export class ChatClient extends BaseManager {
   }
 
   /**
-   * Updates the App Key, which is the unique identifier used to access the chat service.
+   * 修改 App Key。
    *
-   * **Note**
+   * App Key 是用户访问 chat 服务时的唯一标识符。
    *
-   * - As this key controls access to the chat service for your app, you can only update the key when the current user is logged out.
+   * **注意**
    *
-   * - Updating the App Key means to switch to a new App Key.
+   * - App Key 用于控制对你的 app 的 Chat 服务的访问，只有在未登录状态才能修改 App Key。
    *
-   * - You can retrieve the new App Key from the Console.
+   * - 修改 App Key 是为了方便你切换到其他 App Key。
    *
-   * - You can also set an App Key by using the {@link ChatOptions.appKey} method when logged out.
+   * - 你可以在 Console 上获取 App Key。
    *
-   * @param newAppKey The new App Key. Ensure that you set this parameter.
+   * - 你也可以用 {@link ChatOptions#appKey} 设置 App Key。
    *
-   * @throws A description of the exception. See {@link ChatError}.
+   * @param newAppKey 新的 App Key，必填。
+   *
+   * @throws 如果有异常会在这里抛出，包含错误码和错误描述，详见 {@link ChatError}。
    */
   public async changeAppKey(newAppKey: string): Promise<void> {
     chatlog.log(`${ChatClient.TAG}: changeAppKey: `, newAppKey);
@@ -659,13 +665,15 @@ export class ChatClient extends BaseManager {
   }
 
   /**
-   * Compresses the debug log file into a gzip archive.
+   * 压缩日志文件。
    *
-   * We strongly recommend that you delete this debug archive once it is no longer used.
+   * **注意**
    *
-   * @returns The path of the compressed gzip file.
+   * 强烈建议方法完成之后删除该压缩文件。
    *
-   * @throws A description of the exception. See {@link ChatError}.
+   * @returns 压缩后的日志文件路径。
+   *
+   * @throws 如果有异常会在这里抛出，包含错误码和错误描述，详见 {@link ChatError}。
    */
   public async compressLogs(): Promise<string | undefined> {
     chatlog.log(`${ChatClient.TAG}: compressLogs:`);
@@ -675,13 +683,13 @@ export class ChatClient extends BaseManager {
   }
 
   /**
-   * Gets the list of online devices to which you have logged in with a specified account.
+   * 获取指定账号下登录的在线设备列表。
    *
-   * @param username The user ID.
-   * @param password The password.
-   * @returns The list of the online logged-in devices.
+   * @param username 用户 ID。
+   * @param password 密码。
+   * @returns 登录的在线设备列表。
    *
-   * @throws A description of the exception. See {@link ChatError}.
+   * @throws 如果有异常会在这里抛出，包含错误码和错误描述，详见 {@link ChatError}。
    */
   public async getLoggedInDevicesFromServer(
     username: string,
@@ -710,15 +718,15 @@ export class ChatClient extends BaseManager {
   }
 
   /**
-   * Logs out from a specified account on a device.
+   * 将特定账号登录的指定设备下线。
    *
-   * For how to get the device ID, see {@link ChatDeviceInfo.resource}.
+   * 关于如何获取设备 ID，详见 {@link ChatDeviceInfo#resource}。
    *
-   * @param username The user ID.
-   * @param password The password.
-   * @param resource The device ID. See {@link ChatDeviceInfo.resource}.
+   * @param username 用户 ID。
+   * @param password 密码。
+   * @param resource 设备 ID，详见 {@link ChatDeviceInfo#resource}。
    *
-   * @throws A description of the exception. See {@link ChatError}.
+   * @throws 如果有异常会在这里抛出，包含错误码和错误描述，详见 {@link ChatError}。
    */
   public async kickDevice(
     username: string,
@@ -742,12 +750,12 @@ export class ChatClient extends BaseManager {
   }
 
   /**
-   * Logs out from a specified account on all devices.
+   * 将指定账号登录的所有设备都踢下线。
    *
-   * @param username The user ID.
-   * @param password The password.
+   * @param username 用户 ID。
+   * @param password 密码。
    *
-   * @throws A description of the exception. See {@link ChatError}.
+   * @throws 如果有异常会在这里抛出，包含错误码和错误描述，详见 {@link ChatError}。
    */
   public async kickAllDevices(
     username: string,
@@ -764,14 +772,14 @@ export class ChatClient extends BaseManager {
   }
 
   /**
-   * Update push configurations.
+   * 更新推送设置。
    *
-   * **Note**
-   * For the iOS platform, you need to pass the device ID during initialization. Otherwise, the push function cannot be used properly. See {@link ChatClient.init}
+   * **注意**
+   * 对于 iOS 设备需在初始化 SDK 时录入设备 ID，否则设置不会成功，详见 {@link ChatClient#init}。
    *
-   * @param config The push config, See {@link ChatPushConfig}
+   * @param config 推送设置，详见 {@link ChatPushConfig}。
    *
-   * @throws A description of the exception. See {@link ChatError}.
+   * @throws 如果有异常会在这里抛出，包含错误码和错误描述，详见 {@link ChatError}。
    */
   public async updatePushConfig(config: ChatPushConfig): Promise<void> {
     chatlog.log(
@@ -795,9 +803,9 @@ export class ChatClient extends BaseManager {
   }
 
   /**
-   * Adds the connection status listener.
+   * 设置连接状态监听器。
    *
-   * @param listener The connection status listener to add.
+   *  @param listener 要添加的连接状态监听器。
    */
   public addConnectionListener(listener: ChatConnectEventListener): void {
     chatlog.log(`${ChatClient.TAG}: addConnectionListener: `);
@@ -805,9 +813,9 @@ export class ChatClient extends BaseManager {
   }
 
   /**
-   * Removes the connection status listener.
+   *  移除连接状态监听器。
    *
-   * @param listener The connection status listener to remove.
+   *  @param listener 要移除的连接状态监听器。
    */
   public removeConnectionListener(listener: ChatConnectEventListener): void {
     chatlog.log(`${ChatClient.TAG}: removeConnectionListener: `);
@@ -815,7 +823,7 @@ export class ChatClient extends BaseManager {
   }
 
   /**
-   * Removes all the connection status listeners for the chat server.
+   *  移除所有连接状态监听器。
    */
   public removeAllConnectionListener(): void {
     chatlog.log(`${ChatClient.TAG}: removeAllConnectionListener: `);
@@ -823,9 +831,9 @@ export class ChatClient extends BaseManager {
   }
 
   /**
-   * Adds the multi-device listener.
+   *  添加多设备监听器。
    *
-   * @param listener The multi-device listener to add.
+   *  @param listener 要添加的多设备监听器。
    */
   public addMultiDeviceListener(listener: ChatMultiDeviceEventListener): void {
     chatlog.log(`${ChatClient.TAG}: addMultiDeviceListener: `);
@@ -833,9 +841,9 @@ export class ChatClient extends BaseManager {
   }
 
   /**
-   * Removes the specified multi-device listener.
+   *  移除指定多设备监听器。
    *
-   * @param listener The multi-device listener to remove.
+   *  @param listener 要移除的多设备监听器。
    */
   public removeMultiDeviceListener(
     listener: ChatMultiDeviceEventListener
@@ -845,7 +853,7 @@ export class ChatClient extends BaseManager {
   }
 
   /**
-   * Removes all the multi-device listeners.
+   *  移除所有多设备监听器。
    */
   public removeAllMultiDeviceListener(): void {
     chatlog.log(`${ChatClient.TAG}: removeAllMultiDeviceListener: `);
@@ -853,9 +861,9 @@ export class ChatClient extends BaseManager {
   }
 
   /**
-   * Adds a custom listener to receive data that the iOS or Android devices send to the React Native layer.
+   *  添加自定义监听器，接收 Android 或者 iOS 设备发到 React Native 层的数据。
    *
-   * @param listener The custom listener to add.
+   *  @param listener 要添加的自定义监听器。
    */
   public addCustomListener(listener: ChatCustomEventListener): void {
     chatlog.log(`${ChatClient.TAG}: addCustomListener: `);
@@ -863,9 +871,9 @@ export class ChatClient extends BaseManager {
   }
 
   /**
-   * Removes a custom listener to stop receiving data that the iOS or Android devices send to the React Native layer.
+   *  移除自定义监听，不再接收 Android 或者 iOS 设备发到 React Native 层的数据。
    *
-   * @param listener The custom listener to remove.
+   *  @param listener 要移除的自定义监听器。
    */
   public removeCustomListener(listener: ChatCustomEventListener): void {
     chatlog.log(`${ChatClient.TAG}: removeCustomListener: `);
@@ -873,7 +881,7 @@ export class ChatClient extends BaseManager {
   }
 
   /**
-   *  Removes all the custom listeners.
+   *  移除所有自定义监听器。
    */
   public removeAllCustomListener(): void {
     chatlog.log(`${ChatClient.TAG}: removeAllCustomListener: `);
@@ -881,77 +889,77 @@ export class ChatClient extends BaseManager {
   }
 
   /**
-   * Gets the chat manager class.
+   * 获取聊天管理器类。
    *
-   * This method can be called only after the chat client is initialized.
+   * 该方法只能在 Chat 客户端初始化之后调用。
    *
-   * @returns The chat manager class.
+   *  @returns 聊天管理器类。
    */
   public get chatManager(): ChatManager {
     return this._chatManager;
   }
 
   /**
-   * Gets the chat group manager class.
+   * 获取群组管理器类。
    *
-   * This method can be called only after the chat client is initialized.
+   * 该方法只能在 Chat 客户端初始化之后调用。
    *
-   * @returns The chat group manager class.
+   *  @returns 群组管理器类。
    */
   public get groupManager(): ChatGroupManager {
     return this._groupManager;
   }
 
   /**
-   * Gets the contact manager class.
+   * 获取联系人管理器类。
    *
-   * This method can be called only after the chat client is initialized.
+   * 该方法只能在 Chat 客户端初始化之后调用。
    *
-   * @returns The contact manager class.
+   *  @returns 联系人管理器类。
    */
   public get contactManager(): ChatContactManager {
     return this._contactManager;
   }
 
   /**
-   * Gets the push manager class.
+   * 获取推送管理器类。
    *
-   * This method can be called only after the chat client is initialized.
+   * 该方法只能在 Chat 客户端初始化之后调用。
    *
-   * @returns The push manager class.
+   *  @returns 推送管理器类。
    */
   public get pushManager(): ChatPushManager {
     return this._pushManager;
   }
 
   /**
-   * Gets the user information manager class.
+   * 获取用户信息管理器类。
    *
-   * This method can be called only after the chat client is initialized.
+   * 该方法只能在 Chat 客户端初始化之后调用。
    *
-   * @returns The user information manager class.
+   *  @returns 用户信息管理器类。
    */
   public get userManager(): ChatUserInfoManager {
     return this._userInfoManager;
   }
 
   /**
-   * Gets the chat room manager class.
+   * 获取聊天室管理器类。
    *
-   * This method can be called only after the chat client is initialized.
+   * 该方法只能在 Chat 客户端初始化之后调用。
    *
-   * @returns The chat room manager class.
+   *  @returns 聊天室管理器类。
    */
   public get roomManager(): ChatRoomManager {
     return this._chatRoomManager;
   }
 
   /**
-   * Gets the presence manager class.
+   * 获取在线状态管理器类。
    *
-   * This method can be called only after the chat client is initialized.
+   * 该方法只能在 Chat 客户端初始化之后调用。
    *
-   * @returns The presence manager class.
+   *  @returns 在线状态管理器类。
    */
   public get presenceManager(): ChatPresenceManager {
     return this._presenceManager;

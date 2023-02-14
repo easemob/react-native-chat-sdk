@@ -29,7 +29,7 @@ import { ChatError } from './common/ChatError';
 import { ChatLog } from './common/ChatLog';
 import {
   ChatGroupStyle,
-  ChatGroupPermissionType,
+  ChatGroupType,
   ChatGroupMessageAck,
   ChatGroupOptions,
   ChatGroup,
@@ -38,8 +38,8 @@ import {
   ChatGroupSharedFile,
   ChatGroupStyleFromNumber,
   ChatGroupStyleToString,
-  ChatGroupPermissionTypeFromNumber,
-  ChatGroupPermissionTypeToString,
+  ChatGroupTypeFromNumber,
+  ChatGroupTypeToString,
 } from './common/ChatGroup';
 import {
   ChatMessageChatType,
@@ -144,7 +144,7 @@ export {
   ChatSearchDirection,
   ChatConversationType,
   ChatGroupStyle,
-  ChatGroupPermissionType,
+  ChatGroupType,
   ChatMessageChatType,
   ChatMessageDirection,
   ChatMessageStatus,
@@ -219,8 +219,8 @@ export {
   ChatConversationTypeToString,
   ChatGroupStyleFromNumber,
   ChatGroupStyleToString,
-  ChatGroupPermissionTypeFromNumber,
-  ChatGroupPermissionTypeToString,
+  ChatGroupTypeFromNumber,
+  ChatGroupTypeToString,
   ChatRoomPermissionTypeFromNumber,
   ChatRoomPermissionTypeToString,
   ChatSilentModeParamTypeFromNumber,
