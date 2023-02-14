@@ -1,19 +1,19 @@
 /**
- * The pagination class.
+ * 分页类。
  *
- * This class contains the cursor for the next query and the number of records on the page.
+ * 该类包含下次查询的页码以及相应页面上的数据条数。
  *
- * The class instance is returned when you make a paginated query.
+ * 该对象在分页获取数据时返回。
  */
 export class ChatPageResult<T> {
   /**
-   * The number of records on the current page.
+   * 当前页面上的数据条数。
    *
-   * If the value of `PageCount` is smaller than the number of records that you expect to get on each page, the current page is the last page.
+   * 若 `PageCount` 小于传入的每页要获取的数量，表示当前是最后一页。
    */
   pageCount: number;
   /**
-   * The data of the generic List<T> type.
+   * 泛型类型 <T>，获取到的数据列表。
    */
   list?: Array<T>;
   constructor(params: {

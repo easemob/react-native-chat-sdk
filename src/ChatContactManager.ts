@@ -20,7 +20,7 @@ import {
 import { Native } from './__internal__/Native';
 
 /**
- * The contact manager class, which manages chat contacts such as adding, retrieving, modifying, and deleting contacts.
+ * 联系人管理类，用于添加、查询和删除联系人。
  */
 export class ChatContactManager extends BaseManager {
   protected static TAG = 'ChatContactManager';
@@ -77,9 +77,9 @@ export class ChatContactManager extends BaseManager {
   }
 
   /**
-   * Adds a contact listener.
+   * 添加联系人监听器。
    *
-   * @param listener The listener to add.
+   * @param listener 要添加的监听器。
    */
   public addContactListener(listener: ChatContactEventListener): void {
     chatlog.log(`${ChatContactManager.TAG}: addContactListener: `);
@@ -87,9 +87,9 @@ export class ChatContactManager extends BaseManager {
   }
 
   /**
-   * Removes the contact listener.
+   * 移除联系人监听器。
    *
-   * @param listener The listener to remove.
+   * @param listener 要移除的监听器。
    */
   public removeContactListener(listener: ChatContactEventListener): void {
     chatlog.log(`${ChatContactManager.TAG}: removeContactListener: `);
@@ -97,7 +97,7 @@ export class ChatContactManager extends BaseManager {
   }
 
   /**
-   * Removes all contact listeners.
+   * 移除所有联系人监听器。
    */
   public removeAllContactListener(): void {
     chatlog.log(`${ChatContactManager.TAG}: removeAllContactListener: `);
@@ -105,12 +105,12 @@ export class ChatContactManager extends BaseManager {
   }
 
   /**
-   * Adds a new contact.
+   * 添加好友。
    *
-   * @param userId The user ID of the contact to add.
-   * @param reason The reason for adding the contact. This parameter is optional and can be `null` or "".
+   * @param userId 要添加为好友的用户 ID。
+   * @param reason 添加为好友的原因。该参数可选，可设置为 `null` 或 `""`。
    *
-   * @throws A description of the exception. See {@link ChatError}.
+   * @throws 如果有方法调用的异常会在这里抛出，可以看到具体错误原因。参见 {@link ChatError}。
    */
   public async addContact(userId: string, reason: string = ''): Promise<void> {
     chatlog.log(`${ChatContactManager.TAG}: addContact: `, userId);
@@ -124,14 +124,14 @@ export class ChatContactManager extends BaseManager {
   }
 
   /**
-   * Deletes a contact and all the related conversations.
+   * 删除联系人及其相关的会话。
    *
-   * @param userId The user ID of the contact to delete.
-   * @param keepConversation Whether to retain conversations of the contact to delete.
-   * - `true`: Yes.
-   * - (Default) `false`: No.
+   * @param userId 要删除的联系人用户 ID。
+   * @param keepConversation 是否保留要删除的联系人的会话。
+   * - `true`：是；
+   * - （默认）`false`：否。
    *
-   * @throws A description of the exception. See {@link ChatError}.
+   * @throws 如果有方法调用的异常会在这里抛出，可以看到具体错误原因。参见 {@link ChatError}。
    */
   public async deleteContact(
     userId: string,
@@ -148,11 +148,11 @@ export class ChatContactManager extends BaseManager {
   }
 
   /**
-   * Gets the contact list from the server.
+   * 从服务器获取联系人列表。
    *
-   * @returns The list of contacts.
+   * @returns 联系人列表。
    *
-   * @throws A description of the exception. See {@link ChatError}.
+   * @throws 如果有方法调用的异常会在这里抛出，可以看到具体错误原因。参见 {@link ChatError}。
    */
   public async getAllContactsFromServer(): Promise<Array<string>> {
     chatlog.log(`${ChatContactManager.TAG}: getAllContactsFromServer: `);
@@ -163,11 +163,11 @@ export class ChatContactManager extends BaseManager {
   }
 
   /**
-   * Gets the contact list from the local database.
+   * 从本地数据库获取联系人列表。
    *
-   * @returns The contact list.
+   * @returns 联系人列表。
    *
-   * @throws A description of the exception. See {@link ChatError}.
+   * @throws 如果有方法调用的异常会在这里抛出，可以看到具体错误原因。参见 {@link ChatError}。
    */
   public async getAllContactsFromDB(): Promise<Array<string>> {
     chatlog.log(`${ChatContactManager.TAG}: getAllContactsFromDB: `);
@@ -178,13 +178,13 @@ export class ChatContactManager extends BaseManager {
   }
 
   /**
-   * Adds a contact to the block list.
+   * 将指定用户加入黑名单。
    *
-   * You can send messages to the users on the block list, but cannot receive messages from them.
+   * 你可以向黑名单中用户发消息，但是接收不到对方发送的消息。
    *
-   * @param userId The user ID of the contact to be added to the block list.
+   * @param userId 要加入黑名单的用户的用户 ID。
    *
-   * @throws A description of the exception. See {@link ChatError}.
+   * @throws 如果有方法调用的异常会在这里抛出，可以看到具体错误原因。参见 {@link ChatError}。
    */
   public async addUserToBlockList(userId: string): Promise<void> {
     chatlog.log(`${ChatContactManager.TAG}: addUserToBlockList: `, userId);
@@ -197,11 +197,11 @@ export class ChatContactManager extends BaseManager {
   }
 
   /**
-   * Removes the contact from the block list.
+   * 将指定用户移除黑名单。
    *
-   * @param userId The user ID of the contact to be removed from the block list.
+   * @param userId 要在黑名单中移除的用户 ID。
    *
-   * @throws A description of the exception. See {@link ChatError}.
+   * @throws 如果有方法调用的异常会在这里抛出，可以看到具体错误原因。参见 {@link ChatError}。
    */
   public async removeUserFromBlockList(userId: string): Promise<void> {
     chatlog.log(`${ChatContactManager.TAG}: removeUserFromBlockList: `, userId);
@@ -214,11 +214,11 @@ export class ChatContactManager extends BaseManager {
   }
 
   /**
-   * Gets the block list from the server.
+   * 从服务器获取黑名单列表。
    *
-   * @returns The block list obtained from the server.
+   * @returns 黑名单列表。
    *
-   * @throws A description of the exception. See {@link ChatError}.
+   * @throws 如果有方法调用的异常会在这里抛出，可以看到具体错误原因。参见 {@link ChatError}。
    */
   public async getBlockListFromServer(): Promise<Array<string>> {
     chatlog.log(`${ChatContactManager.TAG}: getBlockListFromServer: `);
@@ -229,11 +229,11 @@ export class ChatContactManager extends BaseManager {
   }
 
   /**
-   * Gets the block list from the local database.
+   * 从本地数据库获取黑名单列表。
    *
-   * @returns The block list obtained from the local database.
+   * @returns 黑名单列表。
    *
-   * @throws A description of the exception. See {@link ChatError}.
+   * @throws 如果有方法调用的异常会在这里抛出，可以看到具体错误原因。参见 {@link ChatError}。
    */
   public async getBlockListFromDB(): Promise<Array<string>> {
     chatlog.log(`${ChatContactManager.TAG}: getBlockListFromDB: `);
@@ -244,11 +244,11 @@ export class ChatContactManager extends BaseManager {
   }
 
   /**
-   * Accepts a friend invitation。
+   * 接受加好友的邀请。
    *
-   * @param userId The user who sends the friend invitation.
+   * @param userId 发起好友邀请的用户 ID。
    *
-   * @throws A description of the exception. See {@link ChatError}.
+   * @throws 如果有方法调用的异常会在这里抛出，可以看到具体错误原因。参见 {@link ChatError}。
    */
   public async acceptInvitation(userId: string): Promise<void> {
     chatlog.log(`${ChatContactManager.TAG}: acceptInvitation: `, userId);
@@ -259,11 +259,11 @@ export class ChatContactManager extends BaseManager {
   }
 
   /**
-   * Declines a friend invitation.
+   * 拒绝加好友的邀请。
    *
-   * @param userId The user who sends the friend invitation.
+   * @param userId 发起好友邀请的用户 ID。
    *
-   * @throws A description of the exception. See {@link ChatError}.
+   * @throws 如果有方法调用的异常会在这里抛出，可以看到具体错误原因。参见 {@link ChatError}。
    */
   public async declineInvitation(userId: string): Promise<void> {
     chatlog.log(`${ChatContactManager.TAG}: declineInvitation: `, userId);
@@ -274,11 +274,11 @@ export class ChatContactManager extends BaseManager {
   }
 
   /**
-   * Gets the unique IDs of the current user on the other devices. The ID is in the format of `{user_ID} + "/" + {resource_ID}`.
+   * 获取登录用户在其他登录设备上唯一 ID，该 ID 由 user ID + "/" + resource 组成。
    *
-   * @returns The list of unique IDs of users on the other devices if the method succeeds.
+   * @returns 该方法调用成功会返回 ID 列表。
    *
-   * @throws A description of the exception. See {@link ChatError}.
+   * @throws 如果有方法调用的异常会在这里抛出，可以看到具体错误原因。参见 {@link ChatError}。
    */
   public async getSelfIdsOnOtherPlatform(): Promise<Array<string>> {
     chatlog.log(`${ChatContactManager.TAG}: getSelfIdsOnOtherPlatform: `);

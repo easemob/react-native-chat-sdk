@@ -1,146 +1,148 @@
 import { generateMessageId, getNowTimestamp } from '../__internal__/Utils';
 import { ChatClient } from '../ChatClient';
 import { ChatError } from './ChatError';
-import type { ChatMessageReaction } from './ChatMessageReaction';
-import type { ChatMessageThread } from './ChatMessageThread';
+import type {
+  ChatMessageReaction,
+  ChatMessageThread,
+} from 'react-native-chat-sdk';
 
 /**
- * The conversation types.
+ * 会话类型枚举。
  */
 export enum ChatMessageChatType {
   /**
-   * One-to-one chat.
+   * 单聊。
    */
   PeerChat = 0,
   /**
-   * Group chat.
+   * 群聊。
    */
   GroupChat = 1,
   /**
-   * Chat room.
+   * 聊天室。
    */
   ChatRoom = 2,
 }
 
 /**
- * The message directions.
+ * 消息的方向枚举。
  */
 export enum ChatMessageDirection {
   /**
-   * This message is sent from the local client.
+   * 该消息是当前用户发送出去的。
    */
   SEND = 'send',
   /**
-   * The message is received by the local client.
+   * 该消息是当前用户接收到的。
    */
   RECEIVE = 'rec',
 }
 
 /**
- * The message sending states.
+ * 消息的发送状态枚举类。
  */
 export enum ChatMessageStatus {
   /**
-   * The message is created to be sent.
+   * 消息已创建待发送。
    */
   CREATE = 0,
   /**
-   * The message is being delivered.
+   * 正在发送。
    */
   PROGRESS = 1,
   /**
-   * The message is successfully delivered.
+   * 发送成功。
    */
   SUCCESS = 2,
   /**
-   * The message fails to be delivered.
+   * 发送失败。
    */
   FAIL = 3,
 }
 
 /**
- * The attachment file download states.
+ * 消息附件下载状态枚举。
  */
 export enum ChatDownloadStatus {
   /**
-   * The file message download is pending.
+   * 等待下载。
    */
   PENDING = -1,
   /**
-   * The SDK is downloading the file message.
+   * 正在下载。
    */
   DOWNLOADING = 0,
   /**
-   * The SDK successfully downloads the file message.
+   * 下载成功。
    */
   SUCCESS = 1,
   /**
-   * The SDK fails to download the file message.
+   * 下载失败。
    */
   FAILED = 2,
 }
 
 /**
- * The message types.
+ * 消息类型。
  */
 export enum ChatMessageType {
   /**
-   * Text message.
+   * 文本消息。
    */
   TXT = 'txt',
   /**
-   * Image message.
+   * 图片消息。
    */
   IMAGE = 'img',
   /**
-   * Video message.
+   * 视频消息。
    */
   VIDEO = 'video',
   /**
-   * Location message.
+   * 位置消息。
    */
   LOCATION = 'loc',
   /**
-   * Voice message.
+   * 语音消息。
    */
   VOICE = 'voice',
   /**
-   * File message.
+   * 文件消息。
    */
   FILE = 'file',
   /**
-   * Command message.
+   * 命令消息。
    */
   CMD = 'cmd',
   /**
-   * Custom message.
+   * 自定义消息。
    */
   CUSTOM = 'custom',
 }
 
 /**
- * The delivery priorities of chat room messages.
+ * 聊天室消息优先级。
  */
 export enum ChatRoomMessagePriority {
   /**
-   * High priority
+   * 高优先级
    */
   PriorityHigh = 0,
   /**
-   * Normal priority
+   * 普通优先级。默认值
    */
   PriorityNormal,
   /**
-   * Low priority
+   * 低优先级。
    */
   PriorityLow,
 }
 
 /**
- * Converts the conversation type from int to string.
+ * 将会话类型由整型转换为字符串类型。
  *
- * @param params The conversation type of the int type.
- * @returns The conversation type of the string type.
+ * @param params 整型的会话类型。
+ * @returns 字符串类型的会话类型。
  */
 export function ChatMessageChatTypeFromNumber(
   params: number
@@ -156,10 +158,10 @@ export function ChatMessageChatTypeFromNumber(
 }
 
 /**
- * Converts the message direction from string to enum.
+ * 将消息方向由字符串类型转换为枚举类型。
  *
- * @param params The message direction of the string type.
- * @returns The message direction of the enum type.
+ * @param params 字符串类型的消息方向。
+ * @returns 枚举类型的消息方向。
  */
 export function ChatMessageDirectionFromString(
   params: string
@@ -173,10 +175,10 @@ export function ChatMessageDirectionFromString(
 }
 
 /**
- * Converts the message status from int to enum.
+ * 将消息状态由整型转换为枚举类型。
  *
- * @param params The message status of the int type.
- * @returns The message status of the enum type.
+ * @param params 整型的消息状态。
+ * @returns 枚举类型的消息状态。
  */
 export function ChatMessageStatusFromNumber(params: number): ChatMessageStatus {
   switch (params) {
@@ -192,20 +194,20 @@ export function ChatMessageStatusFromNumber(params: number): ChatMessageStatus {
 }
 
 /**
- * Converts the message status from enum to string.
+ * 将消息状态由枚举类型转换为字符串类型。
  *
- * @param params The message status of the enum type.
- * @returns The message status of the string type.
+ * @param params 枚举类型的消息状态。
+ * @returns 字符串类型的消息状态。
  */
 export function ChatMessageStatusToString(params: ChatMessageStatus): string {
   return ChatMessageStatus[params];
 }
 
 /**
- * Converts the message download status from int to string.
+ * 将消息下载状态由整型转换为字符串类型。
  *
- * @param params The message download status of the int type.
- * @returns The message download status of the string type.
+ * @param params 整型的消息下载状态。
+ * @returns 字符串类型的消息下载状态。
  */
 export function ChatDownloadStatusFromNumber(
   params: number
@@ -223,20 +225,20 @@ export function ChatDownloadStatusFromNumber(
 }
 
 /**
- * Converts the message download status from int to string.
+ * 将消息附件下载状态由整型转换为字符串类型。
  *
- * @param params The message download status of the int type.
- * @returns The message download status of the string type.
+ * @param params 整型的消息附件下载状态。
+ * @returns 枚举类型的消息附件下载状态。
  */
 export function ChatDownloadStatusToString(params: ChatDownloadStatus): string {
   return ChatDownloadStatus[params];
 }
 
 /**
- * Converts the message type from string to enum.
+ * 将消息类型由字符串类型转换为枚举类型。
  *
- * @param params The message type of the string type.
- * @returns The message type of the enum type.
+ * @param params 字符串类型的消息类型。
+ * @returns 枚举类型的消息类型。
  */
 export function ChatMessageTypeFromString(params: string): ChatMessageType {
   switch (params) {
@@ -265,35 +267,34 @@ export function ChatMessageTypeFromString(params: string): ChatMessageType {
 }
 
 /**
- * The message status change listener.
+ * 消息状态监听器接口。
  */
 export interface ChatMessageStatusCallback {
   /**
-   * Occurs when a message is uploaded or downloaded.
+   * 消息上传或下载进度回调。
    *
-   * @param progress The message upload/download progress value. The value range is 0 to 100 in percentage.
+   * @param progress 消息上传或下载的进度值，取值范围为 [0,100]。
    */
-  onProgress?(localMsgId: string, progress: number): void;
+  onProgress(localMsgId: string, progress: number): void;
 
   /**
-   * Occurs when a message error occurs.
+   * 消息错误回调。
    *
-   * @param error A description of the error. See {@link ChatError}.
+   * @param error 错误码和错误描述，详见 {@link ChatError}。
    */
   onError(localMsgId: string, error: ChatError): void;
 
   /**
-   * Occurs when a message is successfully delivered.
-   *
-   * @param message The message that is successfully delivered.
+   * 消息发送成功回调。
+   * @param message 发送成功的消息。
    */
   onSuccess(message: ChatMessage): void;
 }
 
 /**
- * The message class that defines a message that is to be sent or received.
+ * 消息类，用于定义一条要发送或接收的消息。
  *
- * For example, construct a text message to send:
+ * 例如，构造一条文本消息：
  *
  * ```typescript
  *   let msg = ChatMessage.createTextMessage(
@@ -306,108 +307,108 @@ export interface ChatMessageStatusCallback {
 export class ChatMessage {
   static TAG = 'ChatMessage';
   /**
-   * The message ID generated on the server.
+   * 服务器生成的消息 ID。
    */
   msgId: string = generateMessageId();
   /**
-   * The local message ID.
+   * 本地消息 ID。
    */
   localMsgId: string = '';
   /**
-   * The conversation ID.
+   * 会话 ID。
    */
   conversationId: string = '';
   /**
-   * The user ID of the message sender.
+   * 消息发送者的用户 ID。
    */
   from: string = '';
   /**
-   * The user ID of the message recipient:
+   * 消息接收方的用户 ID：
    *
-   * - For the one-to-one chat, it is the user ID of the message recipient;
-   * - For the group chat, it is the group ID;
-   * - For the chat room chat, it is the chat room ID;
-   * - For a message thread, it is the ID of the message thread.
+   * - 单聊：消息接收方的用户 ID；
+   * - 群聊：群组 ID；
+   * - 聊天室：聊天室 ID；
+   * - 子区：子区 ID。
    */
   to: string = '';
   /**
-   * The Unix timestamp when the message is created locally. The unit is millisecond.
+   * 消息创建的本地 Unix 时间戳。单位为毫秒。
    */
   localTime: number = getNowTimestamp();
   /**
-   * The Unix timestamp when the server receives the message. The unit is millisecond.
+   * 服务器收到该消息的 Unix 时间戳。单位为毫秒。
    */
   serverTime: number = getNowTimestamp();
   /**
-   * Whether the delivery receipt is required, which is to check whether the message is delivered successfully.
+   * 是否需要消息接收方发送消息送达回执：
    *
-   * - `true`: Yes.
-   * - (Default) `false`: No.
+   * - `true`：是。
+   * - （默认）`false`：否。
    */
   hasDeliverAck: boolean = false;
   /**
-   * Whether the message read receipt is required.
+   * 是否需要消息接收方发送已读回执：
    *
-   * - `true`: Yes.
-   * - (Default) `false`: No.
+   * - `true`：是。
+   * - （默认）`false`：否。
    */
   hasReadAck: boolean = false;
   /**
-   * Whether read receipts are required for group messages.
+   * 是否需要群组消息已读回执：
    *
-   * - `true`: Yes.
-   * - (Default) `false`: No.
+   * - `true`：是。
+   * - （默认）`false`：否。
    */
   needGroupAck: boolean = false;
   /**
-   * The number of members that have read the group message.
+   * 群组消息已读回执数。
    */
   groupAckCount: number = 0;
   /**
-   * Whether the message is read.
+   * 消息是否已读：
    *
-   * - `true`: Yes.
-   * - (Default) `false`: No.
+   * - `true`：是。
+   * - （默认）`false`：否。
    */
   hasRead: boolean = false;
   /**
-   * The conversation type. See {@link ChatType}.
+   * 会话类型，包括单聊，群聊和聊天室。
    */
   chatType: ChatMessageChatType = ChatMessageChatType.ChatRoom;
   /**
-   * The message direction. See {@link ChatMessageDirection}
+   * 消息方向，详见 {@link ChatMessageDirection}。
    */
   direction: ChatMessageDirection = ChatMessageDirection.SEND;
   /**
-   * The message sending status. See {@link ChatMessageStatus}.
+   * 消息发送状态，详见 {@link ChatMessageStatus}。
    */
   status: ChatMessageStatus = ChatMessageStatus.CREATE;
   /**
-   * The extension attribute of the message.
+   * 消息的扩展属性。
    */
   attributes: Object = {};
   /**
-   * The message body. See {@link ChatMessageBody}.
+   * 消息体实例，详见 {@link ChatMessageBody)}。
    */
   body: ChatMessageBody;
 
   /**
-   * Whether it is a message in a message thread.
+   * 消息是否为子区消息：
    * 
-   * - `true`: Yes. In this case, you need to set the user ID of the message recipient to the message thread ID. See {@link to}.
-   * - `false`: No.
+   * - `true`：是。你需将消息接收方的用户 ID 设置为子区 ID。详见 {@link #to}。
+   * - `false`：否。
    *
-   * **Note**
+   * **注意**
 
-   * This parameter is valid only for group chat.
+   * 该参数仅对群聊有效。
    */
   isChatThread: boolean;
 
   /**
-   * Whether it is a online message.
+   * 消息是否为在线时收到的消息。
    *
-   * - `true`: Yes. In this case, if the application is running in the background, a notification window may pop up.
-   * - `false`: No.
+   * - `true`: 是。这种情况下，如果应用在后台运行可以弹出消息提示框。
+   * - `false`: 否，离线时收到的消息。
    */
   isOnline: boolean;
 
@@ -418,7 +419,7 @@ export class ChatMessage {
   private priority?: ChatRoomMessagePriority;
 
   /**
-   * Constructs a message.
+   * 构造一条消息。
    */
   public constructor(params: {
     msgId?: string;
@@ -511,26 +512,20 @@ export class ChatMessage {
       hasRead: true,
       chatType: params.chatType,
       isChatThread: params.isChatThread,
-      conversationId: params.targetId,
     });
     return r;
   }
 
   /**
-   * Creates a text message for sending.
+   * 创建一条待发送的文本消息。
    *
-   * @param targetId The user ID of the message recipient.
-   * - For a one-to-one chat, it is the user ID of the peer user.
-   * - For a group chat, it is the group ID.
-   * - For a chat room, it is the chat room ID.
-   * @param content The text content.
-   * @param chatType The conversation type. See {@link ChatType}.
-   * @param opt The extension parameters of the message.
-   * - targetLanguageCodes: The language code. See {@link ChatTextMessageBody.targetLanguageCodes}.
-   * - isChatThread: Whether this message is a threaded message.
-   *   - `true`: Yes.
-   *   - (Default) `false`: No.
-   * @returns The message instance.
+   * @param targetId 消息接收方的用户 ID。
+   * - 单聊时是接收方的用户 ID。
+   * - 群聊时是群组 ID。
+   * - 聊天室则是聊天室 ID。
+   * @param content 文本消息内容。
+   * @param chatType 会话类型。
+   * @returns 消息实例。
    */
   public static createTextMessage(
     targetId: string,
@@ -555,20 +550,16 @@ export class ChatMessage {
   }
 
   /**
-   * Creates a message with a file attachment for sending.
+   * 创建一条待发送的文件类型消息。
    *
-   * @param targetId The user ID of the message recipient.
-   * - For a one-to-one chat, it is the user ID of the peer user.
-   * - For a group chat, it is the group ID.
-   * - For a chat room, it is the chat room ID.
-   * @param filePath The file path.
-   * @param chatType The conversation type. See {@link ChatType}.
-   * @param opt The extension parameters of the message.
-   * - displayName: The file name.
-   * - isChatThread: Whether this message is a threaded message.
-   *   - `true`: Yes.
-   *   - (Default) `false`: No.
-   * @returns The message instance.
+   * @param targetId 消息接收方的用户 ID。
+   * - 单聊时为接收方的用户 ID。
+   * - 群聊时为群组 ID。
+   * - 聊天室则为聊天室 ID。
+   * @param filePath 文件路径。
+   * @param chatType 会话类型。
+   * @param opt 文件名称。
+   * @returns 消息实例。
    */
   public static createFileMessage(
     targetId: string,
@@ -592,26 +583,23 @@ export class ChatMessage {
   }
 
   /**
-   * Creates an image message for sending.
+   * 创建一条待发送的图片消息。
    *
-   * @param targetId The user ID of the message recipient.
-   * - For a one-to-one chat, it is the user ID of the peer user.
-   * - For a group chat, it is the group ID.
-   * - For a chat room, it is the chat room ID.
-   * @param filePath The image path.
-   * @param chatType The conversation type. See {@link ChatType}.
-   * @param opt The extension parameters of the message.
-   * - displayName: The image name.
-   * - thumbnailLocalPath: The image thumbnail path.
-   * - sendOriginalImage: Whether to send the original image.
-   *   - `true`: Yes.
-   *   - (Default) `false`: If the image is equal to or greater than 100 KB, the SDK will compress it before sending the compressed image.
-   * - width: The image width in pixels.
-   * - height: The image height in pixels.
-   * - isChatThread: Whether this message is a threaded message.
-   *   - `true`: Yes.
-   *   - (Default) `false`: No.
-   * @returns The message instance.
+   * @param targetId 消息接收方的用户 ID。
+   * - 单聊：接收方的用户 ID。
+   * - 群聊：群组 ID。
+   * - 聊天室：聊天室 ID。
+   * @param filePath 图片路径。
+   * @param chatType 会话类型。
+   * @param opt
+   *   @{#displayName} 图片名称。
+   *   @{#thumbnailLocalPath} 图片缩略图的存储路径。
+   *   @{#sendOriginalImage} 是否发送原图：
+   *     - `true`：发送原图和缩略图。
+   *     - （默认）`false`：图片小于 100 KB 时，发送原图和缩略图；图片大于 100 KB 时，发送压缩后的图片和压缩后图片的缩略图。
+   *   @{#width} 图片宽度，单位为像素。
+   *   @{#height} 图片高度，单位为像素。
+   * @returns 消息实例。
    */
   public static createImageMessage(
     targetId: string,
@@ -643,24 +631,21 @@ export class ChatMessage {
   }
 
   /**
-   * Creates a video message for sending.
+   * 创建一条待发送的视频消息。
    *
-   * @param targetId The user ID of the message recipient.
-   * - For a one-to-one chat, it is the user ID of the peer user.
-   * - For a group chat, it is the group ID.
-   * - For a chat room, it is the chat room ID.
-   * @param filePath The path of the video file.
-   * @param chatType The conversation type. See {@link ChatType}.
-   * @param opt The extension parameters of the message.
-   * - displayName: The video file name.
-   * - thumbnailLocalPath: The path of the thumbnail of the first frame of video.
-   * - duration: The video duration in seconds.
-   * - width: The video thumbnail width in pixels.
-   * - height: The video thumbnail height in pixels.
-   * - isChatThread: Whether this message is a threaded message.
-   *   - `true`: Yes.
-   *   - (Default) `false`: No.
-   * @returns The message instance.
+   * @param targetId 消息接收方的用户 ID。
+   * - 单聊时是接收方的用户 ID。
+   * - 群聊时是群组 ID。
+   * - 聊天室则是聊天室 ID。
+   * @param filePath 视频文件路径。
+   * @param chatType 会话类型。
+   * @param opt
+   *   @{#displayName} 视频名称
+   *   @{#thumbnailLocalPath} 视频第一帧的缩略图的存储路径。
+   *   @{#duration} 视频时长，单位为秒。
+   *   @{#width} 视频缩略图宽度，单位为像素。
+   *   @{#height} 视频缩略图高度，单位为像素。
+   * @returns 消息实例。
    */
   public static createVideoMessage(
     targetId: string,
@@ -692,21 +677,18 @@ export class ChatMessage {
   }
 
   /**
-   * Creates a voice message for sending.
+   * 创建一条待发送的语音消息。
    *
-   * @param targetId The user ID of the message recipient.
-   * - For a one-to-one chat, it is the user ID of the peer user.
-   * - For a group chat, it is the group ID.
-   * - For a chat room, it is the chat room ID.
-   * @param filePath The path of the voice file.
-   * @param chatType The conversation type. See {@link ChatType}.
-   * @param opt The extension parameters of the message.
-   * - displayName: The voice file name.
-   * - duration: The voice duration in seconds.
-   * - isChatThread: Whether this message is a threaded message.
-   *   - `true`: Yes.
-   *   - (Default) `false`: No.
-   * @returns The message instance.
+   * @param targetId 消息接收方 ID。
+   * - 单聊时是接收方的用户 ID。
+   * - 群聊时是群组 ID。
+   * - 聊天室则是聊天室 ID。
+   * @param filePath 语音文件路径。
+   * @param chatType 会话类型。
+   * @param opt
+   *   @{#displayName} 语音文件名称。
+   *   @{#duration} 语音时长，单位为秒。
+   * @returns 消息实例。
    */
   public static createVoiceMessage(
     targetId: string,
@@ -732,21 +714,18 @@ export class ChatMessage {
   }
 
   /**
-   * Creates a location message for sending.
+   * 创建一条待发送的位置消息。
    *
-   * @param targetId The user ID of the message recipient.
-   * - For a one-to-one chat, it is the user ID of the peer user.
-   * - For a group chat, it is the group ID.
-   * - For a chat room, it is the chat room ID.
-   * @param latitude The latitude.
-   * @param longitude The longitude.
-   * @param chatType The conversation type. See {@link ChatType}.
-   * @param opt The extension parameters of the message.
-   * - address: The location details.
-   * - isChatThread: Whether this message is a threaded message.
-   *   - `true`: Yes.
-   *   - (Default) `false`: No.
-   * @returns The message instance.
+   * @param targetId 消息接收方的用户 ID。
+   * - 单聊：接收方的用户 ID。
+   * - 群聊：群组 ID。
+   * - 聊天室：聊天室 ID。
+   * @param latitude 纬度。
+   * @param longitude 经度。
+   * @param chatType 会话类型。
+   * @param opt
+   *   @{#address} 地址。
+   * @returns 消息实例。
    */
   public static createLocationMessage(
     targetId: string,
@@ -772,22 +751,15 @@ export class ChatMessage {
   }
 
   /**
-   * Creates a command message for sending.
+   * 创建一条待发送的命令消息。
    *
-   * @param targetId The user ID of the message recipient.
-   * - For a one-to-one chat, it is the user ID of the peer user.
-   * - For a group chat, it is the group ID.
-   * - For a chat room, it is the chat room ID.
-   * @param action The command action.
-   * @param chatType The conversation type. See {@link ChatType}.
-   * @param opt The extension parameters of the message.
-   * - isChatThread: Whether this message is a threaded message.
-   *   - `true`: Yes.
-   *   - (Default) `false`: No.
-   * - deliverOnlineOnly: Whether this command message is delivered only to the online users.
-   *   - (Default) `true`: Yes.
-   *   - `false`: No. The command message is delivered to users, regardless of their online or offline status.
-   * @returns The message instance.
+   * @param targetId 消息接收方的用户 ID。
+   * - 单聊：接收方的用户 ID。
+   * - 群聊：群组 ID。
+   * - 聊天室：聊天室 ID。
+   * @param action 命令内容。
+   * @param chatType 会话类型。
+   * @returns 消息实例。
    */
   public static createCmdMessage(
     targetId: string,
@@ -810,20 +782,17 @@ export class ChatMessage {
   }
 
   /**
-   * Creates a custom message for sending.
+   * 创建一条待发送的自定义类型消息。
    *
-   * @param targetId The user ID of the message recipient.
-   * - For a one-to-one chat, it is the user ID of the peer user.
-   * - For a group chat, it is the group ID.
-   * - For a chat room, it is the chat room ID.
-   * @param event The custom event.
-   * @param chatType The conversation type. See {@link ChatType}.
-   * @param opt The extension parameters of the message.
-   * - params: The dictionary of custom parameters.
-   * - isChatThread: Whether this message is a threaded message.
-   *   - `true`: Yes.
-   *   - (Default) `false`: No.
-   * @returns The message instance.
+   * @param targetId 消息接收方的用户 ID。
+   * - 单聊：接收方的用户 ID。
+   * - 群聊：群组 ID。
+   * - 聊天室：聊天室 ID。
+   * @param event 消息触发的自定义事件。
+   * @param chatType 会话类型。
+   * @param opt
+   *   @{#params} 自定义参数字典。
+   * @returns 消息实例。
    */
   public static createCustomMessage(
     targetId: string,
@@ -846,38 +815,40 @@ export class ChatMessage {
   }
 
   /**
-   * Creates a received message instance.
+   * 创建一条接收消息。
    *
-   * @param params The received message.
-   * @returns The message object.
+   * @param params 接收的消息。
+   * @returns 消息对象。
    */
   public static createReceiveMessage(params: any): ChatMessage {
     return new ChatMessage(params);
   }
 
   /**
-   * Gets the list of Reactions.
+   * 获取 Reaction 列表。
    */
   public get reactionList(): Promise<Array<ChatMessageReaction>> {
     return ChatClient.getInstance().chatManager.getReactionList(this.msgId);
   }
 
   /**
-   * Gets the count of read receipts of a group message.
+   * 获取群组消息的已读人数。
+   *
    */
   public get groupReadCount(): Promise<number> {
     return ChatClient.getInstance().chatManager.groupAckCount(this.msgId);
   }
 
   /**
-   * Gets details of a message thread.
+   * 获取指定子区的详情。
+   *
    */
   public get threadInfo(): Promise<ChatMessageThread | undefined> {
     return ChatClient.getInstance().chatManager.getMessageThread(this.msgId);
   }
 
   /**
-   * Set chat room message delivery priority.
+   * 设置聊天室消息投递优先级。
    */
   public set messagePriority(p: ChatRoomMessagePriority) {
     this.priority = p;
@@ -885,11 +856,11 @@ export class ChatMessage {
 }
 
 /**
- * The message body base class.
+ * 消息体基类。
  */
 export class ChatMessageBody {
   /**
-   * The message type. See {@link ChatMessageType}.
+   * 消息类型，详见 {@link ChatMessageType}。
    */
   type: ChatMessageType;
 
@@ -899,21 +870,21 @@ export class ChatMessageBody {
 }
 
 /**
- * The text message body class.
+ * 文本消息体基类。
  */
 export class ChatTextMessageBody extends ChatMessageBody {
   /**
-   * The text message content.
+   * 文本消息内容。
    */
   content: string;
   /**
-   * The target language for translation. See {@link https://docs.microsoft.com/en-us/azure/cognitive-services/translator/language-support}.
+   * 目标翻译语言。详见 {@link https://docs.microsoft.com/en-us/azure/cognitive-services/translator/language-support}。
    */
   targetLanguageCodes?: Array<string>;
   /**
-   * The translation.
+   * 译文。
    *
-   * It is a KV object, where the key is the target language and the value is the translation.
+   * 该参数为 KV 对象，Key 指目标语言，Value 为译文。
    */
   translations?: any;
   constructor(params: {
@@ -930,19 +901,19 @@ export class ChatTextMessageBody extends ChatMessageBody {
 }
 
 /**
- * The location message body class.
+ * 位置消息体基类。
  */
 export class ChatLocationMessageBody extends ChatMessageBody {
   /**
-   * The address.
+   * 地址。
    */
   address: string;
   /**
-   * The latitude.
+   * 纬度。
    */
   latitude: string;
   /**
-   * The longitude.
+   * 经度。
    */
   longitude: string;
   constructor(params: {
@@ -959,31 +930,31 @@ export class ChatLocationMessageBody extends ChatMessageBody {
 }
 
 /**
- * The file message body class.
+ * 文件消息体基类。
  */
 export class ChatFileMessageBody extends ChatMessageBody {
   /**
-   * The local path of the file.
+   * 文件本地路径。
    */
   localPath: string = '';
   /**
-   * The token to download the file attachment.
+   * 下载附件的 token。
    */
   secret: string;
   /**
-   * The path of the attachment file in the server.
+   * 文件在服务器的路径。
    */
   remotePath: string;
   /**
-   * The download status of the attachment file. See {@link ChatDownloadStatus}.
+   * 文件下载状态，详见 {@link ChatDownloadStatus}。
    */
   fileStatus: ChatDownloadStatus;
   /**
-   * The size of the file in bytes.
+   * 文件大小，单位为字节。
    */
   fileSize: number;
   /**
-   * The file name.
+   * 文件名称。
    */
   displayName: string;
 
@@ -1007,37 +978,37 @@ export class ChatFileMessageBody extends ChatMessageBody {
 }
 
 /**
- * The image message body class.
+ * 图片消息体基类。
  */
 export class ChatImageMessageBody extends ChatFileMessageBody {
   /**
-   Whether to send the original image.
-  * - `true`: Yes. 
-  * - (Default) `false`: No. If the image is smaller than 100 KB, the SDK sends the original image. If the image is equal to or greater than 100 KB, the SDK will compress it before sending the compressed image.
+   * 发送图片时是否发送原图。
+   * - `true`: 发送原图和缩略图。
+   * - (默认） `false`: 若图片小于 100 KB，发送原图和缩略图；若图片大于等于 100 KB, 发送压缩后的图片和压缩后图片的缩略图。
    */
   sendOriginalImage: boolean;
   /**
-   * The local path or the URI of the thumbnail as a string.
+   * 缩略图的本地路径。
    */
   thumbnailLocalPath: string;
   /**
-   * The URL of the thumbnail on the server.
+   * 缩略图在服务器的地址。
    */
   thumbnailRemotePath: string;
   /**
-   * The secret to access the thumbnail. A secret is required for verification for thumbnail download.
+   * 下载缩略图需要的 token。
    */
   thumbnailSecret: string;
   /**
-   * The download status of the thumbnail. See {@link ChatDownloadStatus}
+   * 缩略图下载状态，详见 {@link ChatDownloadStatus}。
    */
   thumbnailStatus: ChatDownloadStatus;
   /**
-   * The image width in pixels.
+   * 图片宽度，单位为像素。
    */
   width: number;
   /**
-   * The image height in pixels.
+   * 图片高度，单位为像素。
    */
   height: number;
   constructor(params: {
@@ -1078,35 +1049,35 @@ export class ChatImageMessageBody extends ChatFileMessageBody {
 }
 
 /**
- * The video message body class.
+ * 视频消息体基类。
  */
 export class ChatVideoMessageBody extends ChatFileMessageBody {
   /**
-   * The video duration in seconds.
+   * 视频时长，单位为秒。
    */
   duration: number;
   /**
-   * The local path of the video thumbnail.
+   * 视频缩略图的本地路径。
    */
   thumbnailLocalPath: string;
   /**
-   * The URL of the thumbnail on the server.
+   * 视频缩略图在服务器的路径。
    */
   thumbnailRemotePath: string;
   /**
-   * The secret to download the video thumbnail.
+   * 下载视频缩略图需要的 token。
    */
   thumbnailSecret: string;
   /**
-   * The download status of the video thumbnail. See {@link ChatDownloadStatus}
+   * 视频缩略图下载状态，详见 {@link ChatDownloadStatus}。
    */
   thumbnailStatus: ChatDownloadStatus;
   /**
-   * The video width in pixels.
+   * 视频的宽度，单位是像素。
    */
   width: number;
   /**
-   * The video height in pixels.
+   * 视频的高度，单位是像素。
    */
   height: number;
   constructor(params: {
@@ -1147,11 +1118,11 @@ export class ChatVideoMessageBody extends ChatFileMessageBody {
 }
 
 /**
- * The voice message body.
+ * 语音消息体基类。
  */
 export class ChatVoiceMessageBody extends ChatFileMessageBody {
   /**
-   * The voice duration in seconds.
+   * 语音时长，单位为秒。
    */
   duration: number;
   constructor(params: {
@@ -1178,36 +1149,36 @@ export class ChatVoiceMessageBody extends ChatFileMessageBody {
 }
 
 /**
- * The command message body.
+ * 命令消息体基类。
  */
 export class ChatCmdMessageBody extends ChatMessageBody {
   /**
-   * The command action.
+   * 命令内容。
    */
   action: string;
   /**
-   * Whether this command message is delivered only to online users.
-   * - (Default)`false`: The command message is delivered to users, regardless of their online or offline status.
-   * - `true`: The message is delivered to the online users only, so the offline users won't receive the message when they log in later.
+   * 当前命令消息是否只投递在线用户。
+   * - （默认）`false`: 投递给所有用户。
+   * - `true`: 只投递给在线用户，离线用户再次上线时不会收到该命令消息。
    */
   deliverOnlineOnly: boolean;
   constructor(params: { action: string; deliverOnlineOnly?: boolean }) {
     super(ChatMessageType.CMD);
     this.action = params.action;
-    this.deliverOnlineOnly = params.deliverOnlineOnly ?? true;
+    this.deliverOnlineOnly = params.deliverOnlineOnly ?? false;
   }
 }
 
 /**
- * The custom message body.
+ * 自定义消息体基类。
  */
 export class ChatCustomMessageBody extends ChatMessageBody {
   /**
-   * The event.
+   * 自定义事件。
    */
   event: string;
   /**
-   * The custom params map.
+   * 自定义消息的键值对。
    */
   params: any;
   constructor(params: { event: string; params?: any }) {

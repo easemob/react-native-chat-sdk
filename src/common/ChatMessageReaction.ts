@@ -1,23 +1,23 @@
 /**
- * The message Reaction instance class that defines Reaction attributes.
+ * 消息 Reaction 实体类，用于指定 Reaction 属性。
  */
 export class ChatMessageReaction {
   /**
-   * The Reaction content.
+   * Reaction 内容。
    */
   reaction: string;
   /**
-   * The count of the users who added this Reaction.
+   * 添加了指定 Reaction 的用户数量。
    */
   count: string;
   /**
-   * Whether the current user added this Reaction.
-   * - `true`: Yes.
-   * - `false`: No.
+   * 当前用户是否添加了该 Reaction。
+   * - `Yes`：是。
+   * - `No`：否。
    */
   isAddedBySelf: boolean;
   /**
-   * The list of users that added this Reaction.
+   * 添加了指定 Reaction 的用户列表。
    */
   userList: Array<string>;
   constructor(params: {
@@ -33,20 +33,20 @@ export class ChatMessageReaction {
   }
 }
 /**
- * The message Reaction event class.
+ * 消息 Reaction 事件类。
  *
  */
 export class ChatMessageReactionEvent {
   /**
-   * The conversation ID.
+   * 会话 ID。
    */
   convId: string;
   /**
-   * The message ID.
+   * 消息 ID。
    */
   msgId: string;
   /**
-   * The Reaction list.
+   * Reaction 列表。
    */
   reactions: Array<ChatMessageReaction>;
   constructor(params: {

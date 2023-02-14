@@ -1,17 +1,17 @@
 /**
- * The chat error class, which contains the error code and error description.
+ * 错误类，包含错误码和错误描述。
  */
 export class ChatError {
   /**
-   * The error code.
+   * 错误码。
    *
-   * See the error code of the iOS or Android platform:
-   * - iOS: {@url https://docs-preprod.agora.io/en/agora-chat/agora_chat_error_ios?platform=iOS}
-   * - Android: {@url https://docs-preprod.agora.io/en/agora-chat/agora_chat_error_android?platform=Android}
+   * 详见原生代码平台 iOS 和 Android 错误码：
+   * - iOS：{@link EMErrorCode#https://docs-im.easemob.com/ccim/ios/errorcode}
+   * - Android: {@link HyphenateException#errorCode#https://docs-im.easemob.com/ccim/android/errorcode}
    */
   code: number;
   /**
-   * The error description.
+   * 错误描述。
    */
   description: string;
 
