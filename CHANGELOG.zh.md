@@ -7,18 +7,20 @@ _Chinese | [English](./CHANGELOG.md)_
 新增特性：
 
 - 依赖的原生 SDK 升级为 4.0.0 版本 (`iOS` 和 `Android`)。
-- 新增实现聊天室属性自定义功能
-- 新增 `fetchConversationsFromServerWithPage` 实现从服务器分页获取会话列表
-- 新增 `ChatMessage#messagePriority` 实现聊天室消息优先级功能
-- 新增 `removeMessagesFromServerWithTimestamp` 和 `removeMessagesFromServerWithMsgIds` 实现单向删除服务端历史消息
+- 新增实现聊天室属性自定义功能。
+- 新增 `fetchConversationsFromServerWithPage` 实现从服务器分页获取会话列表。
+- 新增 `ChatMessage#messagePriority` 实现聊天室消息优先级功能。
+- 新增 `removeMessagesFromServerWithTimestamp` 和 `removeMessagesFromServerWithMsgIds` 实现单向删除服务端历史消息。
 
 优化：
 
-- 去除测试数据的敏感信息
+- 去除测试数据的敏感信息。
 
 修复：
 
-- 原生部分修复不安全代码
+- 原生部分修复不安全代码。
+- 获取会话可能失败的问题。
+- 解决回调方法可能多次进入主线程导致死锁的问题。该问题只可能发生在 iOS 平台。
 
 ---
 

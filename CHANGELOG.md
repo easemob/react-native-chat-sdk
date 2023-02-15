@@ -16,11 +16,13 @@ New features
 
 Improvements
 
-Removed the sensitive information from the test data.
+- Removed the sensitive information from the test data.
 
 Issues fixed
 
-Some insecure code of native platforms was fixed.
+- Some insecure code of native platforms was fixed.
+- An issue where getting a session might fail.
+- The potential deadlock issue caused by a callback method that repeatedly enters the main thread for execution. This issue occurs only on the iOS platform.
 
 ## 1.0.11
 
