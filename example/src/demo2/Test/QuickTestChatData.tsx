@@ -188,7 +188,7 @@ export const metaDataList = new Map<string, ApiParams>([
         {
           paramName: 'msgId',
           paramType: 'string',
-          paramDefaultValue: '165122593166911045',
+          paramDefaultValue: '1112266640122185168',
         },
       ],
     },
@@ -584,7 +584,7 @@ export const metaDataList = new Map<string, ApiParams>([
         {
           paramName: 'msgId',
           paramType: 'string',
-          paramDefaultValue: '1003599319195977800',
+          paramDefaultValue: '1111837470724457888',
         },
       ],
     },
@@ -1198,7 +1198,7 @@ export const metaDataList = new Map<string, ApiParams>([
         {
           paramName: 'timestamp', // 使用发送成功或者失败的数据测试，依赖sendMessage
           paramType: 'number',
-          paramDefaultValue: 1660814489000,
+          paramDefaultValue: 16765345578360,
         },
       ],
     },

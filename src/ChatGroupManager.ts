@@ -747,13 +747,13 @@ export class ChatGroupManager extends BaseManager {
    *
    * @throws 如果有异常会在这里抛出，包含错误码和错误描述，详见 {@link ChatError}。
    */
-  public async inviterUser(
+  public async inviteUser(
     groupId: string,
     members: Array<string>,
     reason?: string
   ): Promise<void> {
     chatlog.log(
-      `${ChatGroupManager.TAG}: inviterUser: `,
+      `${ChatGroupManager.TAG}: inviteUser: `,
       groupId,
       members,
       reason

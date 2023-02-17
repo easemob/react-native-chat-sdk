@@ -83,7 +83,7 @@ export class SendMessageLeafScreen extends LeafScreenBase<StateSendMessage> {
             {
               paramName: 'targetId',
               paramType: 'string',
-              paramDefaultValue: datasheet.accounts[0].id,
+              paramDefaultValue: datasheet.accounts[2].id,
             },
             {
               paramName: 'targetType',

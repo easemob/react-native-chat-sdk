@@ -31,7 +31,7 @@ export interface StateGroupMessage extends StateBase {
     groupId: string;
     members: Array<string>;
   };
-  inviterUser: {
+  inviteUser: {
     groupId: string;
     members: Array<string>;
     reason: string;
@@ -222,7 +222,7 @@ export class GroupManagerLeafScreen extends LeafScreenBase<StateGroupMessage> {
       'requestToJoinPublicGroup',
       'joinPublicGroup',
       'leaveGroup',
-      'inviterUser',
+      'inviteUser',
       'fetchJoinedGroupsFromServer',
       'fetchPublicGroupsFromServer',
       'getJoinedGroups',
@@ -391,10 +391,10 @@ export class GroupManagerLeafScreen extends LeafScreenBase<StateGroupMessage> {
         );
         break;
       }
-      case MN.inviterUser: {
-        const { groupId, members, reason } = this.state.inviterUser;
+      case MN.inviteUser: {
+        const { groupId, members, reason } = this.state.inviteUser;
         this.tryCatch(
-          ChatClient.getInstance().groupManager.inviterUser(
+          ChatClient.getInstance().groupManager.inviteUser(
             groupId,
             members,
             reason

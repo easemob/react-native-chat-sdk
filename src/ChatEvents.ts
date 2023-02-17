@@ -116,11 +116,11 @@ export enum ChatMultiDeviceEvent {
   /**
    * 用户 A 在设备 A1 上将其他成员添加到群组白名单中，则设备 A2 上会收到该事件。
    */
-  GROUP_ADD_USER_WHITE_LIST,
+  GROUP_ADD_USER_ALLOW_LIST,
   /**
    * 用户 A 在设备 A1 上将其他成员移除群组白名单，则设备 A2 上会收到该事件。
    */
-  GROUP_REMOVE_USER_WHITE_LIST,
+  GROUP_REMOVE_USER_ALLOW_LIST,
   /**
    * 用户 A 在设备 A1 上将所有其他群组成员添加到群组禁言列表，则设备 A2 上会收到该事件。
    */
@@ -218,9 +218,9 @@ export function ChatMultiDeviceEventFromNumber(
     case 29:
       return ChatMultiDeviceEvent.GROUP_REMOVE_MUTE;
     case 30:
-      return ChatMultiDeviceEvent.GROUP_ADD_USER_WHITE_LIST;
+      return ChatMultiDeviceEvent.GROUP_ADD_USER_ALLOW_LIST;
     case 31:
-      return ChatMultiDeviceEvent.GROUP_REMOVE_USER_WHITE_LIST;
+      return ChatMultiDeviceEvent.GROUP_REMOVE_USER_ALLOW_LIST;
     case 32:
       return ChatMultiDeviceEvent.GROUP_ALL_BAN;
     case 33:
