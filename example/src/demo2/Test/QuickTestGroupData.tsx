@@ -17,7 +17,7 @@ export const MN = {
   fetchGroupFileListFromServer: 'fetchGroupFileListFromServer',
   fetchAnnouncementFromServer: 'fetchAnnouncementFromServer',
   addMembers: 'addMembers',
-  inviterUser: 'inviterUser',
+  inviteUser: 'inviteUser',
   removeMembers: 'removeMembers',
   blockMembers: 'blockMembers',
   unblockMembers: 'unblockMembers',
@@ -322,9 +322,9 @@ export const metaDataList = new Map<string, ApiParams>([
     },
   ],
   [
-    MN.inviterUser,
+    MN.inviteUser,
     {
-      methodName: MN.inviterUser,
+      methodName: MN.inviteUser,
       params: [
         {
           paramName: 'groupId',
