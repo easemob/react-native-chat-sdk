@@ -17,6 +17,9 @@ New features
 Improvements
 
 - Removed the sensitive information from the test data.
+- Changed the `inviterUser` method in the `ChatGroupManager` class to `inviteUser`.
+- Changed `GROUP_ADD_USER_WHITE_LIST` in the enumeration type `ChatMultiDeviceEvent` to `GROUP_ADD_USER_ALLOW_LIST`.
+- Changed `GROUP_REMOVE_USER_WHITE_LIST` in the enumeration type `ChatMultiDeviceEvent` to `GROUP_REMOVE_USER_ALLOW_LIST`.
 
 Issues fixed
 
