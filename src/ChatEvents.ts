@@ -116,11 +116,11 @@ export enum ChatMultiDeviceEvent {
   /**
    * If user A adds other members to the allow list of the chat group on Device A1, this event is triggered on Device A2.
    */
-  GROUP_ADD_USER_WHITE_LIST,
+  GROUP_ADD_USER_ALLOW_LIST,
   /**
    * If user A removes other members from the allow list of the chat group on Device A1, this event is triggered on Device A2.
    */
-  GROUP_REMOVE_USER_WHITE_LIST,
+  GROUP_REMOVE_USER_ALLOW_LIST,
   /**
    * If user A mutes all chat group members on Device A1, this event is triggered on Device A2.
    *
@@ -221,9 +221,9 @@ export function ChatMultiDeviceEventFromNumber(
     case 29:
       return ChatMultiDeviceEvent.GROUP_REMOVE_MUTE;
     case 30:
-      return ChatMultiDeviceEvent.GROUP_ADD_USER_WHITE_LIST;
+      return ChatMultiDeviceEvent.GROUP_ADD_USER_ALLOW_LIST;
     case 31:
-      return ChatMultiDeviceEvent.GROUP_REMOVE_USER_WHITE_LIST;
+      return ChatMultiDeviceEvent.GROUP_REMOVE_USER_ALLOW_LIST;
     case 32:
       return ChatMultiDeviceEvent.GROUP_ALL_BAN;
     case 33:

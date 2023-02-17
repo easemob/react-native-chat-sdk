@@ -751,13 +751,13 @@ export class ChatGroupManager extends BaseManager {
    *
    * @throws A description of the exception. See {@link ChatError}.
    */
-  public async inviterUser(
+  public async inviteUser(
     groupId: string,
     members: Array<string>,
     reason?: string
   ): Promise<void> {
     chatlog.log(
-      `${ChatGroupManager.TAG}: inviterUser: `,
+      `${ChatGroupManager.TAG}: inviteUser: `,
       groupId,
       members,
       reason

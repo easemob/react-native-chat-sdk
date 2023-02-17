@@ -362,19 +362,19 @@ export class QuickTestScreenGroup extends QuickTestScreenBase<
           );
         }
         break;
-      case MN.inviterUser:
+      case MN.inviteUser:
         {
-          const methodName = this.metaData.get(MN.inviterUser)?.methodName!;
-          console.log(`${MN.inviterUser} === ${methodName}`);
-          const groupId = this.metaData.get(MN.inviterUser)?.params[0]
+          const methodName = this.metaData.get(MN.inviteUser)?.methodName!;
+          console.log(`${MN.inviteUser} === ${methodName}`);
+          const groupId = this.metaData.get(MN.inviteUser)?.params[0]
             .paramDefaultValue;
-          const members = this.metaData.get(MN.inviterUser)?.params[1]
+          const members = this.metaData.get(MN.inviteUser)?.params[1]
             .paramDefaultValue;
-          const reason = this.metaData.get(MN.inviterUser)?.params[2]
+          const reason = this.metaData.get(MN.inviteUser)?.params[2]
             .paramDefaultValue;
 
           this.tryCatch(
-            ChatClient.getInstance().groupManager.inviterUser(
+            ChatClient.getInstance().groupManager.inviteUser(
               groupId,
               members,
               reason
