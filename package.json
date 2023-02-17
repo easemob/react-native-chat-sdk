@@ -41,7 +41,8 @@
     "pods": "cd example && pod-install --quiet",
     "cpp": "cd native_src/cpp && sh generate.sh --type rn && cd ../..",
     "cpp_win": "cd native_src/cpp && generate.ps1 --type rn && cd ../..",
-    "bootstrap": "yarn example && yarn && yarn pods"
+    "bootstrap": "yarn example && yarn && yarn pods",
+    "typedoc": "npx typedoc --out ./docs/typedoc --json ./docs/typedoc/typedoc.json --tsconfig ./tsconfig.json --readme ./docs/rn_api_overview.md ./src/index.ts"
   },
   "keywords": [
     "react-native",
