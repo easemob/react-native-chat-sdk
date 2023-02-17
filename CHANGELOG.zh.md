@@ -15,6 +15,9 @@ _Chinese | [English](./CHANGELOG.md)_
 优化：
 
 - 去除测试数据的敏感信息。
+- ChatGroupManager 类方法 `inviterUser` 更名为 `inviteUser`
+- ChatMultiDeviceEvent 枚举类型 `GROUP_ADD_USER_WHITE_LIST` 更名为 `GROUP_ADD_USER_ALLOW_LIST`
+- ChatMultiDeviceEvent 枚举类型 `GROUP_REMOVE_USER_WHITE_LIST` 更名为 `GROUP_REMOVE_USER_ALLOW_LIST`
 
 修复：
 
