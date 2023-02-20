@@ -2256,6 +2256,15 @@ export class ChatManager extends BaseManager {
     return undefined;
   }
 
+  /**
+   * 从服务器分页获取会话列表。
+   *
+   * @param pageSize 当前页码，从 1 开始。
+   * @param pageNum 每页获取的会话数量，取值范围为 [1,20]。
+   * @returns 当前用户的会话列表。
+   *
+   * @throws 如果有异常会在此抛出，包括错误码和错误信息，详见 {@link ChatError}。
+   */
   public async fetchConversationsFromServerWithPage(
     pageSize: number,
     pageNum: number
@@ -2285,6 +2294,15 @@ export class ChatManager extends BaseManager {
     return ret;
   }
 
+  /**
+   * 根据消息 ID 单向删除漫游消息
+   *
+   * @param convId 会话ID。
+   * @param convType 会话类型。
+   * @param msgIds 将要删除的消息ID列表。
+   *
+   * @throws 如果有异常会在此抛出，包括错误码和错误信息，详见 {@link ChatError}。
+   */
   public async removeMessagesFromServerWithMsgIds(
     convId: string,
     convType: ChatConversationType,
@@ -2309,6 +2327,15 @@ export class ChatManager extends BaseManager {
     Native.checkErrorFromResult(r);
   }
 
+  /**
+   * 根据消息 时间戳 单向删除漫游消息
+   *
+   * @param convId 会话ID。
+   * @param convType 会话类型。
+   * @param timestamp UNIX 时间戳，单位为毫秒。若消息的 UNIX 时间戳小于设置的值，则会被删除。
+   *
+   * @throws 如果有异常会在此抛出，包括错误码和错误信息，详见 {@link ChatError}。
+   */
   public async removeMessagesFromServerWithTimestamp(
     convId: string,
     convType: ChatConversationType,
