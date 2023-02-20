@@ -1271,17 +1271,17 @@ export const metaDataList = new Map<string, ApiParams>([
         {
           paramName: 'convId', // 使用发送成功或者失败的数据测试，依赖sendMessage
           paramType: 'string',
-          paramDefaultValue: '206054790070283',
+          paramDefaultValue: datasheet.accounts[2].id,
         },
         {
           paramName: 'convType',
           paramType: 'number',
-          paramDefaultValue: 1,
+          paramDefaultValue: 0,
         },
         {
           paramName: 'timestamp',
           paramType: 'number',
-          paramDefaultValue: 1675997166172,
+          paramDefaultValue: 16759971661720,
         },
       ],
     },
