@@ -352,6 +352,8 @@ export class ChatGroupManager extends BaseManager {
       [MTgetJoinedGroupsFromServer]: {
         pageSize,
         pageNum,
+        needRole: true,
+        needMemberCount: true,
       },
     });
     ChatGroupManager.checkErrorFromResult(r);

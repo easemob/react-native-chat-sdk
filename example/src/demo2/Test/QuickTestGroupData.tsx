@@ -78,7 +78,7 @@ export const metaDataList = new Map<string, ApiParams>([
         {
           paramName: 'pageSize',
           paramType: 'number',
-          paramDefaultValue: 1,
+          paramDefaultValue: 0,
         },
         {
           paramName: 'pageNum',
@@ -143,7 +143,7 @@ export const metaDataList = new Map<string, ApiParams>([
             style: 3,
             maxCount: 200,
             inviteNeedConfirm: false,
-            ext: '',
+            ext: 'sdf',
           },
         },
       ],
