@@ -2276,6 +2276,15 @@ export class ChatManager extends BaseManager {
     return undefined;
   }
 
+  /**
+   * Gets conversations from the server with pagination.
+   *
+   * @param pageSize The number of conversations to retrieve on each page.
+   * @param pageNum The current page number, starting from 1.
+   * @returns If success, the list of conversations is returned; otherwise, an exception will be thrown.
+   *
+   * @throws A description of the exception. See {@link ChatError}.
+   */
   public async fetchConversationsFromServerWithPage(
     pageSize: number,
     pageNum: number
@@ -2305,6 +2314,15 @@ export class ChatManager extends BaseManager {
     return ret;
   }
 
+  /**
+   * Deletes messages from the conversation (from both local storage and server).
+   *
+   * @param convId The conversation ID.
+   * @param convType The conversation Type.
+   * @param msgIds The IDs of messages to delete from the current conversation.
+   *
+   * @throws A description of the exception. See {@link ChatError}.
+   */
   public async removeMessagesFromServerWithMsgIds(
     convId: string,
     convType: ChatConversationType,
@@ -2329,6 +2347,15 @@ export class ChatManager extends BaseManager {
     Native.checkErrorFromResult(r);
   }
 
+  /**
+   * Deletes messages from the conversation (from both local storage and server).
+   *
+   * @param convId The conversation ID.
+   * @param convType The conversation Type.
+   * @param timestamp The message timestamp in millisecond. The messages with the timestamp smaller than the specified one will be deleted.
+   *
+   * @throws A description of the exception. See {@link ChatError}.
+   */
   public async removeMessagesFromServerWithTimestamp(
     convId: string,
     convType: ChatConversationType,
