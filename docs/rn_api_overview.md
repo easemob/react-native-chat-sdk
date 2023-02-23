@@ -134,6 +134,9 @@ Agora Chat is a highly reliable global communication platform where your users c
 | {@link ChatManager.fetchChatThreadFromServer fetchChatThreadFromServer} | Gets the details of the message thread from the server. |
 | {@link ChatManager.getMessageThread getMessageThread} | Gets the details of the message thread from the memory. |
 | {@link ChatManager.getThreadConversation getThreadConversation} | Gets the thread conversation by conversation ID. |
+| {@link ChatManager.fetchConversationsFromServerWithPage fetchConversationsFromServerWithPage} | Gets conversations from the server with pagination. |
+| {@link ChatManager.removeMessagesFromServerWithMsgIds removeMessagesFromServerWithMsgIds} | Deletes messages from the conversation (from both local storage and server). |
+| {@link ChatManager.removeMessagesFromServerWithTimestamp removeMessagesFromServerWithTimestamp} | Deletes messages from the conversation (from both local storage and server). |
 
 | Event | Description |
 | :----- | :---------- |
@@ -194,7 +197,7 @@ Agora Chat is a highly reliable global communication platform where your users c
 | {@link ChatGroupManager.fetchGroupFileListFromServer fetchGroupFileListFromServer} | Uses the pagination to get the shared files of the group from the server. |
 | {@link ChatGroupManager.fetchAnnouncementFromServer fetchAnnouncementFromServer} | Gets the group announcement from the server. |
 | {@link ChatGroupManager.addMembers addMembers} | Adds users to the group. |
-| {@link ChatGroupManager.inviterUser inviterUser} | Invites users to join the group. |
+| {@link ChatGroupManager.inviteUser inviteUser} | Invites users to join the group. |
 | {@link ChatGroupManager.removeMembers removeMembers} | Removes a member from the group. |
 | {@link ChatGroupManager.blockMembers blockMembers} | Adds the user to the block list of the group. |
 | {@link ChatGroupManager.unblockMembers unblockMembers} | Removes users from the group block list. |
@@ -314,7 +317,7 @@ Agora Chat is a highly reliable global communication platform where your users c
 ## ChatPresenceManager
 | Method | Description |
 | :----- | :---------- |
-| {@link ChatPresenceManager.setNativeListener setNativeListener} |  |
+| {@link ChatPresenceManager.setNativeListener setNativeListener} | The presence manager class. |
 | {@link ChatPresenceManager.addPresenceListener addPresenceListener} | Adds a presence listener. |
 | {@link ChatPresenceManager.removePresenceListener removePresenceListener} | Removes a presence listener. |
 | {@link ChatPresenceManager.removeAllPresenceListener removeAllPresenceListener} | Clears all presence listeners. |
@@ -364,6 +367,7 @@ Agora Chat is a highly reliable global communication platform where your users c
 | {@link ChatMessage.reactionList reactionList} | Gets the list of Reactions. |
 | {@link ChatMessage.groupReadCount groupReadCount} | Gets the count of read receipts of a group message. |
 | {@link ChatMessage.threadInfo threadInfo} | Gets details of a message thread. |
+| {@link ChatMessage.messagePriority messagePriority} | Set chat room message delivery priority. |
 ## ChatConversation
 | Method | Description |
 | :----- | :---------- |
