@@ -333,8 +333,8 @@ export class ChatGroupManager extends BaseManager {
    *
    * This method returns a group list which does not contain member information. If you want to update information of a group to include its member information, call {@link fetchMemberListFromServer}.
    *
-   * @param pageSize The number of groups that you expect to return on each page.
-   * @param pageNum The page number, starting from 1.
+   * @param pageSize The number of groups that you expect to return on each page [1, 20].
+   * @param pageNum The page number, starting from 0.
    * @returns The list of groups that the current user joins.
    *
    * @throws A description of the exception. See {@link ChatError}.
