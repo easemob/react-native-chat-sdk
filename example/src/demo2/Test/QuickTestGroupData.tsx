@@ -157,7 +157,7 @@ export const metaDataList = new Map<string, ApiParams>([
         {
           paramName: 'groupId',
           paramType: 'string',
-          paramDefaultValue: '183958105030657',
+          paramDefaultValue: '207993699368962',
         },
         {
           paramName: 'isFetchMembers',
@@ -740,7 +740,7 @@ export const metaDataList = new Map<string, ApiParams>([
         {
           paramName: 'groupId',
           paramType: 'string',
-          paramDefaultValue: '180804431970306',
+          paramDefaultValue: '207993699368962',
         },
         {
           paramName: 'extension',
