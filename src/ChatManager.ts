@@ -1359,7 +1359,7 @@ export class ChatManager extends BaseManager {
         direction: direction === ChatSearchDirection.UP ? 'up' : 'down',
         timestamp: timestamp,
         count: count,
-        sender: sender,
+        sender: sender ?? '',
       },
     });
     ChatManager.checkErrorFromResult(r);
