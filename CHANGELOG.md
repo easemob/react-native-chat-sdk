@@ -2,6 +2,12 @@ _English | [Chinese](./CHANGELOG.zh.md)_
 
 # Update Log
 
+## 1.1.1
+
+Issues fixed
+
+- 'fetchJoinedGroupsFromServer' fixed the issue that the extended attribute of fetching joined public groups was empty.
+
 ---
 
 ## 1.1.0
@@ -26,6 +32,8 @@ Issues fixed
 - Some insecure code of native platforms was fixed.
 - An issue where getting a session might fail.
 - The potential deadlock issue caused by a callback method that repeatedly enters the main thread for execution. This issue occurs only on the iOS platform.
+
+---
 
 ## 1.0.11
 

@@ -2,6 +2,14 @@ _Chinese | [English](./CHANGELOG.md)_
 
 # Update Log
 
+## 1.1.1
+
+修复：
+
+- `fetchJoinedGroupsFromServer` 修复获取加入的公开群的扩展属性为空的问题。
+
+---
+
 ## 1.1.0
 
 新增特性：
