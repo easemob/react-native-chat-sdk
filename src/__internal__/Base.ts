@@ -2,13 +2,13 @@ import type { NativeEventEmitter } from 'react-native';
 import { ChatError } from '../common/ChatError';
 import { ChatMessage, ChatMessageStatusCallback } from '../common/ChatMessage';
 import type { ChatGroupFileStatusCallback } from '../common/ChatGroup';
-import { chatlog } from '../common/ChatLog';
 import {
   MTonMessageError,
   MTonMessageProgressUpdate,
   MTonMessageSuccess,
 } from './Consts';
 import { Native } from './Native';
+import { chatlog } from '../common/ChatConst';
 
 export class BaseManager extends Native {
   protected static TAG = 'BaseManager';

@@ -1,5 +1,7 @@
 import type { InspectOptions } from 'util';
 
+type PrintFunctionType = (message?: any, ...optionalParams: any[]) => void;
+
 /**
  * This needs to be global to avoid TS2403 in case lib.dom.d.ts is present in the same build
  */
@@ -104,9 +106,7 @@ export class ChatLog {
    * @since v8.0.0
    */
   debug(message?: any, ...optionalParams: any[]): void {
-    if (ChatLog._enableLog) {
-      console.debug(message, ...optionalParams);
-    }
+    this._printf(console.debug, message, ...optionalParams);
   }
   /**
    * Uses `util.inspect()` on `obj` and prints the resulting string to `stdout`.
@@ -146,9 +146,7 @@ export class ChatLog {
    * @since v0.1.100
    */
   error(message?: any, ...optionalParams: any[]): void {
-    if (ChatLog._enableLog) {
-      console.error(message, ...optionalParams);
-    }
+    this._printf(console.error, message, ...optionalParams);
   }
   /**
    * Increases indentation of subsequent lines by spaces for `groupIndentation`length.
@@ -185,9 +183,7 @@ export class ChatLog {
    * @since v0.1.100
    */
   info(message?: any, ...optionalParams: any[]): void {
-    if (ChatLog._enableLog) {
-      console.info(message, ...optionalParams);
-    }
+    this._printf(console.info, message, ...optionalParams);
   }
   /**
    * Prints to `stdout` with newline. Multiple arguments can be passed, with the
@@ -206,9 +202,7 @@ export class ChatLog {
    * @since v0.1.100
    */
   log(message?: any, ...optionalParams: any[]): void {
-    if (ChatLog._enableLog) {
-      console.log(message, ...optionalParams);
-    }
+    this._printf(console.log, message, ...optionalParams);
   }
   /**
    * Try to construct a table with the columns of the properties of `tabularData`(or use `properties`) and rows of `tabularData` and log it. Falls back to just
@@ -315,18 +309,14 @@ export class ChatLog {
    * @since v0.1.104
    */
   trace(message?: any, ...optionalParams: any[]): void {
-    if (ChatLog._enableLog) {
-      console.trace(message, ...optionalParams);
-    }
+    this._printf(console.trace, message, ...optionalParams);
   }
   /**
    * The `console.warn()` function is an alias for {@link error}.
    * @since v0.1.100
    */
   warn(message?: any, ...optionalParams: any[]): void {
-    if (ChatLog._enableLog) {
-      console.warn(message, ...optionalParams);
-    }
+    this._printf(console.warn, message, ...optionalParams);
   }
   // --- Inspector mode only ---
   /**
@@ -366,5 +356,78 @@ export class ChatLog {
   get enableLog(): boolean {
     return ChatLog._enableLog;
   }
+
+  private static _enableTimestamp = true;
+
+  set enableTimestamp(is: boolean) {
+    ChatLog._enableTimestamp = is;
+  }
+
+  get enableTimestamp(): boolean {
+    return ChatLog._enableTimestamp;
+  }
+
+  private static _tag = '[test]';
+
+  set tag(tag: string) {
+    ChatLog._tag = tag;
+  }
+
+  get tag(): string {
+    return ChatLog._tag;
+  }
+
+  private _ft(): string {
+    const date = new Date();
+    const y = date.getFullYear();
+    const m =
+      (date.getMonth() + 1).toString().length < 2
+        ? `0${date.getMonth() + 1}`
+        : date.getMonth() + 1;
+    const d =
+      date.getDate().toString().length < 2
+        ? `0${date.getDate()}`
+        : date.getDate();
+    const h =
+      date.getHours().toString().length < 2
+        ? `0${date.getHours()}`
+        : date.getHours();
+    const mm =
+      date.getMinutes().toString().length < 2
+        ? `0${date.getMinutes()}`
+        : date.getMinutes();
+    const s =
+      date.getSeconds().toString().length < 2
+        ? `0${date.getSeconds()}`
+        : date.getSeconds();
+    const z =
+      date.getMilliseconds().toString().length < 3
+        ? date.getMilliseconds().toString().length < 2
+          ? `00${date.getMilliseconds()}`
+          : `0${date.getMilliseconds()}`
+        : date.getMilliseconds();
+    return `${y}${m}${d}-${h}${mm}${s}.${z}`;
+  }
+
+  private _printf(
+    f: PrintFunctionType,
+    message?: any,
+    ...optionalParams: any[]
+  ): void {
+    if (ChatLog._enableLog) {
+      if (this.tag.length > 0) {
+        if (this.enableTimestamp === true) {
+          f(this.tag, this._ft(), message, ...optionalParams);
+        } else {
+          f(this.tag, message, ...optionalParams);
+        }
+      } else {
+        if (this.enableTimestamp === true) {
+          f(this._ft(), message, ...optionalParams);
+        } else {
+          f(message, ...optionalParams);
+        }
+      }
+    }
+  }
 }
-export var chatlog: ChatLog = new ChatLog();

@@ -20,7 +20,6 @@ import { ChatRoomManager } from './ChatRoomManager';
 import { ChatUserInfoManager } from './ChatUserInfoManager';
 import { ChatDeviceInfo } from './common/ChatDeviceInfo';
 import { ChatError } from './common/ChatError';
-import { chatlog } from './common/ChatLog';
 import { ChatOptions } from './common/ChatOptions';
 import { ChatPushConfig } from './common/ChatPushConfig';
 import { BaseManager } from './__internal__/Base';
@@ -56,6 +55,7 @@ import {
   MTupdatePushConfig,
 } from './__internal__/Consts';
 import { Native } from './__internal__/Native';
+import { chatlog } from './common/ChatConst';
 
 const LINKING_ERROR =
   `The package 'react-native-chat-sdk' doesn't seem to be linked. Make sure: \n\n` +
@@ -397,6 +397,8 @@ export class ChatClient extends BaseManager {
     }
     this._options = new ChatOptions(options); // deep copy
     chatlog.enableLog = options.debugModel ?? false;
+    chatlog.enableTimestamp = options.logTimestamp ?? true;
+    chatlog.tag = options.logTag ?? '[chat]';
     const r = await Native._callMethod(MTinit, { options });
     ChatClient.checkErrorFromResult(r);
     this._isInit = true;

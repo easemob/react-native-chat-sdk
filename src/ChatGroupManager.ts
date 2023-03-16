@@ -1,6 +1,5 @@
 import type { EmitterSubscription, NativeEventEmitter } from 'react-native';
 import type { ChatGroupEventListener } from './ChatEvents';
-import { chatlog } from './common/ChatLog';
 import {
   ChatGroupSharedFile,
   ChatGroup,
@@ -59,6 +58,7 @@ import {
 import { Native } from './__internal__/Native';
 import { BaseManager } from './__internal__/Base';
 import { ChatError } from './common/ChatError';
+import { chatlog } from './common/ChatConst';
 
 /**
  * The group manager class, which defines how to manage groups, like group creation and destruction and member management.

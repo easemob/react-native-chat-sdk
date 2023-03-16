@@ -1,6 +1,5 @@
 import type { EmitterSubscription, NativeEventEmitter } from 'react-native';
 import type { ChatRoomEventListener } from './ChatEvents';
-import { chatlog } from './common/ChatLog';
 import {
   MTaddChatRoomAdmin,
   MTaddMembersToChatRoomAllowList,
@@ -40,6 +39,7 @@ import { ChatPageResult } from './common/ChatPageResult';
 import { ChatRoom } from './common/ChatRoom';
 import { ChatCursorResult } from './common/ChatCursorResult';
 import { ChatError } from './common/ChatError';
+import { chatlog } from './common/ChatConst';
 
 /**
  * The chat room manager class, which manages user operations, like joining and leaving the chat room and retrieving the chat room list, and manages member privileges.

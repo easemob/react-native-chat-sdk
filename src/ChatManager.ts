@@ -1,6 +1,5 @@
 import type { NativeEventEmitter } from 'react-native';
 import type { ChatMessageEventListener } from './ChatEvents';
-import { chatlog } from './common/ChatLog';
 import {
   ChatConversation,
   ChatConversationType,
@@ -106,6 +105,7 @@ import {
   ChatMessageThread,
   ChatMessageThreadEvent,
 } from './common/ChatMessageThread';
+import { chatlog } from './common/ChatConst';
 
 /**
  * The chat manager class, responsible for sending and receiving messages, managing conversations (including loading and deleting conversations), and downloading attachments.

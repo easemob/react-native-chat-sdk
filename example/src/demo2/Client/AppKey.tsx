@@ -105,7 +105,8 @@ export class AppKeyScreen extends Component<{ navigation: any }, State, any> {
         this.setState({ result: 'success' });
       })
       .catch((reason) => {
-        this.setState({ result: reason });
+        console.error(reason);
+        this.setState({ result: reason.toString() });
       });
   }
 
