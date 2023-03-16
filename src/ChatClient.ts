@@ -392,6 +392,9 @@ export class ChatClient extends BaseManager {
    */
   public async init(options: ChatOptions): Promise<void> {
     chatlog.log(`${ChatClient.TAG}: init: `, options);
+    if (options.appKey === undefined || options.appKey.length === 0) {
+      throw new Error('appKey is empty.');
+    }
     this._options = new ChatOptions(options); // deep copy
     chatlog.enableLog = options.debugModel ?? false;
     const r = await Native._callMethod(MTinit, { options });
@@ -650,6 +653,9 @@ export class ChatClient extends BaseManager {
    */
   public async changeAppKey(newAppKey: string): Promise<void> {
     chatlog.log(`${ChatClient.TAG}: changeAppKey: `, newAppKey);
+    if (newAppKey === undefined || newAppKey.length === 0) {
+      throw new Error('appKey is empty.');
+    }
     let r: any = await Native._callMethod(MTchangeAppKey, {
       [MTchangeAppKey]: {
         appKey: newAppKey,
