@@ -26,6 +26,14 @@ export class ChatOptions {
    */
   debugModel: boolean;
   /**
+   * Global flag for printing logs.
+   */
+  logTag?: string;
+  /**
+   * Whether to activate the timestamp of the log.
+   */
+  logTimestamp?: boolean;
+  /**
    * Whether to accept friend invitations from other users automatically.
    *
    * - `true`: Yes.
@@ -165,6 +173,8 @@ export class ChatOptions {
     isAutoDownload?: boolean;
     pushConfig?: ChatPushConfig;
     areaCode?: ChatAreaCode;
+    logTag?: string;
+    logTimestamp?: boolean;
   }) {
     this.appKey = params.appKey;
     this.autoLogin = params.autoLogin ?? true;
@@ -189,5 +199,7 @@ export class ChatOptions {
     this.imServer = '';
     this.imPort = 0;
     this.areaCode = params.areaCode ?? ChatAreaCode.GLOB;
+    this.logTag = params.logTag;
+    this.logTimestamp = params.logTimestamp;
   }
 }

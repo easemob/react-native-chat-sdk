@@ -1,7 +1,6 @@
 import type { EmitterSubscription, NativeEventEmitter } from 'react-native';
 import type { ChatContactEventListener } from './ChatEvents';
 import { ChatError } from './common/ChatError';
-import { chatlog } from './common/ChatLog';
 import { BaseManager } from './__internal__/Base';
 import {
   MTacceptInvitation,
@@ -18,6 +17,7 @@ import {
   MTremoveUserFromBlockList,
 } from './__internal__/Consts';
 import { Native } from './__internal__/Native';
+import { chatlog } from './common/ChatConst';
 
 /**
  * The contact manager class, which manages chat contacts such as adding, retrieving, modifying, and deleting contacts.

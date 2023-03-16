@@ -3,7 +3,6 @@ import type {
   ChatConversation,
   ChatConversationType,
 } from './common/ChatConversation';
-import { chatlog } from './common/ChatLog';
 import { ChatPushDisplayStyle, ChatPushOption } from './common/ChatPushConfig';
 import {
   ChatSilentModeResult,
@@ -23,6 +22,7 @@ import {
   MTupdatePushNickname,
 } from './__internal__/Consts';
 import { Native } from './__internal__/Native';
+import { chatlog } from './common/ChatConst';
 
 /**
  * The class for message push configuration options.
