@@ -377,6 +377,12 @@ export class ChatLog {
     return ChatLog._tag;
   }
 
+  private static _h: PrintFunctionType | undefined;
+
+  set handler(h: PrintFunctionType) {
+    ChatLog._h = h;
+  }
+
   private _ft(): string {
     const date = new Date();
     const y = date.getFullYear();
@@ -427,6 +433,9 @@ export class ChatLog {
         } else {
           f(message, ...optionalParams);
         }
+      }
+      if (ChatLog._h) {
+        ChatLog._h(message, ...optionalParams);
       }
     }
   }
