@@ -577,6 +577,7 @@ export class ChatMessage {
     opt?: {
       displayName: string;
       isChatThread?: boolean;
+      fileSize?: number;
     }
   ): ChatMessage {
     return ChatMessage.createSendMessage({
@@ -584,6 +585,7 @@ export class ChatMessage {
         type: ChatMessageType.FILE.valueOf(),
         localPath: filePath,
         displayName: opt?.displayName ?? '',
+        fileSize: opt?.fileSize,
       }),
       targetId: targetId,
       chatType: chatType,
@@ -624,6 +626,7 @@ export class ChatMessage {
       width: number;
       height: number;
       isChatThread?: boolean;
+      fileSize?: number;
     }
   ): ChatMessage {
     return ChatMessage.createSendMessage({
@@ -635,6 +638,7 @@ export class ChatMessage {
         sendOriginalImage: opt?.sendOriginalImage ?? false,
         width: opt?.width,
         height: opt?.height,
+        fileSize: opt?.fileSize,
       }),
       targetId: targetId,
       chatType: chatType,
@@ -673,6 +677,7 @@ export class ChatMessage {
       width: number;
       height: number;
       isChatThread?: boolean;
+      fileSize?: number;
     }
   ): ChatMessage {
     return ChatMessage.createSendMessage({
@@ -684,6 +689,7 @@ export class ChatMessage {
         duration: opt?.duration,
         width: opt?.width,
         height: opt?.height,
+        fileSize: opt?.fileSize,
       }),
       targetId: targetId,
       chatType: chatType,
@@ -716,6 +722,7 @@ export class ChatMessage {
       displayName: string;
       duration: number;
       isChatThread?: boolean;
+      fileSize?: number;
     }
   ): ChatMessage {
     return ChatMessage.createSendMessage({
@@ -724,6 +731,7 @@ export class ChatMessage {
         localPath: filePath,
         displayName: opt?.displayName ?? '',
         duration: opt?.duration,
+        fileSize: opt?.fileSize,
       }),
       targetId: targetId,
       chatType: chatType,
