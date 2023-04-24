@@ -252,7 +252,7 @@ export interface StateChatMessage extends StateBase {
   setConversationExtension: {
     convId: string;
     convType: number;
-    ext: { [key: string]: string | number };
+    ext: { [key: string]: string };
   };
   insertMessage: {
     message: ChatMessage;

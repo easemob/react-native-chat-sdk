@@ -13,6 +13,7 @@ interface State {
   devices: string;
   deviceId: string;
   deviceToken: string;
+  version: string;
 }
 
 export class ClientOthersScreen extends Component<
@@ -36,6 +37,7 @@ export class ClientOthersScreen extends Component<
       devices: '',
       deviceId: '',
       deviceToken: '',
+      version: '',
     };
   }
 
@@ -110,6 +112,10 @@ export class ClientOthersScreen extends Component<
           result: `compressLogs: fail: ${reason.code} ${reason.description}`,
         });
       });
+  }
+
+  private getVersion(): void {
+    this.setState({ version: ChatClient.getInstance().version });
   }
 
   componentDidMount?(): void {
@@ -201,6 +207,19 @@ export class ClientOthersScreen extends Component<
               title="updatePush"
               onPress={() => {
                 this.updatePush();
+              }}
+            >
+              newAppKey
+            </Button>
+          </View>
+          <View style={styleValues.containerRow}>
+            <Text style={styleValues.textStyle}>
+              version: {this.state.version}
+            </Text>
+            <Button
+              title="version"
+              onPress={() => {
+                this.getVersion();
               }}
             >
               newAppKey
