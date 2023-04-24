@@ -686,3 +686,4 @@ FodyWeavers.xsd
 native_src/output/**
 
 env.ts
+version.ts

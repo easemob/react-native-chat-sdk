@@ -144,6 +144,12 @@ export class ChatClient extends BaseManager {
     this._customListeners = new Set<ChatCustomEventListener>();
 
     this.setEventEmitter();
+
+    try {
+      this._rnSdkVersion = require('./version').default;
+    } catch (error) {
+      console.error(error);
+    }
   }
 
   public setNativeListener(event: NativeEventEmitter): void {
@@ -348,6 +354,11 @@ export class ChatClient extends BaseManager {
   private reset(): void {
     chatlog.log(`${ChatClient.TAG}: reset: `);
     this._currentUsername = '';
+  }
+
+  public get version() {
+    chatlog.log(`${ChatClient.TAG}: version: `, this._rnSdkVersion);
+    return this._rnSdkVersion;
   }
 
   /**
