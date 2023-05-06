@@ -1727,11 +1727,11 @@ export class ChatManager extends BaseManager {
   }
 
   /**
-   * 举报非法消息。
+   * 举报消息。
    *
-   * @param msgId 非法消息的 ID。
-   * @param tag 非法消息标签，如涉政和恐怖相关。
-   * @param reason 举报原因。
+   * @param msgId 要举报的消息 ID。
+   * @param tag 非法消息的标签。你需要填写自定义标签，例如`涉政`或`广告`。
+   * @param reason 举报原因。你需要自行填写举报原因。
    *
    * @throws 如果有异常会在此抛出，包括错误码和错误信息，详见 {@link ChatError}.
    */
