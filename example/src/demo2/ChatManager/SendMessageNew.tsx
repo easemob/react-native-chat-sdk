@@ -23,6 +23,11 @@ import { ChatManagerCache } from './ChatManagerData';
 import type { ApiParams } from '../__internal__/DataTypes';
 import { datasheet } from '../__default__/Datasheet';
 
+enum TestType {
+  Audio = 0,
+  Video,
+}
+
 const MN = {
   sendMessage: 'sendMessage',
 };
@@ -56,6 +61,9 @@ export interface StateSendMessage extends StateBase {
   // custom message body
   event: string;
   ext: string;
+
+  // message attribute
+  attr?: string;
 
   // is chat message
   isChatThread: boolean;
@@ -114,6 +122,7 @@ export class SendMessageLeafScreen extends LeafScreenBase<StateSendMessage> {
         },
       ],
     ]);
+    const t = TestType.Video;
     this.state = {
       sendResult: '',
       recvResult: '',
@@ -148,6 +157,10 @@ export class SendMessageLeafScreen extends LeafScreenBase<StateSendMessage> {
       // custom message body
       event: '',
       ext: '',
+
+      // message attribute
+      attr: JSON.stringify({ k: 'v', k2: 10, k3: true, k4: t as number }),
+
       // is thread message
       isChatThread: this.metaData.get(MN.sendMessage)?.params[4]
         .paramDefaultValue,
@@ -336,6 +349,16 @@ export class SendMessageLeafScreen extends LeafScreenBase<StateSendMessage> {
     ChatClient.getInstance().chatManager.removeAllMessageListener();
   }
 
+  protected renderSendMessageAttribute(): ReactNode[] {
+    const { attr } = this.state;
+    return [
+      this.renderParamWithInput('attr', attr ?? '', (text: string) => {
+        this.setState({
+          attr: text,
+        });
+      }),
+    ];
+  }
   protected renderSendMessageBodyText(): ReactNode[] {
     const { content } = this.state;
     return [
@@ -348,6 +371,7 @@ export class SendMessageLeafScreen extends LeafScreenBase<StateSendMessage> {
           });
         }
       ),
+      this.renderSendMessageAttribute(),
     ];
   }
   protected renderSendMessageBodyCmd(): ReactNode[] {
@@ -358,6 +382,7 @@ export class SendMessageLeafScreen extends LeafScreenBase<StateSendMessage> {
           action: text,
         });
       }),
+      this.renderSendMessageAttribute(),
     ];
   }
   protected renderSendMessageBodyLocation(): ReactNode[] {
@@ -378,6 +403,7 @@ export class SendMessageLeafScreen extends LeafScreenBase<StateSendMessage> {
           address: text,
         });
       }),
+      this.renderSendMessageAttribute(),
     ];
   }
 
@@ -394,6 +420,7 @@ export class SendMessageLeafScreen extends LeafScreenBase<StateSendMessage> {
           ext: text,
         });
       }),
+      this.renderSendMessageAttribute(),
     ];
   }
   protected renderSendMessageBodyFile(): ReactNode[] {
@@ -412,6 +439,7 @@ export class SendMessageLeafScreen extends LeafScreenBase<StateSendMessage> {
           displayName: text,
         });
       }),
+      this.renderSendMessageAttribute(),
     ];
   }
   protected renderSendMessageBodyVoice(): ReactNode[] {
@@ -439,6 +467,7 @@ export class SendMessageLeafScreen extends LeafScreenBase<StateSendMessage> {
           });
         }
       ),
+      this.renderSendMessageAttribute(),
     ];
   }
   protected renderSendMessageBodyImage(): ReactNode[] {
@@ -459,6 +488,7 @@ export class SendMessageLeafScreen extends LeafScreenBase<StateSendMessage> {
           displayName: text,
         });
       }),
+      this.renderSendMessageAttribute(),
     ];
   }
   protected renderSendMessageBodyVideo(): ReactNode[] {
@@ -497,6 +527,7 @@ export class SendMessageLeafScreen extends LeafScreenBase<StateSendMessage> {
           });
         }
       ),
+      this.renderSendMessageAttribute(),
     ];
   }
 
@@ -779,9 +810,18 @@ export class SendMessageLeafScreen extends LeafScreenBase<StateSendMessage> {
 
   private callApi(name: string): void {
     console.log(`${SendMessageLeafScreen.TAG}: callApi: `);
+    const { attr } = this.state;
     if (name === MN.sendMessage) {
       const message = this.createMessage();
       if (message) {
+        if (attr && attr?.trim().length > 0) {
+          try {
+            message.attributes = JSON.parse(attr);
+            // message.attributes = JSON.stringify(attr);
+          } catch (error) {
+            console.warn(error);
+          }
+        }
         this.tryCatch(
           ChatClient.getInstance().chatManager.sendMessage(
             message,
