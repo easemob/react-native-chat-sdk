@@ -1599,7 +1599,7 @@ export class ChatManager extends BaseManager {
     convId: string,
     convType: ChatConversationType,
     ext: {
-      [key: string]: string;
+      [key: string]: string | number | boolean;
     }
   ): Promise<void> {
     chatlog.log(
