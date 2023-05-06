@@ -1745,9 +1745,9 @@ export class ChatManager extends BaseManager {
   /**
    * Reports an inappropriate message.
    *
-   * @param msgId The ID of the inappropriate message.
-   * @param tag The message content tag. For example, the message is related to pornography or terrorism.
-   * @param reason The reason for reporting the message.
+   * @param msgId The ID of the message to report.
+   * @param tag The tag of the inappropriate message. You need to type a custom tag, like `porn` or `ad`.
+   * @param reason The reporting reason. You need to type a specific reason.
    *
    * @throws A description of the exception. See {@link ChatError}.
    */
