@@ -1,6 +1,10 @@
 import type { InspectOptions } from 'util';
 
-type PrintFunctionType = (message?: any, ...optionalParams: any[]) => void;
+export type PrintFunctionType = (
+  type: string,
+  message?: any,
+  ...optionalParams: any[]
+) => void;
 
 /**
  * This needs to be global to avoid TS2403 in case lib.dom.d.ts is present in the same build
@@ -106,7 +110,7 @@ export class ChatLog {
    * @since v8.0.0
    */
   debug(message?: any, ...optionalParams: any[]): void {
-    this._printf(console.debug, message, ...optionalParams);
+    this._printf('debug', console.debug, message, ...optionalParams);
   }
   /**
    * Uses `util.inspect()` on `obj` and prints the resulting string to `stdout`.
@@ -146,7 +150,7 @@ export class ChatLog {
    * @since v0.1.100
    */
   error(message?: any, ...optionalParams: any[]): void {
-    this._printf(console.error, message, ...optionalParams);
+    this._printf('error', console.error, message, ...optionalParams);
   }
   /**
    * Increases indentation of subsequent lines by spaces for `groupIndentation`length.
@@ -183,7 +187,7 @@ export class ChatLog {
    * @since v0.1.100
    */
   info(message?: any, ...optionalParams: any[]): void {
-    this._printf(console.info, message, ...optionalParams);
+    this._printf('info', console.info, message, ...optionalParams);
   }
   /**
    * Prints to `stdout` with newline. Multiple arguments can be passed, with the
@@ -202,7 +206,7 @@ export class ChatLog {
    * @since v0.1.100
    */
   log(message?: any, ...optionalParams: any[]): void {
-    this._printf(console.log, message, ...optionalParams);
+    this._printf('log', console.log, message, ...optionalParams);
   }
   /**
    * Try to construct a table with the columns of the properties of `tabularData`(or use `properties`) and rows of `tabularData` and log it. Falls back to just
@@ -309,14 +313,14 @@ export class ChatLog {
    * @since v0.1.104
    */
   trace(message?: any, ...optionalParams: any[]): void {
-    this._printf(console.trace, message, ...optionalParams);
+    this._printf('trace', console.trace, message, ...optionalParams);
   }
   /**
    * The `console.warn()` function is an alias for {@link error}.
    * @since v0.1.100
    */
   warn(message?: any, ...optionalParams: any[]): void {
-    this._printf(console.warn, message, ...optionalParams);
+    this._printf('warn', console.warn, message, ...optionalParams);
   }
   // --- Inspector mode only ---
   /**
@@ -416,6 +420,7 @@ export class ChatLog {
   }
 
   private _printf(
+    type: string,
     f: PrintFunctionType,
     message?: any,
     ...optionalParams: any[]
@@ -435,7 +440,7 @@ export class ChatLog {
         }
       }
       if (ChatLog._h) {
-        ChatLog._h(message, ...optionalParams);
+        ChatLog._h(type, message, ...optionalParams);
       }
     }
   }
