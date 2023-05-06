@@ -159,7 +159,16 @@ export class SendMessageLeafScreen extends LeafScreenBase<StateSendMessage> {
       ext: '',
 
       // message attribute
-      attr: JSON.stringify({ k: 'v', k2: 10, k3: true, k4: t as number }),
+      attr: JSON.stringify({
+        k: 'v',
+        k2: 10,
+        k3: true,
+        k4: t as number,
+        k5: 0.12,
+        // k6: {
+        //   kk1: { kkk2: 'kkk' },
+        // },
+      }),
 
       // is thread message
       isChatThread: this.metaData.get(MN.sendMessage)?.params[4]
