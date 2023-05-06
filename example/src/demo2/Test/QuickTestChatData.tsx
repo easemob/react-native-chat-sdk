@@ -1170,7 +1170,7 @@ export const metaDataList = new Map<string, ApiParams>([
         {
           paramName: 'ext',
           paramType: 'json',
-          paramDefaultValue: { key: 'value' },
+          paramDefaultValue: { key: 'value', key2: 10, key3: true },
           domType: 'input',
         },
       ],
