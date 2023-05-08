@@ -78,12 +78,12 @@ export const metaDataList = new Map<string, ApiParams>([
         {
           paramName: 'pageSize',
           paramType: 'number',
-          paramDefaultValue: 0,
+          paramDefaultValue: 20,
         },
         {
           paramName: 'pageNum',
           paramType: 'number',
-          paramDefaultValue: 10,
+          paramDefaultValue: 0,
         },
       ],
     },
@@ -651,7 +651,7 @@ export const metaDataList = new Map<string, ApiParams>([
         {
           paramName: 'groupId',
           paramType: 'string',
-          paramDefaultValue: '180804431970306',
+          paramDefaultValue: '210891706531841',
         },
         {
           paramName: 'filePath',
