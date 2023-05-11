@@ -621,7 +621,7 @@ export class ChatClient extends BaseManager {
     chatlog.log(`${ChatClient.TAG}: renewAgoraToken: `, '******');
     let r: any = await Native._callMethod(MTrenewToken, {
       [MTrenewToken]: {
-        agoraToken: agoraToken,
+        agora_token: agoraToken,
       },
     });
     ChatClient.checkErrorFromResult(r);
