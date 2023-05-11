@@ -740,12 +740,12 @@ export const metaDataList = new Map<string, ApiParams>([
         {
           paramName: 'groupId',
           paramType: 'string',
-          paramDefaultValue: '207993699368962',
+          paramDefaultValue: '210891706531841',
         },
         {
           paramName: 'extension',
           paramType: 'string',
-          paramDefaultValue: 'new extension',
+          paramDefaultValue: JSON.stringify({ k: 'v', k2: 10 }),
         },
       ],
     },
