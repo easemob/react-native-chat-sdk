@@ -3,6 +3,7 @@ import { View, Button, Text, TextInput, ScrollView } from 'react-native';
 import { ChatClient, ChatPushConfig } from 'react-native-chat-sdk';
 import { styleValues } from '../__internal__/Css';
 import messaging from '@react-native-firebase/messaging';
+import { datasheet } from '../__default__/Datasheet';
 
 interface State {
   result: string;
@@ -32,8 +33,8 @@ export class ClientOthersScreen extends Component<
       result: '',
       agoraToken: '',
       newAppKey: '',
-      username: 'asteriskhx1',
-      password: 'qwer',
+      username: datasheet.accounts[0].id,
+      password: datasheet.accounts[0].mm,
       devices: '',
       deviceId: '',
       deviceToken: '',
