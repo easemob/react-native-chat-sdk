@@ -2,6 +2,28 @@ _English | [Chinese](./CHANGELOG.zh.md)_
 
 # Update Log
 
+## 1.1.2
+
+New features
+
+- Dependent native SDK upgraded to version 4.0.2 ('iOS' and 'Android').
+- Added the api to get the current SDK version.
+- Adds the `setMemberAttribute` group manager api.
+- Adds the `fetchMemberAttributes` group manager api.
+- Adds the `fetchMembersAttributes` group manager api.
+- Adds the `fetchHistoryMessagesByOptions` chat manager api.
+- Adds the `deleteMessagesWithTimestamp` chat manager api.
+
+Improvements
+
+- Remove sensitive information.
+- Improve log.
+- Add `ChatGroupEventListener.onMemberAttributesChanged` notification.
+
+Issues fixed
+
+- `renewAgoraToken`: Repair update token interface.
+
 ## 1.1.1
 
 Issues fixed

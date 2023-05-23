@@ -2,6 +2,28 @@ _Chinese | [English](./CHANGELOG.md)_
 
 # Update Log
 
+## 1.1.2
+
+新功能
+
+- 原生 SDK 升级到版本 4.0.2（“iOS”和“Android”）。
+- 添加获取当前 SDK 版本的 api。
+- 添加 `setMemberAttribute` 组管理器 api。
+- 添加 `fetchMemberAttributes` 组管理器 api。
+- 添加 `fetchMembersAttributes` 组管理器 api。
+- 添加 `fetchHistoryMessagesByOptions` 聊天管理器 api。
+- 添加 `deleteMessagesWithTimestamp` 聊天管理器 api。
+
+改进
+
+- 删除敏感信息。
+- 改进日志。
+- 添加 `ChatGroupEventListener.onMemberAttributesChanged` 通知。
+
+问题修复
+
+- `renewAgoraToken`: 修复更新 token 接口。
+
 ## 1.1.1
 
 修复：
