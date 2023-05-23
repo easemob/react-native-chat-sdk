@@ -54,6 +54,9 @@ import {
   MTupdateGroupOwner,
   MTupdateGroupSubject,
   MTuploadGroupSharedFile,
+  MTsetMemberAttributesFromGroup,
+  MTfetchMemberAttributesFromGroup,
+  MTfetchMembersAttributesFromGroup,
 } from './__internal__/Consts';
 import { Native } from './__internal__/Native';
 import { BaseManager } from './__internal__/Base';
@@ -243,6 +246,14 @@ export class ChatGroupManager extends BaseManager {
           break;
         case 'onSpecificationChanged':
           listener.onDetailChanged?.(new ChatGroup(params.group));
+          break;
+        case 'onMemberAttributesChanged':
+          listener.onMemberAttributesChanged?.({
+            groupId: params.groupId,
+            member: params.member,
+            operator: params.operator,
+            attributes: params.attributes,
+          });
           break;
         default:
           throw new ChatError({
@@ -1502,6 +1513,104 @@ export class ChatGroupManager extends BaseManager {
       },
     });
     ChatGroupManager.checkErrorFromResult(r);
+  }
+
+  /**
+   * Sets custom attributes of a group member.
+   *
+   * @param groupId The group ID.
+   * @param member The array of user IDs of group members whose custom attributes are retrieved.(limitation is ten. More than callback error. )
+   * @param attribute The map of custom attributes in key-value format. In a key-value pair, if the value is set to an empty string, the custom attribute will be deleted.
+   *
+   * @throws A description of the exception. See {@link ChatError}.
+   */
+  public async setMemberAttribute(
+    groupId: string,
+    member: string,
+    attributes: Record<string, string>
+  ): Promise<void> {
+    chatlog.log(
+      `${ChatGroupManager.TAG}: setMemberAttribute: `,
+      groupId,
+      member,
+      attributes
+    );
+    let r: any = await Native._callMethod(MTsetMemberAttributesFromGroup, {
+      [MTsetMemberAttributesFromGroup]: {
+        groupId,
+        member,
+        attributes,
+      },
+    });
+    ChatGroupManager.checkErrorFromResult(r);
+  }
+
+  /**
+   * Gets all custom attributes of a group member.
+   *
+   * @param groupId The group ID.
+   * @param member The user ID of the group member whose all custom attributes are retrieved.
+   *
+   * @returns The user attributes.
+   *
+   * @throws A description of the exception. See {@link ChatError}.
+   */
+  public async fetchMemberAttributes(
+    groupId: string,
+    member: string
+  ): Promise<Record<string, string> | undefined> {
+    chatlog.log(
+      `${ChatGroupManager.TAG}: fetchMemberAttributes: `,
+      groupId,
+      member
+    );
+    let r: any = await Native._callMethod(MTfetchMemberAttributesFromGroup, {
+      [MTfetchMemberAttributesFromGroup]: {
+        groupId,
+        member,
+      },
+    });
+    ChatGroupManager.checkErrorFromResult(r);
+    return r?.[MTfetchMemberAttributesFromGroup];
+  }
+
+  /**
+   * Gets custom attributes of multiple group members by attribute key.
+   *
+   * @param groupId The group ID.
+   * @param members The array of user IDs of group members whose custom attributes are retrieved.(limitation is ten. More than callback error. )
+   * @param attributeKeys The array of keys of custom attributes to be retrieved.
+   *
+   * @returns The users attributes.
+   *
+   * @throws A description of the exception. See {@link ChatError}.
+   */
+  public async fetchMembersAttributes(
+    groupId: string,
+    members: string[],
+    attributeKeys?: string[]
+  ): Promise<Map<string, Record<string, string>>> {
+    chatlog.log(
+      `${ChatGroupManager.TAG}: fetchMembersAttributes: `,
+      groupId,
+      members,
+      attributeKeys
+    );
+    let r: any = await Native._callMethod(MTfetchMembersAttributesFromGroup, {
+      [MTfetchMembersAttributesFromGroup]: {
+        groupId,
+        members,
+        keys: attributeKeys,
+      },
+    });
+    ChatGroupManager.checkErrorFromResult(r);
+    const ret: Map<string, Record<string, string>> = new Map();
+    Object.entries(r?.[MTfetchMembersAttributesFromGroup]).forEach(
+      (v: [string, any]) => {
+        ret.set(v[0], v[1]);
+      }
+    );
+    return ret;
   }
 
   /**

@@ -939,23 +939,66 @@ export class QuickTestScreenGroup extends QuickTestScreenBase<
           );
         }
         break;
-      case MN.declineInvitation:
+      case MN.setMemberAttribute:
         {
-          const methodName = this.metaData.get(MN.declineInvitation)
+          const methodName = this.metaData.get(MN.setMemberAttribute)
             ?.methodName!;
-          console.log(`${MN.declineInvitation} === ${methodName}`);
-          const groupId = this.metaData.get(MN.declineInvitation)?.params[0]
+          console.log(`${MN.setMemberAttribute} === ${methodName}`);
+          const groupId = this.metaData.get(MN.setMemberAttribute)?.params[0]
             .paramDefaultValue;
-          const inviter = this.metaData.get(MN.declineInvitation)?.params[1]
+          const member = this.metaData.get(MN.setMemberAttribute)?.params[1]
             .paramDefaultValue;
-          const reason = this.metaData.get(MN.declineInvitation)?.params[2]
+          const attributes = this.metaData.get(MN.setMemberAttribute)?.params[2]
             .paramDefaultValue;
 
           this.tryCatch(
-            ChatClient.getInstance().groupManager.declineInvitation(
+            ChatClient.getInstance().groupManager.setMemberAttribute(
               groupId,
-              inviter,
-              reason
+              member,
+              attributes
+            ),
+            QuickTestScreenGroup.TAG,
+            methodName
+          );
+        }
+        break;
+      case MN.fetchMemberAttributes:
+        {
+          const methodName = this.metaData.get(MN.fetchMemberAttributes)
+            ?.methodName!;
+          console.log(`${MN.fetchMemberAttributes} === ${methodName}`);
+          const groupId = this.metaData.get(MN.fetchMemberAttributes)?.params[0]
+            .paramDefaultValue;
+          const member = this.metaData.get(MN.fetchMemberAttributes)?.params[1]
+            .paramDefaultValue;
+
+          this.tryCatch(
+            ChatClient.getInstance().groupManager.fetchMemberAttributes(
+              groupId,
+              member
+            ),
+            QuickTestScreenGroup.TAG,
+            methodName
+          );
+        }
+        break;
+      case MN.fetchMembersAttributes:
+        {
+          const methodName = this.metaData.get(MN.fetchMembersAttributes)
+            ?.methodName!;
+          console.log(`${MN.fetchMembersAttributes} === ${methodName}`);
+          const groupId = this.metaData.get(MN.fetchMembersAttributes)
+            ?.params[0].paramDefaultValue;
+          const members = this.metaData.get(MN.fetchMembersAttributes)
+            ?.params[1].paramDefaultValue;
+          const attributeKeys = this.metaData.get(MN.fetchMembersAttributes)
+            ?.params[2].paramDefaultValue;
+
+          this.tryCatch(
+            ChatClient.getInstance().groupManager.fetchMembersAttributes(
+              groupId,
+              members,
+              attributeKeys
             ),
             QuickTestScreenGroup.TAG,
             methodName

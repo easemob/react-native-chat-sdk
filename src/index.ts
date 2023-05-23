@@ -60,6 +60,7 @@ import {
   ChatVoiceMessageBody,
   ChatCmdMessageBody,
   ChatCustomMessageBody,
+  ChatFetchMessageOptions,
   ChatMessageDirectionFromString,
   ChatMessageStatusFromNumber,
   ChatMessageStatusToString,
@@ -81,6 +82,7 @@ import {
 } from './common/ChatRoom';
 import { ChatUserInfo } from './common/ChatUserInfo';
 import {
+  ChatReactionOperation,
   ChatMessageReaction,
   ChatMessageReactionEvent,
 } from './common/ChatMessageReaction';
@@ -185,6 +187,7 @@ export {
   ChatVoiceMessageBody,
   ChatCmdMessageBody,
   ChatCustomMessageBody,
+  ChatFetchMessageOptions,
   ChatOptions,
   ChatPageResult,
   ChatPresence,
@@ -195,6 +198,7 @@ export {
   ChatMessageReaction,
   ChatMessageThread,
   ChatMessageThreadEvent,
+  ChatReactionOperation,
   ChatMessageReactionEvent,
   ChatPushConfig,
   ChatPushOption,

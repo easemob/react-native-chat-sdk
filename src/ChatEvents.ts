@@ -157,6 +157,10 @@ export enum ChatMultiDeviceEvent {
    * If user A kicks a user from a message thread on Device A1, this event is triggered on Device A2.
    */
   THREAD_KICK,
+  /**
+   * The current user modified custom attributes of a group member on another device.
+   */
+  GROUP_METADATA_CHANGED = 52,
 }
 
 /**
@@ -241,6 +245,8 @@ export function ChatMultiDeviceEventFromNumber(
       return ChatMultiDeviceEvent.THREAD_UPDATE;
     case 45:
       return ChatMultiDeviceEvent.THREAD_KICK;
+    case 52:
+      return ChatMultiDeviceEvent.GROUP_METADATA_CHANGED;
 
     default:
       throw new ChatError({
@@ -801,6 +807,22 @@ export interface ChatGroupEventListener {
    * @param group The chat group.
    */
   onStateChanged?(group: ChatGroup): void;
+
+  /**
+   * Occurs when a custom attribute(s) of a group member is/are changed.
+   *
+   * @param params -
+   * - groupId: The group ID.
+   * - member: The group member.
+   * - attributes: The modified custom attributes, in key-value format.
+   * - operator: The user ID of the operator.
+   */
+  onMemberAttributesChanged?(params: {
+    groupId: string;
+    member: string;
+    attributes: any;
+    operator: string;
+  }): void;
 }
 
 /**

@@ -47,6 +47,9 @@ export const MN = {
   declineJoinApplication: 'declineJoinApplication',
   acceptInvitation: 'acceptInvitation',
   declineInvitation: 'declineInvitation',
+  setMemberAttribute: 'setMemberAttribute',
+  fetchMemberAttributes: 'fetchMemberAttributes',
+  fetchMembersAttributes: 'fetchMembersAttributes',
 };
 
 export const metaDataList = new Map<string, ApiParams>([
@@ -859,6 +862,70 @@ export const metaDataList = new Map<string, ApiParams>([
           paramName: 'reason',
           paramType: 'string',
           paramDefaultValue: 'reason',
+        },
+      ],
+    },
+  ],
+  [
+    MN.setMemberAttribute,
+    {
+      methodName: MN.setMemberAttribute,
+      params: [
+        {
+          paramName: 'groupId',
+          paramType: 'string',
+          paramDefaultValue: '210891706531841',
+        },
+        {
+          paramName: 'member',
+          paramType: 'string',
+          paramDefaultValue: 'asterisk003',
+        },
+        {
+          paramName: 'attributes',
+          paramType: 'json',
+          paramDefaultValue: { key: 'v' },
+        },
+      ],
+    },
+  ],
+  [
+    MN.fetchMemberAttributes,
+    {
+      methodName: MN.fetchMemberAttributes,
+      params: [
+        {
+          paramName: 'groupId',
+          paramType: 'string',
+          paramDefaultValue: '210891706531841',
+        },
+        {
+          paramName: 'member',
+          paramType: 'string',
+          paramDefaultValue: 'asterisk003',
+        },
+      ],
+    },
+  ],
+  [
+    MN.fetchMembersAttributes,
+    {
+      methodName: MN.fetchMembersAttributes,
+      params: [
+        {
+          paramName: 'groupId',
+          paramType: 'string',
+          paramDefaultValue: '210891706531841',
+        },
+        {
+          paramName: 'members',
+          paramType: 'json',
+          paramDefaultValue: ['asterisk003'],
+        },
+        {
+          paramName: 'attributeKeys',
+          paramType: 'json',
+          paramDefaultValue: ['key', 'key2'],
         },
       ],
     },

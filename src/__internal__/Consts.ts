@@ -71,6 +71,7 @@ export const MTloadAllConversations = 'loadAllConversations';
 export const MTgetConversationsFromServer = 'getConversationsFromServer';
 export const MTdeleteConversation = 'deleteConversation';
 export const MTfetchHistoryMessages = 'fetchHistoryMessages';
+export const MTfetchHistoryMessagesByOptions = 'fetchHistoryMessagesByOptions';
 export const MTsearchChatMsgFromDB = 'searchChatMsgFromDB';
 export const MTgetMessage = 'getMessage';
 export const MTasyncFetchGroupAcks = 'asyncFetchGroupAcks';
@@ -130,6 +131,7 @@ export const MTremoveMessage = 'removeMessage';
 export const MTgetLatestMessage = 'getLatestMessage';
 export const MTgetLatestMessageFromOthers = 'getLatestMessageFromOthers';
 export const MTclearAllMessages = 'clearAllMessages';
+export const MTdeleteMessagesWithTs = 'deleteMessagesWithTs';
 export const MTinsertMessage = 'insertMessage';
 export const MTappendMessage = 'appendMessage';
 export const MTupdateConversationMessage = 'updateConversationMessage';
@@ -238,6 +240,11 @@ export const MTacceptJoinApplication = 'acceptJoinApplication';
 export const MTdeclineJoinApplication = 'declineJoinApplication';
 export const MTacceptInvitationFromGroup = 'acceptInvitationFromGroup';
 export const MTdeclineInvitationFromGroup = 'declineInvitationFromGroup';
+export const MTsetMemberAttributesFromGroup = 'setMemberAttributesFromGroup';
+export const MTfetchMemberAttributesFromGroup =
+  'fetchMemberAttributesFromGroup';
+export const MTfetchMembersAttributesFromGroup =
+  'fetchMembersAttributesFromGroup';
 
 /// ChatGroupManager listener
 export const MTonGroupChanged = 'onGroupChanged';
