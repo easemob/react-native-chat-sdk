@@ -1,6 +1,11 @@
 import { ChatClient } from '../ChatClient';
+import type { ChatCursorResult } from './ChatCursorResult';
 import { ChatError } from './ChatError';
-import type { ChatMessage, ChatMessageType } from './ChatMessage';
+import type {
+  ChatFetchMessageOptions,
+  ChatMessage,
+  ChatMessageType,
+} from './ChatMessage';
 
 /**
  * The message search directions.
@@ -9,7 +14,7 @@ import type { ChatMessage, ChatMessageType } from './ChatMessage';
  *    - The Unix timestamp when the message is created;
  *    - The Unix timestamp when the message is received by the server.
  *
- * Which Unix timestamp is used for message search depends on the setting of {@link sortMessageByServerTime}.
+ * Which Unix timestamp is used for message search depends on the setting of {@link ChatOptions.sortMessageByServerTime}.
  *
  */
 export enum ChatSearchDirection {
@@ -281,15 +286,31 @@ export class ChatConversation {
    *
    * @throws A description of the exception. See {@link ChatError}.
    */
-  public async deleteMessage(
-    convId: string,
-    convType: ChatConversationType,
-    msgId: string
-  ): Promise<void> {
+  public async deleteMessage(msgId: string): Promise<void> {
     return ChatClient.getInstance().chatManager.deleteMessage(
       this.convId,
       this.convType,
       msgId
+    );
+  }
+
+  /**
+   * Deletes messages sent or received in a certain period from the local database.
+   *
+   * @param params -
+   * - startTs: The starting UNIX timestamp for message deletion. The unit is millisecond.
+   * - endTs: The end UNIX timestamp for message deletion. The unit is millisecond.
+   *
+   * @throws A description of the exception. See {@link ChatError}.
+   */
+  public async deleteMessagesWithTimestamp(params: {
+    startTs: number;
+    endTs: number;
+  }): Promise<void> {
+    return ChatClient.getInstance().chatManager.deleteMessagesWithTimestamp(
+      this.convId,
+      this.convType,
+      params
     );
   }
 
@@ -312,8 +333,8 @@ export class ChatConversation {
    *
    * @param msgType The message type. See {@link ChatMessageType}.
    * @param direction The message search direction. See {@link ChatSearchDirection}.
-   * - (Default) `ChatSearchDirection.UP`: Messages are retrieved in the descending order of the Unix timestamp ({@link sortMessageByServerTime}) included in them.
-   * - `ChatSearchDirection.DOWN`: Messages are retrieved in the ascending of the Unix timestamp ({@link sortMessageByServerTime}) included in them.
+   * - (Default) `ChatSearchDirection.UP`: Messages are retrieved in the descending order of the Unix timestamp ({@link ChatOptions.sortMessageByServerTime}) included in them.
+   * - `ChatSearchDirection.DOWN`: Messages are retrieved in the ascending of the Unix timestamp ({@link ChatOptions.sortMessageByServerTime}) included in them.
    * @param timestamp The starting Unix timestamp in the message for query. The unit is millisecond. After this parameter is set, the SDK retrieves messages, starting from the specified one, according to the message search direction.
    *                  If you set this parameter as a negative value, the SDK retrieves messages, starting from the current time, in the descending order of the timestamp included in them.
    * @param count The maximum number of messages to retrieve each time. The value range is [1,400].
@@ -349,11 +370,11 @@ export class ChatConversation {
    *
    * @param startMsgId The starting message ID for query. After this parameter is set, the SDK retrieves messages, starting from the specified one, according to the message search direction.
    *                   If this parameter is set as "null" or an empty string, the SDK retrieves messages according to the message search direction while ignoring this parameter.
-   *                  - If `direction` is set as `ChatSearchDirection.UP`, the SDK retrieves messages, starting from the latest one, in the descending order of the Unix timestamp ({@link sortMessageByServerTime}) included in them.
-   *                 - If `direction` is set as `ChatSearchDirection.DOWN`, the SDK retrieves messages, starting from the oldest one, in the ascending order of the Unix timestamp ({@link sortMessageByServerTime}) included in them.
+   *                  - If `direction` is set as `ChatSearchDirection.UP`, the SDK retrieves messages, starting from the latest one, in the descending order of the Unix timestamp ({@link ChatOptions.sortMessageByServerTime}) included in them.
+   *                 - If `direction` is set as `ChatSearchDirection.DOWN`, the SDK retrieves messages, starting from the oldest one, in the ascending order of the Unix timestamp ({@link ChatOptions.sortMessageByServerTime}) included in them.
    * @param direction The message search direction. See {@link ChatSearchDirection}.
-   * - (Default) `ChatSearchDirection.UP`: Messages are retrieved in the descending order of the Unix timestamp ({@link sortMessageByServerTime}) included in them.
-   * - `ChatSearchDirection.DOWN`: Messages are retrieved in the ascending order of the Unix timestamp ({@link sortMessageByServerTime}) included in them.
+   * - (Default) `ChatSearchDirection.UP`: Messages are retrieved in the descending order of the Unix timestamp ({@link ChatOptions.sortMessageByServerTime}) included in them.
+   * - `ChatSearchDirection.DOWN`: Messages are retrieved in the ascending order of the Unix timestamp ({@link ChatOptions.sortMessageByServerTime}) included in them.
    * @param loadCount The maximum number of messages to retrieve each time. The value range is [1,400].
    * @returns The message list (excluding the ones with the starting or ending timestamp). If no message is obtained, an empty list is returned.
    *
@@ -378,10 +399,10 @@ export class ChatConversation {
    *
    * @param keywords The keywords for query.
    * @param direction The message search direction. See {@link ChatSearchDirection}.
-   * - (Default) `ChatSearchDirection.Up`: Messages are retrieved in the descending order of the Unix timestamp ({@link sortMessageByServerTime}) included in them.
-   * - `ChatSearchDirection.Down`: Messages are retrieved in the ascending order of the Unix timestamp ({@link sortMessageByServerTime}) included in them.
+   * - (Default) `ChatSearchDirection.Up`: Messages are retrieved in the descending order of the Unix timestamp ({@link ChatOptions.sortMessageByServerTime}) included in them.
+   * - `ChatSearchDirection.Down`: Messages are retrieved in the ascending order of the Unix timestamp ({@link ChatOptions.sortMessageByServerTime}) included in them.
    * @param timestamp The starting Unix timestamp in the message for query. The unit is millisecond. After this parameter is set, the SDK retrieves messages, starting from the specified one, according to the message search direction.
-   *                  If you set this parameter as a negative value, the SDK retrieves messages, starting from the current time, in the descending order of the the Unix timestamp ({@link sortMessageByServerTime}) included in them.
+   *                  If you set this parameter as a negative value, the SDK retrieves messages, starting from the current time, in the descending order of the the Unix timestamp ({@link ChatOptions.sortMessageByServerTime}) included in them.
    * @param count The maximum number of messages to retrieve each time. The value range is [1,400].
    * @param sender The user ID or group ID for retrieval. Usually, it is the conversation ID.
    * @returns  The list of retrieved messages (excluding the one with the starting timestamp). If no message is obtained, an empty list is returned.
@@ -412,8 +433,8 @@ export class ChatConversation {
    * @param startTime The starting Unix timestamp for search. The unit is millisecond.
    * @param endTime The ending Unix timestamp for search. The unit is millisecond.
    * @param direction The message search direction. See {@link ChatSearchDirection}.
-   * - (Default) `ChatSearchDirection.UP`: Messages are retrieved in the descending order of the Unix timestamp ({@link sortMessageByServerTime}) included in them.
-   * - `ChatSearchDirection.DOWN`: Messages are retrieved in the ascending order of the Unix timestamp ({@link sortMessageByServerTime}) included in them.
+   * - (Default) `ChatSearchDirection.UP`: Messages are retrieved in the descending order of the Unix timestamp ({@link ChatOptions.sortMessageByServerTime}) included in them.
+   * - `ChatSearchDirection.DOWN`: Messages are retrieved in the ascending order of the Unix timestamp ({@link ChatOptions.sortMessageByServerTime}) included in them.
    * @param count The maximum number of messages to retrieve each time. The value range is [1,400].
    * @returns The list of retrieved messages (excluding the ones with the starting or ending timestamp). If no message is obtained, an empty list is returned.
    *
@@ -432,6 +453,52 @@ export class ChatConversation {
       endTime,
       direction,
       count
+    );
+  }
+
+  /**
+   * Uses the pagination to get messages in the specified conversation from the server.
+   *
+   * @param pageSize The number of messages that you expect to get on each page. The value range is [1,400].
+   * @param startMsgId The starting message ID for query. After this parameter is set, the SDK retrieves messages, starting from the specified one, in the reverse chronological order of when the server receives them.
+   *                   If this parameter is set as "null" or an empty string, the SDK retrieves messages, starting from the latest one, in the reverse chronological order of when the server receives them.
+   * @returns The list of retrieved messages (excluding the one with the starting ID) and the cursor for the next query.
+   *
+   * @throws A description of the exception. See {@link ChatError}.
+   */
+  public async fetchHistoryMessages(
+    pageSize: number = 20,
+    startMsgId: string = ''
+  ): Promise<ChatCursorResult<ChatMessage>> {
+    return ChatClient.getInstance().chatManager.fetchHistoryMessages(
+      this.convId,
+      this.convType,
+      pageSize,
+      startMsgId
+    );
+  }
+
+  /**
+   * retrieve the history message for the specified session from the server.
+   *
+   * @param params -
+   * - options: The parameter configuration class for pulling historical messages from the server. See {@link ChatFetchMessageOptions}.
+   * - cursor: The cursor position from which to start querying data.
+   * - pageSize: The number of messages that you expect to get on each page. The value range is [1,50].
+   *
+   * @returns The list of retrieved messages (excluding the one with the starting ID) and the cursor for the next query.
+   *
+   * @throws A description of the exception. See {@link ChatError}.
+   */
+  public async fetchHistoryMessagesByOptions(params?: {
+    options?: ChatFetchMessageOptions;
+    cursor?: string;
+    pageSize?: number;
+  }): Promise<ChatCursorResult<ChatMessage>> {
+    return ChatClient.getInstance().chatManager.fetchHistoryMessagesByOptions(
+      this.convId,
+      this.convType,
+      params
     );
   }
 }

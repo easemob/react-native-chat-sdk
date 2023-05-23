@@ -17,6 +17,7 @@ import {
   ChatMessageType,
   ChatMessageChatType,
   ChatCmdMessageBody,
+  ChatFetchMessageOptions,
 } from 'react-native-chat-sdk';
 import { ChatManagerCache } from './ChatManagerCache';
 
@@ -1516,6 +1517,62 @@ export class QuickTestScreenChat extends QuickTestScreenBase<
               convId,
               convType,
               timestamp
+            ),
+            QuickTestScreenChat.TAG,
+            name
+          );
+        }
+        break;
+      case MN.fetchHistoryMessagesByOptions:
+        {
+          const methodName = this.metaData.get(
+            MN.fetchHistoryMessagesByOptions
+          )!.methodName;
+          console.log(`${MN.fetchHistoryMessagesByOptions} === ${methodName}`);
+          const convId = this.metaData.get(MN.fetchHistoryMessagesByOptions)
+            ?.params[0].paramDefaultValue;
+          const convType = this.metaData.get(MN.fetchHistoryMessagesByOptions)
+            ?.params[1].paramDefaultValue;
+          const cursor = this.metaData.get(MN.fetchHistoryMessagesByOptions)
+            ?.params[2].paramDefaultValue;
+          const pageSize = this.metaData.get(MN.fetchHistoryMessagesByOptions)
+            ?.params[3].paramDefaultValue;
+          const options = this.metaData.get(MN.fetchHistoryMessagesByOptions)
+            ?.params[4].paramDefaultValue;
+          this.tryCatch(
+            ChatClient.getInstance().chatManager.fetchHistoryMessagesByOptions(
+              convId,
+              convType,
+              {
+                cursor: cursor,
+                pageSize: pageSize,
+                options: options as ChatFetchMessageOptions,
+              }
+            ),
+            QuickTestScreenChat.TAG,
+            name
+          );
+        }
+        break;
+      case MN.deleteMessagesWithTimestamp:
+        {
+          const methodName = this.metaData.get(
+            MN.deleteMessagesWithTimestamp
+          )!.methodName;
+          console.log(`${MN.deleteMessagesWithTimestamp} === ${methodName}`);
+          const convId = this.metaData.get(MN.deleteMessagesWithTimestamp)
+            ?.params[0].paramDefaultValue;
+          const convType = this.metaData.get(MN.deleteMessagesWithTimestamp)
+            ?.params[1].paramDefaultValue;
+          const startTs = this.metaData.get(MN.deleteMessagesWithTimestamp)
+            ?.params[2].paramDefaultValue;
+          const endTs = this.metaData.get(MN.deleteMessagesWithTimestamp)
+            ?.params[3].paramDefaultValue;
+          this.tryCatch(
+            ChatClient.getInstance().chatManager.deleteMessagesWithTimestamp(
+              convId,
+              convType,
+              { startTs, endTs }
             ),
             QuickTestScreenChat.TAG,
             name

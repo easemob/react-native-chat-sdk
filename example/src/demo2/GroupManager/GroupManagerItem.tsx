@@ -190,6 +190,20 @@ export interface StateGroupMessage extends StateBase {
     groupId: string;
     fileId: string;
   };
+  setMemberAttribute: {
+    groupId: string;
+    member: string;
+    attributes: Record<string, string>;
+  };
+  fetchMemberAttributes: {
+    groupId: string;
+    member: string;
+  };
+  fetchMembersAttributes: {
+    groupId: string;
+    member: string;
+    attributeKeys: string[];
+  };
 }
 export class GroupManagerLeafScreen extends LeafScreenBase<StateGroupMessage> {
   protected static TAG = 'GroupManagerLeafScreen';
@@ -258,6 +272,9 @@ export class GroupManagerLeafScreen extends LeafScreenBase<StateGroupMessage> {
       'removeAllowList',
       'fetchAllowListFromServer',
       'destroyGroup',
+      'setMemberAttribute',
+      'fetchMemberAttributes',
+      'fetchMembersAttributes',
     ];
     let renderDomAry: ({} | null | undefined)[] = [];
     const data = this.metaDataList;

@@ -1,6 +1,9 @@
 import React, { ReactNode } from 'react';
 import { Text, View } from 'react-native';
-import type { ChatMessageStatusCallback } from 'react-native-chat-sdk';
+import type {
+  ChatFetchMessageOptions,
+  ChatMessageStatusCallback,
+} from 'react-native-chat-sdk';
 import {
   ChatClient,
   ChatMessage,
@@ -277,6 +280,19 @@ export interface StateChatMessage extends StateBase {
     convId: string;
     convType: number;
     timestamp: number;
+  };
+  fetchHistoryMessagesByOptions: {
+    convId: string;
+    convType: number;
+    cursor: string;
+    pageSize: number;
+    options: ChatFetchMessageOptions;
+  };
+  deleteMessagesWithTimestamp: {
+    convId: string;
+    convType: number;
+    startTs: number;
+    endTs: number;
   };
 }
 
@@ -569,6 +585,8 @@ export class ChatManagerLeafScreen extends LeafScreenBase<StateChatMessage> {
       'fetchConversationsFromServerWithPage',
       'removeMessagesFromServerWithMsgIds',
       'removeMessagesFromServerWithTimestamp',
+      'fetchHistoryMessagesByOptions',
+      'deleteMessagesWithTimestamp',
     ];
     let renderDomAry: ({} | null | undefined)[] = [];
     const data = this.metaData;

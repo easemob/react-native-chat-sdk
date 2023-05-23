@@ -3,6 +3,7 @@ import { ChatClient } from '../ChatClient';
 import { ChatError } from './ChatError';
 import type { ChatMessageReaction } from './ChatMessageReaction';
 import type { ChatMessageThread } from './ChatMessageThread';
+import type { ChatSearchDirection } from './ChatConversation';
 
 /**
  * The conversation types.
@@ -418,6 +419,13 @@ export class ChatMessage {
   private priority?: ChatRoomMessagePriority;
 
   /**
+   * Whether the message is delivered only when the recipient(s) is/are online:
+   * - `true`：The message is delivered only when the recipient(s) is/are online. If the recipient is offline, the message is not delivered.
+   * - (Default) `false`：The message is delivered to the recipients regardless of whether they are online or offline.
+   */
+  deliverOnlineOnly: boolean;
+
+  /**
    * Constructs a message.
    */
   public constructor(params: {
@@ -440,6 +448,7 @@ export class ChatMessage {
     body: any;
     isChatThread?: boolean;
     isOnline?: boolean;
+    deliverOnlineOnly?: boolean;
   }) {
     this.msgId = params.msgId ?? generateMessageId();
     this.conversationId = params.conversationId ?? '';
@@ -460,6 +469,7 @@ export class ChatMessage {
     this.localMsgId = this.localTime.toString();
     this.isChatThread = params.isChatThread ?? false;
     this.isOnline = params.isOnline ?? true;
+    this.deliverOnlineOnly = params.deliverOnlineOnly ?? false;
   }
 
   private static getBody(params: any): ChatMessageBody {
@@ -502,6 +512,8 @@ export class ChatMessage {
     targetId: string;
     chatType: ChatMessageChatType;
     isChatThread?: boolean;
+    isOnline?: boolean;
+    deliverOnlineOnly?: boolean;
   }): ChatMessage {
     let r = new ChatMessage({
       from: ChatClient.getInstance().currentUserName ?? '',
@@ -512,6 +524,8 @@ export class ChatMessage {
       chatType: params.chatType,
       isChatThread: params.isChatThread,
       conversationId: params.targetId,
+      isOnline: params.isOnline,
+      deliverOnlineOnly: params.deliverOnlineOnly,
     });
     return r;
   }
@@ -539,6 +553,8 @@ export class ChatMessage {
     opt?: {
       isChatThread?: boolean;
       targetLanguageCodes?: Array<string>;
+      isOnline?: boolean;
+      deliverOnlineOnly?: boolean;
     }
   ): ChatMessage {
     let s = ChatMessageType.TXT.valueOf();
@@ -551,6 +567,8 @@ export class ChatMessage {
       targetId: targetId,
       chatType: chatType,
       isChatThread: opt?.isChatThread,
+      isOnline: opt?.isOnline,
+      deliverOnlineOnly: opt?.deliverOnlineOnly,
     });
   }
 
@@ -578,6 +596,8 @@ export class ChatMessage {
       displayName: string;
       isChatThread?: boolean;
       fileSize?: number;
+      isOnline?: boolean;
+      deliverOnlineOnly?: boolean;
     }
   ): ChatMessage {
     return ChatMessage.createSendMessage({
@@ -590,6 +610,8 @@ export class ChatMessage {
       targetId: targetId,
       chatType: chatType,
       isChatThread: opt?.isChatThread,
+      isOnline: opt?.isOnline,
+      deliverOnlineOnly: opt?.deliverOnlineOnly,
     });
   }
 
@@ -627,6 +649,8 @@ export class ChatMessage {
       height: number;
       isChatThread?: boolean;
       fileSize?: number;
+      isOnline?: boolean;
+      deliverOnlineOnly?: boolean;
     }
   ): ChatMessage {
     return ChatMessage.createSendMessage({
@@ -643,6 +667,8 @@ export class ChatMessage {
       targetId: targetId,
       chatType: chatType,
       isChatThread: opt?.isChatThread,
+      isOnline: opt?.isOnline,
+      deliverOnlineOnly: opt?.deliverOnlineOnly,
     });
   }
 
@@ -678,6 +704,8 @@ export class ChatMessage {
       height: number;
       isChatThread?: boolean;
       fileSize?: number;
+      isOnline?: boolean;
+      deliverOnlineOnly?: boolean;
     }
   ): ChatMessage {
     return ChatMessage.createSendMessage({
@@ -694,6 +722,8 @@ export class ChatMessage {
       targetId: targetId,
       chatType: chatType,
       isChatThread: opt?.isChatThread,
+      isOnline: opt?.isOnline,
+      deliverOnlineOnly: opt?.deliverOnlineOnly,
     });
   }
 
@@ -723,6 +753,8 @@ export class ChatMessage {
       duration: number;
       isChatThread?: boolean;
       fileSize?: number;
+      isOnline?: boolean;
+      deliverOnlineOnly?: boolean;
     }
   ): ChatMessage {
     return ChatMessage.createSendMessage({
@@ -736,6 +768,8 @@ export class ChatMessage {
       targetId: targetId,
       chatType: chatType,
       isChatThread: opt?.isChatThread,
+      isOnline: opt?.isOnline,
+      deliverOnlineOnly: opt?.deliverOnlineOnly,
     });
   }
 
@@ -764,6 +798,8 @@ export class ChatMessage {
     opt?: {
       address: string;
       isChatThread?: boolean;
+      isOnline?: boolean;
+      deliverOnlineOnly?: boolean;
     }
   ): ChatMessage {
     return ChatMessage.createSendMessage({
@@ -776,6 +812,8 @@ export class ChatMessage {
       targetId: targetId,
       chatType: chatType,
       isChatThread: opt?.isChatThread,
+      isOnline: opt?.isOnline,
+      deliverOnlineOnly: opt?.deliverOnlineOnly,
     });
   }
 
@@ -803,17 +841,19 @@ export class ChatMessage {
     chatType: ChatMessageChatType = ChatMessageChatType.PeerChat,
     opt?: {
       isChatThread?: boolean;
+      isOnline?: boolean;
       deliverOnlineOnly?: boolean;
     }
   ): ChatMessage {
     return ChatMessage.createSendMessage({
       body: new ChatCmdMessageBody({
         action: action,
-        deliverOnlineOnly: opt?.deliverOnlineOnly,
       }),
       targetId: targetId,
       chatType: chatType,
       isChatThread: opt?.isChatThread,
+      isOnline: opt?.isOnline,
+      deliverOnlineOnly: opt?.deliverOnlineOnly,
     });
   }
 
@@ -838,8 +878,10 @@ export class ChatMessage {
     event: string,
     chatType: ChatMessageChatType = ChatMessageChatType.PeerChat,
     opt?: {
-      params: any;
+      params: Record<string, string>;
       isChatThread?: boolean;
+      isOnline?: boolean;
+      deliverOnlineOnly?: boolean;
     }
   ): ChatMessage {
     return ChatMessage.createSendMessage({
@@ -850,6 +892,8 @@ export class ChatMessage {
       targetId: targetId,
       chatType: chatType,
       isChatThread: opt?.isChatThread,
+      isOnline: opt?.isOnline,
+      deliverOnlineOnly: opt?.deliverOnlineOnly,
     });
   }
 
@@ -1193,16 +1237,9 @@ export class ChatCmdMessageBody extends ChatMessageBody {
    * The command action.
    */
   action: string;
-  /**
-   * Whether this command message is delivered only to online users.
-   * - (Default)`false`: The command message is delivered to users, regardless of their online or offline status.
-   * - `true`: The message is delivered to the online users only, so the offline users won't receive the message when they log in later.
-   */
-  deliverOnlineOnly: boolean;
-  constructor(params: { action: string; deliverOnlineOnly?: boolean }) {
+  constructor(params: { action: string }) {
     super(ChatMessageType.CMD);
     this.action = params.action;
-    this.deliverOnlineOnly = params.deliverOnlineOnly ?? true;
   }
 }
 
@@ -1217,10 +1254,57 @@ export class ChatCustomMessageBody extends ChatMessageBody {
   /**
    * The custom params map.
    */
-  params: any;
-  constructor(params: { event: string; params?: any }) {
+  params?: Record<string, string>;
+  constructor(params: { event: string; params?: Record<string, string> }) {
     super(ChatMessageType.CUSTOM);
     this.event = params.event;
-    this.params = params.params ?? {};
+    this.params = params.params;
+  }
+}
+
+/**
+ * The parameter configuration class for pulling historical messages from the server.
+ */
+export class ChatFetchMessageOptions {
+  /**
+   * The user ID of the message sender in the group conversation.
+   */
+  from?: string;
+  /**
+   * The array of message types for query. The default value is `undefined`, indicating that all types of messages are retrieved.
+   */
+  msgTypes?: ChatMessageType[];
+  /**
+   * The start time for message query. The time is a UNIX time stamp in milliseconds. The default value is -1,indicating that this parameter is ignored during message query.If the [startTs] is set to a specific time spot and the [endTs] uses the default value -1,the SDK returns messages that are sent and received in the period that is from the start time to the current time.If the [startTs] uses the default value -1 and the [endTs] is set to a specific time spot,the SDK returns messages that are sent and received in the period that is from the timestamp of the first message to the current time.
+   */
+  startTs: number;
+  /**
+   * The end time for message query. The time is a UNIX time stamp in milliseconds.
+   */
+  endTs: number;
+  /**
+   * The message search direction, Default is {@link ChatSearchDirection.UP}.
+   */
+  direction: ChatSearchDirection;
+  /**
+   * Whether to save the retrieved messages to the database:
+   * - `true`: save to database;
+   * - `false`(Default)：no save to database.
+   */
+  needSave: boolean;
+  constructor(params: {
+    from?: string;
+    msgTypes?: ChatMessageType[];
+    startTs: number;
+    endTs: number;
+    direction: ChatSearchDirection;
+    needSave: boolean;
+  }) {
+    this.from = params.from;
+    this.startTs = params.startTs;
+    this.endTs = params.endTs;
+    this.direction = params.direction;
+    this.needSave = params.needSave;
+    this.msgTypes = params.msgTypes;
   }
 }

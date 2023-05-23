@@ -9,6 +9,7 @@ import { ChatCursorResult } from './common/ChatCursorResult';
 import { ChatError } from './common/ChatError';
 import { ChatGroupMessageAck } from './common/ChatGroup';
 import {
+  ChatFetchMessageOptions,
   ChatMessage,
   ChatMessageChatType,
   ChatMessageStatus,
@@ -95,11 +96,14 @@ import {
   MTfetchConversationsFromServerWithPage,
   MTremoveMessagesFromServerWithMsgIds,
   MTremoveMessagesFromServerWithTs,
+  MTfetchHistoryMessagesByOptions,
+  MTdeleteMessagesWithTs,
 } from './__internal__/Consts';
 import { Native } from './__internal__/Native';
 import {
   ChatMessageReaction,
   ChatMessageReactionEvent,
+  ChatReactionOperation,
 } from './common/ChatMessageReaction';
 import {
   ChatMessageThread,
@@ -322,11 +326,16 @@ export class ChatManager extends BaseManager {
         Object.entries(v[1].reactions).forEach((vv: [string, any]) => {
           ll.push(new ChatMessageReaction(vv[1]));
         });
+        const o: Array<ChatReactionOperation> = [];
+        Object.entries(v[1].operations).forEach((vv: [string, any]) => {
+          o.push(ChatReactionOperation.fromNative(vv[1]));
+        });
         list.push(
           new ChatMessageReactionEvent({
             convId: convId,
             msgId: msgId,
             reactions: ll,
+            operations: o,
           })
         );
       });
@@ -819,6 +828,54 @@ export class ChatManager extends BaseManager {
   }
 
   /**
+   * retrieve the history message for the specified session from the server.
+   *
+   * @param convId The conversation ID.
+   * @param chatType The conversation type. See {@link ChatConversationType}.
+   * @param params -
+   * - options: The parameter configuration class for pulling historical messages from the server. See {@link ChatFetchMessageOptions}.
+   * - cursor: The cursor position from which to start querying data.
+   * - pageSize: The number of messages that you expect to get on each page. The value range is [1,50].
+   *
+   * @returns The list of retrieved messages (excluding the one with the starting ID) and the cursor for the next query.
+   *
+   * @throws A description of the exception. See {@link ChatError}.
+   */
+  public async fetchHistoryMessagesByOptions(
+    convId: string,
+    chatType: ChatConversationType,
+    params?: {
+      options?: ChatFetchMessageOptions;
+      cursor?: string;
+      pageSize?: number;
+    }
+  ): Promise<ChatCursorResult<ChatMessage>> {
+    chatlog.log(
+      `${ChatManager.TAG}: fetchHistoryMessagesByOptions: ${convId}, ${chatType}, ${params}`
+    );
+    let r: any = await Native._callMethod(MTfetchHistoryMessagesByOptions, {
+      [MTfetchHistoryMessagesByOptions]: {
+        convId: convId,
+        convType: chatType as number,
+        pageSize: params?.pageSize ?? 20,
+        cursor: params?.cursor ?? '',
+        options: params?.options,
+      },
+    });
+    Native.checkErrorFromResult(r);
+    let ret = new ChatCursorResult<ChatMessage>({
+      cursor: r?.[MTfetchHistoryMessagesByOptions].cursor,
+      list: r?.[MTfetchHistoryMessagesByOptions].list,
+      opt: {
+        map: (param: any) => {
+          return new ChatMessage(param);
+        },
+      },
+    });
+    return ret;
+  }
+
+  /**
    * Retrieves messages with keywords in a conversation from the local database.
    *
    * @param keywords The keywords for query.
@@ -1268,6 +1325,39 @@ export class ChatManager extends BaseManager {
         convId: convId,
         convType: convType,
         msg_id: msgId,
+      },
+    });
+    ChatManager.checkErrorFromResult(r);
+  }
+
+  /**
+   * Deletes messages sent or received in a certain period from the local database.
+   *
+   * @param convId The conversation ID.
+   * @param convType The conversation type. See {@link ChatConversationType}.
+   * @param params -
+   * - startTs: The starting UNIX timestamp for message deletion. The unit is millisecond.
+   * - endTs: The end UNIX timestamp for message deletion. The unit is millisecond.
+   *
+   * @throws A description of the exception. See {@link ChatError}.
+   */
+  public async deleteMessagesWithTimestamp(
+    convId: string,
+    convType: ChatConversationType,
+    params: {
+      startTs: number;
+      endTs: number;
+    }
+  ): Promise<void> {
+    chatlog.log(
+      `${ChatManager.TAG}: deleteMessagesWithTimestamp: ${convId}, ${convType}, ${params}`
+    );
+    let r: any = await Native._callMethod(MTdeleteMessagesWithTs, {
+      [MTdeleteMessagesWithTs]: {
+        convId: convId,
+        convType: convType,
+        startTs: params.startTs,
+        endTs: params.endTs,
       },
     });
     ChatManager.checkErrorFromResult(r);

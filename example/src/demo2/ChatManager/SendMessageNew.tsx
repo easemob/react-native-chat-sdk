@@ -60,7 +60,7 @@ export interface StateSendMessage extends StateBase {
 
   // custom message body
   event: string;
-  ext: string;
+  ext: { [index: string]: string };
 
   // message attribute
   attr?: string;
@@ -156,7 +156,7 @@ export class SendMessageLeafScreen extends LeafScreenBase<StateSendMessage> {
 
       // custom message body
       event: '',
-      ext: '',
+      ext: { k: 'v' },
 
       // message attribute
       attr: JSON.stringify({
@@ -424,9 +424,9 @@ export class SendMessageLeafScreen extends LeafScreenBase<StateSendMessage> {
           event: text,
         });
       }),
-      this.renderParamWithInput('ext', ext, (text: string) => {
+      this.renderParamWithInput('ext', JSON.stringify(ext), (text: string) => {
         this.setState({
-          ext: text,
+          ext: JSON.parse(text),
         });
       }),
       this.renderSendMessageAttribute(),

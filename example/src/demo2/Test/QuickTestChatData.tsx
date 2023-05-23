@@ -1,4 +1,5 @@
 import {
+  ChatSearchDirection,
   ChatMessageType,
   ChatMessageChatType,
   ChatConversationType,
@@ -72,6 +73,8 @@ export const MN = {
   removeMessagesFromServerWithMsgIds: 'removeMessagesFromServerWithMsgIds',
   removeMessagesFromServerWithTimestamp:
     'removeMessagesFromServerWithTimestamp',
+  fetchHistoryMessagesByOptions: 'fetchHistoryMessagesByOptions',
+  deleteMessagesWithTimestamp: 'deleteMessagesWithTimestamp',
 };
 
 export const metaDataList = new Map<string, ApiParams>([
@@ -584,7 +587,7 @@ export const metaDataList = new Map<string, ApiParams>([
         {
           paramName: 'msgId',
           paramType: 'string',
-          paramDefaultValue: '1111837470724457888',
+          paramDefaultValue: '1147529186152285628',
         },
       ],
     },
@@ -673,7 +676,7 @@ export const metaDataList = new Map<string, ApiParams>([
         {
           paramName: 'startMsgId',
           paramType: 'string',
-          paramDefaultValue: '1003607445513177152',
+          paramDefaultValue: '',
         },
         {
           paramName: 'loadCount',
@@ -1282,6 +1285,74 @@ export const metaDataList = new Map<string, ApiParams>([
           paramName: 'timestamp',
           paramType: 'number',
           paramDefaultValue: 16759971661720,
+        },
+      ],
+    },
+  ],
+  [
+    MN.fetchHistoryMessagesByOptions,
+    {
+      methodName: MN.fetchHistoryMessagesByOptions,
+      params: [
+        {
+          paramName: 'convId', // 使用发送成功或者失败的数据测试，依赖sendMessage
+          paramType: 'string',
+          paramDefaultValue: datasheet.accounts[2].id,
+        },
+        {
+          paramName: 'convType',
+          paramType: 'number',
+          paramDefaultValue: 0,
+        },
+        {
+          paramName: 'cursor',
+          paramType: 'string',
+          paramDefaultValue: '',
+        },
+        {
+          paramName: 'pageSize',
+          paramType: 'number',
+          paramDefaultValue: 2,
+        },
+        {
+          paramName: 'options',
+          paramType: 'json',
+          paramDefaultValue: {
+            from: datasheet.accounts[2].id,
+            msgTypes: [ChatMessageType.FILE],
+            startTs: 0,
+            endTs: 0,
+            direction: ChatSearchDirection.UP,
+            needSave: false,
+          },
+        },
+      ],
+    },
+  ],
+  [
+    MN.deleteMessagesWithTimestamp,
+    {
+      methodName: MN.deleteMessagesWithTimestamp,
+      params: [
+        {
+          paramName: 'convId', // 使用发送成功或者失败的数据测试，依赖sendMessage
+          paramType: 'string',
+          paramDefaultValue: datasheet.accounts[2].id,
+        },
+        {
+          paramName: 'convType',
+          paramType: 'number',
+          paramDefaultValue: 0,
+        },
+        {
+          paramName: 'startTs',
+          paramType: 'number',
+          paramDefaultValue: 168474475329,
+        },
+        {
+          paramName: 'endTs',
+          paramType: 'number',
+          paramDefaultValue: 16847450793740,
         },
       ],
     },
