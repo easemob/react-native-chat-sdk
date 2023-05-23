@@ -790,7 +790,7 @@ export class ChatManager extends BaseManager {
    *
    * @param convId The conversation ID.
    * @param chatType The conversation type. See {@link ChatConversationType}.
-   * @param pageSize The number of messages that you expect to get on each page. The value range is [1,400].
+   * @param pageSize The number of messages that you expect to get on each page. The value range is [1,50].
    * @param startMsgId The starting message ID for query. After this parameter is set, the SDK retrieves messages, starting from the specified one, in the reverse chronological order of when the server receives them.
    *                   If this parameter is set as "null" or an empty string, the SDK retrieves messages, starting from the latest one, in the reverse chronological order of when the server receives them.
    * @returns The list of retrieved messages (excluding the one with the starting ID) and the cursor for the next query.
