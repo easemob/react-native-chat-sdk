@@ -23,6 +23,7 @@ Improvements
 Issues fixed
 
 - `renewAgoraToken`: Repair update token interface.
+- Fixed failure to send video messages on android.
 
 ## 1.1.1
 
