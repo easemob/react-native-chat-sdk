@@ -23,6 +23,7 @@ _Chinese | [English](./CHANGELOG.md)_
 问题修复
 
 - `renewAgoraToken`: 修复更新 token 接口。
+- 安卓平台：修复发送视频消息失败的问题。
 
 ## 1.1.1
 
