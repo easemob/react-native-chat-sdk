@@ -19,6 +19,7 @@ Improvements
 - Remove sensitive information.
 - Improve log.
 - Add `ChatGroupEventListener.onMemberAttributesChanged` notification.
+- Adds the `fetchHistoryMessages` chat manager api.
 
 Issues fixed
 

@@ -69,6 +69,7 @@ export interface StateChatMessage extends StateBase {
     chatType: number;
     pageSize: number;
     startMsgId: string;
+    direction: number;
   };
   searchMsgFromDB: {
     keywords: string;
@@ -766,14 +767,17 @@ export class ChatManagerLeafScreen extends LeafScreenBase<StateChatMessage> {
         this.metaData.get(MN.downloadThumbnail)!.methodName
       );
     } else if (name === MN.fetchHistoryMessages) {
-      const { convId, chatType, pageSize, startMsgId } =
+      const { convId, chatType, pageSize, startMsgId, direction } =
         this.state.fetchHistoryMessages;
       this.tryCatch(
         ChatClient.getInstance().chatManager.fetchHistoryMessages(
           convId,
           ChatConversationTypeFromNumber(chatType),
-          pageSize,
-          startMsgId
+          {
+            pageSize,
+            startMsgId,
+            direction,
+          }
         ),
         ChatManagerLeafScreen.TAG,
         this.metaData.get(MN.fetchHistoryMessages)!.methodName

@@ -19,6 +19,7 @@ _Chinese | [English](./CHANGELOG.md)_
 - 删除敏感信息。
 - 改进日志。
 - 添加 `ChatGroupEventListener.onMemberAttributesChanged` 通知。
+- 添加 `fetchHistoryMessages` 聊天管理器 api。
 
 问题修复
 

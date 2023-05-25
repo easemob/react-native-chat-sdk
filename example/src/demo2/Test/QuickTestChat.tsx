@@ -498,12 +498,17 @@ export class QuickTestScreenChat extends QuickTestScreenBase<
             .paramDefaultValue;
           const startMsgId = this.metaData.get(MN.fetchHistoryMessages)
             ?.params[3].paramDefaultValue;
+          const direction = this.metaData.get(MN.fetchHistoryMessages)
+            ?.params[4].paramDefaultValue;
           this.tryCatch(
             ChatClient.getInstance().chatManager.fetchHistoryMessages(
               convId,
               chatType,
-              pageSize,
-              startMsgId
+              {
+                pageSize,
+                startMsgId,
+                direction,
+              }
             ),
             QuickTestScreenChat.TAG,
             MN.fetchHistoryMessages

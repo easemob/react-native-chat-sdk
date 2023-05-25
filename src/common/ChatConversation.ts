@@ -459,22 +459,25 @@ export class ChatConversation {
   /**
    * Uses the pagination to get messages in the specified conversation from the server.
    *
-   * @param pageSize The number of messages that you expect to get on each page. The value range is [1,400].
-   * @param startMsgId The starting message ID for query. After this parameter is set, the SDK retrieves messages, starting from the specified one, in the reverse chronological order of when the server receives them.
-   *                   If this parameter is set as "null" or an empty string, the SDK retrieves messages, starting from the latest one, in the reverse chronological order of when the server receives them.
+   * @param -
+   * - pageSize: The number of messages that you expect to get on each page. The value range is [1,50].
+   * - startMsgId: The starting message ID for query. After this parameter is set, the SDK retrieves messages, starting from the specified one, in the reverse chronological order of when the server receives them. If this parameter is set as "null" or an empty string, the SDK retrieves messages, starting from the latest one, in the reverse chronological order of when the server receives them.
+   * - direction: The message search direction. See {@link ChatSearchDirection}.
+   *                  - (Default) `ChatSearchDirection.Up`: Messages are retrieved in the descending order of the Unix timestamp included in them.
+   *                  - `ChatSearchDirection.Down`: Messages are retrieved in the ascending order of the Unix timestamp included in them.
    * @returns The list of retrieved messages (excluding the one with the starting ID) and the cursor for the next query.
    *
    * @throws A description of the exception. See {@link ChatError}.
    */
-  public async fetchHistoryMessages(
-    pageSize: number = 20,
-    startMsgId: string = ''
-  ): Promise<ChatCursorResult<ChatMessage>> {
+  public async fetchHistoryMessages(params: {
+    pageSize?: number;
+    startMsgId?: string;
+    direction?: ChatSearchDirection;
+  }): Promise<ChatCursorResult<ChatMessage>> {
     return ChatClient.getInstance().chatManager.fetchHistoryMessages(
       this.convId,
       this.convType,
-      pageSize,
-      startMsgId
+      params
     );
   }
 
