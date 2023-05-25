@@ -305,6 +305,11 @@ export const metaDataList = new Map<string, ApiParams>([
           paramType: 'string',
           paramDefaultValue: '',
         },
+        {
+          paramName: 'direction',
+          paramType: 'number',
+          paramDefaultValue: 0,
+        },
       ],
     },
   ],
