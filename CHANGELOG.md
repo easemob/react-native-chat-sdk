@@ -20,6 +20,7 @@ Improvements
 - Improve log.
 - Adds `ChatGroupEventListener.onMemberAttributesChanged` notification.
 - Updates the `fetchHistoryMessages` chat manager api.
+- Adds `ChatConnectEventListener.onAppActiveNumberReachLimit` notification.
 
 Issues fixed
 

@@ -36,6 +36,7 @@ export const MTonUserDidChangePassword = 'onUserDidChangePassword';
 export const MTonUserDidLoginTooManyDevice = 'onUserDidLoginTooManyDevice';
 export const MTonUserKickedByOtherDevice = 'onUserKickedByOtherDevice';
 export const MTonUserAuthenticationFailed = 'onUserAuthenticationFailed';
+export const MTonAppActiveNumberReachLimit = 'onAppActiveNumberReachLimit';
 
 /// ChatContactManager methods
 export const MTaddContact = 'addContact';

@@ -53,6 +53,7 @@ import {
   MTonUserKickedByOtherDevice,
   MTrenewToken,
   MTupdatePushConfig,
+  MTonAppActiveNumberReachLimit,
 } from './__internal__/Consts';
 import { Native } from './__internal__/Native';
 import { chatlog } from './common/ChatConst';
@@ -243,6 +244,13 @@ export class ChatClient extends BaseManager {
         this.onUserAuthenticationFailed.bind(this)
       )
     );
+    this._connectionSubscriptions.set(
+      MTonAppActiveNumberReachLimit,
+      event.addListener(
+        MTonAppActiveNumberReachLimit,
+        this.onAppActiveNumberReachLimit.bind(this)
+      )
+    );
   }
 
   private onConnected(): void {
@@ -348,6 +356,12 @@ export class ChatClient extends BaseManager {
     chatlog.log(`${ChatClient.TAG}: onUserAuthenticationFailed: `);
     this._connectionListeners.forEach((element) => {
       element.onDisconnected?.(202);
+    });
+  }
+  private onAppActiveNumberReachLimit(): void {
+    chatlog.log(`${ChatClient.TAG}: onAppActiveNumberReachLimit: `);
+    this._connectionListeners.forEach((element) => {
+      element.onAppActiveNumberReachLimit?.();
     });
   }
 
