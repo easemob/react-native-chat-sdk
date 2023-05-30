@@ -116,6 +116,9 @@ export class LoginAndLogoutScreen extends Component<
         console.log('LoginAndLogoutScreen.onDisconnected: ', errorCode);
         this.that.setState({ listenerStatus: 'onDisconnected' });
       }
+      onAppActiveNumberReachLimit(): void {
+        console.log('LoginAndLogoutScreen.onAppActiveNumberReachLimit: ');
+      }
     })(this);
     ChatClient.getInstance().removeAllConnectionListener();
     ChatClient.getInstance().addConnectionListener(listener);

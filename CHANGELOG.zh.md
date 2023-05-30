@@ -20,6 +20,7 @@ _Chinese | [English](./CHANGELOG.md)_
 - 改进日志。
 - 添加 `ChatGroupEventListener.onMemberAttributesChanged` 通知。
 - 更新 `fetchHistoryMessages` 聊天管理器 api。
+- 添加 `ChatConnectEventListener.onAppActiveNumberReachLimit` 通知。
 
 问题修复
 
