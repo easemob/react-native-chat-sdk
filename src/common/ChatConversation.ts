@@ -111,7 +111,7 @@ export class ChatConversation {
    *
    * **Note**
 
-   * This parameter is valid only for group chat.This parameter is valid only for group.
+   * This parameter is valid only for group chat.
    */
   isChatThread: boolean;
   /**

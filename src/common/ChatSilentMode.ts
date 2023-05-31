@@ -73,10 +73,15 @@ export class ChatSilentModeParam {
   remindType?: ChatPushRemindType;
   /**
    * The start time of do-not-disturb mode.
+   * - Both the start time and end time need to be set.
+   * - If both `hours` and `minutes` are set to `0` in the start time and end time, the Do Not Disturb mode is disabled.
    */
   startTime?: ChatSilentModeTime;
   /**
    * The end time of do-not-disturb mode.
+   * - Both the start time and end time need to be set.
+   * - If both `hours` and `minutes` are set to `0` in the start time and end time, the Do Not Disturb mode is disabled.
+    
    */
   endTime?: ChatSilentModeTime;
   /**

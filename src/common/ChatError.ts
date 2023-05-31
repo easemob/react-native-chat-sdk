@@ -6,8 +6,8 @@ export class ChatError {
    * The error code.
    *
    * See the error code of the iOS or Android platform:
-   * - iOS: {@url https://docs-preprod.agora.io/en/agora-chat/agora_chat_error_ios?platform=iOS}
-   * - Android: {@url https://docs-preprod.agora.io/en/agora-chat/agora_chat_error_android?platform=Android}
+   * - iOS: {@link https://docs.agora.io/en/agora-chat/reference/error-codes?platform=ios}
+   * - Android: {@link https://docs.agora.io/en/agora-chat/reference/error-codes?platform=android}
    */
   code: number;
   /**
