@@ -531,8 +531,10 @@ export class SendMessageScreen extends LeafComponentBaseScreen<State> {
       ChatClient.getInstance().chatManager.fetchHistoryMessages(
         this.state.targetId,
         this.state.convType,
-        this.state.pageSize,
-        this.state.startMsgId
+        {
+          pageSize: this.state.pageSize,
+          startMsgId: this.state.startMsgId,
+        }
       ),
       SendMessageScreen.TAG,
       'fetchHistoryMessages'
