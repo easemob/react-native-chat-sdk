@@ -21,6 +21,7 @@ Improvements
 - Adds `ChatGroupEventListener.onMemberAttributesChanged` notification.
 - Updates the `fetchHistoryMessages` chat manager api.
 - Adds `ChatConnectEventListener.onAppActiveNumberReachLimit` notification.
+- Optimized file types messages for iOS.
 
 Issues fixed
 

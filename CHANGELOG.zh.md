@@ -21,6 +21,7 @@ _Chinese | [English](./CHANGELOG.md)_
 - 添加 `ChatGroupEventListener.onMemberAttributesChanged` 通知。
 - 更新 `fetchHistoryMessages` 聊天管理器 api。
 - 添加 `ChatConnectEventListener.onAppActiveNumberReachLimit` 通知。
+- 优化 iOS 文件类型的消息。
 
 问题修复
 
