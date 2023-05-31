@@ -99,7 +99,7 @@ export class ChatMessageReactionEvent {
    */
   reactions: Array<ChatMessageReaction>;
   /**
-   * Details of changed operation.
+   * The list of Reaction operations.
    */
   operations: Array<ChatReactionOperation>;
   constructor(params: {
