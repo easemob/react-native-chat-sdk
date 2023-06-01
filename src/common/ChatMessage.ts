@@ -1237,12 +1237,6 @@ export class ChatCmdMessageBody extends ChatMessageBody {
    * The command action.
    */
   action: string;
-  /**
-   * Whether the message is delivered only when the recipient(s) is/are online:
-   * -  (Default) `false`: The message is delivered when the recipient(s) is/are online. If the recipient(s) is/are offline, the message will not be delivered to them until they get online.
-   * - `true`: The message is delivered only when the recipient(s) is/are online. If the recipient is offline, the message is discarded.
-   */
-  deliverOnlineOnly: boolean;
   constructor(params: { action: string }) {
     super(ChatMessageType.CMD);
     this.action = params.action;
