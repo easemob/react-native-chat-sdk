@@ -21,8 +21,6 @@ export class ChatOptions {
    * - `true`: Yes.
    * - (Default) `false`: No.
    *
-   * **Note**
-   * You can call {@link ChatClient.init} to set this attribute after `ChatClient` is initialized.
    */
   debugModel: boolean;
   /**

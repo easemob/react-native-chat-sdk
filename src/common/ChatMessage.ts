@@ -120,19 +120,19 @@ export enum ChatMessageType {
 }
 
 /**
- * The delivery priorities of chat room messages.
+ * The priorities of chat room messages.
  */
 export enum ChatRoomMessagePriority {
   /**
-   * High priority
+   * High
    */
   PriorityHigh = 0,
   /**
-   * Normal priority
+   * Normal. `Normal` is the default priority.
    */
   PriorityNormal,
   /**
-   * Low priority
+   * Low
    */
   PriorityLow,
 }
@@ -376,7 +376,7 @@ export class ChatMessage {
    */
   chatType: ChatMessageChatType = ChatMessageChatType.ChatRoom;
   /**
-   * The message direction. See {@link ChatMessageDirection}
+   * The message direction. See {@link ChatMessageDirection}.
    */
   direction: ChatMessageDirection = ChatMessageDirection.SEND;
   /**
@@ -420,8 +420,8 @@ export class ChatMessage {
 
   /**
    * Whether the message is delivered only when the recipient(s) is/are online:
-   * - `true`：The message is delivered only when the recipient(s) is/are online. If the recipient is offline, the message is not delivered.
-   * - (Default) `false`：The message is delivered to the recipients regardless of whether they are online or offline.
+   * - `true`：The message is delivered only when the recipient(s) is/are online. If the recipient is offline, the message is discarded.
+   * - (Default) `false`：The message is delivered when the recipient(s) is/are online. If the recipient(s) is/are offline, the message will not be delivered to them until they get online.
    */
   deliverOnlineOnly: boolean;
 
@@ -540,8 +540,8 @@ export class ChatMessage {
    * @param content The text content.
    * @param chatType The conversation type. See {@link ChatType}.
    * @param opt The extension parameters of the message.
-   * - targetLanguageCodes: The language code. See {@link ChatTextMessageBody.targetLanguageCodes}.
-   * - isChatThread: Whether this message is a threaded message.
+   *  - targetLanguageCodes: The language code. See {@link ChatTextMessageBody.targetLanguageCodes}.
+   *  -  isChatThread: Whether this message is a threaded message.
    *   - `true`: Yes.
    *   - (Default) `false`: No.
    * @returns The message instance.
@@ -929,7 +929,7 @@ export class ChatMessage {
   }
 
   /**
-   * Set chat room message delivery priority.
+   * Set the chat room message priority.
    */
   public set messagePriority(p: ChatRoomMessagePriority) {
     this.priority = p;
