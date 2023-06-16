@@ -57,7 +57,7 @@ export function ChatRoomPermissionTypeFromNumber(
 export function ChatRoomPermissionTypeToString(
   params: ChatRoomPermissionType
 ): string {
-  return ChatRoomPermissionType[params];
+  return ChatRoomPermissionType[params]!;
 }
 
 /**

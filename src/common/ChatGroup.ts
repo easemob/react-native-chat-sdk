@@ -75,7 +75,7 @@ export function ChatGroupStyleFromNumber(params: number): ChatGroupStyle {
  * @returns The group type of the string type.
  */
 export function ChatGroupStyleToString(params: ChatGroupStyle): string {
-  return ChatGroupStyle[params];
+  return ChatGroupStyle[params]!;
 }
 
 /**
@@ -113,7 +113,7 @@ export function ChatGroupPermissionTypeFromNumber(
 export function ChatGroupPermissionTypeToString(
   params: ChatGroupPermissionType
 ): string {
-  return ChatGroupPermissionType[params];
+  return ChatGroupPermissionType[params]!;
 }
 
 /**

@@ -199,7 +199,7 @@ export function ChatMessageStatusFromNumber(params: number): ChatMessageStatus {
  * @returns The message status of the string type.
  */
 export function ChatMessageStatusToString(params: ChatMessageStatus): string {
-  return ChatMessageStatus[params];
+  return ChatMessageStatus[params]!;
 }
 
 /**
@@ -230,7 +230,7 @@ export function ChatDownloadStatusFromNumber(
  * @returns The message download status of the string type.
  */
 export function ChatDownloadStatusToString(params: ChatDownloadStatus): string {
-  return ChatDownloadStatus[params];
+  return ChatDownloadStatus[params]!;
 }
 
 /**
