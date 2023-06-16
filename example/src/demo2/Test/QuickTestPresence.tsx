@@ -74,7 +74,7 @@ export class QuickTestScreenPresence extends QuickTestScreenBase<
         {
           const methodName = this.metaData.get(MN.publishPresence)?.methodName!;
           console.log(`${MN.publishPresence} === ${methodName}`);
-          const description = this.metaData.get(MN.publishPresence)!.params[0]
+          const description = this.metaData.get(MN.publishPresence)!.params[0]!
             .paramDefaultValue;
           this.tryCatch(
             ChatClient.getInstance().presenceManager.publishPresence(
@@ -90,9 +90,9 @@ export class QuickTestScreenPresence extends QuickTestScreenBase<
           const methodName = this.metaData.get(MN.presenceSubscribe)
             ?.methodName!;
           console.log(`${MN.presenceSubscribe} === ${methodName}`);
-          const members = this.metaData.get(MN.presenceSubscribe)!.params[0]
+          const members = this.metaData.get(MN.presenceSubscribe)!.params[0]!
             .paramDefaultValue;
-          const expiry = this.metaData.get(MN.presenceSubscribe)!.params[1]
+          const expiry = this.metaData.get(MN.presenceSubscribe)!.params[1]!
             .paramDefaultValue;
           this.tryCatch(
             ChatClient.getInstance().presenceManager.subscribe(members, expiry),
@@ -106,7 +106,7 @@ export class QuickTestScreenPresence extends QuickTestScreenBase<
           const methodName = this.metaData.get(MN.presenceUnsubscribe)
             ?.methodName!;
           console.log(`${MN.presenceUnsubscribe} === ${methodName}`);
-          const members = this.metaData.get(MN.presenceUnsubscribe)!.params[0]
+          const members = this.metaData.get(MN.presenceUnsubscribe)!.params[0]!
             .paramDefaultValue;
           this.tryCatch(
             ChatClient.getInstance().presenceManager.unsubscribe(members),
@@ -125,10 +125,10 @@ export class QuickTestScreenPresence extends QuickTestScreenBase<
           );
           const pageNum = this.metaData.get(
             MN.fetchSubscribedMembersWithPageNum
-          )!.params[0].paramDefaultValue;
+          )!.params[0]!.paramDefaultValue;
           const pageSize = this.metaData.get(
             MN.fetchSubscribedMembersWithPageNum
-          )!.params[1].paramDefaultValue;
+          )!.params[1]!.paramDefaultValue;
           this.tryCatch(
             ChatClient.getInstance().presenceManager.fetchSubscribedMembers(
               pageNum,
@@ -144,7 +144,7 @@ export class QuickTestScreenPresence extends QuickTestScreenBase<
           const methodName = this.metaData.get(MN.fetchPresenceStatus)
             ?.methodName!;
           console.log(`${MN.fetchPresenceStatus} === ${methodName}`);
-          const members = this.metaData.get(MN.fetchPresenceStatus)!.params[0]
+          const members = this.metaData.get(MN.fetchPresenceStatus)!.params[0]!
             .paramDefaultValue;
           this.tryCatch(
             ChatClient.getInstance().presenceManager.fetchPresenceStatus(

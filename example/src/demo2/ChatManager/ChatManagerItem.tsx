@@ -393,7 +393,7 @@ export class ChatManagerLeafScreen extends LeafScreenBase<StateChatMessage> {
         );
         if (messages.length > 0) {
           ChatManagerCache.getInstance().addRecvMessage(
-            messages[messages.length - 1]
+            messages[messages.length - 1]!
           );
           this.that.setState({
             recvResult: JSON.stringify(messages[messages.length - 1]),
@@ -407,7 +407,7 @@ export class ChatManagerLeafScreen extends LeafScreenBase<StateChatMessage> {
         );
         if (messages.length > 0) {
           ChatManagerCache.getInstance().addRecvMessage(
-            messages[messages.length - 1]
+            messages[messages.length - 1]!
           );
           this.that.setState({
             recvResult: JSON.stringify(messages[messages.length - 1]),
@@ -660,7 +660,7 @@ export class ChatManagerLeafScreen extends LeafScreenBase<StateChatMessage> {
       renderDomAry.push(this.renderDivider());
     });
     renderDomAry.push(this.addSpaces());
-    return renderDomAry;
+    return renderDomAry as any;
   }
 
   private callApi(name: string): void {

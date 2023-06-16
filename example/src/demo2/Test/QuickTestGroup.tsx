@@ -105,7 +105,7 @@ export class QuickTestScreenGroup extends QuickTestScreenBase<
         {
           const methodName = this.metaData.get(MN.getGroupWithId)?.methodName!;
           console.log(`${MN.getGroupWithId} === ${methodName}`);
-          const groupId = this.metaData.get(MN.getGroupWithId)?.params[0]
+          const groupId = this.metaData.get(MN.getGroupWithId)?.params[0]!
             .paramDefaultValue;
 
           this.tryCatch(
@@ -132,9 +132,9 @@ export class QuickTestScreenGroup extends QuickTestScreenBase<
             ?.methodName!;
           console.log(`${MN.fetchJoinedGroupsFromServer} === ${methodName}`);
           const pageSize = this.metaData.get(MN.fetchJoinedGroupsFromServer)
-            ?.params[0].paramDefaultValue;
+            ?.params[0]!.paramDefaultValue;
           const pageNum = this.metaData.get(MN.fetchJoinedGroupsFromServer)
-            ?.params[1].paramDefaultValue;
+            ?.params[1]!.paramDefaultValue;
 
           this.tryCatch(
             ChatClient.getInstance().groupManager.fetchJoinedGroupsFromServer(
@@ -152,9 +152,9 @@ export class QuickTestScreenGroup extends QuickTestScreenBase<
             ?.methodName!;
           console.log(`${MN.fetchPublicGroupsFromServer} === ${methodName}`);
           const pageSize = this.metaData.get(MN.fetchPublicGroupsFromServer)
-            ?.params[0].paramDefaultValue;
+            ?.params[0]!.paramDefaultValue;
           const cursor = this.metaData.get(MN.fetchPublicGroupsFromServer)
-            ?.params[1].paramDefaultValue;
+            ?.params[1]!.paramDefaultValue;
 
           this.tryCatch(
             ChatClient.getInstance().groupManager.fetchPublicGroupsFromServer(
@@ -170,16 +170,16 @@ export class QuickTestScreenGroup extends QuickTestScreenBase<
         {
           const methodName = this.metaData.get(MN.createGroup)?.methodName!;
           console.log(`${MN.createGroup} === ${methodName}`);
-          const groupName = this.metaData.get(MN.createGroup)?.params[0]
+          const groupName = this.metaData.get(MN.createGroup)?.params[0]!
             .paramDefaultValue;
-          const desc = this.metaData.get(MN.createGroup)?.params[1]
+          const desc = this.metaData.get(MN.createGroup)?.params[1]!
             .paramDefaultValue;
           const allMembers: Array<string> = this.metaData.get(MN.createGroup)
-            ?.params[2].paramDefaultValue;
-          const reason = this.metaData.get(MN.createGroup)?.params[3]
+            ?.params[2]!.paramDefaultValue;
+          const reason = this.metaData.get(MN.createGroup)?.params[3]!
             .paramDefaultValue;
           const option: ChatGroupOptions = this.metaData.get(MN.createGroup)
-            ?.params[4].paramDefaultValue;
+            ?.params[4]!.paramDefaultValue;
 
           this.tryCatch(
             ChatClient.getInstance().groupManager.createGroup(
@@ -200,9 +200,9 @@ export class QuickTestScreenGroup extends QuickTestScreenBase<
             ?.methodName!;
           console.log(`${MN.fetchGroupInfoFromServer} === ${methodName}`);
           const groupId = this.metaData.get(MN.fetchGroupInfoFromServer)
-            ?.params[0].paramDefaultValue;
+            ?.params[0]!.paramDefaultValue;
           const isFetchMembers = this.metaData.get(MN.fetchGroupInfoFromServer)
-            ?.params[1].paramDefaultValue;
+            ?.params[1]!.paramDefaultValue;
 
           this.tryCatch(
             ChatClient.getInstance().groupManager.fetchGroupInfoFromServer(
@@ -220,11 +220,11 @@ export class QuickTestScreenGroup extends QuickTestScreenBase<
             ?.methodName!;
           console.log(`${MN.fetchMemberListFromServer} === ${methodName}`);
           const groupId = this.metaData.get(MN.fetchMemberListFromServer)
-            ?.params[0].paramDefaultValue;
+            ?.params[0]!.paramDefaultValue;
           const pageSize = this.metaData.get(MN.fetchMemberListFromServer)
-            ?.params[1].paramDefaultValue;
+            ?.params[1]!.paramDefaultValue;
           const cursor = this.metaData.get(MN.fetchMemberListFromServer)
-            ?.params[2].paramDefaultValue;
+            ?.params[2]!.paramDefaultValue;
 
           this.tryCatch(
             ChatClient.getInstance().groupManager.fetchMemberListFromServer(
@@ -243,11 +243,11 @@ export class QuickTestScreenGroup extends QuickTestScreenBase<
             ?.methodName!;
           console.log(`${MN.fetchBlockListFromServer} === ${methodName}`);
           const groupId = this.metaData.get(MN.fetchBlockListFromServer)
-            ?.params[0].paramDefaultValue;
+            ?.params[0]!.paramDefaultValue;
           const pageSize = this.metaData.get(MN.fetchBlockListFromServer)
-            ?.params[1].paramDefaultValue;
+            ?.params[1]!.paramDefaultValue;
           const pageNum = this.metaData.get(MN.fetchBlockListFromServer)
-            ?.params[2].paramDefaultValue;
+            ?.params[2]!.paramDefaultValue;
 
           this.tryCatch(
             ChatClient.getInstance().groupManager.fetchBlockListFromServer(
@@ -266,11 +266,11 @@ export class QuickTestScreenGroup extends QuickTestScreenBase<
             ?.methodName!;
           console.log(`${MN.fetchMuteListFromServer} === ${methodName}`);
           const groupId = this.metaData.get(MN.fetchMuteListFromServer)
-            ?.params[0].paramDefaultValue;
+            ?.params[0]!.paramDefaultValue;
           const pageSize = this.metaData.get(MN.fetchMuteListFromServer)
-            ?.params[1].paramDefaultValue;
+            ?.params[1]!.paramDefaultValue;
           const pageNum = this.metaData.get(MN.fetchMuteListFromServer)
-            ?.params[2].paramDefaultValue;
+            ?.params[2]!.paramDefaultValue;
 
           this.tryCatch(
             ChatClient.getInstance().groupManager.fetchMuteListFromServer(
@@ -289,7 +289,7 @@ export class QuickTestScreenGroup extends QuickTestScreenBase<
             ?.methodName!;
           console.log(`${MN.fetchAllowListFromServer} === ${methodName}`);
           const groupId = this.metaData.get(MN.fetchAllowListFromServer)
-            ?.params[0].paramDefaultValue;
+            ?.params[0]!.paramDefaultValue;
 
           this.tryCatch(
             ChatClient.getInstance().groupManager.fetchAllowListFromServer(
@@ -306,7 +306,7 @@ export class QuickTestScreenGroup extends QuickTestScreenBase<
             ?.methodName!;
           console.log(`${MN.isMemberInAllowListFromServer} === ${methodName}`);
           const groupId = this.metaData.get(MN.isMemberInAllowListFromServer)
-            ?.params[0].paramDefaultValue;
+            ?.params[0]!.paramDefaultValue;
 
           this.tryCatch(
             ChatClient.getInstance().groupManager.isMemberInAllowListFromServer(
@@ -323,11 +323,11 @@ export class QuickTestScreenGroup extends QuickTestScreenBase<
             ?.methodName!;
           console.log(`${MN.fetchGroupFileListFromServer} === ${methodName}`);
           const groupId = this.metaData.get(MN.fetchGroupFileListFromServer)
-            ?.params[0].paramDefaultValue;
+            ?.params[0]!.paramDefaultValue;
           const pageSize = this.metaData.get(MN.fetchGroupFileListFromServer)
-            ?.params[1].paramDefaultValue;
+            ?.params[1]!.paramDefaultValue;
           const pageNum = this.metaData.get(MN.fetchGroupFileListFromServer)
-            ?.params[2].paramDefaultValue;
+            ?.params[2]!.paramDefaultValue;
 
           this.tryCatch(
             ChatClient.getInstance().groupManager.fetchGroupFileListFromServer(
@@ -344,11 +344,11 @@ export class QuickTestScreenGroup extends QuickTestScreenBase<
         {
           const methodName = this.metaData.get(MN.addMembers)?.methodName!;
           console.log(`${MN.addMembers} === ${methodName}`);
-          const groupId = this.metaData.get(MN.addMembers)?.params[0]
+          const groupId = this.metaData.get(MN.addMembers)?.params[0]!
             .paramDefaultValue;
-          const members = this.metaData.get(MN.addMembers)?.params[1]
+          const members = this.metaData.get(MN.addMembers)?.params[1]!
             .paramDefaultValue;
-          const welcome = this.metaData.get(MN.addMembers)?.params[2]
+          const welcome = this.metaData.get(MN.addMembers)?.params[2]!
             .paramDefaultValue;
 
           this.tryCatch(
@@ -366,11 +366,11 @@ export class QuickTestScreenGroup extends QuickTestScreenBase<
         {
           const methodName = this.metaData.get(MN.inviteUser)?.methodName!;
           console.log(`${MN.inviteUser} === ${methodName}`);
-          const groupId = this.metaData.get(MN.inviteUser)?.params[0]
+          const groupId = this.metaData.get(MN.inviteUser)?.params[0]!
             .paramDefaultValue;
-          const members = this.metaData.get(MN.inviteUser)?.params[1]
+          const members = this.metaData.get(MN.inviteUser)?.params[1]!
             .paramDefaultValue;
-          const reason = this.metaData.get(MN.inviteUser)?.params[2]
+          const reason = this.metaData.get(MN.inviteUser)?.params[2]!
             .paramDefaultValue;
 
           this.tryCatch(
@@ -388,9 +388,9 @@ export class QuickTestScreenGroup extends QuickTestScreenBase<
         {
           const methodName = this.metaData.get(MN.removeMembers)?.methodName!;
           console.log(`${MN.removeMembers} === ${methodName}`);
-          const groupId = this.metaData.get(MN.removeMembers)?.params[0]
+          const groupId = this.metaData.get(MN.removeMembers)?.params[0]!
             .paramDefaultValue;
-          const members = this.metaData.get(MN.removeMembers)?.params[1]
+          const members = this.metaData.get(MN.removeMembers)?.params[1]!
             .paramDefaultValue;
 
           this.tryCatch(
@@ -407,9 +407,9 @@ export class QuickTestScreenGroup extends QuickTestScreenBase<
         {
           const methodName = this.metaData.get(MN.blockMembers)?.methodName!;
           console.log(`${MN.blockMembers} === ${methodName}`);
-          const groupId = this.metaData.get(MN.blockMembers)?.params[0]
+          const groupId = this.metaData.get(MN.blockMembers)?.params[0]!
             .paramDefaultValue;
-          const members = this.metaData.get(MN.blockMembers)?.params[1]
+          const members = this.metaData.get(MN.blockMembers)?.params[1]!
             .paramDefaultValue;
 
           this.tryCatch(
@@ -426,9 +426,9 @@ export class QuickTestScreenGroup extends QuickTestScreenBase<
         {
           const methodName = this.metaData.get(MN.unblockMembers)?.methodName!;
           console.log(`${MN.unblockMembers} === ${methodName}`);
-          const groupId = this.metaData.get(MN.unblockMembers)?.params[0]
+          const groupId = this.metaData.get(MN.unblockMembers)?.params[0]!
             .paramDefaultValue;
-          const members = this.metaData.get(MN.unblockMembers)?.params[1]
+          const members = this.metaData.get(MN.unblockMembers)?.params[1]!
             .paramDefaultValue;
 
           this.tryCatch(
@@ -445,9 +445,9 @@ export class QuickTestScreenGroup extends QuickTestScreenBase<
         {
           const methodName = this.metaData.get(MN.changeGroupName)?.methodName!;
           console.log(`${MN.changeGroupName} === ${methodName}`);
-          const groupId = this.metaData.get(MN.changeGroupName)?.params[0]
+          const groupId = this.metaData.get(MN.changeGroupName)?.params[0]!
             .paramDefaultValue;
-          const local_name = this.metaData.get(MN.changeGroupName)?.params[1]
+          const local_name = this.metaData.get(MN.changeGroupName)?.params[1]!
             .paramDefaultValue;
 
           this.tryCatch(
@@ -466,8 +466,8 @@ export class QuickTestScreenGroup extends QuickTestScreenBase<
             ?.methodName!;
           console.log(`${MN.changeGroupDescription} === ${methodName}`);
           const groupId = this.metaData.get(MN.changeGroupDescription)
-            ?.params[0].paramDefaultValue;
-          const desc = this.metaData.get(MN.changeGroupDescription)?.params[1]
+            ?.params[0]!.paramDefaultValue;
+          const desc = this.metaData.get(MN.changeGroupDescription)?.params[1]!
             .paramDefaultValue;
 
           this.tryCatch(
@@ -484,7 +484,7 @@ export class QuickTestScreenGroup extends QuickTestScreenBase<
         {
           const methodName = this.metaData.get(MN.leaveGroup)?.methodName!;
           console.log(`${MN.leaveGroup} === ${methodName}`);
-          const groupId = this.metaData.get(MN.leaveGroup)?.params[0]
+          const groupId = this.metaData.get(MN.leaveGroup)?.params[0]!
             .paramDefaultValue;
 
           this.tryCatch(
@@ -498,7 +498,7 @@ export class QuickTestScreenGroup extends QuickTestScreenBase<
         {
           const methodName = this.metaData.get(MN.destroyGroup)?.methodName!;
           console.log(`${MN.destroyGroup} === ${methodName}`);
-          const groupId = this.metaData.get(MN.destroyGroup)?.params[0]
+          const groupId = this.metaData.get(MN.destroyGroup)?.params[0]!
             .paramDefaultValue;
 
           this.tryCatch(
@@ -512,7 +512,7 @@ export class QuickTestScreenGroup extends QuickTestScreenBase<
         {
           const methodName = this.metaData.get(MN.blockGroup)?.methodName!;
           console.log(`${MN.blockGroup} === ${methodName}`);
-          const groupId = this.metaData.get(MN.blockGroup)?.params[0]
+          const groupId = this.metaData.get(MN.blockGroup)?.params[0]!
             .paramDefaultValue;
 
           this.tryCatch(
@@ -526,7 +526,7 @@ export class QuickTestScreenGroup extends QuickTestScreenBase<
         {
           const methodName = this.metaData.get(MN.unblockGroup)?.methodName!;
           console.log(`${MN.unblockGroup} === ${methodName}`);
-          const groupId = this.metaData.get(MN.unblockGroup)?.params[0]
+          const groupId = this.metaData.get(MN.unblockGroup)?.params[0]!
             .paramDefaultValue;
 
           this.tryCatch(
@@ -540,9 +540,9 @@ export class QuickTestScreenGroup extends QuickTestScreenBase<
         {
           const methodName = this.metaData.get(MN.changeOwner)?.methodName!;
           console.log(`${MN.changeOwner} === ${methodName}`);
-          const groupId = this.metaData.get(MN.changeOwner)?.params[0]
+          const groupId = this.metaData.get(MN.changeOwner)?.params[0]!
             .paramDefaultValue;
-          const newOwner = this.metaData.get(MN.changeOwner)?.params[1]
+          const newOwner = this.metaData.get(MN.changeOwner)?.params[1]!
             .paramDefaultValue;
 
           this.tryCatch(
@@ -559,9 +559,9 @@ export class QuickTestScreenGroup extends QuickTestScreenBase<
         {
           const methodName = this.metaData.get(MN.addAdmin)?.methodName!;
           console.log(`${MN.addAdmin} === ${methodName}`);
-          const groupId = this.metaData.get(MN.addAdmin)?.params[0]
+          const groupId = this.metaData.get(MN.addAdmin)?.params[0]!
             .paramDefaultValue;
-          const memberId = this.metaData.get(MN.addAdmin)?.params[1]
+          const memberId = this.metaData.get(MN.addAdmin)?.params[1]!
             .paramDefaultValue;
 
           this.tryCatch(
@@ -575,9 +575,9 @@ export class QuickTestScreenGroup extends QuickTestScreenBase<
         {
           const methodName = this.metaData.get(MN.removeAdmin)?.methodName!;
           console.log(`${MN.removeAdmin} === ${methodName}`);
-          const groupId = this.metaData.get(MN.removeAdmin)?.params[0]
+          const groupId = this.metaData.get(MN.removeAdmin)?.params[0]!
             .paramDefaultValue;
-          const memberId = this.metaData.get(MN.removeAdmin)?.params[1]
+          const memberId = this.metaData.get(MN.removeAdmin)?.params[1]!
             .paramDefaultValue;
 
           this.tryCatch(
@@ -594,11 +594,11 @@ export class QuickTestScreenGroup extends QuickTestScreenBase<
         {
           const methodName = this.metaData.get(MN.muteMembers)?.methodName!;
           console.log(`${MN.muteMembers} === ${methodName}`);
-          const groupId = this.metaData.get(MN.muteMembers)?.params[0]
+          const groupId = this.metaData.get(MN.muteMembers)?.params[0]!
             .paramDefaultValue;
-          const members = this.metaData.get(MN.muteMembers)?.params[1]
+          const members = this.metaData.get(MN.muteMembers)?.params[1]!
             .paramDefaultValue;
-          const duration = this.metaData.get(MN.muteMembers)?.params[2]
+          const duration = this.metaData.get(MN.muteMembers)?.params[2]!
             .paramDefaultValue;
 
           this.tryCatch(
@@ -616,9 +616,9 @@ export class QuickTestScreenGroup extends QuickTestScreenBase<
         {
           const methodName = this.metaData.get(MN.unMuteMembers)?.methodName!;
           console.log(`${MN.unMuteMembers} === ${methodName}`);
-          const groupId = this.metaData.get(MN.unMuteMembers)?.params[0]
+          const groupId = this.metaData.get(MN.unMuteMembers)?.params[0]!
             .paramDefaultValue;
-          const members = this.metaData.get(MN.unMuteMembers)?.params[1]
+          const members = this.metaData.get(MN.unMuteMembers)?.params[1]!
             .paramDefaultValue;
 
           this.tryCatch(
@@ -635,7 +635,7 @@ export class QuickTestScreenGroup extends QuickTestScreenBase<
         {
           const methodName = this.metaData.get(MN.muteAllMembers)?.methodName!;
           console.log(`${MN.muteAllMembers} === ${methodName}`);
-          const groupId = this.metaData.get(MN.muteAllMembers)?.params[0]
+          const groupId = this.metaData.get(MN.muteAllMembers)?.params[0]!
             .paramDefaultValue;
 
           this.tryCatch(
@@ -650,7 +650,7 @@ export class QuickTestScreenGroup extends QuickTestScreenBase<
           const methodName = this.metaData.get(MN.unMuteAllMembers)
             ?.methodName!;
           console.log(`${MN.unMuteAllMembers} === ${methodName}`);
-          const groupId = this.metaData.get(MN.unMuteAllMembers)?.params[0]
+          const groupId = this.metaData.get(MN.unMuteAllMembers)?.params[0]!
             .paramDefaultValue;
 
           this.tryCatch(
@@ -664,9 +664,9 @@ export class QuickTestScreenGroup extends QuickTestScreenBase<
         {
           const methodName = this.metaData.get(MN.addAllowList)?.methodName!;
           console.log(`${MN.addAllowList} === ${methodName}`);
-          const groupId = this.metaData.get(MN.addAllowList)?.params[0]
+          const groupId = this.metaData.get(MN.addAllowList)?.params[0]!
             .paramDefaultValue;
-          const members = this.metaData.get(MN.addAllowList)?.params[1]
+          const members = this.metaData.get(MN.addAllowList)?.params[1]!
             .paramDefaultValue;
 
           this.tryCatch(
@@ -683,9 +683,9 @@ export class QuickTestScreenGroup extends QuickTestScreenBase<
         {
           const methodName = this.metaData.get(MN.removeAllowList)?.methodName!;
           console.log(`${MN.removeAllowList} === ${methodName}`);
-          const groupId = this.metaData.get(MN.removeAllowList)?.params[0]
+          const groupId = this.metaData.get(MN.removeAllowList)?.params[0]!
             .paramDefaultValue;
-          const members = this.metaData.get(MN.removeAllowList)?.params[1]
+          const members = this.metaData.get(MN.removeAllowList)?.params[1]!
             .paramDefaultValue;
 
           this.tryCatch(
@@ -703,10 +703,10 @@ export class QuickTestScreenGroup extends QuickTestScreenBase<
           const methodName = this.metaData.get(MN.uploadGroupSharedFile)
             ?.methodName!;
           console.log(`${MN.uploadGroupSharedFile} === ${methodName}`);
-          const groupId = this.metaData.get(MN.uploadGroupSharedFile)?.params[0]
-            .paramDefaultValue;
+          const groupId = this.metaData.get(MN.uploadGroupSharedFile)
+            ?.params[0]!.paramDefaultValue;
           const filePath = this.metaData.get(MN.uploadGroupSharedFile)
-            ?.params[1].paramDefaultValue;
+            ?.params[1]!.paramDefaultValue;
           let cb = this.createCallback();
 
           this.tryCatch(
@@ -726,11 +726,11 @@ export class QuickTestScreenGroup extends QuickTestScreenBase<
             ?.methodName!;
           console.log(`${MN.downloadGroupSharedFile} === ${methodName}`);
           const groupId = this.metaData.get(MN.downloadGroupSharedFile)
-            ?.params[0].paramDefaultValue;
+            ?.params[0]!.paramDefaultValue;
           const fileId = this.metaData.get(MN.downloadGroupSharedFile)
-            ?.params[1].paramDefaultValue;
+            ?.params[1]!.paramDefaultValue;
           const savePath = this.metaData.get(MN.downloadGroupSharedFile)
-            ?.params[2].paramDefaultValue;
+            ?.params[2]!.paramDefaultValue;
           let cb = this.createCallback();
 
           this.tryCatch(
@@ -750,9 +750,9 @@ export class QuickTestScreenGroup extends QuickTestScreenBase<
           const methodName = this.metaData.get(MN.removeGroupSharedFile)
             ?.methodName!;
           console.log(`${MN.removeGroupSharedFile} === ${methodName}`);
-          const groupId = this.metaData.get(MN.removeGroupSharedFile)?.params[0]
-            .paramDefaultValue;
-          const fileId = this.metaData.get(MN.removeGroupSharedFile)?.params[1]
+          const groupId = this.metaData.get(MN.removeGroupSharedFile)
+            ?.params[0]!.paramDefaultValue;
+          const fileId = this.metaData.get(MN.removeGroupSharedFile)?.params[1]!
             .paramDefaultValue;
 
           this.tryCatch(
@@ -771,7 +771,7 @@ export class QuickTestScreenGroup extends QuickTestScreenBase<
             ?.methodName!;
           console.log(`${MN.fetchAnnouncementFromServer} === ${methodName}`);
           const groupId = this.metaData.get(MN.fetchAnnouncementFromServer)
-            ?.params[0].paramDefaultValue;
+            ?.params[0]!.paramDefaultValue;
 
           this.tryCatch(
             ChatClient.getInstance().groupManager.fetchAnnouncementFromServer(
@@ -788,9 +788,9 @@ export class QuickTestScreenGroup extends QuickTestScreenBase<
             ?.methodName!;
           console.log(`${MN.updateGroupAnnouncement} === ${methodName}`);
           const groupId = this.metaData.get(MN.updateGroupAnnouncement)
-            ?.params[0].paramDefaultValue;
+            ?.params[0]!.paramDefaultValue;
           const announcement = this.metaData.get(MN.updateGroupAnnouncement)
-            ?.params[1].paramDefaultValue;
+            ?.params[1]!.paramDefaultValue;
 
           this.tryCatch(
             ChatClient.getInstance().groupManager.updateGroupAnnouncement(
@@ -807,10 +807,10 @@ export class QuickTestScreenGroup extends QuickTestScreenBase<
           const methodName = this.metaData.get(MN.updateGroupExtension)
             ?.methodName!;
           console.log(`${MN.updateGroupExtension} === ${methodName}`);
-          const groupId = this.metaData.get(MN.updateGroupExtension)?.params[0]
+          const groupId = this.metaData.get(MN.updateGroupExtension)?.params[0]!
             .paramDefaultValue;
           const extension = this.metaData.get(MN.updateGroupExtension)
-            ?.params[1].paramDefaultValue;
+            ?.params[1]!.paramDefaultValue;
 
           this.tryCatch(
             ChatClient.getInstance().groupManager.updateGroupExtension(
@@ -827,10 +827,10 @@ export class QuickTestScreenGroup extends QuickTestScreenBase<
           const methodName = this.metaData.get(MN.updateGroupExtension)
             ?.methodName!;
           console.log(`${MN.updateGroupExtension} === ${methodName}`);
-          const groupId = this.metaData.get(MN.updateGroupExtension)?.params[0]
+          const groupId = this.metaData.get(MN.updateGroupExtension)?.params[0]!
             .paramDefaultValue;
           const extension = this.metaData.get(MN.updateGroupExtension)
-            ?.params[1].paramDefaultValue;
+            ?.params[1]!.paramDefaultValue;
 
           this.tryCatch(
             ChatClient.getInstance().groupManager.updateGroupExtension(
@@ -846,7 +846,7 @@ export class QuickTestScreenGroup extends QuickTestScreenBase<
         {
           const methodName = this.metaData.get(MN.joinPublicGroup)?.methodName!;
           console.log(`${MN.joinPublicGroup} === ${methodName}`);
-          const groupId = this.metaData.get(MN.joinPublicGroup)?.params[0]
+          const groupId = this.metaData.get(MN.joinPublicGroup)?.params[0]!
             .paramDefaultValue;
 
           this.tryCatch(
@@ -862,9 +862,9 @@ export class QuickTestScreenGroup extends QuickTestScreenBase<
             ?.methodName!;
           console.log(`${MN.requestToJoinPublicGroup} === ${methodName}`);
           const groupId = this.metaData.get(MN.requestToJoinPublicGroup)
-            ?.params[0].paramDefaultValue;
+            ?.params[0]!.paramDefaultValue;
           const reason = this.metaData.get(MN.requestToJoinPublicGroup)
-            ?.params[1].paramDefaultValue;
+            ?.params[1]!.paramDefaultValue;
 
           this.tryCatch(
             ChatClient.getInstance().groupManager.requestToJoinPublicGroup(
@@ -881,10 +881,10 @@ export class QuickTestScreenGroup extends QuickTestScreenBase<
           const methodName = this.metaData.get(MN.acceptJoinApplication)
             ?.methodName!;
           console.log(`${MN.acceptJoinApplication} === ${methodName}`);
-          const groupId = this.metaData.get(MN.acceptJoinApplication)?.params[0]
-            .paramDefaultValue;
+          const groupId = this.metaData.get(MN.acceptJoinApplication)
+            ?.params[0]!.paramDefaultValue;
           const username = this.metaData.get(MN.acceptJoinApplication)
-            ?.params[1].paramDefaultValue;
+            ?.params[1]!.paramDefaultValue;
 
           this.tryCatch(
             ChatClient.getInstance().groupManager.acceptJoinApplication(
@@ -902,11 +902,11 @@ export class QuickTestScreenGroup extends QuickTestScreenBase<
             ?.methodName!;
           console.log(`${MN.declineJoinApplication} === ${methodName}`);
           const groupId = this.metaData.get(MN.declineJoinApplication)
-            ?.params[0].paramDefaultValue;
+            ?.params[0]!.paramDefaultValue;
           const username = this.metaData.get(MN.declineJoinApplication)
-            ?.params[1].paramDefaultValue;
-          const reason = this.metaData.get(MN.declineJoinApplication)?.params[2]
-            .paramDefaultValue;
+            ?.params[1]!.paramDefaultValue;
+          const reason = this.metaData.get(MN.declineJoinApplication)
+            ?.params[2]!.paramDefaultValue;
 
           this.tryCatch(
             ChatClient.getInstance().groupManager.declineJoinApplication(
@@ -924,9 +924,9 @@ export class QuickTestScreenGroup extends QuickTestScreenBase<
           const methodName = this.metaData.get(MN.acceptInvitation)
             ?.methodName!;
           console.log(`${MN.acceptInvitation} === ${methodName}`);
-          const groupId = this.metaData.get(MN.acceptInvitation)?.params[0]
+          const groupId = this.metaData.get(MN.acceptInvitation)?.params[0]!
             .paramDefaultValue;
-          const inviter = this.metaData.get(MN.acceptInvitation)?.params[1]
+          const inviter = this.metaData.get(MN.acceptInvitation)?.params[1]!
             .paramDefaultValue;
 
           this.tryCatch(
@@ -944,12 +944,12 @@ export class QuickTestScreenGroup extends QuickTestScreenBase<
           const methodName = this.metaData.get(MN.setMemberAttribute)
             ?.methodName!;
           console.log(`${MN.setMemberAttribute} === ${methodName}`);
-          const groupId = this.metaData.get(MN.setMemberAttribute)?.params[0]
+          const groupId = this.metaData.get(MN.setMemberAttribute)?.params[0]!
             .paramDefaultValue;
-          const member = this.metaData.get(MN.setMemberAttribute)?.params[1]
+          const member = this.metaData.get(MN.setMemberAttribute)?.params[1]!
             .paramDefaultValue;
-          const attributes = this.metaData.get(MN.setMemberAttribute)?.params[2]
-            .paramDefaultValue;
+          const attributes = this.metaData.get(MN.setMemberAttribute)
+            ?.params[2]!.paramDefaultValue;
 
           this.tryCatch(
             ChatClient.getInstance().groupManager.setMemberAttribute(
@@ -967,9 +967,9 @@ export class QuickTestScreenGroup extends QuickTestScreenBase<
           const methodName = this.metaData.get(MN.fetchMemberAttributes)
             ?.methodName!;
           console.log(`${MN.fetchMemberAttributes} === ${methodName}`);
-          const groupId = this.metaData.get(MN.fetchMemberAttributes)?.params[0]
-            .paramDefaultValue;
-          const member = this.metaData.get(MN.fetchMemberAttributes)?.params[1]
+          const groupId = this.metaData.get(MN.fetchMemberAttributes)
+            ?.params[0]!.paramDefaultValue;
+          const member = this.metaData.get(MN.fetchMemberAttributes)?.params[1]!
             .paramDefaultValue;
 
           this.tryCatch(
@@ -988,11 +988,11 @@ export class QuickTestScreenGroup extends QuickTestScreenBase<
             ?.methodName!;
           console.log(`${MN.fetchMembersAttributes} === ${methodName}`);
           const groupId = this.metaData.get(MN.fetchMembersAttributes)
-            ?.params[0].paramDefaultValue;
+            ?.params[0]!.paramDefaultValue;
           const members = this.metaData.get(MN.fetchMembersAttributes)
-            ?.params[1].paramDefaultValue;
+            ?.params[1]!.paramDefaultValue;
           const attributeKeys = this.metaData.get(MN.fetchMembersAttributes)
-            ?.params[2].paramDefaultValue;
+            ?.params[2]!.paramDefaultValue;
 
           this.tryCatch(
             ChatClient.getInstance().groupManager.fetchMembersAttributes(

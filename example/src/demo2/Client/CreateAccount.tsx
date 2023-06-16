@@ -96,9 +96,7 @@ export class CreateAccountScreen extends Component<
                 // console.log(`${CreateAccountScreen.TAG}`);
                 this.createAccount();
               }}
-            >
-              login
-            </Button>
+            />
           </View>
           <View style={styleValues.containerColumn}>
             <Text style={styleValues.textTipStyle}>

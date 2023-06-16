@@ -1,6 +1,5 @@
 import type { EmitterSubscription, NativeEventEmitter } from 'react-native';
-import type { ChatPresenceEventListener } from './ChatEvents';
-import { ChatPresence } from './common/ChatPresence';
+
 import {
   MTfetchPresenceStatus,
   MTfetchSubscribedMembersWithPageNum,
@@ -10,7 +9,9 @@ import {
   MTpublishPresenceWithDescription,
 } from './__internal__/Consts';
 import { Native } from './__internal__/Native';
+import type { ChatPresenceEventListener } from './ChatEvents';
 import { chatlog } from './common/ChatConst';
+import { ChatPresence } from './common/ChatPresence';
 
 /**
  * The presence manager class.

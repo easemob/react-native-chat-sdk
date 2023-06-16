@@ -1,5 +1,5 @@
 import type { EmitterSubscription, NativeEventEmitter } from 'react-native';
-import type { ChatRoomEventListener } from './ChatEvents';
+
 import {
   MTaddChatRoomAdmin,
   MTaddMembersToChatRoomAllowList,
@@ -10,12 +10,13 @@ import {
   MTchatRoomChange,
   MTcreateChatRoom,
   MTdestroyChatRoom,
+  MTfetchChatRoomAllowListFromServer,
   MTfetchChatRoomAnnouncement,
+  MTfetchChatRoomAttributes,
   MTfetchChatRoomBlockList,
   MTfetchChatRoomInfoFromServer,
   MTfetchChatRoomMembers,
   MTfetchChatRoomMuteList,
-  MTfetchChatRoomAllowListFromServer,
   MTfetchPublicChatRoomsFromServer,
   MTgetChatRoom,
   MTisMemberInChatRoomAllowListFromServer,
@@ -24,22 +25,22 @@ import {
   MTmuteAllChatRoomMembers,
   MTmuteChatRoomMembers,
   MTremoveChatRoomAdmin,
+  MTremoveChatRoomAttributes,
   MTremoveChatRoomMembers,
   MTremoveMembersFromChatRoomAllowList,
+  MTsetChatRoomAttributes,
   MTunBlockChatRoomMembers,
   MTunMuteAllChatRoomMembers,
   MTunMuteChatRoomMembers,
   MTupdateChatRoomAnnouncement,
-  MTfetchChatRoomAttributes,
-  MTsetChatRoomAttributes,
-  MTremoveChatRoomAttributes,
 } from './__internal__/Consts';
 import { Native } from './__internal__/Native';
-import { ChatPageResult } from './common/ChatPageResult';
-import { ChatRoom } from './common/ChatRoom';
+import type { ChatRoomEventListener } from './ChatEvents';
+import { chatlog } from './common/ChatConst';
 import { ChatCursorResult } from './common/ChatCursorResult';
 import { ChatError } from './common/ChatError';
-import { chatlog } from './common/ChatConst';
+import { ChatPageResult } from './common/ChatPageResult';
+import { ChatRoom } from './common/ChatRoom';
 
 /**
  * The chat room manager class, which manages user operations, like joining and leaving the chat room and retrieving the chat room list, and manages member privileges.

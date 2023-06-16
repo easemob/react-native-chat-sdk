@@ -69,12 +69,12 @@ export class ChatManagerCache {
   }
 
   public getLastSendMessage(
-    id: string = datasheet.accounts[2].id,
+    id: string = datasheet.accounts[2]!.id,
     type: ChatMessageChatType = ChatMessageChatType.PeerChat
   ): ChatMessage {
     let ret: ChatMessage;
     if (this.sendMessageList.length > 0) {
-      ret = this.sendMessageList[this.sendMessageList.length - 1];
+      ret = this.sendMessageList[this.sendMessageList.length - 1]!;
     } else {
       ret = this.createTestMessage(id, Date.now().toString(), type);
     }
@@ -84,12 +84,12 @@ export class ChatManagerCache {
     this.sendMessageList.push(msg);
   }
   public getLastRecvMessage(
-    id: string = datasheet.accounts[2].id,
+    id: string = datasheet.accounts[2]!.id,
     type: ChatMessageChatType = ChatMessageChatType.PeerChat
   ): ChatMessage {
     let ret: ChatMessage;
     if (this.recvMessageList.length > 0) {
-      ret = this.recvMessageList[this.recvMessageList.length - 1];
+      ret = this.recvMessageList[this.recvMessageList.length - 1]!;
     } else {
       ret = this.createTestMessage(id, Date.now().toString(), type);
     }
@@ -120,10 +120,10 @@ export class ChatManagerCache {
   }
 
   public createTextMessage(): ChatMessage {
-    const targetId = metaDataList.get(MN.sendMessage)?.params[0]
+    const targetId = metaDataList.get(MN.sendMessage)?.params[0]!
       .paramDefaultValue;
     const targetType: ChatMessageChatType = metaDataList.get(MN.sendMessage)
-      ?.params[1].paramDefaultValue;
+      ?.params[1]!.paramDefaultValue;
     const content: string = Date.now().toString();
     return this.createTextMessageWithParams(targetId, content, targetType);
   }

@@ -1,6 +1,7 @@
 require "json"
 
 package = JSON.parse(File.read(File.join(__dir__, "package.json")))
+folly_compiler_flags = '-DFOLLY_NO_CONFIG -DFOLLY_MOBILE=1 -DFOLLY_USE_LIBCPP=1 -Wno-comma -Wno-shorten-64-to-32'
 
 Pod::Spec.new do |s|
   s.name         = "react-native-chat-sdk"
@@ -10,7 +11,7 @@ Pod::Spec.new do |s|
   s.license      = package["license"]
   s.authors      = package["author"]
 
-  s.platforms    = { :ios => "10.0" }
+  s.platforms    = { :ios => "11.0" }
   s.source       = { :git => "https://github.com/easemob/react-native-chat-sdk.git", :tag => "#{s.version}" }
 
   s.source_files = ['ios/**/*.{h,m,mm}', 'native_src/cpp/**/*.{h,cpp,mm}', 'native_src/objc/**/*']
@@ -20,25 +21,6 @@ Pod::Spec.new do |s|
   s.dependency "React-Core"
   s.dependency 'HyphenateChat','4.0.2'
 
-  s.pod_target_xcconfig = {
-    'DEFINES_MODULE' => 'YES',
-    "CLANG_CXX_LANGUAGE_STANDARD" => "c++11",
-    # 'VALID_ARCHS[sdk=iphonesimulator*]' => 'x86_64',
-    # "ENABLE_BITCODE": "NO",
-    'OTHER_LDFLAGS' => [
-      '-Wunused-function',
-      '-Wunreachable-code',
-      '-Wunused-variable'
-    ],
-    'HEADER_SEARCH_PATHS' => [
-      "$(PODS_TARGET_SRCROOT)/native_src/cpp/common",
-      "$(PODS_TARGET_SRCROOT)/native_src/cpp/core",
-      "$(PODS_TARGET_SRCROOT)/native_src/cpp/objc",
-      "$(PODS_TARGET_SRCROOT)/native_src/objc/common",
-      "$(PODS_TARGET_SRCROOT)/native_src/objc/dispatch",
-      "$(PODS_TARGET_SRCROOT)/native_src/objc/rn"
-    ]
-  }
   s.xcconfig = {
     "OTHER_LDFLAGS": "-ObjC",
     'GCC_PREPROCESSOR_DEFINITIONS' => [
@@ -47,4 +29,46 @@ Pod::Spec.new do |s|
       "IOS_PLATFORM"
     ]
   }
+
+  # Don't install the dependencies when we run `pod install` in the old architecture.
+  if ENV['RCT_NEW_ARCH_ENABLED'] == '1' then
+    puts "log: enable rct new arch."
+    s.compiler_flags = folly_compiler_flags + " -DRCT_NEW_ARCH_ENABLED=1"
+    s.pod_target_xcconfig    = {
+      "OTHER_CPLUSPLUSFLAGS" => "-DFOLLY_NO_CONFIG -DFOLLY_MOBILE=1 -DFOLLY_USE_LIBCPP=1",
+      "CLANG_CXX_LANGUAGE_STANDARD" => "c++17",
+      'HEADER_SEARCH_PATHS' => [
+        "$(PODS_ROOT)/boost",
+        "$(PODS_TARGET_SRCROOT)/native_src/cpp/common",
+        "$(PODS_TARGET_SRCROOT)/native_src/cpp/core",
+        "$(PODS_TARGET_SRCROOT)/native_src/cpp/objc",
+        "$(PODS_TARGET_SRCROOT)/native_src/objc/common",
+        "$(PODS_TARGET_SRCROOT)/native_src/objc/dispatch",
+        "$(PODS_TARGET_SRCROOT)/native_src/objc/rn"
+      ]
+    }
+    s.dependency "React-Codegen"
+    s.dependency "RCT-Folly"
+    s.dependency "RCTRequired"
+    s.dependency "RCTTypeSafety"
+    s.dependency "ReactCommon/turbomodule/core"
+  else
+    puts "log: disable rct new arch."
+    s.pod_target_xcconfig    = {
+      "CLANG_CXX_LANGUAGE_STANDARD" => "c++17",
+      'OTHER_LDFLAGS' => [
+        '-Wunused-function',
+        '-Wunreachable-code',
+        '-Wunused-variable'
+      ],
+      'HEADER_SEARCH_PATHS' => [
+        "$(PODS_TARGET_SRCROOT)/native_src/cpp/common",
+        "$(PODS_TARGET_SRCROOT)/native_src/cpp/core",
+        "$(PODS_TARGET_SRCROOT)/native_src/cpp/objc",
+        "$(PODS_TARGET_SRCROOT)/native_src/objc/common",
+        "$(PODS_TARGET_SRCROOT)/native_src/objc/dispatch",
+        "$(PODS_TARGET_SRCROOT)/native_src/objc/rn"
+      ]
+   }
+  end
 end

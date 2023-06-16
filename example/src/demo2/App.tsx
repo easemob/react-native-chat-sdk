@@ -49,7 +49,7 @@ function App() {
             <Stack.Screen
               key={component.route}
               name={component.route}
-              component={component.screen}
+              component={component.screen as any}
             />
           );
         })}

@@ -1,9 +1,9 @@
 import { generateMessageId, getNowTimestamp } from '../__internal__/Utils';
 import { ChatClient } from '../ChatClient';
+import type { ChatSearchDirection } from './ChatConversation';
 import { ChatError } from './ChatError';
 import type { ChatMessageReaction } from './ChatMessageReaction';
 import type { ChatMessageThread } from './ChatMessageThread';
-import type { ChatSearchDirection } from './ChatConversation';
 
 /**
  * The conversation types.

@@ -1,13 +1,5 @@
 import type { NativeEventEmitter } from 'react-native';
-import type {
-  ChatConversation,
-  ChatConversationType,
-} from './common/ChatConversation';
-import { ChatPushDisplayStyle, ChatPushOption } from './common/ChatPushConfig';
-import {
-  ChatSilentModeResult,
-  ChatSilentModeParam,
-} from './common/ChatSilentMode';
+
 import {
   MTfetchConversationSilentMode,
   MTfetchPreferredNotificationLanguage,
@@ -23,6 +15,15 @@ import {
 } from './__internal__/Consts';
 import { Native } from './__internal__/Native';
 import { chatlog } from './common/ChatConst';
+import type {
+  ChatConversation,
+  ChatConversationType,
+} from './common/ChatConversation';
+import { ChatPushDisplayStyle, ChatPushOption } from './common/ChatPushConfig';
+import {
+  ChatSilentModeParam,
+  ChatSilentModeResult,
+} from './common/ChatSilentMode';
 
 /**
  * The class for message push configuration options.

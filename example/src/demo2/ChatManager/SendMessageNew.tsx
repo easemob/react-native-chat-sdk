@@ -91,7 +91,7 @@ export class SendMessageLeafScreen extends LeafScreenBase<StateSendMessage> {
             {
               paramName: 'targetId',
               paramType: 'string',
-              paramDefaultValue: datasheet.accounts[2].id,
+              paramDefaultValue: datasheet.accounts[2]!.id,
             },
             {
               paramName: 'targetType',
@@ -130,12 +130,12 @@ export class SendMessageLeafScreen extends LeafScreenBase<StateSendMessage> {
       cb_result: '',
       messageType: ChatMessageType.TXT,
 
-      targetId: this.metaData.get(MN.sendMessage)?.params[0].paramDefaultValue,
-      targetType: this.metaData.get(MN.sendMessage)?.params[1]
+      targetId: this.metaData.get(MN.sendMessage)?.params[0]!.paramDefaultValue,
+      targetType: this.metaData.get(MN.sendMessage)?.params[1]!
         .paramDefaultValue,
 
       // text message body
-      content: this.metaData.get(MN.sendMessage)?.params[2].paramDefaultValue,
+      content: this.metaData.get(MN.sendMessage)?.params[2]!.paramDefaultValue,
 
       // file message body
       filePath: '',
@@ -171,7 +171,7 @@ export class SendMessageLeafScreen extends LeafScreenBase<StateSendMessage> {
       }),
 
       // is thread message
-      isChatThread: this.metaData.get(MN.sendMessage)?.params[4]
+      isChatThread: this.metaData.get(MN.sendMessage)?.params[4]!
         .paramDefaultValue,
       priority: 1,
     };
@@ -253,7 +253,7 @@ export class SendMessageLeafScreen extends LeafScreenBase<StateSendMessage> {
         );
         if (messages.length > 0) {
           ChatManagerCache.getInstance().addRecvMessage(
-            messages[messages.length - 1]
+            messages[messages.length - 1]!
           );
         }
       }
@@ -264,7 +264,7 @@ export class SendMessageLeafScreen extends LeafScreenBase<StateSendMessage> {
         );
         if (messages.length > 0) {
           ChatManagerCache.getInstance().addRecvMessage(
-            messages[messages.length - 1]
+            messages[messages.length - 1]!
           );
         }
       }
@@ -582,7 +582,7 @@ export class SendMessageLeafScreen extends LeafScreenBase<StateSendMessage> {
       throw new Error('error: ' + tt);
     };
     return this.renderParamWithEnum(
-      data.params[5].paramName,
+      data.params[5]!.paramName,
       ['High', 'Normal', 'Low'],
       getPriority(priority ?? ChatRoomMessagePriority.PriorityNormal),
       (index: string, option: any) => {
@@ -623,7 +623,7 @@ export class SendMessageLeafScreen extends LeafScreenBase<StateSendMessage> {
     return [
       this.renderParamWithText(data.methodName),
       this.renderParamWithEnum(
-        data.params[4].paramName,
+        data.params[4]!.paramName,
         ['true', 'false'],
         isChatThread === true ? 'true' : 'false',
         (index: string, option: any) => {
@@ -639,7 +639,7 @@ export class SendMessageLeafScreen extends LeafScreenBase<StateSendMessage> {
         });
       }),
       this.renderParamWithEnum(
-        data.params[1].paramName,
+        data.params[1]!.paramName,
         ['PeerChat', 'GroupChat', 'ChatRoom'],
         getTargetId(targetType),
         (index: string, option: any) => {
@@ -659,7 +659,7 @@ export class SendMessageLeafScreen extends LeafScreenBase<StateSendMessage> {
         }
       ),
       this.renderParamWithEnum(
-        data.params[3].paramName,
+        data.params[3]!.paramName,
         [
           ChatMessageType.TXT,
           ChatMessageType.CMD,

@@ -333,7 +333,7 @@ export class GroupManagerLeafScreen extends LeafScreenBase<StateGroupMessage> {
       renderDomAry.push(this.renderDivider());
     });
     renderDomAry.push(this.addSpaces());
-    return renderDomAry;
+    return renderDomAry as any;
   }
   protected createGroup(): ReactNode[] {
     const data = this.metaDataList;

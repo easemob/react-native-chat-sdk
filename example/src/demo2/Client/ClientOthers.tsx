@@ -2,7 +2,7 @@ import React, { Component, ReactNode } from 'react';
 import { View, Button, Text, TextInput, ScrollView } from 'react-native';
 import { ChatClient, ChatPushConfig } from 'react-native-chat-sdk';
 import { styleValues } from '../__internal__/Css';
-import messaging from '@react-native-firebase/messaging';
+// import messaging from '@react-native-firebase/messaging';
 import { datasheet } from '../__default__/Datasheet';
 
 interface State {
@@ -33,8 +33,8 @@ export class ClientOthersScreen extends Component<
       result: '',
       agoraToken: '',
       newAppKey: '',
-      username: datasheet.accounts[0].id,
-      password: datasheet.accounts[0].mm,
+      username: datasheet.accounts[0]!.id,
+      password: datasheet.accounts[0]!.mm,
       devices: '',
       deviceId: '',
       deviceToken: '',
@@ -75,9 +75,10 @@ export class ClientOthersScreen extends Component<
   private async requestFcmToken() {
     // https://rnfirebase.io/reference/messaging#getToken
     // await messaging().registerDeviceForRemoteMessages();
-    const fcmToken = await messaging().getToken();
-    console.log('fcm token: ', fcmToken);
-    return fcmToken;
+    // const fcmToken = await messaging().getToken();
+    // console.log('fcm token: ', fcmToken);
+    // return fcmToken;
+    return 'pseudo';
   }
 
   private async updatePush(): Promise<void> {
@@ -148,9 +149,7 @@ export class ClientOthersScreen extends Component<
               onPress={() => {
                 this.renewAgoraToken();
               }}
-            >
-              agoraToken
-            </Button>
+            />
           </View>
           <View style={styleValues.containerRow}>
             <Text style={styleValues.textStyle}>newAppKey: </Text>
@@ -168,9 +167,7 @@ export class ClientOthersScreen extends Component<
               onPress={() => {
                 this.changeAppKey();
               }}
-            >
-              newAppKey
-            </Button>
+            />
           </View>
           <View style={styleValues.containerRow}>
             <Text style={styleValues.textStyle}>compressLogs: </Text>
@@ -179,9 +176,7 @@ export class ClientOthersScreen extends Component<
               onPress={() => {
                 this.compressLogs();
               }}
-            >
-              compressLogs
-            </Button>
+            />
           </View>
           <View style={styleValues.containerRow}>
             <Text style={styleValues.textStyle}>deviceId: </Text>
@@ -209,9 +204,7 @@ export class ClientOthersScreen extends Component<
               onPress={() => {
                 this.updatePush();
               }}
-            >
-              newAppKey
-            </Button>
+            />
           </View>
           <View style={styleValues.containerRow}>
             <Text style={styleValues.textStyle}>
@@ -222,9 +215,7 @@ export class ClientOthersScreen extends Component<
               onPress={() => {
                 this.getVersion();
               }}
-            >
-              newAppKey
-            </Button>
+            />
           </View>
           <View style={styleValues.containerColumn}>
             <Text style={styleValues.textTipStyle}>result: {result}</Text>

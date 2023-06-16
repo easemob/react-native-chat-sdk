@@ -151,9 +151,7 @@ export class GetStateScreen extends Component<{ navigation: any }, State, any> {
               onPress={() => {
                 this.getOptions();
               }}
-            >
-              options
-            </Button>
+            />
           </View>
           {/* <View style={styleValues.containerRow}>
             <Text style={styleValues.textStyle}>sdkVersion: </Text>
@@ -173,9 +171,7 @@ export class GetStateScreen extends Component<{ navigation: any }, State, any> {
               onPress={() => {
                 this.getcurrentUserName();
               }}
-            >
-              currentUserName
-            </Button>
+            />
           </View>
           {/* <View style={styleValues.containerRow}>
             <Text style={styleValues.textStyle}>rnSdkVersion: </Text>
@@ -195,9 +191,7 @@ export class GetStateScreen extends Component<{ navigation: any }, State, any> {
               onPress={() => {
                 this.isConnected();
               }}
-            >
-              isConnected
-            </Button>
+            />
           </View>
           <View style={styleValues.containerRow}>
             <Text style={styleValues.textStyle}>isLoginBefore: </Text>
@@ -206,9 +200,7 @@ export class GetStateScreen extends Component<{ navigation: any }, State, any> {
               onPress={() => {
                 this.isLoginBefore();
               }}
-            >
-              isLoginBefore
-            </Button>
+            />
           </View>
           <View style={styleValues.containerRow}>
             <Text style={styleValues.textStyle}>token: </Text>
@@ -217,9 +209,7 @@ export class GetStateScreen extends Component<{ navigation: any }, State, any> {
               onPress={() => {
                 this.getToken();
               }}
-            >
-              token
-            </Button>
+            />
           </View>
           <View style={styleValues.containerColumn}>
             <Text style={styleValues.textTipStyle}>result: {result}</Text>

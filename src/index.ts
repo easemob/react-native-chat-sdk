@@ -1,103 +1,102 @@
 import { ChatClient } from './ChatClient';
-import { ChatManager } from './ChatManager';
 import { ChatContactManager } from './ChatContactManager';
+import type {
+  ChatConnectEventListener,
+  ChatContactEventListener,
+  ChatCustomEventListener,
+  ChatGroupEventListener,
+  ChatMessageEventListener,
+  ChatMultiDeviceEvent,
+  ChatMultiDeviceEventFromNumber,
+  ChatMultiDeviceEventListener,
+  ChatPresenceEventListener,
+  ChatRoomEventListener,
+} from './ChatEvents';
 import { ChatGroupManager } from './ChatGroupManager';
+import { ChatManager } from './ChatManager';
 import { ChatPresenceManager } from './ChatPresenceManager';
 import { ChatPushManager } from './ChatPushManager';
 import { ChatRoomManager } from './ChatRoomManager';
 import { ChatUserInfoManager } from './ChatUserInfoManager';
-import type {
-  ChatMultiDeviceEvent,
-  ChatConnectEventListener,
-  ChatMultiDeviceEventListener,
-  ChatCustomEventListener,
-  ChatMessageEventListener,
-  ChatGroupEventListener,
-  ChatContactEventListener,
-  ChatRoomEventListener,
-  ChatPresenceEventListener,
-  ChatMultiDeviceEventFromNumber,
-} from './ChatEvents';
+import type { ChatAreaCode } from './common/ChatAreaCode';
 import {
-  ChatConversationType,
   ChatConversation,
+  ChatConversationType,
   ChatConversationTypeToString,
 } from './common/ChatConversation';
-import { ChatCursorResult } from './common/ChatCursorResult';
-import { ChatDeviceInfo } from './common/ChatDeviceInfo';
-import { ChatError } from './common/ChatError';
-import { ChatLog } from './common/ChatLog';
-import {
-  ChatGroupStyle,
-  ChatGroupPermissionType,
-  ChatGroupMessageAck,
-  ChatGroupOptions,
-  ChatGroup,
-  ChatGroupInfo,
-  ChatGroupFileStatusCallback,
-  ChatGroupSharedFile,
-  ChatGroupStyleFromNumber,
-  ChatGroupStyleToString,
-  ChatGroupPermissionTypeFromNumber,
-  ChatGroupPermissionTypeToString,
-} from './common/ChatGroup';
-import {
-  ChatMessageChatType,
-  ChatMessageDirection,
-  ChatMessageStatus,
-  ChatDownloadStatus,
-  ChatMessageType,
-  ChatMessageStatusCallback,
-  ChatMessage,
-  ChatMessageTypeFromString,
-  ChatMessageChatTypeFromNumber,
-  ChatMessageBody,
-  ChatTextMessageBody,
-  ChatLocationMessageBody,
-  ChatFileMessageBody,
-  ChatImageMessageBody,
-  ChatVideoMessageBody,
-  ChatVoiceMessageBody,
-  ChatCmdMessageBody,
-  ChatCustomMessageBody,
-  ChatFetchMessageOptions,
-  ChatMessageDirectionFromString,
-  ChatMessageStatusFromNumber,
-  ChatMessageStatusToString,
-  ChatDownloadStatusFromNumber,
-  ChatDownloadStatusToString,
-  ChatRoomMessagePriority,
-} from './common/ChatMessage';
 import {
   ChatConversationTypeFromNumber,
   ChatSearchDirection,
 } from './common/ChatConversation';
-import { ChatOptions } from './common/ChatOptions';
-import { ChatPageResult } from './common/ChatPageResult';
+import { ChatCursorResult } from './common/ChatCursorResult';
+import { ChatDeviceInfo } from './common/ChatDeviceInfo';
+import { ChatError } from './common/ChatError';
 import {
-  ChatRoomPermissionType,
-  ChatRoom,
-  ChatRoomPermissionTypeFromNumber,
-  ChatRoomPermissionTypeToString,
-} from './common/ChatRoom';
-import { ChatUserInfo } from './common/ChatUserInfo';
+  ChatGroup,
+  ChatGroupFileStatusCallback,
+  ChatGroupInfo,
+  ChatGroupMessageAck,
+  ChatGroupOptions,
+  ChatGroupPermissionType,
+  ChatGroupPermissionTypeFromNumber,
+  ChatGroupPermissionTypeToString,
+  ChatGroupSharedFile,
+  ChatGroupStyle,
+  ChatGroupStyleFromNumber,
+  ChatGroupStyleToString,
+} from './common/ChatGroup';
+import { ChatLog } from './common/ChatLog';
 import {
-  ChatReactionOperation,
+  ChatCmdMessageBody,
+  ChatCustomMessageBody,
+  ChatDownloadStatus,
+  ChatDownloadStatusFromNumber,
+  ChatDownloadStatusToString,
+  ChatFetchMessageOptions,
+  ChatFileMessageBody,
+  ChatImageMessageBody,
+  ChatLocationMessageBody,
+  ChatMessage,
+  ChatMessageBody,
+  ChatMessageChatType,
+  ChatMessageChatTypeFromNumber,
+  ChatMessageDirection,
+  ChatMessageDirectionFromString,
+  ChatMessageStatus,
+  ChatMessageStatusCallback,
+  ChatMessageStatusFromNumber,
+  ChatMessageStatusToString,
+  ChatMessageType,
+  ChatMessageTypeFromString,
+  ChatRoomMessagePriority,
+  ChatTextMessageBody,
+  ChatVideoMessageBody,
+  ChatVoiceMessageBody,
+} from './common/ChatMessage';
+import {
   ChatMessageReaction,
   ChatMessageReactionEvent,
+  ChatReactionOperation,
 } from './common/ChatMessageReaction';
 import {
   ChatMessageThread,
   ChatMessageThreadEvent,
   ChatMessageThreadOperation,
 } from './common/ChatMessageThread';
+import { ChatOptions } from './common/ChatOptions';
+import { ChatPageResult } from './common/ChatPageResult';
 import { ChatPresence } from './common/ChatPresence';
-import { ChatTranslateLanguage } from './common/ChatTranslateLanguage';
 import {
-  ChatPushDisplayStyle,
   ChatPushConfig,
+  ChatPushDisplayStyle,
   ChatPushOption,
 } from './common/ChatPushConfig';
+import {
+  ChatRoom,
+  ChatRoomPermissionType,
+  ChatRoomPermissionTypeFromNumber,
+  ChatRoomPermissionTypeToString,
+} from './common/ChatRoom';
 import {
   ChatPushRemindType,
   ChatPushRemindTypeFromNumber,
@@ -106,19 +105,20 @@ import {
   ChatSilentModeParamType,
   ChatSilentModeParamTypeFromNumber,
   ChatSilentModeParamTypeToNumber,
-  ChatSilentModeTime,
   ChatSilentModeResult,
+  ChatSilentModeTime,
 } from './common/ChatSilentMode';
-import type { ChatAreaCode } from './common/ChatAreaCode';
+import { ChatTranslateLanguage } from './common/ChatTranslateLanguage';
+import { ChatUserInfo } from './common/ChatUserInfo';
 
 /**
  * export manager
  */
 export {
   ChatClient,
-  ChatManager,
   ChatContactManager,
   ChatGroupManager,
+  ChatManager,
   ChatPresenceManager,
   ChatPushManager,
   ChatRoomManager,
@@ -130,105 +130,105 @@ export {
  */
 export {
   ChatConnectEventListener,
-  ChatMultiDeviceEventListener,
-  ChatCustomEventListener,
-  ChatMessageEventListener,
-  ChatGroupEventListener,
   ChatContactEventListener,
-  ChatRoomEventListener,
+  ChatCustomEventListener,
+  ChatGroupEventListener,
+  ChatMessageEventListener,
+  ChatMultiDeviceEventListener,
   ChatPresenceEventListener,
+  ChatRoomEventListener,
 };
 
 /**
  * export enum type
  */
 export {
-  ChatSearchDirection,
+  ChatAreaCode,
   ChatConversationType,
-  ChatGroupStyle,
+  ChatDownloadStatus,
   ChatGroupPermissionType,
+  ChatGroupStyle,
   ChatMessageChatType,
   ChatMessageDirection,
   ChatMessageStatus,
-  ChatDownloadStatus,
-  ChatMessageType,
-  ChatRoomPermissionType,
   ChatMessageThreadOperation,
-  ChatSilentModeParamType,
-  ChatPushRemindType,
+  ChatMessageType,
   ChatPushDisplayStyle,
-  ChatAreaCode,
+  ChatPushRemindType,
   ChatRoomMessagePriority,
+  ChatRoomPermissionType,
+  ChatSearchDirection,
+  ChatSilentModeParamType,
 };
 
 /**
  * export class type
  */
 export {
+  ChatCmdMessageBody,
   ChatConversation,
   ChatCursorResult,
+  ChatCustomMessageBody,
   ChatDeviceInfo,
   ChatError,
-  ChatLog,
+  ChatFetchMessageOptions,
+  ChatFileMessageBody,
+  ChatGroup,
+  ChatGroupFileStatusCallback,
+  ChatGroupInfo,
   ChatGroupMessageAck,
   ChatGroupOptions,
-  ChatGroup,
   ChatGroupSharedFile,
-  ChatGroupInfo,
-  ChatGroupFileStatusCallback,
-  ChatMessageStatusCallback,
+  ChatImageMessageBody,
+  ChatLocationMessageBody,
+  ChatLog,
   ChatMessage,
   ChatMessageBody,
-  ChatTextMessageBody,
-  ChatLocationMessageBody,
-  ChatFileMessageBody,
-  ChatImageMessageBody,
-  ChatVideoMessageBody,
-  ChatVoiceMessageBody,
-  ChatCmdMessageBody,
-  ChatCustomMessageBody,
-  ChatFetchMessageOptions,
+  ChatMessageReaction,
+  ChatMessageReactionEvent,
+  ChatMessageStatusCallback,
+  ChatMessageThread,
+  ChatMessageThreadEvent,
+  ChatMultiDeviceEvent,
   ChatOptions,
   ChatPageResult,
   ChatPresence,
-  ChatRoom,
-  ChatTranslateLanguage,
-  ChatUserInfo,
-  ChatMultiDeviceEvent,
-  ChatMessageReaction,
-  ChatMessageThread,
-  ChatMessageThreadEvent,
-  ChatReactionOperation,
-  ChatMessageReactionEvent,
   ChatPushConfig,
   ChatPushOption,
-  ChatSilentModeTime,
+  ChatReactionOperation,
+  ChatRoom,
   ChatSilentModeParam,
   ChatSilentModeResult,
+  ChatSilentModeTime,
+  ChatTextMessageBody,
+  ChatTranslateLanguage,
+  ChatUserInfo,
+  ChatVideoMessageBody,
+  ChatVoiceMessageBody,
 };
 
 /**
  * export converter
  */
 export {
-  ChatMessageTypeFromString,
+  ChatConversationTypeFromNumber,
+  ChatConversationTypeToString,
+  ChatDownloadStatusFromNumber,
+  ChatDownloadStatusToString,
+  ChatGroupPermissionTypeFromNumber,
+  ChatGroupPermissionTypeToString,
+  ChatGroupStyleFromNumber,
+  ChatGroupStyleToString,
   ChatMessageChatTypeFromNumber,
   ChatMessageDirectionFromString,
   ChatMessageStatusFromNumber,
   ChatMessageStatusToString,
-  ChatDownloadStatusFromNumber,
-  ChatDownloadStatusToString,
-  ChatConversationTypeFromNumber,
+  ChatMessageTypeFromString,
   ChatMultiDeviceEventFromNumber,
-  ChatConversationTypeToString,
-  ChatGroupStyleFromNumber,
-  ChatGroupStyleToString,
-  ChatGroupPermissionTypeFromNumber,
-  ChatGroupPermissionTypeToString,
+  ChatPushRemindTypeFromNumber,
+  ChatPushRemindTypeToNumber,
   ChatRoomPermissionTypeFromNumber,
   ChatRoomPermissionTypeToString,
   ChatSilentModeParamTypeFromNumber,
   ChatSilentModeParamTypeToNumber,
-  ChatPushRemindTypeFromNumber,
-  ChatPushRemindTypeToNumber,
 };

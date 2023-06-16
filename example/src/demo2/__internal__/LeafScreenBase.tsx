@@ -362,7 +362,7 @@ export abstract class LeafScreenBase<
                   return;
                 }
                 if (Platform.OS === 'ios') {
-                  let s = values[0].uri;
+                  let s = values[0]!.uri;
                   if (s.startsWith('file://')) {
                     s = s.substring('file://'.length);
                   }
@@ -372,7 +372,7 @@ export abstract class LeafScreenBase<
                     oct(obj);
                   }
                 } else {
-                  let s = values[0].fileCopyUri!;
+                  let s = values[0]!.fileCopyUri!;
                   if (s.startsWith('file:')) {
                     s = s.substring('file:'.length);
                   }
@@ -399,9 +399,7 @@ export abstract class LeafScreenBase<
                 }
               });
           }}
-        >
-          SF
-        </Button>
+        />
       </View>
     );
   }
@@ -445,7 +443,7 @@ export abstract class LeafScreenBase<
                   return;
                 }
                 if (Platform.OS === 'ios') {
-                  let s = values[0].uri;
+                  let s = values[0]!.uri;
                   if (s.startsWith('file://')) {
                     s = s.substring('file://'.length);
                   }
@@ -453,15 +451,15 @@ export abstract class LeafScreenBase<
                     oct(
                       JSON.stringify({
                         localPath: s,
-                        name: values[0].name,
-                        size: values[0].size,
-                        type: values[0].type,
-                        uri: values[0].uri,
+                        name: values[0]!.name,
+                        size: values[0]!.size,
+                        type: values[0]!.type,
+                        uri: values[0]!.uri,
                       })
                     );
                   }
                 } else {
-                  let s = values[0].fileCopyUri!;
+                  let s = values[0]!.fileCopyUri!;
                   if (s.startsWith('file:')) {
                     s = s.substring('file:'.length);
                   }
@@ -469,10 +467,10 @@ export abstract class LeafScreenBase<
                     oct(
                       JSON.stringify({
                         localPath: s,
-                        name: values[0].name,
-                        size: values[0].size,
-                        type: values[0].type,
-                        uri: values[0].uri,
+                        name: values[0]!.name,
+                        size: values[0]!.size,
+                        type: values[0]!.type,
+                        uri: values[0]!.uri,
                       })
                     );
                   }
@@ -492,9 +490,7 @@ export abstract class LeafScreenBase<
                 }
               });
           }}
-        >
-          SF
-        </Button>
+        />
       </View>
     );
   }
@@ -540,7 +536,7 @@ export abstract class LeafScreenBase<
               default:
                 throw new Error(`error: ${t}`);
             }
-            let options = actions[t].options;
+            let options = actions[t]!.options;
             launchImageLibrary(options, (response: ImagePickerResponse) => {
               if (
                 response.didCancel ||
@@ -552,7 +548,7 @@ export abstract class LeafScreenBase<
                 }
               } else {
                 if (response.assets && response.assets?.length > 0) {
-                  let s = response.assets[0].uri!;
+                  let s = response.assets[0]!.uri!;
                   if (s.startsWith('file://')) {
                     s = s.substring('file://'.length);
                   }
@@ -561,11 +557,11 @@ export abstract class LeafScreenBase<
                       JSON.stringify(
                         `{
                             localPath: ${s}, 
-                            width: ${response.assets[0].width!},
-                            height: ${response.assets[0].height!},
-                            name: ${response.assets[0].fileName!},
-                            size: ${response.assets[0].fileSize!},
-                            duration: ${response.assets[0].duration!}
+                            width: ${response.assets[0]!.width!},
+                            height: ${response.assets[0]!.height!},
+                            name: ${response.assets[0]!.fileName!},
+                            size: ${response.assets[0]!.fileSize!},
+                            duration: ${response.assets[0]!.duration!}
                           }`
                       )
                     );
@@ -574,9 +570,7 @@ export abstract class LeafScreenBase<
               }
             });
           }}
-        >
-          SMF
-        </Button>
+        />
       </View>
     );
   }
@@ -594,9 +588,7 @@ export abstract class LeafScreenBase<
               op();
             }
           }}
-        >
-          {name}
-        </Button>
+        />
       </View>
     );
   }

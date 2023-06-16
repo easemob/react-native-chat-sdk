@@ -73,7 +73,7 @@ export const metaDataList = new Map<string, ApiParams>([
         {
           paramName: 'userIds',
           paramType: 'json',
-          paramDefaultValue: [datasheet.accounts[0].id],
+          paramDefaultValue: [datasheet.accounts[0]!.id],
           domType: 'input',
         },
         {

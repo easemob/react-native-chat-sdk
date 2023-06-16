@@ -128,10 +128,10 @@ export const metaDataList = new Map<string, ApiParams>([
           paramName: 'allMembers',
           paramType: 'json',
           paramDefaultValue: [
-            datasheet.accounts[0].id,
-            datasheet.accounts[1].id,
-            datasheet.accounts[2].id,
-            datasheet.accounts[3].id,
+            datasheet.accounts[0]!.id,
+            datasheet.accounts[1]!.id,
+            datasheet.accounts[2]!.id,
+            datasheet.accounts[3]!.id,
           ],
         },
         {

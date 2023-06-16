@@ -158,7 +158,7 @@ export class ContactLeafScreen extends LeafScreenBase<StateChatContact> {
       renderDomAry.push(this.renderDivider());
     });
     renderDomAry.push(this.addSpaces());
-    return renderDomAry;
+    return renderDomAry as any;
   }
 
   private callApi(name: string): void {

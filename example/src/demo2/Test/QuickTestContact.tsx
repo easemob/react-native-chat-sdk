@@ -119,9 +119,9 @@ export class QuickTestScreenContact extends QuickTestScreenBase<
         {
           const methodName = this.metaData.get(MN.addContact)!.methodName;
           console.log(`${MN.addContact} === ${methodName}`);
-          const username = this.metaData.get(MN.addContact)!.params[0]
+          const username = this.metaData.get(MN.addContact)!.params[0]!
             .paramDefaultValue;
-          const reason = this.metaData.get(MN.addContact)!.params[1]
+          const reason = this.metaData.get(MN.addContact)!.params[1]!
             .paramDefaultValue;
           this.tryCatch(
             ChatClient.getInstance().contactManager.addContact(
@@ -137,10 +137,10 @@ export class QuickTestScreenContact extends QuickTestScreenBase<
         {
           const methodName = this.metaData.get(MN.deleteContact)!.methodName;
           console.log(`${MN.deleteContact} === ${methodName}`);
-          const username = this.metaData.get(MN.deleteContact)!.params[0]
+          const username = this.metaData.get(MN.deleteContact)!.params[0]!
             .paramDefaultValue;
           const keepConversation = this.metaData.get(MN.deleteContact)!
-            .params[1].paramDefaultValue;
+            .params[1]!.paramDefaultValue;
           this.tryCatch(
             ChatClient.getInstance().contactManager.deleteContact(
               username,
@@ -183,7 +183,7 @@ export class QuickTestScreenContact extends QuickTestScreenBase<
             MN.addUserToBlockList
           )!.methodName;
           console.log(`${MN.addUserToBlockList} === ${methodName}`);
-          const username = this.metaData.get(MN.addUserToBlockList)!.params[0]
+          const username = this.metaData.get(MN.addUserToBlockList)!.params[0]!
             .paramDefaultValue;
           this.tryCatch(
             ChatClient.getInstance().contactManager.addUserToBlockList(
@@ -201,7 +201,7 @@ export class QuickTestScreenContact extends QuickTestScreenBase<
           )!.methodName;
           console.log(`${MN.removeUserFromBlockList} === ${methodName}`);
           const username = this.metaData.get(MN.removeUserFromBlockList)!
-            .params[0].paramDefaultValue;
+            .params[0]!.paramDefaultValue;
           this.tryCatch(
             ChatClient.getInstance().contactManager.removeUserFromBlockList(
               username
@@ -240,7 +240,7 @@ export class QuickTestScreenContact extends QuickTestScreenBase<
       case MN.acceptInvitation:
         {
           const methodName = this.metaData.get(MN.acceptInvitation)!.methodName;
-          const username = this.metaData.get(MN.acceptInvitation)!.params[0]
+          const username = this.metaData.get(MN.acceptInvitation)!.params[0]!
             .paramDefaultValue;
           console.log(`${MN.acceptInvitation} === ${methodName}`);
           this.tryCatch(
@@ -255,7 +255,7 @@ export class QuickTestScreenContact extends QuickTestScreenBase<
           const methodName = this.metaData.get(
             MN.declineInvitation
           )!.methodName;
-          const username = this.metaData.get(MN.declineInvitation)!.params[0]
+          const username = this.metaData.get(MN.declineInvitation)!.params[0]!
             .paramDefaultValue;
           console.log(`${MN.declineInvitation} === ${methodName}`);
           this.tryCatch(

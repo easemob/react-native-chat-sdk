@@ -41,8 +41,8 @@ export class LoginAndLogoutScreen extends Component<
       loginStatus: '',
       connectStatus: '...',
       listenerStatus: '...',
-      useName: datasheet.accounts[0].id,
-      password: datasheet.accounts[0].mm,
+      useName: datasheet.accounts[0]!.id,
+      password: datasheet.accounts[0]!.mm,
     };
   }
 
@@ -219,9 +219,7 @@ export class LoginAndLogoutScreen extends Component<
                 // console.log(`${LoginAndLogoutScreen.TAG}`);
                 this.login(true);
               }}
-            >
-              login
-            </Button>
+            />
           </View>
           <View style={styleValues.containerRow}>
             <Button
@@ -230,9 +228,7 @@ export class LoginAndLogoutScreen extends Component<
                 // console.log(`${LoginAndLogoutScreen.TAG}`);
                 this.login(false);
               }}
-            >
-              login
-            </Button>
+            />
           </View>
           <View style={styleValues.containerRow}>
             <Button
@@ -241,9 +237,7 @@ export class LoginAndLogoutScreen extends Component<
                 // console.log(`${LoginAndLogoutScreen.TAG}`);
                 this.login(false, true);
               }}
-            >
-              login
-            </Button>
+            />
           </View>
           <View style={styleValues.containerRow}>
             <Button
@@ -252,9 +246,7 @@ export class LoginAndLogoutScreen extends Component<
                 // console.log(`${LoginAndLogoutScreen.TAG}`);
                 this.logout();
               }}
-            >
-              logout
-            </Button>
+            />
           </View>
           <View style={styleValues.containerRow}>
             <Button
@@ -263,9 +255,7 @@ export class LoginAndLogoutScreen extends Component<
                 // console.log(`${LoginAndLogoutScreen.TAG}`);
                 this.getLoginState();
               }}
-            >
-              get login state
-            </Button>
+            />
           </View>
           <View style={styleValues.containerRow}>
             <Button
@@ -274,9 +264,7 @@ export class LoginAndLogoutScreen extends Component<
                 // console.log(`${LoginAndLogoutScreen.TAG}`);
                 this.getConnectState();
               }}
-            >
-              get connect state
-            </Button>
+            />
           </View>
           <View style={styleValues.containerRow}>
             <Button
@@ -285,9 +273,7 @@ export class LoginAndLogoutScreen extends Component<
                 // console.log(`${LoginAndLogoutScreen.TAG}`);
                 this.getUserName();
               }}
-            >
-              get user name
-            </Button>
+            />
           </View>
           <View style={styleValues.containerColumn}>
             <Text style={styleValues.textTipStyle}>

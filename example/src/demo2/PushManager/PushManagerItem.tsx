@@ -119,7 +119,7 @@ export class PushManagerLeafScreen extends LeafScreenBase<StatePushMessage> {
       renderDomAry.push(this.renderDivider());
     });
     renderDomAry.push(this.addSpaces());
-    return renderDomAry;
+    return renderDomAry as any;
   }
 
   private callApi(name: string): void {

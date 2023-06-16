@@ -33,7 +33,7 @@ export const metaDataList = new Map<string, ApiParams>([
         {
           paramName: 'convId',
           paramType: 'string',
-          paramDefaultValue: datasheet.accounts[2].id,
+          paramDefaultValue: datasheet.accounts[2]!.id,
           domType: 'input',
         },
         {
@@ -65,7 +65,7 @@ export const metaDataList = new Map<string, ApiParams>([
         {
           paramName: 'convId',
           paramType: 'string',
-          paramDefaultValue: datasheet.accounts[2].id,
+          paramDefaultValue: datasheet.accounts[2]!.id,
           domType: 'input',
         },
         {
@@ -85,7 +85,7 @@ export const metaDataList = new Map<string, ApiParams>([
         {
           paramName: 'convId',
           paramType: 'string',
-          paramDefaultValue: datasheet.accounts[2].id,
+          paramDefaultValue: datasheet.accounts[2]!.id,
           domType: 'input',
         },
         {
@@ -130,11 +130,11 @@ export const metaDataList = new Map<string, ApiParams>([
           paramType: 'json',
           paramDefaultValue: [
             new ChatConversation({
-              convId: datasheet.accounts[2].id,
+              convId: datasheet.accounts[2]!.id,
               convType: ChatConversationType.PeerChat,
             }),
             new ChatConversation({
-              convId: datasheet.accounts[0].id,
+              convId: datasheet.accounts[0]!.id,
               convType: ChatConversationType.PeerChat,
             }),
           ],

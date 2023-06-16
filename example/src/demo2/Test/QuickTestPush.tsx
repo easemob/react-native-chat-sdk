@@ -70,11 +70,11 @@ export class QuickTestScreenPush extends QuickTestScreenBase<
           )!.methodName;
           console.log(`${MN.setSilentModeForConversation} === ${methodName}`);
           const convId = this.metaData.get(MN.setSilentModeForConversation)!
-            .params[0].paramDefaultValue;
+            .params[0]!.paramDefaultValue;
           const convType = this.metaData.get(MN.setSilentModeForConversation)!
-            .params[1].paramDefaultValue;
+            .params[1]!.paramDefaultValue;
           const option = this.metaData.get(MN.setSilentModeForConversation)!
-            .params[2].paramDefaultValue;
+            .params[2]!.paramDefaultValue;
           this.tryCatch(
             ChatClient.getInstance().pushManager.setSilentModeForConversation({
               convId,
@@ -95,10 +95,10 @@ export class QuickTestScreenPush extends QuickTestScreenBase<
             `${MN.removeSilentModeForConversation} === ${methodName}`
           );
           const convId = this.metaData.get(MN.removeSilentModeForConversation)!
-            .params[0].paramDefaultValue;
+            .params[0]!.paramDefaultValue;
           const convType = this.metaData.get(
             MN.removeSilentModeForConversation
-          )!.params[1].paramDefaultValue;
+          )!.params[1]!.paramDefaultValue;
           this.tryCatch(
             ChatClient.getInstance().pushManager.removeSilentModeForConversation(
               {
@@ -118,9 +118,9 @@ export class QuickTestScreenPush extends QuickTestScreenBase<
           )!.methodName;
           console.log(`${MN.fetchSilentModeForConversation} === ${methodName}`);
           const convId = this.metaData.get(MN.fetchSilentModeForConversation)!
-            .params[0].paramDefaultValue;
+            .params[0]!.paramDefaultValue;
           const convType = this.metaData.get(MN.fetchSilentModeForConversation)!
-            .params[1].paramDefaultValue;
+            .params[1]!.paramDefaultValue;
           this.tryCatch(
             ChatClient.getInstance().pushManager.fetchSilentModeForConversation(
               {
@@ -139,7 +139,7 @@ export class QuickTestScreenPush extends QuickTestScreenBase<
             MN.setSilentModeForAll
           )!.methodName;
           console.log(`${MN.setSilentModeForAll} === ${methodName}`);
-          const option = this.metaData.get(MN.setSilentModeForAll)!.params[0]
+          const option = this.metaData.get(MN.setSilentModeForAll)!.params[0]!
             .paramDefaultValue;
           this.tryCatch(
             ChatClient.getInstance().pushManager.setSilentModeForAll(option),
@@ -171,7 +171,7 @@ export class QuickTestScreenPush extends QuickTestScreenBase<
           );
           const conversations = this.metaData.get(
             MN.fetchSilentModeForConversations
-          )!.params[0].paramDefaultValue;
+          )!.params[0]!.paramDefaultValue;
           this.tryCatch(
             ChatClient.getInstance().pushManager.fetchSilentModeForConversations(
               conversations
@@ -191,7 +191,7 @@ export class QuickTestScreenPush extends QuickTestScreenBase<
           );
           const languageCode = this.metaData.get(
             MN.setPreferredNotificationLanguage
-          )!.params[0].paramDefaultValue;
+          )!.params[0]!.paramDefaultValue;
           this.tryCatch(
             ChatClient.getInstance().pushManager.setPreferredNotificationLanguage(
               languageCode
@@ -222,7 +222,7 @@ export class QuickTestScreenPush extends QuickTestScreenBase<
             MN.updatePushNickname
           )!.methodName;
           console.log(`${MN.updatePushNickname} === ${methodName}`);
-          const nickname = this.metaData.get(MN.updatePushNickname)!.params[0]
+          const nickname = this.metaData.get(MN.updatePushNickname)!.params[0]!
             .paramDefaultValue;
           this.tryCatch(
             ChatClient.getInstance().pushManager.updatePushNickname(nickname),
@@ -238,7 +238,7 @@ export class QuickTestScreenPush extends QuickTestScreenBase<
           )!.methodName;
           console.log(`${MN.updatePushDisplayStyle} === ${methodName}`);
           const displayStyle = this.metaData.get(MN.updatePushDisplayStyle)!
-            .params[0].paramDefaultValue;
+            .params[0]!.paramDefaultValue;
           this.tryCatch(
             ChatClient.getInstance().pushManager.updatePushDisplayStyle(
               displayStyle

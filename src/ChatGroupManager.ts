@@ -1,19 +1,12 @@
 import type { EmitterSubscription, NativeEventEmitter } from 'react-native';
-import type { ChatGroupEventListener } from './ChatEvents';
-import {
-  ChatGroupSharedFile,
-  ChatGroup,
-  ChatGroupOptions,
-  ChatGroupInfo,
-  ChatGroupFileStatusCallback,
-} from './common/ChatGroup';
-import { ChatCursorResult } from './common/ChatCursorResult';
+
+import { BaseManager } from './__internal__/Base';
 import {
   MTacceptInvitationFromGroup,
   MTacceptJoinApplication,
   MTaddAdmin,
-  MTaddMembers,
   MTaddAllowList,
+  MTaddMembers,
   MTblockGroup,
   MTblockMembers,
   MTcreateGroup,
@@ -21,13 +14,15 @@ import {
   MTdeclineJoinApplication,
   MTdestroyGroup,
   MTdownloadGroupSharedFile,
+  MTfetchMemberAttributesFromGroup,
+  MTfetchMembersAttributesFromGroup,
+  MTgetGroupAllowListFromServer,
   MTgetGroupAnnouncementFromServer,
   MTgetGroupBlockListFromServer,
   MTgetGroupFileListFromServer,
   MTgetGroupMemberListFromServer,
   MTgetGroupMuteListFromServer,
   MTgetGroupSpecificationFromServer,
-  MTgetGroupAllowListFromServer,
   MTgetGroupWithId,
   MTgetJoinedGroups,
   MTgetJoinedGroupsFromServer,
@@ -40,10 +35,11 @@ import {
   MTmuteMembers,
   MTonGroupChanged,
   MTremoveAdmin,
+  MTremoveAllowList,
   MTremoveGroupSharedFile,
   MTremoveMembers,
-  MTremoveAllowList,
   MTrequestToJoinPublicGroup,
+  MTsetMemberAttributesFromGroup,
   MTunblockGroup,
   MTunblockMembers,
   MTunMuteAllMembers,
@@ -54,14 +50,19 @@ import {
   MTupdateGroupOwner,
   MTupdateGroupSubject,
   MTuploadGroupSharedFile,
-  MTsetMemberAttributesFromGroup,
-  MTfetchMemberAttributesFromGroup,
-  MTfetchMembersAttributesFromGroup,
 } from './__internal__/Consts';
 import { Native } from './__internal__/Native';
-import { BaseManager } from './__internal__/Base';
-import { ChatError } from './common/ChatError';
+import type { ChatGroupEventListener } from './ChatEvents';
 import { chatlog } from './common/ChatConst';
+import { ChatCursorResult } from './common/ChatCursorResult';
+import { ChatError } from './common/ChatError';
+import {
+  ChatGroup,
+  ChatGroupFileStatusCallback,
+  ChatGroupInfo,
+  ChatGroupOptions,
+  ChatGroupSharedFile,
+} from './common/ChatGroup';
 
 /**
  * The group manager class, which defines how to manage groups, like group creation and destruction and member management.

@@ -86,7 +86,7 @@ export const metaDataList = new Map<string, ApiParams>([
         {
           paramName: 'targetId',
           paramType: 'string',
-          paramDefaultValue: datasheet.accounts[2].id,
+          paramDefaultValue: datasheet.accounts[2]!.id,
         },
         {
           paramName: 'targetType',
@@ -165,7 +165,7 @@ export const metaDataList = new Map<string, ApiParams>([
         {
           paramName: 'convId',
           paramType: 'string',
-          paramDefaultValue: datasheet.accounts[2].id,
+          paramDefaultValue: datasheet.accounts[2]!.id,
         },
       ],
     },
@@ -288,7 +288,7 @@ export const metaDataList = new Map<string, ApiParams>([
         {
           paramName: 'convId', // 使用发送成功或者失败的数据测试，依赖sendMessage
           paramType: 'string',
-          paramDefaultValue: datasheet.accounts[2].id,
+          paramDefaultValue: datasheet.accounts[2]!.id,
         },
         {
           paramName: 'chatType',
@@ -336,7 +336,7 @@ export const metaDataList = new Map<string, ApiParams>([
         {
           paramName: 'from',
           paramType: 'string',
-          paramDefaultValue: datasheet.accounts[2].id,
+          paramDefaultValue: datasheet.accounts[2]!.id,
         },
         {
           paramName: 'direction',
@@ -382,7 +382,7 @@ export const metaDataList = new Map<string, ApiParams>([
         {
           paramName: 'convId', // 使用发送成功或者失败的数据测试，依赖sendMessage
           paramType: 'string',
-          paramDefaultValue: datasheet.accounts[2].id,
+          paramDefaultValue: datasheet.accounts[2]!.id,
         },
         {
           paramName: 'convType',
@@ -406,7 +406,7 @@ export const metaDataList = new Map<string, ApiParams>([
         {
           paramName: 'convId', // 使用发送成功或者失败的数据测试，依赖sendMessage
           paramType: 'string',
-          paramDefaultValue: datasheet.accounts[2].id,
+          paramDefaultValue: datasheet.accounts[2]!.id,
         },
         {
           paramName: 'convType',
@@ -444,7 +444,7 @@ export const metaDataList = new Map<string, ApiParams>([
         {
           paramName: 'convId', // 使用发送成功或者失败的数据测试，依赖sendMessage
           paramType: 'string',
-          paramDefaultValue: datasheet.accounts[2].id,
+          paramDefaultValue: datasheet.accounts[2]!.id,
         },
         {
           paramName: 'withMessage',
@@ -463,7 +463,7 @@ export const metaDataList = new Map<string, ApiParams>([
         {
           paramName: 'convId', // 使用发送成功或者失败的数据测试，依赖sendMessage
           paramType: 'string',
-          paramDefaultValue: datasheet.accounts[2].id,
+          paramDefaultValue: datasheet.accounts[2]!.id,
         },
         {
           paramName: 'convType',
@@ -481,7 +481,7 @@ export const metaDataList = new Map<string, ApiParams>([
         {
           paramName: 'convId', // 使用发送成功或者失败的数据测试，依赖sendMessage
           paramType: 'string',
-          paramDefaultValue: datasheet.accounts[2].id,
+          paramDefaultValue: datasheet.accounts[2]!.id,
         },
         {
           paramName: 'convType',
@@ -499,7 +499,7 @@ export const metaDataList = new Map<string, ApiParams>([
         {
           paramName: 'convId', // 使用发送成功或者失败的数据测试，依赖sendMessage
           paramType: 'string',
-          paramDefaultValue: datasheet.accounts[2].id,
+          paramDefaultValue: datasheet.accounts[2]!.id,
         },
         {
           paramName: 'convType',
@@ -517,7 +517,7 @@ export const metaDataList = new Map<string, ApiParams>([
         {
           paramName: 'convId', // 使用发送成功或者失败的数据测试，依赖sendMessage
           paramType: 'string',
-          paramDefaultValue: datasheet.accounts[2].id,
+          paramDefaultValue: datasheet.accounts[2]!.id,
         },
         {
           paramName: 'convType',
@@ -540,7 +540,7 @@ export const metaDataList = new Map<string, ApiParams>([
         {
           paramName: 'convId', // 使用发送成功或者失败的数据测试，依赖sendMessage
           paramType: 'string',
-          paramDefaultValue: datasheet.accounts[2].id,
+          paramDefaultValue: datasheet.accounts[2]!.id,
         },
         {
           paramName: 'convType',
@@ -558,7 +558,7 @@ export const metaDataList = new Map<string, ApiParams>([
         {
           paramName: 'convId', // 使用发送成功或者失败的数据测试，依赖sendMessage
           paramType: 'string',
-          paramDefaultValue: datasheet.accounts[2].id,
+          paramDefaultValue: datasheet.accounts[2]!.id,
         },
         {
           paramName: 'convType',
@@ -582,7 +582,7 @@ export const metaDataList = new Map<string, ApiParams>([
         {
           paramName: 'convId', // 使用发送成功或者失败的数据测试，依赖sendMessage
           paramType: 'string',
-          paramDefaultValue: datasheet.accounts[2].id,
+          paramDefaultValue: datasheet.accounts[2]!.id,
         },
         {
           paramName: 'convType',
@@ -605,7 +605,7 @@ export const metaDataList = new Map<string, ApiParams>([
         {
           paramName: 'convId', // 使用发送成功或者失败的数据测试，依赖sendMessage
           paramType: 'string',
-          paramDefaultValue: datasheet.accounts[2].id,
+          paramDefaultValue: datasheet.accounts[2]!.id,
         },
         {
           paramName: 'convType',
@@ -623,7 +623,7 @@ export const metaDataList = new Map<string, ApiParams>([
         {
           paramName: 'convId', // 使用发送成功或者失败的数据测试，依赖sendMessage
           paramType: 'string',
-          paramDefaultValue: datasheet.accounts[2].id,
+          paramDefaultValue: datasheet.accounts[2]!.id,
         },
         {
           paramName: 'convType',
@@ -653,7 +653,7 @@ export const metaDataList = new Map<string, ApiParams>([
         {
           paramName: 'sender',
           paramType: 'string',
-          paramDefaultValue: datasheet.accounts[0].id,
+          paramDefaultValue: datasheet.accounts[0]!.id,
         },
       ],
     },
@@ -666,7 +666,7 @@ export const metaDataList = new Map<string, ApiParams>([
         {
           paramName: 'convId', // 使用发送成功或者失败的数据测试，依赖sendMessage
           paramType: 'string',
-          paramDefaultValue: datasheet.accounts[2].id,
+          paramDefaultValue: datasheet.accounts[2]!.id,
         },
         {
           paramName: 'convType',
@@ -699,7 +699,7 @@ export const metaDataList = new Map<string, ApiParams>([
         {
           paramName: 'convId', // 使用发送成功或者失败的数据测试，依赖sendMessage
           paramType: 'string',
-          paramDefaultValue: datasheet.accounts[2].id,
+          paramDefaultValue: datasheet.accounts[2]!.id,
         },
         {
           paramName: 'convType',
@@ -729,7 +729,7 @@ export const metaDataList = new Map<string, ApiParams>([
         {
           paramName: 'sender',
           paramType: 'string',
-          paramDefaultValue: datasheet.accounts[0].id,
+          paramDefaultValue: datasheet.accounts[0]!.id,
         },
       ],
     },
@@ -742,7 +742,7 @@ export const metaDataList = new Map<string, ApiParams>([
         {
           paramName: 'convId', // 使用发送成功或者失败的数据测试，依赖sendMessage
           paramType: 'string',
-          paramDefaultValue: datasheet.accounts[2].id,
+          paramDefaultValue: datasheet.accounts[2]!.id,
         },
         {
           paramName: 'convType',
@@ -1027,7 +1027,7 @@ export const metaDataList = new Map<string, ApiParams>([
         {
           paramName: 'memberId',
           paramType: 'string',
-          paramDefaultValue: datasheet.accounts[2].id,
+          paramDefaultValue: datasheet.accounts[2]!.id,
         },
       ],
     },
@@ -1166,7 +1166,7 @@ export const metaDataList = new Map<string, ApiParams>([
         {
           paramName: 'convId',
           paramType: 'string',
-          paramDefaultValue: datasheet.accounts[2].id,
+          paramDefaultValue: datasheet.accounts[2]!.id,
           domType: 'input',
         },
         {
@@ -1219,7 +1219,7 @@ export const metaDataList = new Map<string, ApiParams>([
         {
           paramName: 'convId', // 使用发送成功或者失败的数据测试，依赖sendMessage
           paramType: 'string',
-          paramDefaultValue: datasheet.accounts[2].id,
+          paramDefaultValue: datasheet.accounts[2]!.id,
         },
         {
           paramName: 'createIfNeed',
@@ -1256,7 +1256,7 @@ export const metaDataList = new Map<string, ApiParams>([
         {
           paramName: 'convId', // 使用发送成功或者失败的数据测试，依赖sendMessage
           paramType: 'string',
-          paramDefaultValue: datasheet.accounts[2].id,
+          paramDefaultValue: datasheet.accounts[2]!.id,
         },
         {
           paramName: 'convType',
@@ -1279,7 +1279,7 @@ export const metaDataList = new Map<string, ApiParams>([
         {
           paramName: 'convId', // 使用发送成功或者失败的数据测试，依赖sendMessage
           paramType: 'string',
-          paramDefaultValue: datasheet.accounts[2].id,
+          paramDefaultValue: datasheet.accounts[2]!.id,
         },
         {
           paramName: 'convType',
@@ -1302,7 +1302,7 @@ export const metaDataList = new Map<string, ApiParams>([
         {
           paramName: 'convId', // 使用发送成功或者失败的数据测试，依赖sendMessage
           paramType: 'string',
-          paramDefaultValue: datasheet.accounts[2].id,
+          paramDefaultValue: datasheet.accounts[2]!.id,
         },
         {
           paramName: 'convType',
@@ -1323,7 +1323,7 @@ export const metaDataList = new Map<string, ApiParams>([
           paramName: 'options',
           paramType: 'json',
           paramDefaultValue: {
-            from: datasheet.accounts[2].id,
+            from: datasheet.accounts[2]!.id,
             msgTypes: [ChatMessageType.FILE],
             startTs: 0,
             endTs: 0,
@@ -1342,7 +1342,7 @@ export const metaDataList = new Map<string, ApiParams>([
         {
           paramName: 'convId', // 使用发送成功或者失败的数据测试，依赖sendMessage
           paramType: 'string',
-          paramDefaultValue: datasheet.accounts[2].id,
+          paramDefaultValue: datasheet.accounts[2]!.id,
         },
         {
           paramName: 'convType',

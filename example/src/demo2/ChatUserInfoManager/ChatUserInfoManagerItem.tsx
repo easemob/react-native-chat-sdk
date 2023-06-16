@@ -78,7 +78,7 @@ export class ChatUserInfoManagerLeafScreen extends LeafScreenBase<StateChatUserI
       renderDomAry.push(this.renderDivider());
     });
     renderDomAry.push(this.addSpaces());
-    return renderDomAry;
+    return renderDomAry as any;
   }
 
   private callApi(name: string): void {

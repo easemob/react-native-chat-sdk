@@ -81,7 +81,7 @@ export class KickScreen extends Component<{ navigation: any }, State, any> {
         });
         if ((value as any[]).length > 0) {
           this.setState({
-            resource: value[0].resource,
+            resource: value[0]!.resource,
           });
         }
       })
@@ -132,9 +132,7 @@ export class KickScreen extends Component<{ navigation: any }, State, any> {
               onPress={() => {
                 this.getLoggedInDevicesFromServer();
               }}
-            >
-              getLoggedInDevicesFromServer
-            </Button>
+            />
           </View>
           <View style={styleValues.containerRow}>
             <Text style={styleValues.textStyle}>username: </Text>
@@ -179,9 +177,7 @@ export class KickScreen extends Component<{ navigation: any }, State, any> {
                 // console.log(`${KickScreen.TAG}`);
                 this.kickDevice();
               }}
-            >
-              kickDevice
-            </Button>
+            />
           </View>
           <View style={styleValues.containerRow}>
             <Button
@@ -190,9 +186,7 @@ export class KickScreen extends Component<{ navigation: any }, State, any> {
                 // console.log(`${KickScreen.TAG}`);
                 this.kickAllDevices();
               }}
-            >
-              kickAllDevices
-            </Button>
+            />
           </View>
           <View style={styleValues.containerColumn}>
             <Text selectable={true} style={styleValues.textTipStyle}>

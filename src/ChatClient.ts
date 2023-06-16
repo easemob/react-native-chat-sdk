@@ -1,27 +1,10 @@
 import {
   EmitterSubscription,
-  EventEmitter,
   NativeEventEmitter,
   NativeModules,
   Platform,
 } from 'react-native';
-import { ChatContactManager } from './ChatContactManager';
-import {
-  ChatConnectEventListener,
-  ChatMultiDeviceEventFromNumber,
-  ChatCustomEventListener,
-  ChatMultiDeviceEventListener,
-} from './ChatEvents';
-import { ChatGroupManager } from './ChatGroupManager';
-import { ChatManager } from './ChatManager';
-import { ChatPresenceManager } from './ChatPresenceManager';
-import { ChatPushManager } from './ChatPushManager';
-import { ChatRoomManager } from './ChatRoomManager';
-import { ChatUserInfoManager } from './ChatUserInfoManager';
-import { ChatDeviceInfo } from './common/ChatDeviceInfo';
-import { ChatError } from './common/ChatError';
-import { ChatOptions } from './common/ChatOptions';
-import { ChatPushConfig } from './common/ChatPushConfig';
+
 import { BaseManager } from './__internal__/Base';
 import {
   MTchangeAppKey,
@@ -38,10 +21,11 @@ import {
   MTlogin,
   MTloginWithAgoraToken,
   MTlogout,
+  MTonAppActiveNumberReachLimit,
   MTonConnected,
+  MTonCustomEvent,
   MTonDisconnected,
   MTonMultiDeviceEvent,
-  MTonCustomEvent,
   MTonTokenDidExpire,
   MTonTokenWillExpire,
   MTonUserAuthenticationFailed,
@@ -53,10 +37,26 @@ import {
   MTonUserKickedByOtherDevice,
   MTrenewToken,
   MTupdatePushConfig,
-  MTonAppActiveNumberReachLimit,
 } from './__internal__/Consts';
 import { Native } from './__internal__/Native';
+import { ChatContactManager } from './ChatContactManager';
+import {
+  ChatConnectEventListener,
+  ChatCustomEventListener,
+  ChatMultiDeviceEventFromNumber,
+  ChatMultiDeviceEventListener,
+} from './ChatEvents';
+import { ChatGroupManager } from './ChatGroupManager';
+import { ChatManager } from './ChatManager';
+import { ChatPresenceManager } from './ChatPresenceManager';
+import { ChatPushManager } from './ChatPushManager';
+import { ChatRoomManager } from './ChatRoomManager';
+import { ChatUserInfoManager } from './ChatUserInfoManager';
 import { chatlog } from './common/ChatConst';
+import { ChatDeviceInfo } from './common/ChatDeviceInfo';
+import { ChatError } from './common/ChatError';
+import { ChatOptions } from './common/ChatOptions';
+import { ChatPushConfig } from './common/ChatPushConfig';
 
 const LINKING_ERROR =
   `The package 'react-native-chat-sdk' doesn't seem to be linked. Make sure: \n\n` +
@@ -105,7 +105,7 @@ export class ChatClient extends BaseManager {
     chatlog.log('eventEmitter has finished.');
   }
 
-  public getEventEmitter(): EventEmitter {
+  public getEventEmitter(): NativeEventEmitter {
     return eventEmitter;
   }
 

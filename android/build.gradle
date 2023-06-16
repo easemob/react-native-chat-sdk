@@ -1,77 +1,95 @@
 buildscript {
-    if (project == rootProject) {
-        repositories {
-            google()
-            mavenCentral()
-            jcenter()
-        }
+  repositories {
+    google()
+    mavenCentral()
+  }
 
-        dependencies {
-            classpath 'com.android.tools.build:gradle:4.2.2'
-        }
-    }
+  dependencies {
+    classpath "com.android.tools.build:gradle:7.2.1"
+  }
 }
 
-apply plugin: 'com.android.library'
+def isNewArchitectureEnabled() {
+  return rootProject.hasProperty("newArchEnabled") && rootProject.getProperty("newArchEnabled") == "true"
+}
 
-def safeExtGet(prop, fallback) {
-    rootProject.ext.has(prop) ? rootProject.ext.get(prop) : fallback
+apply plugin: "com.android.library"
+
+
+def appProject = rootProject.allprojects.find { it.plugins.hasPlugin('com.android.application') }
+
+if (isNewArchitectureEnabled()) {
+  apply plugin: "com.facebook.react"
+}
+
+def getExtOrDefault(name) {
+  return rootProject.ext.has(name) ? rootProject.ext.get(name) : project.properties["ChatSdk_" + name]
+}
+
+def getExtOrIntegerDefault(name) {
+  return rootProject.ext.has(name) ? rootProject.ext.get(name) : (project.properties["ChatSdk_" + name]).toInteger()
 }
 
 android {
-    compileSdkVersion safeExtGet('ChatSdk_compileSdkVersion', 30)
-    defaultConfig {
-        minSdkVersion safeExtGet('ChatSdk_minSdkVersion', 21)
-        targetSdkVersion safeExtGet('ChatSdk_targetSdkVersion', 30)
-        versionCode 1
-        versionName "1.0"
-        externalNativeBuild {
-            cmake {
-                cppFlags ''
-            }
-        }
-    }
+  compileSdkVersion getExtOrIntegerDefault("compileSdkVersion")
 
-    buildTypes {
-        release {
-            minifyEnabled false
-        }
-    }
-    lintOptions {
-        disable 'GradleCompatible'
-    }
-    compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
-    }
+  defaultConfig {
+    minSdkVersion getExtOrIntegerDefault("minSdkVersion")
+    targetSdkVersion getExtOrIntegerDefault("targetSdkVersion")
+    buildConfigField "boolean", "IS_NEW_ARCHITECTURE_ENABLED", isNewArchitectureEnabled().toString()
     externalNativeBuild {
-        cmake {
-            path file('src/main/cpp/CMakeLists.txt')
-            version '3.10.2'
-        }
+      cmake {
+        cppFlags ''
+      }
     }
+  }
+  buildTypes {
+    release {
+      minifyEnabled false
+    }
+  }
 
-    sourceSets {
-        main.java {
-            srcDir '../native_src/java'
-            exclude 'com/easemob/ext_sdk/flutter/*.java'
-        }
+  lintOptions {
+    disable "GradleCompatible"
+  }
+
+  compileOptions {
+    sourceCompatibility JavaVersion.VERSION_1_8
+    targetCompatibility JavaVersion.VERSION_1_8
+  }
+  externalNativeBuild {
+    cmake {
+      path file('src/main/cpp/CMakeLists.txt')
+      version '3.10.2'
     }
+  }
+  sourceSets {
+    main.java {
+      srcDir '../native_src/java'
+      exclude 'com/easemob/ext_sdk/flutter/*.java'
+    }
+  }
 }
 
 repositories {
-    mavenLocal()
-    maven {
-        // All of React Native (JS, Obj-C sources, Android binaries) is installed from npm
-        url("$rootDir/../node_modules/react-native/android")
-    }
-    google()
-    mavenCentral()
-    jcenter()
+  // mavenLocal()
+  mavenCentral()
+  google()
 }
 
+
 dependencies {
-    //noinspection GradleDynamicVersion
-    implementation "com.facebook.react:react-native:+"  // From node_modules
-    implementation 'io.hyphenate:hyphenate-chat:4.0.2'
+  // For < 0.71, this will be from the local maven repo
+  // For > 0.71, this will be replaced by `com.facebook.react:react-android:$version` by react gradle plugin
+  //noinspection GradleDynamicVersion
+  implementation "com.facebook.react:react-native:+"
+  implementation 'io.hyphenate:hyphenate-chat:4.0.2'
+}
+
+if (isNewArchitectureEnabled()) {
+  react {
+    jsRootDir = file("../src/")
+    libraryName = "ChatSdk"
+    codegenJavaPackageName = "com.chatsdk"
+  }
 }

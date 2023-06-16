@@ -226,11 +226,11 @@ export abstract class QuickTestScreenBase<
         // });
         if (
           messages.length <= 0 ||
-          messages[0].body.type !== ChatMessageType.CMD
+          messages[0]!.body.type !== ChatMessageType.CMD
         ) {
           return;
         }
-        let r = messages[0].body;
+        let r = messages[0]!.body;
         let rr = (r as ChatCmdMessageBody).action;
         console.log(`${QuickTestScreenBase.TAG}: onMessagesReceived: cmd:`, rr);
         this.that.setState({ cmd: rr });
@@ -296,7 +296,9 @@ export abstract class QuickTestScreenBase<
     ChatClient.getInstance().chatManager.removeAllMessageListener();
     ChatClient.getInstance().chatManager.addMessageListener(msgListener);
 
-    const contactEventListener = new (class implements ChatContactEventListener {
+    const contactEventListener = new (class
+      implements ChatContactEventListener
+    {
       that: QuickTestScreenBase<S, SL>;
       constructor(parent: QuickTestScreenBase<S, SL>) {
         this.that = parent;

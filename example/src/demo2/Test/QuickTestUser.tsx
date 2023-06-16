@@ -69,21 +69,21 @@ export class QuickTestScreenUser extends QuickTestScreenBase<
             MN.updateOwnUserInfo
           )!.methodName;
           console.log(`${MN.updateOwnUserInfo} === ${methodName}`);
-          const nickName = this.metaData.get(MN.updateOwnUserInfo)!.params[0]
+          const nickName = this.metaData.get(MN.updateOwnUserInfo)!.params[0]!
             .paramDefaultValue;
-          const avatarUrl = this.metaData.get(MN.updateOwnUserInfo)!.params[1]
+          const avatarUrl = this.metaData.get(MN.updateOwnUserInfo)!.params[1]!
             .paramDefaultValue;
-          const mail = this.metaData.get(MN.updateOwnUserInfo)!.params[2]
+          const mail = this.metaData.get(MN.updateOwnUserInfo)!.params[2]!
             .paramDefaultValue;
-          const phone = this.metaData.get(MN.updateOwnUserInfo)!.params[3]
+          const phone = this.metaData.get(MN.updateOwnUserInfo)!.params[3]!
             .paramDefaultValue;
-          const gender = this.metaData.get(MN.updateOwnUserInfo)!.params[4]
+          const gender = this.metaData.get(MN.updateOwnUserInfo)!.params[4]!
             .paramDefaultValue;
-          const sign = this.metaData.get(MN.updateOwnUserInfo)!.params[5]
+          const sign = this.metaData.get(MN.updateOwnUserInfo)!.params[5]!
             .paramDefaultValue;
-          const birth = this.metaData.get(MN.updateOwnUserInfo)!.params[6]
+          const birth = this.metaData.get(MN.updateOwnUserInfo)!.params[6]!
             .paramDefaultValue;
-          const ext = this.metaData.get(MN.updateOwnUserInfo)!.params[7]
+          const ext = this.metaData.get(MN.updateOwnUserInfo)!.params[7]!
             .paramDefaultValue;
           this.tryCatch(
             ChatClient.getInstance().userManager.updateOwnUserInfo({
@@ -107,7 +107,7 @@ export class QuickTestScreenUser extends QuickTestScreenBase<
             MN.fetchUserInfoById
           )!.methodName;
           console.log(`${MN.fetchUserInfoById} === ${methodName}`);
-          const userIds = this.metaData.get(MN.fetchUserInfoById)!.params[0]
+          const userIds = this.metaData.get(MN.fetchUserInfoById)!.params[0]!
             .paramDefaultValue;
           this.tryCatch(
             ChatClient.getInstance().userManager.fetchUserInfoById(userIds),

@@ -145,7 +145,7 @@ export class PresenceLeafScreen extends LeafScreenBase<StateChatPresence> {
       renderDomAry.push(this.renderDivider());
     });
     renderDomAry.push(this.addSpaces());
-    return renderDomAry;
+    return renderDomAry as any;
   }
 
   private callApi(name: string): void {

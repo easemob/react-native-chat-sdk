@@ -1,11 +1,11 @@
-import { ChatClient } from './ChatClient';
-import { ChatUserInfo } from './common/ChatUserInfo';
 import {
   MTfetchUserInfoById,
   MTupdateOwnUserInfo,
 } from './__internal__/Consts';
 import { Native } from './__internal__/Native';
+import { ChatClient } from './ChatClient';
 import { chatlog } from './common/ChatConst';
+import { ChatUserInfo } from './common/ChatUserInfo';
 
 /**
  * The user information manager for updating and getting user attributes.
