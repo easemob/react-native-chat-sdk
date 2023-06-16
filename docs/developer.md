@@ -190,7 +190,7 @@ find and remove `<svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler
 
 find and replace "class="title">react-native-chat-sdk</a>" to "class="title">Chat SDK for React Native v{x.x.x}</a>"
 
-find and replace in index.html "react-native-chat-sdk" to "class="Chat SDK for React Native"
+find and replace in index.html "<h1>react-native-chat-sdk </h1>" to "<h1>Chat SDK for React Native </h1>"
 
 ---
 

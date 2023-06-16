@@ -17,6 +17,7 @@ Agora Chat is a highly reliable global communication platform where your users c
 | {@link ChatClient.getInstance getInstance} | The chat client class, which is the entry of the chat SDK. It defines how to log in to and log out of the chat app and how to manage the connection between the SDK and the chat server. |
 | {@link ChatClient.getEventEmitter getEventEmitter} | The chat client class, which is the entry of the chat SDK. It defines how to log in to and log out of the chat app and how to manage the connection between the SDK and the chat server. |
 | {@link ChatClient.setNativeListener setNativeListener} | The chat client class, which is the entry of the chat SDK. It defines how to log in to and log out of the chat app and how to manage the connection between the SDK and the chat server. |
+| {@link ChatClient.version version} | The chat client class, which is the entry of the chat SDK. It defines how to log in to and log out of the chat app and how to manage the connection between the SDK and the chat server. |
 | {@link ChatClient.options options} | Gets the SDK configurations. |
 | {@link ChatClient.currentUserName currentUserName} | Gets the current logged-in user ID. |
 | {@link ChatClient.init init} | Initializes the SDK. |
@@ -58,6 +59,7 @@ Agora Chat is a highly reliable global communication platform where your users c
 | {@link ChatConnectEventListener.onDisconnected onDisconnected} | Occurs when the SDK disconnects from the chat server. |
 | {@link ChatConnectEventListener.onTokenWillExpire onTokenWillExpire} | Occurs when the Agora token is about to expire. |
 | {@link ChatConnectEventListener.onTokenDidExpire onTokenDidExpire} | Occurs when the Agora token has expired. |
+| {@link ChatConnectEventListener.onAppActiveNumberReachLimit onAppActiveNumberReachLimit} | The number of daily active users (DAU) or monthly active users (MAU) for the app has reached the upper limit. |
 
 | Event | Description |
 | :----- | :---------- |
@@ -90,6 +92,7 @@ Agora Chat is a highly reliable global communication platform where your users c
 | {@link ChatManager.downloadAttachment downloadAttachment} | Downloads the message attachment. |
 | {@link ChatManager.downloadThumbnail downloadThumbnail} | Downloads the message thumbnail. |
 | {@link ChatManager.fetchHistoryMessages fetchHistoryMessages} | Uses the pagination to get messages in the specified conversation from the server. |
+| {@link ChatManager.fetchHistoryMessagesByOptions fetchHistoryMessagesByOptions} | retrieve the history message for the specified session from the server. |
 | {@link ChatManager.searchMsgFromDB searchMsgFromDB} | Retrieves messages with keywords in a conversation from the local database. |
 | {@link ChatManager.fetchGroupAcks fetchGroupAcks} | Uses the pagination to get read receipts for group messages from the server. |
 | {@link ChatManager.removeConversationFromServer removeConversationFromServer} | Deletes the specified conversation and its historical messages from the server. |
@@ -104,6 +107,7 @@ Agora Chat is a highly reliable global communication platform where your users c
 | {@link ChatManager.markAllMessagesAsRead markAllMessagesAsRead} | Marks all messages as read. |
 | {@link ChatManager.updateConversationMessage updateConversationMessage} | Updates a message in the local database. |
 | {@link ChatManager.deleteMessage deleteMessage} | Deletes a message from the local database. |
+| {@link ChatManager.deleteMessagesWithTimestamp deleteMessagesWithTimestamp} | Deletes messages sent or received in a certain period from the local database. |
 | {@link ChatManager.deleteAllMessages deleteAllMessages} | Deletes all messages in the conversation from both the memory and local database. |
 | {@link ChatManager.deleteMessagesBeforeTimestamp deleteMessagesBeforeTimestamp} | Deletes local messages with timestamp that is before the specified one. |
 | {@link ChatManager.getMessagesWithMsgType getMessagesWithMsgType} | Retrieves messages of a certain type in the conversation from the local database. |
@@ -227,6 +231,9 @@ Agora Chat is a highly reliable global communication platform where your users c
 | {@link ChatGroupManager.declineJoinApplication declineJoinApplication} | Declines a join request. |
 | {@link ChatGroupManager.acceptInvitation acceptInvitation} | Accepts a group invitation. |
 | {@link ChatGroupManager.declineInvitation declineInvitation} | Declines a group invitation. |
+| {@link ChatGroupManager.setMemberAttribute setMemberAttribute} | Sets custom attributes of a group member. |
+| {@link ChatGroupManager.fetchMemberAttributes fetchMemberAttributes} | Gets all custom attributes of a group member. |
+| {@link ChatGroupManager.fetchMembersAttributes fetchMembersAttributes} | Gets custom attributes of multiple group members by attribute key. |
 | {@link ChatGroupManager.addGroupListener addGroupListener} | Adds a group listener. |
 | {@link ChatGroupManager.removeGroupListener removeGroupListener} | Removes the group listener. |
 | {@link ChatGroupManager.removeAllGroupListener removeAllGroupListener} | Clears all group listeners. |
@@ -257,6 +264,7 @@ Agora Chat is a highly reliable global communication platform where your users c
 | {@link ChatGroupEventListener.onAllGroupMemberMuteStateChanged onAllGroupMemberMuteStateChanged} | Occurs when all group members are muted or unmuted. |
 | {@link ChatGroupEventListener.onDetailChanged onDetailChanged} | Occurs when the chat group detail change. All chat group members receive this event. |
 | {@link ChatGroupEventListener.onStateChanged onStateChanged} | Occurs when the disabled state of group changes. |
+| {@link ChatGroupEventListener.onMemberAttributesChanged onMemberAttributesChanged} | Occurs when a custom attribute(s) of a group member is/are changed. |
 ## ChatRoomManager
 | Method | Description |
 | :----- | :---------- |
@@ -367,7 +375,7 @@ Agora Chat is a highly reliable global communication platform where your users c
 | {@link ChatMessage.reactionList reactionList} | Gets the list of Reactions. |
 | {@link ChatMessage.groupReadCount groupReadCount} | Gets the count of read receipts of a group message. |
 | {@link ChatMessage.threadInfo threadInfo} | Gets details of a message thread. |
-| {@link ChatMessage.messagePriority messagePriority} | Set chat room message delivery priority. |
+| {@link ChatMessage.messagePriority messagePriority} | Set the chat room message priority. |
 ## ChatConversation
 | Method | Description |
 | :----- | :---------- |
@@ -380,8 +388,11 @@ Agora Chat is a highly reliable global communication platform where your users c
 | {@link ChatConversation.markAllMessagesAsRead markAllMessagesAsRead} | Marks all messages as read. |
 | {@link ChatConversation.updateMessage updateMessage} | Updates a message in the local database. |
 | {@link ChatConversation.deleteMessage deleteMessage} | Deletes a message from the local database. |
+| {@link ChatConversation.deleteMessagesWithTimestamp deleteMessagesWithTimestamp} | Deletes messages sent or received in a certain period from the local database. |
 | {@link ChatConversation.deleteAllMessages deleteAllMessages} | Deletes all the messages of the conversation. |
 | {@link ChatConversation.getMessagesWithMsgType getMessagesWithMsgType} | Retrieves messages of a certain type that a specified user sends in a conversation. |
 | {@link ChatConversation.getMessages getMessages} | Retrieves messages of a certain quantity in a conversation from the local database. |
 | {@link ChatConversation.getMessagesWithKeyword getMessagesWithKeyword} | Retrieves messages with keywords in a conversation in the local database. |
 | {@link ChatConversation.getMessageWithTimestamp getMessageWithTimestamp} | Gets messages that are sent and received in a certain period in a conversation in the local database. |
+| {@link ChatConversation.fetchHistoryMessages fetchHistoryMessages} | Uses the pagination to get messages in the specified conversation from the server. |
+| {@link ChatConversation.fetchHistoryMessagesByOptions fetchHistoryMessagesByOptions} | retrieve the history message for the specified session from the server. |
