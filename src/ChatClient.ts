@@ -554,7 +554,7 @@ export class ChatClient extends BaseManager {
    *
    * If you use an Easemob token to log in to the server, you can get the token in either of the following ways:
    * - Through an SDK API. See {@link createAccount} or {@link getAccessToken}.
-   * - Through the console. See {@url https://console.easemob.com/app/applicationOverview/userManagement}.
+   * - Through the console.
    *
    * The token expiration reminder is notified by the two callback methods: {@link ChatConnectEventListener.onTokenWillExpire} and {@link ChatConnectEventListener.onTokenDidExpire}.
    *
