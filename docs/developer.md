@@ -192,6 +192,9 @@ find and replace "class="title">react-native-chat-sdk</a>" to "class="title">Cha
 
 find and replace in index.html "<h1>react-native-chat-sdk </h1>" to "<h1>Chat SDK for React Native </h1>"
 
+find and remove "<li>Defined in.+</li>" in all files for agora documents.
+find and replace "react-native-chat-sdk" to "react-native-agora-chat" in all files for agora documents.
+
 ---
 
 ## Q & A
