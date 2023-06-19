@@ -25,6 +25,8 @@
 # For example: sh publish_agora_package.sh
 #
 # npm package version list: `npm dist-tag react-native-chat-sdk`
+#
+# npm pack
 
 function now() {
     local lv_var=$1
@@ -70,11 +72,19 @@ mv ${current_dir}/Output/node_modules/${old_package_name} ${current_dir}/Output/
 sed -i '' 's/: \"react-native-chat-sdk/: \"react-native-agora-chat/g' ${current_dir}/Output/node_modules/${new_package_name}/package.json
 # sed -i '' 's/lib\/typescript\/src\/index.d.ts/lib\/typescript\/index.d.ts/g' ${current_dir}/Output/node_modules/${new_package_name}/package.json
 sed -i '' 's/\"prepare\": \"bob build\",/\"prepare\": \"\",/g' ${current_dir}/Output/node_modules/${new_package_name}/package.json
+sed -i '' 's/https:\/\/github.com\/easemob\/react-native-chat-sdk#readme//g' ${current_dir}/Output/node_modules/${new_package_name}/package.json
+sed -i '' 's/https:\/\/github.com\/easemob\/react-native-chat-sdk\/issues//g' ${current_dir}/Output/node_modules/${new_package_name}/package.json
+sed -i '' 's/https:\/\/github.com\/easemob\/react-native-chat-sdk//g' ${current_dir}/Output/node_modules/${new_package_name}/package.json
+sed -i '' 's/easemob-npm <npm@easemob.com> (https:\/\/github.com\/easemob)/asteriskzuo@hotmail.com/g' ${current_dir}/Output/node_modules/${new_package_name}/package.json
 
+sed -i '' 's/For more examples, see here.\[Portal\](https:\/\/github.com\/easemob\/react-native-chat-sdk\/tree\/dev\/examples)//g' ${current_dir}/Output/node_modules/${new_package_name}/README.md
 sed -i '' 's/react-native-chat-sdk/react-native-agora-chat/g' ${current_dir}/Output/node_modules/${new_package_name}/README.md
 # https://docs-im.easemob.com/ccim/rn/quickstart
 # https://docs.agora.io/en/agora-chat/agora_chat_get_started_rn?platform=React%20Native
 sed -i '' 's/https:\/\/docs-im.easemob.com\/ccim\/rn\/quickstart/https:\/\/docs.agora.io\/en\/agora-chat\/agora_chat_get_started_rn?platform=React%20Native/g' ${current_dir}/Output/node_modules/${new_package_name}/README.md
+
+sed -i '' 's/easemob/agora/g' ${current_dir}/Output/node_modules/${new_package_name}/LICENSE
+
 # For more examples, see here.[Portal](https://github.com/easemob/react-native-chat-sdk/tree/dev/examples)
 # 
 sed -i '' 's/For more examples, see here.\[Portal\](https:\/\/github.com\/easemob\/react-native-chat-sdk\/tree\/dev\/examples)//g' ${current_dir}/Output/node_modules/${new_package_name}/README.md
@@ -87,6 +97,7 @@ rm -rf ${current_dir}/Output/node_modules/${new_package_name}/native_src/cpp/CMa
 rm -rf ${current_dir}/Output/node_modules/${new_package_name}/native_src/cpp/generate.ps1
 rm -rf ${current_dir}/Output/node_modules/${new_package_name}/native_src/cpp/generate.sh
 rm -rf ${current_dir}/Output/node_modules/${new_package_name}/README.zh.md
+rm -rf ${current_dir}/Output/docs/*
 
 git log -1 > ${current_dir}/Output/node_modules/${new_package_name}/git.log
 
