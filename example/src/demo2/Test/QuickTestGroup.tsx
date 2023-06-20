@@ -1,16 +1,17 @@
 import {
+  ChatClient,
+  ChatError,
+  ChatGroupFileStatusCallback,
+  ChatGroupOptions,
+} from 'react-native-chat-sdk';
+
+import { metaDataList, MN } from './QuickTestGroupData';
+import {
   QuickTestScreenBase,
   QuickTestState,
   QuickTestStateless,
   registerStateDataList,
 } from './QuickTestScreenBase';
-import { MN, metaDataList } from './QuickTestGroupData';
-import {
-  ChatClient,
-  ChatError,
-  ChatGroupOptions,
-  ChatGroupFileStatusCallback,
-} from 'react-native-chat-sdk';
 
 export interface QuickTestGroupState extends QuickTestState {}
 

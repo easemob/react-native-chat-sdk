@@ -1,16 +1,17 @@
 import React, { ReactNode } from 'react';
 import { View } from 'react-native';
-import { styleValues } from '../__internal__/Css';
-import { LeafScreenBase, StateBase } from '../__internal__/LeafScreenBase';
-import { metaDataList, MN } from './PushManagerData';
-import type { ApiParams } from '../__internal__/DataTypes';
 import {
   ChatClient,
   ChatConversation,
   ChatPushDisplayStyle,
   ChatSilentModeParam,
 } from 'react-native-chat-sdk';
+
+import { styleValues } from '../__internal__/Css';
+import type { ApiParams } from '../__internal__/DataTypes';
+import { LeafScreenBase, StateBase } from '../__internal__/LeafScreenBase';
 import { generateData } from '../__internal__/Utils';
+import { metaDataList, MN } from './PushManagerData';
 export interface StatePushMessage extends StateBase {
   setSilentModeForConversation: {
     convId: string;

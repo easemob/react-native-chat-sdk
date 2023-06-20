@@ -1,11 +1,12 @@
+import { ChatClient } from 'react-native-chat-sdk';
+
+import { metaDataList, MN } from './QuickTestPushData';
 import {
   QuickTestScreenBase,
   QuickTestState,
   QuickTestStateless,
   registerStateDataList,
 } from './QuickTestScreenBase';
-import { MN, metaDataList } from './QuickTestPushData';
-import { ChatClient } from 'react-native-chat-sdk';
 
 export interface QuickTestPushState extends QuickTestState {}
 

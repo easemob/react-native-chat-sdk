@@ -2,26 +2,27 @@ import React, { ReactNode } from 'react';
 import { Text, View } from 'react-native';
 import {
   ChatClient,
-  ChatGroupMessageAck,
-  ChatMessageEventListener,
-  ChatMessage,
-  ChatMessageStatusCallback,
-  ChatMessageType,
-  ChatMessageChatType,
   ChatError,
-  ChatMessageThreadEvent,
+  ChatGroupMessageAck,
+  ChatMessage,
+  ChatMessageChatType,
+  ChatMessageEventListener,
   ChatMessageReactionEvent,
+  ChatMessageStatusCallback,
+  ChatMessageThreadEvent,
+  ChatMessageType,
   ChatRoomMessagePriority,
 } from 'react-native-chat-sdk';
+
+import { datasheet } from '../__default__/Datasheet';
 import { styleValues } from '../__internal__/Css';
+import type { ApiParams } from '../__internal__/DataTypes';
 import {
   LeafScreenBase,
   StateBase,
   StatelessBase,
 } from '../__internal__/LeafScreenBase';
 import { ChatManagerCache } from './ChatManagerData';
-import type { ApiParams } from '../__internal__/DataTypes';
-import { datasheet } from '../__default__/Datasheet';
 
 enum TestType {
   Audio = 0,

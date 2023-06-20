@@ -1,3 +1,3 @@
-import { MN, metaDataList } from '../Test/QuickTestChatData';
 import { ChatManagerCache } from '../Test/ChatManagerCache';
-export { MN, metaDataList, ChatManagerCache };
+import { metaDataList, MN } from '../Test/QuickTestChatData';
+export { ChatManagerCache, metaDataList, MN };

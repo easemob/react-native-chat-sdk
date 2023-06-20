@@ -1,12 +1,12 @@
 import React, { Component, ReactNode } from 'react';
 import {
-  View,
   Button,
+  NativeSyntheticEvent,
+  ScrollView,
   Text,
   TextInput,
   TextInputChangeEventData,
-  NativeSyntheticEvent,
-  ScrollView,
+  View,
 } from 'react-native';
 import {
   ChatClient,
@@ -14,6 +14,7 @@ import {
   ChatMultiDeviceEvent,
   ChatMultiDeviceEventListener,
 } from 'react-native-chat-sdk';
+
 import { datasheet } from '../__default__/Datasheet';
 import { styleValues } from '../__internal__/Css';
 

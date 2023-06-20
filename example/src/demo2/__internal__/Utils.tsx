@@ -1,4 +1,5 @@
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
+
 import type { ApiParams } from './DataTypes';
 
 export const Stack = createNativeStackNavigator();

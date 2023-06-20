@@ -1,15 +1,16 @@
 import { NavigationContainer } from '@react-navigation/native';
 import React from 'react';
-import { ScrollView, View, Button } from 'react-native';
+import { Button, ScrollView, View } from 'react-native';
+
 import { screenComponents } from './__internal__/Components';
+import { styleValues } from './__internal__/Css';
 import {
-  ScreenComponent,
   getComponentList,
   registerComponent,
+  ScreenComponent,
   Stack,
   unregisterComponents,
 } from './__internal__/Utils';
-import { styleValues } from './__internal__/Css';
 // import messaging from '@react-native-firebase/messaging';
 
 function HomeScreen(params: { navigation: any }) {

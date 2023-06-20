@@ -6,25 +6,26 @@ import type {
 } from 'react-native-chat-sdk';
 import {
   ChatClient,
-  ChatMessage,
-  ChatMessageTypeFromString,
   ChatConversationTypeFromNumber,
-  ChatMessageEventListener,
-  ChatGroupMessageAck,
   ChatError,
-  ChatMessageThreadEvent,
-  ChatMessageReactionEvent,
+  ChatGroupMessageAck,
+  ChatMessage,
   ChatMessageChatTypeFromNumber,
+  ChatMessageEventListener,
+  ChatMessageReactionEvent,
+  ChatMessageThreadEvent,
+  ChatMessageTypeFromString,
 } from 'react-native-chat-sdk';
+
 import { styleValues } from '../__internal__/Css';
+import type { ApiParams } from '../__internal__/DataTypes';
 import {
   LeafScreenBase,
   StateBase,
   StatelessBase,
 } from '../__internal__/LeafScreenBase';
-import { ChatManagerCache, metaDataList, MN } from './ChatManagerData';
-import type { ApiParams } from '../__internal__/DataTypes';
 import { generateData } from '../__internal__/Utils';
+import { ChatManagerCache, metaDataList, MN } from './ChatManagerData';
 
 export interface StateChatMessage extends StateBase {
   cb_result: string;

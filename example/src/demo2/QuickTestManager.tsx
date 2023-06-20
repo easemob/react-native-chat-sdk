@@ -1,7 +1,8 @@
 import React from 'react';
-import { View, Button, ScrollView } from 'react-native';
-import { getComponentList, ScreenComponent } from './__internal__/Utils';
+import { Button, ScrollView, View } from 'react-native';
+
 import { styleValues } from './__internal__/Css';
+import { getComponentList, ScreenComponent } from './__internal__/Utils';
 
 export const QuickTestManagerRoute = 'QuickTestManagerScreen';
 export function QuickTestManagerScreen(params: {

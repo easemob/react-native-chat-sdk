@@ -1,15 +1,16 @@
 import React, { ReactNode } from 'react';
 import { View } from 'react-native';
 import { ChatClient } from 'react-native-chat-sdk';
+
 import { styleValues } from '../__internal__/Css';
+import type { ApiParams } from '../__internal__/DataTypes';
 import {
   LeafScreenBase,
   StateBase,
   StatelessBase,
 } from '../__internal__/LeafScreenBase';
-import { metaDataList, MN } from './ContactManagerData';
-import type { ApiParams } from '../__internal__/DataTypes';
 import { generateData } from '../__internal__/Utils';
+import { metaDataList, MN } from './ContactManagerData';
 
 export interface StateChatContact extends StateBase {
   addContact: {

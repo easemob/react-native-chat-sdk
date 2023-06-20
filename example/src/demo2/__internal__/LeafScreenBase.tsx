@@ -8,18 +8,19 @@ import {
   TextInput,
   View,
 } from 'react-native';
-import ModalDropdown from 'react-native-modal-dropdown';
-import { styleValues } from './Css';
-import { seq } from './Utils';
 import DocumentPicker, {
   DocumentPickerResponse,
 } from 'react-native-document-picker';
-import type { MediaType } from './Types';
+import type ImagePicker from 'react-native-image-picker';
 import {
   ImagePickerResponse,
   launchImageLibrary,
 } from 'react-native-image-picker';
-import type ImagePicker from 'react-native-image-picker';
+import ModalDropdown from 'react-native-modal-dropdown';
+
+import { styleValues } from './Css';
+import type { MediaType } from './Types';
+import { seq } from './Utils';
 
 export interface StateBase {
   sendResult: string;

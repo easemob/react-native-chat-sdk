@@ -1,16 +1,7 @@
-import { ChatManagerScreen, ChatManagerRoute } from '../ChatManager';
+import { ChatManagerRoute, ChatManagerScreen } from '../ChatManager';
 // import { SendMessageScreen } from '../ChatManager/SendMessage';
 import { ChatManagerLeafScreen } from '../ChatManager/ChatManagerItem';
 import { SendMessageLeafScreen } from '../ChatManager/SendMessageNew';
-import { ClientScreen, ClientRoute } from '../Client';
-import { ClientOthersScreen } from '../Client/ClientOthers';
-import { CreateAccountScreen } from '../Client/CreateAccount';
-import { GetStateScreen } from '../Client/GetState';
-import { KickScreen } from '../Client/Kick';
-import { AppKeyScreen } from '../Client/AppKey';
-import { LoginAndLogoutScreen as LoginLogoutScreen } from '../Client/LoginAndLogout';
-import { GroupManagerRoute, GroupManagerScreen } from '../GroupManager';
-import { GroupManagerLeafScreen } from '../GroupManager/GroupManagerItem';
 import {
   ChatRoomManagerRoute,
   ChatRoomManagerScreen,
@@ -21,14 +12,24 @@ import {
   ChatUserInfoManagerScreen,
 } from '../ChatUserInfoManager';
 import { ChatUserInfoManagerLeafScreen } from '../ChatUserInfoManager/ChatUserInfoManagerItem';
+import { ClientRoute, ClientScreen } from '../Client';
+import { AppKeyScreen } from '../Client/AppKey';
+import { ClientOthersScreen } from '../Client/ClientOthers';
+import { CreateAccountScreen } from '../Client/CreateAccount';
+import { GetStateScreen } from '../Client/GetState';
+import { KickScreen } from '../Client/Kick';
+import { LoginAndLogoutScreen as LoginLogoutScreen } from '../Client/LoginAndLogout';
+import { ContactManagerRoute, ContactManagerScreen } from '../ContactManager';
+import { ContactLeafScreen } from '../ContactManager/ContactManagerItem';
+import { GroupManagerRoute, GroupManagerScreen } from '../GroupManager';
+import { GroupManagerLeafScreen } from '../GroupManager/GroupManagerItem';
 import {
   PresenceManagerRoute,
   PresenceManagerScreen,
 } from '../PresenceManager';
 import { PresenceLeafScreen } from '../PresenceManager/PresenceManagerItem';
-import { ContactManagerRoute, ContactManagerScreen } from '../ContactManager';
-import { ContactLeafScreen } from '../ContactManager/ContactManagerItem';
-import type { ScreenComponent } from './Utils';
+import { PushManagerRoute, PushManagerScreen } from '../PushManager';
+import { PushManagerLeafScreen } from '../PushManager/PushManagerItem';
 import {
   QuickTestManagerRoute,
   QuickTestManagerScreen,
@@ -36,12 +37,11 @@ import {
 import { QuickTestScreenChat } from '../Test/QuickTestChat';
 import { QuickTestScreenContact } from '../Test/QuickTestContact';
 import { QuickTestScreenGroup } from '../Test/QuickTestGroup';
-import { QuickTestScreenRoom } from '../Test/QuickTestRoom';
-import { QuickTestScreenUser } from '../Test/QuickTestUser';
 import { QuickTestScreenPresence } from '../Test/QuickTestPresence';
 import { QuickTestScreenPush } from '../Test/QuickTestPush';
-import { PushManagerRoute, PushManagerScreen } from '../PushManager';
-import { PushManagerLeafScreen } from '../PushManager/PushManagerItem';
+import { QuickTestScreenRoom } from '../Test/QuickTestRoom';
+import { QuickTestScreenUser } from '../Test/QuickTestUser';
+import type { ScreenComponent } from './Utils';
 
 export const screenComponents: ScreenComponent[] = [
   // root navigator
