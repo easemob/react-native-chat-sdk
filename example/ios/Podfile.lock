@@ -604,7 +604,7 @@ SPEC CHECKSUMS:
   React-jsiexecutor: 089cd07c76ecf498960a64ba8ae0f2dddd382f44
   React-jsinspector: b6ed4cb3ffa27a041cd440300503dc512b761450
   React-logger: 186dd536128ae5924bc38ed70932c00aa740cd5b
-  react-native-chat-sdk: ba87390855a382d8a27553087a105a38f3cd7930
+  react-native-chat-sdk: e1931b09e0dd896c7aaf519b633f1938225b5f4c
   react-native-document-picker: 2b8f18667caee73a96708a82b284a4f40b30a156
   react-native-image-picker: 709d04e7df67bd3a90f376c3eedb2e8b8334dd04
   react-native-safe-area-context: b8979f5eda6ed5903d4dbc885be3846ea3daa753

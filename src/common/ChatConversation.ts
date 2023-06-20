@@ -369,7 +369,7 @@ export class ChatConversation {
    * The obtained messages will also join the existing messages of the conversation stored in the memory.
    *
    * @param startMsgId The starting message ID for query. After this parameter is set, the SDK retrieves messages, starting from the specified one, according to the message search direction.
-   *                   If this parameter is set as "null" or an empty string, the SDK retrieves messages according to the message search direction while ignoring this parameter.
+   *                   If this parameter is set an empty string, the SDK retrieves messages according to the message search direction while ignoring this parameter.
    *                  - If `direction` is set as `ChatSearchDirection.UP`, the SDK retrieves messages, starting from the latest one, in the descending order of the Unix timestamp ({@link ChatOptions.sortMessageByServerTime}) included in them.
    *                 - If `direction` is set as `ChatSearchDirection.DOWN`, the SDK retrieves messages, starting from the oldest one, in the ascending order of the Unix timestamp ({@link ChatOptions.sortMessageByServerTime}) included in them.
    * @param direction The message search direction. See {@link ChatSearchDirection}.
@@ -461,7 +461,7 @@ export class ChatConversation {
    *
    * @param -
    * - pageSize: The number of messages that you expect to get on each page. The value range is [1,50].
-   * - startMsgId: The starting message ID for query. After this parameter is set, the SDK retrieves messages, starting from the specified one, in the reverse chronological order of when the server receives them. If this parameter is set as "null" or an empty string, the SDK retrieves messages, starting from the latest one, in the reverse chronological order of when the server receives them.
+   * - startMsgId: The starting message ID for query. After this parameter is set, the SDK retrieves messages, starting from the specified one, in the reverse chronological order of when the server receives them. If this parameter is set an empty string, the SDK retrieves messages, starting from the latest one, in the reverse chronological order of when the server receives them.
    * - direction: The message search direction. See {@link ChatSearchDirection}.
    *                  - (Default) `ChatSearchDirection.Up`: Messages are retrieved in the descending order of the Unix timestamp included in them.
    *                  - `ChatSearchDirection.Down`: Messages are retrieved in the ascending order of the Unix timestamp included in them.
