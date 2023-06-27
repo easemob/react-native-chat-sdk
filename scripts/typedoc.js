@@ -1,6 +1,6 @@
 const fs = require('fs');
 const path = require('path');
-const { exit } = require('process');
+// const { exit } = require('process');
 
 // Step 1: Delete the contents of all files in the specified directory "xxx"
 function deleteContent(dir, xxx) {
