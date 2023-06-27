@@ -180,6 +180,13 @@ sh scripts/publish_agora_package.sh 1.0.5-rc.1 rc ~/Output/agora
 ## generate docs
 
 ```sh
+npx typedoc --version
+```
+
+TypeDoc 0.22.17
+Using TypeScript 4.7.3 from /opt/homebrew/lib/node_modules/typedoc/node_modules/typescript/lib
+
+```sh
 npx typedoc --out ./docs/typedoc --json ./docs/typedoc/typedoc.json --tsconfig ./tsconfig.json --readme ./docs/rn_api_overview.md ./src/index.ts
 npx typedoc --out ./docs/typedoc --json ./docs/typedoc/typedoc.json --tsconfig ./tsconfig.json --readme ./docs/rn_api_overview.zh.md ./src/index.ts
 ```
@@ -192,8 +199,8 @@ find and replace "class="title">react-native-chat-sdk</a>" to "class="title">Cha
 
 find and replace in index.html "<h1>react-native-chat-sdk </h1>" to "<h1>Chat SDK for React Native </h1>"
 
-find and remove "<li>Defined in.+</li>" in all files for agora documents.
-find and replace "react-native-chat-sdk" to "react-native-agora-chat" in all files for agora documents.
+find and remove `<li>Defined in <a href="https:\/\/github\.com\/easemob\/react-native-chat-sdk(_|\/|\s|[0-9]|[a-z]|[A-Z]|#|\.|"|>|:)+<\/a><\/li>` in all files for agora documents.
+find and replace `react-native-chat-sdk` to `react-native-agora-chat` in all files for agora documents.
 
 ---
 
