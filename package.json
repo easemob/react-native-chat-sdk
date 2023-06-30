@@ -36,7 +36,7 @@
   "scripts": {
     "test": "jest",
     "typecheck": "tsc --noEmit",
-    "lint": "eslint \"**/*.{js,ts,tsx}\"",
+    "lint": "yarn lint_sdk && yarn lint_example",
     "lint_sdk": "eslint \"src/**/*.ts\"",
     "lint_example": "eslint \"example/src/**/*.{js,ts,tsx}\"",
     "bb": "bob build",
