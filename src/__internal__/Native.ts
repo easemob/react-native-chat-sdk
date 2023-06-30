@@ -2,8 +2,9 @@
  * Call native api
  */
 
-import { ChatError } from '../common/ChatError';
 import { NativeModules } from 'react-native';
+
+import { ChatError } from '../common/ChatError';
 
 const { ExtSdkApiRN } = NativeModules;
 
