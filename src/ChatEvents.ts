@@ -547,7 +547,7 @@ export interface ChatGroupEventListener {
    *
    * For example, after user B sends user A a group invitation, user A receives this callback.
    *
-   * @param params The parameter set.
+   * @params The parameter set.
    * - Param [groupId] The group ID.
    * - Param [groupName] The group name.
    * - Param [inviter] The user ID of the inviter.
@@ -565,7 +565,7 @@ export interface ChatGroupEventListener {
    *
    * For example, after user A sends a join request to user B, user B receives this callback.
    *
-   * @param params The parameter set.
+   * @params The parameter set.
    * - Param [groupId] The group ID.
    * - Param [groupName] The group name.
    * - Param [applicant] The user ID of the applicant.
@@ -582,7 +582,7 @@ export interface ChatGroupEventListener {
    *
    * For a group of the `PublicJoinNeedApproval` style, after user B accepts a join request from user A, user A receives this callback.
    *
-   * @param params The parameter set.
+   * @params The parameter set.
    * - Param [groupId] The group ID.
    * - Param [groupName] The group name.
    * - Param [accepter] The ID of the user that accepts the join request.
@@ -597,7 +597,7 @@ export interface ChatGroupEventListener {
    *
    * For example, for a group of the `PublicJoinNeedApproval` style, after user B declines a join request from user A, user A receives this callback.
    *
-   * @param params The parameter set.
+   * @params The parameter set.
    * - Param [groupId] The group ID.
    * - Param [groupName] The group name.
    * - Param [decliner] The ID of the user that declines the join request.
@@ -614,7 +614,7 @@ export interface ChatGroupEventListener {
    *
    * For example, after user B accepts a group invitation from user A, user A receives this callback.
    *
-   * @param params The parameter set.
+   * @params The parameter set.
    * - Param [groupId] The group ID.
    * - Param [groupName] The group name.
    * - Param [invitee] The user ID of the invitee.
@@ -630,7 +630,7 @@ export interface ChatGroupEventListener {
    *
    * For example, after user B declines a group invitation from user A, user A receives this callback.
    *
-   * @param params The parameter set.
+   * @params The parameter set.
    * - Param [groupId] The group ID.
    * - Param [invitee] The user ID of the invitee.
    * - Param [reason] The reason for accepting the group invitation.
@@ -643,7 +643,7 @@ export interface ChatGroupEventListener {
   /**
    * Occurs when the current user is removed from the group.
    *
-   * @param params The parameter set.
+   * @params The parameter set.
    * - Param [groupId] The group ID.
    * - Param [groupName] The group name.
    */
@@ -651,7 +651,7 @@ export interface ChatGroupEventListener {
   /**
    * Occurs when a group is destroyed.
    *
-   * @param params The parameter set.
+   * @params The parameter set.
    * - Param [groupId] The group ID.
    * - Param [groupName] The group name.
    */
@@ -661,7 +661,7 @@ export interface ChatGroupEventListener {
    *
    * For example, after user B invites user A to join the group, as user A sets {@link ChatOptions.autoAcceptGroupInvitation} to `true`, the invitee joins the group automatically and receives this callback.
    *
-   * @param params The parameter set.
+   * @params The parameter set.
    * - Param [groupId]			The group ID.
    * - Param [inviter]			The user ID of the inviter.
    * - Param [inviteMessage]    The invitation message.
@@ -676,7 +676,7 @@ export interface ChatGroupEventListener {
    *
    * A user, when muted, can still see group messages, but cannot send messages in the group. However, a user on the block list can neither see nor send group messages.
    *
-   * @param params The parameter set.
+   * @params The parameter set.
    * - Param [groupId] The group ID.
    * - Param [mutes] The user ID(s) of member(s) that are muted.
    * - Param [muteExpire] Reserved parameter. The Unix timestamp when the mute expires. The unit is millisecond.
@@ -689,7 +689,7 @@ export interface ChatGroupEventListener {
   /**
    * Occurs when one or more members are removed from the mute list of the group.
    *
-   * @param params The parameter set.
+   * @params The parameter set.
    * - Param [groupId] The group ID.
    * - Param [mutes] The user ID(s) of member(s) that is removed from the mute list.
    */
@@ -697,7 +697,7 @@ export interface ChatGroupEventListener {
   /**
    * Occurs when a member is set as an admin.
    *
-   * @param params The parameter set.
+   * @params The parameter set.
    * - Param [groupId] The group ID.
    * - Param [admin] The user ID of the member that is set as an admin.
    */
@@ -705,7 +705,7 @@ export interface ChatGroupEventListener {
   /**
    * Occurs when the administrative privileges of an admin are removed.
    *
-   * @param params The parameter set.
+   * @params The parameter set.
    * - Param [groupId] The group ID.
    * - Param [admin] The user ID of the admin whose administrative privileges are removed.
    */
@@ -713,7 +713,7 @@ export interface ChatGroupEventListener {
   /**
    * Occurs when the group ownership is transferred.
    *
-   * @param params The parameter set.
+   * @params The parameter set.
    * - Param [groupId] The group ID.
    * - Param [newOwner] The user ID of the new group owner.
    * - Param [oldOwner] The user ID of the previous group owner.
@@ -726,7 +726,7 @@ export interface ChatGroupEventListener {
   /**
    * Occurs when a user joins a group.
    *
-   * @param params The parameter set.
+   * @params The parameter set.
    * - Param [groupId] The group ID.
    * - Param [member] The user ID of the new member.
    */
@@ -734,7 +734,7 @@ export interface ChatGroupEventListener {
   /**
    * Occurs when a member voluntarily leaves the group.
    *
-   * @param params The parameter set.
+   * @params The parameter set.
    * - Param [groupId] The group ID.
    * - Param [member] The user ID of the member leaving the group.
    */
@@ -742,7 +742,7 @@ export interface ChatGroupEventListener {
   /**
    * Occurs when the group announcement is updated.
    *
-   * @param params The parameter set.
+   * @params The parameter set.
    * - Param [groupId] The group ID.
    * - Param [announcement] The new announcement.
    */
@@ -753,7 +753,7 @@ export interface ChatGroupEventListener {
   /**
    * Occurs when a shared file is added to the group.
    *
-   * @param params The parameter set.
+   * @params The parameter set.
    * - Param [groupId] The group ID.
    * - Param [sharedFile] The ID of the new shared file.
    */
@@ -761,7 +761,7 @@ export interface ChatGroupEventListener {
   /**
    * Occurs when a shared file is removed from a group.
    *
-   * @param params The parameter set.
+   * @params The parameter set.
    * - Param [groupId] The group ID.
    * - Param [fileId] The ID of the shared file that is deleted.
    */
@@ -769,7 +769,7 @@ export interface ChatGroupEventListener {
   /**
    * Occurs when one or more group members are added to the allow list.
    *
-   * @param params The parameter set.
+   * @params The parameter set.
    * - Param [groupId] The group ID.
    * - Param [members] The user IDs of members that are added to the allow list of the group.
    */
@@ -777,7 +777,7 @@ export interface ChatGroupEventListener {
   /**
    * Occurs when one or more group members are removed from the allow list.
    *
-   * @param params The parameter set.
+   * @params The parameter set.
    * - Param [groupId] The group ID.
    * - Param [members] The user IDs of members that are removed from the allow list of the group.
    */
@@ -788,7 +788,7 @@ export interface ChatGroupEventListener {
   /**
    * Occurs when all group members are muted or unmuted.
    *
-   * @param params The parameter set.
+   * @params The parameter set.
    * - Param [groupId] The group ID.
    * - Param [isAllMuted] Whether all group members are muted.
    *   - `true`: Yes.
@@ -816,7 +816,7 @@ export interface ChatGroupEventListener {
   /**
    * Occurs when a custom attribute(s) of a group member is/are changed.
    *
-   * @param params -
+   * @params params
    * - groupId: The group ID.
    * - member: The group member.
    * - attributes: The modified custom attributes, in key-value format.
@@ -888,7 +888,7 @@ export interface ChatRoomEventListener {
   /**
    * Occurs when the chat room is destroyed.
    *
-   * @param params The parameter set.
+   * @params The parameter set.
    * - Param [roomId] The chat room ID.
    * - Param [roomName] The name of the chat room.
    */
@@ -896,7 +896,7 @@ export interface ChatRoomEventListener {
   /**
    * Occurs when a user joins the chat room.
    *
-   * @param params The parameter set.
+   * @params The parameter set.
    * - Param [roomId] The chat room ID.
    * - Param [participant] The user ID of the new member.
    */
@@ -904,7 +904,7 @@ export interface ChatRoomEventListener {
   /**
    * Occurs when a member voluntarily leaves the chat room.
    *
-   * @param params The parameter set.
+   * @params The parameter set.
    * - Param [roomId] The chat room ID.
    * - Param [participant] The user ID of the member who leaves the chat room.
    */
@@ -916,7 +916,7 @@ export interface ChatRoomEventListener {
   /**
    *  Occurs when a member is removed from a chat room.
    *
-   * @param params The parameter set.
+   * @params The parameter set.
    * - Param [roomId] The chat room ID.
    * - Param [roomName] The name of the chat room.
    * - Param [participant] The user ID of the member that is removed from a chat room.
@@ -929,7 +929,7 @@ export interface ChatRoomEventListener {
   /**
    * Occurs when a chat room member is added to the mute list.
    *
-   * @param params The parameter set.
+   * @params The parameter set.
    * - Param [roomId] The chat room ID.
    * - Param [mutes] The user ID(s) of muted member(s).
    * - Param [expireTime] Reserved parameter. The Unix timestamp when the mute duration expires.
@@ -942,7 +942,7 @@ export interface ChatRoomEventListener {
   /**
    * Occurs when one or more chat room members are removed from the mute list.
    *
-   * @param params The parameter set.
+   * @params The parameter set.
    * - Param [roomId] The chat room ID.
    * - Param [mutes] The user ID(s) of unmuted member(s).
    */
@@ -950,7 +950,7 @@ export interface ChatRoomEventListener {
   /**
    *Occurs when a chat room member is set as an admin.
    *
-   * @param params The parameter set.
+   * @params The parameter set.
    * - Param [roomId] The chat room ID.
    * - Param [admin]  The user ID of the member who is set as an admin.
    */
@@ -958,7 +958,7 @@ export interface ChatRoomEventListener {
   /**
    * Occurs when the administrative privileges of a chat room admin are removed.
    *
-   * @param params The parameter set.
+   * @params The parameter set.
    * - Param [roomId] The chat room ID.
    * - Param [admin] The user ID of the admin whose administrative privileges are removed.
    */
@@ -966,7 +966,7 @@ export interface ChatRoomEventListener {
   /**
    * Occurs when the chat room ownership is transferred.
    *
-   * @param params The parameter set.
+   * @params The parameter set.
    * - Param [roomId] The chat room ID.
    * - Param [newOwner] The user ID of the new chat room owner.
    * - Param [oldOwner] The user ID of the previous chat room owner.
@@ -979,7 +979,7 @@ export interface ChatRoomEventListener {
   /**
    * Occurs when the chat room announcement changes.
    *
-   * @param params The parameter set.
+   * @params The parameter set.
    * - Param [roomId] The chat room ID.
    * - Param [announcement] The new announcement.
    */
@@ -990,7 +990,7 @@ export interface ChatRoomEventListener {
   /**
    * Occurs when one or more chat room members are added to the allow list.
    *
-   * @param params The parameter set.
+   * @params The parameter set.
    * - Param [roomId] The chat room ID.
    * - Param [members] The member(s) added to the allow list of the chat room.
    */
@@ -998,7 +998,7 @@ export interface ChatRoomEventListener {
   /**
    * Occurs when one or more chat room members are removed from the allow list.
    *
-   * @param params The parameter set.
+   * @params The parameter set.
    * - Param [roomId] The chat room ID.
    * - Param [members] The member(s) removed from the allow list of the chat room.
    */
@@ -1006,7 +1006,7 @@ export interface ChatRoomEventListener {
   /**
    * Occurs when all members in the chat room are muted or unmuted.
    *
-   * @param params The parameter set.
+   * @params The parameter set.
    * - Param [roomId] The chat room ID.
    * - Param [isAllMuted] Whether all chat room members are muted.
    *   - `true`: Yes.
@@ -1027,7 +1027,7 @@ export interface ChatRoomEventListener {
   /**
    * Occurs when the custom chat room attributes (key-value) are updated.
    *
-   * @param params -
+   * @params params
    * - roomId: The chat room ID.
    * - attributes: The list of custom chat room attributes (key-value) that are updated.
    * - from: The user ID of the operator.
@@ -1040,7 +1040,7 @@ export interface ChatRoomEventListener {
 
   /**
    * Occurs when the custom chat room attributes (key-value) are removed.
-   * @param params -
+   * @params params
    * - roomId: The chat room ID.
    * - removedKeys: The key list of custom chat room attributes that are removed.
    * - from: The user ID of the operator.

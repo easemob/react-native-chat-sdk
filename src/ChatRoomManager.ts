@@ -1015,7 +1015,7 @@ export class ChatRoomManager extends Native {
   /**
    * Sets custom chat room attributes.
    *
-   * @param params -
+   * @params params
    * - roomId The chat room ID.
    * - attributes The chat room attributes to add. The attributes are in key-value format.
    * In a key-value pair, the key is the attribute name that can contain 128 characters at most; the value is the attribute value that cannot exceed 4096 characters.
@@ -1065,7 +1065,7 @@ export class ChatRoomManager extends Native {
   /**
    * Removes custom chat room attributes.
    *
-   * @param params -
+   * @params params
    * - roomId: The chat room ID.
    * - keys: The keys of the chat room attributes to remove.
    * - forced: Whether to remove the attributes with same key set by others.

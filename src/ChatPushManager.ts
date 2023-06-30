@@ -41,7 +41,7 @@ export class ChatPushManager extends Native {
   /**
    * Sets the offline push for the conversation.
    *
-   * @param params -
+   * @params params
    * - convId: The conversation ID.
    * - convType: The conversation type.
    * - option: The configuration options for the offline push.
@@ -74,7 +74,7 @@ export class ChatPushManager extends Native {
    *
    * After clearing, the conversation uses the offline push settings of the app. See {@link EMPushManager.setSilentModeForAll}.
    *
-   * @param params -
+   * @params params
    * - convId: The conversation ID.
    * - convType: The conversation type.
    *
@@ -101,7 +101,7 @@ export class ChatPushManager extends Native {
   /**
    * Gets the offline push settings of the conversation.
    *
-   * @param params -
+   * @params params
    * - convId: The conversation ID.
    * - convType: The conversation type.
    *

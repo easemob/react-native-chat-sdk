@@ -141,7 +141,7 @@ export class ChatSilentModeParam {
    *
    * The time frame of the do-not-disturb mode is valid only at the app level, but not for conversations.
    *
-   * @param params
+   * @params params
    * - startTime: The start point in the do-not-disturb time frame.
    * - endTime: The end point in the do-not-disturb time frame.
    * @returns The ChatSilentModeParam object.
