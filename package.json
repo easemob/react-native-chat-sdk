@@ -108,7 +108,9 @@
   "packageManager": "^yarn@1.22.15",
   "jest": {
     "preset": "react-native",
+    "testRegex": "/__tests__/.*\\.(test|spec)\\.(js|jsx|ts|tsx?)$",
     "modulePathIgnorePatterns": [
+      "<rootDir>/node_modules",
       "<rootDir>/example/node_modules",
       "<rootDir>/lib/"
     ]
