@@ -62,7 +62,7 @@
     "sdk"
   ],
   "repository": "https://github.com/easemob/react-native-chat-sdk",
-  "author": "asteriskzuo@hotmail.com",
+  "author": "Asterisk <zuoyu@agora.io> (https://github.com/asteriskzuo)",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/easemob/react-native-chat-sdk/issues"
