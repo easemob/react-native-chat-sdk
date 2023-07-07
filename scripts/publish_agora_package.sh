@@ -75,7 +75,7 @@ sed -i '' '/"prepare": "yarn run version && yarn run bb",/d' ${current_dir}/Outp
 sed -i '' 's/https:\/\/github.com\/easemob\/react-native-chat-sdk#readme/https:\/\/www.npmjs.com\/package\/react-native-agora-chat/g' ${current_dir}/Output/node_modules/${new_package_name}/package.json
 sed -i '' 's/\/easemob\/react-native-chat-sdk\/issues//g' ${current_dir}/Output/node_modules/${new_package_name}/package.json
 sed -i '' 's/https:\/\/github.com\/easemob\/react-native-chat-sdk//g' ${current_dir}/Output/node_modules/${new_package_name}/package.json
-sed -i '' 's/easemob-npm <npm@easemob.com> (https:\/\/github.com\/easemob)/asteriskzuo@hotmail.com/g' ${current_dir}/Output/node_modules/${new_package_name}/package.json
+sed -i '' 's/easemob-npm <npm@easemob.com> (https:\/\/github.com\/easemob)/Asterisk <zuoyu@agora.io> \(https:\/\/github.com\/asteriskzuo\)/g' ${current_dir}/Output/node_modules/${new_package_name}/package.json
 
 sed -i '' 's/For more examples, see here.\[Portal\](https:\/\/github.com\/easemob\/react-native-chat-sdk\/tree\/dev\/examples)//g' ${current_dir}/Output/node_modules/${new_package_name}/README.md
 sed -i '' 's/react-native-chat-sdk/react-native-agora-chat/g' ${current_dir}/Output/node_modules/${new_package_name}/README.md
