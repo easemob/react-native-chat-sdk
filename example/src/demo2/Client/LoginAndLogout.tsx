@@ -17,6 +17,7 @@ import {
 
 import { datasheet } from '../__default__/Datasheet';
 import { styleValues } from '../__internal__/Css';
+import { AppServerClient } from './AppServer';
 
 interface State {
   loginStatus: string;
@@ -48,20 +49,38 @@ export class LoginAndLogoutScreen extends Component<
   }
 
   private login(isPassword: boolean, isAgora?: boolean): void {
-    console.log(`${LoginAndLogoutScreen.TAG}: login`);
+    console.log(
+      `${LoginAndLogoutScreen.TAG}: login ${this.state.useName} ${this.state.password} ${isPassword} ${isAgora}`
+    );
     if (isAgora) {
-      ChatClient.getInstance()
-        .loginWithAgoraToken(this.state.useName, this.state.password)
-        .then((value: any) => {
-          console.log(`${LoginAndLogoutScreen.TAG}: login: success`, value);
-          this.setState({ connectStatus: `login: success` + value });
-        })
-        .catch((reason: any) => {
-          console.log(`${LoginAndLogoutScreen.TAG}: login: fail`);
-          this.setState({
-            connectStatus: `login: fail: ${reason.code} ${reason.description}`,
-          });
-        });
+      AppServerClient.getAccountToken({
+        userId: this.state.useName,
+        userPassword: this.state.password,
+        onResult: (params: { data?: any; error?: any }) => {
+          console.log('test:getAccountToken:', params);
+          if (params.error === undefined) {
+            ChatClient.getInstance()
+              .loginWithAgoraToken(this.state.useName, params.data.token)
+              .then((value) => {
+                console.log(
+                  `${LoginAndLogoutScreen.TAG}: login: success`,
+                  value
+                );
+                this.setState({ connectStatus: `login: success` + value });
+              })
+              .catch((reason) => {
+                console.log(
+                  `${LoginAndLogoutScreen.TAG}: login: fail ${JSON.stringify(
+                    reason
+                  )}`
+                );
+                this.setState({
+                  connectStatus: `login: fail: ${reason.code} ${reason.description}`,
+                });
+              });
+          }
+        },
+      });
     } else {
       ChatClient.getInstance()
         .login(this.state.useName, this.state.password, isPassword)

@@ -11,6 +11,7 @@ import {
   Stack,
   unregisterComponents,
 } from './__internal__/Utils';
+import { AppServerClient } from './Client/AppServer';
 // import messaging from '@react-native-firebase/messaging';
 
 function HomeScreen(params: { navigation: any }) {
@@ -34,6 +35,8 @@ function HomeScreen(params: { navigation: any }) {
 }
 
 function App() {
+  AppServerClient.regUrl = 'https://a41.chat.agora.io/app/chat/user/register';
+  AppServerClient.tokenUrl = 'https://a41.chat.agora.io/app/chat/user/login';
   return (
     <NavigationContainer>
       <Stack.Navigator initialRouteName="Home">

@@ -812,7 +812,7 @@ export const metaDataList = new Map<string, ApiParams>([
         {
           paramName: 'msgId',
           paramType: 'string',
-          paramDefaultValue: '1017652723916474936',
+          paramDefaultValue: '1166078124673207044',
         },
       ],
     },
@@ -830,7 +830,7 @@ export const metaDataList = new Map<string, ApiParams>([
         {
           paramName: 'msgId',
           paramType: 'string',
-          paramDefaultValue: '1017560360250509880',
+          paramDefaultValue: '1166078124673207044',
         },
       ],
     },
