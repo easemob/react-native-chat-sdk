@@ -10,13 +10,9 @@ New features
 
 Improvements
 
-- Adds `ChatConnectEventListener.onUserDidLoginFromOtherDevice` notification.
-- Adds `ChatConnectEventListener.onUserDidRemoveFromServer` notification.
-- Adds `ChatConnectEventListener.onUserDidForbidByServer` notification.
-- Adds `ChatConnectEventListener.onUserDidChangePassword` notification.
-- Adds `ChatConnectEventListener.onUserDidLoginTooManyDevice` notification.
-- Adds `ChatConnectEventListener.onUserKickedByOtherDevice` notification.
-- Adds `ChatConnectEventListener.onUserAuthenticationFailed` notification.
+- Optimize the disconnection notification, separate the notification of the server's active disconnection, and the user can specifically deal with the reason for the server's active disconnection.
+- Optimize git commit specification with commitlint. Code cannot be submitted if it is not in accordance with the specification.
+- Optimize git commit with lefthook. Add sensitive information check with gitleaks.
 
 Issues fixed
 
