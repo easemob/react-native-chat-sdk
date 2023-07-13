@@ -6,7 +6,7 @@ _English | [Chinese](./CHANGELOG.zh.md)_
 
 New features
 
-- React-Native upgrade to 0.71.11 from 0.68.5
+- React-Native upgrade to 0.71.11 from 0.66.5
 
 Improvements
 
