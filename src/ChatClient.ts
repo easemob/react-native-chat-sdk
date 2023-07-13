@@ -319,43 +319,43 @@ export class ChatClient extends BaseManager {
   private onUserDidLoginFromOtherDevice(): void {
     chatlog.log(`${ChatClient.TAG}: onUserDidLoginFromOtherDevice: `);
     this._connectionListeners.forEach((element) => {
-      element.onDisconnected?.(206);
+      element.onUserDidLoginFromOtherDevice?.();
     });
   }
   private onUserDidRemoveFromServer(): void {
     chatlog.log(`${ChatClient.TAG}: onUserDidRemoveFromServer: `);
     this._connectionListeners.forEach((element) => {
-      element.onDisconnected?.(207);
+      element.onUserDidRemoveFromServer?.();
     });
   }
   private onUserDidForbidByServer(): void {
     chatlog.log(`${ChatClient.TAG}: onUserDidForbidByServer: `);
     this._connectionListeners.forEach((element) => {
-      element.onDisconnected?.(305);
+      element.onUserDidForbidByServer?.();
     });
   }
   private onUserDidChangePassword(): void {
     chatlog.log(`${ChatClient.TAG}: onUserDidChangePassword: `);
     this._connectionListeners.forEach((element) => {
-      element.onDisconnected?.(216);
+      element.onUserDidChangePassword?.();
     });
   }
   private onUserDidLoginTooManyDevice(): void {
     chatlog.log(`${ChatClient.TAG}: onUserDidLoginTooManyDevice: `);
     this._connectionListeners.forEach((element) => {
-      element.onDisconnected?.(214);
+      element.onUserDidLoginTooManyDevice?.();
     });
   }
   private onUserKickedByOtherDevice(): void {
     chatlog.log(`${ChatClient.TAG}: onUserKickedByOtherDevice: `);
     this._connectionListeners.forEach((element) => {
-      element.onDisconnected?.(217);
+      element.onUserKickedByOtherDevice?.();
     });
   }
   private onUserAuthenticationFailed(): void {
     chatlog.log(`${ChatClient.TAG}: onUserAuthenticationFailed: `);
     this._connectionListeners.forEach((element) => {
-      element.onDisconnected?.(202);
+      element.onUserAuthenticationFailed?.();
     });
   }
   private onAppActiveNumberReachLimit(): void {
@@ -548,7 +548,7 @@ export class ChatClient extends BaseManager {
   }
 
   /**
-   * Logs in to the chat server with a password or an Easemob token.
+   * Logs in to the chat server with a password or an Easemob token. An exception message is thrown if the login fails.
    *
    * **Note**
    *
@@ -588,7 +588,7 @@ export class ChatClient extends BaseManager {
   }
 
   /**
-   * Logs in to the chat server with the user ID and an Agora token.
+   * Logs in to the chat server with the user ID and an Agora token. An exception message is thrown if the login fails.
    *
    * **Note**
    *
@@ -642,7 +642,7 @@ export class ChatClient extends BaseManager {
   }
 
   /**
-   * Logs out of the chat app.
+   * Logs out of the chat app. An exception message is thrown if the logout fails.
    *
    * @param unbindDeviceToken Whether to unbind the token upon logout. This parameter is available only to mobile platforms.
    * - (Default) `true`: Yes.

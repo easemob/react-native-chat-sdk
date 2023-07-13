@@ -301,7 +301,7 @@ export interface ChatConnectEventListener {
   /**
    * Occurs when the SDK disconnects from the chat server.
    *
-   * The logout does not necessarily occur at the bottom level when the SDK is disconnected.
+   * The user also remains logged in. For the cases where the user is disconnected by the server, see {@link onAppActiveNumberReachLimit}, {@link onUserDidLoginFromOtherDevice}, {@link onUserDidRemoveFromServer}, {@link onUserDidForbidByServer}, {@link onUserDidChangePassword}, {@link onUserDidLoginTooManyDevice}, {@link onUserKickedByOtherDevice}, {@link onUserAuthenticationFailed}.
    *
    * @param errorCode The error code. See {@link ChatError}.
    */
@@ -319,8 +319,59 @@ export interface ChatConnectEventListener {
 
   /**
    * The number of daily active users (DAU) or monthly active users (MAU) for the app has reached the upper limit.
+   *
+   * The user is disconnected by the server.
    */
   onAppActiveNumberReachLimit?(): void;
+
+  /**
+   * Occurs when the current user account is logged in to another device.
+   *
+   * The user is disconnected by the server.
+   */
+  onUserDidLoginFromOtherDevice?(): void;
+
+  /**
+   * Occurs when the current chat user is removed from the server.
+   *
+   * The user is disconnected by the server.
+   */
+  onUserDidRemoveFromServer?(): void;
+
+  /**
+   * Occurs when the current chat user is banned from accessing the server.
+   *
+   * The user is disconnected by the server.
+   */
+  onUserDidForbidByServer?(): void;
+
+  /**
+   * Occurs when the current chat user changed the password.
+   *
+   * The user is disconnected by the server.
+   */
+  onUserDidChangePassword?(): void;
+
+  /**
+   * Occurs when the current chat user logged in to many devices.
+   *
+   * The user is disconnected by the server.
+   */
+  onUserDidLoginTooManyDevice?(): void;
+
+  /**
+   * Occurs when the current chat user is kicked out of the app by another device.
+   *
+   * The user is disconnected by the server.
+   */
+  onUserKickedByOtherDevice?(): void;
+
+  /**
+   * Occurs when the current chat user authentication failed.
+   *
+   * The user is disconnected by the server.
+   */
+  onUserAuthenticationFailed?(): void;
 }
 
 /**

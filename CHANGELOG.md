@@ -2,6 +2,26 @@ _English | [Chinese](./CHANGELOG.zh.md)_
 
 # Update Log
 
+## 1.2.0
+
+New features
+
+- React-Native upgrade to 0.71.11 from 0.68.5
+
+Improvements
+
+- Adds `ChatConnectEventListener.onUserDidLoginFromOtherDevice` notification.
+- Adds `ChatConnectEventListener.onUserDidRemoveFromServer` notification.
+- Adds `ChatConnectEventListener.onUserDidForbidByServer` notification.
+- Adds `ChatConnectEventListener.onUserDidChangePassword` notification.
+- Adds `ChatConnectEventListener.onUserDidLoginTooManyDevice` notification.
+- Adds `ChatConnectEventListener.onUserKickedByOtherDevice` notification.
+- Adds `ChatConnectEventListener.onUserAuthenticationFailed` notification.
+
+Issues fixed
+
+- Fix the problem that the application crashes due to the addition of emoticon responses under the android platform.
+
 ## 1.1.2
 
 New features
