@@ -302,10 +302,8 @@ export interface ChatConnectEventListener {
    * Occurs when the SDK disconnects from the chat server.
    *
    * The user also remains logged in. For the cases where the user is disconnected by the server, see {@link onAppActiveNumberReachLimit}, {@link onUserDidLoginFromOtherDevice}, {@link onUserDidRemoveFromServer}, {@link onUserDidForbidByServer}, {@link onUserDidChangePassword}, {@link onUserDidLoginTooManyDevice}, {@link onUserKickedByOtherDevice}, {@link onUserAuthenticationFailed}.
-   *
-   * @param errorCode The error code. See {@link ChatError}.
    */
-  onDisconnected?(errorCode?: number): void;
+  onDisconnected?(): void;
 
   /**
    * Occurs when the Agora token is about to expire.

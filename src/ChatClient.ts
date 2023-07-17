@@ -269,8 +269,8 @@ export class ChatClient extends BaseManager {
   private onDisconnected(params?: any): void {
     chatlog.log(`${ChatClient.TAG}: onDisconnected: `, params);
     this._connectionListeners.forEach((element) => {
-      let ec = params?.errorCode as number;
-      element.onDisconnected?.(ec);
+      // let ec = params?.errorCode as number;
+      element.onDisconnected?.();
     });
   }
   private onTokenWillExpire(params?: any): void {
