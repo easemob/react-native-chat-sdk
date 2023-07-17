@@ -135,7 +135,8 @@
           "revert",
           "style",
           "test",
-          "tag"
+          "tag",
+          "api"
         ]
       ]
     }
