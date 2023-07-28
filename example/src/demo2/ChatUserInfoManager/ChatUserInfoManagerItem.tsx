@@ -13,7 +13,14 @@ export interface StateChatUserInfoMessage extends StateBase {
     userIds: Array<string>;
   };
   updateOwnUserInfo: {
-    userInfo: object;
+    nickName: string;
+    avatarUrl: string;
+    mail: string;
+    phone: string;
+    gender: number;
+    sign: string;
+    birth: string;
+    ext: string;
   };
 }
 export class ChatUserInfoManagerLeafScreen extends LeafScreenBase<StateChatUserInfoMessage> {
@@ -103,9 +110,19 @@ export class ChatUserInfoManagerLeafScreen extends LeafScreenBase<StateChatUserI
         break;
       }
       case MN.updateOwnUserInfo: {
-        const { userInfo } = this.state.updateOwnUserInfo;
+        const { nickName, avatarUrl, mail, phone, gender, sign, birth, ext } =
+          this.state.updateOwnUserInfo;
         this.tryCatch(
-          ChatClient.getInstance().userManager.updateOwnUserInfo(userInfo),
+          ChatClient.getInstance().userManager.updateOwnUserInfo({
+            nickName,
+            avatarUrl,
+            mail,
+            phone,
+            gender,
+            sign,
+            birth,
+            ext,
+          }),
           ChatUserInfoManagerLeafScreen.TAG,
           name
         );
