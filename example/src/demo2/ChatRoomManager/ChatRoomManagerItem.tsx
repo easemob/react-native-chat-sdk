@@ -641,14 +641,14 @@ export class ChatRoomManagerLeafScreen extends LeafScreenBase<StateChatRoomMessa
         roomName?: string | undefined;
       }): void {
         console.log(
-          `${ChatRoomManagerLeafScreen.TAG}: onMemberJoined:`,
+          `${ChatRoomManagerLeafScreen.TAG}: onMemberExited:`,
           params.roomId,
           params.participant,
           params.roomName
         );
         this.that.setState({
           recvResult:
-            `onMemberJoined: ` +
+            `onMemberExited: ` +
             params.roomId +
             params.participant +
             params.roomName,
@@ -658,19 +658,22 @@ export class ChatRoomManagerLeafScreen extends LeafScreenBase<StateChatRoomMessa
         roomId: string;
         participant?: string | undefined;
         roomName?: string | undefined;
+        reason?: string | undefined;
       }): void {
         console.log(
           `${ChatRoomManagerLeafScreen.TAG}: onRemoved:`,
           params.roomId,
           params.participant,
-          params.roomName
+          params.roomName,
+          params.reason
         );
         this.that.setState({
           recvResult:
             `onRemoved: ` +
             params.roomId +
             params.participant +
-            params.roomName,
+            params.roomName +
+            params.reason,
         });
       }
       onMuteListAdded(params: {

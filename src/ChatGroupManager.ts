@@ -1406,23 +1406,23 @@ export class ChatGroupManager extends BaseManager {
    * Only the group owner or admin can call this method.
    *
    * @param groupId The group ID.
-   * @param username The ID of the user who sends a request to join the group.
+   * @param userId The ID of the user who sends a request to join the group.
    *
    * @throws A description of the exception. See {@link ChatError}.
    */
   public async acceptJoinApplication(
     groupId: string,
-    username: string
+    userId: string
   ): Promise<void> {
     chatlog.log(
       `${ChatGroupManager.TAG}: acceptJoinApplication: `,
       groupId,
-      username
+      userId
     );
     let r: any = await Native._callMethod(MTacceptJoinApplication, {
       [MTacceptJoinApplication]: {
         groupId,
-        username,
+        username: userId,
       },
     });
     ChatGroupManager.checkErrorFromResult(r);

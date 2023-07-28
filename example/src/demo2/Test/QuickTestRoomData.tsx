@@ -44,7 +44,7 @@ export const metaDataList = new Map<string, ApiParams>([
         {
           paramName: 'roomId',
           paramType: 'string',
-          paramDefaultValue: '187507809517570',
+          paramDefaultValue: '221008568057862',
           domType: 'input',
         },
       ],
@@ -145,7 +145,7 @@ export const metaDataList = new Map<string, ApiParams>([
         {
           paramName: 'members',
           paramType: 'json',
-          paramDefaultValue: ['bye', 'nat'],
+          paramDefaultValue: ['asterisk002', 'asterisk003'],
           domType: 'input',
         },
         {
@@ -377,13 +377,13 @@ export const metaDataList = new Map<string, ApiParams>([
         {
           paramName: 'roomId',
           paramType: 'string',
-          paramDefaultValue: '180456077197313',
+          paramDefaultValue: '221008568057862',
           domType: 'input',
         },
         {
           paramName: 'members',
           paramType: 'json',
-          paramDefaultValue: ['nat'],
+          paramDefaultValue: ['asterisk003'],
           domType: 'input',
         },
       ],

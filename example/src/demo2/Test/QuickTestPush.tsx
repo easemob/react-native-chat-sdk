@@ -262,6 +262,36 @@ export class QuickTestScreenPush extends QuickTestScreenBase<
           );
         }
         break;
+      case MN.selectPushTemplate:
+        {
+          const methodName = this.metaData.get(
+            MN.selectPushTemplate
+          )!.methodName;
+          console.log(`${MN.selectPushTemplate} === ${methodName}`);
+          const templateName = this.metaData.get(MN.updatePushDisplayStyle)!
+            .params[0]!.paramDefaultValue;
+          this.tryCatch(
+            ChatClient.getInstance().pushManager.selectPushTemplate(
+              templateName
+            ),
+            QuickTestScreenPush.TAG,
+            name
+          );
+        }
+        break;
+      case MN.fetchSelectedPushTemplate:
+        {
+          const methodName = this.metaData.get(
+            MN.fetchSelectedPushTemplate
+          )!.methodName;
+          console.log(`${MN.fetchSelectedPushTemplate} === ${methodName}`);
+          this.tryCatch(
+            ChatClient.getInstance().pushManager.fetchSelectedPushTemplate(),
+            QuickTestScreenPush.TAG,
+            name
+          );
+        }
+        break;
 
       default:
         console.log(`${name}`);

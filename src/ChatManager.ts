@@ -5,7 +5,6 @@ import {
   MTackConversationRead,
   MTackGroupMessageRead,
   MTackMessageRead,
-  // MTsyncConversationName,
   MTaddReaction,
   MTasyncFetchGroupAcks,
   MTclearAllMessages,
@@ -15,6 +14,7 @@ import {
   MTdeleteMessagesWithTs,
   MTdeleteRemoteConversation,
   MTdestroyChatThread,
+  MTdownloadAndParseCombineMessage,
   MTdownloadAttachment,
   MTdownloadThumbnail,
   MTfetchChatThreadDetail,
@@ -31,10 +31,12 @@ import {
   MTfetchSupportLanguages,
   MTgetConversation,
   MTgetConversationsFromServer,
+  MTgetConversationsFromServerWithCursor,
   MTgetLatestMessage,
   MTgetLatestMessageFromOthers,
   MTgetMessage,
   MTgetMessageThread,
+  MTgetPinnedConversationsFromServerWithCursor,
   MTgetReactionList,
   MTgetThreadConversation,
   MTgetUnreadMessageCount,
@@ -53,6 +55,7 @@ import {
   MTmarkAllMessagesAsRead,
   MTmarkMessageAsRead,
   MTmessageReactionDidChange,
+  MTmodifyMessage,
   MTonChatThreadCreated,
   MTonChatThreadDestroyed,
   MTonChatThreadUpdated,
@@ -61,11 +64,13 @@ import {
   MTonConversationHasRead,
   MTonConversationUpdate,
   MTonGroupMessageRead,
+  MTonMessageContentChanged,
   MTonMessagesDelivered,
   MTonMessagesRead,
   MTonMessagesRecalled,
   MTonMessagesReceived,
   MTonReadAckForGroupMessageUpdated,
+  MTpinConversation,
   MTrecallMessage,
   MTremoveMemberFromChatThread,
   MTremoveMessage,
@@ -96,6 +101,7 @@ import { ChatGroupMessageAck } from './common/ChatGroup';
 import {
   ChatFetchMessageOptions,
   ChatMessage,
+  ChatMessageBody,
   ChatMessageChatType,
   ChatMessageStatus,
   ChatMessageStatusCallback,
@@ -222,6 +228,11 @@ export class ChatManager extends BaseManager {
     event.addListener(
       MTonChatThreadUserRemoved,
       this.onChatMessageThreadUserRemoved.bind(this)
+    );
+    event.removeAllListeners(MTonMessageContentChanged);
+    event.addListener(
+      MTonMessageContentChanged,
+      this.onMessageContentChanged.bind(this)
     );
   }
 
@@ -372,6 +383,17 @@ export class ChatManager extends BaseManager {
     this._messageListeners.forEach((listener: ChatMessageEventListener) => {
       listener.onChatMessageThreadUserRemoved?.(
         new ChatMessageThreadEvent(params)
+      );
+    });
+  }
+
+  private onMessageContentChanged(params: any): void {
+    chatlog.log(`${ChatManager.TAG}: onMessageContentChanged: `, params);
+    this._messageListeners.forEach((listener: ChatMessageEventListener) => {
+      listener.onMessageContentChanged?.(
+        ChatMessage.createReceiveMessage(params.message),
+        params.lastModifyOperatorId,
+        params.lastModifyTime
       );
     });
   }
@@ -1077,6 +1099,8 @@ export class ChatManager extends BaseManager {
   }
 
   /**
+   * @deprecated 2023-07-24
+   *
    * Gets the conversation list from the server.
    *
    * **Note**
@@ -1379,11 +1403,15 @@ export class ChatManager extends BaseManager {
    *
    * @throws A description of the exception. See {@link ChatError}.
    */
-  public async deleteAllMessages(
+  public async deleteConversationAllMessages(
     convId: string,
     convType: ChatConversationType
   ): Promise<void> {
-    chatlog.log(`${ChatManager.TAG}: deleteAllMessages: `, convId, convType);
+    chatlog.log(
+      `${ChatManager.TAG}: deleteConversationAllMessages: `,
+      convId,
+      convType
+    );
     let r: any = await Native._callMethod(MTclearAllMessages, {
       [MTclearAllMessages]: {
         convId: convId,
@@ -2473,5 +2501,187 @@ export class ChatManager extends BaseManager {
       },
     });
     Native.checkErrorFromResult(r);
+  }
+
+  /**
+   * Get the list of conversations from the server with pagination.
+   *
+   * The SDK retrieves the list of conversations in the reverse chronological order of their active time (the timestamp of the last message).
+   *
+   * If there is no message in the conversation, the SDK retrieves the list of conversations in the reverse chronological order of their creation time.
+   *
+   * @param cursor: The cursor position from which to start querying data.
+   * @param pageSize: The number of conversations that you expect to get on each page. The value range is [1,50].
+   *
+   * @returns The list of retrieved conversations.
+   *
+   * @throws A description of the exception. See {@link ChatError}.
+   */
+  public async fetchConversationsFromServerWithCursor(
+    cursor?: string,
+    pageSize?: number
+  ): Promise<ChatCursorResult<ChatConversation>> {
+    chatlog.log(
+      `${ChatManager.TAG}: fetchConversationsFromServerWithCursor: ${cursor}, ${pageSize}`
+    );
+    let r: any = await Native._callMethod(
+      MTgetConversationsFromServerWithCursor,
+      {
+        [MTgetConversationsFromServerWithCursor]: {
+          cursor: cursor ?? '',
+          pageSize: pageSize ?? 20,
+        },
+      }
+    );
+    Native.checkErrorFromResult(r);
+    let ret = new ChatCursorResult<ChatConversation>({
+      cursor: r?.[MTgetConversationsFromServerWithCursor].cursor,
+      list: r?.[MTgetConversationsFromServerWithCursor].list,
+      opt: {
+        map: (param: any) => {
+          return new ChatConversation(param);
+        },
+      },
+    });
+    return ret;
+  }
+
+  /**
+   * Get the list of pinned conversations from the server with pagination.
+   *
+   * The SDK returns the pinned conversations in the reverse chronological order of their pinning.
+   *
+   * @param cursor: The cursor position from which to start querying data.
+   * @param pageSize: The number of conversations that you expect to get on each page. The value range is [1,50].
+   *
+   * @returns The list of retrieved conversations.
+   *
+   * @throws A description of the exception. See {@link ChatError}.
+   */
+  public async fetchPinnedConversationsFromServerWithCursor(
+    cursor?: string,
+    pageSize?: number
+  ): Promise<ChatCursorResult<ChatConversation>> {
+    chatlog.log(
+      `${ChatManager.TAG}: fetchPinnedConversationsFromServerWithCursor: ${cursor}, ${pageSize}`
+    );
+    let r: any = await Native._callMethod(
+      MTgetPinnedConversationsFromServerWithCursor,
+      {
+        [MTgetPinnedConversationsFromServerWithCursor]: {
+          cursor: cursor ?? '',
+          pageSize: pageSize ?? 20,
+        },
+      }
+    );
+    Native.checkErrorFromResult(r);
+    let ret = new ChatCursorResult<ChatConversation>({
+      cursor: r?.[MTgetPinnedConversationsFromServerWithCursor].cursor,
+      list: r?.[MTgetPinnedConversationsFromServerWithCursor].list,
+      opt: {
+        map: (param: any) => {
+          return new ChatConversation(param);
+        },
+      },
+    });
+    return ret;
+  }
+
+  /**
+   * Sets whether to pin a conversation.
+   *
+   * @param convId The conversation ID.
+   * @param isPinned Whether to pin a conversation:
+   * - `true`：Yes.
+   * - `false`: No. The conversation is unpinned.
+   *
+   * @throws A description of the exception. See {@link ChatError}.
+   */
+  public async pinConversation(
+    convId: string,
+    isPinned: boolean
+  ): Promise<void> {
+    chatlog.log(`${ChatManager.TAG}: pinConversation: ${convId}, ${isPinned}`);
+    let r: any = await Native._callMethod(MTpinConversation, {
+      [MTpinConversation]: {
+        convId,
+        isPinned,
+      },
+    });
+    Native.checkErrorFromResult(r);
+  }
+
+  /**
+   * Modifies a local message or a message at the server side.
+   *
+   * You can call this method to only modify a text message in one-to-one chats or group chats, but not in chat rooms.
+   *
+   * @param msgId The ID of the message to modify.
+   * @param body The modified text message body. See {@link ChatTextMessageBody}.
+   *
+   * @returns Modified message with modify information. See {@link ChatMessageBody}.
+   *
+   * @throws A description of the exception. See {@link ChatError}.
+   */
+  public async modifyMessageBody(
+    msgId: string,
+    body: ChatMessageBody
+  ): Promise<ChatMessage> {
+    chatlog.log(
+      `${ChatManager.TAG}: modifyMessageBody: ${msgId}, ${body.type}`
+    );
+    if (body.type !== ChatMessageType.TXT) {
+      throw new ChatError({
+        code: 1,
+        description:
+          'Currently only text message content modification is supported.',
+      });
+    }
+    let r: any = await Native._callMethod(MTmodifyMessage, {
+      [MTmodifyMessage]: {
+        msgId,
+        body,
+      },
+    });
+    Native.checkErrorFromResult(r);
+    const rr = r?.[MTmodifyMessage];
+    return new ChatMessage(rr);
+  }
+
+  /**
+   * Get information about combine type messages. A combine type message contains multiple messages, and these messages are obtained through this method.
+   *
+   * @param message The combine message.
+   *
+   * @returns The message list in this message body.
+   *
+   * @throws A description of the exception. See {@link ChatError}.
+   */
+  public async fetchCombineMessageDetail(
+    message: ChatMessage
+  ): Promise<Array<ChatMessage>> {
+    chatlog.log(
+      `${ChatManager.TAG}: fetchCombineMessageDetail: ${message.body.type}`
+    );
+    if (message.body.type !== ChatMessageType.COMBINE) {
+      throw new ChatError({
+        code: 1,
+        description: 'Please select a combine type message.',
+      });
+    }
+    let r: any = await Native._callMethod(MTdownloadAndParseCombineMessage, {
+      [MTdownloadAndParseCombineMessage]: {
+        message,
+      },
+    });
+    Native.checkErrorFromResult(r);
+    const ret: ChatMessage[] = [];
+    const rr = r?.[MTdownloadAndParseCombineMessage];
+    if (rr) {
+      Object.entries(rr).forEach((value: [string, any]) => {
+        ret.push(new ChatMessage(value[1]));
+      });
+    }
+    return ret;
   }
 }

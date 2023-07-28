@@ -154,6 +154,26 @@ export class ChatOptions {
    */
   areaCode: ChatAreaCode;
 
+  /**
+   * Whether to include empty conversations when the SDK loads conversations from the local database. Default is false.
+   */
+  enableEmptyConversation: boolean;
+
+  /**
+   * Custom device name.
+   *
+   * This attribute does not take effect when `customOSType` is set to `-1`.
+   *
+   * Typical application: User A's mobile phone and pad want to log in at the same time, set customOSType to `1`, customDeviceName to `foo`, and it can be done.
+   *
+   */
+  customDeviceName?: string;
+
+  /**
+   * Custom system type.
+   */
+  customOSType?: number;
+
   constructor(params: {
     appKey: string;
     autoLogin?: boolean;
@@ -173,6 +193,9 @@ export class ChatOptions {
     areaCode?: ChatAreaCode;
     logTag?: string;
     logTimestamp?: boolean;
+    enableEmptyConversation?: boolean;
+    customDeviceName?: string;
+    customOSType?: number;
   }) {
     this.appKey = params.appKey;
     this.autoLogin = params.autoLogin ?? true;
@@ -199,5 +222,8 @@ export class ChatOptions {
     this.areaCode = params.areaCode ?? ChatAreaCode.GLOB;
     this.logTag = params.logTag;
     this.logTimestamp = params.logTimestamp;
+    this.enableEmptyConversation = params.enableEmptyConversation ?? false;
+    this.customDeviceName = params.customDeviceName;
+    this.customOSType = params.customOSType;
   }
 }

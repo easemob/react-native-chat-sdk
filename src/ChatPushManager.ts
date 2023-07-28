@@ -6,9 +6,11 @@ import {
   MTfetchSilentModeForAll,
   MTfetchSilentModeForConversations,
   MTgetImPushConfigFromServer,
+  MTgetPushTemplate,
   MTremoveConversationSilentMode,
   MTsetConversationSilentMode,
   MTsetPreferredNotificationLanguage,
+  MTsetPushTemplate,
   MTsetSilentModeForAll,
   MTupdateImPushStyle,
   MTupdatePushNickname,
@@ -278,6 +280,8 @@ export class ChatPushManager extends Native {
    * Gets the push configurations from the server.
    *
    * @returns The push options.
+   *
+   * @throws A description of the exception. See {@link ChatError}.
    */
   public async fetchPushOptionFromServer(): Promise<ChatPushOption> {
     chatlog.log(
@@ -286,5 +290,38 @@ export class ChatPushManager extends Native {
     let r: any = await Native._callMethod(MTgetImPushConfigFromServer);
     ChatPushManager.checkErrorFromResult(r);
     return new ChatPushOption(r?.[MTgetImPushConfigFromServer]);
+  }
+
+  /**
+   * Select the push template with template name for offline push, and send to Server.
+   *
+   * The push template can be set through restful or console.
+   *
+   * @param templateName The push template name. If the name does not exist in the console, although this method will not return an error, it will not take effect.
+   *
+   * @throws A description of the exception. See {@link ChatError}.
+   */
+  public async selectPushTemplate(templateName: string): Promise<void> {
+    chatlog.log(`${ChatPushManager.TAG}: ${this.selectPushTemplate.name}`);
+    let r: any = await Native._callMethod(MTsetPushTemplate, {
+      [MTsetPushTemplate]: { templateName },
+    });
+    ChatPushManager.checkErrorFromResult(r);
+  }
+
+  /**
+   * Get selected push template for offline push.
+   *
+   * @returns The selected template name.
+   *
+   * @throws A description of the exception. See {@link ChatError}.
+   */
+  public async fetchSelectedPushTemplate(): Promise<string | undefined> {
+    chatlog.log(
+      `${ChatPushManager.TAG}: ${this.fetchSelectedPushTemplate.name}`
+    );
+    let r: any = await Native._callMethod(MTgetPushTemplate);
+    ChatPushManager.checkErrorFromResult(r);
+    return r?.[MTgetPushTemplate].templateName as string | undefined;
   }
 }

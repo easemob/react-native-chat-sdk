@@ -63,6 +63,12 @@ export interface StateSendMessage extends StateBase {
   event: string;
   ext: { [index: string]: string };
 
+  // combine message body
+  title: string;
+  summary: string;
+  compatibleText: string;
+  msgIdList: string[];
+
   // message attribute
   attr?: string;
 
@@ -72,6 +78,8 @@ export interface StateSendMessage extends StateBase {
   cb_result: string;
 
   priority: number;
+
+  tmp: string;
 }
 
 export interface StatelessSendMessage extends StatelessBase {}
@@ -125,6 +133,7 @@ export class SendMessageLeafScreen extends LeafScreenBase<StateSendMessage> {
     ]);
     const t = TestType.Video;
     this.state = {
+      tmp: '',
       sendResult: '',
       recvResult: '',
       exceptResult: '',
@@ -159,6 +168,16 @@ export class SendMessageLeafScreen extends LeafScreenBase<StateSendMessage> {
       event: '',
       ext: { k: 'v' },
 
+      // combine message body
+      title: 'title',
+      summary: '...',
+      compatibleText: '',
+      msgIdList: [
+        '1170944951337354656',
+        '1170945161216132512',
+        '1170945381442258336',
+      ],
+
       // message attribute
       attr: JSON.stringify({
         k: 'v',
@@ -177,6 +196,13 @@ export class SendMessageLeafScreen extends LeafScreenBase<StateSendMessage> {
       priority: 1,
     };
     this.statelessData = {};
+  }
+
+  private initData(): void {
+    const { msgIdList } = this.state;
+    if (msgIdList.length > 0) {
+      this.setState({ tmp: JSON.stringify(msgIdList) });
+    }
   }
 
   protected renderCallBackResult(): ReactNode[] {
@@ -212,6 +238,7 @@ export class SendMessageLeafScreen extends LeafScreenBase<StateSendMessage> {
   }
 
   protected addListener?(): void {
+    this.initData();
     let msgListener = new (class implements ChatMessageEventListener {
       that: SendMessageLeafScreen;
       constructor(parent: any) {
@@ -320,6 +347,21 @@ export class SendMessageLeafScreen extends LeafScreenBase<StateSendMessage> {
         );
         this.that.setState({
           recvResult: `onConversationRead: ${from}, ${to}`,
+        });
+      }
+      onMessageContentChanged?(
+        message: ChatMessage,
+        lastModifyOperatorId: string,
+        lastModifyTime: number
+      ): void {
+        console.log(
+          `${SendMessageLeafScreen.TAG}: onMessageContentChanged: `,
+          JSON.stringify(message),
+          lastModifyOperatorId,
+          lastModifyTime
+        );
+        this.that.setState({
+          recvResult: `onMessageContentChanged: ${lastModifyOperatorId}, ${lastModifyTime}`,
         });
       }
     })(this);
@@ -452,6 +494,42 @@ export class SendMessageLeafScreen extends LeafScreenBase<StateSendMessage> {
       this.renderSendMessageAttribute(),
     ];
   }
+  protected renderSendMessageBodyCombine(): ReactNode[] {
+    const { msgIdList, title, summary, compatibleText, tmp } = this.state;
+    return [
+      this.renderParamWithInput('title', title, (text: string) => {
+        this.setState({
+          title: text,
+        });
+      }),
+      this.renderParamWithInput('summary', summary, (text: string) => {
+        this.setState({
+          summary: text,
+        });
+      }),
+      this.renderParamWithInput(
+        'compatibleText',
+        compatibleText,
+        (text: string) => {
+          this.setState({
+            compatibleText: text,
+          });
+        }
+      ),
+      this.renderParamWithInput('msgIdList', tmp, (text: string) => {
+        this.setState({ tmp: text });
+        try {
+          const obj = JSON.parse(text) as Array<string>;
+          msgIdList.length = 0;
+          msgIdList.push(...obj);
+          this.setState({
+            msgIdList: msgIdList,
+          });
+        } catch (e) {}
+      }),
+      this.renderSendMessageAttribute(),
+    ];
+  }
   protected renderSendMessageBodyVoice(): ReactNode[] {
     const { filePath, displayName, duration } = this.state;
     return [
@@ -558,6 +636,8 @@ export class SendMessageLeafScreen extends LeafScreenBase<StateSendMessage> {
       return this.renderSendMessageBodyLocation();
     } else if (bodyType === ChatMessageType.CUSTOM) {
       return this.renderSendMessageBodyCustom();
+    } else if (bodyType === ChatMessageType.COMBINE) {
+      return this.renderSendMessageBodyCombine();
     } else {
       throw new Error('error: ' + bodyType);
     }
@@ -670,6 +750,7 @@ export class SendMessageLeafScreen extends LeafScreenBase<StateSendMessage> {
           ChatMessageType.FILE,
           ChatMessageType.LOCATION,
           ChatMessageType.CUSTOM,
+          ChatMessageType.COMBINE,
         ],
         messageType,
         (index: string, option: any) => {
@@ -690,6 +771,8 @@ export class SendMessageLeafScreen extends LeafScreenBase<StateSendMessage> {
             bt = ChatMessageType.LOCATION;
           } else if (option === ChatMessageType.CUSTOM) {
             bt = ChatMessageType.CUSTOM;
+          } else if (option === ChatMessageType.COMBINE) {
+            bt = ChatMessageType.COMBINE;
           } else {
             throw new Error('error: ' + option);
           }
@@ -806,6 +889,22 @@ export class SendMessageLeafScreen extends LeafScreenBase<StateSendMessage> {
             duration,
             isChatThread,
           });
+        }
+        break;
+      case ChatMessageType.COMBINE:
+        {
+          const { title, summary, compatibleText, msgIdList } = this.state;
+          ret = ChatMessage.createCombineMessage(
+            targetId,
+            msgIdList,
+            targetType,
+            {
+              title,
+              summary,
+              compatibleText,
+              isChatThread,
+            }
+          );
         }
         break;
       default:

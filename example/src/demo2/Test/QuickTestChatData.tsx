@@ -38,7 +38,7 @@ export const MN = {
   markAllMessagesAsRead: 'markAllMessagesAsRead',
   updateConversationMessage: 'updateConversationMessage',
   deleteMessage: 'deleteMessage',
-  deleteAllMessages: 'deleteAllMessages',
+  deleteConversationAllMessages: 'deleteConversationAllMessages',
   getMessagesWithMsgType: 'getMessagesWithMsgType',
   getMessages: 'getMessages',
   getMessagesWithKeyword: 'getMessagesWithKeyword',
@@ -76,6 +76,13 @@ export const MN = {
     'removeMessagesFromServerWithTimestamp',
   fetchHistoryMessagesByOptions: 'fetchHistoryMessagesByOptions',
   deleteMessagesWithTimestamp: 'deleteMessagesWithTimestamp',
+  fetchConversationsFromServerWithCursor:
+    'fetchConversationsFromServerWithCursor',
+  fetchPinnedConversationsFromServerWithCursor:
+    'fetchPinnedConversationsFromServerWithCursor',
+  pinConversation: 'pinConversation',
+  modifyMessageBody: 'modifyMessageBody',
+  fetchCombineMessageDetail: 'fetchCombineMessageDetail',
 };
 
 export const metaDataList = new Map<string, ApiParams>([
@@ -599,9 +606,9 @@ export const metaDataList = new Map<string, ApiParams>([
     },
   ],
   [
-    MN.deleteAllMessages,
+    MN.deleteConversationAllMessages,
     {
-      methodName: MN.deleteAllMessages,
+      methodName: MN.deleteConversationAllMessages,
       params: [
         {
           paramName: 'convId', // 使用发送成功或者失败的数据测试，依赖sendMessage
@@ -1359,6 +1366,136 @@ export const metaDataList = new Map<string, ApiParams>([
           paramName: 'endTs',
           paramType: 'number',
           paramDefaultValue: 16847450793740,
+        },
+      ],
+    },
+  ],
+  [
+    MN.fetchConversationsFromServerWithCursor,
+    {
+      methodName: MN.fetchConversationsFromServerWithCursor,
+      params: [
+        {
+          paramName: 'cursor',
+          paramType: 'string',
+          paramDefaultValue: '',
+        },
+        {
+          paramName: 'pageSize',
+          paramType: 'number',
+          paramDefaultValue: 2,
+        },
+      ],
+    },
+  ],
+  [
+    MN.fetchPinnedConversationsFromServerWithCursor,
+    {
+      methodName: MN.fetchPinnedConversationsFromServerWithCursor,
+      params: [
+        {
+          paramName: 'cursor',
+          paramType: 'string',
+          paramDefaultValue: '',
+        },
+        {
+          paramName: 'pageSize',
+          paramType: 'number',
+          paramDefaultValue: 2,
+        },
+      ],
+    },
+  ],
+  [
+    MN.pinConversation,
+    {
+      methodName: MN.pinConversation,
+      params: [
+        {
+          paramName: 'convId',
+          paramType: 'string',
+          paramDefaultValue: datasheet.accounts[2]!.id,
+        },
+        {
+          paramName: 'isPinned',
+          paramType: 'boolean',
+          paramDefaultValue: true,
+        },
+      ],
+    },
+  ],
+  [
+    MN.modifyMessageBody,
+    {
+      methodName: MN.modifyMessageBody,
+      params: [
+        {
+          paramName: 'msgId',
+          paramType: 'string',
+          paramDefaultValue: '1171296473862636988',
+        },
+        {
+          paramName: 'body',
+          paramType: 'json',
+          paramDefaultValue: {
+            content: '123',
+            lastModifyOperatorId: '',
+            lastModifyTime: 0,
+            modifyCount: 0,
+            targetLanguageCodes: undefined,
+            translations: {},
+            type: 'txt',
+          },
+        },
+      ],
+    },
+  ],
+  [
+    MN.fetchCombineMessageDetail,
+    {
+      methodName: MN.fetchCombineMessageDetail,
+      params: [
+        {
+          paramName: 'message',
+          paramType: 'json',
+          paramDefaultValue: {
+            msgId: '1170945161216132512',
+            localMsgId: '1690196941352',
+            conversationId: 'asterisk003',
+            from: 'asterisk001',
+            to: 'asterisk003',
+            localTime: 1690196941352,
+            serverTime: 1690196715627,
+            hasDeliverAck: false,
+            hasReadAck: false,
+            needGroupAck: false,
+            groupAckCount: 0,
+            hasRead: true,
+            status: 2,
+            attributes: { k: 'v', k4: 1, k5: 0.12, k3: true, k2: 10 },
+            chatType: 0,
+            direction: 'send',
+            body: {
+              type: 'combine',
+              lastModifyOperatorId: '',
+              lastModifyTime: 0,
+              modifyCount: 0,
+              localPath:
+                '/storage/emulated/0/Android/data/com.chatsdkexample/easemob-demo#flutter/files/asterisk001/asterisk003/1170945381442258336/1170945161216132512',
+              secret: '',
+              remotePath:
+                'https://a1.easemob.com/easemob-demo/flutter/chatfiles/f7d0c910-2a11-11ee-a545-c52a13fef54f',
+              fileStatus: -1,
+              fileSize: 0,
+              displayName: '',
+              title: 'title',
+              compatibleText: '',
+              summary: '...',
+            },
+            isChatThread: false,
+            isOnline: true,
+            deliverOnlineOnly: false,
+          },
         },
       ],
     },

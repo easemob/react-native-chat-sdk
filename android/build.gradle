@@ -68,6 +68,9 @@ android {
       srcDir '../native_src/java'
       exclude 'com/easemob/ext_sdk/flutter/*.java'
     }
+//    main.jniLibs {
+//      srcDirs = ["libs"]
+//    }
   }
 }
 
@@ -83,7 +86,8 @@ dependencies {
   // For > 0.71, this will be replaced by `com.facebook.react:react-android:$version` by react gradle plugin
   //noinspection GradleDynamicVersion
   implementation "com.facebook.react:react-native:+"
-  implementation 'io.hyphenate:hyphenate-chat:4.0.2'
+  implementation 'io.hyphenate:hyphenate-chat:4.1.0'
+  // implementation files('libs/hyphenatechat_4.1.0.jar')
 }
 
 if (isNewArchitectureEnabled()) {

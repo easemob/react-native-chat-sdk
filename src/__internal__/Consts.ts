@@ -29,6 +29,14 @@ export const MTonCustomEvent = 'onSendDataToFlutter';
 export const MTonTokenWillExpire = 'onTokenWillExpire';
 export const MTonTokenDidExpire = 'onTokenDidExpire';
 
+export const MTonMultiDeviceEventContact = 'onMultiDeviceEventContact';
+export const MTonMultiDeviceEventGroup = 'onMultiDeviceEventGroup';
+export const MTonMultiDeviceEventThread = 'onMultiDeviceEventThread';
+export const MTonMultiDeviceEventRemoveMessage =
+  'onMultiDeviceEventRemoveMessage';
+export const MTonMultiDeviceEventConversation =
+  'onMultiDeviceEventConversation';
+
 export const MTonUserDidLoginFromOtherDevice = 'onUserDidLoginFromOtherDevice';
 export const MTonUserDidRemoveFromServer = 'onUserDidRemoveFromServer';
 export const MTonUserDidForbidByServer = 'onUserDidForbidByServer';
@@ -69,7 +77,7 @@ export const MTdownloadAttachment = 'downloadAttachment';
 export const MTdownloadThumbnail = 'downloadThumbnail';
 export const MTimportMessages = 'importMessages';
 export const MTloadAllConversations = 'loadAllConversations';
-export const MTgetConversationsFromServer = 'getConversationsFromServer';
+export const MTgetConversationsFromServer = 'getConversationsFromServer'; // deprecated. 2023-07-24
 export const MTdeleteConversation = 'deleteConversation';
 export const MTfetchHistoryMessages = 'fetchHistoryMessages';
 export const MTfetchHistoryMessagesByOptions = 'fetchHistoryMessagesByOptions';
@@ -95,6 +103,15 @@ export const MTremoveMessagesFromServerWithMsgIds =
 export const MTremoveMessagesFromServerWithTs =
   'removeMessagesFromServerWithTs';
 
+export const MTgetConversationsFromServerWithCursor =
+  'getConversationsFromServerWithCursor';
+export const MTgetPinnedConversationsFromServerWithCursor =
+  'getPinnedConversationsFromServerWithCursor';
+export const MTpinConversation = 'pinConversation';
+export const MTmodifyMessage = 'modifyMessage';
+export const MTdownloadAndParseCombineMessage =
+  'downloadAndParseCombineMessage';
+
 /// ChatManager listener
 export const MTonMessagesReceived = 'onMessagesReceived';
 export const MTonCmdMessagesReceived = 'onCmdMessagesReceived';
@@ -109,6 +126,7 @@ export const MTonConversationHasRead = 'onConversationHasRead';
 export const MTonReadAckForGroupMessageUpdated =
   'onReadAckForGroupMessageUpdated';
 export const MTmessageReactionDidChange = 'messageReactionDidChange';
+export const MTonMessageContentChanged = 'onMessageContentChanged';
 
 export const MTonMessageProgressUpdate = 'onMessageProgressUpdate';
 export const MTonMessageError = 'onMessageError';
@@ -285,6 +303,8 @@ export const MTsetPreferredNotificationLanguage =
   'setPreferredNotificationLanguage';
 export const MTfetchPreferredNotificationLanguage =
   'fetchPreferredNotificationLanguage';
+export const MTsetPushTemplate = 'setPushTemplate';
+export const MTgetPushTemplate = 'getPushTemplate';
 
 /// ChatUserInfoManager methods
 export const MTupdateOwnUserInfo = 'updateOwnUserInfo';

@@ -199,6 +199,21 @@ export class QuickTestScreenChat extends QuickTestScreenBase<
             conv_listener: `onConversationRead: ${from}, ${to}`,
           });
         }
+        onMessageContentChanged?(
+          message: ChatMessage,
+          lastModifyOperatorId: string,
+          lastModifyTime: number
+        ): void {
+          console.log(
+            `${QuickTestScreenChat.TAG}: onMessageContentChanged: `,
+            JSON.stringify(message),
+            lastModifyOperatorId,
+            lastModifyTime
+          );
+          this.that.setState({
+            conv_listener: `onMessageContentChanged: ${lastModifyOperatorId}, ${lastModifyTime}`,
+          });
+        }
       })(this);
 
       ChatClient.getInstance().chatManager.removeAllMessageListener();
@@ -802,23 +817,23 @@ export class QuickTestScreenChat extends QuickTestScreenBase<
           );
         }
         break;
-      case MN.deleteAllMessages:
+      case MN.deleteConversationAllMessages:
         {
           const methodName = this.metaData.get(
-            MN.deleteAllMessages
+            MN.deleteConversationAllMessages
           )!.methodName;
-          console.log(`${MN.deleteAllMessages} === ${methodName}`);
-          const convId = this.metaData.get(MN.deleteAllMessages)?.params[0]!
-            .paramDefaultValue;
-          const convType = this.metaData.get(MN.deleteAllMessages)?.params[1]!
-            .paramDefaultValue;
+          console.log(`${MN.deleteConversationAllMessages} === ${methodName}`);
+          const convId = this.metaData.get(MN.deleteConversationAllMessages)
+            ?.params[0]!.paramDefaultValue;
+          const convType = this.metaData.get(MN.deleteConversationAllMessages)
+            ?.params[1]!.paramDefaultValue;
           this.tryCatch(
-            ChatClient.getInstance().chatManager.deleteAllMessages(
+            ChatClient.getInstance().chatManager.deleteConversationAllMessages(
               convId,
               convType
             ),
             QuickTestScreenChat.TAG,
-            MN.deleteAllMessages
+            MN.deleteConversationAllMessages
           );
         }
         break;
@@ -1579,6 +1594,106 @@ export class QuickTestScreenChat extends QuickTestScreenBase<
               convId,
               convType,
               { startTs, endTs }
+            ),
+            QuickTestScreenChat.TAG,
+            name
+          );
+        }
+        break;
+      case MN.fetchConversationsFromServerWithCursor:
+        {
+          const methodName = this.metaData.get(
+            MN.fetchConversationsFromServerWithCursor
+          )!.methodName;
+          console.log(
+            `${MN.fetchConversationsFromServerWithCursor} === ${methodName}`
+          );
+          const cursor = this.metaData.get(
+            MN.fetchConversationsFromServerWithCursor
+          )?.params[0]!.paramDefaultValue;
+          const pageSize = this.metaData.get(
+            MN.fetchConversationsFromServerWithCursor
+          )?.params[1]!.paramDefaultValue;
+          this.tryCatch(
+            ChatClient.getInstance().chatManager.fetchConversationsFromServerWithCursor(
+              cursor,
+              pageSize
+            ),
+            QuickTestScreenChat.TAG,
+            name
+          );
+        }
+        break;
+      case MN.fetchPinnedConversationsFromServerWithCursor:
+        {
+          const methodName = this.metaData.get(
+            MN.fetchPinnedConversationsFromServerWithCursor
+          )!.methodName;
+          console.log(
+            `${MN.fetchPinnedConversationsFromServerWithCursor} === ${methodName}`
+          );
+          const cursor = this.metaData.get(
+            MN.fetchPinnedConversationsFromServerWithCursor
+          )?.params[0]!.paramDefaultValue;
+          const pageSize = this.metaData.get(
+            MN.fetchPinnedConversationsFromServerWithCursor
+          )?.params[1]!.paramDefaultValue;
+          this.tryCatch(
+            ChatClient.getInstance().chatManager.fetchPinnedConversationsFromServerWithCursor(
+              cursor,
+              pageSize
+            ),
+            QuickTestScreenChat.TAG,
+            name
+          );
+        }
+        break;
+      case MN.pinConversation:
+        {
+          const methodName = this.metaData.get(MN.pinConversation)!.methodName;
+          console.log(`${MN.pinConversation} === ${methodName}`);
+          const convId = this.metaData.get(MN.pinConversation)?.params[0]!
+            .paramDefaultValue;
+          const isPinned = this.metaData.get(MN.pinConversation)?.params[1]!
+            .paramDefaultValue;
+          this.tryCatch(
+            ChatClient.getInstance().chatManager.pinConversation(
+              convId,
+              isPinned
+            ),
+            QuickTestScreenChat.TAG,
+            name
+          );
+        }
+        break;
+      case MN.modifyMessageBody:
+        {
+          const methodName = this.metaData.get(
+            MN.modifyMessageBody
+          )!.methodName;
+          console.log(`${MN.modifyMessageBody} === ${methodName}`);
+          const msgId = this.metaData.get(MN.modifyMessageBody)?.params[0]!
+            .paramDefaultValue;
+          const body = this.metaData.get(MN.modifyMessageBody)?.params[1]!
+            .paramDefaultValue;
+          this.tryCatch(
+            ChatClient.getInstance().chatManager.modifyMessageBody(msgId, body),
+            QuickTestScreenChat.TAG,
+            name
+          );
+        }
+        break;
+      case MN.fetchCombineMessageDetail:
+        {
+          const methodName = this.metaData.get(
+            MN.fetchCombineMessageDetail
+          )!.methodName;
+          console.log(`${MN.fetchCombineMessageDetail} === ${methodName}`);
+          const message = this.metaData.get(MN.fetchCombineMessageDetail)
+            ?.params[0]!.paramDefaultValue;
+          this.tryCatch(
+            ChatClient.getInstance().chatManager.fetchCombineMessageDetail(
+              message
             ),
             QuickTestScreenChat.TAG,
             name

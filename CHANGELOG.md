@@ -10,6 +10,7 @@ New features
 
 Improvements
 
+- Dependent native SDK upgraded to version 4.1.0 ('iOS' and 'Android'). Add new features provided by the native SDK.
 - Optimize the disconnection notification, separate the notification of the server's active disconnection, and the user can specifically deal with the reason for the server's active disconnection.
 - Optimize git commit specification with commitlint. Code cannot be submitted if it is not in accordance with the specification.
 - Optimize git commit with lefthook. Add sensitive information check with gitleaks.
@@ -17,6 +18,55 @@ Improvements
 Issues fixed
 
 - Fix the problem that the application crashes due to the addition of emoticon responses under the android platform.
+
+### Detail
+
+Rename API
+
+- `deleteConversationAllMessages` is renamed `deleteAllMessages`.
+
+Updated API
+
+- `getLoggedInDevicesFromServer`: add token support.
+- `kickDevice`: add token support.
+- `kickAllDevices`: add token support.
+
+Added API
+
+- `fetchConversationsFromServerWithCursor`: Get the list of conversations from the server with pagination.
+- `fetchPinnedConversationsFromServerWithCursor`: Get the list of pinned conversations from the server with pagination.
+- `pinConversation`: Sets whether to pin a conversation.
+- `modifyMessageBody`: Modifies a local message or a message at the server side.
+- `fetchCombineMessageDetail`: Get information about combine type messages.
+- `selectPushTemplate`: Select the push template with template name for offline push.
+- `fetchSelectedPushTemplate`: Get selected push template for offline push.
+
+Deprecated API
+
+- fetchAllConversations: please use `fetchConversationsFromServerWithCursor` instead.
+
+Update Data Object
+
+- `ChatConversation`: add `isPinned` and `pinnedTime` properties.
+- `ChatMessageType`: add `COMBINE` type message body.
+- `ChatMessage`: add `receiverList` property.
+- create send message: add `secret` parameter.
+- `ChatMessageBody`: add `lastModifyOperatorId`, `lastModifyTime` and `modifyCount` properties.
+- `ChatOptions`: add `enableEmptyConversation`, `customDeviceName` and `customOSType` properties.
+
+Add Data Object
+
+- `ChatCombineMessageBody`: add combine message body object.
+
+Update Listener
+
+- `ChatConnectEventListener.onUserDidLoginFromOtherDevice`: add `deviceName` parameter.
+- `ChatConnectEventListener`: add `onUserDidRemoveFromServer`, `onUserDidForbidByServer`, `onUserDidChangePassword`, `onUserDidLoginTooManyDevice`, `onUserKickedByOtherDevice`, `onUserAuthenticationFailed` event notifications.
+- `ChatConnectEventListener.onDisconnected`: remove code parameter.
+- `ChatMultiDeviceEventListener`: add `onMessageRemoved` event notification.
+- `ChatMultiDeviceEventListener`: add `onConversationEvent` event notification.
+- `ChatMessageEventListener`: add `onMessageContentChanged` event notification.
+- `ChatRoomEventListener.onRemoved`: add `reason` parameter.
 
 ## 1.1.2
 

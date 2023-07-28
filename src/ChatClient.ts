@@ -26,6 +26,11 @@ import {
   MTonCustomEvent,
   MTonDisconnected,
   MTonMultiDeviceEvent,
+  MTonMultiDeviceEventContact,
+  MTonMultiDeviceEventConversation,
+  MTonMultiDeviceEventGroup,
+  MTonMultiDeviceEventRemoveMessage,
+  MTonMultiDeviceEventThread,
   MTonTokenDidExpire,
   MTonTokenWillExpire,
   MTonUserAuthenticationFailed,
@@ -122,8 +127,8 @@ export class ChatClient extends BaseManager {
   private _customListeners: Set<ChatCustomEventListener>;
 
   private _options?: ChatOptions;
-  private _sdkVersion: string = '4.0.0';
-  private _rnSdkVersion: string = '1.1.0';
+  private readonly _sdkVersion: string = '4.0.0';
+  private readonly _rnSdkVersion: string = '1.1.0';
   private _isInit: boolean = false;
   private _currentUsername: string = '';
 
@@ -288,25 +293,42 @@ export class ChatClient extends BaseManager {
   private onMultiDeviceEvent(params?: any): void {
     chatlog.log(`${ChatClient.TAG}: onMultiDeviceEvent: `, params);
     this._multiDeviceListeners.forEach((element) => {
-      let event = params?.event as number;
-      if (event < 10) {
-        element.onContactEvent?.(
-          ChatMultiDeviceEventFromNumber(event),
-          params.target,
-          params.ext
-        );
-      } else if (event >= 10 && event < 40) {
-        element.onGroupEvent?.(
-          ChatMultiDeviceEventFromNumber(event),
-          params.target,
-          params.ext
-        );
-      } else {
-        element.onThreadEvent?.(
-          ChatMultiDeviceEventFromNumber(event),
-          params.target,
-          params.ext
-        );
+      const type = params.type as string;
+      switch (type) {
+        case MTonMultiDeviceEventContact:
+          element.onContactEvent?.(
+            ChatMultiDeviceEventFromNumber(params.event),
+            params.target,
+            params.ext
+          );
+          break;
+        case MTonMultiDeviceEventGroup:
+          element.onGroupEvent?.(
+            ChatMultiDeviceEventFromNumber(params.event),
+            params.target,
+            params.ext
+          );
+          break;
+        case MTonMultiDeviceEventThread:
+          element.onThreadEvent?.(
+            ChatMultiDeviceEventFromNumber(params.event),
+            params.target,
+            params.ext
+          );
+          break;
+        case MTonMultiDeviceEventRemoveMessage:
+          element.onMessageRemoved?.(params.convId, params.deviceId);
+          break;
+        case MTonMultiDeviceEventConversation:
+          element.onConversationEvent?.(
+            ChatMultiDeviceEventFromNumber(params.event),
+            params.convId,
+            params.convType
+          );
+          break;
+
+        default:
+          break;
       }
     });
   }
@@ -316,10 +338,11 @@ export class ChatClient extends BaseManager {
       element.onDataReceived(params);
     });
   }
-  private onUserDidLoginFromOtherDevice(): void {
+  private onUserDidLoginFromOtherDevice(params: any): void {
     chatlog.log(`${ChatClient.TAG}: onUserDidLoginFromOtherDevice: `);
     this._connectionListeners.forEach((element) => {
-      element.onUserDidLoginFromOtherDevice?.();
+      const deviceName = params.deviceName as string | undefined;
+      element.onUserDidLoginFromOtherDevice?.(deviceName);
     });
   }
   private onUserDidRemoveFromServer(): void {
@@ -521,7 +544,7 @@ export class ChatClient extends BaseManager {
    *
    * - Authorized registration: You can create a new user through a REST API, and then save it to your server or return it to the client.
    *
-   * @param username The user ID.
+   * @param userId The user ID.
    *                 Ensure that you set this parameter. The user ID can be a maximum of 64 characters of the following types:
    *                 - 26 English letters (a-z)
    *                 - 10 numbers (0-9),
@@ -533,14 +556,11 @@ export class ChatClient extends BaseManager {
    *
    * @throws A description of the exception. See {@link ChatError}.
    */
-  public async createAccount(
-    username: string,
-    password: string
-  ): Promise<void> {
-    chatlog.log(`${ChatClient.TAG}: createAccount: `, username, '******');
+  public async createAccount(userId: string, password: string): Promise<void> {
+    chatlog.log(`${ChatClient.TAG}: createAccount: `, userId, '******');
     let r: any = await Native._callMethod(MTcreateAccount, {
       [MTcreateAccount]: {
-        username: username,
+        username: userId,
         password: password,
       },
     });
@@ -558,7 +578,7 @@ export class ChatClient extends BaseManager {
    *
    * The token expiration reminder is notified by the two callback methods: {@link ChatConnectEventListener.onTokenWillExpire} and {@link ChatConnectEventListener.onTokenDidExpire}.
    *
-   * @param userName    The user ID. See {@link createAccount}.
+   * @param userId    The user ID. See {@link createAccount}.
    * @param pwdOrToken  The password or token. See {@link createAccount} or {@link getAccessToken}
    * @param isPassword  Whether to log in with a password or a token.
    *                    - `true`: A token is used.
@@ -567,14 +587,14 @@ export class ChatClient extends BaseManager {
    * @throws A description of the exception. See {@link ChatError}.
    */
   public async login(
-    userName: string,
+    userId: string,
     pwdOrToken: string,
     isPassword: boolean = true
   ): Promise<void> {
-    chatlog.log(`${ChatClient.TAG}: login: `, userName, '******', isPassword);
+    chatlog.log(`${ChatClient.TAG}: login: `, userId, '******', isPassword);
     let r: any = await Native._callMethod(MTlogin, {
       [MTlogin]: {
-        username: userName,
+        username: userId,
         pwdOrToken: pwdOrToken,
         isPassword: isPassword,
       },
@@ -596,19 +616,19 @@ export class ChatClient extends BaseManager {
    *
    * This method supports automatic login.
    *
-   * @param userName The user ID. See {@link createAccount}.
+   * @param userId The user ID. See {@link createAccount}.
    * @param agoraToken The Agora token.
    *
    * @throws A description of the exception. See {@link ChatError}.
    */
   public async loginWithAgoraToken(
-    userName: string,
+    userId: string,
     agoraToken: string
   ): Promise<void> {
-    chatlog.log(`${ChatClient.TAG}: loginWithAgoraToken: `, userName, '******');
+    chatlog.log(`${ChatClient.TAG}: loginWithAgoraToken: `, userId, '******');
     let r: any = await Native._callMethod(MTloginWithAgoraToken, {
       [MTloginWithAgoraToken]: {
-        username: userName,
+        username: userId,
         agoratoken: agoraToken,
       },
     });
@@ -710,25 +730,28 @@ export class ChatClient extends BaseManager {
   /**
    * Gets the list of online devices to which you have logged in with a specified account.
    *
-   * @param username The user ID.
-   * @param password The password.
+   * @param userId The user ID.
+   * @param pwdOrToken The password or token.
+   * @param isPassword If true, use password, otherwise use token. Default is true. See {@link pwdOrToken}
    * @returns The list of the online logged-in devices.
    *
    * @throws A description of the exception. See {@link ChatError}.
    */
   public async getLoggedInDevicesFromServer(
-    username: string,
-    password: string
+    userId: string,
+    pwdOrToken: string,
+    isPassword?: boolean
   ): Promise<Array<ChatDeviceInfo>> {
     chatlog.log(
       `${ChatClient.TAG}: getLoggedInDevicesFromServer: `,
-      username,
+      userId,
       '******'
     );
     let r: any = await Native._callMethod(MTgetLoggedInDevicesFromServer, {
       [MTgetLoggedInDevicesFromServer]: {
-        username: username,
-        password: password,
+        username: userId,
+        password: pwdOrToken,
+        isPassword: isPassword ?? true,
       },
     });
     ChatClient.checkErrorFromResult(r);
@@ -747,28 +770,26 @@ export class ChatClient extends BaseManager {
    *
    * For how to get the device ID, see {@link ChatDeviceInfo.resource}.
    *
-   * @param username The user ID.
-   * @param password The password.
+   * @param userId The user ID.
+   * @param pwdOrToken The password or token.
    * @param resource The device ID. See {@link ChatDeviceInfo.resource}.
+   * @param isPassword If true, use password, otherwise use token. Default is true. See {@link pwdOrToken}
    *
    * @throws A description of the exception. See {@link ChatError}.
    */
   public async kickDevice(
-    username: string,
-    password: string,
-    resource: string
+    userId: string,
+    pwdOrToken: string,
+    resource: string,
+    isPassword?: boolean
   ): Promise<void> {
-    chatlog.log(
-      `${ChatClient.TAG}: kickDevice: `,
-      username,
-      '******',
-      resource
-    );
+    chatlog.log(`${ChatClient.TAG}: kickDevice: `, userId, '******', resource);
     let r: any = await Native._callMethod(MTkickDevice, {
       [MTkickDevice]: {
-        username: username,
-        password: password,
+        username: userId,
+        password: pwdOrToken,
         resource: resource,
+        isPassword: isPassword ?? true,
       },
     });
     ChatClient.checkErrorFromResult(r);
@@ -777,20 +798,23 @@ export class ChatClient extends BaseManager {
   /**
    * Logs out from a specified account on all devices.
    *
-   * @param username The user ID.
-   * @param password The password.
+   * @param userId The user ID.
+   * @param pwdOrToken The password or token.
+   * @param isPassword If true, use password, otherwise use token. Default is true. See {@link pwdOrToken}
    *
    * @throws A description of the exception. See {@link ChatError}.
    */
   public async kickAllDevices(
-    username: string,
-    password: string
+    userId: string,
+    pwdOrToken: string,
+    isPassword?: boolean
   ): Promise<void> {
-    chatlog.log(`${ChatClient.TAG}: kickAllDevices: `, username, '******');
+    chatlog.log(`${ChatClient.TAG}: kickAllDevices: `, userId, '******');
     let r: any = await Native._callMethod(MTkickAllDevices, {
       [MTkickAllDevices]: {
-        username: username,
-        password: password,
+        username: userId,
+        password: pwdOrToken,
+        isPassword: isPassword ?? true,
       },
     });
     ChatClient.checkErrorFromResult(r);

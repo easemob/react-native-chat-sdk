@@ -117,6 +117,10 @@ export enum ChatMessageType {
    * Custom message.
    */
   CUSTOM = 'custom',
+  /**
+   * combined message.
+   */
+  COMBINE = 'combine',
 }
 
 /**
@@ -257,6 +261,8 @@ export function ChatMessageTypeFromString(params: string): ChatMessageType {
       return ChatMessageType.VIDEO;
     case 'voice':
       return ChatMessageType.VOICE;
+    case 'combine':
+      return ChatMessageType.COMBINE;
     default:
       throw new ChatError({
         code: 1,
@@ -374,11 +380,11 @@ export class ChatMessage {
   /**
    * The conversation type. See {@link ChatType}.
    */
-  chatType: ChatMessageChatType = ChatMessageChatType.ChatRoom;
+  chatType: ChatMessageChatType;
   /**
    * The message direction. See {@link ChatMessageDirection}.
    */
-  direction: ChatMessageDirection = ChatMessageDirection.SEND;
+  direction: ChatMessageDirection;
   /**
    * The message sending status. See {@link ChatMessageStatus}.
    */
@@ -426,6 +432,13 @@ export class ChatMessage {
   deliverOnlineOnly: boolean;
 
   /**
+   * The recipient list of a targeted message.
+   *
+   * This property is used only for messages in groups and chat rooms.
+   */
+  receiverList?: string[];
+
+  /**
    * Constructs a message.
    */
   public constructor(params: {
@@ -449,6 +462,7 @@ export class ChatMessage {
     isChatThread?: boolean;
     isOnline?: boolean;
     deliverOnlineOnly?: boolean;
+    receiverList?: string[];
   }) {
     this.msgId = params.msgId ?? generateMessageId();
     this.conversationId = params.conversationId ?? '';
@@ -470,6 +484,7 @@ export class ChatMessage {
     this.isChatThread = params.isChatThread ?? false;
     this.isOnline = params.isOnline ?? true;
     this.deliverOnlineOnly = params.deliverOnlineOnly ?? false;
+    this.receiverList = params.receiverList;
   }
 
   private static getBody(params: any): ChatMessageBody {
@@ -498,6 +513,9 @@ export class ChatMessage {
 
       case ChatMessageType.VOICE:
         return new ChatVoiceMessageBody(params);
+
+      case ChatMessageType.COMBINE:
+        return new ChatCombineMessageBody(params);
 
       default:
         throw new ChatError({
@@ -539,11 +557,13 @@ export class ChatMessage {
    * - For a chat room, it is the chat room ID.
    * @param content The text content.
    * @param chatType The conversation type. See {@link ChatType}.
-   * @param opt The extension parameters of the message.
+   * @params opt The extension parameters of the message.
    *  - targetLanguageCodes: The language code. See {@link ChatTextMessageBody.targetLanguageCodes}.
    *  -  isChatThread: Whether this message is a threaded message.
    *   - `true`: Yes.
    *   - (Default) `false`: No.
+   * - isOnline: Whether it is a online message.
+   * - deliverOnlineOnly: Whether the message is delivered only when the recipient(s) is/are online.
    * @returns The message instance.
    */
   public static createTextMessage(
@@ -557,10 +577,8 @@ export class ChatMessage {
       deliverOnlineOnly?: boolean;
     }
   ): ChatMessage {
-    let s = ChatMessageType.TXT.valueOf();
     return ChatMessage.createSendMessage({
       body: new ChatTextMessageBody({
-        type: s,
         content: content,
         targetLanguageCodes: opt?.targetLanguageCodes,
       }),
@@ -581,11 +599,15 @@ export class ChatMessage {
    * - For a chat room, it is the chat room ID.
    * @param filePath The file path.
    * @param chatType The conversation type. See {@link ChatType}.
-   * @param opt The extension parameters of the message.
+   * @params opt The extension parameters of the message.
    * - displayName: The file name.
    * - isChatThread: Whether this message is a threaded message.
    *   - `true`: Yes.
    *   - (Default) `false`: No.
+   * - isOnline: Whether it is a online message.
+   * - deliverOnlineOnly: Whether the message is delivered only when the recipient(s) is/are online.
+   * - secret: The token to download the file attachment.
+   * - fileSize: The file size.
    * @returns The message instance.
    */
   public static createFileMessage(
@@ -598,14 +620,15 @@ export class ChatMessage {
       fileSize?: number;
       isOnline?: boolean;
       deliverOnlineOnly?: boolean;
+      secret?: string;
     }
   ): ChatMessage {
     return ChatMessage.createSendMessage({
       body: new ChatFileMessageBody({
-        type: ChatMessageType.FILE.valueOf(),
         localPath: filePath,
         displayName: opt?.displayName ?? '',
         fileSize: opt?.fileSize,
+        secret: opt?.secret,
       }),
       targetId: targetId,
       chatType: chatType,
@@ -624,7 +647,7 @@ export class ChatMessage {
    * - For a chat room, it is the chat room ID.
    * @param filePath The image path.
    * @param chatType The conversation type. See {@link ChatType}.
-   * @param opt The extension parameters of the message.
+   * @params opt The extension parameters of the message.
    * - displayName: The image name.
    * - thumbnailLocalPath: The image thumbnail path.
    * - sendOriginalImage: Whether to send the original image.
@@ -635,6 +658,10 @@ export class ChatMessage {
    * - isChatThread: Whether this message is a threaded message.
    *   - `true`: Yes.
    *   - (Default) `false`: No.
+   * - isOnline: Whether it is a online message.
+   * - deliverOnlineOnly: Whether the message is delivered only when the recipient(s) is/are online.
+   * - secret: The token to download the file attachment.
+   * - fileSize: The file size.
    * @returns The message instance.
    */
   public static createImageMessage(
@@ -651,11 +678,11 @@ export class ChatMessage {
       fileSize?: number;
       isOnline?: boolean;
       deliverOnlineOnly?: boolean;
+      secret?: string;
     }
   ): ChatMessage {
     return ChatMessage.createSendMessage({
       body: new ChatImageMessageBody({
-        type: ChatMessageType.IMAGE.valueOf(),
         localPath: filePath,
         displayName: opt?.displayName ?? filePath,
         thumbnailLocalPath: opt?.thumbnailLocalPath,
@@ -663,6 +690,7 @@ export class ChatMessage {
         width: opt?.width,
         height: opt?.height,
         fileSize: opt?.fileSize,
+        secret: opt?.secret,
       }),
       targetId: targetId,
       chatType: chatType,
@@ -681,7 +709,7 @@ export class ChatMessage {
    * - For a chat room, it is the chat room ID.
    * @param filePath The path of the video file.
    * @param chatType The conversation type. See {@link ChatType}.
-   * @param opt The extension parameters of the message.
+   * @params opt The extension parameters of the message.
    * - displayName: The video file name.
    * - thumbnailLocalPath: The path of the thumbnail of the first frame of video.
    * - duration: The video duration in seconds.
@@ -690,6 +718,10 @@ export class ChatMessage {
    * - isChatThread: Whether this message is a threaded message.
    *   - `true`: Yes.
    *   - (Default) `false`: No.
+   * - isOnline: Whether it is a online message.
+   * - deliverOnlineOnly: Whether the message is delivered only when the recipient(s) is/are online.
+   * - secret: The token to download the file attachment.
+   * - fileSize: The file size.
    * @returns The message instance.
    */
   public static createVideoMessage(
@@ -706,11 +738,11 @@ export class ChatMessage {
       fileSize?: number;
       isOnline?: boolean;
       deliverOnlineOnly?: boolean;
+      secret?: string;
     }
   ): ChatMessage {
     return ChatMessage.createSendMessage({
       body: new ChatVideoMessageBody({
-        type: ChatMessageType.VIDEO.valueOf(),
         localPath: filePath,
         displayName: opt?.displayName ?? '',
         thumbnailLocalPath: opt?.thumbnailLocalPath,
@@ -718,6 +750,7 @@ export class ChatMessage {
         width: opt?.width,
         height: opt?.height,
         fileSize: opt?.fileSize,
+        secret: opt?.secret,
       }),
       targetId: targetId,
       chatType: chatType,
@@ -736,12 +769,16 @@ export class ChatMessage {
    * - For a chat room, it is the chat room ID.
    * @param filePath The path of the voice file.
    * @param chatType The conversation type. See {@link ChatType}.
-   * @param opt The extension parameters of the message.
+   * @params opt The extension parameters of the message.
    * - displayName: The voice file name.
    * - duration: The voice duration in seconds.
    * - isChatThread: Whether this message is a threaded message.
    *   - `true`: Yes.
    *   - (Default) `false`: No.
+   * - isOnline: Whether it is a online message.
+   * - deliverOnlineOnly: Whether the message is delivered only when the recipient(s) is/are online.
+   * - secret: The token to download the file attachment.
+   * - fileSize: The file size.
    * @returns The message instance.
    */
   public static createVoiceMessage(
@@ -749,21 +786,74 @@ export class ChatMessage {
     filePath: string,
     chatType: ChatMessageChatType = ChatMessageChatType.PeerChat,
     opt?: {
-      displayName: string;
+      displayName?: string;
       duration: number;
       isChatThread?: boolean;
       fileSize?: number;
       isOnline?: boolean;
       deliverOnlineOnly?: boolean;
+      secret?: string;
     }
   ): ChatMessage {
     return ChatMessage.createSendMessage({
       body: new ChatVoiceMessageBody({
-        type: ChatMessageType.VOICE.valueOf(),
         localPath: filePath,
         displayName: opt?.displayName ?? '',
         duration: opt?.duration,
         fileSize: opt?.fileSize,
+        secret: opt?.secret,
+      }),
+      targetId: targetId,
+      chatType: chatType,
+      isChatThread: opt?.isChatThread,
+      isOnline: opt?.isOnline,
+      deliverOnlineOnly: opt?.deliverOnlineOnly,
+    });
+  }
+
+  /**
+   * Creates a combine message for sending.
+   *
+   * @param targetId The user ID of the message recipient.
+   * - For a one-to-one chat, it is the user ID of the peer user.
+   * - For a group chat, it is the group ID.
+   * - For a chat room, it is the chat room ID.
+   * @param messageIdList A collection of message IDs..
+   * @param chatType The conversation type. See {@link ChatType}.
+   * @params opt The extension parameters of the message.
+   * - title: The message title.
+   * - summary: The message summary.
+   * - compatibleText: The message compatibleText.
+   * - isChatThread: Whether this message is a threaded message.
+   *   - `true`: Yes.
+   *   - (Default) `false`: No.
+   * - isOnline: Whether it is a online message.
+   * - deliverOnlineOnly: Whether the message is delivered only when the recipient(s) is/are online.
+   * - secret: The token to download the file attachment.
+   * @returns The message instance.
+   */
+  public static createCombineMessage(
+    targetId: string,
+    messageIdList: string[],
+    chatType: ChatMessageChatType = ChatMessageChatType.PeerChat,
+    opt?: {
+      title?: string;
+      summary?: string;
+      compatibleText?: string;
+      isChatThread?: boolean;
+      isOnline?: boolean;
+      deliverOnlineOnly?: boolean;
+      secret?: string;
+    }
+  ): ChatMessage {
+    return ChatMessage.createSendMessage({
+      body: new ChatCombineMessageBody({
+        localPath: '',
+        title: opt?.title,
+        summary: opt?.summary,
+        compatibleText: opt?.compatibleText,
+        messageIdList: messageIdList,
+        secret: opt?.secret,
       }),
       targetId: targetId,
       chatType: chatType,
@@ -783,7 +873,7 @@ export class ChatMessage {
    * @param latitude The latitude.
    * @param longitude The longitude.
    * @param chatType The conversation type. See {@link ChatType}.
-   * @param opt The extension parameters of the message.
+   * @params opt The extension parameters of the message.
    * - address: The location details.
    * - isChatThread: Whether this message is a threaded message.
    *   - `true`: Yes.
@@ -804,7 +894,6 @@ export class ChatMessage {
   ): ChatMessage {
     return ChatMessage.createSendMessage({
       body: new ChatLocationMessageBody({
-        type: ChatMessageType.LOCATION.valueOf(),
         latitude: latitude,
         longitude: longitude,
         address: opt?.address ?? '',
@@ -826,7 +915,7 @@ export class ChatMessage {
    * - For a chat room, it is the chat room ID.
    * @param action The command action.
    * @param chatType The conversation type. See {@link ChatType}.
-   * @param opt The extension parameters of the message.
+   * @params opt The extension parameters of the message.
    * - isChatThread: Whether this message is a threaded message.
    *   - `true`: Yes.
    *   - (Default) `false`: No.
@@ -866,7 +955,7 @@ export class ChatMessage {
    * - For a chat room, it is the chat room ID.
    * @param event The custom event.
    * @param chatType The conversation type. See {@link ChatType}.
-   * @param opt The extension parameters of the message.
+   * @params opt The extension parameters of the message.
    * - params: The dictionary of custom parameters.
    * - isChatThread: Whether this message is a threaded message.
    *   - `true`: Yes.
@@ -939,14 +1028,39 @@ export class ChatMessage {
 /**
  * The message body base class.
  */
-export class ChatMessageBody {
+export abstract class ChatMessageBody {
   /**
    * The message type. See {@link ChatMessageType}.
    */
-  type: ChatMessageType;
+  public readonly type: ChatMessageType;
 
-  constructor(type: string) {
-    this.type = ChatMessageTypeFromString(type);
+  /**
+   * Get the user ID of the operator that modified the message last time.
+   */
+  lastModifyOperatorId?: string;
+
+  /**
+   * Get the UNIX timestamp of the last message modification, in milliseconds.
+   */
+  lastModifyTime?: number;
+
+  /**
+   * Get the number of times a message is modified.
+   */
+  modifyCount?: number;
+
+  protected constructor(
+    type: ChatMessageType,
+    opt?: {
+      lastModifyOperatorId?: string;
+      lastModifyTime?: number;
+      modifyCount?: number;
+    }
+  ) {
+    this.type = type;
+    this.lastModifyOperatorId = opt?.lastModifyOperatorId;
+    this.lastModifyTime = opt?.lastModifyTime;
+    this.modifyCount = opt?.modifyCount;
   }
 }
 
@@ -969,12 +1083,18 @@ export class ChatTextMessageBody extends ChatMessageBody {
    */
   translations?: any;
   constructor(params: {
-    type: string;
     content: string;
     targetLanguageCodes?: Array<string>;
     translations?: any;
+    lastModifyOperatorId?: string;
+    lastModifyTime?: number;
+    modifyCount?: number;
   }) {
-    super(params.type);
+    super(ChatMessageType.TXT, {
+      lastModifyOperatorId: params.lastModifyOperatorId,
+      lastModifyTime: params.lastModifyTime,
+      modifyCount: params.modifyCount,
+    });
     this.content = params.content;
     this.targetLanguageCodes = params.targetLanguageCodes;
     this.translations = params.translations;
@@ -998,12 +1118,18 @@ export class ChatLocationMessageBody extends ChatMessageBody {
    */
   longitude: string;
   constructor(params: {
-    type: string;
     address: string;
     latitude: string;
     longitude: string;
+    lastModifyOperatorId?: string;
+    lastModifyTime?: number;
+    modifyCount?: number;
   }) {
-    super(params.type);
+    super(ChatMessageType.LOCATION, {
+      lastModifyOperatorId: params.lastModifyOperatorId,
+      lastModifyTime: params.lastModifyTime,
+      modifyCount: params.modifyCount,
+    });
     this.address = params.address;
     this.latitude = params.latitude;
     this.longitude = params.longitude;
@@ -1011,9 +1137,9 @@ export class ChatLocationMessageBody extends ChatMessageBody {
 }
 
 /**
- * The file message body class.
+ * The file message body class for internal.
  */
-export class ChatFileMessageBody extends ChatMessageBody {
+abstract class _ChatFileMessageBody extends ChatMessageBody {
   /**
    * The local path of the file.
    */
@@ -1039,29 +1165,55 @@ export class ChatFileMessageBody extends ChatMessageBody {
    */
   displayName: string;
 
-  constructor(params: {
-    type: string;
+  protected constructor(params: {
+    type: ChatMessageType;
     localPath: string;
     secret?: string;
     remotePath?: string;
     fileStatus?: number;
     fileSize?: number;
-    displayName: string;
+    displayName?: string;
+    lastModifyOperatorId?: string;
+    lastModifyTime?: number;
+    modifyCount?: number;
   }) {
-    super(params.type);
+    super(params.type, {
+      lastModifyOperatorId: params.lastModifyOperatorId,
+      lastModifyTime: params.lastModifyTime,
+      modifyCount: params.modifyCount,
+    });
     this.localPath = params.localPath;
     this.secret = params.secret ?? '';
     this.remotePath = params.remotePath ?? '';
     this.fileStatus = ChatDownloadStatusFromNumber(params.fileStatus ?? -1);
     this.fileSize = params.fileSize ?? 0;
-    this.displayName = params.displayName;
+    this.displayName = params.displayName ?? '';
+  }
+}
+
+/**
+ * The file message body class.
+ */
+export class ChatFileMessageBody extends _ChatFileMessageBody {
+  constructor(params: {
+    localPath: string;
+    secret?: string;
+    remotePath?: string;
+    fileStatus?: number;
+    fileSize?: number;
+    displayName?: string;
+    lastModifyOperatorId?: string;
+    lastModifyTime?: number;
+    modifyCount?: number;
+  }) {
+    super({ ...params, type: ChatMessageType.FILE });
   }
 }
 
 /**
  * The image message body class.
  */
-export class ChatImageMessageBody extends ChatFileMessageBody {
+export class ChatImageMessageBody extends _ChatFileMessageBody {
   /**
    Whether to send the original image.
   * - `true`: Yes. 
@@ -1093,7 +1245,6 @@ export class ChatImageMessageBody extends ChatFileMessageBody {
    */
   height: number;
   constructor(params: {
-    type: string;
     localPath: string;
     secret?: string;
     remotePath?: string;
@@ -1107,9 +1258,15 @@ export class ChatImageMessageBody extends ChatFileMessageBody {
     thumbnailStatus?: number;
     width?: number;
     height?: number;
+    lastModifyOperatorId?: string;
+    lastModifyTime?: number;
+    modifyCount?: number;
   }) {
     super({
-      type: params.type,
+      type: ChatMessageType.IMAGE,
+      lastModifyOperatorId: params.lastModifyOperatorId,
+      lastModifyTime: params.lastModifyTime,
+      modifyCount: params.modifyCount,
       localPath: params.localPath,
       secret: params.secret,
       remotePath: params.remotePath,
@@ -1132,7 +1289,7 @@ export class ChatImageMessageBody extends ChatFileMessageBody {
 /**
  * The video message body class.
  */
-export class ChatVideoMessageBody extends ChatFileMessageBody {
+export class ChatVideoMessageBody extends _ChatFileMessageBody {
   /**
    * The video duration in seconds.
    */
@@ -1162,7 +1319,6 @@ export class ChatVideoMessageBody extends ChatFileMessageBody {
    */
   height: number;
   constructor(params: {
-    type: string;
     localPath: string;
     secret?: string;
     remotePath?: string;
@@ -1176,9 +1332,15 @@ export class ChatVideoMessageBody extends ChatFileMessageBody {
     thumbnailStatus?: ChatDownloadStatus;
     width?: number;
     height?: number;
+    lastModifyOperatorId?: string;
+    lastModifyTime?: number;
+    modifyCount?: number;
   }) {
     super({
-      type: params.type,
+      type: ChatMessageType.VIDEO,
+      lastModifyOperatorId: params.lastModifyOperatorId,
+      lastModifyTime: params.lastModifyTime,
+      modifyCount: params.modifyCount,
       localPath: params.localPath,
       secret: params.secret,
       remotePath: params.remotePath,
@@ -1201,13 +1363,12 @@ export class ChatVideoMessageBody extends ChatFileMessageBody {
 /**
  * The voice message body.
  */
-export class ChatVoiceMessageBody extends ChatFileMessageBody {
+export class ChatVoiceMessageBody extends _ChatFileMessageBody {
   /**
    * The voice duration in seconds.
    */
   duration: number;
   constructor(params: {
-    type: string;
     localPath: string;
     secret?: string;
     remotePath?: string;
@@ -1215,9 +1376,15 @@ export class ChatVoiceMessageBody extends ChatFileMessageBody {
     fileSize?: number;
     displayName: string;
     duration?: number;
+    lastModifyOperatorId?: string;
+    lastModifyTime?: number;
+    modifyCount?: number;
   }) {
     super({
-      type: params.type,
+      type: ChatMessageType.VOICE,
+      lastModifyOperatorId: params.lastModifyOperatorId,
+      lastModifyTime: params.lastModifyTime,
+      modifyCount: params.modifyCount,
       localPath: params.localPath,
       secret: params.secret,
       remotePath: params.remotePath,
@@ -1237,8 +1404,17 @@ export class ChatCmdMessageBody extends ChatMessageBody {
    * The command action.
    */
   action: string;
-  constructor(params: { action: string }) {
-    super(ChatMessageType.CMD);
+  constructor(params: {
+    action: string;
+    lastModifyOperatorId?: string;
+    lastModifyTime?: number;
+    modifyCount?: number;
+  }) {
+    super(ChatMessageType.CMD, {
+      lastModifyOperatorId: params.lastModifyOperatorId,
+      lastModifyTime: params.lastModifyTime,
+      modifyCount: params.modifyCount,
+    });
     this.action = params.action;
   }
 }
@@ -1255,10 +1431,76 @@ export class ChatCustomMessageBody extends ChatMessageBody {
    * The custom params map.
    */
   params?: Record<string, string>;
-  constructor(params: { event: string; params?: Record<string, string> }) {
-    super(ChatMessageType.CUSTOM);
+  constructor(params: {
+    event: string;
+    params?: Record<string, string>;
+    lastModifyOperatorId?: string;
+    lastModifyTime?: number;
+    modifyCount?: number;
+  }) {
+    super(ChatMessageType.CUSTOM, {
+      lastModifyOperatorId: params.lastModifyOperatorId,
+      lastModifyTime: params.lastModifyTime,
+      modifyCount: params.modifyCount,
+    });
     this.event = params.event;
     this.params = params.params;
+  }
+}
+
+/**
+ * The combine message body.
+ */
+export class ChatCombineMessageBody extends _ChatFileMessageBody {
+  /**
+   * The message title.
+   */
+  title?: string;
+  /**
+   * The message summary.
+   */
+  summary?: string;
+  /**
+   * The combined message list ID.
+   *
+   * **note** Used when creating send messages. Not applicable in other cases.
+   */
+  messageIdList?: string[];
+  /**
+   * The compatible text.
+   */
+  compatibleText?: string;
+  constructor(params: {
+    localPath: string;
+    secret?: string;
+    remotePath?: string;
+    fileStatus?: number;
+    fileSize?: number;
+    displayName?: string;
+    title?: string;
+    summary?: string;
+    messageIdList?: string[];
+    compatibleText?: string;
+    lastModifyOperatorId?: string;
+    lastModifyTime?: number;
+    modifyCount?: number;
+  }) {
+    super({
+      type: ChatMessageType.COMBINE,
+      lastModifyOperatorId: params.lastModifyOperatorId,
+      lastModifyTime: params.lastModifyTime,
+      modifyCount: params.modifyCount,
+      localPath: params.localPath,
+      secret: params.secret,
+      remotePath: params.remotePath,
+      fileStatus: params.fileStatus,
+      fileSize: params.fileSize,
+      displayName: params.displayName,
+    });
+    this.title = params.title;
+    this.compatibleText = params.compatibleText;
+    this.messageIdList = params.messageIdList;
+    this.summary = params.summary;
   }
 }
 

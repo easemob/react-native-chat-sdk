@@ -132,12 +132,52 @@ export class LoginAndLogoutScreen extends Component<
         console.log('LoginAndLogoutScreen.onConnected');
         this.that.setState({ listenerStatus: 'onConnected' });
       }
-      onDisconnected(errorCode?: number): void {
-        console.log('LoginAndLogoutScreen.onDisconnected: ', errorCode);
+      onDisconnected(): void {
+        console.log('LoginAndLogoutScreen.onDisconnected');
         this.that.setState({ listenerStatus: 'onDisconnected' });
       }
+
       onAppActiveNumberReachLimit(): void {
-        console.log('LoginAndLogoutScreen.onAppActiveNumberReachLimit: ');
+        console.log('LoginAndLogoutScreen.onAppActiveNumberReachLimit');
+        this.that.setState({ listenerStatus: 'onAppActiveNumberReachLimit' });
+      }
+
+      onUserDidLoginFromOtherDevice(deviceName?: string): void {
+        console.log(
+          'LoginAndLogoutScreen.onUserDidLoginFromOtherDevice',
+          deviceName
+        );
+        this.that.setState({ listenerStatus: 'onUserDidLoginFromOtherDevice' });
+      }
+
+      onUserDidRemoveFromServer(): void {
+        console.log('LoginAndLogoutScreen.onAppActiveNumberReachLimit');
+        this.that.setState({ listenerStatus: 'onAppActiveNumberReachLimit' });
+      }
+
+      onUserDidForbidByServer(): void {
+        console.log('LoginAndLogoutScreen.onUserDidForbidByServer');
+        this.that.setState({ listenerStatus: 'onUserDidForbidByServer' });
+      }
+
+      onUserDidChangePassword(): void {
+        console.log('LoginAndLogoutScreen.onUserDidChangePassword');
+        this.that.setState({ listenerStatus: 'onUserDidChangePassword' });
+      }
+
+      onUserDidLoginTooManyDevice(): void {
+        console.log('LoginAndLogoutScreen.onUserDidLoginTooManyDevice');
+        this.that.setState({ listenerStatus: 'onUserDidLoginTooManyDevice' });
+      }
+
+      onUserKickedByOtherDevice(): void {
+        console.log('LoginAndLogoutScreen.onUserKickedByOtherDevice');
+        this.that.setState({ listenerStatus: 'onUserKickedByOtherDevice' });
+      }
+
+      onUserAuthenticationFailed(): void {
+        console.log('LoginAndLogoutScreen.onUserAuthenticationFailed');
+        this.that.setState({ listenerStatus: 'onUserAuthenticationFailed' });
       }
     })(this);
     ChatClient.getInstance().removeAllConnectionListener();
@@ -191,6 +231,37 @@ export class LoginAndLogoutScreen extends Component<
         this.that.setState({
           listenerStatus:
             'LoginAndLogoutScreen.onGroupEvent: ' + event + target + usernames,
+        });
+      }
+      onMessageRemoved?(convId?: string, deviceId?: string): void {
+        console.log(
+          'LoginAndLogoutScreen.onMessageRemoved: ',
+          convId,
+          deviceId
+        );
+        this.that.setState({
+          listenerStatus:
+            'LoginAndLogoutScreen.onMessageRemoved: ' + convId + deviceId,
+        });
+      }
+
+      onConversationEvent?(
+        event?: ChatMultiDeviceEvent,
+        convId?: string,
+        convType?: any
+      ): void {
+        console.log(
+          'LoginAndLogoutScreen.onConversationEvent: ',
+          event,
+          convId,
+          convType
+        );
+        this.that.setState({
+          listenerStatus:
+            'LoginAndLogoutScreen.onConversationEvent: ' +
+            event +
+            convId +
+            convType,
         });
       }
     })(this);

@@ -23,6 +23,8 @@ export const MN = {
   updatePushNickname: 'updatePushNickname',
   updatePushDisplayStyle: 'updatePushDisplayStyle',
   fetchPushOptionFromServer: 'fetchPushOptionFromServer',
+  selectPushTemplate: 'selectPushTemplate',
+  fetchSelectedPushTemplate: 'fetchSelectedPushTemplate',
 };
 
 export const metaDataList = new Map<string, ApiParams>([
@@ -197,6 +199,27 @@ export const metaDataList = new Map<string, ApiParams>([
     MN.fetchPushOptionFromServer,
     {
       methodName: MN.fetchPushOptionFromServer,
+      params: [],
+    },
+  ],
+  [
+    MN.selectPushTemplate,
+    {
+      methodName: MN.selectPushTemplate,
+      params: [
+        {
+          paramName: 'templateName',
+          paramType: 'string',
+          paramDefaultValue: 'test1',
+          domType: 'input',
+        },
+      ],
+    },
+  ],
+  [
+    MN.fetchSelectedPushTemplate,
+    {
+      methodName: MN.fetchSelectedPushTemplate,
       params: [],
     },
   ],

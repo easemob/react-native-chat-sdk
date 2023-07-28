@@ -65,12 +65,12 @@ export class ChatRoomManager extends Native {
     this._roomSubscriptions.set(
       MTchatRoomChange,
       event.addListener(MTchatRoomChange, (params: any) => {
-        this.invokeContactListener(params);
+        this.invokeRoomListener(params);
       })
     );
   }
 
-  private invokeContactListener(params: any): void {
+  private invokeRoomListener(params: any): void {
     this._roomListeners.forEach((listener: ChatRoomEventListener) => {
       const contactEventType = params.type;
       switch (contactEventType) {
@@ -98,6 +98,7 @@ export class ChatRoomManager extends Native {
             roomId: params.roomId,
             participant: params.participant,
             roomName: params.roomName,
+            reason: params.reason,
           });
           break;
         case 'onMuteListAdded':

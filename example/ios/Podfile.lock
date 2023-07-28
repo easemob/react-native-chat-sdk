@@ -72,7 +72,7 @@ PODS:
     - FlipperKit/FlipperKitNetworkPlugin
   - fmt (6.2.1)
   - glog (0.3.5)
-  - HyphenateChat (4.0.2)
+  - HyphenateChat (4.1.0)
   - libevent (2.1.12)
   - OpenSSL-Universal (1.1.1100)
   - RCT-Folly (2021.07.22.00):
@@ -297,8 +297,8 @@ PODS:
   - React-jsinspector (0.71.11)
   - React-logger (0.71.11):
     - glog
-  - react-native-chat-sdk (1.1.2):
-    - HyphenateChat (= 4.0.2)
+  - react-native-chat-sdk (1.2.0-beta.1):
+    - HyphenateChat (= 4.1.0)
     - React-Core
   - react-native-document-picker (9.0.1):
     - React-Core
@@ -470,6 +470,8 @@ DEPENDENCIES:
   - Yoga (from `../node_modules/react-native/ReactCommon/yoga`)
 
 SPEC REPOS:
+  https://mirrors.tuna.tsinghua.edu.cn/git/CocoaPods/Specs.git:
+    - HyphenateChat
   trunk:
     - CocoaAsyncSocket
     - Flipper
@@ -482,7 +484,6 @@ SPEC REPOS:
     - Flipper-RSocket
     - FlipperKit
     - fmt
-    - HyphenateChat
     - libevent
     - OpenSSL-Universal
     - SocketRocket
@@ -587,7 +588,7 @@ SPEC CHECKSUMS:
   FlipperKit: 2efad7007d6745a3f95e4034d547be637f89d3f6
   fmt: ff9d55029c625d3757ed641535fd4a75fedc7ce9
   glog: 04b94705f318337d7ead9e6d17c019bd9b1f6b1b
-  HyphenateChat: add908a7200ba951a5b27a0fa2514ea6f532e69c
+  HyphenateChat: 0c8ef696b0f21cf5a10053266cd82a1e00659996
   libevent: 4049cae6c81cdb3654a443be001fb9bdceff7913
   OpenSSL-Universal: ebc357f1e6bc71fa463ccb2fe676756aff50e88c
   RCT-Folly: 424b8c9a7a0b9ab2886ffe9c3b041ef628fd4fb1
@@ -604,7 +605,7 @@ SPEC CHECKSUMS:
   React-jsiexecutor: 089cd07c76ecf498960a64ba8ae0f2dddd382f44
   React-jsinspector: b6ed4cb3ffa27a041cd440300503dc512b761450
   React-logger: 186dd536128ae5924bc38ed70932c00aa740cd5b
-  react-native-chat-sdk: b01137f44d25f8594395b647d684dadc88ac8092
+  react-native-chat-sdk: 9dad11f74a0666d8fdefc4a14ba593e8ddcc25bd
   react-native-document-picker: 2b8f18667caee73a96708a82b284a4f40b30a156
   react-native-image-picker: 709d04e7df67bd3a90f376c3eedb2e8b8334dd04
   react-native-safe-area-context: b8979f5eda6ed5903d4dbc885be3846ea3daa753
@@ -628,6 +629,6 @@ SPEC CHECKSUMS:
   Yoga: f7decafdc5e8c125e6fa0da38a687e35238420fa
   YogaKit: f782866e155069a2cca2517aafea43200b01fd5a
 
-PODFILE CHECKSUM: f1d5970fe2925b0798d8802f3f94c4d0e1c3e186
+PODFILE CHECKSUM: cf501c0df7487f458bf2b51db740050896f865bc
 
 COCOAPODS: 1.11.3

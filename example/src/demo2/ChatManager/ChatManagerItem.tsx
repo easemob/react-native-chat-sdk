@@ -3,6 +3,7 @@ import { Text, View } from 'react-native';
 import type {
   ChatFetchMessageOptions,
   ChatMessageStatusCallback,
+  ChatTextMessageBody,
 } from 'react-native-chat-sdk';
 import {
   ChatClient,
@@ -132,7 +133,7 @@ export interface StateChatMessage extends StateBase {
     convType: number;
     msgId: string;
   };
-  deleteAllMessages: {
+  deleteConversationAllMessages: {
     convId: string;
     convType: number;
   };
@@ -295,6 +296,25 @@ export interface StateChatMessage extends StateBase {
     convType: number;
     startTs: number;
     endTs: number;
+  };
+  fetchConversationsFromServerWithCursor: {
+    cursor?: string;
+    pageSize?: number;
+  };
+  fetchPinnedConversationsFromServerWithCursor: {
+    cursor?: string;
+    pageSize?: number;
+  };
+  pinConversation: {
+    convId: string;
+    isPinned: boolean;
+  };
+  modifyMessageBody: {
+    msgId: string;
+    body: ChatTextMessageBody;
+  };
+  fetchCombineMessageDetail: {
+    message: ChatMessage;
   };
 }
 
@@ -465,6 +485,21 @@ export class ChatManagerLeafScreen extends LeafScreenBase<StateChatMessage> {
           recvResult: `onConversationRead: ${from}, ${to}`,
         });
       }
+      onMessageContentChanged?(
+        message: ChatMessage,
+        lastModifyOperatorId: string,
+        lastModifyTime: number
+      ): void {
+        console.log(
+          `${ChatManagerLeafScreen.TAG}: onMessageContentChanged: `,
+          JSON.stringify(message),
+          lastModifyOperatorId,
+          lastModifyTime
+        );
+        this.that.setState({
+          recvResult: `onMessageContentChanged: ${lastModifyOperatorId}, ${lastModifyTime}`,
+        });
+      }
     })(this);
 
     ChatClient.getInstance().chatManager.removeAllMessageListener();
@@ -555,7 +590,7 @@ export class ChatManagerLeafScreen extends LeafScreenBase<StateChatMessage> {
       'markAllMessagesAsRead',
       'updateConversationMessage',
       'deleteMessage',
-      'deleteAllMessages',
+      'deleteConversationAllMessages',
       'getMessagesWithMsgType',
       'getMessages',
       'getMessagesWithKeyword',
@@ -589,6 +624,11 @@ export class ChatManagerLeafScreen extends LeafScreenBase<StateChatMessage> {
       'removeMessagesFromServerWithTimestamp',
       'fetchHistoryMessagesByOptions',
       'deleteMessagesWithTimestamp',
+      'fetchConversationsFromServerWithCursor',
+      'fetchPinnedConversationsFromServerWithCursor',
+      'pinConversation',
+      'modifyMessageBody',
+      'fetchCombineMessageDetail',
     ];
     let renderDomAry: ({} | null | undefined)[] = [];
     const data = this.metaData;
@@ -928,15 +968,15 @@ export class ChatManagerLeafScreen extends LeafScreenBase<StateChatMessage> {
         ChatManagerLeafScreen.TAG,
         this.metaData.get(MN.deleteMessage)!.methodName
       );
-    } else if (name === MN.deleteAllMessages) {
-      const { convId, convType } = this.state.deleteAllMessages;
+    } else if (name === MN.deleteConversationAllMessages) {
+      const { convId, convType } = this.state.deleteConversationAllMessages;
       this.tryCatch(
-        ChatClient.getInstance().chatManager.deleteAllMessages(
+        ChatClient.getInstance().chatManager.deleteConversationAllMessages(
           convId,
           ChatConversationTypeFromNumber(convType)
         ),
         ChatManagerLeafScreen.TAG,
-        this.metaData.get(MN.deleteAllMessages)!.methodName
+        this.metaData.get(MN.deleteConversationAllMessages)!.methodName
       );
     } else if (name === MN.getMessagesWithMsgType) {
       const { convId, convType, msgType, direction, timestamp, count, sender } =
@@ -1270,6 +1310,49 @@ export class ChatManagerLeafScreen extends LeafScreenBase<StateChatMessage> {
           convType,
           timestamp
         ),
+        ChatManagerLeafScreen.TAG,
+        name
+      );
+    } else if (name === MN.fetchConversationsFromServerWithCursor) {
+      const { cursor, pageSize } =
+        this.state.fetchConversationsFromServerWithCursor;
+      this.tryCatch(
+        ChatClient.getInstance().chatManager.fetchConversationsFromServerWithCursor(
+          cursor,
+          pageSize
+        ),
+        ChatManagerLeafScreen.TAG,
+        name
+      );
+    } else if (name === MN.fetchPinnedConversationsFromServerWithCursor) {
+      const { cursor, pageSize } =
+        this.state.fetchPinnedConversationsFromServerWithCursor;
+      this.tryCatch(
+        ChatClient.getInstance().chatManager.fetchPinnedConversationsFromServerWithCursor(
+          cursor,
+          pageSize
+        ),
+        ChatManagerLeafScreen.TAG,
+        name
+      );
+    } else if (name === MN.pinConversation) {
+      const { convId, isPinned } = this.state.pinConversation;
+      this.tryCatch(
+        ChatClient.getInstance().chatManager.pinConversation(convId, isPinned),
+        ChatManagerLeafScreen.TAG,
+        name
+      );
+    } else if (name === MN.modifyMessageBody) {
+      const { msgId, body } = this.state.modifyMessageBody;
+      this.tryCatch(
+        ChatClient.getInstance().chatManager.modifyMessageBody(msgId, body),
+        ChatManagerLeafScreen.TAG,
+        name
+      );
+    } else if (name === MN.fetchCombineMessageDetail) {
+      const { message } = this.state.fetchCombineMessageDetail;
+      this.tryCatch(
+        ChatClient.getInstance().chatManager.fetchCombineMessageDetail(message),
         ChatManagerLeafScreen.TAG,
         name
       );

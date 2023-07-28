@@ -1,3 +1,4 @@
+import type { ChatConversationType } from './common/ChatConversation';
 import { ChatError } from './common/ChatError';
 import type { ChatGroup, ChatGroupMessageAck } from './common/ChatGroup';
 import type { ChatMessage } from './common/ChatMessage';
@@ -132,6 +133,10 @@ export enum ChatMultiDeviceEvent {
    * Even if all chat group members are unmuted, members on the mute list still cannot send messages in the group.
    */
   GROUP_REMOVE_ALL_BAN,
+  /**
+   * The current user modified custom attributes of a group member on another device.
+   */
+  GROUP_METADATA_CHANGED,
 
   /**
    * If user A creates a message thread on Device A1, this event is triggered on Device A2.
@@ -158,9 +163,17 @@ export enum ChatMultiDeviceEvent {
    */
   THREAD_KICK,
   /**
-   * The current user modified custom attributes of a group member on another device.
+   * If user A pins a conversation on device A1, this event is triggered on device A2.
    */
-  GROUP_METADATA_CHANGED = 52,
+  CONVERSATION_PINNED = 60,
+  /**
+   * If user A unpins a conversation on device A1, this event is triggered on device A2.
+   */
+  CONVERSATION_UNPINNED = 61,
+  /**
+   * If user A deletes a conversation on device A1, this event is triggered on device A2.
+   */
+  CONVERSATION_DELETED = 62,
 }
 
 /**
@@ -245,8 +258,16 @@ export function ChatMultiDeviceEventFromNumber(
       return ChatMultiDeviceEvent.THREAD_UPDATE;
     case 45:
       return ChatMultiDeviceEvent.THREAD_KICK;
+
     case 52:
       return ChatMultiDeviceEvent.GROUP_METADATA_CHANGED;
+
+    case 60:
+      return ChatMultiDeviceEvent.CONVERSATION_PINNED;
+    case 61:
+      return ChatMultiDeviceEvent.CONVERSATION_UNPINNED;
+    case 62:
+      return ChatMultiDeviceEvent.CONVERSATION_DELETED;
 
     default:
       throw new ChatError({
@@ -301,7 +322,7 @@ export interface ChatConnectEventListener {
   /**
    * Occurs when the SDK disconnects from the chat server.
    *
-   * The user also remains logged in. For the cases where the user is disconnected by the server, see {@link onAppActiveNumberReachLimit}, {@link onUserDidLoginFromOtherDevice}, {@link onUserDidRemoveFromServer}, {@link onUserDidForbidByServer}, {@link onUserDidChangePassword}, {@link onUserDidLoginTooManyDevice}, {@link onUserKickedByOtherDevice}, {@link onUserAuthenticationFailed}.
+   * The user also remains logged in. For the cases where the user is disconnected by the server, see {@link ChatConnectEventListener.onAppActiveNumberReachLimit}, {@link ChatConnectEventListener.onUserDidLoginFromOtherDevice}, {@link ChatConnectEventListener.onUserDidRemoveFromServer}, {@link ChatConnectEventListener.onUserDidForbidByServer}, {@link ChatConnectEventListener.onUserDidChangePassword}, {@link ChatConnectEventListener.onUserDidLoginTooManyDevice}, {@link ChatConnectEventListener.onUserKickedByOtherDevice}, {@link ChatConnectEventListener.onUserAuthenticationFailed}.
    */
   onDisconnected?(): void;
 
@@ -327,7 +348,7 @@ export interface ChatConnectEventListener {
    *
    * The user is disconnected by the server.
    */
-  onUserDidLoginFromOtherDevice?(): void;
+  onUserDidLoginFromOtherDevice?(deviceName?: string): void;
 
   /**
    * Occurs when the current chat user is removed from the server.
@@ -365,7 +386,7 @@ export interface ChatConnectEventListener {
   onUserKickedByOtherDevice?(): void;
 
   /**
-   * Occurs when the current chat user authentication failed.
+   * Occurs when the current chat user authentication failed. Typical trigger notification scenarios: token expires, token verification fails.
    *
    * The user is disconnected by the server.
    */
@@ -415,6 +436,27 @@ export interface ChatMultiDeviceEventListener {
     event?: ChatMultiDeviceEvent,
     target?: string,
     usernames?: Array<string>
+  ): void;
+
+  /**
+   * Callback to other devices after conversation deleted message from server after enabling multiple devices.
+   *
+   * @param convId The conversation ID.
+   * @param deviceId The device ID.
+   */
+  onMessageRemoved?(convId?: string, deviceId?: string): void;
+
+  /**
+   * The multi-device event callback for the operation of a single conversation.
+   *
+   * @param event The event type.
+   * @param convId The conversation ID.
+   * @param convType The conversation type.
+   */
+  onConversationEvent?(
+    event?: ChatMultiDeviceEvent,
+    convId?: string,
+    convType?: ChatConversationType
   ): void;
 }
 
@@ -583,6 +625,19 @@ export interface ChatMessageEventListener {
    * @param event The message thread user removal event.
    */
   onChatMessageThreadUserRemoved?(event: ChatMessageThreadEvent): void;
+
+  /**
+   * Occurs when the message content is modified.
+   *
+   * @param message News of the change.
+   * @param lastModifyOperatorId The user ID of the operator that modified the message last time.
+   * @param lastModifyTime The last message modification time. It is a UNIX timestamp in milliseconds.
+   */
+  onMessageContentChanged?(
+    message: ChatMessage,
+    lastModifyOperatorId: string,
+    lastModifyTime: number
+  ): void;
 }
 
 /**
@@ -969,11 +1024,13 @@ export interface ChatRoomEventListener {
    * - Param [roomId] The chat room ID.
    * - Param [roomName] The name of the chat room.
    * - Param [participant] The user ID of the member that is removed from a chat room.
+   * - Param [reason] Reason for removal.
    */
   onRemoved?(params: {
     roomId: string;
     participant?: string;
     roomName?: string;
+    reason?: string;
   }): void;
   /**
    * Occurs when a chat room member is added to the mute list.

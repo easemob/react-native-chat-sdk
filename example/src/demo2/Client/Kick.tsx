@@ -3,6 +3,7 @@ import {
   Button,
   NativeSyntheticEvent,
   ScrollView,
+  Switch,
   Text,
   TextInput,
   TextInputChangeEventData,
@@ -18,6 +19,7 @@ interface State {
   password: string;
   resource: string;
   devices: string;
+  usePassword: boolean;
 }
 
 export class KickScreen extends Component<{ navigation: any }, State, any> {
@@ -31,15 +33,21 @@ export class KickScreen extends Component<{ navigation: any }, State, any> {
     this.state = {
       result: '',
       resource: '',
-      username: 'asteriskhx1',
-      password: 'qwer',
+      username: 'asterisk001',
+      password: 'qwerty',
       devices: '',
+      usePassword: true,
     };
   }
 
   private kickDevice(): void {
     ChatClient.getInstance()
-      .kickDevice(this.state.username, this.state.password, this.state.resource)
+      .kickDevice(
+        this.state.username,
+        this.state.password,
+        this.state.resource,
+        this.state.usePassword
+      )
       .then(() => {
         console.log('KickScreen: kickDevice: success');
         this.setState({ result: `kickDevice: success` });
@@ -54,7 +62,11 @@ export class KickScreen extends Component<{ navigation: any }, State, any> {
 
   private kickAllDevices(): void {
     ChatClient.getInstance()
-      .kickAllDevices(this.state.username, this.state.password)
+      .kickAllDevices(
+        this.state.username,
+        this.state.password,
+        this.state.usePassword
+      )
       .then(() => {
         console.log(`${KickScreen.TAG}: kickAllDevices: success`);
         this.setState({ result: `kickAllDevices: success` });
@@ -69,7 +81,11 @@ export class KickScreen extends Component<{ navigation: any }, State, any> {
 
   private getLoggedInDevicesFromServer(): void {
     ChatClient.getInstance()
-      .getLoggedInDevicesFromServer(this.state.username, this.state.password)
+      .getLoggedInDevicesFromServer(
+        this.state.username,
+        this.state.password,
+        this.state.usePassword
+      )
       .then((value: Array<ChatDeviceInfo>) => {
         console.log(
           `${KickScreen.TAG}: getLoggedInDevicesFromServer: success`,
@@ -128,8 +144,13 @@ export class KickScreen extends Component<{ navigation: any }, State, any> {
             >
               {password}
             </TextInput>
+            <Switch
+              onValueChange={(usePassword: boolean) => {
+                this.setState({ usePassword: usePassword });
+              }}
+            />
             <Button
-              title="devices"
+              title="get devices"
               onPress={() => {
                 this.getLoggedInDevicesFromServer();
               }}

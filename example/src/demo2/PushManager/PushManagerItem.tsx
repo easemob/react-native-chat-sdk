@@ -44,6 +44,10 @@ export interface StatePushMessage extends StateBase {
     displayStyle: ChatPushDisplayStyle;
   };
   fetchPushOptionFromServer: {};
+  selectPushTemplate: {
+    templateName: string;
+  };
+  fetchSelectedPushTemplate: {};
 }
 export class PushManagerLeafScreen extends LeafScreenBase<StatePushMessage> {
   protected static TAG = 'PushManagerLeafScreen';
@@ -78,6 +82,8 @@ export class PushManagerLeafScreen extends LeafScreenBase<StatePushMessage> {
       'updatePushNickname',
       'updatePushDisplayStyle',
       'fetchPushOptionFromServer',
+      'selectPushTemplate',
+      'fetchSelectedPushTemplate',
     ];
     let renderDomAry: ({} | null | undefined)[] = [];
     const data = this.metaDataList;
@@ -234,6 +240,23 @@ export class PushManagerLeafScreen extends LeafScreenBase<StatePushMessage> {
       case MN.fetchPushOptionFromServer: {
         this.tryCatch(
           ChatClient.getInstance().pushManager.fetchPushOptionFromServer(),
+          PushManagerLeafScreen.TAG,
+          name
+        );
+        break;
+      }
+      case MN.selectPushTemplate: {
+        const { templateName } = this.state.selectPushTemplate;
+        this.tryCatch(
+          ChatClient.getInstance().pushManager.selectPushTemplate(templateName),
+          PushManagerLeafScreen.TAG,
+          name
+        );
+        break;
+      }
+      case MN.fetchSelectedPushTemplate: {
+        this.tryCatch(
+          ChatClient.getInstance().pushManager.fetchSelectedPushTemplate(),
           PushManagerLeafScreen.TAG,
           name
         );

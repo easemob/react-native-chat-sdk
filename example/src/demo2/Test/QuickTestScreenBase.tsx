@@ -94,9 +94,54 @@ export abstract class QuickTestScreenBase<
         console.log('QuickTestScreenBase.onConnected');
         this.that.setState({ connect_listener: 'onConnected' });
       }
-      onDisconnected(errorCode?: number): void {
-        console.log('QuickTestScreenBase.onDisconnected: ', errorCode);
+      onDisconnected(): void {
+        console.log('QuickTestScreenBase.onDisconnected');
         this.that.setState({ connect_listener: 'onDisconnected' });
+      }
+
+      onAppActiveNumberReachLimit(): void {
+        console.log('QuickTestScreenBase.onAppActiveNumberReachLimit');
+        this.that.setState({ connect_listener: 'onAppActiveNumberReachLimit' });
+      }
+
+      onUserDidLoginFromOtherDevice(deviceName?: string): void {
+        console.log(
+          'QuickTestScreenBase.onUserDidLoginFromOtherDevice',
+          deviceName
+        );
+        this.that.setState({
+          connect_listener: 'onUserDidLoginFromOtherDevice',
+        });
+      }
+
+      onUserDidRemoveFromServer(): void {
+        console.log('QuickTestScreenBase.onAppActiveNumberReachLimit');
+        this.that.setState({ connect_listener: 'onAppActiveNumberReachLimit' });
+      }
+
+      onUserDidForbidByServer(): void {
+        console.log('QuickTestScreenBase.onUserDidForbidByServer');
+        this.that.setState({ connect_listener: 'onUserDidForbidByServer' });
+      }
+
+      onUserDidChangePassword(): void {
+        console.log('QuickTestScreenBase.onUserDidChangePassword');
+        this.that.setState({ connect_listener: 'onUserDidChangePassword' });
+      }
+
+      onUserDidLoginTooManyDevice(): void {
+        console.log('QuickTestScreenBase.onUserDidLoginTooManyDevice');
+        this.that.setState({ connect_listener: 'onUserDidLoginTooManyDevice' });
+      }
+
+      onUserKickedByOtherDevice(): void {
+        console.log('QuickTestScreenBase.onUserKickedByOtherDevice');
+        this.that.setState({ connect_listener: 'onUserKickedByOtherDevice' });
+      }
+
+      onUserAuthenticationFailed(): void {
+        console.log('QuickTestScreenBase.onUserAuthenticationFailed');
+        this.that.setState({ connect_listener: 'onUserAuthenticationFailed' });
       }
     })(this);
     ChatClient.getInstance().removeAllConnectionListener();
@@ -145,6 +190,33 @@ export abstract class QuickTestScreenBase<
         this.that.setState({
           multi_listener:
             'QuickTestScreenBase.onGroupEvent: ' + event + target + usernames,
+        });
+      }
+      onMessageRemoved?(convId?: string, deviceId?: string): void {
+        console.log('QuickTestScreenBase.onMessageRemoved: ', convId, deviceId);
+        this.that.setState({
+          multi_listener:
+            'QuickTestScreenBase.onMessageRemoved: ' + convId + deviceId,
+        });
+      }
+
+      onConversationEvent?(
+        event?: ChatMultiDeviceEvent,
+        convId?: string,
+        convType?: any
+      ): void {
+        console.log(
+          'QuickTestScreenBase.onConversationEvent: ',
+          event,
+          convId,
+          convType
+        );
+        this.that.setState({
+          multi_listener:
+            'QuickTestScreenBase.onConversationEvent: ' +
+            event +
+            convId +
+            convType,
         });
       }
     })(this);
@@ -290,6 +362,21 @@ export abstract class QuickTestScreenBase<
         );
         this.that.setState({
           conv_listener: `onConversationRead: ${from}, ${to}`,
+        });
+      }
+      onMessageContentChanged?(
+        message: ChatMessage,
+        lastModifyOperatorId: string,
+        lastModifyTime: number
+      ): void {
+        console.log(
+          `${QuickTestScreenBase.TAG}: onMessageContentChanged: `,
+          JSON.stringify(message),
+          lastModifyOperatorId,
+          lastModifyTime
+        );
+        this.that.setState({
+          conv_listener: `onMessageContentChanged: ${lastModifyOperatorId}, ${lastModifyTime}`,
         });
       }
     })(this);
@@ -742,14 +829,14 @@ export abstract class QuickTestScreenBase<
         roomName?: string | undefined;
       }): void {
         console.log(
-          `${QuickTestScreenBase.TAG}: onMemberJoined:`,
+          `${QuickTestScreenBase.TAG}: onMemberExited:`,
           params.roomId,
           params.participant,
           params.roomName
         );
         this.that.setState({
           room_listener:
-            `onMemberJoined: ` +
+            `onMemberExited: ` +
             params.roomId +
             params.participant +
             params.roomName,
@@ -759,19 +846,22 @@ export abstract class QuickTestScreenBase<
         roomId: string;
         participant?: string | undefined;
         roomName?: string | undefined;
+        reason?: string | undefined;
       }): void {
         console.log(
           `${QuickTestScreenBase.TAG}: onRemoved:`,
           params.roomId,
           params.participant,
-          params.roomName
+          params.roomName,
+          params.reason
         );
         this.that.setState({
           room_listener:
             `onRemoved: ` +
             params.roomId +
             params.participant +
-            params.roomName,
+            params.roomName +
+            params.reason,
         });
       }
       onMuteListAdded(params: {

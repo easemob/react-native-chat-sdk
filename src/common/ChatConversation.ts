@@ -118,16 +118,29 @@ export class ChatConversation {
    * The conversation extension.
    */
   ext?: any;
+  /**
+   * Whether the conversation is pinned. Default is false.
+   */
+  isPinned?: boolean;
+  /**
+   * The UNIX timestamp when the conversation is pinned. The unit is millisecond. This value is `0` when the conversation is not pinned.
+   */
+  pinnedTime?: number;
+
   constructor(params: {
     convId: string;
     convType: ChatConversationType;
     isChatThread?: boolean;
     ext?: any;
+    isPinned?: boolean;
+    pinnedTime?: number;
   }) {
     this.convId = params.convId;
     this.convType = params.convType;
     this.isChatThread = params.isChatThread ?? false;
     this.ext = params.ext;
+    this.isPinned = params.isPinned ?? false;
+    this.pinnedTime = params.pinnedTime ?? 0;
   }
 
   /**
@@ -322,7 +335,7 @@ export class ChatConversation {
    * @throws A description of the exception. See {@link ChatError}.
    */
   public async deleteAllMessages(): Promise<void> {
-    return ChatClient.getInstance().chatManager.deleteAllMessages(
+    return ChatClient.getInstance().chatManager.deleteConversationAllMessages(
       this.convId,
       this.convType
     );
@@ -502,6 +515,40 @@ export class ChatConversation {
       this.convId,
       this.convType,
       params
+    );
+  }
+
+  /**
+   * Deletes messages from the conversation (from both local storage and server).
+   *
+   * @param msgIds The IDs of messages to delete from the current conversation.
+   *
+   * @throws A description of the exception. See {@link ChatError}.
+   */
+  public async removeMessagesFromServerWithMsgIds(
+    msgIds: string[]
+  ): Promise<void> {
+    return ChatClient.getInstance().chatManager.removeMessagesFromServerWithMsgIds(
+      this.convId,
+      this.convType,
+      msgIds
+    );
+  }
+
+  /**
+   * Deletes messages from the conversation (from both local storage and server).
+   *
+   * @param timestamp The message timestamp in millisecond. The messages with the timestamp smaller than the specified one will be deleted.
+   *
+   * @throws A description of the exception. See {@link ChatError}.
+   */
+  public async removeMessagesFromServerWithTimestamp(
+    timestamp: number
+  ): Promise<void> {
+    return ChatClient.getInstance().chatManager.removeMessagesFromServerWithTimestamp(
+      this.convId,
+      this.convType,
+      timestamp
     );
   }
 }
