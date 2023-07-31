@@ -59,13 +59,22 @@ Agora Chat 是一个高度可靠的全球交流平台，您的用户可以在其
 | {@link ChatConnectEventListener.onDisconnected onDisconnected} | 和 chat 服务器断开连接时触发的回调。 |
 | {@link ChatConnectEventListener.onTokenWillExpire onTokenWillExpire} | Agora token 即将过期时触发。 |
 | {@link ChatConnectEventListener.onTokenDidExpire onTokenDidExpire} | Agora token 已过期时触发。 |
-| {@link ChatConnectEventListener.onAppActiveNumberReachLimit onAppActiveNumberReachLimit} | The number of daily active users (DAU) or monthly active users (MAU) for the app has reached the upper limit. |
+| {@link ChatConnectEventListener.onAppActiveNumberReachLimit onAppActiveNumberReachLimit} | 应用程序的日活跃用户数量（DAU）或月活跃用户数量（MAU）达到上限时回调。 |
+| {@link ChatConnectEventListener.onUserDidLoginFromOtherDevice onUserDidLoginFromOtherDevice} | 其他设备登录通知。 |
+| {@link ChatConnectEventListener.onUserDidRemoveFromServer onUserDidRemoveFromServer} | 用户被移除通知。 |
+| {@link ChatConnectEventListener.onUserDidForbidByServer onUserDidForbidByServer} | 被服务器禁止连接通知。 |
+| {@link ChatConnectEventListener.onUserDidChangePassword onUserDidChangePassword} | 用户密码变更通知。 |
+| {@link ChatConnectEventListener.onUserDidLoginTooManyDevice onUserDidLoginTooManyDevice} | 登录设备数量超限通知。 |
+| {@link ChatConnectEventListener.onUserKickedByOtherDevice onUserKickedByOtherDevice} | 被其他设备踢掉通知。 |
+| {@link ChatConnectEventListener.onUserAuthenticationFailed onUserAuthenticationFailed} | 鉴权失败通知。 典型触发通知场景：token过期、token验证失败。 |
 
 | Event | Description |
 | :----- | :---------- |
 | {@link ChatMultiDeviceEventListener.onContactEvent onContactEvent} | 联系人事件监听回调。 |
 | {@link ChatMultiDeviceEventListener.onGroupEvent onGroupEvent} | 群组事件监听回调。 |
 | {@link ChatMultiDeviceEventListener.onThreadEvent onThreadEvent} | 子区事件监听回调。 |
+| {@link ChatMultiDeviceEventListener.onMessageRemoved onMessageRemoved} | 会话删除漫游消息后，其他设备收到该通知。 |
+| {@link ChatMultiDeviceEventListener.onConversationEvent onConversationEvent} | The multi-device event callback for the operation of a single conversation. |
 
 | Event | Description |
 | :----- | :---------- |
@@ -108,7 +117,7 @@ Agora Chat 是一个高度可靠的全球交流平台，您的用户可以在其
 | {@link ChatManager.updateConversationMessage updateConversationMessage} | 更新本地数据库的消息。 |
 | {@link ChatManager.deleteMessage deleteMessage} | 删除指定消息。 |
 | {@link ChatManager.deleteMessagesWithTimestamp deleteMessagesWithTimestamp} | 从本地数据库中删除指定时间段内的消息。 |
-| {@link ChatManager.deleteAllMessages deleteAllMessages} | 清除内存和数据库中指定会话中的消息。 |
+| {@link ChatManager.deleteConversationAllMessages deleteConversationAllMessages} | 清除内存和数据库中指定会话中的消息。 |
 | {@link ChatManager.deleteMessagesBeforeTimestamp deleteMessagesBeforeTimestamp} | 删除指定时间戳之前的所有本地消息。 |
 | {@link ChatManager.getMessagesWithMsgType getMessagesWithMsgType} | 从本地数据库获取会话中的指定用户发送的某些类型的消息。 |
 | {@link ChatManager.getMessages getMessages} | 从本地数据库获取指定会话中一定数量的消息。 |
@@ -141,6 +150,11 @@ Agora Chat 是一个高度可靠的全球交流平台，您的用户可以在其
 | {@link ChatManager.fetchConversationsFromServerWithPage fetchConversationsFromServerWithPage} | 从服务器分页获取会话列表。 |
 | {@link ChatManager.removeMessagesFromServerWithMsgIds removeMessagesFromServerWithMsgIds} | 根据消息 ID 单向删除漫游消息 |
 | {@link ChatManager.removeMessagesFromServerWithTimestamp removeMessagesFromServerWithTimestamp} | 根据消息 时间戳 单向删除漫游消息 |
+| {@link ChatManager.fetchConversationsFromServerWithCursor fetchConversationsFromServerWithCursor} | 分页获取会话列表 |
+| {@link ChatManager.fetchPinnedConversationsFromServerWithCursor fetchPinnedConversationsFromServerWithCursor} | 分页获取置顶会话列表 |
+| {@link ChatManager.pinConversation pinConversation} | 设置会话是否置顶。 |
+| {@link ChatManager.modifyMessageBody modifyMessageBody} | 修改文本消息。同时修改本地消息和服务器消息。 |
+| {@link ChatManager.fetchCombineMessageDetail fetchCombineMessageDetail} | 获取合并类型消息的消息列表。 合并消息包含1条或者多条其它类型消息。 |
 
 | Event | Description |
 | :----- | :---------- |
@@ -157,6 +171,7 @@ Agora Chat 是一个高度可靠的全球交流平台，您的用户可以在其
 | {@link ChatMessageEventListener.onChatMessageThreadUpdated onChatMessageThreadUpdated} | 子区更新回调。 |
 | {@link ChatMessageEventListener.onChatMessageThreadDestroyed onChatMessageThreadDestroyed} | 子区移除回调。 |
 | {@link ChatMessageEventListener.onChatMessageThreadUserRemoved onChatMessageThreadUserRemoved} | 管理员移除子区用户的回调。 |
+| {@link ChatMessageEventListener.onMessageContentChanged onMessageContentChanged} | 文本消息内容更改，其它设备收到该通知。 |
 ## ChatContactManager
 | Method | Description |
 | :----- | :---------- |
@@ -234,6 +249,9 @@ Agora Chat 是一个高度可靠的全球交流平台，您的用户可以在其
 | {@link ChatGroupManager.setMemberAttribute setMemberAttribute} | 设置单个群成员的自定义属性。 |
 | {@link ChatGroupManager.fetchMemberAttributes fetchMemberAttributes} | 获取单个群成员所有自定义属性。 |
 | {@link ChatGroupManager.fetchMembersAttributes fetchMembersAttributes} | 根据指定的属性 key 获取多个群成员的自定义属性。 |
+| {@link ChatGroupManager.addGroupListener addGroupListener} | 添加群组监听器。 |
+| {@link ChatGroupManager.removeGroupListener removeGroupListener} | 移除群组监听器。 |
+| {@link ChatGroupManager.removeAllGroupListener removeAllGroupListener} | 清除群组监听器。 |
 
 | Event | Description |
 | :----- | :---------- |
@@ -323,6 +341,9 @@ Agora Chat 是一个高度可靠的全球交流平台，您的用户可以在其
 | Method | Description |
 | :----- | :---------- |
 | {@link ChatPresenceManager.setNativeListener setNativeListener} | 在线状态管理器类。 |
+| {@link ChatPresenceManager.addPresenceListener addPresenceListener} | 添加在线状态监听器。 |
+| {@link ChatPresenceManager.removePresenceListener removePresenceListener} | 移除在线状态监听器。 |
+| {@link ChatPresenceManager.removeAllPresenceListener removeAllPresenceListener} | 清除所有在线状态监听器。 |
 | {@link ChatPresenceManager.publishPresence publishPresence} | 发布自定义在线状态。 |
 | {@link ChatPresenceManager.subscribe subscribe} | 订阅指定用户的在线状态。 |
 | {@link ChatPresenceManager.unsubscribe unsubscribe} | 取消订阅指定用户的在线状态。 |
@@ -347,6 +368,8 @@ Agora Chat 是一个高度可靠的全球交流平台，您的用户可以在其
 | {@link ChatPushManager.updatePushNickname updatePushNickname} | 修改推送通知中显示的消息发送方的昵称。 |
 | {@link ChatPushManager.updatePushDisplayStyle updatePushDisplayStyle} | 修改推送通知的展示方式。 |
 | {@link ChatPushManager.fetchPushOptionFromServer fetchPushOptionFromServer} | 从服务器获取推送配置。 |
+| {@link ChatPushManager.selectPushTemplate selectPushTemplate} | 选择离线推送模板，通知服务器。 |
+| {@link ChatPushManager.fetchSelectedPushTemplate fetchSelectedPushTemplate} | 获取当前模板的名字。 |
 ## ChatUserInfoManager
 | Method | Description |
 | :----- | :---------- |
@@ -356,12 +379,13 @@ Agora Chat 是一个高度可靠的全球交流平台，您的用户可以在其
 ## ChatMessage
 | Method | Description |
 | :----- | :---------- |
-| {@link ChatMessage.constructor constructor} | 构造消息对象。 |
+| {@link ChatMessage.constructor constructor} | 构造消息。 |
 | {@link ChatMessage.createTextMessage createTextMessage} | 创建一条待发送的文本消息。 |
 | {@link ChatMessage.createFileMessage createFileMessage} | 创建一条待发送的文件类型消息。 |
 | {@link ChatMessage.createImageMessage createImageMessage} | 创建一条待发送的图片消息。 |
 | {@link ChatMessage.createVideoMessage createVideoMessage} | 创建一条待发送的视频消息。 |
 | {@link ChatMessage.createVoiceMessage createVoiceMessage} | 创建一条待发送的语音消息。 |
+| {@link ChatMessage.createCombineMessage createCombineMessage} | 创建合并类型消息体 |
 | {@link ChatMessage.createLocationMessage createLocationMessage} | 创建一条待发送的位置消息。 |
 | {@link ChatMessage.createCmdMessage createCmdMessage} | 创建一条待发送的命令消息。 |
 | {@link ChatMessage.createCustomMessage createCustomMessage} | 创建一条待发送的自定义类型消息。 |
@@ -390,3 +414,5 @@ Agora Chat 是一个高度可靠的全球交流平台，您的用户可以在其
 | {@link ChatConversation.getMessageWithTimestamp getMessageWithTimestamp} | 从本地数据库获取指定会话在一段时间内的消息。 |
 | {@link ChatConversation.fetchHistoryMessages fetchHistoryMessages} | 分页获取指定会话的历史消息。 |
 | {@link ChatConversation.fetchHistoryMessagesByOptions fetchHistoryMessagesByOptions} | 根据消息拉取参数配置从服务器分页获取指定会话的历史消息。 |
+| {@link ChatConversation.removeMessagesFromServerWithMsgIds removeMessagesFromServerWithMsgIds} | 根据消息 ID 单向删除漫游消息 |
+| {@link ChatConversation.removeMessagesFromServerWithTimestamp removeMessagesFromServerWithTimestamp} | 根据消息 时间戳 单向删除漫游消息 |

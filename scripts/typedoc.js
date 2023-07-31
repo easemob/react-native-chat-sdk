@@ -1,3 +1,5 @@
+// node scripts/typedoc.js ${version} ${dir} ${agora | easemob}
+
 const fs = require('fs');
 const path = require('path');
 // const { exit } = require('process');
@@ -69,6 +71,9 @@ const title = `class="title">Chat SDK for React Native ${version}</a>`;
 deleteContent(dirPath, del1);
 deleteContent(dirPath, del2);
 replaceContent(dirPath, `class="title">react-native-chat-sdk</a>`, title);
-replaceContent(dirPath, /react-native-chat-sdk/g, `react-native-agora-chat`);
+
+if (process.argv.at(4) === 'agora') {
+  replaceContent(dirPath, /react-native-chat-sdk/g, `react-native-agora-chat`);
+}
 
 console.log('test:end:');
