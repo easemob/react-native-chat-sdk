@@ -2,6 +2,72 @@ _Chinese | [English](./CHANGELOG.md)_
 
 # Update Log
 
+## 1.2.0
+
+新功能
+
+- React-Native 从 0.66.5 升级到 0.71.11
+
+改进
+
+- 依赖的原生 SDK 升级到版本 4.1.0（“iOS”和“Android”）。 添加原生 SDK 提供的新功能。
+- 优化断线通知，分离出服务器主动断线的通知，用户可以具体处理服务器主动断线的原因。
+- 使用 commitlint 优化 git 提交规范。 不符合规范的代码不能提交。
+- 使用 lefthook 优化 git commit。 添加使用 gitleaks 检查敏感信息。
+
+问题已修复
+
+- 修复 android 平台下由于添加表情响应导致应用程序崩溃的问题。
+
+＃＃＃ 细节
+
+重命名 API
+
+- `deleteConversationAllMessages` 更名为 `deleteAllMessages`。
+
+更新的 API
+
+- `getLoggedInDevicesFromServer`：添加令牌支持。
+- `kickDevice`：添加令牌支持。
+- `kickAllDevices`：添加令牌支持。
+
+添加了 API
+
+- `fetchConversationsFromServerWithCursor`：从服务器获取带分页的对话列表。
+- `fetchPinnedConversationsFromServerWithCursor`：通过分页从服务器获取固定对话列表。
+- `pinConversation`：设置是否固定对话。
+- `modifyMessageBody`：修改本地消息或服务器端消息。
+- `fetchCombineMessageDetail`：获取有关组合类型消息的信息。
+- `selectPushTemplate`：选择带有模板名称的推送模板进行离线推送。
+- `fetchSelectedPushTemplate`：获取选定的推送模板以进行离线推送。
+
+已弃用的 API
+
+- fetchAllConversations：请改用“fetchConversationsFromServerWithCursor”。
+
+更新数据对象
+
+- `ChatConversation`：添加 `isPinned` 和 `pinnedTime` 属性。
+- `ChatMessageType`：添加`COMBINE`类型消息正文。
+- `ChatMessage`：添加`receiverList`属性。
+- 创建发送消息：添加“secret”参数。
+- `ChatMessageBody`：添加 `lastModifyOperatorId`、`lastModifyTime` 和 `modifyCount` 属性。
+- `ChatOptions`：添加 `enableEmptyConversation`、`customDeviceName` 和 `customOSType` 属性。
+
+添加数据对象
+
+- `ChatCombineMessageBody`：添加组合消息正文对象。
+
+更新监听器
+
+- `ChatConnectEventListener.onUserDidLoginFromOtherDevice`：添加`deviceName`参数。
+- `ChatConnectEventListener`：添加 `onUserDidRemoveFromServer`、`onUserDidForbidByServer`、`onUserDidChangePassword`、`onUserDidLoginTooManyDevice`、`onUserKickedByOtherDevice`、`onUserAuthenticationFailed` 事件通知。
+- `ChatConnectEventListener.onDisconnected`：删除代码参数。
+- `ChatMultiDeviceEventListener`：添加`onMessageRemoved`事件通知。
+- `ChatMultiDeviceEventListener`：添加`onConversationEvent`事件通知。
+- `ChatMessageEventListener`：添加`onMessageContentChanged`事件通知。
+- `ChatRoomEventListener.onRemoved`：添加`reason`参数。
+
 ## 1.1.2
 
 新功能
