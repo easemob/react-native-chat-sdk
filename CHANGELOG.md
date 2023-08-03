@@ -10,7 +10,7 @@ New features
 
 Improvements
 
-- Dependent native SDK upgraded to version 4.1.0 ('iOS' and 'Android'). Add new features provided by the native SDK.
+- Dependent native SDK upgraded to version 4.1.1 ('iOS' and 'Android'). Add new features provided by the native SDK.
 - Optimize the disconnection notification, separate the notification of the server's active disconnection, and the user can specifically deal with the reason for the server's active disconnection.
 - Optimize git commit specification with commitlint. Code cannot be submitted if it is not in accordance with the specification.
 - Optimize git commit with lefthook. Add sensitive information check with gitleaks.

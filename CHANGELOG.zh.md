@@ -10,7 +10,7 @@ _Chinese | [English](./CHANGELOG.md)_
 
 改进
 
-- 依赖的原生 SDK 升级到版本 4.1.0（“iOS”和“Android”）。 添加原生 SDK 提供的新功能。
+- 依赖的原生 SDK 升级到版本 4.1.1（“iOS”和“Android”）。 添加原生 SDK 提供的新功能。
 - 优化断线通知，分离出服务器主动断线的通知，用户可以具体处理服务器主动断线的原因。
 - 使用 commitlint 优化 git 提交规范。 不符合规范的代码不能提交。
 - 使用 lefthook 优化 git commit。 添加使用 gitleaks 检查敏感信息。
