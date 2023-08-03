@@ -72,7 +72,7 @@ PODS:
     - FlipperKit/FlipperKitNetworkPlugin
   - fmt (6.2.1)
   - glog (0.3.5)
-  - HyphenateChat (4.1.0)
+  - HyphenateChat (4.1.1)
   - libevent (2.1.12)
   - OpenSSL-Universal (1.1.1100)
   - RCT-Folly (2021.07.22.00):
@@ -297,8 +297,8 @@ PODS:
   - React-jsinspector (0.71.11)
   - React-logger (0.71.11):
     - glog
-  - react-native-chat-sdk (1.2.0-beta.1):
-    - HyphenateChat (= 4.1.0)
+  - react-native-chat-sdk (1.2.0-beta.2):
+    - HyphenateChat (= 4.1.1)
     - React-Core
   - react-native-document-picker (9.0.1):
     - React-Core
@@ -398,7 +398,7 @@ PODS:
   - RNScreens (3.20.0):
     - React-Core
     - React-RCTImage
-  - SocketRocket (0.6.0)
+  - SocketRocket (0.6.1)
   - Yoga (1.14.0)
   - YogaKit (1.18.1):
     - Yoga (~> 1.14)
@@ -470,8 +470,6 @@ DEPENDENCIES:
   - Yoga (from `../node_modules/react-native/ReactCommon/yoga`)
 
 SPEC REPOS:
-  https://mirrors.tuna.tsinghua.edu.cn/git/CocoaPods/Specs.git:
-    - HyphenateChat
   trunk:
     - CocoaAsyncSocket
     - Flipper
@@ -484,6 +482,7 @@ SPEC REPOS:
     - Flipper-RSocket
     - FlipperKit
     - fmt
+    - HyphenateChat
     - libevent
     - OpenSSL-Universal
     - SocketRocket
@@ -588,7 +587,7 @@ SPEC CHECKSUMS:
   FlipperKit: 2efad7007d6745a3f95e4034d547be637f89d3f6
   fmt: ff9d55029c625d3757ed641535fd4a75fedc7ce9
   glog: 04b94705f318337d7ead9e6d17c019bd9b1f6b1b
-  HyphenateChat: 0c8ef696b0f21cf5a10053266cd82a1e00659996
+  HyphenateChat: 95aa4abbad0e763f513acbe21ff9543f50b886cd
   libevent: 4049cae6c81cdb3654a443be001fb9bdceff7913
   OpenSSL-Universal: ebc357f1e6bc71fa463ccb2fe676756aff50e88c
   RCT-Folly: 424b8c9a7a0b9ab2886ffe9c3b041ef628fd4fb1
@@ -605,7 +604,7 @@ SPEC CHECKSUMS:
   React-jsiexecutor: 089cd07c76ecf498960a64ba8ae0f2dddd382f44
   React-jsinspector: b6ed4cb3ffa27a041cd440300503dc512b761450
   React-logger: 186dd536128ae5924bc38ed70932c00aa740cd5b
-  react-native-chat-sdk: 9dad11f74a0666d8fdefc4a14ba593e8ddcc25bd
+  react-native-chat-sdk: 709f30dbc371947d6b71018fa0b4bfb90fd58130
   react-native-document-picker: 2b8f18667caee73a96708a82b284a4f40b30a156
   react-native-image-picker: 709d04e7df67bd3a90f376c3eedb2e8b8334dd04
   react-native-safe-area-context: b8979f5eda6ed5903d4dbc885be3846ea3daa753
@@ -625,10 +624,10 @@ SPEC CHECKSUMS:
   RNFS: 4ac0f0ea233904cb798630b3c077808c06931688
   RNGestureHandler: f75d81410b40aaa99e71ae8f8bb7a88620c95042
   RNScreens: 218801c16a2782546d30bd2026bb625c0302d70f
-  SocketRocket: fccef3f9c5cedea1353a9ef6ada904fde10d6608
+  SocketRocket: f32cd54efbe0f095c4d7594881e52619cfe80b17
   Yoga: f7decafdc5e8c125e6fa0da38a687e35238420fa
   YogaKit: f782866e155069a2cca2517aafea43200b01fd5a
 
-PODFILE CHECKSUM: cf501c0df7487f458bf2b51db740050896f865bc
+PODFILE CHECKSUM: 57fdd43670092a619248b57829aa6641ac34725f
 
 COCOAPODS: 1.11.3
