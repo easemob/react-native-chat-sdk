@@ -14,6 +14,12 @@ Improvements
 - Optimize the disconnection notification, separate the notification of the server's active disconnection, and the user can specifically deal with the reason for the server's active disconnection.
 - Optimize git commit specification with commitlint. Code cannot be submitted if it is not in accordance with the specification.
 - Optimize git commit with lefthook. Add sensitive information check with gitleaks.
+- Add merge type message body, create merge message method, and get merge message content method.
+- Support for modifying the content of text messages and adding modification attributes.
+- Added message modification callback notification.
+- Added settings to customize the current device type and name.
+- Added the use of tokens to kick specified devices and kick all devices.
+- Added the use of token to get the list of online devices.
 
 Issues fixed
 
