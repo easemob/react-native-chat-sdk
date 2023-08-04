@@ -72,6 +72,10 @@ export interface StateSendMessage extends StateBase {
   // message attribute
   attr?: string;
 
+  // ids
+  targetIds?: string[];
+  targetIdsString: string;
+
   // is chat message
   isChatThread: boolean;
 
@@ -189,6 +193,10 @@ export class SendMessageLeafScreen extends LeafScreenBase<StateSendMessage> {
         //   kk1: { kkk2: 'kkk' },
         // },
       }),
+
+      // target ids
+      targetIds: [],
+      targetIdsString: JSON.stringify([]),
 
       // is thread message
       isChatThread: this.metaData.get(MN.sendMessage)?.params[4]!
@@ -411,6 +419,21 @@ export class SendMessageLeafScreen extends LeafScreenBase<StateSendMessage> {
       }),
     ];
   }
+  protected renderSendMessageIdList(): ReactNode[] {
+    const { targetIdsString } = this.state;
+    return [
+      this.renderParamWithInput('ids', targetIdsString, (text: string) => {
+        try {
+          this.setState({
+            targetIds: JSON.parse(text),
+          });
+        } catch (e) {
+        } finally {
+          this.setState({ targetIdsString: text });
+        }
+      }),
+    ];
+  }
   protected renderSendMessageBodyText(): ReactNode[] {
     const { content } = this.state;
     return [
@@ -423,7 +446,6 @@ export class SendMessageLeafScreen extends LeafScreenBase<StateSendMessage> {
           });
         }
       ),
-      this.renderSendMessageAttribute(),
     ];
   }
   protected renderSendMessageBodyCmd(): ReactNode[] {
@@ -434,7 +456,6 @@ export class SendMessageLeafScreen extends LeafScreenBase<StateSendMessage> {
           action: text,
         });
       }),
-      this.renderSendMessageAttribute(),
     ];
   }
   protected renderSendMessageBodyLocation(): ReactNode[] {
@@ -455,7 +476,6 @@ export class SendMessageLeafScreen extends LeafScreenBase<StateSendMessage> {
           address: text,
         });
       }),
-      this.renderSendMessageAttribute(),
     ];
   }
 
@@ -472,7 +492,6 @@ export class SendMessageLeafScreen extends LeafScreenBase<StateSendMessage> {
           ext: JSON.parse(text),
         });
       }),
-      this.renderSendMessageAttribute(),
     ];
   }
   protected renderSendMessageBodyFile(): ReactNode[] {
@@ -491,7 +510,6 @@ export class SendMessageLeafScreen extends LeafScreenBase<StateSendMessage> {
           displayName: text,
         });
       }),
-      this.renderSendMessageAttribute(),
     ];
   }
   protected renderSendMessageBodyCombine(): ReactNode[] {
@@ -527,7 +545,6 @@ export class SendMessageLeafScreen extends LeafScreenBase<StateSendMessage> {
           });
         } catch (e) {}
       }),
-      this.renderSendMessageAttribute(),
     ];
   }
   protected renderSendMessageBodyVoice(): ReactNode[] {
@@ -555,7 +572,6 @@ export class SendMessageLeafScreen extends LeafScreenBase<StateSendMessage> {
           });
         }
       ),
-      this.renderSendMessageAttribute(),
     ];
   }
   protected renderSendMessageBodyImage(): ReactNode[] {
@@ -576,7 +592,6 @@ export class SendMessageLeafScreen extends LeafScreenBase<StateSendMessage> {
           displayName: text,
         });
       }),
-      this.renderSendMessageAttribute(),
     ];
   }
   protected renderSendMessageBodyVideo(): ReactNode[] {
@@ -615,7 +630,6 @@ export class SendMessageLeafScreen extends LeafScreenBase<StateSendMessage> {
           });
         }
       ),
-      this.renderSendMessageAttribute(),
     ];
   }
 
@@ -739,6 +753,8 @@ export class SendMessageLeafScreen extends LeafScreenBase<StateSendMessage> {
           });
         }
       ),
+      this.renderSendMessageAttribute(),
+      this.renderSendMessageIdList(),
       this.renderParamWithEnum(
         data.params[3]!.paramName,
         [
@@ -795,8 +811,14 @@ export class SendMessageLeafScreen extends LeafScreenBase<StateSendMessage> {
 
   private createMessage(): ChatMessage {
     let ret: ChatMessage;
-    const { targetId, targetType, messageType, isChatThread, priority } =
-      this.state;
+    const {
+      targetId,
+      targetType,
+      messageType,
+      isChatThread,
+      priority,
+      targetIds,
+    } = this.state;
     console.log('test:priority:', priority);
     switch (messageType) {
       case ChatMessageType.TXT:
@@ -909,6 +931,9 @@ export class SendMessageLeafScreen extends LeafScreenBase<StateSendMessage> {
         break;
       default:
         throw new Error('This type is not find. ', messageType);
+    }
+    if (targetIds) {
+      ret.receiverList = targetIds;
     }
     if (ret.chatType === ChatMessageChatType.ChatRoom) {
       ret.messagePriority = priority;

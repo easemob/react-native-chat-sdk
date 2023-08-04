@@ -148,6 +148,7 @@ export class KickScreen extends Component<{ navigation: any }, State, any> {
               onValueChange={(usePassword: boolean) => {
                 this.setState({ usePassword: usePassword });
               }}
+              value={this.state.usePassword}
             />
             <Button
               title="get devices"
