@@ -18,8 +18,12 @@ _Chinese | [English](./CHANGELOG.md)_
 - 支持修改文本消息内容，新增修改属性。
 - 新增消息修改回调通知。
 - 新增设置自定义当前设备类型和名称。
-- 新增使用token踢指定设备和踢所有设备。
-- 新增使用token获取在线设备列表。
+- 新增使用 token 踢指定设备和踢所有设备。
+- 新增使用 token 获取在线设备列表。
+- 更新多设备通知事件。
+- 更新连接状态通知事件。
+- 更新消息通知事件。
+- 更新聊天室通知事件。
 
 问题已修复
 
@@ -59,6 +63,7 @@ _Chinese | [English](./CHANGELOG.md)_
 - 创建发送消息：添加“secret”参数。
 - `ChatMessageBody`：添加 `lastModifyOperatorId`、`lastModifyTime` 和 `modifyCount` 属性。
 - `ChatOptions`：添加 `enableEmptyConversation`、`customDeviceName` 和 `customOSType` 属性。
+- `ChatMultiDeviceEvent`：添加 `CONVERSATION_PINNED`、`CONVERSATION_UNPINNED` 和 `CONVERSATION_DELETED`。
 
 添加数据对象
 

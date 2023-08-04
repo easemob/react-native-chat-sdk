@@ -20,6 +20,10 @@ Improvements
 - Added settings to customize the current device type and name.
 - Added the use of tokens to kick specified devices and kick all devices.
 - Added the use of token to get the list of online devices.
+- Update multi-device notification events.
+- Update connection status notification event.
+- Update message notification event.
+- Update chat room notification event.
 
 Issues fixed
 
@@ -59,6 +63,7 @@ Update Data Object
 - create send message: add `secret` parameter.
 - `ChatMessageBody`: add `lastModifyOperatorId`, `lastModifyTime` and `modifyCount` properties.
 - `ChatOptions`: add `enableEmptyConversation`, `customDeviceName` and `customOSType` properties.
+- `ChatMultiDeviceEvent`：添加 `CONVERSATION_PINNED`、`CONVERSATION_UNPINNED` 和 `CONVERSATION_DELETED`。
 
 Add Data Object
 
