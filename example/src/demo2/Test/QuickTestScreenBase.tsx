@@ -567,31 +567,31 @@ export abstract class QuickTestScreenBase<
             params.reason,
         });
       }
-      onUserRemoved(params: {
+      onMemberRemoved(params: {
         groupId: string;
         groupName?: string | undefined;
       }): void {
         console.log(
-          `${QuickTestScreenBase.TAG}: onUserRemoved:`,
-          params.groupId,
-          params.groupName
-        );
-        this.that.setState({
-          group_listener: `onUserRemoved: ` + params.groupId + params.groupName,
-        });
-      }
-      onGroupDestroyed(params: {
-        groupId: string;
-        groupName?: string | undefined;
-      }): void {
-        console.log(
-          `${QuickTestScreenBase.TAG}: onGroupDestroyed:`,
+          `${QuickTestScreenBase.TAG}: onMemberRemoved:`,
           params.groupId,
           params.groupName
         );
         this.that.setState({
           group_listener:
-            `onGroupDestroyed: ` + params.groupId + params.groupName,
+            `onMemberRemoved: ` + params.groupId + params.groupName,
+        });
+      }
+      onDestroyed(params: {
+        groupId: string;
+        groupName?: string | undefined;
+      }): void {
+        console.log(
+          `${QuickTestScreenBase.TAG}: onDestroyed:`,
+          params.groupId,
+          params.groupName
+        );
+        this.that.setState({
+          group_listener: `onDestroyed: ` + params.groupId + params.groupName,
         });
       }
       onAutoAcceptInvitation(params: {
@@ -798,18 +798,17 @@ export abstract class QuickTestScreenBase<
       constructor(parent: QuickTestScreenBase<S, SL>) {
         this.that = parent;
       }
-      onChatRoomDestroyed(params: {
+      onDestroyed(params: {
         roomId: string;
         roomName?: string | undefined;
       }): void {
         console.log(
-          `${QuickTestScreenBase.TAG}: onChatRoomDestroyed:`,
+          `${QuickTestScreenBase.TAG}: onDestroyed:`,
           params.roomId,
           params.roomName
         );
         this.that.setState({
-          room_listener:
-            `onChatRoomDestroyed: ` + params.roomId + params.roomName,
+          room_listener: `onDestroyed: ` + params.roomId + params.roomName,
         });
       }
       onMemberJoined(params: { roomId: string; participant: string }): void {
@@ -842,14 +841,14 @@ export abstract class QuickTestScreenBase<
             params.roomName,
         });
       }
-      onRemoved(params: {
+      onMemberRemoved(params: {
         roomId: string;
         participant?: string | undefined;
         roomName?: string | undefined;
         reason?: string | undefined;
       }): void {
         console.log(
-          `${QuickTestScreenBase.TAG}: onRemoved:`,
+          `${QuickTestScreenBase.TAG}: onMemberRemoved:`,
           params.roomId,
           params.participant,
           params.roomName,
@@ -857,7 +856,7 @@ export abstract class QuickTestScreenBase<
         );
         this.that.setState({
           room_listener:
-            `onRemoved: ` +
+            `onMemberRemoved: ` +
             params.roomId +
             params.participant +
             params.roomName +

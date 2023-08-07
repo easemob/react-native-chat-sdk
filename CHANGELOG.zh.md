@@ -33,7 +33,11 @@ _Chinese | [English](./CHANGELOG.md)_
 
 重命名 API
 
-- `deleteConversationAllMessages` 更名为 `deleteAllMessages`。
+- 在 `ChatManager` 对象中，`deleteAllMessages` 被重命名为 `deleteConversationAllMessages`.
+- 在 `ChatRoomEventListener` 对象中，`onRemoved` 被重命名为 `onMemberRemoved`.
+- 在 `ChatGroupEventListener` 对象中，`onUserRemoved` 被重命名为 `onMemberRemoved`.
+- 在 `ChatRoomEventListener` 对象中，`onChatRoomDestroyed` 被重命名为 `onDestroyed`。
+- 在 `ChatGroupEventListener` 对象中，`onGroupDestroyed` 被重命名为 `onDestroyed`。
 
 更新的 API
 

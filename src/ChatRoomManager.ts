@@ -74,8 +74,8 @@ export class ChatRoomManager extends Native {
     this._roomListeners.forEach((listener: ChatRoomEventListener) => {
       const contactEventType = params.type;
       switch (contactEventType) {
-        case 'onChatRoomDestroyed':
-          listener.onChatRoomDestroyed?.({
+        case 'onDestroyed':
+          listener.onDestroyed?.({
             roomId: params.roomId,
             roomName: params.roomName,
           });
@@ -94,7 +94,7 @@ export class ChatRoomManager extends Native {
           });
           break;
         case 'onRemovedFromChatRoom':
-          listener.onRemoved?.({
+          listener.onMemberRemoved?.({
             roomId: params.roomId,
             participant: params.participant,
             roomName: params.roomName,

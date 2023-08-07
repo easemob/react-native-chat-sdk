@@ -612,17 +612,17 @@ export class ChatRoomManagerLeafScreen extends LeafScreenBase<StateChatRoomMessa
       constructor(parent: ChatRoomManagerLeafScreen) {
         this.that = parent;
       }
-      onChatRoomDestroyed(params: {
+      onDestroyed(params: {
         roomId: string;
         roomName?: string | undefined;
       }): void {
         console.log(
-          `${ChatRoomManagerLeafScreen.TAG}: onChatRoomDestroyed:`,
+          `${ChatRoomManagerLeafScreen.TAG}: onDestroyed:`,
           params.roomId,
           params.roomName
         );
         this.that.setState({
-          recvResult: `onChatRoomDestroyed: ` + params.roomId + params.roomName,
+          recvResult: `onDestroyed: ` + params.roomId + params.roomName,
         });
       }
       onMemberJoined(params: { roomId: string; participant: string }): void {
@@ -654,14 +654,14 @@ export class ChatRoomManagerLeafScreen extends LeafScreenBase<StateChatRoomMessa
             params.roomName,
         });
       }
-      onRemoved(params: {
+      onMemberRemoved(params: {
         roomId: string;
         participant?: string | undefined;
         roomName?: string | undefined;
         reason?: string | undefined;
       }): void {
         console.log(
-          `${ChatRoomManagerLeafScreen.TAG}: onRemoved:`,
+          `${ChatRoomManagerLeafScreen.TAG}: onMemberRemoved:`,
           params.roomId,
           params.participant,
           params.roomName,
@@ -669,7 +669,7 @@ export class ChatRoomManagerLeafScreen extends LeafScreenBase<StateChatRoomMessa
         );
         this.that.setState({
           recvResult:
-            `onRemoved: ` +
+            `onMemberRemoved: ` +
             params.roomId +
             params.participant +
             params.roomName +

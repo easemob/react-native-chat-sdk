@@ -143,14 +143,14 @@ export class ChatGroupManager extends BaseManager {
             reason: params.reason,
           });
           break;
-        case 'onUserRemoved':
-          listener.onUserRemoved?.({
+        case 'onMemberRemoved':
+          listener.onMemberRemoved?.({
             groupId: params.groupId,
             groupName: params.groupName,
           });
           break;
-        case 'onGroupDestroyed':
-          listener.onGroupDestroyed?.({
+        case 'onDestroyed':
+          listener.onDestroyed?.({
             groupId: params.groupId,
             groupName: params.groupName,
           });

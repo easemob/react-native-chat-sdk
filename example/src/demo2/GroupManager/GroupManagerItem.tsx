@@ -1029,30 +1029,30 @@ export class GroupManagerLeafScreen extends LeafScreenBase<StateGroupMessage> {
             params.reason,
         });
       }
-      onUserRemoved(params: {
+      onMemberRemoved(params: {
         groupId: string;
         groupName?: string | undefined;
       }): void {
         console.log(
-          `${GroupManagerLeafScreen.TAG}: onUserRemoved:`,
+          `${GroupManagerLeafScreen.TAG}: onMemberRemoved:`,
           params.groupId,
           params.groupName
         );
         this.that.setState({
-          recvResult: `onUserRemoved: ` + params.groupId + params.groupName,
+          recvResult: `onMemberRemoved: ` + params.groupId + params.groupName,
         });
       }
-      onGroupDestroyed(params: {
+      onDestroyed(params: {
         groupId: string;
         groupName?: string | undefined;
       }): void {
         console.log(
-          `${GroupManagerLeafScreen.TAG}: onGroupDestroyed:`,
+          `${GroupManagerLeafScreen.TAG}: onDestroyed:`,
           params.groupId,
           params.groupName
         );
         this.that.setState({
-          recvResult: `onGroupDestroyed: ` + params.groupId + params.groupName,
+          recvResult: `onDestroyed: ` + params.groupId + params.groupName,
         });
       }
       onAutoAcceptInvitation(params: {

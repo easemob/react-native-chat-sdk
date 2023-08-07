@@ -751,7 +751,7 @@ export interface ChatGroupEventListener {
    * - Param [groupId] The group ID.
    * - Param [groupName] The group name.
    */
-  onUserRemoved?(params: { groupId: string; groupName?: string }): void;
+  onMemberRemoved?(params: { groupId: string; groupName?: string }): void;
   /**
    * Occurs when a group is destroyed.
    *
@@ -759,7 +759,7 @@ export interface ChatGroupEventListener {
    * - Param [groupId] The group ID.
    * - Param [groupName] The group name.
    */
-  onGroupDestroyed?(params: { groupId: string; groupName?: string }): void;
+  onDestroyed?(params: { groupId: string; groupName?: string }): void;
   /**
    * Occurs when the group invitation is accepted automatically by the current user.
    *
@@ -990,15 +990,15 @@ export interface ChatContactEventListener {
  */
 export interface ChatRoomEventListener {
   /**
-   * Occurs when the chat room is destroyed.
+   * Occurs when the chat room is destroyed. All chat room members receive this event.
    *
    * @params The parameter set.
    * - Param [roomId] The chat room ID.
    * - Param [roomName] The name of the chat room.
    */
-  onChatRoomDestroyed?(params: { roomId: string; roomName?: string }): void;
+  onDestroyed?(params: { roomId: string; roomName?: string }): void;
   /**
-   * Occurs when a user joins the chat room.
+   * Occurs when a member joins the chat room. All chat room members, except the new member, receive this event.
    *
    * @params The parameter set.
    * - Param [roomId] The chat room ID.
@@ -1006,7 +1006,7 @@ export interface ChatRoomEventListener {
    */
   onMemberJoined?(params: { roomId: string; participant: string }): void;
   /**
-   * Occurs when a member voluntarily leaves the chat room.
+   * Occurs when a member exits the chat room. All chat room members, except the member exiting the chat room, receive this event.
    *
    * @params The parameter set.
    * - Param [roomId] The chat room ID.
@@ -1018,7 +1018,7 @@ export interface ChatRoomEventListener {
     roomName?: string;
   }): void;
   /**
-   *  Occurs when a member is removed from a chat room.
+   *  Occurs when a member is removed from a chat room. The member that is kicked out of the chat room receive this event.
    *
    * @params The parameter set.
    * - Param [roomId] The chat room ID.
@@ -1026,14 +1026,14 @@ export interface ChatRoomEventListener {
    * - Param [participant] The user ID of the member that is removed from a chat room.
    * - Param [reason] Reason for removal.
    */
-  onRemoved?(params: {
+  onMemberRemoved?(params: {
     roomId: string;
     participant?: string;
     roomName?: string;
     reason?: string;
   }): void;
   /**
-   * Occurs when a chat room member is added to the mute list.
+   * Occurs when the chat room member(s) is/are added to the mute list. The muted members receive this event.
    *
    * @params The parameter set.
    * - Param [roomId] The chat room ID.
@@ -1046,7 +1046,7 @@ export interface ChatRoomEventListener {
     expireTime?: string;
   }): void;
   /**
-   * Occurs when one or more chat room members are removed from the mute list.
+   * Occurs when the chat room member(s) is/are removed from the mute list. The members that are removed from the mute list receive this event.
    *
    * @params The parameter set.
    * - Param [roomId] The chat room ID.
@@ -1054,7 +1054,7 @@ export interface ChatRoomEventListener {
    */
   onMuteListRemoved?(params: { roomId: string; mutes: Array<string> }): void;
   /**
-   *Occurs when a chat room member is set as an admin.
+   * Occurs when a chat room member is set as an admin. The member set as the chat room admin receives this event.
    *
    * @params The parameter set.
    * - Param [roomId] The chat room ID.
@@ -1062,7 +1062,7 @@ export interface ChatRoomEventListener {
    */
   onAdminAdded?(params: { roomId: string; admin: string }): void;
   /**
-   * Occurs when the administrative privileges of a chat room admin are removed.
+   * Occurs when the chat room member(s) is/are removed from the admin list. The admin removed from the admin list receives this event.
    *
    * @params The parameter set.
    * - Param [roomId] The chat room ID.
@@ -1070,7 +1070,7 @@ export interface ChatRoomEventListener {
    */
   onAdminRemoved?(params: { roomId: string; admin: string }): void;
   /**
-   * Occurs when the chat room ownership is transferred.
+   * Occurs when the chat room owner is changed. The chat room owner receives this event.
    *
    * @params The parameter set.
    * - Param [roomId] The chat room ID.
@@ -1083,7 +1083,7 @@ export interface ChatRoomEventListener {
     oldOwner: string;
   }): void;
   /**
-   * Occurs when the chat room announcement changes.
+   * Occurs when the chat room announcement changes. All chat room members receive this event.
    *
    * @params The parameter set.
    * - Param [roomId] The chat room ID.
@@ -1094,7 +1094,7 @@ export interface ChatRoomEventListener {
     announcement: string;
   }): void;
   /**
-   * Occurs when one or more chat room members are added to the allow list.
+   * Occurs when the chat room member(s) is/are added to the allow list. The members added to the allow list receive this event.
    *
    * @params The parameter set.
    * - Param [roomId] The chat room ID.
@@ -1102,7 +1102,7 @@ export interface ChatRoomEventListener {
    */
   onAllowListAdded?(params: { roomId: string; members: Array<string> }): void;
   /**
-   * Occurs when one or more chat room members are removed from the allow list.
+   * Occurs when the chat room member(s) is/are removed from the allow list. The members that are removed from the allow list receive this event.
    *
    * @params The parameter set.
    * - Param [roomId] The chat room ID.
@@ -1110,7 +1110,7 @@ export interface ChatRoomEventListener {
    */
   onAllowListRemoved?(params: { roomId: string; members: Array<string> }): void;
   /**
-   * Occurs when all members in the chat room are muted or unmuted.
+   * Occurs when all members in the chat room are muted or unmuted. All chat room members receive this event.
    *
    * @params The parameter set.
    * - Param [roomId] The chat room ID.
@@ -1124,14 +1124,14 @@ export interface ChatRoomEventListener {
   }): void;
 
   /**
-   * Occurs when the chat room specifications change. All chat room members receive this event.
+   * Occurs when the chat room specifications changes. All chat room members receive this event.
    *
    * @param room The chat room.
    */
   onSpecificationChanged?(room: ChatRoom): void;
 
   /**
-   * Occurs when the custom chat room attributes (key-value) are updated.
+   * The custom chat room attribute(s) is/are updated. All chat room members receive this event.
    *
    * @params params
    * - roomId: The chat room ID.
@@ -1145,7 +1145,8 @@ export interface ChatRoomEventListener {
   }): void;
 
   /**
-   * Occurs when the custom chat room attributes (key-value) are removed.
+   * The custom chat room attribute(s) is/are removed. All chat room members receive this event.
+   *
    * @params params
    * - roomId: The chat room ID.
    * - removedKeys: The key list of custom chat room attributes that are removed.
@@ -1163,7 +1164,7 @@ export interface ChatRoomEventListener {
  */
 export interface ChatPresenceEventListener {
   /**
-   * Occurs when the presence state of a subscribed user changes.
+   * The custom chat room attribute(s) is/are removed. All chat room members receive this event.
    *
    * @param list The new presence state of a subscribed user.
    */

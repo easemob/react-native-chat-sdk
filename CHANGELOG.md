@@ -33,7 +33,11 @@ Issues fixed
 
 Rename API
 
-- `deleteConversationAllMessages` is renamed `deleteAllMessages`.
+- `deleteAllMessages` is renamed `deleteConversationAllMessages`.
+- `onRemoved` is renamed `onMemberRemoved` in `ChatRoomEventListener`.
+- `onUserRemoved` is renamed `onMemberRemoved` in `ChatGroupEventListener`.
+- `onChatRoomDestroyed` is renamed `onDestroyed` in `ChatRoomEventListener`.
+- `onGroupDestroyed` is renamed `onDestroyed` in `ChatGroupEventListener`.
 
 Updated API
 
@@ -63,7 +67,7 @@ Update Data Object
 - create send message: add `secret` parameter.
 - `ChatMessageBody`: add `lastModifyOperatorId`, `lastModifyTime` and `modifyCount` properties.
 - `ChatOptions`: add `enableEmptyConversation`, `customDeviceName` and `customOSType` properties.
-- `ChatMultiDeviceEvent`：添加 `CONVERSATION_PINNED`、`CONVERSATION_UNPINNED` 和 `CONVERSATION_DELETED`。
+- - `ChatMultiDeviceEvent`：添加 `CONVERSATION_PINNED`、`CONVERSATION_UNPINNED` 和 `CONVERSATION_DELETED`。
 
 Add Data Object
 
