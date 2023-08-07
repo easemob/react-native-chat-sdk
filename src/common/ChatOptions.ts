@@ -155,7 +155,10 @@ export class ChatOptions {
   areaCode: ChatAreaCode;
 
   /**
-   * Whether to include empty conversations when the SDK loads conversations from the local database. Default is false.
+   * Whether to include empty conversations when the SDK loads conversations from the local database:
+   *
+   * - `true`: Yes. Empty conversations are included.
+   * - (Default) `false`: No. Empty conversations are excluded.
    */
   enableEmptyConversation: boolean;
 
@@ -164,7 +167,7 @@ export class ChatOptions {
    *
    * This attribute does not take effect when `customOSType` is set to `-1`.
    *
-   * Typical application: User A's mobile phone and pad want to log in at the same time, set customOSType to `1`, customDeviceName to `foo`, and it can be done.
+   * An application scenario is as follows: User A wants to log in to a mobile phone and a tablet with the same user account. Then the user sets `customOSType` to `1` and `customDeviceName` to `foo`.
    *
    */
   customDeviceName?: string;

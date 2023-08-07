@@ -119,7 +119,10 @@ export class ChatConversation {
    */
   ext?: any;
   /**
-   * Whether the conversation is pinned. Default is false.
+   * Whether the conversation is pinned:
+   *
+   * - `true`: Yes.
+   * - (Default) `false`: No.
    */
   isPinned?: boolean;
   /**

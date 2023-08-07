@@ -773,7 +773,9 @@ export class ChatClient extends BaseManager {
    * @param userId The user ID.
    * @param pwdOrToken The password or token.
    * @param resource The device ID. See {@link ChatDeviceInfo.resource}.
-   * @param isPassword If true, use password, otherwise use token. Default is true. See {@link pwdOrToken}
+   * @param isPassword Whether the password or user token is used. See {@link pwdOrToken}.
+   * - （Default）`true`：The password is used.
+   * - `false`: The user token is used.
    *
    * @throws A description of the exception. See {@link ChatError}.
    */
@@ -800,7 +802,9 @@ export class ChatClient extends BaseManager {
    *
    * @param userId The user ID.
    * @param pwdOrToken The password or token.
-   * @param isPassword If true, use password, otherwise use token. Default is true. See {@link pwdOrToken}
+   * @param isPassword Whether the password or user token is used. See {@link pwdOrToken}.
+   * - （Default）`true`：The password is used.
+   * - `false`: The user token is used.
    *
    * @throws A description of the exception. See {@link ChatError}.
    */

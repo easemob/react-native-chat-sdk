@@ -2504,13 +2504,14 @@ export class ChatManager extends BaseManager {
   }
 
   /**
-   * Get the list of conversations from the server with pagination.
+   * Gets the list of conversations from the server with pagination.
    *
-   * The SDK retrieves the list of conversations in the reverse chronological order of their active time (the timestamp of the last message).
+   * The SDK retrieves the list of conversations in the reverse chronological order of their active time (generally the timestamp of the last message).
    *
    * If there is no message in the conversation, the SDK retrieves the list of conversations in the reverse chronological order of their creation time.
    *
-   * @param cursor: The cursor position from which to start querying data.
+   * @param cursor: The cursor position from which to start querying data. If you pass in an empty string or `undefined`, the SDK retrieves conversations from the latest active one.
+   *
    * @param pageSize: The number of conversations that you expect to get on each page. The value range is [1,50].
    *
    * @returns The list of retrieved conversations.
@@ -2551,7 +2552,7 @@ export class ChatManager extends BaseManager {
    *
    * The SDK returns the pinned conversations in the reverse chronological order of their pinning.
    *
-   * @param cursor: The cursor position from which to start querying data.
+   * @param cursor: The cursor position from which to start querying data. If you pass in an empty string or `undefined`, the SDK retrieves the pinned conversations from the latest pinned one.
    * @param pageSize: The number of conversations that you expect to get on each page. The value range is [1,50].
    *
    * @returns The list of retrieved conversations.
@@ -2612,14 +2613,16 @@ export class ChatManager extends BaseManager {
   }
 
   /**
-   * Modifies a local message or a message at the server side.
+   * Modifies a message.
    *
-   * You can call this method to only modify a text message in one-to-one chats or group chats, but not in chat rooms.
+   * After this method is called to modify a message, both the local message and the message on the server are modified.
+   *
+   * This method can only modify a text message in one-to-one chats or group chats, but not in chat rooms.
    *
    * @param msgId The ID of the message to modify.
    * @param body The modified text message body. See {@link ChatTextMessageBody}.
    *
-   * @returns Modified message with modify information. See {@link ChatMessageBody}.
+   * @returns The modified message. See {@link ChatMessageBody}.
    *
    * @throws A description of the exception. See {@link ChatError}.
    */
@@ -2649,11 +2652,13 @@ export class ChatManager extends BaseManager {
   }
 
   /**
-   * Get information about combine type messages. A combine type message contains multiple messages, and these messages are obtained through this method.
+   * Gets the list of original messages included in a combined message.
    *
-   * @param message The combine message.
+   * A combined message contains one or more multiple original messages.
    *
-   * @returns The message list in this message body.
+   * @param message The combined message.
+   *
+   * @returns The list of original messages in the message body.
    *
    * @throws A description of the exception. See {@link ChatError}.
    */

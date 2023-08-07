@@ -386,7 +386,9 @@ export interface ChatConnectEventListener {
   onUserKickedByOtherDevice?(): void;
 
   /**
-   * Occurs when the current chat user authentication failed. Typical trigger notification scenarios: token expires, token verification fails.
+   * Occurs when the current chat user authentication failed.
+   *
+   * This callback is triggered in the following typical scenarios: The token expires or token authentication fails.
    *
    * The user is disconnected by the server.
    */
@@ -396,7 +398,7 @@ export interface ChatConnectEventListener {
 /**
  * The multi-device event listener.
  *
- * The listener listens for the actions of the current user on other devices, including contact events and group events.
+ * The listener listens for the actions of the current user on other devices, including contact events, group events, thread events, and conversation events.
  */
 export interface ChatMultiDeviceEventListener {
   /**
@@ -447,7 +449,7 @@ export interface ChatMultiDeviceEventListener {
   onMessageRemoved?(convId?: string, deviceId?: string): void;
 
   /**
-   * The multi-device event callback for the operation of a single conversation.
+   * Occurs when a conversation event occurs.
    *
    * @param event The event type.
    * @param convId The conversation ID.
@@ -627,9 +629,9 @@ export interface ChatMessageEventListener {
   onChatMessageThreadUserRemoved?(event: ChatMessageThreadEvent): void;
 
   /**
-   * Occurs when the message content is modified.
+   * Occurs when the content of a text message is modified.
    *
-   * @param message News of the change.
+   * @param message The modified message.
    * @param lastModifyOperatorId The user ID of the operator that modified the message last time.
    * @param lastModifyTime The last message modification time. It is a UNIX timestamp in milliseconds.
    */

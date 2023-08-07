@@ -118,7 +118,7 @@ export enum ChatMessageType {
    */
   CUSTOM = 'custom',
   /**
-   * combined message.
+   * Combined message.
    */
   COMBINE = 'combine',
 }
@@ -433,6 +433,8 @@ export class ChatMessage {
 
   /**
    * The recipient list of a targeted message.
+   *
+   * The default value is `undefined`, indicating that the message is sent to all members in the group or chat room.
    *
    * This property is used only for messages in groups and chat rooms.
    */
@@ -812,23 +814,27 @@ export class ChatMessage {
   }
 
   /**
-   * Creates a combine message for sending.
+   * Creates a combined message for sending.
    *
-   * @param targetId The user ID of the message recipient.
+   * @param targetId The message recipient. The field setting is determined by the conversation type:
    * - For a one-to-one chat, it is the user ID of the peer user.
    * - For a group chat, it is the group ID.
    * - For a chat room, it is the chat room ID.
-   * @param messageIdList A collection of message IDs..
+   * @param messageIdList A collection of message IDs. The list cannot be empty. It can contain a maximum of 300 message IDs.
    * @param chatType The conversation type. See {@link ChatType}.
    * @params opt The extension parameters of the message.
-   * - title: The message title.
-   * - summary: The message summary.
-   * - compatibleText: The message compatibleText.
+   * - title: The title of the combined message.
+   * - summary: The summary of the combined message.
+   * - compatibleText: The compatible text of the combined message. This field is used for compatibility with SDK versions that do not support combined messages.
    * - isChatThread: Whether this message is a threaded message.
    *   - `true`: Yes.
-   *   - (Default) `false`: No.
+   *   - (Default) `false`：No.
    * - isOnline: Whether it is a online message.
-   * - deliverOnlineOnly: Whether the message is delivered only when the recipient(s) is/are online.
+   *   - `true`: Yes.
+   *   - `false`：No.
+   * - deliverOnlineOnly: Whether the message is delivered only when the recipient(s) is/are online:
+   *   - `true`: - `true`：The message is delivered only when the recipient(s) is/are online. If the recipient is offline, the message is discarded.
+   *   - (Default) `false`：The message is delivered when the recipient(s) is/are online. If the recipient(s) is/are offline, the message will not be delivered to them until they get online.
    * - secret: The token to download the file attachment.
    * @returns The message instance.
    */
@@ -1035,17 +1041,17 @@ export abstract class ChatMessageBody {
   public readonly type: ChatMessageType;
 
   /**
-   * Get the user ID of the operator that modified the message last time.
+   * The user ID of the operator that modified the message last time.
    */
   lastModifyOperatorId?: string;
 
   /**
-   * Get the UNIX timestamp of the last message modification, in milliseconds.
+   * The UNIX timestamp of the last message modification, in milliseconds.
    */
   lastModifyTime?: number;
 
   /**
-   * Get the number of times a message is modified.
+   * The number of times a message is modified.
    */
   modifyCount?: number;
 
@@ -1449,25 +1455,25 @@ export class ChatCustomMessageBody extends ChatMessageBody {
 }
 
 /**
- * The combine message body.
+ * The combined message body.
  */
 export class ChatCombineMessageBody extends _ChatFileMessageBody {
   /**
-   * The message title.
+   * The title of the combined message.
    */
   title?: string;
   /**
-   * The message summary.
+   * The summary of the combined message.
    */
   summary?: string;
   /**
-   * The combined message list ID.
+   * The list of IDs of original messages in the combined message.
    *
-   * **note** Used when creating send messages. Not applicable in other cases.
+   * **note** This attribute is used only when you create a combined message.
    */
   messageIdList?: string[];
   /**
-   * The compatible text.
+   * The compatible text of the combined message.
    */
   compatibleText?: string;
   constructor(params: {

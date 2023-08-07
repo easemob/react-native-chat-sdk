@@ -293,11 +293,11 @@ export class ChatPushManager extends Native {
   }
 
   /**
-   * Select the push template with template name for offline push, and send to Server.
+   * Selects the push template for offline push.
    *
-   * The push template can be set through restful or console.
+   * The push template can be set with a RESTful API or on the console.
    *
-   * @param templateName The push template name. If the name does not exist in the console, although this method will not return an error, it will not take effect.
+   * @param templateName The push template name. If the template name does not exist, this template does not take effect, although no error is returned.
    *
    * @throws A description of the exception. See {@link ChatError}.
    */
@@ -310,9 +310,9 @@ export class ChatPushManager extends Native {
   }
 
   /**
-   * Get selected push template for offline push.
+   * Gets the selected push template for offline push.
    *
-   * @returns The selected template name.
+   * @returns The name of the selected push template.
    *
    * @throws A description of the exception. See {@link ChatError}.
    */
