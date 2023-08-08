@@ -812,6 +812,8 @@ export class ChatManager extends BaseManager {
   /**
    * Uses the pagination to get messages in the specified conversation from the server.
    *
+   * **note** If the conversation object does not exist, this method will create it.
+   *
    * @param convId The conversation ID.
    * @param chatType The conversation type. See {@link ChatConversationType}.
    * @params params
@@ -860,6 +862,8 @@ export class ChatManager extends BaseManager {
 
   /**
    * retrieve the history message for the specified session from the server.
+   *
+   * **note** If the conversation object does not exist, this method will create it.
    *
    * @param convId The conversation ID.
    * @param chatType The conversation type. See {@link ChatConversationType}.
@@ -1163,6 +1167,7 @@ export class ChatManager extends BaseManager {
    * **Note**
    *
    * The operation does not change the unread message count.
+   * If the conversation object does not exist, this method will create it.
    *
    * The SDK gets the latest message from the memory first. If no message is found, the SDK loads the message from the local database and then puts it in the memory.
    *
@@ -1194,6 +1199,8 @@ export class ChatManager extends BaseManager {
   /**
    * Gets the latest received message from the conversation.
    *
+   * **note** If the conversation object does not exist, this method will create it.
+   *
    * @param convId The conversation ID.
    * @param convType The conversation type. See {@link ChatConversationType}.
    * @returns The message instance. The SDK returns `undefined` if the message does not exist.
@@ -1221,6 +1228,8 @@ export class ChatManager extends BaseManager {
 
   /**
    * Gets the unread message count of the conversation.
+   *
+   * **note** If the conversation object does not exist, this method will create it.
    *
    * @param convId The conversation ID.
    * @param convType The conversation type. See {@link ChatConversationType}.
@@ -1250,6 +1259,8 @@ export class ChatManager extends BaseManager {
 
   /**
    * Marks a message as read.
+   *
+   * **note** If the conversation object does not exist, this method will create it.
    *
    * @param convId The conversation ID.
    * @param convType The conversation type. See {@link ChatConversationType}.
@@ -1281,6 +1292,8 @@ export class ChatManager extends BaseManager {
   /**
    * Marks all messages as read.
    *
+   * **note** If the conversation object does not exist, this method will create it.
+   *
    * @param convId The conversation ID.
    * @param convType The conversation type. See {@link ChatConversationType}.
    *
@@ -1308,6 +1321,8 @@ export class ChatManager extends BaseManager {
    * Updates a message in the local database.
    *
    * After you modify a message, the message ID remains unchanged and the SDK automatically updates properties of the conversation, like `latestMessage`.
+   *
+   * **note** If the conversation object does not exist, this method will create it.
    *
    * @param convId The conversation ID.
    * @param convType The conversation type. See {@link ChatConversationType}.
@@ -1339,6 +1354,8 @@ export class ChatManager extends BaseManager {
   /**
    * Deletes a message from the local database.
    *
+   * **note** If the conversation object does not exist, this method will create it.
+   *
    * @param convId The conversation ID.
    * @param convType The conversation type. See {@link ChatConversationType}.
    * @param msgId The ID of the message to delete.
@@ -1365,6 +1382,8 @@ export class ChatManager extends BaseManager {
 
   /**
    * Deletes messages sent or received in a certain period from the local database.
+   *
+   * **note** If the conversation object does not exist, this method will create it.
    *
    * @param convId The conversation ID.
    * @param convType The conversation type. See {@link ChatConversationType}.
@@ -1398,6 +1417,8 @@ export class ChatManager extends BaseManager {
 
   /**
    * Deletes all messages in the conversation from both the memory and local database.
+   *
+   * **note** If the conversation object does not exist, this method will create it.
    *
    * @param convId The conversation ID.
    * @param convType The conversation type. See {@link ChatConversationType}.
@@ -1444,6 +1465,8 @@ export class ChatManager extends BaseManager {
 
   /**
    * Retrieves messages of a certain type in the conversation from the local database.
+   *
+   * **note** If the conversation object does not exist, this method will create it.
    *
    * @param convId The conversation ID.
    * @param convType The conversation type. See {@link ChatConversationType}.
@@ -1505,6 +1528,8 @@ export class ChatManager extends BaseManager {
    *
    * The retrieved messages will also be put in the conversation in the memory according to the timestamp included in them.
    *
+   * **note** If the conversation object does not exist, this method will create it.
+   *
    * @param convId The conversation ID.
    * @param convType The conversation type. See {@link ChatConversationType}.
    * @param startMsgId The starting message ID for query. After this parameter is set, the SDK retrieves messages, starting from the specified one, according to the message search direction.
@@ -1557,7 +1582,7 @@ export class ChatManager extends BaseManager {
    *
    * This method gets data from the local database.
    *
-   * **Note**
+   * **note** If the conversation object does not exist, this method will create it.
    *
    * @param convId The conversation ID.
    * @param convType The conversation type. See {@link ChatConversationType}.
@@ -1616,6 +1641,8 @@ export class ChatManager extends BaseManager {
 
   /**
    * Retrieves messages that are sent and received in a certain period in a conversation in the local database.
+   *
+   * **note** If the conversation object does not exist, this method will create it.
    *
    * @param convId The conversation ID.
    * @param convType The conversation type. See {@link ChatConversationType}.
@@ -1717,6 +1744,8 @@ export class ChatManager extends BaseManager {
 
   /**
    * Sets the extension information of the conversation.
+   *
+   * **note** If the conversation object does not exist, this method will create it.
    *
    * @param convId The conversation ID.
    * @param convType The conversation type. See {@link ChatConversationType}.
@@ -2444,6 +2473,8 @@ export class ChatManager extends BaseManager {
   /**
    * Deletes messages from the conversation (from both local storage and server).
    *
+   * **note** If the conversation object does not exist, this method will create it.
+   *
    * @param convId The conversation ID.
    * @param convType The conversation Type.
    * @param msgIds The IDs of messages to delete from the current conversation.
@@ -2490,6 +2521,8 @@ export class ChatManager extends BaseManager {
 
   /**
    * Deletes messages from the conversation (from both local storage and server).
+   *
+   * **note** If the conversation object does not exist, this method will create it.
    *
    * @param convId The conversation ID.
    * @param convType The conversation Type.
