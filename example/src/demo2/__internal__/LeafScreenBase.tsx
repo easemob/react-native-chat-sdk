@@ -272,6 +272,26 @@ export abstract class LeafScreenBase<
     oct?: (inputData: { [index: string]: string }) => void,
     multiLine: boolean = true
   ): ReactNode {
+    //"string" | "number" | "bigint" | "boolean" | "symbol" | "undefined" | "object" | "function" | "json"
+    const parse = (type: string, value: string) => {
+      if (type === 'string') {
+        return value;
+      } else if (type === 'number') {
+        if (value.includes('.')) {
+          return parseFloat(value);
+        } else {
+          return parseInt(value, 10);
+        }
+      } else if (type === 'bigint') {
+        return parseInt(value, 10);
+      } else if (type === 'boolean') {
+        return value === '0' ? false : true;
+      } else if (type === 'json') {
+        return JSON.parse(value);
+      } else {
+        return value;
+      }
+    };
     return (
       <View
         key={this.generateKey('renderGroupParamWithInput', name)}
@@ -288,7 +308,7 @@ export abstract class LeafScreenBase<
           onChangeText={(text: string) => {
             if (oct) {
               let obj: { [index: string]: string } = {};
-              obj[name] = type === 'json' ? JSON.parse(text) : text;
+              obj[name] = parse(type, text);
               oct(obj);
             }
           }}
