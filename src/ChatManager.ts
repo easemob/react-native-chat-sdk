@@ -88,6 +88,7 @@ import {
   MTupdateConversationMessage,
 } from './__internal__/Consts';
 import { Native } from './__internal__/Native';
+import { ChatClient } from './ChatClient';
 import type { ChatMessageEventListener } from './ChatEvents';
 import { chatlog } from './common/ChatConst';
 import {
@@ -2460,6 +2461,20 @@ export class ChatManager extends BaseManager {
       convType,
       msgIds
     );
+    if (msgIds.length === 0) {
+      // todo: temp fix native
+      console.log(
+        `${ChatManager.TAG}: removeMessagesFromServerWithMsgIds: timestamp <= 0`
+      );
+      return;
+    }
+    if ((await ChatClient.getInstance().isLoginBefore()) === false) {
+      // todo: temp fix native
+      console.log(
+        `${ChatManager.TAG}: removeMessagesFromServerWithMsgIds: not logged in yet.`
+      );
+      return;
+    }
     let r: any = await Native._callMethod(
       MTremoveMessagesFromServerWithMsgIds,
       {
@@ -2493,6 +2508,20 @@ export class ChatManager extends BaseManager {
       convType,
       timestamp
     );
+    if (timestamp <= 0) {
+      // todo: temp fix native
+      console.log(
+        `${ChatManager.TAG}: removeMessagesFromServerWithTimestamp: timestamp <= 0`
+      );
+      return;
+    }
+    if ((await ChatClient.getInstance().isLoginBefore()) === false) {
+      // todo: temp fix native
+      console.log(
+        `${ChatManager.TAG}: removeMessagesFromServerWithTimestamp: not logged in yet.`
+      );
+      return;
+    }
     let r: any = await Native._callMethod(MTremoveMessagesFromServerWithTs, {
       [MTremoveMessagesFromServerWithTs]: {
         convId: convId,
