@@ -2495,16 +2495,16 @@ export class ChatManager extends BaseManager {
     if (msgIds.length === 0) {
       // todo: temp fix native
       console.log(
-        `${ChatManager.TAG}: removeMessagesFromServerWithMsgIds: timestamp <= 0`
+        `${ChatManager.TAG}: removeMessagesFromServerWithMsgIds: msgIds count is 0`
       );
-      return;
+      throw new ChatError({ code: 1, description: 'msgIds count is 0' });
     }
     if ((await ChatClient.getInstance().isLoginBefore()) === false) {
       // todo: temp fix native
       console.log(
         `${ChatManager.TAG}: removeMessagesFromServerWithMsgIds: not logged in yet.`
       );
-      return;
+      throw new ChatError({ code: 1, description: 'not logged in yet' });
     }
     let r: any = await Native._callMethod(
       MTremoveMessagesFromServerWithMsgIds,
@@ -2546,14 +2546,14 @@ export class ChatManager extends BaseManager {
       console.log(
         `${ChatManager.TAG}: removeMessagesFromServerWithTimestamp: timestamp <= 0`
       );
-      return;
+      throw new ChatError({ code: 1, description: 'timestamp <= 0' });
     }
     if ((await ChatClient.getInstance().isLoginBefore()) === false) {
       // todo: temp fix native
       console.log(
         `${ChatManager.TAG}: removeMessagesFromServerWithTimestamp: not logged in yet.`
       );
-      return;
+      throw new ChatError({ code: 1, description: 'not logged in yet' });
     }
     let r: any = await Native._callMethod(MTremoveMessagesFromServerWithTs, {
       [MTremoveMessagesFromServerWithTs]: {
