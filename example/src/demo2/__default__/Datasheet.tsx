@@ -8,6 +8,7 @@ export const datasheet = {
     {
       id: '',
       mm: '',
+      token: '',
     },
   ],
   groups: [
