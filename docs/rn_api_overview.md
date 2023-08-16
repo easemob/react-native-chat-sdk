@@ -26,10 +26,10 @@ Agora Chat is a highly reliable global communication platform where your users c
 | {@link ChatClient.isLoginBefore isLoginBefore} | Checks whether the current user is logged in to the app. |
 | {@link ChatClient.getAccessToken getAccessToken} | Gets the token for login. |
 | {@link ChatClient.createAccount createAccount} | Creates a new user (open registration). |
-| {@link ChatClient.login login} | Logs in to the chat server with a password or an Easemob token. |
-| {@link ChatClient.loginWithAgoraToken loginWithAgoraToken} | Logs in to the chat server with the user ID and an Agora token. |
+| {@link ChatClient.login login} | Logs in to the chat server with a password or an Easemob token. An exception message is thrown if the login fails. |
+| {@link ChatClient.loginWithAgoraToken loginWithAgoraToken} | Logs in to the chat server with the user ID and an Agora token. An exception message is thrown if the login fails. |
 | {@link ChatClient.renewAgoraToken renewAgoraToken} | Renews the Agora token. |
-| {@link ChatClient.logout logout} | Logs out of the chat app. |
+| {@link ChatClient.logout logout} | Logs out of the chat app. An exception message is thrown if the logout fails. |
 | {@link ChatClient.changeAppKey changeAppKey} | Updates the App Key, which is the unique identifier used to access the chat service. |
 | {@link ChatClient.compressLogs compressLogs} | Compresses the debug log file into a gzip archive. |
 | {@link ChatClient.getLoggedInDevicesFromServer getLoggedInDevicesFromServer} | Gets the list of online devices to which you have logged in with a specified account. |
@@ -60,12 +60,21 @@ Agora Chat is a highly reliable global communication platform where your users c
 | {@link ChatConnectEventListener.onTokenWillExpire onTokenWillExpire} | Occurs when the Agora token is about to expire. |
 | {@link ChatConnectEventListener.onTokenDidExpire onTokenDidExpire} | Occurs when the Agora token has expired. |
 | {@link ChatConnectEventListener.onAppActiveNumberReachLimit onAppActiveNumberReachLimit} | The number of daily active users (DAU) or monthly active users (MAU) for the app has reached the upper limit. |
+| {@link ChatConnectEventListener.onUserDidLoginFromOtherDevice onUserDidLoginFromOtherDevice} | Occurs when the current user account is logged in to another device. |
+| {@link ChatConnectEventListener.onUserDidRemoveFromServer onUserDidRemoveFromServer} | Occurs when the current chat user is removed from the server. |
+| {@link ChatConnectEventListener.onUserDidForbidByServer onUserDidForbidByServer} | Occurs when the current chat user is banned from accessing the server. |
+| {@link ChatConnectEventListener.onUserDidChangePassword onUserDidChangePassword} | Occurs when the current chat user changed the password. |
+| {@link ChatConnectEventListener.onUserDidLoginTooManyDevice onUserDidLoginTooManyDevice} | Occurs when the current chat user logged in to many devices. |
+| {@link ChatConnectEventListener.onUserKickedByOtherDevice onUserKickedByOtherDevice} | Occurs when the current chat user is kicked out of the app by another device. |
+| {@link ChatConnectEventListener.onUserAuthenticationFailed onUserAuthenticationFailed} | Occurs when the current chat user authentication failed. |
 
 | Event | Description |
 | :----- | :---------- |
 | {@link ChatMultiDeviceEventListener.onContactEvent onContactEvent} | Occurs when a contact event occurs. |
 | {@link ChatMultiDeviceEventListener.onGroupEvent onGroupEvent} | Occurs when a group event occurs. |
 | {@link ChatMultiDeviceEventListener.onThreadEvent onThreadEvent} | Occurs when a thread event occurs. |
+| {@link ChatMultiDeviceEventListener.onMessageRemoved onMessageRemoved} | Callback to other devices after conversation deleted message from server after enabling multiple devices. |
+| {@link ChatMultiDeviceEventListener.onConversationEvent onConversationEvent} | Occurs when a conversation event occurs. |
 
 | Event | Description |
 | :----- | :---------- |
@@ -98,7 +107,7 @@ Agora Chat is a highly reliable global communication platform where your users c
 | {@link ChatManager.removeConversationFromServer removeConversationFromServer} | Deletes the specified conversation and its historical messages from the server. |
 | {@link ChatManager.getConversation getConversation} | Gets the conversation by conversation ID and conversation type. |
 | {@link ChatManager.getAllConversations getAllConversations} | Gets all conversations from the local database. |
-| {@link ChatManager.fetchAllConversations fetchAllConversations} | Gets the conversation list from the server. |
+| {@link ChatManager.fetchAllConversations fetchAllConversations} | @deprecated 2023-07-24 |
 | {@link ChatManager.deleteConversation deleteConversation} | Deletes a conversation and its local messages from the local database. |
 | {@link ChatManager.getLatestMessage getLatestMessage} | Gets the latest message from the conversation. |
 | {@link ChatManager.getLatestReceivedMessage getLatestReceivedMessage} | Gets the latest received message from the conversation. |
@@ -108,7 +117,7 @@ Agora Chat is a highly reliable global communication platform where your users c
 | {@link ChatManager.updateConversationMessage updateConversationMessage} | Updates a message in the local database. |
 | {@link ChatManager.deleteMessage deleteMessage} | Deletes a message from the local database. |
 | {@link ChatManager.deleteMessagesWithTimestamp deleteMessagesWithTimestamp} | Deletes messages sent or received in a certain period from the local database. |
-| {@link ChatManager.deleteAllMessages deleteAllMessages} | Deletes all messages in the conversation from both the memory and local database. |
+| {@link ChatManager.deleteConversationAllMessages deleteConversationAllMessages} | Deletes all messages in the conversation from both the memory and local database. |
 | {@link ChatManager.deleteMessagesBeforeTimestamp deleteMessagesBeforeTimestamp} | Deletes local messages with timestamp that is before the specified one. |
 | {@link ChatManager.getMessagesWithMsgType getMessagesWithMsgType} | Retrieves messages of a certain type in the conversation from the local database. |
 | {@link ChatManager.getMessages getMessages} | Retrieves messages of a specified quantity in a conversation from the local database. |
@@ -141,6 +150,11 @@ Agora Chat is a highly reliable global communication platform where your users c
 | {@link ChatManager.fetchConversationsFromServerWithPage fetchConversationsFromServerWithPage} | Gets conversations from the server with pagination. |
 | {@link ChatManager.removeMessagesFromServerWithMsgIds removeMessagesFromServerWithMsgIds} | Deletes messages from the conversation (from both local storage and server). |
 | {@link ChatManager.removeMessagesFromServerWithTimestamp removeMessagesFromServerWithTimestamp} | Deletes messages from the conversation (from both local storage and server). |
+| {@link ChatManager.fetchConversationsFromServerWithCursor fetchConversationsFromServerWithCursor} | Gets the list of conversations from the server with pagination. |
+| {@link ChatManager.fetchPinnedConversationsFromServerWithCursor fetchPinnedConversationsFromServerWithCursor} | Get the list of pinned conversations from the server with pagination. |
+| {@link ChatManager.pinConversation pinConversation} | Sets whether to pin a conversation. |
+| {@link ChatManager.modifyMessageBody modifyMessageBody} | Modifies a message. |
+| {@link ChatManager.fetchCombineMessageDetail fetchCombineMessageDetail} | Gets the list of original messages included in a combined message. |
 
 | Event | Description |
 | :----- | :---------- |
@@ -157,6 +171,7 @@ Agora Chat is a highly reliable global communication platform where your users c
 | {@link ChatMessageEventListener.onChatMessageThreadUpdated onChatMessageThreadUpdated} | Occurs when a message thread is updated. |
 | {@link ChatMessageEventListener.onChatMessageThreadDestroyed onChatMessageThreadDestroyed} | Occurs when a message thread is destroyed. |
 | {@link ChatMessageEventListener.onChatMessageThreadUserRemoved onChatMessageThreadUserRemoved} | Occurs when the current user is removed from the message thread by the admin. |
+| {@link ChatMessageEventListener.onMessageContentChanged onMessageContentChanged} | Occurs when the content of a text message is modified. |
 ## ChatContactManager
 | Method | Description |
 | :----- | :---------- |
@@ -246,8 +261,8 @@ Agora Chat is a highly reliable global communication platform where your users c
 | {@link ChatGroupEventListener.onRequestToJoinDeclined onRequestToJoinDeclined} | Occurs when a join request from the current user is declined by the peer user. |
 | {@link ChatGroupEventListener.onInvitationAccepted onInvitationAccepted} | Occurs when a group invitation from the current user is accepted by the peer user. |
 | {@link ChatGroupEventListener.onInvitationDeclined onInvitationDeclined} | Occurs when a group invitation from the current user is declined by the peer user. |
-| {@link ChatGroupEventListener.onUserRemoved onUserRemoved} | Occurs when the current user is removed from the group. |
-| {@link ChatGroupEventListener.onGroupDestroyed onGroupDestroyed} | Occurs when a group is destroyed. |
+| {@link ChatGroupEventListener.onMemberRemoved onMemberRemoved} | Occurs when the current user is removed from the group. |
+| {@link ChatGroupEventListener.onDestroyed onDestroyed} | Occurs when a group is destroyed. |
 | {@link ChatGroupEventListener.onAutoAcceptInvitation onAutoAcceptInvitation} | Occurs when the group invitation is accepted automatically by the current user. |
 | {@link ChatGroupEventListener.onMuteListAdded onMuteListAdded} | Occurs when one or more members are added to the mute list of the group. |
 | {@link ChatGroupEventListener.onMuteListRemoved onMuteListRemoved} | Occurs when one or more members are removed from the mute list of the group. |
@@ -306,22 +321,22 @@ Agora Chat is a highly reliable global communication platform where your users c
 
 | Event | Description |
 | :----- | :---------- |
-| {@link ChatRoomEventListener.onChatRoomDestroyed onChatRoomDestroyed} | Occurs when the chat room is destroyed. |
-| {@link ChatRoomEventListener.onMemberJoined onMemberJoined} | Occurs when a user joins the chat room. |
-| {@link ChatRoomEventListener.onMemberExited onMemberExited} | Occurs when a member voluntarily leaves the chat room. |
-| {@link ChatRoomEventListener.onRemoved onRemoved} | Occurs when a member is removed from a chat room. |
-| {@link ChatRoomEventListener.onMuteListAdded onMuteListAdded} | Occurs when a chat room member is added to the mute list. |
-| {@link ChatRoomEventListener.onMuteListRemoved onMuteListRemoved} | Occurs when one or more chat room members are removed from the mute list. |
-| {@link ChatRoomEventListener.onAdminAdded onAdminAdded} | Occurs when a chat room member is set as an admin. |
-| {@link ChatRoomEventListener.onAdminRemoved onAdminRemoved} | Occurs when the administrative privileges of a chat room admin are removed. |
-| {@link ChatRoomEventListener.onOwnerChanged onOwnerChanged} | Occurs when the chat room ownership is transferred. |
-| {@link ChatRoomEventListener.onAnnouncementChanged onAnnouncementChanged} | Occurs when the chat room announcement changes. |
-| {@link ChatRoomEventListener.onAllowListAdded onAllowListAdded} | Occurs when one or more chat room members are added to the allow list. |
-| {@link ChatRoomEventListener.onAllowListRemoved onAllowListRemoved} | Occurs when one or more chat room members are removed from the allow list. |
-| {@link ChatRoomEventListener.onAllChatRoomMemberMuteStateChanged onAllChatRoomMemberMuteStateChanged} | Occurs when all members in the chat room are muted or unmuted. |
-| {@link ChatRoomEventListener.onSpecificationChanged onSpecificationChanged} | Occurs when the chat room specifications change. All chat room members receive this event. |
-| {@link ChatRoomEventListener.onAttributesUpdated onAttributesUpdated} | Occurs when the custom chat room attributes (key-value) are updated. |
-| {@link ChatRoomEventListener.onAttributesRemoved onAttributesRemoved} | Occurs when the custom chat room attributes (key-value) are removed. |
+| {@link ChatRoomEventListener.onDestroyed onDestroyed} | Occurs when the chat room is destroyed. All chat room members receive this event. |
+| {@link ChatRoomEventListener.onMemberJoined onMemberJoined} | Occurs when a member joins the chat room. All chat room members, except the new member, receive this event. |
+| {@link ChatRoomEventListener.onMemberExited onMemberExited} | Occurs when a member exits the chat room. All chat room members, except the member exiting the chat room, receive this event. |
+| {@link ChatRoomEventListener.onMemberRemoved onMemberRemoved} | Occurs when a member is removed from a chat room. The member that is kicked out of the chat room receive this event. |
+| {@link ChatRoomEventListener.onMuteListAdded onMuteListAdded} | Occurs when the chat room member(s) is/are added to the mute list. The muted members receive this event. |
+| {@link ChatRoomEventListener.onMuteListRemoved onMuteListRemoved} | Occurs when the chat room member(s) is/are removed from the mute list. The members that are removed from the mute list receive this event. |
+| {@link ChatRoomEventListener.onAdminAdded onAdminAdded} | Occurs when a chat room member is set as an admin. The member set as the chat room admin receives this event. |
+| {@link ChatRoomEventListener.onAdminRemoved onAdminRemoved} | Occurs when the chat room member(s) is/are removed from the admin list. The admin removed from the admin list receives this event. |
+| {@link ChatRoomEventListener.onOwnerChanged onOwnerChanged} | Occurs when the chat room owner is changed. The chat room owner receives this event. |
+| {@link ChatRoomEventListener.onAnnouncementChanged onAnnouncementChanged} | Occurs when the chat room announcement changes. All chat room members receive this event. |
+| {@link ChatRoomEventListener.onAllowListAdded onAllowListAdded} | Occurs when the chat room member(s) is/are added to the allow list. The members added to the allow list receive this event. |
+| {@link ChatRoomEventListener.onAllowListRemoved onAllowListRemoved} | Occurs when the chat room member(s) is/are removed from the allow list. The members that are removed from the allow list receive this event. |
+| {@link ChatRoomEventListener.onAllChatRoomMemberMuteStateChanged onAllChatRoomMemberMuteStateChanged} | Occurs when all members in the chat room are muted or unmuted. All chat room members receive this event. |
+| {@link ChatRoomEventListener.onSpecificationChanged onSpecificationChanged} | Occurs when the chat room specifications changes. All chat room members receive this event. |
+| {@link ChatRoomEventListener.onAttributesUpdated onAttributesUpdated} | The custom chat room attribute(s) is/are updated. All chat room members receive this event. |
+| {@link ChatRoomEventListener.onAttributesRemoved onAttributesRemoved} | The custom chat room attribute(s) is/are removed. All chat room members receive this event. |
 ## ChatPresenceManager
 | Method | Description |
 | :----- | :---------- |
@@ -337,7 +352,7 @@ Agora Chat is a highly reliable global communication platform where your users c
 
 | Event | Description |
 | :----- | :---------- |
-| {@link ChatPresenceEventListener.onPresenceStatusChanged onPresenceStatusChanged} | Occurs when the presence state of a subscribed user changes. |
+| {@link ChatPresenceEventListener.onPresenceStatusChanged onPresenceStatusChanged} | The custom chat room attribute(s) is/are removed. All chat room members receive this event. |
 ## ChatPushManager
 | Method | Description |
 | :----- | :---------- |
@@ -353,6 +368,8 @@ Agora Chat is a highly reliable global communication platform where your users c
 | {@link ChatPushManager.updatePushNickname updatePushNickname} | Updates nickname of the sender displayed in push notifications. |
 | {@link ChatPushManager.updatePushDisplayStyle updatePushDisplayStyle} | Updates the display style of push notifications. |
 | {@link ChatPushManager.fetchPushOptionFromServer fetchPushOptionFromServer} | Gets the push configurations from the server. |
+| {@link ChatPushManager.selectPushTemplate selectPushTemplate} | Selects the push template for offline push. |
+| {@link ChatPushManager.fetchSelectedPushTemplate fetchSelectedPushTemplate} | Gets the selected push template for offline push. |
 ## ChatUserInfoManager
 | Method | Description |
 | :----- | :---------- |
@@ -368,6 +385,7 @@ Agora Chat is a highly reliable global communication platform where your users c
 | {@link ChatMessage.createImageMessage createImageMessage} | Creates an image message for sending. |
 | {@link ChatMessage.createVideoMessage createVideoMessage} | Creates a video message for sending. |
 | {@link ChatMessage.createVoiceMessage createVoiceMessage} | Creates a voice message for sending. |
+| {@link ChatMessage.createCombineMessage createCombineMessage} | Creates a combined message for sending. |
 | {@link ChatMessage.createLocationMessage createLocationMessage} | Creates a location message for sending. |
 | {@link ChatMessage.createCmdMessage createCmdMessage} | Creates a command message for sending. |
 | {@link ChatMessage.createCustomMessage createCustomMessage} | Creates a custom message for sending. |
@@ -396,3 +414,5 @@ Agora Chat is a highly reliable global communication platform where your users c
 | {@link ChatConversation.getMessageWithTimestamp getMessageWithTimestamp} | Gets messages that are sent and received in a certain period in a conversation in the local database. |
 | {@link ChatConversation.fetchHistoryMessages fetchHistoryMessages} | Uses the pagination to get messages in the specified conversation from the server. |
 | {@link ChatConversation.fetchHistoryMessagesByOptions fetchHistoryMessagesByOptions} | retrieve the history message for the specified session from the server. |
+| {@link ChatConversation.removeMessagesFromServerWithMsgIds removeMessagesFromServerWithMsgIds} | Deletes messages from the conversation (from both local storage and server). |
+| {@link ChatConversation.removeMessagesFromServerWithTimestamp removeMessagesFromServerWithTimestamp} | Deletes messages from the conversation (from both local storage and server). |
