@@ -608,7 +608,6 @@ export class ChatMessage {
    *   - (Default) `false`: No.
    * - isOnline: Whether it is a online message.
    * - deliverOnlineOnly: Whether the message is delivered only when the recipient(s) is/are online.
-   * - secret: The token to download the file attachment.
    * - fileSize: The file size.
    * @returns The message instance.
    */
@@ -622,7 +621,6 @@ export class ChatMessage {
       fileSize?: number;
       isOnline?: boolean;
       deliverOnlineOnly?: boolean;
-      secret?: string;
     }
   ): ChatMessage {
     return ChatMessage.createSendMessage({
@@ -630,7 +628,6 @@ export class ChatMessage {
         localPath: filePath,
         displayName: opt?.displayName ?? '',
         fileSize: opt?.fileSize,
-        secret: opt?.secret,
       }),
       targetId: targetId,
       chatType: chatType,
@@ -662,7 +659,6 @@ export class ChatMessage {
    *   - (Default) `false`: No.
    * - isOnline: Whether it is a online message.
    * - deliverOnlineOnly: Whether the message is delivered only when the recipient(s) is/are online.
-   * - secret: The token to download the file attachment.
    * - fileSize: The file size.
    * @returns The message instance.
    */
@@ -680,7 +676,6 @@ export class ChatMessage {
       fileSize?: number;
       isOnline?: boolean;
       deliverOnlineOnly?: boolean;
-      secret?: string;
     }
   ): ChatMessage {
     return ChatMessage.createSendMessage({
@@ -692,7 +687,6 @@ export class ChatMessage {
         width: opt?.width,
         height: opt?.height,
         fileSize: opt?.fileSize,
-        secret: opt?.secret,
       }),
       targetId: targetId,
       chatType: chatType,
@@ -722,7 +716,6 @@ export class ChatMessage {
    *   - (Default) `false`: No.
    * - isOnline: Whether it is a online message.
    * - deliverOnlineOnly: Whether the message is delivered only when the recipient(s) is/are online.
-   * - secret: The token to download the file attachment.
    * - fileSize: The file size.
    * @returns The message instance.
    */
@@ -740,7 +733,6 @@ export class ChatMessage {
       fileSize?: number;
       isOnline?: boolean;
       deliverOnlineOnly?: boolean;
-      secret?: string;
     }
   ): ChatMessage {
     return ChatMessage.createSendMessage({
@@ -752,7 +744,6 @@ export class ChatMessage {
         width: opt?.width,
         height: opt?.height,
         fileSize: opt?.fileSize,
-        secret: opt?.secret,
       }),
       targetId: targetId,
       chatType: chatType,
@@ -779,7 +770,6 @@ export class ChatMessage {
    *   - (Default) `false`: No.
    * - isOnline: Whether it is a online message.
    * - deliverOnlineOnly: Whether the message is delivered only when the recipient(s) is/are online.
-   * - secret: The token to download the file attachment.
    * - fileSize: The file size.
    * @returns The message instance.
    */
@@ -794,7 +784,6 @@ export class ChatMessage {
       fileSize?: number;
       isOnline?: boolean;
       deliverOnlineOnly?: boolean;
-      secret?: string;
     }
   ): ChatMessage {
     return ChatMessage.createSendMessage({
@@ -803,7 +792,6 @@ export class ChatMessage {
         displayName: opt?.displayName ?? '',
         duration: opt?.duration,
         fileSize: opt?.fileSize,
-        secret: opt?.secret,
       }),
       targetId: targetId,
       chatType: chatType,
@@ -835,7 +823,6 @@ export class ChatMessage {
    * - deliverOnlineOnly: Whether the message is delivered only when the recipient(s) is/are online:
    *   - `true`: - `true`：The message is delivered only when the recipient(s) is/are online. If the recipient is offline, the message is discarded.
    *   - (Default) `false`：The message is delivered when the recipient(s) is/are online. If the recipient(s) is/are offline, the message will not be delivered to them until they get online.
-   * - secret: The token to download the file attachment.
    * @returns The message instance.
    */
   public static createCombineMessage(
@@ -849,7 +836,6 @@ export class ChatMessage {
       isChatThread?: boolean;
       isOnline?: boolean;
       deliverOnlineOnly?: boolean;
-      secret?: string;
     }
   ): ChatMessage {
     return ChatMessage.createSendMessage({
@@ -859,7 +845,6 @@ export class ChatMessage {
         summary: opt?.summary,
         compatibleText: opt?.compatibleText,
         messageIdList: messageIdList,
-        secret: opt?.secret,
       }),
       targetId: targetId,
       chatType: chatType,

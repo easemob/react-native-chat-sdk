@@ -2,6 +2,12 @@ _Chinese | [English](./CHANGELOG.md)_
 
 # Update Log
 
+## 1.2.1
+
+修复：
+
+- 移除创建消息对象的参数 `secret`。该参数由服务器生成，在发送消息成功之后会获取到。
+
 ## 1.2.0
 
 新功能
