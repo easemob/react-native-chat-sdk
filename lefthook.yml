@@ -10,7 +10,7 @@ pre-commit:
       glob: "*.{js,ts, jsx, tsx}"
       run: npx tsc --noEmit
     gitleaks:
-      run: gitleaks detect --source . -v
+      run: gitleaks detect -c '.gitleaksconfig.toml' -s . -r gitleaks.log
 commit-msg:
   parallel: true
   commands:
