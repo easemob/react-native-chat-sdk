@@ -9,10 +9,14 @@ pre-commit:
       files: git diff --name-only @{push}
       glob: "*.{js,ts, jsx, tsx}"
       run: npx tsc --noEmit
-    gitleaks:
-      run: gitleaks detect -c '.gitleaksconfig.toml' -s . -r gitleaks.log
+
 commit-msg:
   parallel: true
   commands:
     commitlint:
       run: npx commitlint --edit
+post-commit:
+  parallel: true
+  commands:
+    gitleaks:
+      run: gitleaks detect -c '.gitleaksconfig.toml' -s . -r gitleaks.log
