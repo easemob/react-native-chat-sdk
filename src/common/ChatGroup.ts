@@ -264,9 +264,9 @@ export class ChatGroup {
     this.muteList = params.muteList ?? [];
     this.messageBlocked = params.messageBlocked ?? false;
     this.isAllMemberMuted = params.isAllMemberMuted ?? false;
-    this.permissionType = params.permissionType
-      ? ChatGroupPermissionTypeFromNumber(params.permissionType)
-      : ChatGroupPermissionType.None;
+    this.permissionType = ChatGroupPermissionTypeFromNumber(
+      params.permissionType
+    );
     if (params.options) {
       this.options = new ChatGroupOptions(params.options);
     }
