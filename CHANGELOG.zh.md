@@ -2,6 +2,12 @@ _Chinese | [English](./CHANGELOG.md)_
 
 # Update Log
 
+## 1.2.2
+
+修复：
+
+- 构造`ChatGroup`对象时，`permissionType`属性错误的问题。
+
 ## 1.2.1
 
 修复：
@@ -16,7 +22,7 @@ _Chinese | [English](./CHANGELOG.md)_
 
 改进
 
-- 依赖的原生 SDK 升级到版本 4.1.1（“iOS”和“Android”）。 添加原生 SDK 提供的新功能。
+- 依赖的原生 SDK 升级到版本 4.1.1（`iOS`和`Android`）。 添加原生 SDK 提供的新功能。
 - 优化断线通知，分离出服务器主动断线的通知，用户可以具体处理服务器主动断线的原因。
 - 使用 commitlint 优化 git 提交规范。 不符合规范的代码不能提交。
 - 使用 lefthook 优化 git commit。 添加使用 gitleaks 检查敏感信息。
@@ -63,14 +69,14 @@ _Chinese | [English](./CHANGELOG.md)_
 
 已弃用的 API
 
-- fetchAllConversations：请改用“fetchConversationsFromServerWithCursor”。
+- fetchAllConversations：请改用`fetchConversationsFromServerWithCursor`。
 
 更新数据对象
 
 - `ChatConversation`：添加 `isPinned` 和 `pinnedTime` 属性。
 - `ChatMessageType`：添加`COMBINE`类型消息正文。
 - `ChatMessage`：添加`receiverList`属性。
-- 创建发送消息：添加“secret”参数。
+- 创建发送消息：添加`secret`参数。
 - `ChatMessageBody`：添加 `lastModifyOperatorId`、`lastModifyTime` 和 `modifyCount` 属性。
 - `ChatOptions`：添加 `enableEmptyConversation`、`customDeviceName` 和 `customOSType` 属性。
 - `ChatMultiDeviceEvent`：添加 `CONVERSATION_PINNED`、`CONVERSATION_UNPINNED` 和 `CONVERSATION_DELETED`。
@@ -93,7 +99,7 @@ _Chinese | [English](./CHANGELOG.md)_
 
 新功能
 
-- 原生 SDK 升级到版本 4.0.2（“iOS”和“Android”）。
+- 原生 SDK 升级到版本 4.0.2（`iOS`和`Android`）。
 - 添加获取当前 SDK 版本的 api。
 - 添加 `setMemberAttribute` 组管理器 api。
 - 添加 `fetchMemberAttributes` 组管理器 api。

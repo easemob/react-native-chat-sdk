@@ -2,6 +2,12 @@ _English | [Chinese](./CHANGELOG.zh.md)_
 
 # Update Log
 
+## 1.2.2
+
+Issues fixed
+
+- An issue with the wrong `permissionType` property when constructing a `ChatGroup` object.
+
 ## 1.2.1
 
 Issues fixed
@@ -16,8 +22,8 @@ New features
 
 Improvements
 
-- Dependent native SDK upgraded to version 4.1.1 ('iOS' and 'Android'). Add new features provided by the native SDK.
-- Optimize the disconnection notification, separate the notification of the server's active disconnection, and the user can specifically deal with the reason for the server's active disconnection.
+- Dependent native SDK upgraded to version 4.1.1 (`iOS` and `Android`). Add new features provided by the native SDK.
+- Optimize the disconnection notification, separate the notification of the server`s active disconnection, and the user can specifically deal with the reason for the server`s active disconnection.
 - Optimize git commit specification with commitlint. Code cannot be submitted if it is not in accordance with the specification.
 - Optimize git commit with lefthook. Add sensitive information check with gitleaks.
 - Add merge type message body, create merge message method, and get merge message content method.
@@ -93,7 +99,7 @@ Update Listener
 
 New features
 
-- Dependent native SDK upgraded to version 4.0.2 ('iOS' and 'Android').
+- Dependent native SDK upgraded to version 4.0.2 (`iOS` and `Android`).
 - Added the api to get the current SDK version.
 - Adds the `setMemberAttribute` group manager api.
 - Adds the `fetchMemberAttributes` group manager api.
@@ -119,7 +125,7 @@ Issues fixed
 
 Issues fixed
 
-- 'fetchJoinedGroupsFromServer' fixed the issue that the extended attribute of fetching joined public groups was empty.
+- `fetchJoinedGroupsFromServer` fixed the issue that the extended attribute of fetching joined public groups was empty.
 
 ---
 
@@ -150,14 +156,14 @@ Issues fixed
 
 ## 1.0.11
 
-What's new
+What`s new
 
-- Dependent native SDK upgraded to version 3.9.9 ('iOS' and 'Android').
+- Dependent native SDK upgraded to version 3.9.9 (`iOS` and `Android`).
 
 Issues fixed
 
 - Fixed SDK crash in extreme cases.
-- Other fixes, see versions 3.9.8 and 3.9.9 ('iOS' and 'Android').
+- Other fixes, see versions 3.9.8 and 3.9.9 (`iOS` and `Android`).
 
 ---
 
