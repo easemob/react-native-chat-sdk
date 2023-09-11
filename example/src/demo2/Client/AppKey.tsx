@@ -100,6 +100,8 @@ export class AppKeyScreen extends Component<{ navigation: any }, State, any> {
           autoLogin: false,
           debugModel: true,
           enableEmptyConversation: false,
+          requireAck: false,
+          requireDeliveryAck: false,
           // pushConfig: pushConfig,
         })
       )

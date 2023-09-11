@@ -346,32 +346,32 @@ export class ChatMessage {
    */
   serverTime: number = getNowTimestamp();
   /**
-   * Whether the delivery receipt is required, which is to check whether the message is delivered successfully.
+   * Whether messages have arrived at the recipient during a one-to-one chat. If delivery receipts are required, recipient need to set {@link ChatOptions.requireDeliveryAck} to `true` during the SDK initialization. Delivery receipts are unavailable for group messages.
    *
    * - `true`: Yes.
    * - (Default) `false`: No.
    */
   hasDeliverAck: boolean = false;
   /**
-   * Whether the message read receipt is required.
+   * Whether the the read receipt from the recipient is received by the sender during a one-to-one chat. Upon reading the message, the recipient calls the {@link ChatManager.sendMessageReadAck} or `{@link ChatManager.sendConversationReadAck}` method to send a read receipt to the sender. If read receipts are required, you need to set {@link ChatOptions.requireAck} to `true` during the SDK initialization.
    *
    * - `true`: Yes.
    * - (Default) `false`: No.
    */
   hasReadAck: boolean = false;
   /**
-   * Whether read receipts are required for group messages.
+   * Whether read receipts are required for a group message.
    *
    * - `true`: Yes.
    * - (Default) `false`: No.
    */
   needGroupAck: boolean = false;
   /**
-   * The number of members that have read the group message.
+   * The number of group members that have read a message. Upon reading a message, members in the group call {@link ChatManager.sendGroupMessageReadAck} or {@link ChatManager.sendConversationReadAck} to send a read receipt for a message or a conversation. To enable the read receipt function for group messages, you need to set {@link ChatOptions.requireAck} to `true` during SDK initialization and set {@link isNeedGroupAck} to `true` when sending a message.
    */
   groupAckCount: number = 0;
   /**
-   * Whether the message is read.
+   * Whether the the message is read by the recipient during a one-to-one chat or group chat. This parameter setting has connection with the number of unread messages in a conversation. Upon reading the message, the recipient calls  {@link ChatManager.markMessageAsRead} to mark a message read or {@link ChatManager.markAllMessagesAsRead}  to mark all unread messages in the conversation read.
    *
    * - `true`: Yes.
    * - (Default) `false`: No.

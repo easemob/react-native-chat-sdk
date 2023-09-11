@@ -35,6 +35,7 @@ function HomeScreen(params: { navigation: any }) {
 }
 
 function App() {
+  console.log('test:hermes:', !!(global as any).HermesInternal);
   AppServerClient.regUrl = 'https://a41.chat.agora.io/app/chat/user/register';
   AppServerClient.tokenUrl = 'https://a41.chat.agora.io/app/chat/user/login';
   return (
