@@ -7,6 +7,8 @@ _Chinese | [English](./CHANGELOG.md)_
 修复：
 
 - 构造`ChatGroup`对象时，`permissionType`属性错误的问题。
+- 新增丢失的获取会话消息数目的方法 `getConversationMessageCount`。
+- 更新构造各种类型消息的方法，添加可选参数 `receiverList` 。
 
 ## 1.2.1
 

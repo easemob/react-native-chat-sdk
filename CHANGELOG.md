@@ -6,7 +6,8 @@ _English | [Chinese](./CHANGELOG.zh.md)_
 
 Issues fixed
 
-- An issue with the wrong `permissionType` property when constructing a `ChatGroup` object.
+- An issue with the `permissionType` property during the construction of a `ChatGroup` object.
+- Added the missing method of `getConversationMessageCount` API in `ChatManager`.
 
 ## 1.2.1
 
