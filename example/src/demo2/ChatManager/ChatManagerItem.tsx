@@ -114,6 +114,10 @@ export interface StateChatMessage extends StateBase {
     convId: string;
     convType: number;
   };
+  getConversationMessageCount: {
+    convId: string;
+    convType: number;
+  };
   markMessageAsRead: {
     convId: string;
     convType: number;
@@ -586,6 +590,7 @@ export class ChatManagerLeafScreen extends LeafScreenBase<StateChatMessage> {
       'getLatestMessage',
       'getLastReceivedMessage',
       'getConversationUnreadCount',
+      'getConversationMessageCount',
       'markMessageAsRead',
       'markAllMessagesAsRead',
       'updateConversationMessage',
@@ -924,6 +929,16 @@ export class ChatManagerLeafScreen extends LeafScreenBase<StateChatMessage> {
         ),
         ChatManagerLeafScreen.TAG,
         this.metaData.get(MN.getConversationUnreadCount)!.methodName
+      );
+    } else if (name === MN.getConversationMessageCount) {
+      const { convId, convType } = this.state.getConversationMessageCount;
+      this.tryCatch(
+        ChatClient.getInstance().chatManager.getConversationMessageCount(
+          convId,
+          ChatConversationTypeFromNumber(convType)
+        ),
+        ChatManagerLeafScreen.TAG,
+        this.metaData.get(MN.getConversationMessageCount)!.methodName
       );
     } else if (name === MN.markMessageAsRead) {
       const { convId, convType, msgId } = this.state.markMessageAsRead;

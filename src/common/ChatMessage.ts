@@ -534,6 +534,7 @@ export class ChatMessage {
     isChatThread?: boolean;
     isOnline?: boolean;
     deliverOnlineOnly?: boolean;
+    receiverList?: string[];
   }): ChatMessage {
     let r = new ChatMessage({
       from: ChatClient.getInstance().currentUserName ?? '',
@@ -546,6 +547,7 @@ export class ChatMessage {
       conversationId: params.targetId,
       isOnline: params.isOnline,
       deliverOnlineOnly: params.deliverOnlineOnly,
+      receiverList: params.receiverList,
     });
     return r;
   }
@@ -566,6 +568,7 @@ export class ChatMessage {
    *   - (Default) `false`: No.
    * - isOnline: Whether it is a online message.
    * - deliverOnlineOnly: Whether the message is delivered only when the recipient(s) is/are online.
+   * - receiverList: The recipient list of a targeted message.
    * @returns The message instance.
    */
   public static createTextMessage(
@@ -577,6 +580,7 @@ export class ChatMessage {
       targetLanguageCodes?: Array<string>;
       isOnline?: boolean;
       deliverOnlineOnly?: boolean;
+      receiverList?: string[];
     }
   ): ChatMessage {
     return ChatMessage.createSendMessage({
@@ -589,6 +593,7 @@ export class ChatMessage {
       isChatThread: opt?.isChatThread,
       isOnline: opt?.isOnline,
       deliverOnlineOnly: opt?.deliverOnlineOnly,
+      receiverList: opt?.receiverList,
     });
   }
 
@@ -609,6 +614,7 @@ export class ChatMessage {
    * - isOnline: Whether it is a online message.
    * - deliverOnlineOnly: Whether the message is delivered only when the recipient(s) is/are online.
    * - fileSize: The file size.
+   * - receiverList: The recipient list of a targeted message.
    * @returns The message instance.
    */
   public static createFileMessage(
@@ -621,6 +627,7 @@ export class ChatMessage {
       fileSize?: number;
       isOnline?: boolean;
       deliverOnlineOnly?: boolean;
+      receiverList?: string[];
     }
   ): ChatMessage {
     return ChatMessage.createSendMessage({
@@ -634,6 +641,7 @@ export class ChatMessage {
       isChatThread: opt?.isChatThread,
       isOnline: opt?.isOnline,
       deliverOnlineOnly: opt?.deliverOnlineOnly,
+      receiverList: opt?.receiverList,
     });
   }
 
@@ -660,6 +668,7 @@ export class ChatMessage {
    * - isOnline: Whether it is a online message.
    * - deliverOnlineOnly: Whether the message is delivered only when the recipient(s) is/are online.
    * - fileSize: The file size.
+   * - receiverList: The recipient list of a targeted message.
    * @returns The message instance.
    */
   public static createImageMessage(
@@ -676,6 +685,7 @@ export class ChatMessage {
       fileSize?: number;
       isOnline?: boolean;
       deliverOnlineOnly?: boolean;
+      receiverList?: string[];
     }
   ): ChatMessage {
     return ChatMessage.createSendMessage({
@@ -693,6 +703,7 @@ export class ChatMessage {
       isChatThread: opt?.isChatThread,
       isOnline: opt?.isOnline,
       deliverOnlineOnly: opt?.deliverOnlineOnly,
+      receiverList: opt?.receiverList,
     });
   }
 
@@ -717,6 +728,7 @@ export class ChatMessage {
    * - isOnline: Whether it is a online message.
    * - deliverOnlineOnly: Whether the message is delivered only when the recipient(s) is/are online.
    * - fileSize: The file size.
+   * - receiverList: The recipient list of a targeted message.
    * @returns The message instance.
    */
   public static createVideoMessage(
@@ -733,6 +745,7 @@ export class ChatMessage {
       fileSize?: number;
       isOnline?: boolean;
       deliverOnlineOnly?: boolean;
+      receiverList?: string[];
     }
   ): ChatMessage {
     return ChatMessage.createSendMessage({
@@ -750,6 +763,7 @@ export class ChatMessage {
       isChatThread: opt?.isChatThread,
       isOnline: opt?.isOnline,
       deliverOnlineOnly: opt?.deliverOnlineOnly,
+      receiverList: opt?.receiverList,
     });
   }
 
@@ -771,6 +785,7 @@ export class ChatMessage {
    * - isOnline: Whether it is a online message.
    * - deliverOnlineOnly: Whether the message is delivered only when the recipient(s) is/are online.
    * - fileSize: The file size.
+   * - receiverList: The recipient list of a targeted message.
    * @returns The message instance.
    */
   public static createVoiceMessage(
@@ -784,6 +799,7 @@ export class ChatMessage {
       fileSize?: number;
       isOnline?: boolean;
       deliverOnlineOnly?: boolean;
+      receiverList?: string[];
     }
   ): ChatMessage {
     return ChatMessage.createSendMessage({
@@ -798,6 +814,7 @@ export class ChatMessage {
       isChatThread: opt?.isChatThread,
       isOnline: opt?.isOnline,
       deliverOnlineOnly: opt?.deliverOnlineOnly,
+      receiverList: opt?.receiverList,
     });
   }
 
@@ -823,6 +840,7 @@ export class ChatMessage {
    * - deliverOnlineOnly: Whether the message is delivered only when the recipient(s) is/are online:
    *   - `true`: - `true`：The message is delivered only when the recipient(s) is/are online. If the recipient is offline, the message is discarded.
    *   - (Default) `false`：The message is delivered when the recipient(s) is/are online. If the recipient(s) is/are offline, the message will not be delivered to them until they get online.
+   * - receiverList: The recipient list of a targeted message.
    * @returns The message instance.
    */
   public static createCombineMessage(
@@ -836,6 +854,7 @@ export class ChatMessage {
       isChatThread?: boolean;
       isOnline?: boolean;
       deliverOnlineOnly?: boolean;
+      receiverList?: string[];
     }
   ): ChatMessage {
     return ChatMessage.createSendMessage({
@@ -851,6 +870,7 @@ export class ChatMessage {
       isChatThread: opt?.isChatThread,
       isOnline: opt?.isOnline,
       deliverOnlineOnly: opt?.deliverOnlineOnly,
+      receiverList: opt?.receiverList,
     });
   }
 
@@ -869,6 +889,7 @@ export class ChatMessage {
    * - isChatThread: Whether this message is a threaded message.
    *   - `true`: Yes.
    *   - (Default) `false`: No.
+   * - receiverList: The recipient list of a targeted message.
    * @returns The message instance.
    */
   public static createLocationMessage(
@@ -881,6 +902,7 @@ export class ChatMessage {
       isChatThread?: boolean;
       isOnline?: boolean;
       deliverOnlineOnly?: boolean;
+      receiverList?: string[];
     }
   ): ChatMessage {
     return ChatMessage.createSendMessage({
@@ -894,6 +916,7 @@ export class ChatMessage {
       isChatThread: opt?.isChatThread,
       isOnline: opt?.isOnline,
       deliverOnlineOnly: opt?.deliverOnlineOnly,
+      receiverList: opt?.receiverList,
     });
   }
 
@@ -913,6 +936,7 @@ export class ChatMessage {
    * - deliverOnlineOnly: Whether this command message is delivered only to the online users.
    *   - (Default) `true`: Yes.
    *   - `false`: No. The command message is delivered to users, regardless of their online or offline status.
+   * - receiverList: The recipient list of a targeted message.
    * @returns The message instance.
    */
   public static createCmdMessage(
@@ -923,6 +947,7 @@ export class ChatMessage {
       isChatThread?: boolean;
       isOnline?: boolean;
       deliverOnlineOnly?: boolean;
+      receiverList?: string[];
     }
   ): ChatMessage {
     return ChatMessage.createSendMessage({
@@ -934,6 +959,7 @@ export class ChatMessage {
       isChatThread: opt?.isChatThread,
       isOnline: opt?.isOnline,
       deliverOnlineOnly: opt?.deliverOnlineOnly,
+      receiverList: opt?.receiverList,
     });
   }
 
@@ -951,6 +977,7 @@ export class ChatMessage {
    * - isChatThread: Whether this message is a threaded message.
    *   - `true`: Yes.
    *   - (Default) `false`: No.
+   * - receiverList: The recipient list of a targeted message.
    * @returns The message instance.
    */
   public static createCustomMessage(
@@ -962,6 +989,7 @@ export class ChatMessage {
       isChatThread?: boolean;
       isOnline?: boolean;
       deliverOnlineOnly?: boolean;
+      receiverList?: string[];
     }
   ): ChatMessage {
     return ChatMessage.createSendMessage({
@@ -974,6 +1002,7 @@ export class ChatMessage {
       isChatThread: opt?.isChatThread,
       isOnline: opt?.isOnline,
       deliverOnlineOnly: opt?.deliverOnlineOnly,
+      receiverList: opt?.receiverList,
     });
   }
 
