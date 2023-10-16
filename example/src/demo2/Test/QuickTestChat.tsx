@@ -731,6 +731,26 @@ export class QuickTestScreenChat extends QuickTestScreenBase<
           );
         }
         break;
+      case MN.getConversationMessageCount:
+        {
+          const methodName = this.metaData.get(
+            MN.getConversationMessageCount
+          )!.methodName;
+          console.log(`${MN.getConversationMessageCount} === ${methodName}`);
+          const convId = this.metaData.get(MN.getConversationMessageCount)
+            ?.params[0]!.paramDefaultValue;
+          const convType = this.metaData.get(MN.getConversationMessageCount)
+            ?.params[1]!.paramDefaultValue;
+          this.tryCatch(
+            ChatClient.getInstance().chatManager.getConversationMessageCount(
+              convId,
+              convType
+            ),
+            QuickTestScreenChat.TAG,
+            MN.getConversationMessageCount
+          );
+        }
+        break;
       case MN.markMessageAsRead:
         {
           const methodName = this.metaData.get(

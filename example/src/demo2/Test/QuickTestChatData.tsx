@@ -34,6 +34,7 @@ export const MN = {
   getLatestMessage: 'getLatestMessage',
   getLastReceivedMessage: 'getLastReceivedMessage',
   getConversationUnreadCount: 'getConversationUnreadCount',
+  getConversationMessageCount: 'getConversationMessageCount',
   markMessageAsRead: 'markMessageAsRead',
   markAllMessagesAsRead: 'markAllMessagesAsRead',
   updateConversationMessage: 'updateConversationMessage',
@@ -503,6 +504,24 @@ export const metaDataList = new Map<string, ApiParams>([
     MN.getConversationUnreadCount,
     {
       methodName: MN.getConversationUnreadCount,
+      params: [
+        {
+          paramName: 'convId', // 使用发送成功或者失败的数据测试，依赖sendMessage
+          paramType: 'string',
+          paramDefaultValue: datasheet.accounts[2]!.id,
+        },
+        {
+          paramName: 'convType',
+          paramType: 'number',
+          paramDefaultValue: 0,
+        },
+      ],
+    },
+  ],
+  [
+    MN.getConversationMessageCount,
+    {
+      methodName: MN.getConversationMessageCount,
       params: [
         {
           paramName: 'convId', // 使用发送成功或者失败的数据测试，依赖sendMessage

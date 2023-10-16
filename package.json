@@ -1,6 +1,6 @@
 {
   "name": "react-native-chat-sdk",
-  "version": "1.2.0-beta.3",
+  "version": "1.2.1",
   "description": "react native chat sdk",
   "main": "lib/commonjs/index",
   "module": "lib/module/index",
@@ -100,7 +100,7 @@
   },
   "peerDependencies": {
     "react": "*",
-    "react-native": "*"
+    "react-native": ">=0.63.5"
   },
   "engines": {
     "node": ">= 16.0.0"

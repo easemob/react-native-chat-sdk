@@ -199,6 +199,18 @@ export class ChatConversation {
   }
 
   /**
+   * Gets the count of messages in the conversation.
+   * @returns The count of messages.
+   * @throws A description of the exception. See {@link ChatError}.
+   */
+  public async getMessageCount(): Promise<number> {
+    return ChatClient.getInstance().chatManager.getConversationMessageCount(
+      this.convId,
+      this.convType
+    );
+  }
+
+  /**
    * Gets the latest message from the conversation.
    *
    * @returns The message instance. The SDK returns `undefined` if the message does not exist.

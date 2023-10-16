@@ -46,7 +46,7 @@ export class ChatOptions {
    */
   autoAcceptGroupInvitation: boolean;
   /**
-   * Whether to require the read receipt.
+   * Whether to require the read receipt. This setting has no effect on {@link ChatManager.sendConversationReadAck}.
    *
    * - (Default) `true`: Yes.
    * - `false`: No.
@@ -54,6 +54,10 @@ export class ChatOptions {
   requireAck: boolean;
   /**
    * Whether to require the delivery receipt.
+   *
+   * **Note**
+   *
+   * Only valid for single chat messages. {@link ChatMessageChatType.PeerChat}
    *
    * - `true`: Yes.
    * - (Default) `false`: No.

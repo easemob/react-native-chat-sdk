@@ -36,6 +36,7 @@ import {
   MTgetLatestMessageFromOthers,
   MTgetMessage,
   MTgetMessageThread,
+  MTgetMsgCount,
   MTgetPinnedConversationsFromServerWithCursor,
   MTgetReactionList,
   MTgetThreadConversation,
@@ -1254,6 +1255,37 @@ export class ChatManager extends BaseManager {
     });
     ChatManager.checkErrorFromResult(r);
     const ret: number = r?.[MTgetUnreadMsgCount] as number;
+    return ret;
+  }
+
+  /**
+   * Gets the message count of the conversation.
+   *
+   * **note** If the conversation object does not exist, this method will create it.
+   *
+   * @param convId The conversation ID.
+   * @param convType The conversation type. See {@link ChatConversationType}.
+   * @returns The message count.
+   *
+   * @throws A description of the exception. See {@link ChatError}.
+   */
+  public async getConversationMessageCount(
+    convId: string,
+    convType: ChatConversationType
+  ): Promise<number> {
+    chatlog.log(
+      `${ChatManager.TAG}: getConversationMessageCount: `,
+      convId,
+      convType
+    );
+    let r: any = await Native._callMethod(MTgetMsgCount, {
+      [MTgetMsgCount]: {
+        convId: convId,
+        convType: convType,
+      },
+    });
+    ChatManager.checkErrorFromResult(r);
+    const ret: number = r?.[MTgetMsgCount] as number;
     return ret;
   }
 

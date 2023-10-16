@@ -142,6 +142,7 @@ export const MTonChatThreadUserRemoved = 'onChatThreadUserRemoved';
 
 /// ChatConversionManager methods
 export const MTgetUnreadMsgCount = 'getUnreadMsgCount';
+export const MTgetMsgCount = 'getMsgCount';
 export const MTmarkAllMessagesAsRead = 'markAllMessagesAsRead';
 export const MTmarkMessageAsRead = 'markMessageAsRead';
 export const MTsyncConversationExt = 'syncConversationExt';
