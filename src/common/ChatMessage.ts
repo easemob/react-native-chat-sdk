@@ -1,5 +1,6 @@
 import { generateMessageId, getNowTimestamp } from '../__internal__/Utils';
 import { ChatClient } from '../ChatClient';
+import { chatlog } from './ChatConst';
 import type { ChatSearchDirection } from './ChatConversation';
 import { ChatError } from './ChatError';
 import type { ChatMessageReaction } from './ChatMessageReaction';
@@ -391,8 +392,12 @@ export class ChatMessage {
   status: ChatMessageStatus = ChatMessageStatus.CREATE;
   /**
    * The extension attribute of the message.
+   *
+   * Value can be an object, string, string json, numerical value, undefined, null, etc.
+   *
+   * **Note** Symbol and function types are not supported.
    */
-  attributes: Object = {};
+  attributes: Record<string, any>;
   /**
    * The message body. See {@link ChatMessageBody}.
    */
@@ -480,13 +485,40 @@ export class ChatMessage {
     this.chatType = ChatMessageChatTypeFromNumber(params.chatType ?? 0);
     this.direction = ChatMessageDirectionFromString(params.direction ?? 'send');
     this.status = ChatMessageStatusFromNumber(params.status ?? 0);
-    this.attributes = params.attributes ?? {};
+    this.attributes = {};
+    this.fromAttributes(params.attributes);
     this.body = ChatMessage.getBody(params.body);
     this.localMsgId = this.localTime.toString();
     this.isChatThread = params.isChatThread ?? false;
     this.isOnline = params.isOnline ?? true;
     this.deliverOnlineOnly = params.deliverOnlineOnly ?? false;
     this.receiverList = params.receiverList;
+  }
+
+  private fromAttributes(attributes: any) {
+    if (attributes) {
+      const keys = Object.getOwnPropertyNames(attributes);
+      for (const key of keys) {
+        const v = attributes[key];
+        if (typeof v === 'object') {
+          this.attributes[key] = v;
+        } else if (typeof v === 'function') {
+          this.attributes[key] = v;
+        } else if (typeof v === 'symbol' || typeof v === 'undefined') {
+          this.attributes[key] = v;
+        } else if (typeof v === 'string') {
+          // !!! maybe json string
+          try {
+            this.attributes[key] = JSON.parse(v);
+          } catch (error) {
+            chatlog.warn(error);
+            this.attributes[key] = v;
+          }
+        } else {
+          this.attributes[key] = v;
+        }
+      }
+    }
   }
 
   private static getBody(params: any): ChatMessageBody {

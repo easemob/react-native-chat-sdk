@@ -24,11 +24,6 @@ import {
 } from '../__internal__/LeafScreenBase';
 import { ChatManagerCache } from './ChatManagerData';
 
-enum TestType {
-  Audio = 0,
-  Video,
-}
-
 const MN = {
   sendMessage: 'sendMessage',
 };
@@ -135,7 +130,6 @@ export class SendMessageLeafScreen extends LeafScreenBase<StateSendMessage> {
         },
       ],
     ]);
-    const t = TestType.Video;
     this.state = {
       tmp: '',
       sendResult: '',
@@ -187,11 +181,27 @@ export class SendMessageLeafScreen extends LeafScreenBase<StateSendMessage> {
         k: 'v',
         k2: 10,
         k3: true,
-        k4: t as number,
+        k4: undefined,
         k5: 0.12,
-        // k6: {
-        //   kk1: { kkk2: 'kkk' },
-        // },
+        k6: {
+          k66: {
+            avatar: 'http://www.baidu.com',
+            desc: 'this is object',
+          },
+        },
+        k7: () => {
+          console.log('this is function');
+        },
+        k8: Symbol(),
+        k9: null,
+        k10: {
+          func: () => {
+            console.log('this is function');
+          },
+        },
+        k11: {
+          symbol: Symbol(),
+        },
       }),
 
       // target ids
@@ -950,8 +960,11 @@ export class SendMessageLeafScreen extends LeafScreenBase<StateSendMessage> {
       if (message) {
         if (attr && attr?.trim().length > 0) {
           try {
-            message.attributes = JSON.parse(attr);
-            // message.attributes = JSON.stringify(attr);
+            const kv = JSON.parse(attr);
+            const keys = Object.getOwnPropertyNames(kv);
+            for (const key of keys) {
+              message.attributes[key] = kv[key];
+            }
           } catch (error) {
             console.warn(error);
           }
