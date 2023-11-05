@@ -1,6 +1,5 @@
 import { generateMessageId, getNowTimestamp } from '../__internal__/Utils';
 import { ChatClient } from '../ChatClient';
-import { chatlog } from './ChatConst';
 import type { ChatSearchDirection } from './ChatConversation';
 import { ChatError } from './ChatError';
 import type { ChatMessageReaction } from './ChatMessageReaction';
@@ -511,7 +510,6 @@ export class ChatMessage {
           try {
             this.attributes[key] = JSON.parse(v);
           } catch (error) {
-            chatlog.warn(error);
             this.attributes[key] = v;
           }
         } else {
