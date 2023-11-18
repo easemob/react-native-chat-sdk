@@ -511,6 +511,7 @@ export abstract class QuickTestScreenBase<
         groupId: string;
         decliner: string;
         groupName?: string | undefined;
+        applicant?: string;
         reason?: string | undefined;
       }): void {
         console.log(
@@ -518,6 +519,7 @@ export abstract class QuickTestScreenBase<
           params.groupId,
           params.decliner,
           params.groupName,
+          params.applicant,
           params.reason
         );
         this.that.setState({
@@ -526,6 +528,7 @@ export abstract class QuickTestScreenBase<
             params.groupId +
             params.decliner +
             params.groupName +
+            params.applicant +
             params.reason,
         });
       }

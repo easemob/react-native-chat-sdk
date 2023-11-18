@@ -19,6 +19,7 @@ import { ChatPushManager } from './ChatPushManager';
 import { ChatRoomManager } from './ChatRoomManager';
 import { ChatUserInfoManager } from './ChatUserInfoManager';
 import type { ChatAreaCode } from './common/ChatAreaCode';
+import { ChatContact } from './common/ChatContact';
 import {
   ChatConversation,
   ChatConversationType,
@@ -166,6 +167,7 @@ export {
  */
 export {
   ChatCmdMessageBody,
+  ChatContact,
   ChatConversation,
   ChatCursorResult,
   ChatCustomMessageBody,

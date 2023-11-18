@@ -445,6 +445,11 @@ export class ChatMessage {
   receiverList?: string[];
 
   /**
+   * Whether it is a global broadcast message.
+   */
+  isBroadcast: boolean;
+
+  /**
    * Constructs a message.
    */
   public constructor(params: {
@@ -469,6 +474,7 @@ export class ChatMessage {
     isOnline?: boolean;
     deliverOnlineOnly?: boolean;
     receiverList?: string[];
+    isBroadcast?: boolean;
   }) {
     this.msgId = params.msgId ?? generateMessageId();
     this.conversationId = params.conversationId ?? '';
@@ -492,6 +498,7 @@ export class ChatMessage {
     this.isOnline = params.isOnline ?? true;
     this.deliverOnlineOnly = params.deliverOnlineOnly ?? false;
     this.receiverList = params.receiverList;
+    this.isBroadcast = params.isBroadcast ?? false;
   }
 
   private fromAttributes(attributes: any) {

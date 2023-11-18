@@ -202,9 +202,10 @@ export interface StateGroupMessage extends StateBase {
   };
   fetchMembersAttributes: {
     groupId: string;
-    member: string;
+    members: string[];
     attributeKeys: string[];
   };
+  fetchJoinedGroupCount: {};
 }
 export class GroupManagerLeafScreen extends LeafScreenBase<StateGroupMessage> {
   protected static TAG = 'GroupManagerLeafScreen';
@@ -276,6 +277,7 @@ export class GroupManagerLeafScreen extends LeafScreenBase<StateGroupMessage> {
       'setMemberAttribute',
       'fetchMemberAttributes',
       'fetchMembersAttributes',
+      'fetchJoinedGroupCount',
     ];
     let renderDomAry: ({} | null | undefined)[] = [];
     const data = this.metaDataList;
@@ -867,6 +869,53 @@ export class GroupManagerLeafScreen extends LeafScreenBase<StateGroupMessage> {
         );
         break;
       }
+      case MN.setMemberAttribute: {
+        const { groupId, member, attributes } = this.state.setMemberAttribute;
+        this.tryCatch(
+          ChatClient.getInstance().groupManager.setMemberAttribute(
+            groupId,
+            member,
+            attributes
+          ),
+          GroupManagerLeafScreen.TAG,
+          name
+        );
+        break;
+      }
+      case MN.fetchMemberAttributes: {
+        const { groupId, member } = this.state.fetchMemberAttributes;
+        this.tryCatch(
+          ChatClient.getInstance().groupManager.fetchMemberAttributes(
+            groupId,
+            member
+          ),
+          GroupManagerLeafScreen.TAG,
+          name
+        );
+        break;
+      }
+      case MN.fetchMembersAttributes: {
+        const { groupId, members, attributeKeys } =
+          this.state.fetchMembersAttributes;
+        this.tryCatch(
+          ChatClient.getInstance().groupManager.fetchMembersAttributes(
+            groupId,
+            members,
+            attributeKeys
+          ),
+          GroupManagerLeafScreen.TAG,
+          name
+        );
+        break;
+      }
+      case MN.fetchJoinedGroupCount: {
+        this.tryCatch(
+          ChatClient.getInstance().groupManager.fetchJoinedGroupCount(),
+          GroupManagerLeafScreen.TAG,
+          name
+        );
+        break;
+      }
       default:
         console.log('error name');
         break;
@@ -973,6 +1022,7 @@ export class GroupManagerLeafScreen extends LeafScreenBase<StateGroupMessage> {
         groupId: string;
         decliner: string;
         groupName?: string | undefined;
+        applicant?: string;
         reason?: string | undefined;
       }): void {
         console.log(
@@ -980,6 +1030,7 @@ export class GroupManagerLeafScreen extends LeafScreenBase<StateGroupMessage> {
           params.groupId,
           params.decliner,
           params.groupName,
+          params.applicant,
           params.reason
         );
         this.that.setState({

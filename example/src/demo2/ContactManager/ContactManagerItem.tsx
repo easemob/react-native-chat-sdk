@@ -1,6 +1,6 @@
 import React, { ReactNode } from 'react';
 import { View } from 'react-native';
-import { ChatClient } from 'react-native-chat-sdk';
+import { ChatClient, ChatContact } from 'react-native-chat-sdk';
 
 import { styleValues } from '../__internal__/Css';
 import type { ApiParams } from '../__internal__/DataTypes';
@@ -38,6 +38,18 @@ export interface StateChatContact extends StateBase {
     username: string;
   };
   getSelfIdsOnOtherPlatform: {};
+  getAllContacts: {};
+  setContactRemark: {
+    contact: ChatContact;
+  };
+  getContact: {
+    userId: string;
+  };
+  fetchAllContacts: {};
+  fetchContacts: {
+    cursor: string;
+    pageSize: number;
+  };
 }
 
 export interface StatelessChatContact extends StatelessBase {}
@@ -97,6 +109,11 @@ export class ContactLeafScreen extends LeafScreenBase<StateChatContact> {
       'acceptInvitation',
       'declineInvitation',
       'getSelfIdsOnOtherPlatform',
+      'getAllContacts',
+      'setContactRemark',
+      'getContact',
+      'fetchAllContacts',
+      'fetchContacts',
     ];
     let renderDomAry: ({} | null | undefined)[] = [];
     const data = this.metaData;
@@ -280,6 +297,59 @@ export class ContactLeafScreen extends LeafScreenBase<StateChatContact> {
           const {} = this.state.getSelfIdsOnOtherPlatform;
           this.tryCatch(
             ChatClient.getInstance().contactManager.getSelfIdsOnOtherPlatform(),
+            ContactLeafScreen.TAG,
+            name
+          );
+        }
+        break;
+      case MN.getAllContacts:
+        {
+          const {} = this.state.getAllContacts;
+          this.tryCatch(
+            ChatClient.getInstance().contactManager.getAllContacts(),
+            ContactLeafScreen.TAG,
+            name
+          );
+        }
+        break;
+      case MN.setContactRemark:
+        {
+          const { contact } = this.state.setContactRemark;
+          this.tryCatch(
+            ChatClient.getInstance().contactManager.setContactRemark(contact),
+            ContactLeafScreen.TAG,
+            name
+          );
+        }
+        break;
+      case MN.getContact:
+        {
+          const { userId } = this.state.getContact;
+          this.tryCatch(
+            ChatClient.getInstance().contactManager.getContact(userId),
+            ContactLeafScreen.TAG,
+            name
+          );
+        }
+        break;
+      case MN.fetchAllContacts:
+        {
+          const {} = this.state.fetchAllContacts;
+          this.tryCatch(
+            ChatClient.getInstance().contactManager.fetchAllContacts(),
+            ContactLeafScreen.TAG,
+            name
+          );
+        }
+        break;
+      case MN.fetchContacts:
+        {
+          const { cursor, pageSize } = this.state.fetchContacts;
+          this.tryCatch(
+            ChatClient.getInstance().contactManager.fetchContacts({
+              cursor,
+              pageSize,
+            }),
             ContactLeafScreen.TAG,
             name
           );

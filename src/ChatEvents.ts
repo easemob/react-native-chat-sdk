@@ -707,12 +707,14 @@ export interface ChatGroupEventListener {
    * - Param [groupId] The group ID.
    * - Param [groupName] The group name.
    * - Param [decliner] The ID of the user that declines the join request.
+   * - Param [applicant] The user ID of the applicant.
    * - Param [reason] The reason for declining the join request.
    */
   onRequestToJoinDeclined?(params: {
     groupId: string;
     decliner: string;
     groupName?: string;
+    applicant?: string;
     reason?: string;
   }): void;
   /**

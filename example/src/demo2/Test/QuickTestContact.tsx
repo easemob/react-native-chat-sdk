@@ -279,6 +279,72 @@ export class QuickTestScreenContact extends QuickTestScreenBase<
           );
         }
         break;
+      case MN.getAllContacts:
+        {
+          const methodName = this.metaData.get(MN.getAllContacts)!.methodName;
+          console.log(`${MN.getAllContacts} === ${methodName}`);
+          this.tryCatch(
+            ChatClient.getInstance().contactManager.getAllContacts(),
+            QuickTestScreenContact.TAG,
+            MN.getAllContacts
+          );
+        }
+        break;
+      case MN.setContactRemark:
+        {
+          const methodName = this.metaData.get(MN.setContactRemark)!.methodName;
+          console.log(`${MN.setContactRemark} === ${methodName}`);
+          const contact = this.metaData.get(MN.setContactRemark)!.params[0]!
+            .paramDefaultValue;
+          this.tryCatch(
+            ChatClient.getInstance().contactManager.setContactRemark(contact),
+            QuickTestScreenContact.TAG,
+            MN.setContactRemark
+          );
+        }
+        break;
+      case MN.getContact:
+        {
+          const methodName = this.metaData.get(MN.getContact)!.methodName;
+          console.log(`${MN.getContact} === ${methodName}`);
+          const userId = this.metaData.get(MN.getContact)!.params[0]!
+            .paramDefaultValue;
+          this.tryCatch(
+            ChatClient.getInstance().contactManager.getContact(userId),
+            QuickTestScreenContact.TAG,
+            MN.getContact
+          );
+        }
+        break;
+      case MN.fetchAllContacts:
+        {
+          const methodName = this.metaData.get(MN.fetchAllContacts)!.methodName;
+          console.log(`${MN.fetchAllContacts} === ${methodName}`);
+          this.tryCatch(
+            ChatClient.getInstance().contactManager.fetchAllContacts(),
+            QuickTestScreenContact.TAG,
+            MN.fetchAllContacts
+          );
+        }
+        break;
+      case MN.fetchContacts:
+        {
+          const methodName = this.metaData.get(MN.fetchContacts)!.methodName;
+          console.log(`${MN.fetchContacts} === ${methodName}`);
+          const cursor = this.metaData.get(MN.fetchContacts)!.params[0]!
+            .paramDefaultValue;
+          const pageSize = this.metaData.get(MN.fetchContacts)!.params[1]!
+            .paramDefaultValue;
+          this.tryCatch(
+            ChatClient.getInstance().contactManager.fetchContacts({
+              cursor,
+              pageSize,
+            }),
+            QuickTestScreenContact.TAG,
+            MN.fetchContacts
+          );
+        }
+        break;
       default:
         console.log(`${name}`);
         break;

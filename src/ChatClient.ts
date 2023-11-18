@@ -608,6 +608,8 @@ export class ChatClient extends BaseManager {
   }
 
   /**
+   * @deprecated 2023-11-17 Use {@link login} instead.
+   *
    * Logs in to the chat server with the user ID and an Agora token. An exception message is thrown if the login fails.
    *
    * **Note**
