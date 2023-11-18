@@ -2,6 +2,16 @@ _Chinese | [English](./CHANGELOG.md)_
 
 # Update Log
 
+## 1.3.0
+
+新功能
+
+- 依赖的原生 SDK 升级到版本（`iOS` 4.2.0 和`Android` 4.2.1）。 添加原生 SDK 提供的新功能。
+- 新增好友备注。详见 `ChatContact`
+- 新增全局广播。详见 `ChatMessage.isBroadcast`
+- 新增获取已加入群组数量。 详见 `ChatGroupManager.fetchJoinedGroupCount`
+- 更新群组申请被拒绝回调通知。 详见`ChatGroupEventListener.onRequestToJoinDeclined`
+
 ## 1.2.2
 
 修复：
