@@ -136,7 +136,8 @@
           "style",
           "test",
           "tag",
-          "api"
+          "api",
+          "example"
         ]
       ]
     }
