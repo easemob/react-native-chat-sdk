@@ -566,4 +566,20 @@ export class ChatConversation {
       timestamp
     );
   }
+
+  /**
+   * Sets whether to pin a conversation.
+   *
+   * @param isPinned Whether to pin a conversation:
+   * - `true`：Yes.
+   * - `false`: No. The conversation is unpinned.
+   *
+   * @throws A description of the exception. See {@link ChatError}.
+   */
+  public async pinConversation(isPinned: boolean): Promise<void> {
+    return ChatClient.getInstance().chatManager.pinConversation(
+      this.convId,
+      isPinned
+    );
+  }
 }
