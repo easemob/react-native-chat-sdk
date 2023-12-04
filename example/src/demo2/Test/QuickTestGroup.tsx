@@ -1006,6 +1006,18 @@ export class QuickTestScreenGroup extends QuickTestScreenBase<
           );
         }
         break;
+      case MN.fetchJoinedGroupCount:
+        {
+          const methodName = this.metaData.get(MN.fetchJoinedGroupCount)
+            ?.methodName!;
+          console.log(`${MN.fetchJoinedGroupCount} === ${methodName}`);
+          this.tryCatch(
+            ChatClient.getInstance().groupManager.fetchJoinedGroupCount(),
+            QuickTestScreenGroup.TAG,
+            methodName
+          );
+        }
+        break;
 
       default:
         break;

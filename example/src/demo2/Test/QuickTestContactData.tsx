@@ -1,3 +1,5 @@
+import { ChatContact } from 'react-native-chat-sdk';
+
 import { datasheet } from '../__default__/Datasheet';
 import type { ApiParams } from '../__internal__/DataTypes';
 
@@ -13,6 +15,11 @@ export const MN = {
   acceptInvitation: 'acceptInvitation',
   declineInvitation: 'declineInvitation',
   getSelfIdsOnOtherPlatform: 'getSelfIdsOnOtherPlatform',
+  getAllContacts: 'getAllContacts',
+  setContactRemark: 'setContactRemark',
+  getContact: 'getContact',
+  fetchAllContacts: 'fetchAllContacts',
+  fetchContacts: 'fetchContacts',
 };
 
 export const metaDataList = new Map<string, ApiParams>([
@@ -143,6 +150,67 @@ export const metaDataList = new Map<string, ApiParams>([
     {
       methodName: MN.getSelfIdsOnOtherPlatform,
       params: [],
+    },
+  ],
+  [
+    MN.getAllContacts,
+    {
+      methodName: MN.getAllContacts,
+      params: [],
+    },
+  ],
+  [
+    MN.setContactRemark,
+    {
+      methodName: MN.setContactRemark,
+      params: [
+        {
+          paramName: 'contact',
+          paramType: 'json',
+          paramDefaultValue: new ChatContact({
+            userId: datasheet.accounts[1]!.id,
+            remark: 'yy',
+          }),
+        },
+      ],
+    },
+  ],
+  [
+    MN.getContact,
+    {
+      methodName: MN.getContact,
+      params: [
+        {
+          paramName: 'userId',
+          paramType: 'string',
+          paramDefaultValue: datasheet.accounts[1]!.id,
+        },
+      ],
+    },
+  ],
+  [
+    MN.fetchAllContacts,
+    {
+      methodName: MN.fetchAllContacts,
+      params: [],
+    },
+  ],
+  [
+    MN.fetchContacts,
+    {
+      methodName: MN.fetchContacts,
+      params: [
+        {
+          paramName: 'cursor',
+          paramType: 'string',
+          paramDefaultValue: '',
+        },
+        {
+          paramName: 'pageSize',
+          paramType: 'number',
+          paramDefaultValue: 20,
+        },
+      ],
     },
   ],
 ]);

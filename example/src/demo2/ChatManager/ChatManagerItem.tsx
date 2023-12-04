@@ -629,6 +629,7 @@ export class ChatManagerLeafScreen extends LeafScreenBase<StateChatMessage> {
       'removeMessagesFromServerWithTimestamp',
       'fetchHistoryMessagesByOptions',
       'deleteMessagesWithTimestamp',
+      'deleteMessagesWithTimestamp',
       'fetchConversationsFromServerWithCursor',
       'fetchPinnedConversationsFromServerWithCursor',
       'pinConversation',
@@ -1324,6 +1325,37 @@ export class ChatManagerLeafScreen extends LeafScreenBase<StateChatMessage> {
           convId,
           convType,
           timestamp
+        ),
+        ChatManagerLeafScreen.TAG,
+        name
+      );
+    } else if (name === MN.fetchHistoryMessagesByOptions) {
+      const { convId, convType, options, cursor, pageSize } =
+        this.state.fetchHistoryMessagesByOptions;
+      this.tryCatch(
+        ChatClient.getInstance().chatManager.fetchHistoryMessagesByOptions(
+          convId,
+          convType,
+          {
+            options,
+            cursor,
+            pageSize,
+          }
+        ),
+        ChatManagerLeafScreen.TAG,
+        name
+      );
+    } else if (name === MN.deleteMessagesWithTimestamp) {
+      const { convId, convType, startTs, endTs } =
+        this.state.deleteMessagesWithTimestamp;
+      this.tryCatch(
+        ChatClient.getInstance().chatManager.deleteMessagesWithTimestamp(
+          convId,
+          convType,
+          {
+            startTs,
+            endTs,
+          }
         ),
         ChatManagerLeafScreen.TAG,
         name

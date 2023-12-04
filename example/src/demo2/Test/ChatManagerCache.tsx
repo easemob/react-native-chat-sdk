@@ -53,6 +53,7 @@ export class ChatManagerCache {
       }
       onSuccess(message: ChatMessage): void {
         this.that.callbackList.forEach((value: ChatMessageStatusCallback) => {
+          console.log('test:zuoyu:', message.attributes);
           value.onSuccess(message);
         });
       }

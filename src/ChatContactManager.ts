@@ -7,17 +7,24 @@ import {
   MTaddUserToBlockList,
   MTdeclineInvitation,
   MTdeleteContact,
+  MTfetchAllContacts,
+  MTfetchContacts,
+  MTgetAllContacts,
   MTgetAllContactsFromDB,
   MTgetAllContactsFromServer,
   MTgetBlockListFromDB,
   MTgetBlockListFromServer,
+  MTgetContact,
   MTgetSelfIdsOnOtherPlatform,
   MTonContactChanged,
   MTremoveUserFromBlockList,
+  MTsetContactRemark,
 } from './__internal__/Consts';
 import { Native } from './__internal__/Native';
 import type { ChatContactEventListener } from './ChatEvents';
 import { chatlog } from './common/ChatConst';
+import { ChatContact } from './common/ChatContact';
+import { ChatCursorResult } from './common/ChatCursorResult';
 import { ChatError } from './common/ChatError';
 
 /**
@@ -287,5 +294,113 @@ export class ChatContactManager extends BaseManager {
     ChatContactManager.checkErrorFromResult(r);
     const ret: string[] = r?.[MTgetSelfIdsOnOtherPlatform];
     return ret;
+  }
+
+  /**
+   * Gets all contacts from the local database.
+   *
+   * @returns The list of contacts.
+   *
+   * @throws A description of the exception. See {@link ChatError}.
+   */
+  public async getAllContacts(): Promise<ChatContact[]> {
+    chatlog.log(`${ChatContactManager.TAG}: getAllContacts: `);
+    let r: any = await Native._callMethod(MTgetAllContacts);
+    ChatContactManager.checkErrorFromResult(r);
+    const list: any[] = r?.[MTgetAllContacts];
+    const ret: ChatContact[] = [];
+    for (const i of list) {
+      ret.push(new ChatContact(i));
+    }
+    return ret;
+  }
+
+  /**
+   * Gets the contact by user ID from local database.
+   *
+   * @param userId The user ID of the contact to get.
+   * @returns The contact.
+   *
+   * @throws A description of the exception. See {@link ChatError}.
+   */
+  public async getContact(userId: string): Promise<ChatContact> {
+    chatlog.log(`${ChatContactManager.TAG}: getContact: `);
+    let r: any = await Native._callMethod(MTgetContact, {
+      [MTgetContact]: {
+        userId,
+      },
+    });
+    ChatContactManager.checkErrorFromResult(r);
+    return new ChatContact(r?.[MTgetContact]);
+  }
+
+  /**
+   * Gets all contacts from the server.
+   *
+   * @returns The list of contacts.
+   *
+   * @throws A description of the exception. See {@link ChatError}.
+   */
+  public async fetchAllContacts(): Promise<ChatContact[]> {
+    chatlog.log(`${ChatContactManager.TAG}: fetchAllContacts: `);
+    let r: any = await Native._callMethod(MTfetchAllContacts);
+    ChatContactManager.checkErrorFromResult(r);
+    const list: any[] = r?.[MTfetchAllContacts];
+    const ret: ChatContact[] = [];
+    for (const i of list) {
+      ret.push(new ChatContact(i));
+    }
+    return ret;
+  }
+
+  /**
+   * Gets the contacts from the server.
+   * @params params -
+   * - cursor: The cursor of the page to get. The first page is an empty string.
+   * - pageSize: The number of contacts to get. The default value is 20. [1-50]
+   * @returns The list of contacts.
+   *
+   * @throws A description of the exception. See {@link ChatError}.
+   */
+  public async fetchContacts(params: {
+    cursor?: string;
+    pageSize?: number;
+  }): Promise<ChatCursorResult<ChatContact>> {
+    chatlog.log(`${ChatContactManager.TAG}: fetchContacts: `);
+    let r: any = await Native._callMethod(MTfetchContacts, {
+      [MTfetchContacts]: {
+        cursor: params.cursor,
+        pageSize: params.pageSize ?? 20,
+      },
+    });
+    ChatContactManager.checkErrorFromResult(r);
+    let ret = new ChatCursorResult<ChatContact>({
+      cursor: r?.[MTfetchContacts].cursor,
+      list: r?.[MTfetchContacts].list,
+      opt: {
+        map: (param: any) => {
+          return new ChatContact(param);
+        },
+      },
+    });
+    return ret;
+  }
+
+  /**
+   * Set the contact's remark.
+   *
+   * @param contact The contact to set.
+   *
+   * @throws A description of the exception. See {@link ChatError}.
+   */
+  public async setContactRemark(contact: ChatContact): Promise<void> {
+    chatlog.log(`${ChatContactManager.TAG}: setContactRemark: `);
+    let r: any = await Native._callMethod(MTsetContactRemark, {
+      [MTsetContactRemark]: {
+        userId: contact.userId,
+        remark: contact.remark,
+      },
+    });
+    ChatContactManager.checkErrorFromResult(r);
   }
 }

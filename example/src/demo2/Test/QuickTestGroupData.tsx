@@ -51,6 +51,7 @@ export const MN = {
   setMemberAttribute: 'setMemberAttribute',
   fetchMemberAttributes: 'fetchMemberAttributes',
   fetchMembersAttributes: 'fetchMembersAttributes',
+  fetchJoinedGroupCount: 'fetchJoinedGroupCount',
 };
 
 export const metaDataList = new Map<string, ApiParams>([
@@ -929,6 +930,13 @@ export const metaDataList = new Map<string, ApiParams>([
           paramDefaultValue: ['key', 'key2'],
         },
       ],
+    },
+  ],
+  [
+    MN.fetchJoinedGroupCount,
+    {
+      methodName: MN.fetchJoinedGroupCount,
+      params: [],
     },
   ],
 ]);

@@ -14,6 +14,7 @@ import {
   MTdeclineJoinApplication,
   MTdestroyGroup,
   MTdownloadGroupSharedFile,
+  MTfetchJoinedGroupCount,
   MTfetchMemberAttributesFromGroup,
   MTfetchMembersAttributesFromGroup,
   MTgetGroupAllowListFromServer,
@@ -126,6 +127,7 @@ export class ChatGroupManager extends BaseManager {
             groupId: params.groupId,
             decliner: params.decliner,
             groupName: params?.groupName,
+            applicant: params?.applicant,
             reason: params?.reason,
           });
           break;
@@ -1612,6 +1614,20 @@ export class ChatGroupManager extends BaseManager {
       }
     );
     return ret;
+  }
+
+  /**
+   * Get joined group list count.
+   *
+   * @returns the joined group list count.
+   *
+   * @throws A description of the exception. See {@link ChatError}.
+   */
+  public async fetchJoinedGroupCount(): Promise<number> {
+    chatlog.log(`${ChatGroupManager.TAG}: fetchJoinedGroupCount: `);
+    let r: any = await Native._callMethod(MTfetchJoinedGroupCount);
+    ChatGroupManager.checkErrorFromResult(r);
+    return r?.[MTfetchJoinedGroupCount];
   }
 
   /**
