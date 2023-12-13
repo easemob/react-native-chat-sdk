@@ -234,3 +234,5 @@ export {
   ChatSilentModeParamTypeFromNumber,
   ChatSilentModeParamTypeToNumber,
 };
+
+export { default as CHAT_VERSION } from './version';

@@ -78,7 +78,7 @@ export class ChatRoomManager extends Native {
         return;
       }
       switch (contactEventType) {
-        case 'onDestroyed':
+        case 'onChatRoomDestroyed':
           listener.onDestroyed?.({
             roomId: params.roomId,
             roomName: params.roomName,
