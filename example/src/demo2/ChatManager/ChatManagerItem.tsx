@@ -629,7 +629,6 @@ export class ChatManagerLeafScreen extends LeafScreenBase<StateChatMessage> {
       'removeMessagesFromServerWithTimestamp',
       'fetchHistoryMessagesByOptions',
       'deleteMessagesWithTimestamp',
-      'deleteMessagesWithTimestamp',
       'fetchConversationsFromServerWithCursor',
       'fetchPinnedConversationsFromServerWithCursor',
       'pinConversation',

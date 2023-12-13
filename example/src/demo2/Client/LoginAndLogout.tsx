@@ -27,6 +27,9 @@ interface State {
   password: string;
 }
 
+let gUseName = datasheet.accounts[0]!.id;
+let gPassword = datasheet.accounts[0]!.mm;
+
 export class LoginAndLogoutScreen extends Component<
   { navigation: any },
   State,
@@ -43,8 +46,8 @@ export class LoginAndLogoutScreen extends Component<
       loginStatus: '',
       connectStatus: '...',
       listenerStatus: '...',
-      useName: datasheet.accounts[0]!.id,
-      password: datasheet.accounts[0]!.mm,
+      useName: gUseName,
+      password: gPassword,
     };
   }
 
@@ -286,6 +289,7 @@ export class LoginAndLogoutScreen extends Component<
               onChangeText={(text: string) => {
                 // console.log(`${LoginAndLogoutScreen.TAG}: `, text);
                 this.setState({ useName: text });
+                gUseName = text;
               }}
             >
               {useName}
@@ -298,6 +302,7 @@ export class LoginAndLogoutScreen extends Component<
               onChange={(e: NativeSyntheticEvent<TextInputChangeEventData>) => {
                 // console.log(`${LoginAndLogoutScreen.TAG}`);
                 this.setState({ password: e.nativeEvent.text });
+                gPassword = e.nativeEvent.text;
               }}
             >
               {password}

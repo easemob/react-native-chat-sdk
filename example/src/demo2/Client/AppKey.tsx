@@ -12,6 +12,8 @@ interface State {
   enablePush: string;
 }
 
+let gAppkey = datasheet.AppKey[1] ?? '';
+
 export class AppKeyScreen extends Component<{ navigation: any }, State, any> {
   public static route = 'AppKeyScreen';
   private static TAG = 'AppKeyScreen';
@@ -22,7 +24,7 @@ export class AppKeyScreen extends Component<{ navigation: any }, State, any> {
     this.navigation = props.navigation;
     this.state = {
       result: '',
-      appKey: datasheet.AppKey[1] ?? '',
+      appKey: gAppkey,
       enablePush: '0',
     };
   }
@@ -133,6 +135,7 @@ export class AppKeyScreen extends Component<{ navigation: any }, State, any> {
               style={styleValues.textInputStyle}
               onChangeText={(text: string) => {
                 this.setState({ appKey: text });
+                gAppkey = appKey;
               }}
             >
               {appKey}
