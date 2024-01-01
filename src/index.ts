@@ -1,6 +1,6 @@
 import { ChatClient } from './ChatClient';
 import { ChatContactManager } from './ChatContactManager';
-import type {
+import {
   ChatConnectEventListener,
   ChatContactEventListener,
   ChatCustomEventListener,
@@ -18,7 +18,7 @@ import { ChatPresenceManager } from './ChatPresenceManager';
 import { ChatPushManager } from './ChatPushManager';
 import { ChatRoomManager } from './ChatRoomManager';
 import { ChatUserInfoManager } from './ChatUserInfoManager';
-import type { ChatAreaCode } from './common/ChatAreaCode';
+import { ChatAreaCode } from './common/ChatAreaCode';
 import { ChatContact } from './common/ChatContact';
 import {
   ChatConversation,
