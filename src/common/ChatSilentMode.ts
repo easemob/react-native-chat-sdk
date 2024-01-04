@@ -1,55 +1,54 @@
 import type { ChatConversationType } from './ChatConversation';
 
 /**
- * The parameter types of the offline push.
+ * 离线推送参数类型枚举类。
  */
 export enum ChatSilentModeParamType {
   /**
-   * The push notification mode.
+   * 离线消息推送方式。
    */
   REMIND_TYPE,
   /**
-   * The duration of the do-not-disturb mode, in minutes.
+   * 免打扰时长，单位为分钟。
    */
   SILENT_MODE_DURATION,
   /**
-   * The time frame of the do-not-disturb mode.
-   * This parameter type is valid only at the app level, but not for conversations.
+   * 免打扰时间段。仅 app 全局设置有效，对单个会话无效。
    */
   SILENT_MODE_INTERVAL,
 }
 /**
- * The push notification modes.
+ * 离线消息推送方式。
  */
 export enum ChatPushRemindType {
   /**
-   * Receives push notifications for all offline messages.
+   * 接收全部离线消息的推送通知。
    */
   ALL,
   /**
-   * Only receives push notifications for mentioned messages.
+   * 只接收提及当前用户的离线消息的推送通知。
    */
   MENTION_ONLY,
   /**
-   * Receives no push notification for offline messages.
+   * 不接收离线消息的推送通知。
    */
   NONE,
 }
 
 /**
- * The time class that is used to set the start point and end point in the do-not-disturb time frame for the offline message push.
+ * 离线推送免打扰时间段参数类。
  */
 export class ChatSilentModeTime {
   /**
-   * The start or end hour of the do-not-disturb time frame.
+   * 免打扰时间段的起始时间或结束的时间，单位为小时。
    *
-   * The time is based on a 24-hour clock. The value range is [0,23].
+   * 24 小时制，取值范围为 [0,23]。
    */
   hour: number;
   /**
-   * The start or end minute of the do-not-disturb time frame.
+   * 免打扰时间段的开始或结束时间，单位为分钟。
    *
-   * The value range is [0,59].
+   * 取值范围为 [0,59]。
    */
   minute: number;
 
@@ -60,37 +59,38 @@ export class ChatSilentModeTime {
 }
 
 /**
- * The parameter entity class for the offline message push.
+ * 离线推送参数实体类。
  */
 export class ChatSilentModeParam {
   /**
-   * The parameter type of the do-not-disturb mode.
+   * 免打扰模式参数类型。
    */
   paramType: ChatSilentModeParamType;
   /**
-   * The push notification mode.
+   * 离线推送通知方式。
    */
   remindType?: ChatPushRemindType;
   /**
-   * The start time of do-not-disturb mode.
-   * - Both the start time and end time need to be set.
-   * - If both `hours` and `minutes` are set to `0` in the start time and end time, the Do Not Disturb mode is disabled.
+   * 离线推送免打扰时间段的开始时间。
+   * - 请注意以下两点：
+   * - - 开始时间和结束时间必须同时设置。
+   * - - 若开始时间和结束时间中的 hours 和 minutes 都为 0，表示免打扰模式关闭。
    */
   startTime?: ChatSilentModeTime;
   /**
-   * The end time of do-not-disturb mode.
-   * - Both the start time and end time need to be set.
-   * - If both `hours` and `minutes` are set to `0` in the start time and end time, the Do Not Disturb mode is disabled.
-    
+   * 离线推送免打扰时间段的结束时间。
+   * - 请注意以下两点：
+   * - - 开始时间和结束时间必须同时设置。
+   * - - 若开始时间和结束时间中的 hours 和 minutes 都为 0，表示免打扰模式关闭。
    */
   endTime?: ChatSilentModeTime;
   /**
-   * The duration of the do-not-disturb mode, in minutes.
+   * 免打扰时长，单位为分钟。
    */
   duration?: number;
 
   /**
-   * Constructs an object.
+   * 构建离线推送设置的实例。
    */
   public constructor(params: {
     paramType: ChatSilentModeParamType;
@@ -107,10 +107,10 @@ export class ChatSilentModeParam {
   }
 
   /**
-   * Sets the push notification mode.
+   * 设置离线推送通知方式。
    *
-   * @param remindType The push notification mode.
-   * @returns The ChatSilentModeParam Object.
+   * @param remindType 离线推送通知方式。
+   * @returns 离线推送实例。
    */
   public static constructorWithNotification(
     remindType: ChatPushRemindType
@@ -122,10 +122,10 @@ export class ChatSilentModeParam {
   }
 
   /**
-   * Set the duration of the do-not-disturb mode for the offline message push.
+   * 设置免打扰时长。
    *
-   * @param silentDuration The duration of the do-not-disturb mode, in minutes.
-   * @returns The ChatSilentModeParam object.
+   * @param silentDuration 免打扰时长，单位为分钟。
+   * @returns 离线推送设置的实例。
    */
   public static constructorWithDuration(
     silentDuration: number
@@ -137,14 +137,14 @@ export class ChatSilentModeParam {
   }
 
   /**
-   * Sets the time frame of the do-not-disturb mode.
+   * 设置免打扰时间段。
    *
-   * The time frame of the do-not-disturb mode is valid only at the app level, but not for conversations.
+   * 仅 app 全局设置有效，对单个会话无效。
    *
-   * @params params
-   * - startTime: The start point in the do-not-disturb time frame.
-   * - endTime: The end point in the do-not-disturb time frame.
-   * @returns The ChatSilentModeParam object.
+   * @param params
+   * - startTime: 免打扰时间段的开始时间。
+   * - endTime: 免打扰时间段的结束时间。
+   * @returns 离线推送设置的实例。
    */
   public static constructorWithPeriod(params: {
     startTime: ChatSilentModeTime;
@@ -159,36 +159,36 @@ export class ChatSilentModeParam {
 }
 
 /**
- * The configuration result class for the do-not-disturb mode of the offline message push.
+ * 离线推送免打扰配置结果类。
  */
 export class ChatSilentModeResult {
   /**
-   * The Unix timestamp when the do-not-disturb mode of the offline message push expires, in milliseconds.
+   * 离线推送免打扰过期 Unix 时间戳，单位为毫秒。
    */
   expireTimestamp?: number;
   /**
-   * The conversation Type.
+   * 会话类型。
    */
   conversationType: ChatConversationType;
   /**
-   * The conversation ID.
+   * 会话 ID。
    */
   conversationId: string;
   /**
-   * The push notification mode.
+   * 离线推送通知方式。
    */
   remindType?: ChatPushRemindType;
   /**
-   * The start point in the do-not-disturb time frame for the offline message push.
+   * 离线推送免打扰时间段的开始时间。
    */
   startTime?: ChatSilentModeTime;
   /**
-   * The end point in the do-not-disturb time frame for the offline message push.
+   * 离线推送免打扰时间段的结束时间。
    */
   endTime?: ChatSilentModeTime;
 
   /**
-   * Constructs an object.
+   * 离线推送免打扰模式的构造方法。
    */
   constructor(params: {
     expireTimestamp?: number;
@@ -208,10 +208,10 @@ export class ChatSilentModeResult {
 }
 
 /**
- * Converts the parameter type of the do-not-disturb mode from int to enum.
+ * 将免打扰参数类型由整型转换为枚举类型。
  *
- * @param params The do-not-disturb parameter type of the int type.
- * @returns The do-not-disturb parameter of the enum type.
+ * @param params 整型的免打扰参数类型。
+ * @returns 枚举类型的免打扰参数类型。
  */
 export function ChatSilentModeParamTypeFromNumber(
   params: number
@@ -229,10 +229,10 @@ export function ChatSilentModeParamTypeFromNumber(
 }
 
 /**
- * Converts the parameter type of the do-not-disturb mode from enum to int.
+ * 将免打扰参数类型由枚举类型转换为整型。
  *
- * @param params The do-not-disturb parameter type of the enum type.
- * @returns The do-not-disturb parameter type of the int type.
+ * @param params 枚举类型的免打扰参数类型。
+ * @returns 整型的免打扰参数类型。
  */
 export function ChatSilentModeParamTypeToNumber(
   params: ChatSilentModeParamType
@@ -241,10 +241,10 @@ export function ChatSilentModeParamTypeToNumber(
 }
 
 /**
- * Converts the push notification mode from int to enum.
+ * 将离线推送通知方式由整型转换为枚举类型。
  *
- * @param params The push notification mode of the int type.
- * @returns The push notification mode of the enum type.
+ * @param params 枚举类型的离线推送通知方式。
+ * @returns 枚举类型代表的推送提醒模式。
  */
 export function ChatPushRemindTypeFromNumber(
   params: number
@@ -262,10 +262,10 @@ export function ChatPushRemindTypeFromNumber(
 }
 
 /**
- * Converts the push notification mode from enum to int.
+ * 将离线推送通知方式由枚举类型转换为整型。
  *
- * @param params The push notification mode of the enum type.
- * @returns The push notification mode of the int type.
+ * @param params 枚举类型的离线推送通知方式。
+ * @returns 整型的离线推送通知方式。
  */
 export function ChatPushRemindTypeToNumber(params: ChatPushRemindType): number {
   return params;

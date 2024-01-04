@@ -1,15 +1,15 @@
 /**
- * The generic class which contains the cursor and pagination result.
+ * 包含游标及分页结果的泛型类。
  *
- * The class instance is returned when you make a paginated query.
+ * 做为分页获取数据的返回对象。
  */
 export class ChatCursorResult<T> {
   /**
-   * The cursor that specifies where to start to get data.
+   * 游标，用于标记开始取数据的位置。
    */
   cursor: string;
   /**
-   * The request result.
+   * 请求结果。
    */
   list?: Array<T>;
   constructor(params: {

@@ -7,19 +7,19 @@ export enum ChatReactionOperate {
 }
 
 /**
- * Reaction Operation
+ * 消息 Reaction 操作实体类。
  */
 export class ChatReactionOperation {
   /**
-   * Operator userId.
+   * 操作者 ID。
    */
   userId: string;
   /**
-   * Changed reaction.
+   * 发生变化的 Reaction。
    */
   reaction: string;
   /**
-   * Operate type.
+   * Reaction类型。详见 {@link ChatReactionOperate}
    */
   operate: ChatReactionOperate;
   constructor(params: {
@@ -48,25 +48,25 @@ export class ChatReactionOperation {
 }
 
 /**
- * The message Reaction instance class that defines Reaction attributes.
+ * 消息Reaction的类。
  */
 export class ChatMessageReaction {
   /**
-   * The Reaction content.
+   * Reaction 内容。
    */
   reaction: string;
   /**
-   * The count of the users who added this Reaction.
+   * 添加了指定 Reaction 的用户数量。
    */
   count: string;
   /**
-   * Whether the current user added this Reaction.
-   * - `true`: Yes.
-   * - `false`: No.
+   * 当前用户是否添加了该 Reaction。
+   * - `Yes`：是。
+   * - `No`：否。
    */
   isAddedBySelf: boolean;
   /**
-   * The list of users that added this Reaction.
+   * 添加了指定 Reaction 的用户列表。
    */
   userList: Array<string>;
   constructor(params: {
@@ -82,24 +82,24 @@ export class ChatMessageReaction {
   }
 }
 /**
- * The message Reaction event class.
+ * 消息 Reaction 事件类。
  *
  */
 export class ChatMessageReactionEvent {
   /**
-   * The conversation ID.
+   * 会话 ID。
    */
   convId: string;
   /**
-   * The message ID.
+   * 消息 ID。
    */
   msgId: string;
   /**
-   * The Reaction list.
+   * Reaction 列表。
    */
   reactions: Array<ChatMessageReaction>;
   /**
-   * The list of Reaction operations.
+   * Reaction 操作列表。
    */
   operations: Array<ChatReactionOperation>;
   constructor(params: {

@@ -1,13 +1,13 @@
 /**
- * The Contact class is used to store the information of a contact.
+ * 联系人对象
  */
 export class ChatContact {
   /**
-   * The user id of the contact.
+   * 联系人ID。
    */
   userId: string;
   /**
-   * The remark of the contact.
+   * 联系人备注。
    */
   remark: string;
   constructor(params: { userId: string; remark: string }) {

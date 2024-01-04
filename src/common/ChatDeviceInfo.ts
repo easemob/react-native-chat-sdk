@@ -1,17 +1,17 @@
 /**
- * The device information class, which contains the information of logged-in devices.
+ * 设备信息类，包含登录设备的信息。
  */
 export class ChatDeviceInfo {
   /**
-   * The information of logged-in devices.
+   * 登录设备的信息。
    */
   resource: string;
   /**
-   * The UUID of the device.
+   * 设备的 UUID（唯一标识码）。
    */
   deviceUUID: string;
   /**
-   * The device type, such as "Pixel 6 Pro".
+   * 设备型号，如 "Pixel 6 Pro"。
    */
   deviceName: string;
 

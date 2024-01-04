@@ -1,32 +1,32 @@
 import { ChatError } from './ChatError';
 
 /**
- * The chat room role types.
+ *  聊天室角色类型枚举。
  */
 export enum ChatRoomPermissionType {
   /**
-   * Unknown.
+   * 未知类型。
    */
   None = -1,
   /**
-   * The chat room member.
+   * 普通成员。
    */
   Member = 0,
   /**
-   * The chat room admin.
+   * 聊天室管理员。
    */
   Admin = 1,
   /**
-   * The chat room owner.
+   * 聊天室所有者。
    */
   Owner = 2,
 }
 
 /**
- * Converts the chat room role type from Int to enum.
+ * 将聊天室角色类型由整型转换为枚举类型。
  *
- * @param params The chat room role type of the Int type.
- * @returns The chat room role type of the enum type.
+ * @param params 整型的聊天室角色类型。
+ * @returns 枚举类型的聊天室角色类型。
  */
 export function ChatRoomPermissionTypeFromNumber(
   params: number
@@ -49,10 +49,10 @@ export function ChatRoomPermissionTypeFromNumber(
 }
 
 /**
- * Converts the chat room role type from enum to string.
+ * 将聊天室角色类型由枚举类型转换为字符串类型。
  *
- * @param params The chat room role type of the enum type.
- * @returns The chat room role type of the string type.
+ * @param params 枚举类型的聊天室角色类型。
+ * @returns 字符串类型的聊天室角色类型。
  */
 export function ChatRoomPermissionTypeToString(
   params: ChatRoomPermissionType
@@ -61,63 +61,65 @@ export function ChatRoomPermissionTypeToString(
 }
 
 /**
- * The chat room instance class.
+ * 聊天室信息类，用于定义内存中的聊天室信息。
  *
- * To get the correct value, ensure that you call {@link ChatRoomManager.fetchChatRoomInfoFromServer} to get chat room details before calling this method.
+ * **注意**
+ *
+ * 如需最新数据，需从服务器获取：{@link ChatRoomManager.fetchChatRoomInfoFromServer(String)}。
  */
 export class ChatRoom {
   /**
-   * The chat room ID.
+   * 聊天室 ID。
    */
   roomId: string;
   /**
-   * The chat room name.
+   * 聊天室名称。
    */
   roomName?: string;
   /**
-   * The chat room description.
+   * 聊天室描述。
    */
   description?: string;
   /**
-   * The user ID of the chat room owner.
+   * 聊天室所有者的用户 ID。
    */
   owner: string;
   /**
-   * The chat room announcement.
+   * 聊天室公告。
    */
   announcement?: string;
   /**
-   * The number of members in the chat room.
+   * 聊天室成员数量。
    */
   memberCount?: string;
   /**
-   * The maximum number of users allowed to join a chat room. This field is specified during the creation of a chat room.
+   * 聊天室最大成员数，在聊天室创建时设定。
    */
   maxUsers?: string;
   /**
-   * The admin list of the chat room.
+   * 聊天室管理员列表。
    */
   adminList?: Array<string>;
   /**
-   * The member list of the chat room.
+   * 聊天室成员列表。
    */
   memberList?: Array<string>;
   /**
-   * The block list of the chat room.
+   * 聊天室黑名单列表。
    */
   blockList?: Array<string>;
   /**
-   * The mute list of the chat room.
+   * 聊天室禁言列表。
    */
   muteList?: Array<string>;
   /**
-   * Whether all members are muted in the chat room.
-   * - `true`: Yes.
-   * - `false`: No.
+   * 聊天室是否在全员禁言状态。
+   * - `true`：是；
+   * - `false`：否。
    */
   isAllMemberMuted?: boolean;
   /**
-   * The role of the current user in the chat room. For role types, see {@link ChatRoomPermissionType}.
+   * 聊天室成员角色类型，详见 {@link ChatRoomPermissionType}。
    */
   permissionType: ChatRoomPermissionType;
   constructor(params: {

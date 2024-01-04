@@ -8,7 +8,7 @@ import { chatlog } from './common/ChatConst';
 import { ChatUserInfo } from './common/ChatUserInfo';
 
 /**
- * The user information manager for updating and getting user attributes.
+ * 用户信息管理类，负责更新及获取用户属性。
  */
 export class ChatUserInfoManager extends Native {
   private static TAG = 'ChatUserInfoManager';
@@ -18,22 +18,22 @@ export class ChatUserInfoManager extends Native {
   }
 
   /**
-   * Modifies the user attributes of the current user.
+   * 修改当前用户的信息。
    *
-   * @params The parameter set.
-   * - [nickName] The nickname of the user.
-   * - [avatarUrl] The avatar URL of the user.
-   * - [mail] The email address of the user.
-   * - [phone] The phone number of the user.
-   * - [gender] The gender of the user. The value can only be `0`, `1`, or `2`. Other values are invalid.
-   *    - `0`: (Default) Unknown;
-   *    - `1`: Male;
-   *    - `2`: Female.
-   * - [sign] The signature of the user.
-   * - [birth] The birthday of the user.
-   * - [ext] The custom extension information of the user. You can set it to an empty string or type custom information and encapsulate them as a JSON string.
+   * @param params 参数。
+   * - [nickName] 用户昵称。
+   * - [avatarUrl] 用户头像。
+   * - [mail] 用户邮箱。
+   * - [phone] 用户手机号。
+   * - [gender] 用户性别。该参数的值可为 `0`、`1` 或 `2`。
+   *   - `0`：（默认）未知
+   *   - `1`：男
+   *   - `2`：女
+   * - [sign] 用户签名。
+   * - [birth] 用户的生日。
+   * - [ext] 用户的自定义属性字段。该字段可为空，或设置为自定义扩展信息，封装为 JSON 字符串。
    *
-   * @throws A description of the exception. See {@link ChatError}.
+   * @throws 如果有方法调用的异常会在这里抛出，可以看到具体错误原因。参见 {@link ChatError}。
    */
   public async updateOwnUserInfo(params: {
     nickName?: string;
@@ -61,12 +61,12 @@ export class ChatUserInfoManager extends Native {
   }
 
   /**
-   * Gets the user attributes of the specified users.
+   * 获取指定用户的用户属性。
    *
-   * @param userIds The user ID array.
-   * @returns A map that contains key-value pairs where the key is the user ID and the value is user attributes，see {@link ChatUserInfo}.
+   * @param userIds 要获取用户属性的用户 ID 列表。
+   * @returns 用户 ID 和用户属性的键值对，详见 {@link ChatUserInfo}。
    *
-   * @throws A description of the exception. See {@link ChatError}.
+   * @throws 如果有方法调用的异常会在这里抛出，可以看到具体错误原因。参见 {@link ChatError}。
    */
   public async fetchUserInfoById(
     userIds: Array<string>
@@ -87,11 +87,11 @@ export class ChatUserInfoManager extends Native {
   }
 
   /**
-   * Gets attributes of the current user from the server.
+   * 从服务器获取当前用户的用户属性信息。
    *
-   * @returns The obtained user attributes. See {@link ChatUserInfo}.
+   * @returns 用户属性信息，详见 {@link ChatUserInfo}。
    *
-   * @throws A description of the exception. See {@link ChatError}.
+   * @throws 如果有方法调用的异常会在这里抛出，可以看到具体错误原因。参见 {@link ChatError}。
    */
   public async fetchOwnInfo(): Promise<ChatUserInfo | undefined> {
     chatlog.log(`${ChatUserInfoManager.TAG}: fetchOwnInfo: `);

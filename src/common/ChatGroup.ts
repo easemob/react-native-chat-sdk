@@ -1,54 +1,54 @@
 import { ChatError } from './ChatError';
 
 /**
- * The group types.
+ * 群组类型枚举。
  */
 export enum ChatGroupStyle {
   /**
-   * Private groups where only the group owner or admins can invite users to join.
+   * 私有群组，创建完成后，只允许群主邀请用户加入。
    */
   PrivateOnlyOwnerInvite = 0,
   /**
-   * Private groups where each group member can invite users to join.
+   * 私有群组，创建完成后，只允许群主和群成员邀请用户加入。
    */
   PrivateMemberCanInvite = 1,
   /**
-   * Public groups where users can join only after an invitation is received from the group owner(admin) or the join request is accepted by the  group owner(admin).
+   * 公开群组，创建完成后，只允许群主邀请用户加入；非群成员用户需发送入群申请，群主同意后才能入群。
    */
   PublicJoinNeedApproval = 2,
   /**
-   * Public groups where users can join freely, without the approval of the group owner or admins.
+   * 公开群组，创建完成后，允许非群组成员加入，无需群主同意。
    */
   PublicOpenJoin = 3,
 }
 
 /**
- * The group role types.
+ * 群组角色类型枚举。
  */
 export enum ChatGroupPermissionType {
   /**
-   * Unknown.
+   * 未知。
    */
   None = -1,
   /**
-   * The group member.
+   * 群组成员。
    */
   Member = 0,
   /**
-   * The group admin.
+   * 群管理员。
    */
   Admin = 1,
   /**
-   * The group owner.
+   * 群主。
    */
   Owner = 2,
 }
 
 /**
- * Converts the group type from Int to enum.
+ * 将群组类型由整型转换为枚举类型。
  *
- * @param params The group type of the Int type.
- * @returns The group type of the enum type.
+ * @param params 整型的群组类型。
+ * @returns 枚举类型的群组类型。
  */
 export function ChatGroupStyleFromNumber(params: number): ChatGroupStyle {
   switch (params) {
@@ -69,20 +69,20 @@ export function ChatGroupStyleFromNumber(params: number): ChatGroupStyle {
 }
 
 /**
- * Converts the group type from enum to string.
+ * 群组类型由枚举转换为字符串类型。
  *
- * @param params The group type of the enum type.
- * @returns The group type of the string type.
+ * @param params 枚举类型的群组类型。
+ * @returns 字符串类型的群组类型。
  */
 export function ChatGroupStyleToString(params: ChatGroupStyle): string {
   return ChatGroupStyle[params]!;
 }
 
 /**
- * Converts the group role from Int to enum.
+ * 群成员角色由数字整型转换为枚举类型。
  *
- * @param params The group role of the Int type.
- * @returns The group role of the enum type.
+ * @param params 整型的群成员角色类型。
+ * @returns 枚举类型的群成员角色。
  */
 export function ChatGroupPermissionTypeFromNumber(
   params: number
@@ -105,10 +105,10 @@ export function ChatGroupPermissionTypeFromNumber(
 }
 
 /**
- * Converts the group role from enum to string.
+ * 群组角色由枚举类型转换为字符串类型。
  *
- * @param params The group role of the enum type.
- * @returns The group role of the string type.
+ * @param params 枚举类型的群组角色。
+ * @returns 字符串类型的群组角色。
  */
 export function ChatGroupPermissionTypeToString(
   params: ChatGroupPermissionType
@@ -117,31 +117,31 @@ export function ChatGroupPermissionTypeToString(
 }
 
 /**
- *The class for read receipts of group messages.
+ * 群组消息已读回执类。
  */
 export class ChatGroupMessageAck {
   /**
-   * The group message ID.
+   * 群组消息 ID。
    */
   msg_id: string;
   /**
-   * The ID of the read receipt of a group message.
+   * 群组消息已读回执的 ID。
    */
   ack_id: string;
   /**
-   * The ID of the user who sends the read receipt.
+   * 发送已读回执的用户 ID。
    */
   from: string;
   /**
-   * The number of read receipts of group messages.
+   * 群组消息已读回执数量。
    */
   count: number;
   /**
-   * The Unix timestamp of sending the read receipt of a group message. The unit is millisecond.
+   * 群组消息已读回执发送的 Unix 时间戳。单位为毫秒。
    */
   timestamp: number;
   /**
-   * The extension information of a read receipt.
+   * 已读回执的扩展信息。
    */
   content?: string;
   constructor(params: {
@@ -164,73 +164,73 @@ export class ChatGroupMessageAck {
 }
 
 /**
- * The group information class, which contains the information of the chat group.
+ * 群组信息类，包含群组相关的信息。
  *
- * You can call the {@link ChatGroupManager.fetchGroupInfoFromServer} method to obtain group information.
+ * 可调用 {@link ChatGroupManager.fetchGroupInfoFromServer} 方法获取群组相关信息。
  */
 export class ChatGroup {
   /**
-   * The group ID.
+   * 群组 ID。
    */
   groupId: string;
   /**
-   * The group name.
+   * 群组名称。
    */
   groupName: string;
   /**
-   * The group description.
+   * 群组的描述信息。
    */
   description: string;
   /**
-   * The user ID of the group owner.
+   * 群主的用户 ID。
    */
   owner: string;
   /**
-   * The content of the group announcement.
+   * 群组公告内容。
    */
   announcement: string;
   /**
-   * The member count of the group.
+   * 群组的成员数。
    */
   memberCount: number;
   /**
-   * The member list of the group.
+   * 群组成员列表。
    */
   memberList: Array<string>;
   /**
-   * The admin list of the group.
+   * 群组管理员列表。
    */
   adminList: Array<string>;
   /**
-   * The block list of the group.
+   * 群组黑名单列表。
    */
   blockList: Array<string>;
   /**
-   * The mute list of the group.
+   * 群组禁言列表。
    */
   muteList: Array<string>;
   /**
-   * Whether group messages are blocked.
-   * - `true`: Yes.
-   * - `false`: No.
+   * 群组消息是否被当前用户屏蔽。
+   * - `true`：是。
+   * - `false`：否。
    */
   messageBlocked: boolean;
   /**
-   * Whether all group members are muted.
-   * - `true`: Yes.
-   * - `false`: No.
+   * 是否在全员禁言状态。
+   * - `true`：是。
+   * - `false`：否。
    */
   isAllMemberMuted: boolean;
   /**
-   * The role of the current user in the group.
+   * 当前用户在群组中的角色。
    */
   permissionType: ChatGroupPermissionType;
   /**
-   * The group options.
+   * 群组选项。
    */
   options?: ChatGroupOptions;
   /**
-   * Gets the maximum number of members allowed in a group. The parameter is set when the group is created.
+   * 获取群组最大成员数量。该参数在创建群组时设定。
    */
   get maxCount(): number {
     return this.options?.maxCount ?? 0;
@@ -274,35 +274,31 @@ export class ChatGroup {
 }
 
 /**
- * The group options to be configured when the chat group is created.
+ * 群组选项类，包含群组创建时设置的选项。
  */
 export class ChatGroupOptions {
   /**
-   * The group style.
+   * 群组类型。
    */
   style: ChatGroupStyle;
   /**
-   * The maximum number of members allowed in a group.
+   * 群组最大成员数量。
    */
   maxCount: number;
   /**
-   * Whether to ask for consent when inviting a user to join a group.
+   * 邀请用户进群是否需要对方同意。
    *
-   * Whether to automatically accept the invitation to join a group depends on two settings:
+   * 收到邀请是否自动入群取决于两个设置：创建群组时设置 {@link GroupOptions#inviteNeedConfirm} 以及通过 {@link ChatOptions#autoAcceptGroupInvitation} 确定是否自动接受加群邀请。
    *
-   * - {@link GroupOptions.inviteNeedConfirm}, an option for group creation.
-   * - {@link ChatOptions.autoAcceptGroupInvitation}: Determines whether to automatically accept an invitation to join the group.
+   * （1）如果 `inviteNeedConfirm` 设置为 `false`，在服务端直接加受邀人进群，与受邀人对 {@link ChatOptions.autoAcceptGroupInvitation} 的设置无关。
+   *  (2) 如果 `inviteNeedConfirm` 设置为 `true`，是否自动入群取决于受邀请人对 {@link ChatOptions.autoAcceptGroupInvitation} 的设置。
    *
-   * There are two cases:
-   * - If `inviteNeedConfirm` is set to `false`, the SDK adds the invitee directly to the group on the server side, regardless of the setting of {@link ChatOptions.autoAcceptGroupInvitation} on the invitee side.
-   * - If `inviteNeedConfirm` is set to `true`, whether the invitee automatically joins the chat group or not depends on the settings of {@link ChatOptions.autoAcceptGroupInvitation}.
-   *
-   * {@link ChatOptions.autoAcceptGroupInvitation} is an SDK-level operation. If it is set to `true`, the invitee automatically joins the chat group; if it is set to `false`, the invitee can manually accept or decline the group invitation instead of joining the group automatically.
-   *
+   * {@link ChatOptions#autoAcceptGroupInvitation} 为 SDK 级别操作，设置为 `true` 时，受邀人收到入群邀请后，SDK 在内部调用同意入群的 API，自动接受邀请入群；
+   *  若设置为 `false`，即非自动同意其邀请，用户可以选择接受邀请进群，也可选择拒绝邀请。
    */
   inviteNeedConfirm: boolean;
   /**
-   * The group extension information.
+   * 群组扩展信息。
    */
   ext?: string;
   /**
@@ -332,27 +328,27 @@ export class ChatGroupOptions {
 }
 
 /**
- * The shared file class, which defines how to manage shared files.
+ * 群组共享文件类，包含共享文件信息。
  */
 export class ChatGroupSharedFile {
   /**
-   * The ID of the shared file.
+   * 共享文件 ID。
    */
   fileId: string;
   /**
-   * The name of the shared file.
+   * 共享文件名称。
    */
   name: string;
   /**
-   * The user ID of the member who uploads the shared file.
+   * 上传共享文件的成员的用户 ID。
    */
   owner: string;
   /**
-   * The Unix timestamp for uploading the shared file, in milliseconds.
+   * 上传共享文件的 Unix 时间戳，单位为毫秒。
    */
   createTime: number;
   /**
-   * The size of the shared file, in bytes.
+   * 共享文件的大小，单位为字节。
    */
   fileSize: number;
   constructor(params: {
@@ -371,15 +367,15 @@ export class ChatGroupSharedFile {
 }
 
 /**
- * The class that defines basic information of chat groups.
+ * 群组信息类。
  */
 export class ChatGroupInfo {
   /**
-   * The group ID.
+   * 群组 ID。
    */
   groupId: string;
   /**
-   * The group name.
+   * 群组名称。
    */
   groupName: string;
   constructor(params: { groupId: string; groupName: string }) {
@@ -389,32 +385,32 @@ export class ChatGroupInfo {
 }
 
 /**
- * The status change listener for shared files in groups.
+ * 群组共享文件状态变化监听器。
  */
 export interface ChatGroupFileStatusCallback {
   /**
-   * Occurs when a shared file is being uploaded or downloaded.
+   * 共享文件的上传或下载进度。
    *
-   * @param groupId The group ID.
-   * @param filePath The path of the shared file.
-   * @param progress The value of the download or upload progress. The value range is 0-100 in percentage.
+   * @param groupId 群组 ID。
+   * @param filePath 文件路径。
+   * @param progress 进度值，取值范围为 0-100。
    */
   onProgress?(groupId: string, filePath: string, progress: number): void;
 
   /**
-   * Occurs when there is an error during the upload or download of a shared file.
+   * 共享文件上传或下载错误回调。
    *
-   * @param groupId The group ID.
-   * @param filePath The path of the shared file.
-   * @param error A description of the error. See {@link ChatError}.
+   * @param groupId 群组 ID。
+   * @param filePath 群组共享文件路径。
+   * @param error 如果有方法调用的异常会在这里抛出，可以看到具体错误原因。参见 {@link ChatError}。
    */
   onError(groupId: string, filePath: string, error: ChatError): void;
 
   /**
-   * Occurs when the message is sent.
+   * 消息发送成功回调。
    *
-   * @param groupId The group ID.
-   * @param filePath The path of the shared file.
+   * @param groupId 群组 ID。
+   * @param filePath 群组共享文件路径。
    */
   onSuccess(groupId: string, filePath: string): void;
 }
