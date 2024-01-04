@@ -2,6 +2,16 @@ _English | [Chinese](./CHANGELOG.zh.md)_
 
 # Update Log
 
+## 1.3.0
+
+New Features
+
+- The dependent native SDK has been upgraded to version (iOS 4.2.0 and Android 4.2.1). Added new features provided by the native SDK.
+- Added friend remarks. See `ChatContact`
+- Added global broadcast. See `ChatMessage.isBroadcast`
+- Added the ability to get the number of joined groups. See `ChatGroupManager.fetchJoinedGroupCount`
+- Updated the callback notification when a group application is declined. See `ChatGroupEventListener.onRequestToJoinDeclined`
+
 ## 1.2.2
 
 Issues fixed
