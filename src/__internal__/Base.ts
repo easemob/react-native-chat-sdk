@@ -35,7 +35,7 @@ export class BaseManager extends Native {
         (params: any) => {
           const localMsgId: string = params.localTime.toString();
           chatlog.log(
-            `${BaseManager.TAG}: handleMessageCallback: ${methodName}: ${localMsgId}`
+            `${BaseManager.TAG}: handleMessageCallback: ${methodName}: ${localMsgId} ${params.callbackType}`
           );
           if (message.localMsgId === localMsgId) {
             const callbackType: String = params.callbackType;

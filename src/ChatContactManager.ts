@@ -323,15 +323,19 @@ export class ChatContactManager extends BaseManager {
    *
    * @throws A description of the exception. See {@link ChatError}.
    */
-  public async getContact(userId: string): Promise<ChatContact> {
-    chatlog.log(`${ChatContactManager.TAG}: getContact: `);
+  public async getContact(userId: string): Promise<ChatContact | undefined> {
+    chatlog.log(`${ChatContactManager.TAG}: getContact: ${userId}`);
     let r: any = await Native._callMethod(MTgetContact, {
       [MTgetContact]: {
         userId,
       },
     });
     ChatContactManager.checkErrorFromResult(r);
-    return new ChatContact(r?.[MTgetContact]);
+    const g = r?.[MTgetContact];
+    if (g) {
+      return new ChatContact(g);
+    }
+    return undefined;
   }
 
   /**
@@ -366,7 +370,9 @@ export class ChatContactManager extends BaseManager {
     cursor?: string;
     pageSize?: number;
   }): Promise<ChatCursorResult<ChatContact>> {
-    chatlog.log(`${ChatContactManager.TAG}: fetchContacts: `);
+    chatlog.log(
+      `${ChatContactManager.TAG}: fetchContacts: ${params.cursor}, ${params.pageSize}`
+    );
     let r: any = await Native._callMethod(MTfetchContacts, {
       [MTfetchContacts]: {
         cursor: params.cursor,
@@ -394,7 +400,7 @@ export class ChatContactManager extends BaseManager {
    * @throws A description of the exception. See {@link ChatError}.
    */
   public async setContactRemark(contact: ChatContact): Promise<void> {
-    chatlog.log(`${ChatContactManager.TAG}: setContactRemark: `);
+    chatlog.log(`${ChatContactManager.TAG}: setContactRemark: ${contact}`);
     let r: any = await Native._callMethod(MTsetContactRemark, {
       [MTsetContactRemark]: {
         userId: contact.userId,
