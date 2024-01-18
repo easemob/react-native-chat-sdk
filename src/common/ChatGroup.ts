@@ -1,4 +1,4 @@
-import { ChatError } from './ChatError';
+import type { ChatError } from './ChatError';
 
 /**
  * The group types.
@@ -61,10 +61,7 @@ export function ChatGroupStyleFromNumber(params: number): ChatGroupStyle {
     case 3:
       return ChatGroupStyle.PublicOpenJoin;
     default:
-      throw new ChatError({
-        code: 1,
-        description: `This type is not supported. ` + params,
-      });
+      return params;
   }
 }
 
@@ -97,10 +94,7 @@ export function ChatGroupPermissionTypeFromNumber(
     case 2:
       return ChatGroupPermissionType.Owner;
     default:
-      throw new ChatError({
-        code: 1,
-        description: `This type is not supported. ` + params,
-      });
+      return params;
   }
 }
 

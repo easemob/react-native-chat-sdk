@@ -65,10 +65,7 @@ export function ChatConversationTypeFromNumber(
     case 2:
       return ChatConversationType.RoomChat;
     default:
-      throw new ChatError({
-        code: 1,
-        description: `This type is not supported. ` + params,
-      });
+      return params;
   }
 }
 

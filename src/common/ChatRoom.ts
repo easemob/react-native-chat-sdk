@@ -1,5 +1,3 @@
-import { ChatError } from './ChatError';
-
 /**
  * The chat room role types.
  */
@@ -41,10 +39,7 @@ export function ChatRoomPermissionTypeFromNumber(
     case 2:
       return ChatRoomPermissionType.Owner;
     default:
-      throw new ChatError({
-        code: 1,
-        description: `This type is not supported. ` + params,
-      });
+      return params;
   }
 }
 

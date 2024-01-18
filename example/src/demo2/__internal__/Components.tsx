@@ -20,6 +20,7 @@ import { GetStateScreen } from '../Client/GetState';
 import { KickScreen } from '../Client/Kick';
 import { LoginAndLogoutScreen as LoginLogoutScreen } from '../Client/LoginAndLogout';
 import { default as LoginListScreen } from '../Client/LoginList';
+import { UnsupportedScreen } from '../Client/Unsupported';
 import { ContactManagerRoute, ContactManagerScreen } from '../ContactManager';
 import { ContactLeafScreen } from '../ContactManager/ContactManagerItem';
 import { GroupManagerRoute, GroupManagerScreen } from '../GroupManager';
@@ -120,6 +121,12 @@ export const screenComponents: ScreenComponent[] = [
   {
     route: LoginListScreen.route,
     screen: LoginListScreen,
+    isNavigation: false,
+    parentScreen: ClientRoute,
+  },
+  {
+    route: UnsupportedScreen.route,
+    screen: UnsupportedScreen,
     isNavigation: false,
     parentScreen: ClientRoute,
   },

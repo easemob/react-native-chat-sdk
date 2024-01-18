@@ -238,69 +238,82 @@ export class ChatManager extends BaseManager {
     );
   }
 
+  private filterUnsupportedMessage(messages: ChatMessage[]): ChatMessage[] {
+    return messages.filter((message: ChatMessage) => {
+      return message.body.type !== ('unknown' as ChatMessageType);
+    });
+  }
+
+  private createReceiveMessage(messages: any[]): ChatMessage[] {
+    let list: Array<ChatMessage> = [];
+    messages.forEach((message: any) => {
+      let m = ChatMessage.createReceiveMessage(message);
+      list.push(m);
+    });
+    return this.filterUnsupportedMessage(list);
+  }
+
   private onMessagesReceived(messages: any[]): void {
     chatlog.log(`${ChatManager.TAG}: onMessagesReceived: `, messages);
+    if (this._messageListeners.size === 0) {
+      return;
+    }
+    let list: Array<ChatMessage> = this.createReceiveMessage(messages);
     this._messageListeners.forEach((listener: ChatMessageEventListener) => {
-      let list: Array<ChatMessage> = [];
-      messages.forEach((message: any) => {
-        let m = ChatMessage.createReceiveMessage(message);
-        list.push(m);
-      });
       listener.onMessagesReceived?.(list);
     });
   }
   private onCmdMessagesReceived(messages: any[]): void {
     chatlog.log(`${ChatManager.TAG}: onCmdMessagesReceived: `, messages);
+    if (this._messageListeners.size === 0) {
+      return;
+    }
+    let list: Array<ChatMessage> = this.createReceiveMessage(messages);
     this._messageListeners.forEach((listener: ChatMessageEventListener) => {
-      let list: Array<ChatMessage> = [];
-      messages.forEach((message: any) => {
-        let m = ChatMessage.createReceiveMessage(message);
-        list.push(m);
-      });
       listener.onCmdMessagesReceived?.(list);
     });
   }
   private onMessagesRead(messages: any[]): void {
     chatlog.log(`${ChatManager.TAG}: onMessagesRead: `, messages);
+    if (this._messageListeners.size === 0) {
+      return;
+    }
+    let list: Array<ChatMessage> = this.createReceiveMessage(messages);
     this._messageListeners.forEach((listener: ChatMessageEventListener) => {
-      let list: Array<ChatMessage> = [];
-      messages.forEach((message: any) => {
-        let m = ChatMessage.createReceiveMessage(message);
-        list.push(m);
-      });
       listener.onMessagesRead?.(list);
     });
   }
   private onGroupMessageRead(messages: any[]): void {
     chatlog.log(`${ChatManager.TAG}: onGroupMessageRead: `, messages);
+    if (this._messageListeners.size === 0) {
+      return;
+    }
+    let list: Array<ChatGroupMessageAck> = [];
+    messages.forEach((message: any) => {
+      let m = new ChatGroupMessageAck(message);
+      list.push(m);
+    });
     this._messageListeners.forEach((listener: ChatMessageEventListener) => {
-      let list: Array<ChatGroupMessageAck> = [];
-      messages.forEach((message: any) => {
-        let m = new ChatGroupMessageAck(message);
-        list.push(m);
-      });
       listener.onGroupMessageRead?.(messages);
     });
   }
   private onMessagesDelivered(messages: any[]): void {
     chatlog.log(`${ChatManager.TAG}: onMessagesDelivered: `, messages);
+    if (this._messageListeners.size === 0) {
+      return;
+    }
+    let list: Array<ChatMessage> = this.createReceiveMessage(messages);
     this._messageListeners.forEach((listener: ChatMessageEventListener) => {
-      let list: Array<ChatMessage> = [];
-      messages.forEach((message: any) => {
-        let m = ChatMessage.createReceiveMessage(message);
-        list.push(m);
-      });
       listener.onMessagesDelivered?.(list);
     });
   }
   private onMessagesRecalled(messages: any[]): void {
     chatlog.log(`${ChatManager.TAG}: onMessagesRecalled: `, messages);
+    if (this._messageListeners.size === 0) {
+      return;
+    }
+    let list: Array<ChatMessage> = this.createReceiveMessage(messages);
     this._messageListeners.forEach((listener: ChatMessageEventListener) => {
-      let list: Array<ChatMessage> = [];
-      messages.forEach((message: any) => {
-        let m = ChatMessage.createReceiveMessage(message);
-        list.push(m);
-      });
       listener.onMessagesRecalled?.(list);
     });
   }
@@ -331,28 +344,31 @@ export class ChatManager extends BaseManager {
       `${ChatManager.TAG}: onMessageReactionDidChange: `,
       JSON.stringify(params)
     );
-    this._messageListeners.forEach((listener: ChatMessageEventListener) => {
-      const list: Array<ChatMessageReactionEvent> = [];
-      Object.entries(params).forEach((v: [string, any]) => {
-        const convId = v[1].conversationId;
-        const msgId = v[1].messageId;
-        const ll: Array<ChatMessageReaction> = [];
-        Object.entries(v[1].reactions).forEach((vv: [string, any]) => {
-          ll.push(new ChatMessageReaction(vv[1]));
-        });
-        const o: Array<ChatReactionOperation> = [];
-        Object.entries(v[1].operations).forEach((vv: [string, any]) => {
-          o.push(ChatReactionOperation.fromNative(vv[1]));
-        });
-        list.push(
-          new ChatMessageReactionEvent({
-            convId: convId,
-            msgId: msgId,
-            reactions: ll,
-            operations: o,
-          })
-        );
+    if (this._messageListeners.size === 0) {
+      return;
+    }
+    const list: Array<ChatMessageReactionEvent> = [];
+    Object.entries(params).forEach((v: [string, any]) => {
+      const convId = v[1].conversationId;
+      const msgId = v[1].messageId;
+      const ll: Array<ChatMessageReaction> = [];
+      Object.entries(v[1].reactions).forEach((vv: [string, any]) => {
+        ll.push(new ChatMessageReaction(vv[1]));
       });
+      const o: Array<ChatReactionOperation> = [];
+      Object.entries(v[1].operations).forEach((vv: [string, any]) => {
+        o.push(ChatReactionOperation.fromNative(vv[1]));
+      });
+      list.push(
+        new ChatMessageReactionEvent({
+          convId: convId,
+          msgId: msgId,
+          reactions: ll,
+          operations: o,
+        })
+      );
+    });
+    this._messageListeners.forEach((listener: ChatMessageEventListener) => {
       listener.onMessageReactionDidChange?.(list);
     });
   }

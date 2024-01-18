@@ -1,3 +1,4 @@
+import { ErrorHandler } from '../__internal__/ErrorHandler';
 import { generateMessageId, getNowTimestamp } from '../__internal__/Utils';
 import { ChatClient } from '../ChatClient';
 import type { ChatSearchDirection } from './ChatConversation';
@@ -85,6 +86,10 @@ export enum ChatDownloadStatus {
  * The message types.
  */
 export enum ChatMessageType {
+  /**
+   * internal use.
+   */
+  // UNKNOWN = 'unknown',
   /**
    * Text message.
    */
@@ -264,10 +269,15 @@ export function ChatMessageTypeFromString(params: string): ChatMessageType {
     case 'combine':
       return ChatMessageType.COMBINE;
     default:
-      throw new ChatError({
-        code: 1,
-        description: `This type is not supported. ` + params,
+      const ret = 'unknown';
+      ErrorHandler.getInstance().sendError({
+        error: new ChatError({
+          code: 1,
+          description: `This type is not supported. ` + params,
+        }),
+        from: 'ChatMessageTypeFromString',
       });
+      return ret as ChatMessageType;
   }
 }
 
@@ -557,10 +567,15 @@ export class ChatMessage {
         return new ChatCombineMessageBody(params);
 
       default:
-        throw new ChatError({
-          code: 1,
-          description: `This type is not supported. ` + type,
+        const ret = new _ChatUnknownMessageBody();
+        ErrorHandler.getInstance().sendError({
+          error: new ChatError({
+            code: 1,
+            description: `This type is not supported. ` + type,
+          }),
+          from: 'getBody',
         });
+        return ret;
     }
   }
 
@@ -1155,6 +1170,12 @@ export class ChatTextMessageBody extends ChatMessageBody {
     this.content = params.content;
     this.targetLanguageCodes = params.targetLanguageCodes;
     this.translations = params.translations;
+  }
+}
+
+class _ChatUnknownMessageBody extends ChatMessageBody {
+  constructor() {
+    super('unknown' as ChatMessageType);
   }
 }
 

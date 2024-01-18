@@ -1,3 +1,4 @@
+import { ErrorHandler } from './__internal__/ErrorHandler';
 import type { ChatConversationType } from './common/ChatConversation';
 import { ChatError } from './common/ChatError';
 import type { ChatGroup, ChatGroupMessageAck } from './common/ChatGroup';
@@ -270,10 +271,15 @@ export function ChatMultiDeviceEventFromNumber(
       return ChatMultiDeviceEvent.CONVERSATION_DELETED;
 
     default:
-      throw new ChatError({
-        code: 1,
-        description: `This type is not supported. ` + params,
+      const ret = params as ChatMultiDeviceEvent;
+      ErrorHandler.getInstance().sendError({
+        error: new ChatError({
+          code: 1,
+          description: `This type is not supported. ` + params,
+        }),
+        from: 'ChatMultiDeviceEventFromNumber',
       });
+      return ret;
   }
 }
 
@@ -1173,4 +1179,20 @@ export interface ChatPresenceEventListener {
    * @param list The new presence state of a subscribed user.
    */
   onPresenceStatusChanged(list: Array<ChatPresence>): void;
+}
+
+export interface ChatErrorEventListener {
+  /**
+   * When an internal error occurs, this callback notification is triggered.
+   *
+   * @params -
+   * - Param [error] The error object.
+   * - Param [from] Where the error occurred.
+   * - Param [extra] The extra information.
+   */
+  onError(params: {
+    error: ChatError;
+    from?: string;
+    extra?: Record<string, string>;
+  }): void;
 }

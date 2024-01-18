@@ -2,6 +2,13 @@ _English | [Chinese](./CHANGELOG.zh.md)_
 
 # Update Log
 
+## 1.3.1
+
+Issues fixed
+
+- Program crash caused by receiving unsupported multi-device event notifications. Solution: Wrap the unsupported type into an error object and notify the caller through the listener. The modifications involve the Contact Manager, Group Manager, and Chat Room Manager. Related types `ChatMultiDeviceEvent`.
+- Receiving an unsupported message body type causes the program to crash. Wrap unsupported types into error objects and notify the caller through the listener. Related types `ChatMessageType`.
+
 ## 1.3.0
 
 New Features
