@@ -20,13 +20,13 @@ import {
   MTremoveUserFromBlockList,
   MTsetContactRemark,
 } from './__internal__/Consts';
-import { ErrorHandler } from './__internal__/ErrorHandler';
+import { ExceptionHandler } from './__internal__/ErrorHandler';
 import { Native } from './__internal__/Native';
 import type { ChatContactEventListener } from './ChatEvents';
 import { chatlog } from './common/ChatConst';
 import { ChatContact } from './common/ChatContact';
 import { ChatCursorResult } from './common/ChatCursorResult';
-import { ChatError } from './common/ChatError';
+import { ChatException } from './common/ChatError';
 
 /**
  * The contact manager class, which manages chat contacts such as adding, retrieving, modifying, and deleting contacts.
@@ -77,8 +77,8 @@ export class ChatContactManager extends BaseManager {
           break;
 
         default:
-          ErrorHandler.getInstance().sendError({
-            error: new ChatError({
+          ExceptionHandler.getInstance().sendExcept({
+            except: new ChatException({
               code: 1,
               description: `This type is not supported. ` + contactEventType,
             }),

@@ -1,8 +1,8 @@
-import { ErrorHandler } from '../__internal__/ErrorHandler';
+import { ExceptionHandler } from '../__internal__/ErrorHandler';
 import { generateMessageId, getNowTimestamp } from '../__internal__/Utils';
 import { ChatClient } from '../ChatClient';
 import type { ChatSearchDirection } from './ChatConversation';
-import { ChatError } from './ChatError';
+import { ChatError, ChatException } from './ChatError';
 import type { ChatMessageReaction } from './ChatMessageReaction';
 import type { ChatMessageThread } from './ChatMessageThread';
 
@@ -270,8 +270,8 @@ export function ChatMessageTypeFromString(params: string): ChatMessageType {
       return ChatMessageType.COMBINE;
     default:
       const ret = 'unknown';
-      ErrorHandler.getInstance().sendError({
-        error: new ChatError({
+      ExceptionHandler.getInstance().sendExcept({
+        except: new ChatException({
           code: 1,
           description: `This type is not supported. ` + params,
         }),
@@ -568,8 +568,8 @@ export class ChatMessage {
 
       default:
         const ret = new _ChatUnknownMessageBody();
-        ErrorHandler.getInstance().sendError({
-          error: new ChatError({
+        ExceptionHandler.getInstance().sendExcept({
+          except: new ChatException({
             code: 1,
             description: `This type is not supported. ` + type,
           }),

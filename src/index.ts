@@ -4,7 +4,7 @@ import {
   ChatConnectEventListener,
   ChatContactEventListener,
   ChatCustomEventListener,
-  ChatErrorEventListener,
+  ChatExceptionEventListener,
   ChatGroupEventListener,
   ChatMessageEventListener,
   ChatMultiDeviceEvent,
@@ -32,7 +32,7 @@ import {
 } from './common/ChatConversation';
 import { ChatCursorResult } from './common/ChatCursorResult';
 import { ChatDeviceInfo } from './common/ChatDeviceInfo';
-import { ChatError } from './common/ChatError';
+import { ChatError, ChatException } from './common/ChatError';
 import {
   ChatGroup,
   ChatGroupFileStatusCallback,
@@ -134,7 +134,7 @@ export {
   ChatConnectEventListener,
   ChatContactEventListener,
   ChatCustomEventListener,
-  ChatErrorEventListener,
+  ChatExceptionEventListener,
   ChatGroupEventListener,
   ChatMessageEventListener,
   ChatMultiDeviceEventListener,
@@ -175,6 +175,7 @@ export {
   ChatCustomMessageBody,
   ChatDeviceInfo,
   ChatError,
+  ChatException,
   ChatFetchMessageOptions,
   ChatFileMessageBody,
   ChatGroup,

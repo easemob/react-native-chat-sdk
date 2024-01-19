@@ -43,13 +43,13 @@ import {
   MTrenewToken,
   MTupdatePushConfig,
 } from './__internal__/Consts';
-import { ErrorHandler } from './__internal__/ErrorHandler';
+import { ExceptionHandler } from './__internal__/ErrorHandler';
 import { Native } from './__internal__/Native';
 import { ChatContactManager } from './ChatContactManager';
 import {
   ChatConnectEventListener,
   ChatCustomEventListener,
-  ChatErrorEventListener,
+  ChatExceptionEventListener,
   ChatMultiDeviceEventFromNumber,
   ChatMultiDeviceEventListener,
 } from './ChatEvents';
@@ -950,25 +950,25 @@ export class ChatClient extends BaseManager {
    *
    * Monitor SDK internal errors.
    */
-  public addErrorListener(listener: ChatErrorEventListener): void {
-    chatlog.log(`${ChatClient.TAG}: addErrorListener: `);
-    ErrorHandler.getInstance().listeners.add(listener);
+  public addExceptListener(listener: ChatExceptionEventListener): void {
+    chatlog.log(`${ChatClient.TAG}: addExceptListener: `);
+    ExceptionHandler.getInstance().listeners.add(listener);
   }
 
   /**
    * Remove error listener.
    */
-  public removeErrorListener(listener: ChatErrorEventListener): void {
-    chatlog.log(`${ChatClient.TAG}: removeErrorListener: `);
-    ErrorHandler.getInstance().listeners.delete(listener);
+  public removeExceptListener(listener: ChatExceptionEventListener): void {
+    chatlog.log(`${ChatClient.TAG}: removeExceptListener: `);
+    ExceptionHandler.getInstance().listeners.delete(listener);
   }
 
   /**
    * Remove all error listener.
    */
-  public removeAllErrorListener(): void {
-    chatlog.log(`${ChatClient.TAG}: removeAllErrorListener: `);
-    ErrorHandler.getInstance().listeners.clear();
+  public removeAllExceptListener(): void {
+    chatlog.log(`${ChatClient.TAG}: removeAllExceptListener: `);
+    ExceptionHandler.getInstance().listeners.clear();
   }
 
   /**

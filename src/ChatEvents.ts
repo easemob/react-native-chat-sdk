@@ -1,6 +1,6 @@
-import { ErrorHandler } from './__internal__/ErrorHandler';
+import { ExceptionHandler } from './__internal__/ErrorHandler';
 import type { ChatConversationType } from './common/ChatConversation';
-import { ChatError } from './common/ChatError';
+import { ChatException } from './common/ChatError';
 import type { ChatGroup, ChatGroupMessageAck } from './common/ChatGroup';
 import type { ChatMessage } from './common/ChatMessage';
 import type { ChatMessageReactionEvent } from './common/ChatMessageReaction';
@@ -272,8 +272,8 @@ export function ChatMultiDeviceEventFromNumber(
 
     default:
       const ret = params as ChatMultiDeviceEvent;
-      ErrorHandler.getInstance().sendError({
-        error: new ChatError({
+      ExceptionHandler.getInstance().sendExcept({
+        except: new ChatException({
           code: 1,
           description: `This type is not supported. ` + params,
         }),
@@ -1181,17 +1181,17 @@ export interface ChatPresenceEventListener {
   onPresenceStatusChanged(list: Array<ChatPresence>): void;
 }
 
-export interface ChatErrorEventListener {
+export interface ChatExceptionEventListener {
   /**
-   * When an internal error occurs, this callback notification is triggered.
+   * When an internal except occurs, this callback notification is triggered.
    *
    * @params -
-   * - Param [error] The error object.
-   * - Param [from] Where the error occurred.
+   * - Param [except] The except object.
+   * - Param [from] Where the except occurred.
    * - Param [extra] The extra information.
    */
-  onError(params: {
-    error: ChatError;
+  onExcept(params: {
+    except: ChatException;
     from?: string;
     extra?: Record<string, string>;
   }): void;

@@ -52,12 +52,12 @@ import {
   MTupdateGroupSubject,
   MTuploadGroupSharedFile,
 } from './__internal__/Consts';
-import { ErrorHandler } from './__internal__/ErrorHandler';
+import { ExceptionHandler } from './__internal__/ErrorHandler';
 import { Native } from './__internal__/Native';
 import type { ChatGroupEventListener } from './ChatEvents';
 import { chatlog } from './common/ChatConst';
 import { ChatCursorResult } from './common/ChatCursorResult';
-import { ChatError } from './common/ChatError';
+import { ChatException } from './common/ChatError';
 import {
   ChatGroup,
   ChatGroupFileStatusCallback,
@@ -260,8 +260,8 @@ export class ChatGroupManager extends BaseManager {
           });
           break;
         default:
-          ErrorHandler.getInstance().sendError({
-            error: new ChatError({
+          ExceptionHandler.getInstance().sendExcept({
+            except: new ChatException({
               code: 1,
               description: `This type is not supported. ` + groupEventType,
             }),

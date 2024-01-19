@@ -20,3 +20,8 @@ export class ChatError {
     this.description = params.description;
   }
 }
+
+/**
+ * The chat exception class, which contains the code and description.
+ */
+export class ChatException extends ChatError {}

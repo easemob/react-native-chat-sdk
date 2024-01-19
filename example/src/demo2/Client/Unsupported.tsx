@@ -2,11 +2,11 @@ import * as React from 'react';
 import { Text, View } from 'react-native';
 import {
   ChatClient,
-  ChatError,
-  type ChatErrorEventListener,
+  type ChatExceptionEventListener,
   type ChatMessageEventListener,
 } from 'react-native-chat-sdk';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
+import type { ChatException } from 'src/common/ChatError';
 
 type Props = {
   navigation: any;
@@ -17,7 +17,7 @@ type State = {
 export class UnsupportedScreen extends React.Component<Props, State> {
   public static route = 'Unsupported';
   private static TAG = 'Unsupported';
-  private listener: ChatErrorEventListener;
+  private listener: ChatExceptionEventListener;
   private msgListener: ChatMessageEventListener;
   constructor(props: Props) {
     super(props);
@@ -25,8 +25,8 @@ export class UnsupportedScreen extends React.Component<Props, State> {
       params: '',
     };
     this.listener = {
-      onError: (params: {
-        error: ChatError;
+      onExcept: (params: {
+        except: ChatException;
         from?: string | undefined;
         extra?: Record<string, string> | undefined;
       }): void => {
@@ -48,12 +48,12 @@ export class UnsupportedScreen extends React.Component<Props, State> {
   }
   init() {
     console.log('Unsupported init');
-    ChatClient.getInstance().addErrorListener(this.listener);
+    ChatClient.getInstance().addExceptListener(this.listener);
     ChatClient.getInstance().chatManager.addMessageListener(this.msgListener);
   }
   unInit() {
     console.log('Unsupported unInit');
-    ChatClient.getInstance().removeErrorListener(this.listener);
+    ChatClient.getInstance().removeExceptListener(this.listener);
     ChatClient.getInstance().chatManager.removeMessageListener(
       this.msgListener
     );
