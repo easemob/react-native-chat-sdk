@@ -1461,7 +1461,7 @@ export const metaDataList = new Map<string, ApiParams>([
             lastModifyOperatorId: '',
             lastModifyTime: 0,
             modifyCount: 0,
-            targetLanguageCodes: undefined,
+            targetLanguages: undefined,
             translations: {},
             type: 'txt',
           },
