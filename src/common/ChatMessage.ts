@@ -614,7 +614,7 @@ export class ChatMessage {
    * @param content The text content.
    * @param chatType The conversation type. See {@link ChatType}.
    * @params opt The extension parameters of the message.
-   *  - targetLanguages: The language code. See {@link ChatTextMessageBody.targetLanguages}.
+   *  - targetLanguageCodes: The language code. See {@link ChatTextMessageBody.targetLanguageCodes}.
    *  -  isChatThread: Whether this message is a threaded message.
    *   - `true`: Yes.
    *   - (Default) `false`: No.
@@ -629,7 +629,7 @@ export class ChatMessage {
     chatType: ChatMessageChatType = ChatMessageChatType.PeerChat,
     opt?: {
       isChatThread?: boolean;
-      targetLanguages?: Array<string>;
+      targetLanguageCodes?: Array<string>;
       isOnline?: boolean;
       deliverOnlineOnly?: boolean;
       receiverList?: string[];
@@ -638,7 +638,7 @@ export class ChatMessage {
     return ChatMessage.createSendMessage({
       body: new ChatTextMessageBody({
         content: content,
-        targetLanguages: opt?.targetLanguages,
+        targetLanguageCodes: opt?.targetLanguageCodes,
       }),
       targetId: targetId,
       chatType: chatType,
@@ -1147,7 +1147,7 @@ export class ChatTextMessageBody extends ChatMessageBody {
   /**
    * The target language for translation. See {@link https://docs.microsoft.com/en-us/azure/cognitive-services/translator/language-support}.
    */
-  targetLanguages?: Array<string>;
+  targetLanguageCodes?: Array<string>;
   /**
    * The translation.
    *
@@ -1156,7 +1156,7 @@ export class ChatTextMessageBody extends ChatMessageBody {
   translations?: any;
   constructor(params: {
     content: string;
-    targetLanguages?: Array<string>;
+    targetLanguageCodes?: Array<string>;
     translations?: any;
     lastModifyOperatorId?: string;
     lastModifyTime?: number;
@@ -1168,7 +1168,7 @@ export class ChatTextMessageBody extends ChatMessageBody {
       modifyCount: params.modifyCount,
     });
     this.content = params.content;
-    this.targetLanguages = params.targetLanguages;
+    this.targetLanguageCodes = params.targetLanguageCodes;
     this.translations = params.translations;
   }
 }

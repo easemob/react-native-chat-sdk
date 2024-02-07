@@ -1,6 +1,7 @@
+import type { ChatTextMessageBody } from 'lib/typescript';
 import React, { Component, ReactNode } from 'react';
 import { Button, ScrollView, Text, TextInput, View } from 'react-native';
-import { ChatClient, ChatPushConfig } from 'react-native-chat-sdk';
+import { ChatClient, ChatMessage, ChatPushConfig } from 'react-native-chat-sdk';
 
 // import messaging from '@react-native-firebase/messaging';
 import { datasheet } from '../__default__/Datasheet';
@@ -121,6 +122,44 @@ export class ClientOthersScreen extends Component<
     this.setState({ version: ChatClient.getInstance().version });
   }
 
+  private customAction(): void {
+    const newMsg2 = ChatMessage.createTextMessage('zuoyu2', "I'm fine", 0);
+    ChatClient.getInstance()
+      .chatManager.sendMessage(newMsg2, {
+        onSuccess: (message) => {
+          console.log('test:zuoyu:sendMessage', message);
+          ChatClient.getInstance()
+            .chatManager.translateMessage(message, ['zh-Hans'])
+            .then((msg) => {
+              console.log('test:zuoyu:translateMessage', msg);
+              msg.attributes = { test: 'test' };
+              ChatClient.getInstance()
+                .chatManager.updateMessage(msg)
+                .then((result) => {
+                  console.log('test:zuoyu:updateMessage', result);
+                  const text = msg.body as ChatTextMessageBody;
+                  const body = {
+                    ...text,
+                    content: 'test111',
+                  } as ChatTextMessageBody;
+                  ChatClient.getInstance()
+                    .chatManager.modifyMessageBody(msg.msgId, body)
+                    .then((r) => {
+                      console.log('test:zuoyu:modifyMessageBody', r);
+                    })
+                    .catch();
+                })
+                .catch();
+            });
+        },
+        onError: (localMsgId, error) => {
+          console.log('dev:sendMessage:error', error, localMsgId);
+        },
+      })
+      .then(() => {})
+      .catch();
+  }
+
   componentDidMount?(): void {
     console.log(`${ClientOthersScreen.TAG}: componentDidMount: `);
   }
@@ -215,6 +254,15 @@ export class ClientOthersScreen extends Component<
               title="version"
               onPress={() => {
                 this.getVersion();
+              }}
+            />
+          </View>
+          <View style={styleValues.containerRow}>
+            <Text style={styleValues.textStyle}>custom</Text>
+            <Button
+              title="custom"
+              onPress={() => {
+                this.customAction();
               }}
             />
           </View>
