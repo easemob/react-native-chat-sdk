@@ -58,7 +58,7 @@ export class ChatMessageReaction {
   /**
    * The count of the users who added this Reaction.
    */
-  count: string;
+  count: number;
   /**
    * Whether the current user added this Reaction.
    * - `true`: Yes.
@@ -71,7 +71,7 @@ export class ChatMessageReaction {
   userList: Array<string>;
   constructor(params: {
     reaction: string;
-    count: string;
+    count: number;
     isAddedBySelf: boolean;
     userList: Array<string>;
   }) {

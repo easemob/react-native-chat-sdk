@@ -78,6 +78,7 @@ import {
 import {
   ChatMessageReaction,
   ChatMessageReactionEvent,
+  ChatReactionOperate,
   ChatReactionOperation,
 } from './common/ChatMessageReaction';
 import {
@@ -158,6 +159,7 @@ export {
   ChatMessageType,
   ChatPushDisplayStyle,
   ChatPushRemindType,
+  ChatReactionOperate,
   ChatRoomMessagePriority,
   ChatRoomPermissionType,
   ChatSearchDirection,
