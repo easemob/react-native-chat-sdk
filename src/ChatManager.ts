@@ -1069,6 +1069,9 @@ export class ChatManager extends BaseManager {
    * @param createIfNeed Whether to create a conversation if the specified conversation is not found:
    * - (Default) `true`: Yes.
    * - `false`: No.
+   * @param isChatThread Whether the conversation is a chat thread.
+   * - (Default) `false`: No.
+   * - `true`: Yes.
    *
    * @returns The retrieved conversation object. The SDK returns `null` if the conversation is not found.
    *
@@ -1077,16 +1080,18 @@ export class ChatManager extends BaseManager {
   public async getConversation(
     convId: string,
     convType: ChatConversationType,
-    createIfNeed: boolean = true
+    createIfNeed: boolean = true,
+    isChatThread: boolean = false
   ): Promise<ChatConversation | undefined> {
     chatlog.log(
-      `${ChatManager.TAG}: getConversation: ${convId}, ${convType}, ${createIfNeed}`
+      `${ChatManager.TAG}: getConversation: ${convId}, ${convType}, ${createIfNeed}, ${isChatThread}`
     );
     let r: any = await Native._callMethod(MTgetConversation, {
       [MTgetConversation]: {
         convId: convId,
         convType: convType as number,
         createIfNeed: createIfNeed,
+        isChatThread: isChatThread,
       },
     });
     Native.checkErrorFromResult(r);
@@ -1196,13 +1201,20 @@ export class ChatManager extends BaseManager {
    */
   public async getLatestMessage(
     convId: string,
-    convType: ChatConversationType
+    convType: ChatConversationType,
+    isChatThread: boolean = false
   ): Promise<ChatMessage | undefined> {
-    chatlog.log(`${ChatManager.TAG}: latestMessage: `, convId, convType);
+    chatlog.log(
+      `${ChatManager.TAG}: latestMessage: `,
+      convId,
+      convType,
+      isChatThread
+    );
     let r: any = await Native._callMethod(MTgetLatestMessage, {
       [MTgetLatestMessage]: {
         convId: convId,
         convType: convType,
+        isChatThread: isChatThread,
       },
     });
     ChatManager.checkErrorFromResult(r);
@@ -1226,13 +1238,20 @@ export class ChatManager extends BaseManager {
    */
   public async getLatestReceivedMessage(
     convId: string,
-    convType: ChatConversationType
+    convType: ChatConversationType,
+    isChatThread: boolean = false
   ): Promise<ChatMessage | undefined> {
-    chatlog.log(`${ChatManager.TAG}: lastReceivedMessage: `, convId, convType);
+    chatlog.log(
+      `${ChatManager.TAG}: lastReceivedMessage: `,
+      convId,
+      convType,
+      isChatThread
+    );
     let r: any = await Native._callMethod(MTgetLatestMessageFromOthers, {
       [MTgetLatestMessageFromOthers]: {
         convId: convId,
         convType: convType,
+        isChatThread: isChatThread,
       },
     });
     ChatManager.checkErrorFromResult(r);
@@ -1256,17 +1275,20 @@ export class ChatManager extends BaseManager {
    */
   public async getConversationUnreadCount(
     convId: string,
-    convType: ChatConversationType
+    convType: ChatConversationType,
+    isChatThread: boolean = false
   ): Promise<number> {
     chatlog.log(
       `${ChatManager.TAG}: getConversationUnreadCount: `,
       convId,
-      convType
+      convType,
+      isChatThread
     );
     let r: any = await Native._callMethod(MTgetUnreadMsgCount, {
       [MTgetUnreadMsgCount]: {
         convId: convId,
         convType: convType,
+        isChatThread: isChatThread,
       },
     });
     ChatManager.checkErrorFromResult(r);
@@ -1282,22 +1304,25 @@ export class ChatManager extends BaseManager {
    * @param convId The conversation ID.
    * @param convType The conversation type. See {@link ChatConversationType}.
    * @returns The message count.
-   *
+   *getMessageCount
    * @throws A description of the exception. See {@link ChatError}.
    */
   public async getConversationMessageCount(
     convId: string,
-    convType: ChatConversationType
+    convType: ChatConversationType,
+    isChatThread: boolean = false
   ): Promise<number> {
     chatlog.log(
       `${ChatManager.TAG}: getConversationMessageCount: `,
       convId,
-      convType
+      convType,
+      isChatThread
     );
     let r: any = await Native._callMethod(MTgetMsgCount, {
       [MTgetMsgCount]: {
         convId: convId,
         convType: convType,
+        isChatThread: isChatThread,
       },
     });
     ChatManager.checkErrorFromResult(r);
@@ -1319,19 +1344,22 @@ export class ChatManager extends BaseManager {
   public async markMessageAsRead(
     convId: string,
     convType: ChatConversationType,
-    msgId: string
+    msgId: string,
+    isChatThread: boolean = false
   ): Promise<void> {
     chatlog.log(
       `${ChatManager.TAG}: markMessageAsRead: `,
       convId,
       convType,
-      msgId
+      msgId,
+      isChatThread
     );
     let r: any = await Native._callMethod(MTmarkMessageAsRead, {
       [MTmarkMessageAsRead]: {
         convId: convId,
         convType: convType,
         msg_id: msgId,
+        isChatThread: isChatThread,
       },
     });
     ChatManager.checkErrorFromResult(r);
@@ -1349,17 +1377,20 @@ export class ChatManager extends BaseManager {
    */
   public async markAllMessagesAsRead(
     convId: string,
-    convType: ChatConversationType
+    convType: ChatConversationType,
+    isChatThread: boolean = false
   ): Promise<void> {
     chatlog.log(
       `${ChatManager.TAG}: markAllMessagesAsRead: `,
       convId,
-      convType
+      convType,
+      isChatThread
     );
     let r: any = await Native._callMethod(MTmarkAllMessagesAsRead, {
       [MTmarkAllMessagesAsRead]: {
         convId: convId,
         convType: convType,
+        isChatThread: isChatThread,
       },
     });
     ChatManager.checkErrorFromResult(r);
@@ -1381,19 +1412,22 @@ export class ChatManager extends BaseManager {
   public async updateConversationMessage(
     convId: string,
     convType: ChatConversationType,
-    msg: ChatMessage
+    msg: ChatMessage,
+    isChatThread: boolean = false
   ): Promise<void> {
     chatlog.log(
       `${ChatManager.TAG}: updateConversationMessage: `,
       convId,
       convType,
-      msg
+      msg,
+      isChatThread
     );
     let r: any = await Native._callMethod(MTupdateConversationMessage, {
       [MTupdateConversationMessage]: {
         convId: convId,
         convType: convType,
         msg: msg,
+        isChatThread: isChatThread,
       },
     });
     ChatManager.checkErrorFromResult(r);
@@ -1413,16 +1447,18 @@ export class ChatManager extends BaseManager {
   public async deleteMessage(
     convId: string,
     convType: ChatConversationType,
-    msgId: string
+    msgId: string,
+    isChatThread: boolean = false
   ): Promise<void> {
     chatlog.log(
-      `${ChatManager.TAG}: deleteMessage: ${convId}, ${convType}, ${msgId}`
+      `${ChatManager.TAG}: deleteMessage: ${convId}, ${convType}, ${msgId}, ${isChatThread}`
     );
     let r: any = await Native._callMethod(MTremoveMessage, {
       [MTremoveMessage]: {
         convId: convId,
         convType: convType,
         msg_id: msgId,
+        isChatThread: isChatThread,
       },
     });
     ChatManager.checkErrorFromResult(r);
@@ -1447,10 +1483,11 @@ export class ChatManager extends BaseManager {
     params: {
       startTs: number;
       endTs: number;
-    }
+    },
+    isChatThread: boolean = false
   ): Promise<void> {
     chatlog.log(
-      `${ChatManager.TAG}: deleteMessagesWithTimestamp: ${convId}, ${convType}, ${params}`
+      `${ChatManager.TAG}: deleteMessagesWithTimestamp: ${convId}, ${convType}, ${params}, ${isChatThread}`
     );
     let r: any = await Native._callMethod(MTdeleteMessagesWithTs, {
       [MTdeleteMessagesWithTs]: {
@@ -1458,6 +1495,7 @@ export class ChatManager extends BaseManager {
         convType: convType,
         startTs: params.startTs,
         endTs: params.endTs,
+        isChatThread: isChatThread ?? false,
       },
     });
     ChatManager.checkErrorFromResult(r);
@@ -1475,17 +1513,20 @@ export class ChatManager extends BaseManager {
    */
   public async deleteConversationAllMessages(
     convId: string,
-    convType: ChatConversationType
+    convType: ChatConversationType,
+    isChatThread: boolean = false
   ): Promise<void> {
     chatlog.log(
       `${ChatManager.TAG}: deleteConversationAllMessages: `,
       convId,
-      convType
+      convType,
+      isChatThread
     );
     let r: any = await Native._callMethod(MTclearAllMessages, {
       [MTclearAllMessages]: {
         convId: convId,
         convType: convType,
+        isChatThread: isChatThread,
       },
     });
     ChatManager.checkErrorFromResult(r);
@@ -1537,7 +1578,8 @@ export class ChatManager extends BaseManager {
     direction: ChatSearchDirection = ChatSearchDirection.UP,
     timestamp: number = -1,
     count: number = 20,
-    sender?: string
+    sender?: string,
+    isChatThread: boolean = false
   ): Promise<Array<ChatMessage>> {
     chatlog.log(
       `${ChatManager.TAG}: getMessagesWithMsgType: `,
@@ -1547,7 +1589,8 @@ export class ChatManager extends BaseManager {
       direction,
       timestamp,
       count,
-      sender
+      sender,
+      isChatThread
     );
     let r: any = await Native._callMethod(MTloadMsgWithMsgType, {
       [MTloadMsgWithMsgType]: {
@@ -1558,6 +1601,7 @@ export class ChatManager extends BaseManager {
         timestamp: timestamp,
         count: count,
         sender: sender ?? '',
+        isChatThread: isChatThread,
       },
     });
     ChatManager.checkErrorFromResult(r);
@@ -1595,7 +1639,8 @@ export class ChatManager extends BaseManager {
     convType: ChatConversationType,
     startMsgId: string,
     direction: ChatSearchDirection = ChatSearchDirection.UP,
-    loadCount: number = 20
+    loadCount: number = 20,
+    isChatThread: boolean = false
   ): Promise<Array<ChatMessage>> {
     chatlog.log(
       `${ChatManager.TAG}: getMessages: `,
@@ -1603,7 +1648,8 @@ export class ChatManager extends BaseManager {
       convType,
       startMsgId,
       direction,
-      loadCount
+      loadCount,
+      isChatThread
     );
     let r: any = await Native._callMethod(MTloadMsgWithStartId, {
       [MTloadMsgWithStartId]: {
@@ -1612,6 +1658,7 @@ export class ChatManager extends BaseManager {
         direction: direction === ChatSearchDirection.UP ? 'up' : 'down',
         startId: startMsgId,
         count: loadCount,
+        isChatThread: isChatThread,
       },
     });
     ChatManager.checkErrorFromResult(r);
@@ -1653,7 +1700,8 @@ export class ChatManager extends BaseManager {
     direction: ChatSearchDirection = ChatSearchDirection.UP,
     timestamp: number = -1,
     count: number = 20,
-    sender?: string
+    sender?: string,
+    isChatThread: boolean = false
   ): Promise<Array<ChatMessage>> {
     chatlog.log(
       `${ChatManager.TAG}: getMessagesWithKeyword: `,
@@ -1663,7 +1711,8 @@ export class ChatManager extends BaseManager {
       direction,
       timestamp,
       count,
-      sender
+      sender,
+      isChatThread
     );
     let r: any = await Native._callMethod(MTloadMsgWithKeywords, {
       [MTloadMsgWithKeywords]: {
@@ -1674,6 +1723,7 @@ export class ChatManager extends BaseManager {
         timestamp: timestamp,
         count: count,
         sender: sender,
+        isChatThread: isChatThread,
       },
     });
     ChatManager.checkErrorFromResult(r);
@@ -1710,7 +1760,8 @@ export class ChatManager extends BaseManager {
     startTime: number,
     endTime: number,
     direction: ChatSearchDirection = ChatSearchDirection.UP,
-    count: number = 20
+    count: number = 20,
+    isChatThread: boolean = false
   ): Promise<Array<ChatMessage>> {
     chatlog.log(
       `${ChatManager.TAG}: getMessageWithTimestamp: `,
@@ -1719,7 +1770,8 @@ export class ChatManager extends BaseManager {
       startTime,
       endTime,
       direction,
-      count
+      count,
+      isChatThread
     );
     let r: any = await Native._callMethod(MTloadMsgWithTime, {
       [MTloadMsgWithTime]: {
@@ -1729,6 +1781,7 @@ export class ChatManager extends BaseManager {
         endTime: endTime,
         direction: direction === ChatSearchDirection.UP ? 'up' : 'down',
         count: count,
+        isChatThread: isChatThread,
       },
     });
     ChatManager.checkErrorFromResult(r);
@@ -1804,19 +1857,22 @@ export class ChatManager extends BaseManager {
     convType: ChatConversationType,
     ext: {
       [key: string]: string | number | boolean;
-    }
+    },
+    isChatThread: boolean = false
   ): Promise<void> {
     chatlog.log(
       `${ChatManager.TAG}: setConversationExtension: `,
       convId,
       convType,
-      ext
+      ext,
+      isChatThread
     );
     let r: any = await Native._callMethod(MTsyncConversationExt, {
       [MTsyncConversationExt]: {
         convId: convId,
         convType: convType,
         ext: ext,
+        isChatThread: isChatThread,
       },
     });
     ChatManager.checkErrorFromResult(r);
@@ -2218,7 +2274,7 @@ export class ChatManager extends BaseManager {
     chatThreadId: string,
     cursor: string = '',
     pageSize: number = 20
-  ): Promise<Array<string>> {
+  ): Promise<ChatCursorResult<string>> {
     chatlog.log(
       `${ChatManager.TAG}: fetchMembersWithChatThreadFromServer: `,
       chatThreadId,
@@ -2233,7 +2289,16 @@ export class ChatManager extends BaseManager {
       },
     });
     ChatManager.checkErrorFromResult(r);
-    return r?.[MTfetchChatThreadMember] as Array<string>;
+    let ret = new ChatCursorResult<string>({
+      cursor: r?.[MTfetchChatThreadMember].cursor,
+      list: r?.[MTfetchChatThreadMember].list,
+      opt: {
+        map: (param: any) => {
+          return param;
+        },
+      },
+    });
+    return ret;
   }
 
   /**
@@ -2532,13 +2597,15 @@ export class ChatManager extends BaseManager {
   public async removeMessagesFromServerWithMsgIds(
     convId: string,
     convType: ChatConversationType,
-    msgIds: string[]
+    msgIds: string[],
+    isChatThread: boolean = false
   ): Promise<void> {
     chatlog.log(
       `${ChatManager.TAG}: removeMessagesFromServerWithMsgIds: `,
       convId,
       convType,
-      msgIds
+      msgIds,
+      isChatThread
     );
     if (msgIds.length === 0) {
       // todo: temp fix native
@@ -2561,6 +2628,7 @@ export class ChatManager extends BaseManager {
           convId: convId,
           convType: convType,
           msgIds: msgIds,
+          isChatThread: isChatThread,
         },
       }
     );
@@ -2581,13 +2649,15 @@ export class ChatManager extends BaseManager {
   public async removeMessagesFromServerWithTimestamp(
     convId: string,
     convType: ChatConversationType,
-    timestamp: number
+    timestamp: number,
+    isChatThread: boolean = false
   ): Promise<void> {
     chatlog.log(
       `${ChatManager.TAG}: removeMessagesFromServerWithTimestamp: `,
       convId,
       convType,
-      timestamp
+      timestamp,
+      isChatThread
     );
     if (timestamp <= 0) {
       // todo: temp fix native
@@ -2608,6 +2678,7 @@ export class ChatManager extends BaseManager {
         convId: convId,
         convType: convType,
         timestamp: timestamp,
+        isChatThread: isChatThread,
       },
     });
     Native.checkErrorFromResult(r);

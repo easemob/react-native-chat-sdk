@@ -1,11 +1,6 @@
 import { ChatClient } from '../ChatClient';
-import type { ChatCursorResult } from './ChatCursorResult';
 import { ChatError } from './ChatError';
-import type {
-  ChatFetchMessageOptions,
-  ChatMessage,
-  ChatMessageType,
-} from './ChatMessage';
+import type { ChatMessage, ChatMessageType } from './ChatMessage';
 
 /**
  * The message search directions.
@@ -191,7 +186,8 @@ export class ChatConversation {
   public async getUnreadCount(): Promise<number> {
     return ChatClient.getInstance().chatManager.getConversationUnreadCount(
       this.convId,
-      this.convType
+      this.convType,
+      this.isChatThread
     );
   }
 
@@ -203,7 +199,8 @@ export class ChatConversation {
   public async getMessageCount(): Promise<number> {
     return ChatClient.getInstance().chatManager.getConversationMessageCount(
       this.convId,
-      this.convType
+      this.convType,
+      this.isChatThread
     );
   }
 
@@ -217,7 +214,8 @@ export class ChatConversation {
   public async getLatestMessage(): Promise<ChatMessage | undefined> {
     return ChatClient.getInstance().chatManager.getLatestMessage(
       this.convId,
-      this.convType
+      this.convType,
+      this.isChatThread
     );
   }
 
@@ -231,7 +229,8 @@ export class ChatConversation {
   public async getLatestReceivedMessage(): Promise<ChatMessage | undefined> {
     return ChatClient.getInstance().chatManager.getLatestReceivedMessage(
       this.convId,
-      this.convType
+      this.convType,
+      this.isChatThread
     );
   }
 
@@ -248,7 +247,8 @@ export class ChatConversation {
     await ChatClient.getInstance().chatManager.setConversationExtension(
       this.convId,
       this.convType,
-      this.ext
+      this.ext,
+      this.isChatThread
     );
     this.ext = ext;
   }
@@ -264,7 +264,8 @@ export class ChatConversation {
     return ChatClient.getInstance().chatManager.markMessageAsRead(
       this.convId,
       this.convType,
-      msgId
+      msgId,
+      this.isChatThread
     );
   }
 
@@ -276,7 +277,8 @@ export class ChatConversation {
   public async markAllMessagesAsRead(): Promise<void> {
     return ChatClient.getInstance().chatManager.markAllMessagesAsRead(
       this.convId,
-      this.convType
+      this.convType,
+      this.isChatThread
     );
   }
 
@@ -300,7 +302,8 @@ export class ChatConversation {
     return ChatClient.getInstance().chatManager.updateConversationMessage(
       this.convId,
       this.convType,
-      msg
+      msg,
+      this.isChatThread
     );
   }
 
@@ -315,7 +318,8 @@ export class ChatConversation {
     return ChatClient.getInstance().chatManager.deleteMessage(
       this.convId,
       this.convType,
-      msgId
+      msgId,
+      this.isChatThread
     );
   }
 
@@ -335,7 +339,8 @@ export class ChatConversation {
     return ChatClient.getInstance().chatManager.deleteMessagesWithTimestamp(
       this.convId,
       this.convType,
-      params
+      params,
+      this.isChatThread
     );
   }
 
@@ -349,7 +354,8 @@ export class ChatConversation {
   public async deleteAllMessages(): Promise<void> {
     return ChatClient.getInstance().chatManager.deleteConversationAllMessages(
       this.convId,
-      this.convType
+      this.convType,
+      this.isChatThread
     );
   }
 
@@ -382,7 +388,8 @@ export class ChatConversation {
       direction,
       timestamp,
       count,
-      sender
+      sender,
+      this.isChatThread
     );
   }
 
@@ -415,7 +422,8 @@ export class ChatConversation {
       this.convType,
       startMsgId,
       direction,
-      loadCount
+      loadCount,
+      this.isChatThread
     );
   }
 
@@ -448,7 +456,8 @@ export class ChatConversation {
       direction,
       timestamp,
       count,
-      sender
+      sender,
+      this.isChatThread
     );
   }
 
@@ -477,56 +486,8 @@ export class ChatConversation {
       startTime,
       endTime,
       direction,
-      count
-    );
-  }
-
-  /**
-   * Uses the pagination to get messages in the specified conversation from the server.
-   *
-   * @params params
-   * - pageSize: The number of messages that you expect to get on each page. The value range is [1,50].
-   * - startMsgId: The starting message ID for query. After this parameter is set, the SDK retrieves messages, starting from the specified one, in the reverse chronological order of when the server receives them. If this parameter is set an empty string, the SDK retrieves messages, starting from the latest one, in the reverse chronological order of when the server receives them.
-   * - direction: The message search direction. See {@link ChatSearchDirection}.
-   *                  - (Default) `ChatSearchDirection.Up`: Messages are retrieved in the descending order of the Unix timestamp included in them.
-   *                  - `ChatSearchDirection.Down`: Messages are retrieved in the ascending order of the Unix timestamp included in them.
-   * @returns The list of retrieved messages (excluding the one with the starting ID) and the cursor for the next query.
-   *
-   * @throws A description of the exception. See {@link ChatError}.
-   */
-  public async fetchHistoryMessages(params: {
-    pageSize?: number;
-    startMsgId?: string;
-    direction?: ChatSearchDirection;
-  }): Promise<ChatCursorResult<ChatMessage>> {
-    return ChatClient.getInstance().chatManager.fetchHistoryMessages(
-      this.convId,
-      this.convType,
-      params
-    );
-  }
-
-  /**
-   * retrieve the history message for the specified session from the server.
-   *
-   * @param params -
-   * - options: The parameter configuration class for pulling historical messages from the server. See {@link ChatFetchMessageOptions}.
-   * - cursor: The cursor position from which to start querying data.
-   * - pageSize: The number of messages that you expect to get on each page. The value range is [1,50].
-   *
-   * @returns The list of retrieved messages (excluding the one with the starting ID) and the cursor for the next query.
-   *
-   * @throws A description of the exception. See {@link ChatError}.
-   */
-  public async fetchHistoryMessagesByOptions(params?: {
-    options?: ChatFetchMessageOptions;
-    cursor?: string;
-    pageSize?: number;
-  }): Promise<ChatCursorResult<ChatMessage>> {
-    return ChatClient.getInstance().chatManager.fetchHistoryMessagesByOptions(
-      this.convId,
-      this.convType,
-      params
+      count,
+      this.isChatThread
     );
   }
 
@@ -543,7 +504,8 @@ export class ChatConversation {
     return ChatClient.getInstance().chatManager.removeMessagesFromServerWithMsgIds(
       this.convId,
       this.convType,
-      msgIds
+      msgIds,
+      this.isChatThread
     );
   }
 
@@ -560,23 +522,8 @@ export class ChatConversation {
     return ChatClient.getInstance().chatManager.removeMessagesFromServerWithTimestamp(
       this.convId,
       this.convType,
-      timestamp
-    );
-  }
-
-  /**
-   * Sets whether to pin a conversation.
-   *
-   * @param isPinned Whether to pin a conversation:
-   * - `true`：Yes.
-   * - `false`: No. The conversation is unpinned.
-   *
-   * @throws A description of the exception. See {@link ChatError}.
-   */
-  public async pinConversation(isPinned: boolean): Promise<void> {
-    return ChatClient.getInstance().chatManager.pinConversation(
-      this.convId,
-      isPinned
+      timestamp,
+      this.isChatThread
     );
   }
 }
