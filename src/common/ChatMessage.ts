@@ -579,7 +579,7 @@ export class ChatMessage {
     }
   }
 
-  private static createSendMessage(params: {
+  public static createSendMessage(params: {
     body: ChatMessageBody;
     targetId: string;
     chatType: ChatMessageChatType;

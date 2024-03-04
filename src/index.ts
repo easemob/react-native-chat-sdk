@@ -50,6 +50,7 @@ import {
 import { ChatLog } from './common/ChatLog';
 import {
   ChatCmdMessageBody,
+  ChatCombineMessageBody,
   ChatCustomMessageBody,
   ChatDownloadStatus,
   ChatDownloadStatusFromNumber,
@@ -171,6 +172,7 @@ export {
  */
 export {
   ChatCmdMessageBody,
+  ChatCombineMessageBody,
   ChatContact,
   ChatConversation,
   ChatCursorResult,
