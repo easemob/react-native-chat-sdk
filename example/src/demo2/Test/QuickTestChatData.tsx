@@ -415,15 +415,21 @@ export const metaDataList = new Map<string, ApiParams>([
         {
           paramName: 'convId', // 使用发送成功或者失败的数据测试，依赖sendMessage
           paramType: 'string',
-          paramDefaultValue: datasheet.accounts[2]!.id,
+          paramDefaultValue: '241956148019205',
         },
         {
           paramName: 'convType',
           paramType: 'number',
-          paramDefaultValue: 0,
+          paramDefaultValue: 1,
         },
         {
           paramName: 'createIfNeed',
+          paramType: 'boolean',
+          paramDefaultValue: true,
+          domType: 'select',
+        },
+        {
+          paramName: 'isChatThread',
           paramType: 'boolean',
           paramDefaultValue: true,
           domType: 'select',
@@ -472,12 +478,18 @@ export const metaDataList = new Map<string, ApiParams>([
         {
           paramName: 'convId', // 使用发送成功或者失败的数据测试，依赖sendMessage
           paramType: 'string',
-          paramDefaultValue: datasheet.accounts[2]!.id,
+          paramDefaultValue: '241956148019205',
         },
         {
           paramName: 'convType',
           paramType: 'number',
-          paramDefaultValue: 0,
+          paramDefaultValue: 1,
+        },
+        {
+          paramName: 'isChatThread',
+          paramType: 'boolean',
+          paramDefaultValue: true,
+          domType: 'select',
         },
       ],
     },
@@ -490,12 +502,18 @@ export const metaDataList = new Map<string, ApiParams>([
         {
           paramName: 'convId', // 使用发送成功或者失败的数据测试，依赖sendMessage
           paramType: 'string',
-          paramDefaultValue: datasheet.accounts[2]!.id,
+          paramDefaultValue: '241956148019205',
         },
         {
           paramName: 'convType',
           paramType: 'number',
-          paramDefaultValue: 0,
+          paramDefaultValue: 1,
+        },
+        {
+          paramName: 'isChatThread',
+          paramType: 'boolean',
+          paramDefaultValue: true,
+          domType: 'select',
         },
       ],
     },
@@ -508,12 +526,18 @@ export const metaDataList = new Map<string, ApiParams>([
         {
           paramName: 'convId', // 使用发送成功或者失败的数据测试，依赖sendMessage
           paramType: 'string',
-          paramDefaultValue: datasheet.accounts[2]!.id,
+          paramDefaultValue: '241956148019205',
         },
         {
           paramName: 'convType',
           paramType: 'number',
-          paramDefaultValue: 0,
+          paramDefaultValue: 1,
+        },
+        {
+          paramName: 'isChatThread',
+          paramType: 'boolean',
+          paramDefaultValue: true,
+          domType: 'select',
         },
       ],
     },
@@ -526,12 +550,18 @@ export const metaDataList = new Map<string, ApiParams>([
         {
           paramName: 'convId', // 使用发送成功或者失败的数据测试，依赖sendMessage
           paramType: 'string',
-          paramDefaultValue: datasheet.accounts[2]!.id,
+          paramDefaultValue: '241956148019205',
         },
         {
           paramName: 'convType',
           paramType: 'number',
-          paramDefaultValue: 0,
+          paramDefaultValue: 1,
+        },
+        {
+          paramName: 'isChatThread',
+          paramType: 'boolean',
+          paramDefaultValue: true,
+          domType: 'select',
         },
       ],
     },
@@ -544,17 +574,23 @@ export const metaDataList = new Map<string, ApiParams>([
         {
           paramName: 'convId', // 使用发送成功或者失败的数据测试，依赖sendMessage
           paramType: 'string',
-          paramDefaultValue: datasheet.accounts[2]!.id,
+          paramDefaultValue: '241956148019205',
         },
         {
           paramName: 'convType',
           paramType: 'number',
-          paramDefaultValue: 0,
+          paramDefaultValue: 1,
         },
         {
           paramName: 'msgId',
           paramType: 'string',
           paramDefaultValue: '0',
+        },
+        {
+          paramName: 'isChatThread',
+          paramType: 'boolean',
+          paramDefaultValue: false,
+          domType: 'select',
         },
       ],
     },
@@ -573,6 +609,12 @@ export const metaDataList = new Map<string, ApiParams>([
           paramName: 'convType',
           paramType: 'number',
           paramDefaultValue: 0,
+        },
+        {
+          paramName: 'isChatThread',
+          paramType: 'boolean',
+          paramDefaultValue: false,
+          domType: 'select',
         },
       ],
     },
@@ -598,6 +640,12 @@ export const metaDataList = new Map<string, ApiParams>([
           paramDefaultValue: {},
           paramValue: () => ChatManagerCache.getInstance().getLastSendMessage(),
         },
+        {
+          paramName: 'isChatThread',
+          paramType: 'boolean',
+          paramDefaultValue: false,
+          domType: 'select',
+        },
       ],
     },
   ],
@@ -609,17 +657,23 @@ export const metaDataList = new Map<string, ApiParams>([
         {
           paramName: 'convId', // 使用发送成功或者失败的数据测试，依赖sendMessage
           paramType: 'string',
-          paramDefaultValue: datasheet.accounts[2]!.id,
+          paramDefaultValue: '241956148019205',
         },
         {
           paramName: 'convType',
           paramType: 'number',
-          paramDefaultValue: 0,
+          paramDefaultValue: 1,
         },
         {
           paramName: 'msgId',
           paramType: 'string',
-          paramDefaultValue: '1147529186152285628',
+          paramDefaultValue: '1256629251482846624',
+        },
+        {
+          paramName: 'isChatThread',
+          paramType: 'boolean',
+          paramDefaultValue: true,
+          domType: 'select',
         },
       ],
     },
@@ -638,6 +692,12 @@ export const metaDataList = new Map<string, ApiParams>([
           paramName: 'convType',
           paramType: 'number',
           paramDefaultValue: ChatConversationType.PeerChat,
+        },
+        {
+          paramName: 'isChatThread',
+          paramType: 'boolean',
+          paramDefaultValue: false,
+          domType: 'select',
         },
       ],
     },
@@ -682,6 +742,12 @@ export const metaDataList = new Map<string, ApiParams>([
           paramType: 'string',
           paramDefaultValue: datasheet.accounts[0]!.id,
         },
+        {
+          paramName: 'isChatThread',
+          paramType: 'boolean',
+          paramDefaultValue: false,
+          domType: 'select',
+        },
       ],
     },
   ],
@@ -714,6 +780,12 @@ export const metaDataList = new Map<string, ApiParams>([
           paramName: 'loadCount',
           paramType: 'number',
           paramDefaultValue: 20,
+        },
+        {
+          paramName: 'isChatThread',
+          paramType: 'boolean',
+          paramDefaultValue: false,
+          domType: 'select',
         },
       ],
     },
@@ -758,6 +830,12 @@ export const metaDataList = new Map<string, ApiParams>([
           paramType: 'string',
           paramDefaultValue: datasheet.accounts[0]!.id,
         },
+        {
+          paramName: 'isChatThread',
+          paramType: 'boolean',
+          paramDefaultValue: false,
+          domType: 'select',
+        },
       ],
     },
   ],
@@ -769,12 +847,12 @@ export const metaDataList = new Map<string, ApiParams>([
         {
           paramName: 'convId', // 使用发送成功或者失败的数据测试，依赖sendMessage
           paramType: 'string',
-          paramDefaultValue: datasheet.accounts[2]!.id,
+          paramDefaultValue: '241956148019205',
         },
         {
           paramName: 'convType',
           paramType: 'number',
-          paramDefaultValue: 0,
+          paramDefaultValue: 1,
         },
         {
           paramName: 'startTime',
@@ -784,7 +862,7 @@ export const metaDataList = new Map<string, ApiParams>([
         {
           paramName: 'endTime',
           paramType: 'number',
-          paramDefaultValue: 1651234714623,
+          paramDefaultValue: 1890145587619,
         },
         {
           paramName: 'direction',
@@ -795,6 +873,12 @@ export const metaDataList = new Map<string, ApiParams>([
           paramName: 'count',
           paramType: 'number',
           paramDefaultValue: 20,
+        },
+        {
+          paramName: 'isChatThread',
+          paramType: 'boolean',
+          paramDefaultValue: true,
+          domType: 'select',
         },
       ],
     },
@@ -969,17 +1053,17 @@ export const metaDataList = new Map<string, ApiParams>([
         {
           paramName: 'threadName',
           paramType: 'string',
-          paramDefaultValue: 'name',
+          paramDefaultValue: 'thread2024031101',
         },
         {
           paramName: 'msgId',
           paramType: 'string',
-          paramDefaultValue: '1019115514598787640',
+          paramDefaultValue: '1256624913641375152',
         },
         {
           paramName: 'parentId',
           paramType: 'string',
-          paramDefaultValue: '183958105030657',
+          paramDefaultValue: '241955811426310',
         },
       ],
     },
@@ -1208,6 +1292,12 @@ export const metaDataList = new Map<string, ApiParams>([
           paramDefaultValue: { key: 'value', key2: 10, key3: true },
           domType: 'input',
         },
+        {
+          paramName: 'isChatThread',
+          paramType: 'boolean',
+          paramDefaultValue: false,
+          domType: 'select',
+        },
       ],
     },
   ],
@@ -1295,6 +1385,12 @@ export const metaDataList = new Map<string, ApiParams>([
           paramType: 'json',
           paramDefaultValue: ['1109957101259588964'],
         },
+        {
+          paramName: 'isChatThread',
+          paramType: 'boolean',
+          paramDefaultValue: false,
+          domType: 'select',
+        },
       ],
     },
   ],
@@ -1317,6 +1413,12 @@ export const metaDataList = new Map<string, ApiParams>([
           paramName: 'timestamp',
           paramType: 'number',
           paramDefaultValue: 1691379861000,
+        },
+        {
+          paramName: 'isChatThread',
+          paramType: 'boolean',
+          paramDefaultValue: false,
+          domType: 'select',
         },
       ],
     },
@@ -1385,6 +1487,12 @@ export const metaDataList = new Map<string, ApiParams>([
           paramName: 'endTs',
           paramType: 'number',
           paramDefaultValue: 16847450793740,
+        },
+        {
+          paramName: 'isChatThread',
+          paramType: 'boolean',
+          paramDefaultValue: false,
+          domType: 'select',
         },
       ],
     },

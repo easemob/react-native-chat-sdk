@@ -616,11 +616,14 @@ export class QuickTestScreenChat extends QuickTestScreenBase<
             .paramDefaultValue;
           const createIfNeed = this.metaData.get(MN.getConversation)?.params[2]!
             .paramDefaultValue;
+          const isChatThread = this.metaData.get(MN.getConversation)?.params[3]!
+            .paramDefaultValue;
           this.tryCatch(
             ChatClient.getInstance().chatManager.getConversation(
               convId,
               convType,
-              createIfNeed
+              createIfNeed,
+              isChatThread
             ),
             QuickTestScreenChat.TAG,
             MN.getConversation
@@ -681,10 +684,13 @@ export class QuickTestScreenChat extends QuickTestScreenBase<
             .paramDefaultValue;
           const convType = this.metaData.get(MN.getLatestMessage)?.params[1]!
             .paramDefaultValue;
+          const isChatThread = this.metaData.get(MN.getLatestMessage)
+            ?.params[2]!.paramDefaultValue;
           this.tryCatch(
             ChatClient.getInstance().chatManager.getLatestMessage(
               convId,
-              convType
+              convType,
+              isChatThread
             ),
             QuickTestScreenChat.TAG,
             MN.getLatestMessage
@@ -701,10 +707,13 @@ export class QuickTestScreenChat extends QuickTestScreenBase<
             ?.params[0]!.paramDefaultValue;
           const convType = this.metaData.get(MN.getLastReceivedMessage)
             ?.params[1]!.paramDefaultValue;
+          const isChatThread = this.metaData.get(MN.getLastReceivedMessage)
+            ?.params[2]!.paramDefaultValue;
           this.tryCatch(
             ChatClient.getInstance().chatManager.getLatestReceivedMessage(
               convId,
-              convType
+              convType,
+              isChatThread
             ),
             QuickTestScreenChat.TAG,
             MN.getLastReceivedMessage
@@ -721,10 +730,13 @@ export class QuickTestScreenChat extends QuickTestScreenBase<
             ?.params[0]!.paramDefaultValue;
           const convType = this.metaData.get(MN.getConversationUnreadCount)
             ?.params[1]!.paramDefaultValue;
+          const isChatThread = this.metaData.get(MN.getConversationUnreadCount)
+            ?.params[2]!.paramDefaultValue;
           this.tryCatch(
             ChatClient.getInstance().chatManager.getConversationUnreadCount(
               convId,
-              convType
+              convType,
+              isChatThread
             ),
             QuickTestScreenChat.TAG,
             MN.getConversationUnreadCount
@@ -741,10 +753,13 @@ export class QuickTestScreenChat extends QuickTestScreenBase<
             ?.params[0]!.paramDefaultValue;
           const convType = this.metaData.get(MN.getConversationMessageCount)
             ?.params[1]!.paramDefaultValue;
+          const isChatThread = this.metaData.get(MN.getConversationMessageCount)
+            ?.params[2]!.paramDefaultValue;
           this.tryCatch(
             ChatClient.getInstance().chatManager.getConversationMessageCount(
               convId,
-              convType
+              convType,
+              isChatThread
             ),
             QuickTestScreenChat.TAG,
             MN.getConversationMessageCount
@@ -763,11 +778,14 @@ export class QuickTestScreenChat extends QuickTestScreenBase<
             .paramDefaultValue;
           const msgId = this.metaData.get(MN.markMessageAsRead)?.params[2]!
             .paramDefaultValue;
+          const isChatThread = this.metaData.get(MN.markMessageAsRead)
+            ?.params[3]!.paramDefaultValue;
           this.tryCatch(
             ChatClient.getInstance().chatManager.markMessageAsRead(
               convId,
               convType,
-              msgId
+              msgId,
+              isChatThread
             ),
             QuickTestScreenChat.TAG,
             MN.markMessageAsRead
@@ -784,10 +802,13 @@ export class QuickTestScreenChat extends QuickTestScreenBase<
             .paramDefaultValue;
           const convType = this.metaData.get(MN.markAllMessagesAsRead)
             ?.params[1]!.paramDefaultValue;
+          const isChatThread = this.metaData.get(MN.markAllMessagesAsRead)
+            ?.params[2]!.paramDefaultValue;
           this.tryCatch(
             ChatClient.getInstance().chatManager.markAllMessagesAsRead(
               convId,
-              convType
+              convType,
+              isChatThread
             ),
             QuickTestScreenChat.TAG,
             MN.markAllMessagesAsRead
@@ -805,11 +826,14 @@ export class QuickTestScreenChat extends QuickTestScreenBase<
           const convType = this.metaData.get(MN.updateConversationMessage)
             ?.params[1]!.paramDefaultValue;
           const msg = ChatManagerCache.getInstance().createTextMessage();
+          const isChatThread = this.metaData.get(MN.updateConversationMessage)
+            ?.params[3]!.paramDefaultValue;
           this.tryCatch(
             ChatClient.getInstance().chatManager.updateConversationMessage(
               convId,
               convType,
-              msg
+              msg,
+              isChatThread
             ),
             QuickTestScreenChat.TAG,
             MN.updateConversationMessage
@@ -826,11 +850,14 @@ export class QuickTestScreenChat extends QuickTestScreenBase<
             .paramDefaultValue;
           const msgId = this.metaData.get(MN.deleteMessage)?.params[2]!
             .paramDefaultValue;
+          const isChatThread = this.metaData.get(MN.deleteMessage)?.params[3]!
+            .paramDefaultValue;
           this.tryCatch(
             ChatClient.getInstance().chatManager.deleteMessage(
               convId,
               convType,
-              msgId
+              msgId,
+              isChatThread
             ),
             QuickTestScreenChat.TAG,
             MN.deleteMessage
@@ -847,10 +874,14 @@ export class QuickTestScreenChat extends QuickTestScreenBase<
             ?.params[0]!.paramDefaultValue;
           const convType = this.metaData.get(MN.deleteConversationAllMessages)
             ?.params[1]!.paramDefaultValue;
+          const isChatThread = this.metaData.get(
+            MN.deleteConversationAllMessages
+          )?.params[2]!.paramDefaultValue;
           this.tryCatch(
             ChatClient.getInstance().chatManager.deleteConversationAllMessages(
               convId,
-              convType
+              convType,
+              isChatThread
             ),
             QuickTestScreenChat.TAG,
             MN.deleteConversationAllMessages
@@ -877,6 +908,8 @@ export class QuickTestScreenChat extends QuickTestScreenBase<
             .paramDefaultValue;
           const sender = this.metaData.get(MN.getMessagesWithMsgType)
             ?.params[6]!.paramDefaultValue;
+          const isChatThread = this.metaData.get(MN.getMessagesWithMsgType)
+            ?.params[7]!.paramDefaultValue;
           this.tryCatch(
             ChatClient.getInstance().chatManager.getMessagesWithMsgType(
               convId,
@@ -885,7 +918,8 @@ export class QuickTestScreenChat extends QuickTestScreenBase<
               direction,
               timestamp,
               count,
-              sender
+              sender,
+              isChatThread
             ),
             QuickTestScreenChat.TAG,
             MN.getMessagesWithMsgType
@@ -906,13 +940,16 @@ export class QuickTestScreenChat extends QuickTestScreenBase<
             .paramDefaultValue;
           const loadCount = this.metaData.get(MN.getMessages)?.params[4]!
             .paramDefaultValue;
+          const isChatThread = this.metaData.get(MN.getMessages)?.params[5]!
+            .paramDefaultValue;
           this.tryCatch(
             ChatClient.getInstance().chatManager.getMessages(
               convId,
               convType,
               startMsgId,
               direction,
-              loadCount
+              loadCount,
+              isChatThread
             ),
             QuickTestScreenChat.TAG,
             MN.getMessages
@@ -939,6 +976,8 @@ export class QuickTestScreenChat extends QuickTestScreenBase<
             .paramDefaultValue;
           const sender = this.metaData.get(MN.getMessagesWithKeyword)
             ?.params[6]!.paramDefaultValue;
+          const isChatThread = this.metaData.get(MN.getMessagesWithKeyword)
+            ?.params[7]!.paramDefaultValue;
           this.tryCatch(
             ChatClient.getInstance().chatManager.getMessagesWithKeyword(
               convId,
@@ -947,7 +986,8 @@ export class QuickTestScreenChat extends QuickTestScreenBase<
               direction,
               timestamp,
               count,
-              sender
+              sender,
+              isChatThread
             ),
             QuickTestScreenChat.TAG,
             MN.getMessagesWithKeyword
@@ -972,6 +1012,8 @@ export class QuickTestScreenChat extends QuickTestScreenBase<
             ?.params[4]!.paramDefaultValue;
           const count = this.metaData.get(MN.getMessageWithTimestamp)
             ?.params[5]!.paramDefaultValue;
+          const isChatThread = this.metaData.get(MN.getMessageWithTimestamp)
+            ?.params[6]!.paramDefaultValue;
           this.tryCatch(
             ChatClient.getInstance().chatManager.getMessageWithTimestamp(
               convId,
@@ -979,7 +1021,8 @@ export class QuickTestScreenChat extends QuickTestScreenBase<
               startTime,
               endTime,
               direction,
-              count
+              count,
+              isChatThread
             ),
             QuickTestScreenChat.TAG,
             MN.getMessageWithTimestamp
@@ -1422,11 +1465,14 @@ export class QuickTestScreenChat extends QuickTestScreenBase<
             ?.params[1]!.paramDefaultValue;
           const ext = this.metaData.get(MN.setConversationExtension)?.params[2]!
             .paramDefaultValue;
+          const isChatThread = this.metaData.get(MN.setConversationExtension)
+            ?.params[3]!.paramDefaultValue;
           this.tryCatch(
             ChatClient.getInstance().chatManager.setConversationExtension(
               convId,
               convType,
-              ext
+              ext,
+              isChatThread
             ),
             QuickTestScreenChat.TAG,
             name
@@ -1525,11 +1571,15 @@ export class QuickTestScreenChat extends QuickTestScreenBase<
           const msgIds = this.metaData.get(
             MN.removeMessagesFromServerWithMsgIds
           )?.params[2]!.paramDefaultValue;
+          const isChatThread = this.metaData.get(
+            MN.removeMessagesFromServerWithMsgIds
+          )?.params[3]!.paramDefaultValue;
           this.tryCatch(
             ChatClient.getInstance().chatManager.removeMessagesFromServerWithMsgIds(
               convId,
               convType,
-              msgIds
+              msgIds,
+              isChatThread
             ),
             QuickTestScreenChat.TAG,
             name
@@ -1553,11 +1603,15 @@ export class QuickTestScreenChat extends QuickTestScreenBase<
           const timestamp = this.metaData.get(
             MN.removeMessagesFromServerWithTimestamp
           )?.params[2]!.paramDefaultValue;
+          const isChatThread = this.metaData.get(
+            MN.removeMessagesFromServerWithTimestamp
+          )?.params[3]!.paramDefaultValue;
           this.tryCatch(
             ChatClient.getInstance().chatManager.removeMessagesFromServerWithTimestamp(
               convId,
               convType,
-              timestamp
+              timestamp,
+              isChatThread
             ),
             QuickTestScreenChat.TAG,
             name
@@ -1609,11 +1663,14 @@ export class QuickTestScreenChat extends QuickTestScreenBase<
             ?.params[2]!.paramDefaultValue;
           const endTs = this.metaData.get(MN.deleteMessagesWithTimestamp)
             ?.params[3]!.paramDefaultValue;
+          const isChatThread = this.metaData.get(MN.deleteMessagesWithTimestamp)
+            ?.params[4]!.paramDefaultValue;
           this.tryCatch(
             ChatClient.getInstance().chatManager.deleteMessagesWithTimestamp(
               convId,
               convType,
-              { startTs, endTs }
+              { startTs, endTs },
+              isChatThread
             ),
             QuickTestScreenChat.TAG,
             name
