@@ -2,6 +2,15 @@ _Chinese | [English](./CHANGELOG.md)_
 
 # Update Log
 
+## 1.3.2
+
+更新内容
+
+- `getConversation、getLatestMessage、getLatestReceivedMessage、getConversationUnreadCount、getConversationMessageCount、markMessageAsRead、markAllMessagesAsRead、updateConversationMessage、deleteMessage、deleteMessagesWithTimestamp、deleteConversationAllMessages、getMessagesWithMsgType、getMessages、getMessagesWithKeyword、getMessageWithTimestamp、setConversationExtension、removeMessagesFromServerWithMsgIds、removeMessagesFromServerWithTimestamp、removeMessagesFromServerWithTimestamp`、增加参数 `isChatThread` 默认值为 `false`.
+- createSendMessage 接口从私有声明变成公开声明。
+- fetchMembersWithChatThreadFromServer 修改返回值类型
+- ChatTextMessageBody 修改属性名称：由 `targetLanguages` 修改为 `targetLanguageCodes`
+
 ## 1.3.1
 
 修复：

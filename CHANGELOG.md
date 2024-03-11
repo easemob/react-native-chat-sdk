@@ -2,6 +2,15 @@ _English | [Chinese](./CHANGELOG.zh.md)_
 
 # Update Log
 
+## 1.3.2
+
+Update Content
+
+- `getConversation、getLatestMessage、getLatestReceivedMessage、getConversationUnreadCount、getConversationMessageCount、markMessageAsRead、markAllMessagesAsRead、 updateConversationMessage、deleteMessage、deleteMessagesWithTimestamp、deleteConversationAllMessages、getMessagesWithMsgType、getMessages、getMessagesWithKeyword、 getMessageWithTimestamp, setConversationExtension, removeMessagesFromServerWithMsgIds, removeMessagesFromServerWithTimestamp, removeMessagesFromServerWithTimestamp`, increment parameter ` isChatThread` defaults to `false`.
+- The createSendMessage interface has changed from a private claim to a public one.
+- fetchMembersWithChatThreadFromServer changes the return value type
+- ChatTextMessageBody changed the property name from `targetLanguages` to `targetLanguageCodes`
+
 ## 1.3.1
 
 Issues fixed
