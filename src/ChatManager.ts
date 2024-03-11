@@ -1195,6 +1195,8 @@ export class ChatManager extends BaseManager {
    *
    * @param convId The conversation ID.
    * @param convType The conversation type. See {@link ChatConversationType}.
+   * @param isChatThread Whether the conversation is a chat thread.
+   *
    * @returns The message instance. The SDK returns `undefined` if the message does not exist.
    *
    * @throws A description of the exception. See {@link ChatError}.
@@ -1232,6 +1234,8 @@ export class ChatManager extends BaseManager {
    *
    * @param convId The conversation ID.
    * @param convType The conversation type. See {@link ChatConversationType}.
+   * @param isChatThread Whether the conversation is a chat thread.
+   *
    * @returns The message instance. The SDK returns `undefined` if the message does not exist.
    *
    * @throws A description of the exception. See {@link ChatError}.
@@ -1269,6 +1273,8 @@ export class ChatManager extends BaseManager {
    *
    * @param convId The conversation ID.
    * @param convType The conversation type. See {@link ChatConversationType}.
+   * @param isChatThread Whether the conversation is a chat thread.
+   *
    * @returns The unread message count.
    *
    * @throws A description of the exception. See {@link ChatError}.
@@ -1303,6 +1309,8 @@ export class ChatManager extends BaseManager {
    *
    * @param convId The conversation ID.
    * @param convType The conversation type. See {@link ChatConversationType}.
+   * @param isChatThread Whether the conversation is a chat thread.
+   *
    * @returns The message count.
    *getMessageCount
    * @throws A description of the exception. See {@link ChatError}.
@@ -1337,6 +1345,8 @@ export class ChatManager extends BaseManager {
    *
    * @param convId The conversation ID.
    * @param convType The conversation type. See {@link ChatConversationType}.
+   * @param isChatThread Whether the conversation is a chat thread.
+   *
    * @param msgId The message ID.
    *
    * @throws A description of the exception. See {@link ChatError}.
@@ -1372,6 +1382,7 @@ export class ChatManager extends BaseManager {
    *
    * @param convId The conversation ID.
    * @param convType The conversation type. See {@link ChatConversationType}.
+   * @param isChatThread Whether the conversation is a chat thread.
    *
    * @throws A description of the exception. See {@link ChatError}.
    */
@@ -1405,6 +1416,8 @@ export class ChatManager extends BaseManager {
    *
    * @param convId The conversation ID.
    * @param convType The conversation type. See {@link ChatConversationType}.
+   * @param isChatThread Whether the conversation is a chat thread.
+   *
    * @param msg The ID of the message to update.
    *
    * @throws A description of the exception. See {@link ChatError}.
@@ -1440,6 +1453,8 @@ export class ChatManager extends BaseManager {
    *
    * @param convId The conversation ID.
    * @param convType The conversation type. See {@link ChatConversationType}.
+   * @param isChatThread Whether the conversation is a chat thread.
+   *
    * @param msgId The ID of the message to delete.
    *
    * @throws A description of the exception. See {@link ChatError}.
@@ -1471,6 +1486,8 @@ export class ChatManager extends BaseManager {
    *
    * @param convId The conversation ID.
    * @param convType The conversation type. See {@link ChatConversationType}.
+   * @param isChatThread Whether the conversation is a chat thread.
+   *
    * @params params
    * - startTs: The starting UNIX timestamp for message deletion. The unit is millisecond.
    * - endTs: The end UNIX timestamp for message deletion. The unit is millisecond.
@@ -1508,6 +1525,7 @@ export class ChatManager extends BaseManager {
    *
    * @param convId The conversation ID.
    * @param convType The conversation type. See {@link ChatConversationType}.
+   * @param isChatThread Whether the conversation is a chat thread.
    *
    * @throws A description of the exception. See {@link ChatError}.
    */
@@ -1567,6 +1585,8 @@ export class ChatManager extends BaseManager {
    *                  If you set this parameter as a negative value, the SDK retrieves messages, starting from the current time, in the descending order of the timestamp included in them.
    * @param count The maximum number of messages to retrieve each time. The value range is [1,400].
    * @param sender The user ID or group ID for retrieval. Usually, it is the conversation ID.
+   * @param isChatThread Whether the conversation is a chat thread.
+   *
    * @returns The list of retrieved messages (excluding the one with the starting timestamp). If no message is obtained, an empty list is returned.
    *
    * @throws A description of the exception. See {@link ChatError}.
@@ -1630,6 +1650,8 @@ export class ChatManager extends BaseManager {
    * - (Default) `ChatSearchDirection.UP`: Messages are retrieved in the descending order of the Unix timestamp included in them.
    * - `ChatSearchDirection.DOWN`: Messages are retrieved in the ascending order of the Unix timestamp included in them.
    * @param loadCount The maximum number of messages to retrieve each time. The value range is [1,50].
+   * @param isChatThread Whether the conversation is a chat thread.
+   *
    * @returns The list of retrieved messages (excluding the one with the starting timestamp). If no message is obtained, an empty list is returned.
    *
    * @throws A description of the exception. See {@link ChatError}.
@@ -1689,6 +1711,8 @@ export class ChatManager extends BaseManager {
    *                  If you set this parameter as a negative value, the SDK retrieves messages, starting from the current time, in the descending order of the timestamp included in them.
    * @param count The maximum number of messages to retrieve each time. The value range is [1,400].
    * @param sender The user ID or group ID for retrieval. Usually, it is the conversation ID.
+   * @param isChatThread Whether the conversation is a chat thread.
+   *
    * @returns The list of retrieved messages (excluding the one with the starting timestamp). If no message is obtained, an empty list is returned.
    *
    * @throws A description of the exception. See {@link ChatError}.
@@ -1750,6 +1774,8 @@ export class ChatManager extends BaseManager {
    * - (Default) `ChatSearchDirection.UP`: Messages are retrieved in the descending order of the Unix timestamp included in them.
    * - `ChatSearchDirection.DOWN`: Messages are retrieved in the ascending order of the Unix timestamp included in them.
    * @param count The maximum number of messages to retrieve each time. The value range is [1,400].
+   * @param isChatThread Whether the conversation is a chat thread.
+   *
    * @returns The list of retrieved messages (excluding with the ones with the starting or ending timestamp). If no message is obtained, an empty list is returned.
    *
    * @throws A description of the exception. See {@link ChatError}.
@@ -1850,6 +1876,8 @@ export class ChatManager extends BaseManager {
    *
    * @param convId The conversation ID.
    * @param convType The conversation type. See {@link ChatConversationType}.
+   * @param isChatThread Whether the conversation is a chat thread.
+   *
    * @param ext The extension information. This parameter must be key-value type.
    */
   public async setConversationExtension(
@@ -2590,6 +2618,8 @@ export class ChatManager extends BaseManager {
    *
    * @param convId The conversation ID.
    * @param convType The conversation Type.
+   * @param isChatThread Whether the conversation is a chat thread.
+   *
    * @param msgIds The IDs of messages to delete from the current conversation.
    *
    * @throws A description of the exception. See {@link ChatError}.
@@ -2642,6 +2672,8 @@ export class ChatManager extends BaseManager {
    *
    * @param convId The conversation ID.
    * @param convType The conversation Type.
+   * @param isChatThread Whether the conversation is a chat thread.
+   *
    * @param timestamp The message timestamp in millisecond. The messages with the timestamp smaller than the specified one will be deleted.
    *
    * @throws A description of the exception. See {@link ChatError}.
