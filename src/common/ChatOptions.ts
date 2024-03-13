@@ -203,6 +203,11 @@ export class ChatOptions {
     enableEmptyConversation?: boolean;
     customDeviceName?: string;
     customOSType?: number;
+    enableDNSConfig?: boolean;
+    dnsUrl?: string;
+    restServer?: string;
+    imServer?: string;
+    imPort?: number;
   }) {
     this.appKey = params.appKey;
     this.autoLogin = params.autoLogin ?? true;
@@ -221,11 +226,12 @@ export class ChatOptions {
     this.serverTransfer = params.serverTransfer ?? true;
     this.isAutoDownload = params.isAutoDownload ?? true;
     this.pushConfig = params.pushConfig;
-    this.enableDNSConfig = true;
-    this.dnsUrl = '';
-    this.restServer = '';
-    this.imServer = '';
-    this.imPort = 0;
+    this.enableDNSConfig =
+      params.enableDNSConfig !== undefined ? params.enableDNSConfig : true;
+    this.dnsUrl = params.dnsUrl ?? '';
+    this.restServer = params.restServer ?? '';
+    this.imServer = params.imServer ?? '';
+    this.imPort = params.imPort !== undefined ? params.imPort : 0;
     this.areaCode = params.areaCode ?? ChatAreaCode.GLOB;
     this.logTag = params.logTag;
     this.logTimestamp = params.logTimestamp;
