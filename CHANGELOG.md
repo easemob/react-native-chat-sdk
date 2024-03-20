@@ -10,6 +10,7 @@ Update Content
 - The `createSendMessage` interface has changed from a private claim to a public one.
 - `fetchMembersWithChatThreadFromServer` changes the return value type
 - `ChatTextMessageBody` changed the property name from `targetLanguages` to `targetLanguageCodes`
+- Add `downloadAttachmentInCombine` and `downloadThumbnailInCombine` api.
 
 ## 1.3.1
 

@@ -10,6 +10,7 @@ _Chinese | [English](./CHANGELOG.md)_
 - `createSendMessage` 接口从私有声明变成公开声明。
 - `fetchMembersWithChatThreadFromServer` 修改返回值类型
 - `ChatTextMessageBody` 修改属性名称：由 `targetLanguages` 修改为 `targetLanguageCodes`
+- 增加 `downloadAttachmentInCombine` 和 `downloadThumbnailInCombine` 接口。
 
 ## 1.3.1
 
