@@ -16,7 +16,9 @@ import {
   MTdestroyChatThread,
   MTdownloadAndParseCombineMessage,
   MTdownloadAttachment,
+  MTdownloadAttachmentInCombine,
   MTdownloadThumbnail,
+  MTdownloadThumbnailInCombine,
   MTfetchChatThreadDetail,
   MTfetchChatThreadMember,
   MTfetchChatThreadsWithParentId,
@@ -458,6 +460,15 @@ export class ChatManager extends BaseManager {
     );
   }
 
+  private static handleDownloadFileCallback(
+    self: ChatManager,
+    message: ChatMessage,
+    method: string,
+    callback?: ChatMessageStatusCallback
+  ): void {
+    ChatManager.handleMessageCallback(method, self, message, callback);
+  }
+
   /**
    * Adds a message listener.
    *
@@ -770,6 +781,71 @@ export class ChatManager extends BaseManager {
     let r: any = await Native._callMethod(MTimportMessages, {
       [MTimportMessages]: {
         messages: messages,
+      },
+    });
+    Native.checkErrorFromResult(r);
+  }
+
+  /**
+   * Downloads the message attachment.
+   *
+   * **Note** This method is only used to download messages attachment in combine type message.
+   *
+   * You can also call this method if the attachment fails to be downloaded automatically.
+   *
+   * @param message The ID of the message with the attachment to be downloaded.
+   * @param callback The listener that listens for message changes.
+   *
+   * @throws A description of the exception. See {@link ChatError}.
+   */
+  public async downloadAttachmentInCombine(
+    message: ChatMessage,
+    callback?: ChatMessageStatusCallback
+  ): Promise<void> {
+    chatlog.log(
+      `${ChatManager.TAG}: downloadAttachmentInCombine: ${message.msgId}, ${message.localTime}`,
+      message
+    );
+    ChatManager.handleDownloadFileCallback(
+      this,
+      message,
+      MTdownloadAttachmentInCombine,
+      callback
+    );
+    let r: any = await Native._callMethod(MTdownloadAttachmentInCombine, {
+      [MTdownloadAttachmentInCombine]: {
+        message: message,
+      },
+    });
+    Native.checkErrorFromResult(r);
+  }
+
+  /**
+   * Downloads the message thumbnail.
+   *
+   * **Note** This method is only used to download messages thumbnail in combine type message.
+   *
+   * @param message The ID of the message with the thumbnail to be downloaded. Only the image messages and video messages have a thumbnail.
+   *
+   * @throws A description of the exception. See {@link ChatError}.
+   */
+  public async downloadThumbnailInCombine(
+    message: ChatMessage,
+    callback?: ChatMessageStatusCallback
+  ): Promise<void> {
+    chatlog.log(
+      `${ChatManager.TAG}: downloadThumbnailInCombine: ${message.msgId}, ${message.localTime}`,
+      message
+    );
+    ChatManager.handleDownloadFileCallback(
+      this,
+      message,
+      MTdownloadThumbnailInCombine,
+      callback
+    );
+    let r: any = await Native._callMethod(MTdownloadThumbnailInCombine, {
+      [MTdownloadThumbnailInCombine]: {
+        message: message,
       },
     });
     Native.checkErrorFromResult(r);
