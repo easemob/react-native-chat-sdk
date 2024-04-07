@@ -789,7 +789,9 @@ export class ChatManager extends BaseManager {
   /**
    * Downloads the message attachment.
    *
-   * **Note** This method is only used to download messages attachment in combine type message.
+   * **Note** This method is only used to download messages attachment in combine type message or thread type.
+   *
+   * **Note** The bottom layer will not get the original message object and will use the json converted message object.
    *
    * You can also call this method if the attachment fails to be downloaded automatically.
    *
