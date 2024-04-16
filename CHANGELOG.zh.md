@@ -2,23 +2,18 @@ _Chinese | [English](./CHANGELOG.md)_
 
 # Update Log
 
-## 1.3.2
-
-更新内容
-
-- `getConversation、getLatestMessage、getLatestReceivedMessage、getConversationUnreadCount、getConversationMessageCount、markMessageAsRead、markAllMessagesAsRead、updateConversationMessage、deleteMessage、deleteMessagesWithTimestamp、deleteConversationAllMessages、getMessagesWithMsgType、getMessages、getMessagesWithKeyword、getMessageWithTimestamp、setConversationExtension、removeMessagesFromServerWithMsgIds、removeMessagesFromServerWithTimestamp`、增加参数 `isChatThread` 默认值为 `false`.
-- `createSendMessage` 接口从私有声明变成公开声明。
-- `fetchMembersWithChatThreadFromServer` 修改返回值类型
-- `ChatTextMessageBody` 修改属性名称：由 `targetLanguages` 修改为 `targetLanguageCodes`
-- 增加 `downloadAttachmentInCombine` 和 `downloadThumbnailInCombine` 接口。
-- 支持多tag模式的日志输出。
-
 ## 1.3.1
 
 修复：
 
 - 接收不支持的多设备事件通知导致的程序崩溃。解决方法：将不支持的类型包装为异常对象，通过监听器告知调用者。修改内容涉及联系人管理器、群组管理器、聊天室管理器。 相关类型 `ChatMultiDeviceEvent`。
 - 接收不支持的消息体类型导致程序崩溃。将不支持的类型包装为异常对象，通过监听器告知调用者。 相关类型 `ChatMessageType`。
+- `getConversation、getLatestMessage、getLatestReceivedMessage、getConversationUnreadCount、getConversationMessageCount、markMessageAsRead、markAllMessagesAsRead、updateConversationMessage、deleteMessage、deleteMessagesWithTimestamp、deleteConversationAllMessages、getMessagesWithMsgType、getMessages、getMessagesWithKeyword、getMessageWithTimestamp、setConversationExtension、removeMessagesFromServerWithMsgIds、removeMessagesFromServerWithTimestamp`、增加参数 `isChatThread` 默认值为 `false`.
+- `createSendMessage` 接口从私有声明变成公开声明。
+- `fetchMembersWithChatThreadFromServer` 修改返回值类型
+- `ChatTextMessageBody` 修改属性名称：由 `targetLanguages` 修改为 `targetLanguageCodes`
+- 增加 `downloadAttachmentInCombine` 和 `downloadThumbnailInCombine` 接口。
+- 支持多 tag 模式的日志输出。
 
 ## 1.3.0
 

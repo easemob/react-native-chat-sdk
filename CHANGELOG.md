@@ -2,23 +2,18 @@ _English | [Chinese](./CHANGELOG.zh.md)_
 
 # Update Log
 
-## 1.3.2
-
-Update Content
-
-- `getConversation、getLatestMessage、getLatestReceivedMessage、getConversationUnreadCount、getConversationMessageCount、markMessageAsRead、markAllMessagesAsRead、 updateConversationMessage、deleteMessage、deleteMessagesWithTimestamp、deleteConversationAllMessages、getMessagesWithMsgType、getMessages、getMessagesWithKeyword、 getMessageWithTimestamp, setConversationExtension, removeMessagesFromServerWithMsgIds, removeMessagesFromServerWithTimestamp, increment parameter ` isChatThread` defaults to `false`.
-- The `createSendMessage` interface has changed from a private claim to a public one.
-- `fetchMembersWithChatThreadFromServer` changes the return value type
-- `ChatTextMessageBody` changed the property name from `targetLanguages` to `targetLanguageCodes`
-- Add `downloadAttachmentInCombine` and `downloadThumbnailInCombine` api.
-- Supports log output in multi-tag mode.
-
 ## 1.3.1
 
 Issues fixed
 
 - Program crash caused by receiving unsupported multi-device event notifications. Solution: Wrap the unsupported type into an except object and notify the caller through the listener. The modifications involve the Contact Manager, Group Manager, and Chat Room Manager. Related types `ChatMultiDeviceEvent`.
 - Receiving an unsupported message body type causes the program to crash. Wrap unsupported types into except objects and notify the caller through the listener. Related types `ChatMessageType`.
+- `getConversation、getLatestMessage、getLatestReceivedMessage、getConversationUnreadCount、getConversationMessageCount、markMessageAsRead、markAllMessagesAsRead、 updateConversationMessage、deleteMessage、deleteMessagesWithTimestamp、deleteConversationAllMessages、getMessagesWithMsgType、getMessages、getMessagesWithKeyword、 getMessageWithTimestamp, setConversationExtension, removeMessagesFromServerWithMsgIds, removeMessagesFromServerWithTimestamp, increment parameter ` isChatThread`defaults to`false`.
+- The `createSendMessage` interface has changed from a private claim to a public one.
+- `fetchMembersWithChatThreadFromServer` changes the return value type
+- `ChatTextMessageBody` changed the property name from `targetLanguages` to `targetLanguageCodes`
+- Add `downloadAttachmentInCombine` and `downloadThumbnailInCombine` api.
+- Supports log output in multi-tag mode.
 
 ## 1.3.0
 
