@@ -11,6 +11,7 @@ Update Content
 - `fetchMembersWithChatThreadFromServer` changes the return value type
 - `ChatTextMessageBody` changed the property name from `targetLanguages` to `targetLanguageCodes`
 - Add `downloadAttachmentInCombine` and `downloadThumbnailInCombine` api.
+- Supports log output in multi-tag mode.
 
 ## 1.3.1
 

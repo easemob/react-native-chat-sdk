@@ -11,6 +11,7 @@ _Chinese | [English](./CHANGELOG.md)_
 - `fetchMembersWithChatThreadFromServer` 修改返回值类型
 - `ChatTextMessageBody` 修改属性名称：由 `targetLanguages` 修改为 `targetLanguageCodes`
 - 增加 `downloadAttachmentInCombine` 和 `downloadThumbnailInCombine` 接口。
+- 支持多tag模式的日志输出。
 
 ## 1.3.1
 
