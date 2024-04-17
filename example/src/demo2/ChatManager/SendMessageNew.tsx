@@ -7,6 +7,7 @@ import {
   ChatMessage,
   ChatMessageChatType,
   ChatMessageEventListener,
+  ChatMessagePinInfo,
   ChatMessageReactionEvent,
   ChatMessageStatusCallback,
   ChatMessageThreadEvent,
@@ -380,6 +381,16 @@ export class SendMessageLeafScreen extends LeafScreenBase<StateSendMessage> {
         );
         this.that.setState({
           recvResult: `onMessageContentChanged: ${lastModifyOperatorId}, ${lastModifyTime}`,
+        });
+      }
+      onMessagePinChanged(params: {
+        messageId: string;
+        convId: string;
+        pinOperation: number;
+        pinInfo: ChatMessagePinInfo;
+      }): void {
+        this.that.setState({
+          recvResult: `onMessageContentChanged: ${params}`,
         });
       }
     })(this);

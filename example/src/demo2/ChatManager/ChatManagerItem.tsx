@@ -1,7 +1,9 @@
 import React, { ReactNode } from 'react';
 import { Text, View } from 'react-native';
 import type {
+  ChatConversationFetchOptions,
   ChatFetchMessageOptions,
+  ChatMessagePinInfo,
   ChatMessageStatusCallback,
   ChatTextMessageBody,
 } from 'react-native-chat-sdk';
@@ -178,6 +180,7 @@ export interface StateChatMessage extends StateBase {
     count: number;
     sender: string;
     isChatThread: boolean;
+    searchScope: number;
   };
   getMessageWithTimestamp: {
     convId: string;
@@ -337,6 +340,39 @@ export interface StateChatMessage extends StateBase {
   };
   fetchCombineMessageDetail: {
     message: ChatMessage;
+  };
+  addRemoteAndLocalConversationsMark: {
+    convIds: string[];
+    mark: number;
+  };
+  deleteRemoteAndLocalConversationsMark: {
+    convIds: string[];
+    mark: number;
+  };
+  fetchConversationsByOptions: {
+    option: ChatConversationFetchOptions;
+  };
+  deleteAllMessageAndConversation: {
+    clearServerData: boolean;
+  };
+  pinMessage: {
+    messageId: string;
+  };
+  unpinMessage: {
+    messageId: string;
+  };
+  fetchPinnedMessages: {
+    convId: string;
+    convType: number;
+    isChatThread: boolean;
+  };
+  getPinnedMessages: {
+    convId: string;
+    convType: number;
+    isChatThread: boolean;
+  };
+  getMessagePinInfo: {
+    messageId: string;
   };
 }
 
@@ -522,6 +558,16 @@ export class ChatManagerLeafScreen extends LeafScreenBase<StateChatMessage> {
           recvResult: `onMessageContentChanged: ${lastModifyOperatorId}, ${lastModifyTime}`,
         });
       }
+      onMessagePinChanged(params: {
+        messageId: string;
+        convId: string;
+        pinOperation: number;
+        pinInfo: ChatMessagePinInfo;
+      }): void {
+        this.that.setState({
+          recvResult: `onMessageContentChanged: ${params}`,
+        });
+      }
     })(this);
 
     ChatClient.getInstance().chatManager.removeAllMessageListener();
@@ -652,6 +698,15 @@ export class ChatManagerLeafScreen extends LeafScreenBase<StateChatMessage> {
       'pinConversation',
       'modifyMessageBody',
       'fetchCombineMessageDetail',
+      'addRemoteAndLocalConversationsMark',
+      'deleteRemoteAndLocalConversationsMark',
+      'fetchConversationsByOptions',
+      'deleteAllMessageAndConversation',
+      'pinMessage',
+      'unpinMessage',
+      'fetchPinnedMessages',
+      'getPinnedMessages',
+      'getMessagePinInfo',
     ];
     let renderDomAry: ({} | null | undefined)[] = [];
     const data = this.metaData;
@@ -1042,16 +1097,16 @@ export class ChatManagerLeafScreen extends LeafScreenBase<StateChatMessage> {
         isChatThread,
       } = this.state.getMessagesWithMsgType;
       this.tryCatch(
-        ChatClient.getInstance().chatManager.getMessagesWithMsgType(
+        ChatClient.getInstance().chatManager.getMsgsWithMsgType({
           convId,
-          ChatConversationTypeFromNumber(convType),
-          ChatMessageTypeFromString(msgType),
+          convType: ChatConversationTypeFromNumber(convType),
+          msgType: ChatMessageTypeFromString(msgType),
           direction,
           timestamp,
           count,
           sender,
-          isChatThread
-        ),
+          isChatThread,
+        }),
         ChatManagerLeafScreen.TAG,
         this.metaData.get(MN.getMessagesWithMsgType)!.methodName
       );
@@ -1065,14 +1120,14 @@ export class ChatManagerLeafScreen extends LeafScreenBase<StateChatMessage> {
         isChatThread,
       } = this.state.getMessages;
       this.tryCatch(
-        ChatClient.getInstance().chatManager.getMessages(
+        ChatClient.getInstance().chatManager.getMsgs({
           convId,
-          ChatConversationTypeFromNumber(convType),
+          convType: ChatConversationTypeFromNumber(convType),
           startMsgId,
           direction,
           loadCount,
-          isChatThread
-        ),
+          isChatThread,
+        }),
         ChatManagerLeafScreen.TAG,
         this.metaData.get(MN.getMessages)!.methodName
       );
@@ -1086,18 +1141,20 @@ export class ChatManagerLeafScreen extends LeafScreenBase<StateChatMessage> {
         count,
         sender,
         isChatThread,
+        searchScope,
       } = this.state.getMessagesWithKeyword;
       this.tryCatch(
-        ChatClient.getInstance().chatManager.getMessagesWithKeyword(
+        ChatClient.getInstance().chatManager.getMsgsWithKeyword({
           convId,
-          ChatConversationTypeFromNumber(convType),
+          convType: ChatConversationTypeFromNumber(convType),
           keywords,
           direction,
           timestamp,
           count,
           sender,
-          isChatThread
-        ),
+          isChatThread,
+          searchScope,
+        }),
         ChatManagerLeafScreen.TAG,
         this.metaData.get(MN.getMessagesWithKeyword)!.methodName
       );
@@ -1112,15 +1169,15 @@ export class ChatManagerLeafScreen extends LeafScreenBase<StateChatMessage> {
         isChatThread,
       } = this.state.getMessageWithTimestamp;
       this.tryCatch(
-        ChatClient.getInstance().chatManager.getMessageWithTimestamp(
+        ChatClient.getInstance().chatManager.getMsgWithTimestamp({
           convId,
-          ChatConversationTypeFromNumber(convType),
+          convType: ChatConversationTypeFromNumber(convType),
           startTime,
           endTime,
           direction,
           count,
-          isChatThread
-        ),
+          isChatThread,
+        }),
         ChatManagerLeafScreen.TAG,
         this.metaData.get(MN.getMessageWithTimestamp)!.methodName
       );
@@ -1467,6 +1524,88 @@ export class ChatManagerLeafScreen extends LeafScreenBase<StateChatMessage> {
       const { message } = this.state.fetchCombineMessageDetail;
       this.tryCatch(
         ChatClient.getInstance().chatManager.fetchCombineMessageDetail(message),
+        ChatManagerLeafScreen.TAG,
+        name
+      );
+    } else if (name === MN.addRemoteAndLocalConversationsMark) {
+      const { convIds, mark } = this.state.addRemoteAndLocalConversationsMark;
+      this.tryCatch(
+        ChatClient.getInstance().chatManager.addRemoteAndLocalConversationsMark(
+          convIds,
+          mark
+        ),
+        ChatManagerLeafScreen.TAG,
+        name
+      );
+    } else if (name === MN.deleteRemoteAndLocalConversationsMark) {
+      const { convIds, mark } =
+        this.state.deleteRemoteAndLocalConversationsMark;
+      this.tryCatch(
+        ChatClient.getInstance().chatManager.deleteRemoteAndLocalConversationsMark(
+          convIds,
+          mark
+        ),
+        ChatManagerLeafScreen.TAG,
+        name
+      );
+    } else if (name === MN.deleteAllMessageAndConversation) {
+      const { clearServerData } = this.state.deleteAllMessageAndConversation;
+      this.tryCatch(
+        ChatClient.getInstance().chatManager.deleteAllMessageAndConversation(
+          clearServerData
+        ),
+        ChatManagerLeafScreen.TAG,
+        name
+      );
+    } else if (name === MN.fetchConversationsByOptions) {
+      const { option } = this.state.fetchConversationsByOptions;
+      this.tryCatch(
+        ChatClient.getInstance().chatManager.fetchConversationsByOptions(
+          option
+        ),
+        ChatManagerLeafScreen.TAG,
+        name
+      );
+    } else if (name === MN.pinMessage) {
+      const { messageId } = this.state.pinMessage;
+      this.tryCatch(
+        ChatClient.getInstance().chatManager.pinMessage(messageId),
+        ChatManagerLeafScreen.TAG,
+        name
+      );
+    } else if (name === MN.unpinMessage) {
+      const { messageId } = this.state.unpinMessage;
+      this.tryCatch(
+        ChatClient.getInstance().chatManager.unpinMessage(messageId),
+        ChatManagerLeafScreen.TAG,
+        name
+      );
+    } else if (name === MN.fetchPinnedMessages) {
+      const { convId, convType, isChatThread } = this.state.fetchPinnedMessages;
+      this.tryCatch(
+        ChatClient.getInstance().chatManager.fetchPinnedMessages(
+          convId,
+          convType,
+          isChatThread
+        ),
+        ChatManagerLeafScreen.TAG,
+        name
+      );
+    } else if (name === MN.getPinnedMessages) {
+      const { convId, convType, isChatThread } = this.state.getPinnedMessages;
+      this.tryCatch(
+        ChatClient.getInstance().chatManager.getPinnedMessages(
+          convId,
+          convType,
+          isChatThread
+        ),
+        ChatManagerLeafScreen.TAG,
+        name
+      );
+    } else if (name === MN.getMessagePinInfo) {
+      const { messageId } = this.state.getMessagePinInfo;
+      this.tryCatch(
+        ChatClient.getInstance().chatManager.getMessagePinInfo(messageId),
         ChatManagerLeafScreen.TAG,
         name
       );

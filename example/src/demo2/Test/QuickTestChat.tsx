@@ -7,6 +7,7 @@ import {
   ChatMessage,
   ChatMessageChatType,
   ChatMessageEventListener,
+  ChatMessagePinInfo,
   ChatMessageReactionEvent,
   ChatMessageStatusCallback,
   ChatMessageThreadEvent,
@@ -212,6 +213,16 @@ export class QuickTestScreenChat extends QuickTestScreenBase<
           );
           this.that.setState({
             conv_listener: `onMessageContentChanged: ${lastModifyOperatorId}, ${lastModifyTime}`,
+          });
+        }
+        onMessagePinChanged(params: {
+          messageId: string;
+          convId: string;
+          pinOperation: number;
+          pinInfo: ChatMessagePinInfo;
+        }): void {
+          this.that.setState({
+            conv_listener: `onMessageContentChanged: ${params}`,
           });
         }
       })(this);
@@ -911,7 +922,7 @@ export class QuickTestScreenChat extends QuickTestScreenBase<
           const isChatThread = this.metaData.get(MN.getMessagesWithMsgType)
             ?.params[7]!.paramDefaultValue;
           this.tryCatch(
-            ChatClient.getInstance().chatManager.getMessagesWithMsgType(
+            ChatClient.getInstance().chatManager.getMsgsWithMsgType({
               convId,
               convType,
               msgType,
@@ -919,8 +930,8 @@ export class QuickTestScreenChat extends QuickTestScreenBase<
               timestamp,
               count,
               sender,
-              isChatThread
-            ),
+              isChatThread,
+            }),
             QuickTestScreenChat.TAG,
             MN.getMessagesWithMsgType
           );
@@ -943,14 +954,14 @@ export class QuickTestScreenChat extends QuickTestScreenBase<
           const isChatThread = this.metaData.get(MN.getMessages)?.params[5]!
             .paramDefaultValue;
           this.tryCatch(
-            ChatClient.getInstance().chatManager.getMessages(
+            ChatClient.getInstance().chatManager.getMsgs({
               convId,
               convType,
               startMsgId,
               direction,
               loadCount,
-              isChatThread
-            ),
+              isChatThread,
+            }),
             QuickTestScreenChat.TAG,
             MN.getMessages
           );
@@ -978,8 +989,10 @@ export class QuickTestScreenChat extends QuickTestScreenBase<
             ?.params[6]!.paramDefaultValue;
           const isChatThread = this.metaData.get(MN.getMessagesWithKeyword)
             ?.params[7]!.paramDefaultValue;
+          const searchScope = this.metaData.get(MN.getMessagesWithKeyword)
+            ?.params[8]!.paramDefaultValue;
           this.tryCatch(
-            ChatClient.getInstance().chatManager.getMessagesWithKeyword(
+            ChatClient.getInstance().chatManager.getMsgsWithKeyword({
               convId,
               convType,
               keywords,
@@ -987,8 +1000,9 @@ export class QuickTestScreenChat extends QuickTestScreenBase<
               timestamp,
               count,
               sender,
-              isChatThread
-            ),
+              isChatThread,
+              searchScope,
+            }),
             QuickTestScreenChat.TAG,
             MN.getMessagesWithKeyword
           );
@@ -1015,15 +1029,15 @@ export class QuickTestScreenChat extends QuickTestScreenBase<
           const isChatThread = this.metaData.get(MN.getMessageWithTimestamp)
             ?.params[6]!.paramDefaultValue;
           this.tryCatch(
-            ChatClient.getInstance().chatManager.getMessageWithTimestamp(
+            ChatClient.getInstance().chatManager.getMsgWithTimestamp({
               convId,
               convType,
               startTime,
               endTime,
               direction,
               count,
-              isChatThread
-            ),
+              isChatThread,
+            }),
             QuickTestScreenChat.TAG,
             MN.getMessageWithTimestamp
           );
@@ -1772,6 +1786,177 @@ export class QuickTestScreenChat extends QuickTestScreenBase<
             ChatClient.getInstance().chatManager.fetchCombineMessageDetail(
               message
             ),
+            QuickTestScreenChat.TAG,
+            name
+          );
+        }
+        break;
+      case MN.addRemoteAndLocalConversationsMark:
+        {
+          const methodName = this.metaData.get(
+            MN.addRemoteAndLocalConversationsMark
+          )!.methodName;
+          console.log(
+            `${MN.addRemoteAndLocalConversationsMark} === ${methodName}`
+          );
+          const convIds = this.metaData.get(
+            MN.addRemoteAndLocalConversationsMark
+          )?.params[0]!.paramDefaultValue;
+          const mark = this.metaData.get(MN.addRemoteAndLocalConversationsMark)
+            ?.params[1]!.paramDefaultValue;
+          this.tryCatch(
+            ChatClient.getInstance().chatManager.addRemoteAndLocalConversationsMark(
+              convIds,
+              mark
+            ),
+            QuickTestScreenChat.TAG,
+            name
+          );
+        }
+        break;
+      case MN.deleteRemoteAndLocalConversationsMark:
+        {
+          const methodName = this.metaData.get(
+            MN.deleteRemoteAndLocalConversationsMark
+          )!.methodName;
+          console.log(
+            `${MN.deleteRemoteAndLocalConversationsMark} === ${methodName}`
+          );
+          const convIds = this.metaData.get(
+            MN.deleteRemoteAndLocalConversationsMark
+          )?.params[0]!.paramDefaultValue;
+          const mark = this.metaData.get(
+            MN.deleteRemoteAndLocalConversationsMark
+          )?.params[1]!.paramDefaultValue;
+          this.tryCatch(
+            ChatClient.getInstance().chatManager.deleteRemoteAndLocalConversationsMark(
+              convIds,
+              mark
+            ),
+            QuickTestScreenChat.TAG,
+            name
+          );
+        }
+        break;
+      case MN.fetchConversationsByOptions:
+        {
+          const methodName = this.metaData.get(
+            MN.fetchConversationsByOptions
+          )!.methodName;
+          console.log(`${MN.fetchConversationsByOptions} === ${methodName}`);
+          const option = this.metaData.get(MN.fetchConversationsByOptions)
+            ?.params[0]!.paramDefaultValue;
+          this.tryCatch(
+            ChatClient.getInstance().chatManager.fetchConversationsByOptions(
+              option
+            ),
+            QuickTestScreenChat.TAG,
+            name
+          );
+        }
+        break;
+      case MN.deleteAllMessageAndConversation:
+        {
+          const methodName = this.metaData.get(
+            MN.deleteAllMessageAndConversation
+          )!.methodName;
+          console.log(
+            `${MN.deleteAllMessageAndConversation} === ${methodName}`
+          );
+          const clearServerData = this.metaData.get(
+            MN.deleteAllMessageAndConversation
+          )?.params[0]!.paramDefaultValue;
+          this.tryCatch(
+            ChatClient.getInstance().chatManager.deleteAllMessageAndConversation(
+              clearServerData
+            ),
+            QuickTestScreenChat.TAG,
+            name
+          );
+        }
+        break;
+      case MN.pinMessage:
+        {
+          const methodName = this.metaData.get(MN.pinMessage)!.methodName;
+          console.log(`${MN.pinMessage} === ${methodName}`);
+          const messageId = this.metaData.get(MN.pinMessage)?.params[0]!
+            .paramDefaultValue;
+          this.tryCatch(
+            ChatClient.getInstance().chatManager.pinMessage(messageId),
+            QuickTestScreenChat.TAG,
+            name
+          );
+        }
+        break;
+      case MN.unpinMessage:
+        {
+          const methodName = this.metaData.get(MN.unpinMessage)!.methodName;
+          console.log(`${MN.unpinMessage} === ${methodName}`);
+          const messageId = this.metaData.get(MN.unpinMessage)?.params[0]!
+            .paramDefaultValue;
+          this.tryCatch(
+            ChatClient.getInstance().chatManager.unpinMessage(messageId),
+            QuickTestScreenChat.TAG,
+            name
+          );
+        }
+        break;
+      case MN.fetchPinnedMessages:
+        {
+          const methodName = this.metaData.get(
+            MN.fetchPinnedMessages
+          )!.methodName;
+          console.log(`${MN.fetchPinnedMessages} === ${methodName}`);
+          const convId = this.metaData.get(MN.fetchPinnedMessages)?.params[0]!
+            .paramDefaultValue;
+          const convType = this.metaData.get(MN.fetchPinnedMessages)?.params[1]!
+            .paramDefaultValue;
+          const isChatThread = this.metaData.get(MN.fetchPinnedMessages)
+            ?.params[2]!.paramDefaultValue;
+          this.tryCatch(
+            ChatClient.getInstance().chatManager.fetchPinnedMessages(
+              convId,
+              convType,
+              isChatThread
+            ),
+            QuickTestScreenChat.TAG,
+            name
+          );
+        }
+        break;
+      case MN.getPinnedMessages:
+        {
+          const methodName = this.metaData.get(
+            MN.getPinnedMessages
+          )!.methodName;
+          console.log(`${MN.getPinnedMessages} === ${methodName}`);
+          const convId = this.metaData.get(MN.getPinnedMessages)?.params[0]!
+            .paramDefaultValue;
+          const convType = this.metaData.get(MN.getPinnedMessages)?.params[1]!
+            .paramDefaultValue;
+          const isChatThread = this.metaData.get(MN.getPinnedMessages)
+            ?.params[2]!.paramDefaultValue;
+          this.tryCatch(
+            ChatClient.getInstance().chatManager.getPinnedMessages(
+              convId,
+              convType,
+              isChatThread
+            ),
+            QuickTestScreenChat.TAG,
+            name
+          );
+        }
+        break;
+      case MN.getMessagePinInfo:
+        {
+          const methodName = this.metaData.get(
+            MN.getMessagePinInfo
+          )!.methodName;
+          console.log(`${MN.getMessagePinInfo} === ${methodName}`);
+          const messageId = this.metaData.get(MN.getMessagePinInfo)?.params[0]!
+            .paramDefaultValue;
+          this.tryCatch(
+            ChatClient.getInstance().chatManager.getMessagePinInfo(messageId),
             QuickTestScreenChat.TAG,
             name
           );

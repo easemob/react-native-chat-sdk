@@ -1,4 +1,5 @@
 import {
+  ChatConversationFetchOptions,
   ChatConversationType,
   ChatMessageChatType,
   ChatMessageType,
@@ -84,6 +85,16 @@ export const MN = {
   pinConversation: 'pinConversation',
   modifyMessageBody: 'modifyMessageBody',
   fetchCombineMessageDetail: 'fetchCombineMessageDetail',
+  addRemoteAndLocalConversationsMark: 'addRemoteAndLocalConversationsMark',
+  deleteRemoteAndLocalConversationsMark:
+    'deleteRemoteAndLocalConversationsMark',
+  fetchConversationsByOptions: 'fetchConversationsByOptions',
+  deleteAllMessageAndConversation: 'deleteAllMessageAndConversation',
+  pinMessage: 'pinMessage',
+  unpinMessage: 'unpinMessage',
+  fetchPinnedMessages: 'fetchPinnedMessages',
+  getPinnedMessages: 'getPinnedMessages',
+  getMessagePinInfo: 'getMessagePinInfo',
 };
 
 export const metaDataList = new Map<string, ApiParams>([
@@ -835,6 +846,11 @@ export const metaDataList = new Map<string, ApiParams>([
           paramType: 'boolean',
           paramDefaultValue: false,
           domType: 'select',
+        },
+        {
+          paramName: 'searchScope',
+          paramType: 'number',
+          paramDefaultValue: 0,
         },
       ],
     },
@@ -1623,6 +1639,155 @@ export const metaDataList = new Map<string, ApiParams>([
             isOnline: true,
             deliverOnlineOnly: false,
           },
+        },
+      ],
+    },
+  ],
+  [
+    MN.addRemoteAndLocalConversationsMark,
+    {
+      methodName: MN.addRemoteAndLocalConversationsMark,
+      params: [
+        {
+          paramName: 'convIds',
+          paramType: 'json',
+          paramDefaultValue: ['1171296473862636988'],
+        },
+        {
+          paramName: 'mark',
+          paramType: 'number',
+          paramDefaultValue: 0,
+        },
+      ],
+    },
+  ],
+  [
+    MN.deleteRemoteAndLocalConversationsMark,
+    {
+      methodName: MN.deleteRemoteAndLocalConversationsMark,
+      params: [
+        {
+          paramName: 'convIds',
+          paramType: 'json',
+          paramDefaultValue: ['1171296473862636988'],
+        },
+        {
+          paramName: 'mark',
+          paramType: 'number',
+          paramDefaultValue: 0,
+        },
+      ],
+    },
+  ],
+  [
+    MN.fetchConversationsByOptions,
+    {
+      methodName: MN.fetchConversationsByOptions,
+      params: [
+        {
+          paramName: 'option',
+          paramType: 'json',
+          paramDefaultValue: ChatConversationFetchOptions.default(),
+        },
+      ],
+    },
+  ],
+  [
+    MN.deleteAllMessageAndConversation,
+    {
+      methodName: MN.deleteAllMessageAndConversation,
+      params: [
+        {
+          paramName: 'clearServerData',
+          paramType: 'boolean',
+          paramDefaultValue: false,
+        },
+      ],
+    },
+  ],
+  [
+    MN.pinMessage,
+    {
+      methodName: MN.pinMessage,
+      params: [
+        {
+          paramName: 'messageId',
+          paramType: 'string',
+          paramDefaultValue: '123',
+        },
+      ],
+    },
+  ],
+  [
+    MN.unpinMessage,
+    {
+      methodName: MN.unpinMessage,
+      params: [
+        {
+          paramName: 'messageId',
+          paramType: 'string',
+          paramDefaultValue: '123',
+        },
+      ],
+    },
+  ],
+  [
+    MN.fetchPinnedMessages,
+    {
+      methodName: MN.fetchPinnedMessages,
+      params: [
+        {
+          paramName: 'convId',
+          paramType: 'string',
+          paramDefaultValue: '123',
+        },
+        {
+          paramName: 'convType',
+          paramType: 'number',
+          paramDefaultValue: 0,
+        },
+        {
+          paramName: 'isChatThread',
+          paramType: 'boolean',
+          paramDefaultValue: false,
+          domType: 'select',
+        },
+      ],
+    },
+  ],
+  [
+    MN.getPinnedMessages,
+    {
+      methodName: MN.getPinnedMessages,
+      params: [
+        {
+          paramName: 'convId',
+          paramType: 'string',
+          paramDefaultValue: '123',
+        },
+        {
+          paramName: 'convType',
+          paramType: 'number',
+          paramDefaultValue: 0,
+        },
+        {
+          paramName: 'isChatThread',
+          paramType: 'boolean',
+          paramDefaultValue: false,
+          domType: 'select',
+        },
+      ],
+    },
+  ],
+  [
+    MN.getMessagePinInfo,
+    {
+      methodName: MN.getMessagePinInfo,
+      params: [
+        {
+          paramName: 'messageId',
+          paramType: 'string',
+          paramDefaultValue: '123',
         },
       ],
     },
