@@ -82,7 +82,7 @@ Agora Console: 参考上一章节 **FCM 推送需要哪些参数**
 - `Console -> Project Management -> Config -> Features -> Chat -> Features -> Overview -> Offline Message Push` , 该选项需要启用
 - 启用 push 的位置: `Project List / Project Detail / Chat - Overview`
   证书配置:
-- `Console -> Project Management -> Config -> Features -> Chat -> Features -> Push Certificate -> Add Push Certificate` , 在该对话框添加相关信息
+- `Console -> Project Management -> Config -> Features -> Chat -> Features -> Push Certificate -> Add Push Certificate` , 在该会话框添加相关信息
 - 证书配置的位置: `Project List / Project Detail / Chat - Push Certificate`
   参考下面截图。
 
