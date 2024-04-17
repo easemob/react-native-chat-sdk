@@ -23,6 +23,7 @@ import { ChatAreaCode } from './common/ChatAreaCode';
 import { ChatContact } from './common/ChatContact';
 import {
   ChatConversation,
+  ChatConversationMarkType,
   ChatConversationType,
   ChatConversationTypeToString,
 } from './common/ChatConversation';
@@ -65,6 +66,9 @@ import {
   ChatMessageChatTypeFromNumber,
   ChatMessageDirection,
   ChatMessageDirectionFromString,
+  ChatMessagePinInfo,
+  ChatMessagePinOperation,
+  ChatMessageSearchScope,
   ChatMessageStatus,
   ChatMessageStatusCallback,
   ChatMessageStatusFromNumber,
@@ -149,12 +153,15 @@ export {
  */
 export {
   ChatAreaCode,
+  ChatConversationMarkType,
   ChatConversationType,
   ChatDownloadStatus,
   ChatGroupPermissionType,
   ChatGroupStyle,
   ChatMessageChatType,
   ChatMessageDirection,
+  ChatMessagePinOperation,
+  ChatMessageSearchScope,
   ChatMessageStatus,
   ChatMessageThreadOperation,
   ChatMessageType,
@@ -193,6 +200,7 @@ export {
   ChatLog,
   ChatMessage,
   ChatMessageBody,
+  ChatMessagePinInfo,
   ChatMessageReaction,
   ChatMessageReactionEvent,
   ChatMessageStatusCallback,
