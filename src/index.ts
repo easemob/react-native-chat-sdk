@@ -4,6 +4,7 @@ import {
   ChatConnectEventListener,
   ChatContactEventListener,
   ChatCustomEventListener,
+  ChatExceptionEventListener,
   ChatGroupEventListener,
   ChatMessageEventListener,
   ChatMultiDeviceEvent,
@@ -22,6 +23,8 @@ import { ChatAreaCode } from './common/ChatAreaCode';
 import { ChatContact } from './common/ChatContact';
 import {
   ChatConversation,
+  ChatConversationFetchOptions,
+  ChatConversationMarkType,
   ChatConversationType,
   ChatConversationTypeToString,
 } from './common/ChatConversation';
@@ -31,7 +34,7 @@ import {
 } from './common/ChatConversation';
 import { ChatCursorResult } from './common/ChatCursorResult';
 import { ChatDeviceInfo } from './common/ChatDeviceInfo';
-import { ChatError } from './common/ChatError';
+import { ChatError, ChatException } from './common/ChatError';
 import {
   ChatGroup,
   ChatGroupFileStatusCallback,
@@ -49,6 +52,7 @@ import {
 import { ChatLog } from './common/ChatLog';
 import {
   ChatCmdMessageBody,
+  ChatCombineMessageBody,
   ChatCustomMessageBody,
   ChatDownloadStatus,
   ChatDownloadStatusFromNumber,
@@ -63,6 +67,9 @@ import {
   ChatMessageChatTypeFromNumber,
   ChatMessageDirection,
   ChatMessageDirectionFromString,
+  ChatMessagePinInfo,
+  ChatMessagePinOperation,
+  ChatMessageSearchScope,
   ChatMessageStatus,
   ChatMessageStatusCallback,
   ChatMessageStatusFromNumber,
@@ -77,6 +84,7 @@ import {
 import {
   ChatMessageReaction,
   ChatMessageReactionEvent,
+  ChatReactionOperate,
   ChatReactionOperation,
 } from './common/ChatMessageReaction';
 import {
@@ -133,6 +141,7 @@ export {
   ChatConnectEventListener,
   ChatContactEventListener,
   ChatCustomEventListener,
+  ChatExceptionEventListener,
   ChatGroupEventListener,
   ChatMessageEventListener,
   ChatMultiDeviceEventListener,
@@ -145,17 +154,21 @@ export {
  */
 export {
   ChatAreaCode,
+  ChatConversationMarkType,
   ChatConversationType,
   ChatDownloadStatus,
   ChatGroupPermissionType,
   ChatGroupStyle,
   ChatMessageChatType,
   ChatMessageDirection,
+  ChatMessagePinOperation,
+  ChatMessageSearchScope,
   ChatMessageStatus,
   ChatMessageThreadOperation,
   ChatMessageType,
   ChatPushDisplayStyle,
   ChatPushRemindType,
+  ChatReactionOperate,
   ChatRoomMessagePriority,
   ChatRoomPermissionType,
   ChatSearchDirection,
@@ -167,12 +180,15 @@ export {
  */
 export {
   ChatCmdMessageBody,
+  ChatCombineMessageBody,
   ChatContact,
   ChatConversation,
+  ChatConversationFetchOptions,
   ChatCursorResult,
   ChatCustomMessageBody,
   ChatDeviceInfo,
   ChatError,
+  ChatException,
   ChatFetchMessageOptions,
   ChatFileMessageBody,
   ChatGroup,
@@ -186,6 +202,7 @@ export {
   ChatLog,
   ChatMessage,
   ChatMessageBody,
+  ChatMessagePinInfo,
   ChatMessageReaction,
   ChatMessageReactionEvent,
   ChatMessageStatusCallback,

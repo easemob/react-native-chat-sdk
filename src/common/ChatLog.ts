@@ -31,7 +31,7 @@ export class ChatLog {
    * @param message All arguments besides `value` are used as error message.
    */
   assert(value: any, message?: string, ...optionalParams: any[]): void {
-    if (ChatLog._enableLog) {
+    if (this._enableLog) {
       console.assert(value, message, ...optionalParams);
     }
   }
@@ -46,7 +46,7 @@ export class ChatLog {
    * @since v8.3.0
    */
   clear(): void {
-    if (ChatLog._enableLog) {
+    if (this._enableLog) {
       console.clear();
     }
   }
@@ -79,7 +79,7 @@ export class ChatLog {
    * @param label The display label for the counter.
    */
   count(label?: string): void {
-    if (ChatLog._enableLog) {
+    if (this._enableLog) {
       console.count(label);
     }
   }
@@ -101,7 +101,7 @@ export class ChatLog {
    * @param label The display label for the counter.
    */
   countReset(label?: string): void {
-    if (ChatLog._enableLog) {
+    if (this._enableLog) {
       console.countReset(label);
     }
   }
@@ -118,7 +118,7 @@ export class ChatLog {
    * @since v0.1.101
    */
   dir(obj: any, options?: InspectOptions): void {
-    if (ChatLog._enableLog) {
+    if (this._enableLog) {
       console.dir(obj, options);
     }
   }
@@ -128,7 +128,7 @@ export class ChatLog {
    * @since v8.0.0
    */
   dirxml(...data: any[]): void {
-    if (ChatLog._enableLog) {
+    if (this._enableLog) {
       console.dirxml(...data);
     }
   }
@@ -160,7 +160,7 @@ export class ChatLog {
    * @since v8.5.0
    */
   group(...label: any[]): void {
-    if (ChatLog._enableLog) {
+    if (this._enableLog) {
       console.group(...label);
     }
   }
@@ -169,7 +169,7 @@ export class ChatLog {
    * @since v8.5.0
    */
   groupCollapsed(...label: any[]): void {
-    if (ChatLog._enableLog) {
+    if (this._enableLog) {
       console.groupCollapsed(...label);
     }
   }
@@ -178,7 +178,7 @@ export class ChatLog {
    * @since v8.5.0
    */
   groupEnd(): void {
-    if (ChatLog._enableLog) {
+    if (this._enableLog) {
       console.groupEnd();
     }
   }
@@ -240,7 +240,7 @@ export class ChatLog {
    * @param properties Alternate properties for constructing the table.
    */
   table(tabularData: any, properties?: ReadonlyArray<string>): void {
-    if (ChatLog._enableLog) {
+    if (this._enableLog) {
       console.table(tabularData, properties);
     }
   }
@@ -252,7 +252,7 @@ export class ChatLog {
    * @since v0.1.104
    */
   time(label?: string): void {
-    if (ChatLog._enableLog) {
+    if (this._enableLog) {
       console.time(label);
     }
   }
@@ -269,7 +269,7 @@ export class ChatLog {
    * @since v0.1.104
    */
   timeEnd(label?: string): void {
-    if (ChatLog._enableLog) {
+    if (this._enableLog) {
       console.timeEnd(label);
     }
   }
@@ -288,7 +288,7 @@ export class ChatLog {
    * @since v10.7.0
    */
   timeLog(label?: string, ...data: any[]): void {
-    if (ChatLog._enableLog) {
+    if (this._enableLog) {
       console.timeLog(label, ...data);
     }
   }
@@ -328,7 +328,7 @@ export class ChatLog {
    *  Starts a JavaScript CPU profile with an optional label.
    */
   profile(label?: string): void {
-    if (ChatLog._enableLog) {
+    if (this._enableLog) {
       console.profile(label);
     }
   }
@@ -337,7 +337,7 @@ export class ChatLog {
    *  Stops the current JavaScript CPU profiling session if one has been started and prints the report to the Profiles panel of the inspector.
    */
   profileEnd(label?: string): void {
-    if (ChatLog._enableLog) {
+    if (this._enableLog) {
       console.profileEnd(label);
     }
   }
@@ -346,45 +346,45 @@ export class ChatLog {
    *  Adds an event with the label `label` to the Timeline panel of the inspector.
    */
   timeStamp(label?: string): void {
-    if (ChatLog._enableLog) {
+    if (this._enableLog) {
       console.timeStamp(label);
     }
   }
 
-  private static _enableLog = true;
+  private _enableLog = true;
 
   set enableLog(is: boolean) {
-    ChatLog._enableLog = is;
+    this._enableLog = is;
   }
 
   get enableLog(): boolean {
-    return ChatLog._enableLog;
+    return this._enableLog;
   }
 
-  private static _enableTimestamp = true;
+  private _enableTimestamp = true;
 
   set enableTimestamp(is: boolean) {
-    ChatLog._enableTimestamp = is;
+    this._enableTimestamp = is;
   }
 
   get enableTimestamp(): boolean {
-    return ChatLog._enableTimestamp;
+    return this._enableTimestamp;
   }
 
-  private static _tag = '[test]';
+  private _tag = '[test]';
 
   set tag(tag: string) {
-    ChatLog._tag = tag;
+    this._tag = tag;
   }
 
   get tag(): string {
-    return ChatLog._tag;
+    return this._tag;
   }
 
-  private static _h: PrintFunctionType | undefined;
+  private _h: PrintFunctionType | undefined;
 
   set handler(h: PrintFunctionType) {
-    ChatLog._h = h;
+    this._h = h;
   }
 
   private _ft(): string {
@@ -425,7 +425,7 @@ export class ChatLog {
     message?: any,
     ...optionalParams: any[]
   ): void {
-    if (ChatLog._enableLog) {
+    if (this._enableLog) {
       if (this.tag.length > 0) {
         if (this.enableTimestamp === true) {
           f(this.tag, this._ft(), message, ...optionalParams);
@@ -439,8 +439,8 @@ export class ChatLog {
           f(message, ...optionalParams);
         }
       }
-      if (ChatLog._h) {
-        ChatLog._h(type, message, ...optionalParams);
+      if (this._h) {
+        this._h(type, message, ...optionalParams);
       }
     }
   }

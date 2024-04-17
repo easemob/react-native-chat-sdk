@@ -1,47 +1,47 @@
 import { ChatMessage } from './ChatMessage';
 
 /**
- * The chat message thread class.
+ * 消息子区类。
  */
 export class ChatMessageThread {
   /**
-   * The message thread ID.
+   * 子区 ID。
    */
   threadId: string;
   /**
-   * The name of the message thread.
+   * 子区名称。
    */
   threadName: string;
   /**
-   * The creator of the message thread.
+   * 子区创建者。
    */
   owner: string;
   /**
-   * The ID of the parent message of the message thread.
+   * 子区父消息 ID。
    */
   msgId: string;
   /**
-   * The group ID where the message thread belongs.
+   * 子区所属的群组 ID。
    */
   parentId: string;
   /**
-   * The count of members in the message thread.
+   * 子区成员数量。
    */
   memberCount: number;
   /**
-   * The count of messages in the message thread.
+   * 子区消息数量。
    */
   msgCount: number;
   /**
-   * The Unix timestamp when the message thread is created. The unit is millisecond.
+   * 子区创建的 Unix 时间戳。单位为毫秒。
    */
   createAt: number;
   /**
-   * The last reply in the message thread. If it is empty, the last message is withdrawn.
+   * 子区最新一条消息。如果为空，表明最新一条消息被撤回。
    */
   lastMessage?: ChatMessage;
   /**
-   * Creates a message thread.
+   * 创建子区实例。
    */
   constructor(params: {
     threadId: string;
@@ -69,36 +69,36 @@ export class ChatMessageThread {
 }
 
 /**
- * The message thread event types.
+ * 子区事件类型枚举。
  */
 export enum ChatMessageThreadOperation {
   /**
-   * The unknown type of message thread event.
+   * 未知类型。
    */
   UnKnown = 0,
   /**
-   * The message thread is created.
+   * 子区创建。
    */
   Create,
   /**
-   * The message thread is updated.
+   * 子区更新。
    */
   Update,
   /**
-   * The message thread is destroyed.
+   * 子区删除。
    */
   Delete,
   /**
-   * One or more messages are updated in the message thread.
+   * 更新子区最新一条消息。
    */
   Update_Msg,
 }
 
 /**
- * Converts the message thread event type from Int to enum.
+ * 将子区事件类型由整型转换为枚举类型。
  *
- * @param type The message thread event type of the Int type.
- * @returns The message thread event type of the enum type.
+ * @param type 整型的子区事件。
+ * @returns 枚举类型的子区事件。
  */
 export function ChatMessageThreadOperationFromNumber(type: number) {
   let ret = ChatMessageThreadOperation.UnKnown;
@@ -122,23 +122,23 @@ export function ChatMessageThreadOperationFromNumber(type: number) {
 }
 
 /**
- * The message thread event class.
+ * 子区通知。
  */
 export class ChatMessageThreadEvent {
   /**
-   * The user ID of the message thread operator.
+   * 子区操作者。
    */
   from: string;
   /**
-   * The message thread event type.
+   * 子区事件类型。
    */
   type: ChatMessageThreadOperation;
   /**
-   * The message thread object.
+   * 子区实例。
    */
   thread: ChatMessageThread;
   /**
-   * Constructs a message thread event.
+   * 构建子区事件实例。
    */
   constructor(params: { from: string; type: number; thread: any }) {
     this.from = params.from;

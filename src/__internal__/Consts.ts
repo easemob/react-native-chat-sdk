@@ -73,6 +73,8 @@ export const MTgetConversation = 'getConversation';
 export const MTmarkAllChatMsgAsRead = 'markAllChatMsgAsRead';
 export const MTgetUnreadMessageCount = 'getUnreadMessageCount';
 export const MTupdateChatMessage = 'updateChatMessage';
+export const MTdownloadAttachmentInCombine = 'downloadAttachmentInCombine';
+export const MTdownloadThumbnailInCombine = 'downloadThumbnailInCombine';
 export const MTdownloadAttachment = 'downloadAttachment';
 export const MTdownloadThumbnail = 'downloadThumbnail';
 export const MTimportMessages = 'importMessages';
@@ -349,3 +351,18 @@ export const MTgetContact = 'getContact';
 export const MTfetchAllContacts = 'fetchAllContacts';
 export const MTfetchContacts = 'fetchContacts';
 export const MTfetchJoinedGroupCount = 'fetchJoinedGroupCount';
+
+// 2024-04-17 added
+export const MTgetPinInfo = 'getPinInfo';
+export const MTpinnedMessages = 'pinnedMessages';
+export const MTonMessagePinChanged = 'onMessagePinChanged';
+export const MTaddRemoteAndLocalConversationsMark =
+  'addRemoteAndLocalConversationsMark';
+export const MTdeleteRemoteAndLocalConversationsMark =
+  'deleteRemoteAndLocalConversationsMark';
+export const MTfetchConversationsByOptions = 'fetchConversationsByOptions';
+export const MTdeleteAllMessageAndConversation =
+  'deleteAllMessageAndConversation';
+export const MTpinMessage = 'pinMessage';
+export const MTunpinMessage = 'unpinMessage';
+export const MTfetchPinnedMessages = 'fetchPinnedMessages';

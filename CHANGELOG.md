@@ -2,6 +2,60 @@ _English | [Chinese](./CHANGELOG.zh.md)_
 
 # Update Log
 
+## 1.4.0
+
+- The dependent native SDKs are upgraded to versions (`iOS` 4.5.0 and `Android` 4.5.0). Adds new features and fixed issues provided by the native SDK.
+- Added global configuration options
+  - `enableTLS`: Whether to enable security policy. Off by default.
+  - `messagesReceiveCallbackIncludeSend`: Whether the message listener receives callback notifications for sent messages. Off by default.
+  - `regardImportMessagesAsRead`: Whether to set messages imported by the server as read.
+  - `useReplacedMessageContents`: When the content of the sent text message is replaced by the text moderation (Moderation) service, whether it needs to be returned to the sender.
+- Added message callback notification
+  - `onMessagePinChanged`: Receive notification of pinned message.
+- Added multi-device events
+  - `CONVERSATION_UPDATE_MARK`: Multi-device session mark update notification.
+- Added message manager related interfaces
+  - `addRemoteAndLocalConversationsMark`: Add conversation mark.
+  - `deleteRemoteAndLocalConversationsMark`: Delete the conversation mark.
+  - `fetchConversationsByOptions`: Get the conversation list with specified conditions.
+  - `deleteAllMessageAndConversation`: Delete all conversations and messages of the conversation.
+  - `pinMessage`: pinned message.
+  - `unpinMessage`: Unpin the message.
+  - `fetchPinnedMessages`: Get the pinned messages of the specified session.
+  - `getPinnedMessages`: Get the local pinned messages of the specified session.
+  - `getMessagePinInfo`: Get the pinned message details.
+- Added message attributes
+  - `isContentReplaced`: Whether the message content has been modified. Main user server-side message auditing. Requires global configuration of `useReplacedMessageContents`.
+  - `getPinInfo`: Get the pinned details of the message.
+- Obsolete interface description
+  - `getMessagesWithKeyword`: `getMsgsWithKeyword` replaces this interface.
+  - `getMessages`: `getMsgs` replaces this interface.
+  - `getMessageWithTimestamp`: `getMsgWithTimestamp` replaces this interface.
+  - `getMessagesWithMsgType`: `getMsgsWithMsgType` replaces this interface.
+
+## 1.3.1
+
+Issues fixed
+
+- Program crash caused by receiving unsupported multi-device event notifications. Solution: Wrap the unsupported type into an except object and notify the caller through the listener. The modifications involve the Contact Manager, Group Manager, and Chat Room Manager. Related types `ChatMultiDeviceEvent`.
+- Receiving an unsupported message body type causes the program to crash. Wrap unsupported types into except objects and notify the caller through the listener. Related types `ChatMessageType`.
+- `getConversation、getLatestMessage、getLatestReceivedMessage、getConversationUnreadCount、getConversationMessageCount、markMessageAsRead、markAllMessagesAsRead、 updateConversationMessage、deleteMessage、deleteMessagesWithTimestamp、deleteConversationAllMessages、getMessagesWithMsgType、getMessages、getMessagesWithKeyword、 getMessageWithTimestamp, setConversationExtension, removeMessagesFromServerWithMsgIds, removeMessagesFromServerWithTimestamp, increment parameter ` isChatThread`defaults to`false`.
+- The `createSendMessage` interface has changed from a private claim to a public one.
+- `fetchMembersWithChatThreadFromServer` changes the return value type
+- `ChatTextMessageBody` changed the property name from `targetLanguages` to `targetLanguageCodes`
+- Add `downloadAttachmentInCombine` and `downloadThumbnailInCombine` api.
+- Supports log output in multi-tag mode.
+
+## 1.3.0
+
+New Features
+
+- The dependent native SDK has been upgraded to version (iOS 4.2.0 and Android 4.2.1). Added new features provided by the native SDK.
+- Added friend remarks. See `ChatContact`
+- Added global broadcast. See `ChatMessage.isBroadcast`
+- Added the ability to get the number of joined groups. See `ChatGroupManager.fetchJoinedGroupCount`
+- Updated the callback notification when a group application is declined. See `ChatGroupEventListener.onRequestToJoinDeclined`
+
 ## 1.2.2
 
 Issues fixed

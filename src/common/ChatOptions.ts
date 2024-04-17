@@ -2,184 +2,188 @@ import { ChatAreaCode } from './ChatAreaCode';
 import type { ChatPushConfig } from './ChatPushConfig';
 
 /**
- * The chat setting class that defines parameters and options of the SDK, including whether to encrypt the messages before sending them and whether to automatically accept the friend invitations.
+ * 聊天设置类，用于定义 SDK 的各种参数和选项，例如，是否发送前加密信息、是否自动接受加好友邀请等。
  */
 export class ChatOptions {
   /**
-   * The App Key you get from the console when creating a chat app. It is the unique identifier of your app.
+   * 创建 App 时在 console 后台上注册的 App 唯一识别符，即 App Key。
    */
   appKey: string;
   /**
-   * Whether to enable automatic login.
-   *
-   * - (Default) `true`: Enables automatic login.
-   * - `false`: Disables automatic login.
+   * 是否开启自动登录。
+   * -（默认） `true`：开启；
+   * - `false`：关闭。
    */
   autoLogin: boolean;
   /**
-   * Whether to output the debug information.
-   * - `true`: Yes.
-   * - (Default) `false`: No.
-   *
+   * 是否输出调试信息。
+   * - `true`: SDK 会在日志里输出调试信息。
+   * - （默认） `false`: SDK 不输出调试信息。
    */
   debugModel: boolean;
   /**
-   * Global flag for printing logs.
+   * 日志可以带上的标记。区别其它类型的日志。
    */
   logTag?: string;
   /**
-   * Whether to activate the timestamp of the log.
+   * 是否激活日志的时间戳。
    */
   logTimestamp?: boolean;
   /**
-   * Whether to accept friend invitations from other users automatically.
+   * 是否自动接受好友邀请。
    *
-   * - `true`: Yes.
-   * - (Default) `false`: No.
+   * - `true`: 是.
+   * - (Default) `false`: 否.
    */
   acceptInvitationAlways: boolean;
   /**
-   * Whether to accept group invitations automatically.
-   *
-   * - `true`: Yes.
-   * - (Default) `false`: No.
+   * 是否自动接受群组邀请。
+   * - （默认） `true`：是。
+   * - `false`：否。
    */
   autoAcceptGroupInvitation: boolean;
   /**
-   * Whether to require the read receipt. This setting has no effect on {@link ChatManager.sendConversationReadAck}.
-   *
-   * - (Default) `true`: Yes.
-   * - `false`: No.
+   * 是否需要接收方发送已读回执。这个设置对于 {@link ChatManager.sendConversationReadAck} 无效。
+   * - （默认） `true`：是；
+   * - `false`：否。
    */
   requireAck: boolean;
   /**
-   * Whether to require the delivery receipt.
+   * 是否需要接收方发送送达回执。
+   * -（默认）`true`：是；
+   * - `false`：否。
    *
-   * **Note**
-   *
-   * Only valid for single chat messages. {@link ChatMessageChatType.PeerChat}
-   *
-   * - `true`: Yes.
-   * - (Default) `false`: No.
+   * 只对单聊有效。 {@link ChatMessageChatType.PeerChat}
    */
   requireDeliveryAck: boolean;
   /**
-   * Whether to delete the historical messages of the group stored in the memory and local database when leaving a group (either voluntarily or passively).
-   *
-   * - (Default) `true`: Yes.
-   * - `false`: No.
+   * 是否在退出（主动或被动）群组时删除该群组中在内存和本地数据库中的历史消息。
+   * - （默认） `true`: 是；
+   * - `false`: 否。
    */
   deleteMessagesAsExitGroup: boolean;
   /**
-   * Whether to delete the historical messages of the chat room in the memory and local database when leaving the chat room (either voluntarily or passively).
-   *
-   * - (Default) `true`: Yes.
-   * - `false`: No.
+   * 是否在退出（主动或被动）聊天室时删除该聊天室在内存和本地数据库中的历史消息。
+   * - （默认） `true`: 是；
+   * - `false`：否。
    */
   deleteMessagesAsExitChatRoom: boolean;
   /**
-   * Whether to allow the chat room owner to leave the chat room.
-   *
-   * - (Default) `true`: Yes. When leaving the chat room, the chat room owner still has all privileges, except for receive messages in the chat room.
-   * - `false`: No.
+   * 是否允许聊天室所有者离开聊天室。
+   * - （默认） `true`: 允许。离开聊天室后，聊天室所有者除了接收不到该聊天室的消息，其他权限不变。
+   * - `false`: 不允许。
    */
   isChatRoomOwnerLeaveAllowed: boolean;
   /**
-   * Whether to sort the messages in the reverse chronological order of the time when they are received by the server.
-   *
-   * - (Default) `true`: Yes;
-   * - `false`: No. Messages are sorted in the reverse chronological order of the time when they are created.
+   * 是否按服务器收到消息时间的倒序对消息排序。
+   * - （默认） `true`：是；
+   * - `false`：否。按消息创建时间的倒序排序。
    */
   sortMessageByServerTime: boolean;
   /**
-   * Whether only HTTPS is used for REST operations.
-   *
-   * - (Default) `true`: Only HTTPS is supported.
-   * - `false`: Both HTTP and HTTPS are allowed.
+   * 是否只通过 HTTPS 进行 REST 操作。
+   * - （默认） `true`：是；
+   * - `false`：否。支持 HTTPS 和 HTTP。
    */
   usingHttpsOnly: boolean;
   /**
-   * Whether to upload the message attachments automatically to the chat server.
-   *
-   * - (Default) `true`: Yes.
-   * - `false`: No. A custom path is used.
+   * 是否自动将消息附件上传到聊天服务器。
+   * -（默认）`true`：是；
+   * - `false`：否。
    */
   serverTransfer: boolean;
   /**
-   * Whether to automatically download the thumbnail.
-   *
-   * - (Default) `true`: Yes.
-   * - `false`: No.
+   * 是否自动下载缩略图。
+   * - （默认） `true`：是；
+   * - `false`：否。
    */
   isAutoDownload: boolean;
   /**
-   * The push configuration.
+   * 推送设置。
    */
   pushConfig?: ChatPushConfig;
   /**
-   * Whether to disable DNS.
-   *
-   * - (Default) `true`: Yes.
-   * - `false`: No. DNS needs to be disabled for private deployment.
+   * 设置是否开启 DNS。
+   * - （默认） `true`：开启。
+   * - `false`：关闭。私有部署时需要关闭。
    */
   enableDNSConfig: boolean;
   /**
-   * The URL of the DNS server.
+   * DNS 服务器的地址。
    */
   dnsUrl: string;
   /**
-   * The custom address of the REST server.
+   * REST 服务器地址。
    *
-   * This address is used when you implement data isolation and data security during private deployment.
+   * 该地址在进行私有部署时实现数据隔离和数据安全时使用。
    *
-   * If you need the address, contact our business manager.
+   * 如有需求，请联系商务。
    */
   restServer: string;
   /**
-   * The custom address of the IM message server.
+   * IM 消息服务器地址。
    *
-   * This address is used when you implement data isolation and data security during private deployment.
+   * 该地址在进行私有部署时实现数据隔离和数据安全时使用。
    *
-   * If you need the address, contact our business manager.
+   * 如有需求，请联系商务。
    */
   imServer: string;
   /**
-   * The custom port of the IM server.
+   * IM 消息服务器的自定义端口号。
    *
-   * The custom port is used when you implement data isolation and data security during private deployment.
+   * 该端口在进行私有部署时实现数据隔离和数据安全时使用。
    *
-   * If you need the port, contact our business manager.
+   * 如有需求，请联系商务。
    */
   imPort: number;
   /**
-   * The area code.
-   * This attribute is used to restrict the scope of accessible edge nodes. The default value is `GLOB`. See {@link ChatAreaCode}.
-   * This attribute can be set only when you call {@link ChatClient.init}. The attribute setting cannot be changed during the app runtime.
+   * 是否激活 TLS。默认false。
+   */
+  enableTLS: boolean;
+  /**
+   * 接收消息通知是否包含发送消息。
+   */
+  messagesReceiveCallbackIncludeSend: boolean;
+  /**
+   * 是否将导入的消息视为已读。
+   */
+  regardImportMessagesAsRead: boolean;
+  /**
+   * 区号。
+   * 该属性用于限制可访问边缘节点的范围。 默认值为“GLOB”。 请参阅{@link ChatAreaCode}。
+   * 该属性只有在调用 {@link ChatClient.init} 时才能设置。 在应用程序运行期间无法更改属性设置。
    */
   areaCode: ChatAreaCode;
 
   /**
-   * Whether to include empty conversations when the SDK loads conversations from the local database:
+   * SDK 从本地数据库中加载会话时是否包含空会话（没有消息的会话）：
    *
-   * - `true`: Yes. Empty conversations are included.
-   * - (Default) `false`: No. Empty conversations are excluded.
+   * - `true`：包含空会话；
+   * - （默认）`false`：不包含空会话。
    */
   enableEmptyConversation: boolean;
 
   /**
-   * Custom device name.
+   * 自定义设备名称。
    *
-   * This attribute does not take effect when `customOSType` is set to `-1`.
+   * `customOSType` 设置为 -1，则该属性不生效。
    *
-   * An application scenario is as follows: User A wants to log in to a mobile phone and a tablet with the same user account. Then the user sets `customOSType` to `1` and `customDeviceName` to `foo`.
+   * 典型应用：用户需要iphone手机和ipad设备同时在线。
    *
    */
   customDeviceName?: string;
 
   /**
-   * Custom system type.
+   * 自定义设备类型。
    */
   customOSType?: number;
+
+  /**
+   * 服务器是否在文本审核期间向发送者返回文本消息并替换内容。
+   *
+   * 默认为假。
+   */
+  useReplacedMessageContents: boolean;
 
   constructor(params: {
     appKey: string;
@@ -203,6 +207,15 @@ export class ChatOptions {
     enableEmptyConversation?: boolean;
     customDeviceName?: string;
     customOSType?: number;
+    enableDNSConfig?: boolean;
+    dnsUrl?: string;
+    restServer?: string;
+    imServer?: string;
+    imPort?: number;
+    enableTLS?: boolean;
+    messagesReceiveCallbackIncludeSend?: boolean;
+    regardImportMessagesAsRead?: boolean;
+    useReplacedMessageContents?: boolean;
   }) {
     this.appKey = params.appKey;
     this.autoLogin = params.autoLogin ?? true;
@@ -221,16 +234,24 @@ export class ChatOptions {
     this.serverTransfer = params.serverTransfer ?? true;
     this.isAutoDownload = params.isAutoDownload ?? true;
     this.pushConfig = params.pushConfig;
-    this.enableDNSConfig = true;
-    this.dnsUrl = '';
-    this.restServer = '';
-    this.imServer = '';
-    this.imPort = 0;
+    this.enableDNSConfig =
+      params.enableDNSConfig !== undefined ? params.enableDNSConfig : true;
+    this.dnsUrl = params.dnsUrl ?? '';
+    this.restServer = params.restServer ?? '';
+    this.imServer = params.imServer ?? '';
+    this.imPort = params.imPort !== undefined ? params.imPort : 0;
     this.areaCode = params.areaCode ?? ChatAreaCode.GLOB;
     this.logTag = params.logTag;
     this.logTimestamp = params.logTimestamp;
     this.enableEmptyConversation = params.enableEmptyConversation ?? false;
     this.customDeviceName = params.customDeviceName;
     this.customOSType = params.customOSType;
+    this.enableTLS = params.enableTLS ?? false;
+    this.messagesReceiveCallbackIncludeSend =
+      params.messagesReceiveCallbackIncludeSend ?? false;
+    this.regardImportMessagesAsRead =
+      params.regardImportMessagesAsRead ?? false;
+    this.useReplacedMessageContents =
+      params.useReplacedMessageContents ?? false;
   }
 }

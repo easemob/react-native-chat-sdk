@@ -1,6 +1,6 @@
 {
   "name": "react-native-chat-sdk",
-  "version": "1.3.0",
+  "version": "1.4.0-alpha.1",
   "description": "react native chat sdk",
   "main": "lib/commonjs/index",
   "module": "lib/module/index",
@@ -137,7 +137,8 @@
           "test",
           "tag",
           "api",
-          "example"
+          "example",
+          "tag"
         ]
       ]
     }

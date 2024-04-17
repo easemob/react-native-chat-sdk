@@ -1,25 +1,25 @@
 /**
- * The presence property class that contains presence properties, including the publisher's user ID and current presence state, and the platform used by the online device, as well as the presence's extension information, update time, and subscription expiration time.
+ * 在线状态属性类，包含发布者的用户名、在线设备使用的平台、当前在线状态以及在线状态的扩展信息、更新时间和到期时间。
  */
 export class ChatPresence {
   /**
-   * The user ID of the presence publisher.
+   * 在线状态发布者的用户 ID。
    */
   publisher: string;
   /**
-   * The custom online state such as busy, away, or hidden.
+   * 自定义在线状态，例如忙碌、离开和隐身等。
    */
   statusDescription: string;
   /**
-   * The Unix timestamp when the presence state is last updated. The unit is second.
+   * 在线状态更新 Unix 时间戳，单位为秒。
    */
   lastTime: string;
   /**
-   * The Unix timestamp when the presence subscription expires. The unit is second.
+   * 在线状态订阅到期 Unix 时间戳，单位为秒。
    */
   expiryTime: string;
   /**
-   * The details of the current presence state.
+   * 该用户的当前在线状态详情。
    */
   statusDetails: Map<string, number>;
 
