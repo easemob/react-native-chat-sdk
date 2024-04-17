@@ -661,7 +661,7 @@ export interface ChatMessageEventListener {
    * - Param [pinOperation] The pin operation. The value is 1.
    * - Param [pinInfo] The pin information. see {@link ChatMessagePinInfo}.
    */
-  onMessagePinChanged(params: {
+  onMessagePinChanged?(params: {
     messageId: string;
     convId: string;
     pinOperation: number;
