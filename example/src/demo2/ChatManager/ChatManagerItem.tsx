@@ -1,5 +1,5 @@
 import React, { ReactNode } from 'react';
-import { Text, View } from 'react-native';
+import { Pressable, Text, View } from 'react-native';
 import type {
   ChatConversationFetchOptions,
   ChatFetchMessageOptions,
@@ -29,8 +29,12 @@ import {
 } from '../__internal__/LeafScreenBase';
 import { generateData } from '../__internal__/Utils';
 import { ChatManagerCache, metaDataList, MN } from './ChatManagerData';
+import { gMessageApiList } from './const';
+import { splitApiList } from './split';
 
 export interface StateChatMessage extends StateBase {
+  list: string[];
+  keyword: string;
   cb_result: string;
   resendMessage: {
     message: ChatMessage;
@@ -388,6 +392,7 @@ export interface StatelessChatMessage extends StatelessBase {
   sendMessageReadAck: {
     message?: ChatMessage;
   };
+  apiListList: string[][];
 }
 
 export class ChatManagerLeafScreen extends LeafScreenBase<StateChatMessage> {
@@ -404,11 +409,14 @@ export class ChatManagerLeafScreen extends LeafScreenBase<StateChatMessage> {
       recvResult: '',
       exceptResult: '',
       cb_result: '',
+      list: [],
+      keyword: '',
     });
     this.statelessData = {
       sendMessage: {},
       resendMessage: {},
       sendMessageReadAck: {},
+      apiListList: splitApiList(gMessageApiList),
     };
     this.stateTemp = Object.assign({}, this.state);
   }
@@ -623,94 +631,58 @@ export class ChatManagerLeafScreen extends LeafScreenBase<StateChatMessage> {
     ];
   }
 
-  protected renderBody(): ReactNode {
-    // console.log(`${ChatManagerLeafScreen.TAG}: renderBody: `);
+  private onChangePage(key: string) {
+    console.log('test:zuoyu:key:', key, this === undefined);
+    if (key === 'thread') {
+      this.setState({ list: this.statelessData.apiListList[0]!, keyword: key });
+    } else if (key === 'message') {
+      this.setState({ list: this.statelessData.apiListList[1]!, keyword: key });
+    } else if (key === 'others') {
+      this.setState({ list: this.statelessData.apiListList[2]!, keyword: key });
+    }
+  }
+
+  private renderPageButton({ kw }: { kw: string }) {
+    const { keyword } = this.state;
     return (
-      <View style={styleValues.containerColumn}>{this.renderApiDom()}</View>
+      <Pressable
+        style={{
+          height: 20,
+          backgroundColor: keyword === kw ? 'orange' : undefined,
+          borderRadius: 4,
+        }}
+        onPress={() => {
+          this.onChangePage(kw);
+        }}
+      >
+        <Text>{kw}</Text>
+      </Pressable>
+    );
+  }
+
+  protected renderBody(): ReactNode {
+    return (
+      <View style={styleValues.containerColumn}>
+        <View
+          style={{
+            flexDirection: 'row',
+            justifyContent: 'space-evenly',
+            width: '100%',
+          }}
+        >
+          {this.renderPageButton({ kw: 'thread' })}
+          {this.renderPageButton({ kw: 'message' })}
+          {this.renderPageButton({ kw: 'others' })}
+        </View>
+
+        {this.renderApiDom()}
+      </View>
     );
   }
   protected renderApiDom(): ReactNode[] {
-    const apiList = [
-      'resendMessage',
-      'sendMessageReadAck',
-      'sendGroupMessageReadAck',
-      'sendConversationReadAck',
-      'recallMessage',
-      'getMessage',
-      'markAllConversationsAsRead',
-      'getUnreadCount',
-      'updateMessage',
-      'importMessages',
-      'downloadAttachment',
-      'downloadThumbnail',
-      'fetchHistoryMessages',
-      'searchMsgFromDB',
-      'fetchGroupAcks',
-      'removeConversationFromServer',
-      'getConversation',
-      'getAllConversations',
-      'fetchAllConversations',
-      'deleteConversation',
-      'getLatestMessage',
-      'getLastReceivedMessage',
-      'getConversationUnreadCount',
-      'getConversationMessageCount',
-      'markMessageAsRead',
-      'markAllMessagesAsRead',
-      'updateConversationMessage',
-      'deleteMessage',
-      'deleteConversationAllMessages',
-      'getMessagesWithMsgType',
-      'getMessages',
-      'getMessagesWithKeyword',
-      'getMessageWithTimestamp',
-      'translateMessage',
-      'fetchSupportLanguages',
-      'addReaction',
-      'removeReaction',
-      'fetchReactionList',
-      'fetchReactionDetail',
-      'reportMessage',
-      'getReactionList',
-      'groupAckCount',
-      'createChatThread',
-      'joinChatThread',
-      'leaveChatThread',
-      'destroyChatThread',
-      'updateChatThreadName',
-      'removeMemberWithChatThread',
-      'fetchMembersWithChatThreadFromServer',
-      'fetchJoinedChatThreadFromServer',
-      'fetchJoinedChatThreadWithParentFromServer',
-      'fetchChatThreadWithParentFromServer',
-      'fetchLastMessageWithChatThread',
-      'fetchChatThreadFromServer',
-      'getMessageThread',
-      'setConversationExtension',
-      'insertMessage',
-      'fetchConversationsFromServerWithPage',
-      'removeMessagesFromServerWithMsgIds',
-      'removeMessagesFromServerWithTimestamp',
-      'fetchHistoryMessagesByOptions',
-      'deleteMessagesWithTimestamp',
-      'fetchConversationsFromServerWithCursor',
-      'fetchPinnedConversationsFromServerWithCursor',
-      'pinConversation',
-      'modifyMessageBody',
-      'fetchCombineMessageDetail',
-      'addRemoteAndLocalConversationsMark',
-      'deleteRemoteAndLocalConversationsMark',
-      'fetchConversationsByOptions',
-      'deleteAllMessageAndConversation',
-      'pinMessage',
-      'unpinMessage',
-      'fetchPinnedMessages',
-      'getPinnedMessages',
-      'getMessagePinInfo',
-    ];
     let renderDomAry: ({} | null | undefined)[] = [];
     const data = this.metaData;
-    apiList.forEach((apiItem) => {
+    this.state.list.forEach((apiItem) => {
       this.setKeyPrefix(apiItem);
       renderDomAry.push(
         this.renderParamWithText(data.get(apiItem)!.methodName)
