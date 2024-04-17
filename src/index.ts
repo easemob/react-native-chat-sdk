@@ -23,6 +23,7 @@ import { ChatAreaCode } from './common/ChatAreaCode';
 import { ChatContact } from './common/ChatContact';
 import {
   ChatConversation,
+  ChatConversationFetchOptions,
   ChatConversationMarkType,
   ChatConversationType,
   ChatConversationTypeToString,
@@ -182,6 +183,7 @@ export {
   ChatCombineMessageBody,
   ChatContact,
   ChatConversation,
+  ChatConversationFetchOptions,
   ChatCursorResult,
   ChatCustomMessageBody,
   ChatDeviceInfo,
