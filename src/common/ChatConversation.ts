@@ -1,6 +1,10 @@
 import { ChatClient } from '../ChatClient';
 import { ChatError } from './ChatError';
-import type { ChatMessage, ChatMessageType } from './ChatMessage';
+import type {
+  ChatMessage,
+  ChatMessageSearchScope,
+  ChatMessageType,
+} from './ChatMessage';
 
 /**
  * The message search directions.
@@ -41,6 +45,34 @@ export enum ChatConversationType {
    * Chat room chat.
    */
   RoomChat = 2,
+}
+
+/**
+ * The mapping between each type of conversation mark and their actual meanings is maintained by the developer.
+ *
+ * Compared to conversation extension fields, search can be supported.
+ */
+export enum ChatConversationMarkType {
+  Type0,
+  Type1,
+  Type2,
+  Type3,
+  Type4,
+  Type5,
+  Type6,
+  Type7,
+  Type8,
+  Type9,
+  Type10,
+  Type11,
+  Type12,
+  Type13,
+  Type14,
+  Type15,
+  Type16,
+  Type17,
+  Type18,
+  Type19,
 }
 
 /**
@@ -122,6 +154,11 @@ export class ChatConversation {
    */
   pinnedTime?: number;
 
+  /**
+   * The conversation remarks.
+   */
+  marks?: ChatConversationMarkType[];
+
   constructor(params: {
     convId: string;
     convType: ChatConversationType;
@@ -129,6 +166,7 @@ export class ChatConversation {
     ext?: any;
     isPinned?: boolean;
     pinnedTime?: number;
+    marks?: ChatConversationMarkType[];
   }) {
     this.convId = params.convId;
     this.convType = params.convType;
@@ -136,6 +174,7 @@ export class ChatConversation {
     this.ext = params.ext;
     this.isPinned = params.isPinned ?? false;
     this.pinnedTime = params.pinnedTime ?? 0;
+    this.marks = params.marks;
   }
 
   /**
@@ -441,6 +480,8 @@ export class ChatConversation {
    * @returns  The list of retrieved messages (excluding the one with the starting timestamp). If no message is obtained, an empty list is returned.
    *
    * @throws A description of the exception. See {@link ChatError}.
+   *
+   * @deprecated 2024-04-17 This method is deprecated. Use {@link getMsgsWithKeyword} instead.
    */
   public async getMessagesWithKeyword(
     keywords: string,
@@ -459,6 +500,44 @@ export class ChatConversation {
       sender,
       this.isChatThread
     );
+  }
+
+  /**
+   * Gets messages that the specified user sends in a conversation in a certain period.
+   *
+   * This method gets data from the local database.
+   *
+   * **note** If the conversation object does not exist, this method will create it.
+   *
+   * @params -
+   * - keywords The keywords for query.
+   * - direction The message search direction. See {@link ChatSearchDirection}.
+   * - (Default) `ChatSearchDirection.UP`: Messages are retrieved in the descending order of the Unix timestamp included in them.
+   * - `ChatSearchDirection.DOWN`: Messages are retrieved in the ascending order of the Unix timestamp included in them.
+   * - timestamp The starting Unix timestamp in the message for query. The unit is millisecond. After this parameter is set, the SDK retrieves messages, starting from the specified one, according to the message search direction.
+   * - searchScope The message search scope. See {@link ChatMessageSearchScope}.
+   *                  If you set this parameter as a negative value, the SDK retrieves messages, starting from the current time, in the descending order of the timestamp included in them.
+   * - count The maximum number of messages to retrieve each time. The value range is [1,400].
+   * - sender The user ID or group ID for retrieval. Usually, it is the conversation ID.
+   *
+   * @returns The list of retrieved messages (excluding the one with the starting timestamp). If no message is obtained, an empty list is returned.
+   *
+   * @throws A description of the exception. See {@link ChatError}.
+   */
+  public async getMsgsWithKeyword(params: {
+    keywords: string;
+    direction: ChatSearchDirection;
+    timestamp: number;
+    count: number;
+    sender?: string;
+    searchScope: ChatMessageSearchScope;
+  }): Promise<Array<ChatMessage>> {
+    return ChatClient.getInstance().chatManager.getMsgsWithKeyword({
+      ...params,
+      convId: this.convId,
+      convType: this.convType,
+      isChatThread: this.isChatThread,
+    });
   }
 
   /**
@@ -525,5 +604,88 @@ export class ChatConversation {
       timestamp,
       this.isChatThread
     );
+  }
+
+  /**
+   * Get the pinned messages in the conversation from local.
+   *
+   * @returns The list of pinned messages. If no message is obtained, an empty list is returned.
+   *
+   * @throws A description of the exception. See {@link ChatError}.
+   */
+  public async getPinnedMessages(): Promise<ChatMessage[]> {
+    return ChatClient.getInstance().chatManager.getPinnedMessages(
+      this.convId,
+      this.convType,
+      this.isChatThread
+    );
+  }
+
+  /**
+   * Get the pinned messages in the conversation from server.
+   *
+   * @returns The list of pinned messages. If no message is obtained, an empty list is returned.
+   *
+   * @throws A description of the exception. See {@link ChatError}.
+   */
+  public async fetchPinnedMessages(): Promise<ChatMessage[]> {
+    return ChatClient.getInstance().chatManager.fetchPinnedMessages(
+      this.convId,
+      this.convType,
+      this.isChatThread
+    );
+  }
+}
+
+/**
+ * The conversation filter class.
+ */
+export class ChatConversationFetchOptions {
+  /**
+   * The page size of the conversation, when using mark, the value range is [1,10], default is 10. Otherwise, the value range is [1,50].
+   */
+  pageSize?: number;
+  /**
+   * The cursor of the conversation.
+   */
+  cursor?: string;
+  /**
+   * Whether to get pinned conversation.
+   */
+  pinned?: boolean;
+  /**
+   * Whether to get pinned conversation.
+   */
+  mark?: ChatConversationMarkType;
+  constructor(params: {
+    pageSize?: number;
+    cursor?: string;
+    pinned?: boolean;
+    mark?: ChatConversationMarkType;
+  }) {
+    this.pageSize = params.pageSize;
+    this.cursor = params.cursor;
+    this.pinned = params.pinned;
+    this.mark = params.mark;
+  }
+  static default(): ChatConversationFetchOptions {
+    return new ChatConversationFetchOptions({
+      pageSize: 20,
+      pinned: false,
+    });
+  }
+  static pinned(): ChatConversationFetchOptions {
+    return new ChatConversationFetchOptions({
+      pageSize: 20,
+      pinned: true,
+    });
+  }
+  static withMark(
+    mark: ChatConversationMarkType
+  ): ChatConversationFetchOptions {
+    return new ChatConversationFetchOptions({
+      pageSize: 20,
+      mark: mark,
+    });
   }
 }

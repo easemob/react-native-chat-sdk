@@ -152,6 +152,18 @@ export class ChatOptions {
    */
   imPort: number;
   /**
+   * Whether to enable TLS connection, which takes effect during initialization and is false by default.
+   */
+  enableTLS: boolean;
+  /**
+   * Whether the sent message is included in `ChatMessageEventListener.onMessagesReceived,` default is false.
+   */
+  messagesReceiveCallbackIncludeSend: boolean;
+  /**
+   * Whether to set messages from the server side as read. default is false.
+   */
+  regardImportMessagesAsRead: boolean;
+  /**
    * The area code.
    * This attribute is used to restrict the scope of accessible edge nodes. The default value is `GLOB`. See {@link ChatAreaCode}.
    * This attribute can be set only when you call {@link ChatClient.init}. The attribute setting cannot be changed during the app runtime.
@@ -181,6 +193,13 @@ export class ChatOptions {
    */
   customOSType?: number;
 
+  /**
+   * Whether the server returns the sender the text message with the content replaced during text moderation.
+   *
+   * default is false.
+   */
+  useReplacedMessageContents: boolean;
+
   constructor(params: {
     appKey: string;
     autoLogin?: boolean;
@@ -208,6 +227,10 @@ export class ChatOptions {
     restServer?: string;
     imServer?: string;
     imPort?: number;
+    enableTLS?: boolean;
+    messagesReceiveCallbackIncludeSend?: boolean;
+    regardImportMessagesAsRead?: boolean;
+    useReplacedMessageContents?: boolean;
   }) {
     this.appKey = params.appKey;
     this.autoLogin = params.autoLogin ?? true;
@@ -238,5 +261,12 @@ export class ChatOptions {
     this.enableEmptyConversation = params.enableEmptyConversation ?? false;
     this.customDeviceName = params.customDeviceName;
     this.customOSType = params.customOSType;
+    this.enableTLS = params.enableTLS ?? false;
+    this.messagesReceiveCallbackIncludeSend =
+      params.messagesReceiveCallbackIncludeSend ?? false;
+    this.regardImportMessagesAsRead =
+      params.regardImportMessagesAsRead ?? false;
+    this.useReplacedMessageContents =
+      params.useReplacedMessageContents ?? false;
   }
 }

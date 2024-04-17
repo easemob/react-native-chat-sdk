@@ -146,6 +146,32 @@ export enum ChatRoomMessagePriority {
   PriorityLow,
 }
 
+export enum ChatMessagePinOperation {
+  /**
+   * Message pin status.
+   */
+  Pin,
+  /**
+   * Message unpin status.
+   */
+  Unpin,
+}
+
+export enum ChatMessageSearchScope {
+  /**
+   * Search by message content.
+   */
+  Content,
+  /**
+   * Search by message attributes.
+   */
+  Attribute,
+  /**
+   * Search by message content and attributes.
+   */
+  All,
+}
+
 /**
  * Converts the conversation type from int to string.
  *
@@ -460,6 +486,13 @@ export class ChatMessage {
   isBroadcast: boolean;
 
   /**
+   * Whether the message content is replaced.
+   *
+   * It is valid after `ChatOptions.useReplacedMessageContents` is enabled.
+   */
+  isContentReplaced: boolean;
+
+  /**
    * Constructs a message.
    */
   public constructor(params: {
@@ -485,6 +518,7 @@ export class ChatMessage {
     deliverOnlineOnly?: boolean;
     receiverList?: string[];
     isBroadcast?: boolean;
+    isContentReplaced?: boolean;
   }) {
     this.msgId = params.msgId ?? generateMessageId();
     this.conversationId = params.conversationId ?? '';
@@ -509,6 +543,7 @@ export class ChatMessage {
     this.deliverOnlineOnly = params.deliverOnlineOnly ?? false;
     this.receiverList = params.receiverList;
     this.isBroadcast = params.isBroadcast ?? false;
+    this.isContentReplaced = params.isContentReplaced ?? false;
   }
 
   private fromAttributes(attributes: any) {
@@ -1090,6 +1125,13 @@ export class ChatMessage {
   }
 
   /**
+   * Get the pinned messages in the conversation.
+   */
+  public get getPinInfo(): Promise<ChatMessagePinInfo | undefined> {
+    return ChatClient.getInstance().chatManager.getMessagePinInfo(this.msgId);
+  }
+
+  /**
    * Set the chat room message priority.
    */
   public set messagePriority(p: ChatRoomMessagePriority) {
@@ -1579,6 +1621,25 @@ export class ChatCombineMessageBody extends _ChatFileMessageBody {
     this.compatibleText = params.compatibleText;
     this.messageIdList = params.messageIdList;
     this.summary = params.summary;
+  }
+}
+
+/**
+ * The message pinning information.
+ */
+export class ChatMessagePinInfo {
+  /**
+   * The pin time.
+   */
+  pinTime: number;
+  /**
+   * The operator id.
+   */
+  operatorId: string;
+
+  constructor(params: { pinTime: number; operatorId: string }) {
+    this.pinTime = params.pinTime;
+    this.operatorId = params.operatorId;
   }
 }
 

@@ -2,7 +2,7 @@ import { ExceptionHandler } from './__internal__/ErrorHandler';
 import type { ChatConversationType } from './common/ChatConversation';
 import { ChatException } from './common/ChatError';
 import type { ChatGroup, ChatGroupMessageAck } from './common/ChatGroup';
-import type { ChatMessage } from './common/ChatMessage';
+import type { ChatMessage, ChatMessagePinInfo } from './common/ChatMessage';
 import type { ChatMessageReactionEvent } from './common/ChatMessageReaction';
 import type { ChatMessageThreadEvent } from './common/ChatMessageThread';
 import type { ChatPresence } from './common/ChatPresence';
@@ -175,6 +175,10 @@ export enum ChatMultiDeviceEvent {
    * If user A deletes a conversation on device A1, this event is triggered on device A2.
    */
   CONVERSATION_DELETED = 62,
+  /**
+   * The current user updated the conversation mark on another device.
+   */
+  CONVERSATION_UPDATE_MARK,
 }
 
 /**
@@ -269,6 +273,8 @@ export function ChatMultiDeviceEventFromNumber(
       return ChatMultiDeviceEvent.CONVERSATION_UNPINNED;
     case 62:
       return ChatMultiDeviceEvent.CONVERSATION_DELETED;
+    case 63:
+      return ChatMultiDeviceEvent.CONVERSATION_UPDATE_MARK;
 
     default:
       const ret = params as ChatMultiDeviceEvent;
@@ -646,6 +652,21 @@ export interface ChatMessageEventListener {
     lastModifyOperatorId: string,
     lastModifyTime: number
   ): void;
+
+  /**
+   * Occurs when the content of a text message is pinned.
+   * @params params -
+   * - Param [messageId] The message ID.
+   * - Param [convId] The conversation ID.
+   * - Param [pinOperation] The pin operation. The value is 1.
+   * - Param [pinInfo] The pin information. see {@link ChatMessagePinInfo}.
+   */
+  onMessagePinChanged(params: {
+    messageId: string;
+    convId: string;
+    pinOperation: number;
+    pinInfo: ChatMessagePinInfo;
+  }): void;
 }
 
 /**

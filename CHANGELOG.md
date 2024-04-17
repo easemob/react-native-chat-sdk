@@ -2,6 +2,37 @@ _English | [Chinese](./CHANGELOG.zh.md)_
 
 # Update Log
 
+## 1.4.0
+
+- The dependent native SDKs are upgraded to versions (`iOS` 4.5.0 and `Android` 4.5.0). Adds new features and fixed issues provided by the native SDK.
+- Added global configuration options
+  - `enableTLS`: Whether to enable security policy. Off by default.
+  - `messagesReceiveCallbackIncludeSend`: Whether the message listener receives callback notifications for sent messages. Off by default.
+  - `regardImportMessagesAsRead`: Whether to set messages imported by the server as read.
+  - `useReplacedMessageContents`: When the content of the sent text message is replaced by the text moderation (Moderation) service, whether it needs to be returned to the sender.
+- Added message callback notification
+  - `onMessagePinChanged`: Receive notification of pinned message.
+- Added multi-device events
+  - `CONVERSATION_UPDATE_MARK`: Multi-device session mark update notification.
+- Added message manager related interfaces
+  - `addRemoteAndLocalConversationsMark`: Add conversation mark.
+  - `deleteRemoteAndLocalConversationsMark`: Delete the conversation mark.
+  - `fetchConversationsByOptions`: Get the conversation list with specified conditions.
+  - `deleteAllMessageAndConversation`: Delete all conversations and messages of the conversation.
+  - `pinMessage`: pinned message.
+  - `unpinMessage`: Unpin the message.
+  - `fetchPinnedMessages`: Get the pinned messages of the specified session.
+  - `getPinnedMessages`: Get the local pinned messages of the specified session.
+  - `getMessagePinInfo`: Get the pinned message details.
+- Added message attributes
+  - `isContentReplaced`: Whether the message content has been modified. Main user server-side message auditing. Requires global configuration of `useReplacedMessageContents`.
+  - `getPinInfo`: Get the pinned details of the message.
+- Obsolete interface description
+  - `getMessagesWithKeyword`: `getMsgsWithKeyword` replaces this interface.
+  - `getMessages`: `getMsgs` replaces this interface.
+  - `getMessageWithTimestamp`: `getMsgWithTimestamp` replaces this interface.
+  - `getMessagesWithMsgType`: `getMsgsWithMsgType` replaces this interface.
+
 ## 1.3.1
 
 Issues fixed

@@ -6,12 +6,15 @@ import {
   MTackGroupMessageRead,
   MTackMessageRead,
   MTaddReaction,
+  MTaddRemoteAndLocalConversationsMark,
   MTasyncFetchGroupAcks,
   MTclearAllMessages,
   MTcreateChatThread,
+  MTdeleteAllMessageAndConversation,
   MTdeleteConversation,
   MTdeleteMessagesBeforeTimestamp,
   MTdeleteMessagesWithTs,
+  MTdeleteRemoteAndLocalConversationsMark,
   MTdeleteRemoteConversation,
   MTdestroyChatThread,
   MTdownloadAndParseCombineMessage,
@@ -22,12 +25,14 @@ import {
   MTfetchChatThreadDetail,
   MTfetchChatThreadMember,
   MTfetchChatThreadsWithParentId,
+  MTfetchConversationsByOptions,
   MTfetchConversationsFromServerWithPage,
   MTfetchHistoryMessages,
   MTfetchHistoryMessagesByOptions,
   MTfetchJoinedChatThreads,
   MTfetchJoinedChatThreadsWithParentId,
   MTfetchLastMessageWithChatThreads,
+  MTfetchPinnedMessages,
   MTfetchReactionDetail,
   MTfetchReactionList,
   MTfetchSupportLanguages,
@@ -39,6 +44,7 @@ import {
   MTgetMessage,
   MTgetMessageThread,
   MTgetMsgCount,
+  MTgetPinInfo,
   MTgetPinnedConversationsFromServerWithCursor,
   MTgetReactionList,
   MTgetThreadConversation,
@@ -68,12 +74,15 @@ import {
   MTonConversationUpdate,
   MTonGroupMessageRead,
   MTonMessageContentChanged,
+  MTonMessagePinChanged,
   MTonMessagesDelivered,
   MTonMessagesRead,
   MTonMessagesRecalled,
   MTonMessagesReceived,
   MTonReadAckForGroupMessageUpdated,
   MTpinConversation,
+  MTpinMessage,
+  MTpinnedMessages,
   MTrecallMessage,
   MTremoveMemberFromChatThread,
   MTremoveMessage,
@@ -86,6 +95,7 @@ import {
   MTsendMessage,
   MTsyncConversationExt,
   MTtranslateMessage,
+  MTunpinMessage,
   MTupdateChatMessage,
   MTupdateChatThreadSubject,
   MTupdateConversationMessage,
@@ -96,6 +106,8 @@ import type { ChatMessageEventListener } from './ChatEvents';
 import { chatlog } from './common/ChatConst';
 import {
   ChatConversation,
+  ChatConversationFetchOptions,
+  ChatConversationMarkType,
   ChatConversationType,
   ChatSearchDirection,
 } from './common/ChatConversation';
@@ -107,6 +119,8 @@ import {
   ChatMessage,
   ChatMessageBody,
   ChatMessageChatType,
+  ChatMessagePinInfo,
+  ChatMessageSearchScope,
   ChatMessageStatus,
   ChatMessageStatusCallback,
   ChatMessageType,
@@ -237,6 +251,11 @@ export class ChatManager extends BaseManager {
     event.addListener(
       MTonMessageContentChanged,
       this.onMessageContentChanged.bind(this)
+    );
+    event.removeAllListeners(MTonMessagePinChanged);
+    event.addListener(
+      MTonMessagePinChanged,
+      this.onMessagePinChanged.bind(this)
     );
   }
 
@@ -415,6 +434,18 @@ export class ChatManager extends BaseManager {
         params.lastModifyOperatorId,
         params.lastModifyTime
       );
+    });
+  }
+
+  private onMessagePinChanged(params: any): void {
+    chatlog.log(`${ChatManager.TAG}: onMessagePinChanged: `, params);
+    this._messageListeners.forEach((listener: ChatMessageEventListener) => {
+      listener.onMessagePinChanged?.({
+        messageId: params.messageId,
+        convId: params.conversationId,
+        pinOperation: params.pinOperation,
+        pinInfo: new ChatMessagePinInfo(params.pinInfo),
+      });
     });
   }
 
@@ -1668,6 +1699,8 @@ export class ChatManager extends BaseManager {
    * @returns The list of retrieved messages (excluding the one with the starting timestamp). If no message is obtained, an empty list is returned.
    *
    * @throws A description of the exception. See {@link ChatError}.
+   *
+   * @deprecated 2023-07-24. Use {@link getMsgsWithMsgType} instead.
    */
   public async getMessagesWithMsgType(
     convId: string,
@@ -1681,6 +1714,82 @@ export class ChatManager extends BaseManager {
   ): Promise<Array<ChatMessage>> {
     chatlog.log(
       `${ChatManager.TAG}: getMessagesWithMsgType: `,
+      convId,
+      convType,
+      msgType,
+      direction,
+      timestamp,
+      count,
+      sender,
+      isChatThread
+    );
+    let r: any = await Native._callMethod(MTloadMsgWithMsgType, {
+      [MTloadMsgWithMsgType]: {
+        convId: convId,
+        convType: convType,
+        msg_type: msgType,
+        direction: direction === ChatSearchDirection.UP ? 'up' : 'down',
+        timestamp: timestamp,
+        count: count,
+        sender: sender ?? '',
+        isChatThread: isChatThread,
+      },
+    });
+    ChatManager.checkErrorFromResult(r);
+    const ret: ChatMessage[] = [];
+    const rr = r?.[MTloadMsgWithMsgType];
+    if (rr) {
+      Object.entries(rr).forEach((value: [string, any]) => {
+        ret.push(new ChatMessage(value[1]));
+      });
+    }
+    return ret;
+  }
+
+  /**
+   * Retrieves messages of a certain type in the conversation from the local database.
+   *
+   * **note** If the conversation object does not exist, this method will create it.
+   *
+   * @params -
+   * @param convId The conversation ID.
+   * @param convType The conversation type. See {@link ChatConversationType}.
+   * @param msgType The message type. See {@link ChatMessageType}.
+   * @param direction The message search direction. See {@link ChatSearchDirection}.
+   * - (Default) `ChatSearchDirection.UP`: Messages are retrieved in the descending order of the Unix timestamp included in them.
+   * - `ChatSearchDirection.DOWN`: Messages are retrieved in the ascending order of the Unix timestamp included in them.
+   * @param timestamp The starting Unix timestamp in the message for query. The unit is millisecond. After this parameter is set, the SDK retrieves messages, starting from the specified one, according to the message search direction.
+   *                  If you set this parameter as a negative value, the SDK retrieves messages, starting from the current time, in the descending order of the timestamp included in them.
+   * @param count The maximum number of messages to retrieve each time. The value range is [1,400].
+   * @param sender The user ID or group ID for retrieval. Usually, it is the conversation ID.
+   * @param isChatThread Whether the conversation is a chat thread.
+   *
+   * @returns The list of retrieved messages (excluding the one with the starting timestamp). If no message is obtained, an empty list is returned.
+   *
+   * @throws A description of the exception. See {@link ChatError}.
+   */
+  public async getMsgsWithMsgType(params: {
+    convId: string;
+    convType: ChatConversationType;
+    msgType: ChatMessageType;
+    direction: ChatSearchDirection;
+    timestamp: number;
+    count: number;
+    sender?: string;
+    isChatThread: boolean;
+  }): Promise<Array<ChatMessage>> {
+    const {
+      convId,
+      convType,
+      msgType,
+      direction = ChatSearchDirection.UP,
+      timestamp = -1,
+      count = 20,
+      sender,
+      isChatThread = false,
+    } = params;
+    chatlog.log(
+      `${ChatManager.TAG}: getMsgsWithMsgType: `,
       convId,
       convType,
       msgType,
@@ -1733,6 +1842,8 @@ export class ChatManager extends BaseManager {
    * @returns The list of retrieved messages (excluding the one with the starting timestamp). If no message is obtained, an empty list is returned.
    *
    * @throws A description of the exception. See {@link ChatError}.
+   *
+   * @deprecated 2023-07-24. Use {@link getMsgs} instead.
    */
   public async getMessages(
     convId: string,
@@ -1744,6 +1855,74 @@ export class ChatManager extends BaseManager {
   ): Promise<Array<ChatMessage>> {
     chatlog.log(
       `${ChatManager.TAG}: getMessages: `,
+      convId,
+      convType,
+      startMsgId,
+      direction,
+      loadCount,
+      isChatThread
+    );
+    let r: any = await Native._callMethod(MTloadMsgWithStartId, {
+      [MTloadMsgWithStartId]: {
+        convId: convId,
+        convType: convType,
+        direction: direction === ChatSearchDirection.UP ? 'up' : 'down',
+        startId: startMsgId,
+        count: loadCount,
+        isChatThread: isChatThread,
+      },
+    });
+    ChatManager.checkErrorFromResult(r);
+    const ret: ChatMessage[] = [];
+    const rr = r?.[MTloadMsgWithStartId];
+    if (rr) {
+      Object.entries(rr).forEach((value: [string, any]) => {
+        ret.push(new ChatMessage(value[1]));
+      });
+    }
+    return ret;
+  }
+
+  /**
+   * Retrieves messages of a specified quantity in a conversation from the local database.
+   *
+   * The retrieved messages will also be put in the conversation in the memory according to the timestamp included in them.
+   *
+   * **note** If the conversation object does not exist, this method will create it.
+   *
+   * @params -
+   * @param convId The conversation ID.
+   * @param convType The conversation type. See {@link ChatConversationType}.
+   * @param startMsgId The starting message ID for query. After this parameter is set, the SDK retrieves messages, starting from the specified one, according to the message search direction.
+   *                   If this parameter is set an empty string, the SDK retrieves messages according to the message search direction while ignoring this parameter.
+   * @param direction The message search direction. See {@link ChatSearchDirection}.
+   * - (Default) `ChatSearchDirection.UP`: Messages are retrieved in the descending order of the Unix timestamp included in them.
+   * - `ChatSearchDirection.DOWN`: Messages are retrieved in the ascending order of the Unix timestamp included in them.
+   * @param loadCount The maximum number of messages to retrieve each time. The value range is [1,50].
+   * @param isChatThread Whether the conversation is a chat thread.
+   *
+   * @returns The list of retrieved messages (excluding the one with the starting timestamp). If no message is obtained, an empty list is returned.
+   *
+   * @throws A description of the exception. See {@link ChatError}.
+   */
+  public async getMsgs(params: {
+    convId: string;
+    convType: ChatConversationType;
+    startMsgId: string;
+    direction: ChatSearchDirection;
+    loadCount: number;
+    isChatThread: boolean;
+  }): Promise<Array<ChatMessage>> {
+    const {
+      convId,
+      convType,
+      startMsgId,
+      direction = ChatSearchDirection.UP,
+      loadCount = 20,
+      isChatThread = false,
+    } = params;
+    chatlog.log(
+      `${ChatManager.TAG}: getMsgs: `,
       convId,
       convType,
       startMsgId,
@@ -1794,6 +1973,8 @@ export class ChatManager extends BaseManager {
    * @returns The list of retrieved messages (excluding the one with the starting timestamp). If no message is obtained, an empty list is returned.
    *
    * @throws A description of the exception. See {@link ChatError}.
+   *
+   * @deprecated 2023-07-24 This method is deprecated. Use {@link getMsgsWithKeyword} instead.
    */
   public async getMessagesWithKeyword(
     convId: string,
@@ -1840,6 +2021,89 @@ export class ChatManager extends BaseManager {
   }
 
   /**
+   * Gets messages that the specified user sends in a conversation in a certain period.
+   *
+   * This method gets data from the local database.
+   *
+   * **note** If the conversation object does not exist, this method will create it.
+   *
+   * @params -
+   * - convId The conversation ID.
+   * - convType The conversation type. See {@link ChatConversationType}.
+   * - keywords The keywords for query.
+   * - direction The message search direction. See {@link ChatSearchDirection}.
+   * - (Default) `ChatSearchDirection.UP`: Messages are retrieved in the descending order of the Unix timestamp included in them.
+   * - `ChatSearchDirection.DOWN`: Messages are retrieved in the ascending order of the Unix timestamp included in them.
+   * - timestamp The starting Unix timestamp in the message for query. The unit is millisecond. After this parameter is set, the SDK retrieves messages, starting from the specified one, according to the message search direction.
+   * - searchScope The message search scope. See {@link ChatMessageSearchScope}.
+   *                  If you set this parameter as a negative value, the SDK retrieves messages, starting from the current time, in the descending order of the timestamp included in them.
+   * - count The maximum number of messages to retrieve each time. The value range is [1,400].
+   * - sender The user ID or group ID for retrieval. Usually, it is the conversation ID.
+   * - isChatThread Whether the conversation is a chat thread.
+   *
+   * @returns The list of retrieved messages (excluding the one with the starting timestamp). If no message is obtained, an empty list is returned.
+   *
+   * @throws A description of the exception. See {@link ChatError}.
+   */
+  public async getMsgsWithKeyword(params: {
+    convId: string;
+    convType: ChatConversationType;
+    keywords: string;
+    direction: ChatSearchDirection;
+    timestamp: number;
+    count: number;
+    sender?: string;
+    searchScope: ChatMessageSearchScope;
+    isChatThread: boolean;
+  }): Promise<Array<ChatMessage>> {
+    const {
+      convId,
+      convType,
+      keywords,
+      direction = ChatSearchDirection.UP,
+      timestamp = -1,
+      count = 20,
+      sender,
+      searchScope = ChatMessageSearchScope.All,
+      isChatThread = false,
+    } = params;
+    chatlog.log(
+      `${ChatManager.TAG}: getMsgsWithKeyword: `,
+      convId,
+      convType,
+      keywords,
+      direction,
+      timestamp,
+      count,
+      searchScope,
+      sender,
+      isChatThread
+    );
+    let r: any = await Native._callMethod(MTloadMsgWithKeywords, {
+      [MTloadMsgWithKeywords]: {
+        convId: convId,
+        convType: convType,
+        keywords: keywords,
+        direction: direction === ChatSearchDirection.UP ? 'up' : 'down',
+        timestamp: timestamp,
+        count: count,
+        sender: sender,
+        searchScope: searchScope,
+        isChatThread: isChatThread,
+      },
+    });
+    ChatManager.checkErrorFromResult(r);
+    const ret: ChatMessage[] = [];
+    const rr = r?.[MTloadMsgWithKeywords];
+    if (rr) {
+      Object.entries(rr).forEach((value: [string, any]) => {
+        ret.push(new ChatMessage(value[1]));
+      });
+    }
+    return ret;
+  }
+
+  /**
    * Retrieves messages that are sent and received in a certain period in a conversation in the local database.
    *
    * **note** If the conversation object does not exist, this method will create it.
@@ -1857,6 +2121,8 @@ export class ChatManager extends BaseManager {
    * @returns The list of retrieved messages (excluding with the ones with the starting or ending timestamp). If no message is obtained, an empty list is returned.
    *
    * @throws A description of the exception. See {@link ChatError}.
+   *
+   * @deprecated 2023-07-24 This method is deprecated. Use {@link getMsgWithTimestamp} instead.
    */
   public async getMessageWithTimestamp(
     convId: string,
@@ -1869,6 +2135,76 @@ export class ChatManager extends BaseManager {
   ): Promise<Array<ChatMessage>> {
     chatlog.log(
       `${ChatManager.TAG}: getMessageWithTimestamp: `,
+      convId,
+      convType,
+      startTime,
+      endTime,
+      direction,
+      count,
+      isChatThread
+    );
+    let r: any = await Native._callMethod(MTloadMsgWithTime, {
+      [MTloadMsgWithTime]: {
+        convId: convId,
+        convType: convType,
+        startTime: startTime,
+        endTime: endTime,
+        direction: direction === ChatSearchDirection.UP ? 'up' : 'down',
+        count: count,
+        isChatThread: isChatThread,
+      },
+    });
+    ChatManager.checkErrorFromResult(r);
+    const ret: ChatMessage[] = [];
+    const rr = r?.[MTloadMsgWithTime];
+    if (rr) {
+      Object.entries(rr).forEach((value: [string, any]) => {
+        ret.push(new ChatMessage(value[1]));
+      });
+    }
+    return ret;
+  }
+
+  /**
+   * Retrieves messages that are sent and received in a certain period in a conversation in the local database.
+   *
+   * **note** If the conversation object does not exist, this method will create it.
+   *
+   * @params -
+   * @param convId The conversation ID.
+   * @param convType The conversation type. See {@link ChatConversationType}.
+   * @param startTime The starting Unix timestamp for query, in milliseconds.
+   * @param endTime The ending Unix timestamp for query, in milliseconds.
+   * @param direction The message search direction. See {@link ChatSearchDirection}.
+   * - (Default) `ChatSearchDirection.UP`: Messages are retrieved in the descending order of the Unix timestamp included in them.
+   * - `ChatSearchDirection.DOWN`: Messages are retrieved in the ascending order of the Unix timestamp included in them.
+   * @param count The maximum number of messages to retrieve each time. The value range is [1,400].
+   * @param isChatThread Whether the conversation is a chat thread.
+   *
+   * @returns The list of retrieved messages (excluding with the ones with the starting or ending timestamp). If no message is obtained, an empty list is returned.
+   *
+   * @throws A description of the exception. See {@link ChatError}.
+   */
+  public async getMsgWithTimestamp(params: {
+    convId: string;
+    convType: ChatConversationType;
+    startTime: number;
+    endTime: number;
+    direction: ChatSearchDirection;
+    count: number;
+    isChatThread: boolean;
+  }): Promise<Array<ChatMessage>> {
+    const {
+      convId,
+      convType,
+      startTime,
+      endTime,
+      direction = ChatSearchDirection.UP,
+      count = 20,
+      isChatThread = false,
+    } = params;
+    chatlog.log(
+      `${ChatManager.TAG}: getMsgWithTimestamp: `,
       convId,
       convType,
       startTime,
@@ -2979,5 +3315,252 @@ export class ChatManager extends BaseManager {
       });
     }
     return ret;
+  }
+
+  /**
+   * This method marks conversations both locally and on the server.
+   *
+   * @param convIds The conversation ID list.
+   * @param mark The conversation tag. See {@link ChatConversationMarkType}.
+   *
+   * @throws A description of the exception. See {@link ChatError}.
+   */
+  public async addRemoteAndLocalConversationsMark(
+    convIds: string[],
+    mark: ChatConversationMarkType
+  ): Promise<void> {
+    chatlog.log(
+      `${ChatManager.TAG}: addRemoteAndLocalConversationsMark: ${convIds}, ${mark}`
+    );
+    let r: any = await Native._callMethod(
+      MTaddRemoteAndLocalConversationsMark,
+      {
+        [MTaddRemoteAndLocalConversationsMark]: {
+          convIds,
+          mark,
+        },
+      }
+    );
+    Native.checkErrorFromResult(r);
+  }
+
+  /**
+   * his method unmarks conversations both locally and on the server.
+   *
+   * @param convIds The conversation ID list.
+   * @param mark The conversation tag. See {@link ChatConversationMarkType}.
+   *
+   * @throws A description of the exception. See {@link ChatError}.
+   */
+  public async deleteRemoteAndLocalConversationsMark(
+    convIds: string[],
+    mark: ChatConversationMarkType
+  ): Promise<void> {
+    chatlog.log(
+      `${ChatManager.TAG}: deleteRemoteAndLocalConversationsMark: ${convIds}, ${mark}`
+    );
+    let r: any = await Native._callMethod(
+      MTdeleteRemoteAndLocalConversationsMark,
+      {
+        [MTdeleteRemoteAndLocalConversationsMark]: {
+          convIds,
+          mark,
+        },
+      }
+    );
+    Native.checkErrorFromResult(r);
+  }
+
+  /**
+   * Fetches conversations by options.
+   *
+   * @param option The fetch options. See {@link ChatConversationFetchOptions}.
+   *
+   * @returns The conversation list result. See {@link ChatCursorResult}.
+   */
+  public async fetchConversationsByOptions(
+    option: ChatConversationFetchOptions
+  ): Promise<ChatCursorResult<ChatConversation>> {
+    chatlog.log(`${ChatManager.TAG}: fetchConversationsByOptions: ${option}`);
+    let r: any = await Native._callMethod(MTfetchConversationsByOptions, {
+      [MTfetchConversationsByOptions]: {
+        ...option,
+      },
+    });
+    Native.checkErrorFromResult(r);
+    let ret = new ChatCursorResult<ChatConversation>({
+      cursor: r?.[MTfetchConversationsByOptions].cursor,
+      list: r?.[MTfetchConversationsByOptions].list,
+      opt: {
+        map: (param: any) => {
+          return new ChatConversation(param);
+        },
+      },
+    });
+    return ret;
+  }
+
+  /**
+   * Clears all conversations and all messages in them.
+   *
+   * @param clearServerData Whether to clear the server data. default is false.
+   *
+   * @throws A description of the exception. See {@link ChatError}.
+   */
+  public async deleteAllMessageAndConversation(
+    clearServerData: boolean = false
+  ): Promise<void> {
+    chatlog.log(
+      `${ChatManager.TAG}: deleteAllMessageAndConversation: ${clearServerData}`
+    );
+    let r: any = await Native._callMethod(MTdeleteAllMessageAndConversation, {
+      [MTdeleteAllMessageAndConversation]: {
+        clearServerData: clearServerData,
+      },
+    });
+    Native.checkErrorFromResult(r);
+  }
+
+  /**
+   * Pins a message.
+   *
+   * @param messageId The message ID.
+   *
+   * @throws A description of the exception. See {@link ChatError}.
+   */
+  public async pinMessage(messageId: string): Promise<void> {
+    chatlog.log(`${ChatManager.TAG}: pinMessage: ${messageId}`);
+    let r: any = await Native._callMethod(MTpinMessage, {
+      [MTpinMessage]: {
+        msgId: messageId,
+      },
+    });
+    Native.checkErrorFromResult(r);
+  }
+
+  /**
+   * Unpins a message.
+   *
+   * @param messageId The message ID.
+   *
+   * @throws A description of the exception. See {@link ChatError}.
+   */
+  public async unpinMessage(messageId: string): Promise<void> {
+    chatlog.log(`${ChatManager.TAG}: pinMessage: ${messageId}`);
+    let r: any = await Native._callMethod(MTunpinMessage, {
+      [MTunpinMessage]: {
+        msgId: messageId,
+      },
+    });
+    Native.checkErrorFromResult(r);
+  }
+
+  /**
+   * Get the pinned messages in the conversation from server.
+   *
+   * @param convId The conversation ID.
+   * @param convType The conversation type. See {@link ChatConversationType}.
+   * @param isChatThread Whether the conversation is a chat thread.
+   *
+   * @returns The list of pinned messages. If no message is obtained, an empty list is returned.
+   *
+   * @throws A description of the exception. See {@link ChatError}.
+   */
+  public async fetchPinnedMessages(
+    convId: string,
+    convType: ChatConversationType,
+    isChatThread: boolean = false
+  ): Promise<ChatMessage[]> {
+    chatlog.log(
+      `${ChatManager.TAG}: fetchPinnedMessages:`,
+      convId,
+      convType,
+      isChatThread
+    );
+    let r: any = await Native._callMethod(MTfetchPinnedMessages, {
+      [MTfetchPinnedMessages]: {
+        convId: convId,
+        convType: convType,
+        isChatThread: isChatThread,
+      },
+    });
+    ChatManager.checkErrorFromResult(r);
+    const ret: ChatMessage[] = [];
+    const rr = r?.[MTfetchPinnedMessages] as [];
+    if (rr) {
+      Object.entries(rr).forEach((value: [string, any]) => {
+        ret.push(new ChatMessage(value[1]));
+      });
+    }
+    return ret;
+  }
+
+  /**
+   * Get the pinned messages in the conversation from local.
+   *
+   * @param convId The conversation ID.
+   * @param convType The conversation type. See {@link ChatConversationType}.
+   * @param isChatThread Whether the conversation is a chat thread.
+   *
+   * @returns The list of pinned messages. If no message is obtained, an empty list is returned.
+   *
+   * @throws A description of the exception. See {@link ChatError}.
+   */
+  public async getPinnedMessages(
+    convId: string,
+    convType: ChatConversationType,
+    isChatThread: boolean = false
+  ): Promise<ChatMessage[]> {
+    chatlog.log(
+      `${ChatManager.TAG}: getPinnedMessages:`,
+      convId,
+      convType,
+      isChatThread
+    );
+    let r: any = await Native._callMethod(MTpinnedMessages, {
+      [MTpinnedMessages]: {
+        convId: convId,
+        convType: convType,
+        isChatThread: isChatThread,
+      },
+    });
+    ChatManager.checkErrorFromResult(r);
+    const ret: ChatMessage[] = [];
+    const rr = r?.[MTpinnedMessages] as [];
+    if (rr) {
+      Object.entries(rr).forEach((value: [string, any]) => {
+        ret.push(new ChatMessage(value[1]));
+      });
+    }
+    return ret;
+  }
+
+  /**
+   * Get the pinned messages in the conversation.
+   *
+   * @param messageId The message ID.
+   * @returns The message pin information. If no message is obtained, an empty list is returned.
+   *
+   * @throws A description of the exception. See {@link ChatError}.
+   */
+  public async getMessagePinInfo(
+    messageId: string
+  ): Promise<ChatMessagePinInfo | undefined> {
+    chatlog.log(`${ChatManager.TAG}: getMessagePinInfo:`, messageId);
+    let r: any = await Native._callMethod(MTgetPinInfo, {
+      [MTgetPinInfo]: {
+        msgId: messageId,
+      },
+    });
+    try {
+      ChatManager.checkErrorFromResult(r);
+    } catch (error) {
+      chatlog.log(`${ChatManager.TAG}: getMessagePinInfo:`, error);
+      return undefined;
+    }
+    if (r[MTgetPinInfo]) {
+      return new ChatMessagePinInfo(r[MTgetPinInfo]);
+    }
+    return undefined;
   }
 }
