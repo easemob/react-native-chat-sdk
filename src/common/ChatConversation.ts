@@ -412,6 +412,8 @@ export class ChatConversation {
    * @returns The list of retrieved messages (excluding the one with the starting timestamp). If no message is obtained, an empty list is returned.
    *
    * @throws A description of the exception. See {@link ChatError}.
+   *
+   * @deprecated 2024-04-17 This method is deprecated. Use {@link getMsgsWithMsgType} instead.
    */
   public async getMessagesWithMsgType(
     msgType: ChatMessageType,
@@ -433,6 +435,40 @@ export class ChatConversation {
   }
 
   /**
+   * Retrieves messages of a certain type in the conversation from the local database.
+   *
+   * **note** If the conversation object does not exist, this method will create it.
+   *
+   * @params -
+   * @param msgType The message type. See {@link ChatMessageType}.
+   * @param direction The message search direction. See {@link ChatSearchDirection}.
+   * - (Default) `ChatSearchDirection.UP`: Messages are retrieved in the descending order of the Unix timestamp included in them.
+   * - `ChatSearchDirection.DOWN`: Messages are retrieved in the ascending order of the Unix timestamp included in them.
+   * @param timestamp The starting Unix timestamp in the message for query. The unit is millisecond. After this parameter is set, the SDK retrieves messages, starting from the specified one, according to the message search direction.
+   *                  If you set this parameter as a negative value, the SDK retrieves messages, starting from the current time, in the descending order of the timestamp included in them.
+   * @param count The maximum number of messages to retrieve each time. The value range is [1,400].
+   * @param sender The user ID or group ID for retrieval. Usually, it is the conversation ID.
+   *
+   * @returns The list of retrieved messages (excluding the one with the starting timestamp). If no message is obtained, an empty list is returned.
+   *
+   * @throws A description of the exception. See {@link ChatError}.
+   */
+  public async getMsgsWithMsgType(params: {
+    msgType: ChatMessageType;
+    direction: ChatSearchDirection;
+    timestamp: number;
+    count: number;
+    sender?: string;
+  }): Promise<Array<ChatMessage>> {
+    return ChatClient.getInstance().chatManager.getMsgsWithMsgType({
+      ...params,
+      convId: this.convId,
+      convType: this.convType,
+      isChatThread: this.isChatThread,
+    });
+  }
+
+  /**
    * Retrieves messages of a certain quantity in a conversation from the local database.
    *
    * **Note**
@@ -450,6 +486,8 @@ export class ChatConversation {
    * @returns The message list (excluding the ones with the starting or ending timestamp). If no message is obtained, an empty list is returned.
    *
    * @throws A description of the exception. See {@link ChatError}.
+   *
+   * @deprecated 2024-04-17 This method is deprecated. Use {@link getMsgs} instead.
    */
   public async getMessages(
     startMsgId: string,
@@ -464,6 +502,38 @@ export class ChatConversation {
       loadCount,
       this.isChatThread
     );
+  }
+
+  /**
+   * Retrieves messages of a specified quantity in a conversation from the local database.
+   *
+   * The retrieved messages will also be put in the conversation in the memory according to the timestamp included in them.
+   *
+   * **note** If the conversation object does not exist, this method will create it.
+   *
+   * @params -
+   * @param startMsgId The starting message ID for query. After this parameter is set, the SDK retrieves messages, starting from the specified one, according to the message search direction.
+   *                   If this parameter is set an empty string, the SDK retrieves messages according to the message search direction while ignoring this parameter.
+   * @param direction The message search direction. See {@link ChatSearchDirection}.
+   * - (Default) `ChatSearchDirection.UP`: Messages are retrieved in the descending order of the Unix timestamp included in them.
+   * - `ChatSearchDirection.DOWN`: Messages are retrieved in the ascending order of the Unix timestamp included in them.
+   * @param loadCount The maximum number of messages to retrieve each time. The value range is [1,50].
+   *
+   * @returns The list of retrieved messages (excluding the one with the starting timestamp). If no message is obtained, an empty list is returned.
+   *
+   * @throws A description of the exception. See {@link ChatError}.
+   */
+  public async getMsgs(params: {
+    startMsgId: string;
+    direction: ChatSearchDirection;
+    loadCount: number;
+  }): Promise<Array<ChatMessage>> {
+    return ChatClient.getInstance().chatManager.getMsgs({
+      ...params,
+      convId: this.convId,
+      convType: this.convType,
+      isChatThread: this.isChatThread,
+    });
   }
 
   /**
@@ -552,6 +622,8 @@ export class ChatConversation {
    * @returns The list of retrieved messages (excluding the ones with the starting or ending timestamp). If no message is obtained, an empty list is returned.
    *
    * @throws A description of the exception. See {@link ChatError}.
+   *
+   * @deprecated 2024-04-17 This method is deprecated. Use {@link getMsgWithTimestamp} instead.
    */
   public async getMessageWithTimestamp(
     startTime: number,
@@ -568,6 +640,37 @@ export class ChatConversation {
       count,
       this.isChatThread
     );
+  }
+
+  /**
+   * Retrieves messages that are sent and received in a certain period in a conversation in the local database.
+   *
+   * **note** If the conversation object does not exist, this method will create it.
+   *
+   * @params -
+   * @param startTime The starting Unix timestamp for query, in milliseconds.
+   * @param endTime The ending Unix timestamp for query, in milliseconds.
+   * @param direction The message search direction. See {@link ChatSearchDirection}.
+   * - (Default) `ChatSearchDirection.UP`: Messages are retrieved in the descending order of the Unix timestamp included in them.
+   * - `ChatSearchDirection.DOWN`: Messages are retrieved in the ascending order of the Unix timestamp included in them.
+   * @param count The maximum number of messages to retrieve each time. The value range is [1,400].
+   *
+   * @returns The list of retrieved messages (excluding with the ones with the starting or ending timestamp). If no message is obtained, an empty list is returned.
+   *
+   * @throws A description of the exception. See {@link ChatError}.
+   */
+  public async getMsgWithTimestamp(params: {
+    startTime: number;
+    endTime: number;
+    direction: ChatSearchDirection;
+    count: number;
+  }): Promise<Array<ChatMessage>> {
+    return ChatClient.getInstance().chatManager.getMsgWithTimestamp({
+      ...params,
+      convId: this.convId,
+      convType: this.convType,
+      isChatThread: this.isChatThread,
+    });
   }
 
   /**

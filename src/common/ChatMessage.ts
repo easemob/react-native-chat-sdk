@@ -146,6 +146,9 @@ export enum ChatRoomMessagePriority {
   PriorityLow,
 }
 
+/**
+ * The message pin operation.
+ */
 export enum ChatMessagePinOperation {
   /**
    * Message pin status.
@@ -157,6 +160,9 @@ export enum ChatMessagePinOperation {
   Unpin,
 }
 
+/**
+ * The message search scope.
+ */
 export enum ChatMessageSearchScope {
   /**
    * Search by message content.
