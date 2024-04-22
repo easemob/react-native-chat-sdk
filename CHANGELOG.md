@@ -31,7 +31,8 @@ _English | [Chinese](./CHANGELOG.zh.md)_
   - `getMessagesWithKeyword`: `getMsgsWithKeyword` replaces this interface.
   - `getMessages`: `getMsgs` replaces this interface.
   - `getMessageWithTimestamp`: `getMsgWithTimestamp` replaces this interface.
-  - `getMessagesWithMsgType`: `getMsgsWithMsgType` replaces this interface.
+  - `getMessagesWithMsgType`: `getConvMsgsWithMsgType` replaces this interface.
+  - `searchMsgFromDB`: `getMsgsWithMsgType` replaces this interface.
 
 ## 1.3.1
 

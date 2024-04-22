@@ -363,6 +363,11 @@ export const metaDataList = new Map<string, ApiParams>([
           paramType: 'number',
           paramDefaultValue: 1,
         },
+        {
+          paramName: 'searchScope',
+          paramType: 'number',
+          paramDefaultValue: 0,
+        },
       ],
     },
   ],

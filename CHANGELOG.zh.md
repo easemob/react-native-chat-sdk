@@ -31,7 +31,8 @@ _Chinese | [English](./CHANGELOG.md)_
   - `getMessagesWithKeyword`: `getMsgsWithKeyword` 替换该接口。
   - `getMessages`: `getMsgs` 替换该接口。
   - `getMessageWithTimestamp`: `getMsgWithTimestamp`替换该接口。
-  - `getMessagesWithMsgType`: `getMsgsWithMsgType`替换该接口。
+  - `getMessagesWithMsgType`: `getConvMsgsWithMsgType`替换该接口。
+  - `searchMsgFromDB`: `getMsgsWithMsgType`替换该接口。
 
 ## 1.3.1
 

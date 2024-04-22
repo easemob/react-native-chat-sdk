@@ -556,14 +556,17 @@ export class QuickTestScreenChat extends QuickTestScreenBase<
             .paramDefaultValue;
           const direction = this.metaData.get(MN.searchMsgFromDB)?.params[4]!
             .paramDefaultValue;
+          const searchScope = this.metaData.get(MN.searchMsgFromDB)?.params[5]!
+            .paramDefaultValue;
           this.tryCatch(
-            ChatClient.getInstance().chatManager.searchMsgFromDB(
+            ChatClient.getInstance().chatManager.getMsgsWithKeyword({
               keywords,
               timestamp,
               maxCount,
               from,
-              direction
-            ),
+              direction,
+              searchScope,
+            }),
             QuickTestScreenChat.TAG,
             MN.searchMsgFromDB
           );
@@ -992,7 +995,7 @@ export class QuickTestScreenChat extends QuickTestScreenBase<
           const searchScope = this.metaData.get(MN.getMessagesWithKeyword)
             ?.params[8]!.paramDefaultValue;
           this.tryCatch(
-            ChatClient.getInstance().chatManager.getMsgsWithKeyword({
+            ChatClient.getInstance().chatManager.getConvMsgsWithKeyword({
               convId,
               convType,
               keywords,

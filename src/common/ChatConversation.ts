@@ -455,9 +455,9 @@ export class ChatConversation {
    */
   public async getMsgsWithMsgType(params: {
     msgType: ChatMessageType;
-    direction: ChatSearchDirection;
-    timestamp: number;
-    count: number;
+    direction?: ChatSearchDirection;
+    timestamp?: number;
+    count?: number;
     sender?: string;
   }): Promise<Array<ChatMessage>> {
     return ChatClient.getInstance().chatManager.getMsgsWithMsgType({
@@ -525,8 +525,8 @@ export class ChatConversation {
    */
   public async getMsgs(params: {
     startMsgId: string;
-    direction: ChatSearchDirection;
-    loadCount: number;
+    direction?: ChatSearchDirection;
+    loadCount?: number;
   }): Promise<Array<ChatMessage>> {
     return ChatClient.getInstance().chatManager.getMsgs({
       ...params,
@@ -596,13 +596,13 @@ export class ChatConversation {
    */
   public async getMsgsWithKeyword(params: {
     keywords: string;
-    direction: ChatSearchDirection;
-    timestamp: number;
-    count: number;
+    direction?: ChatSearchDirection;
+    timestamp?: number;
+    count?: number;
     sender?: string;
-    searchScope: ChatMessageSearchScope;
+    searchScope?: ChatMessageSearchScope;
   }): Promise<Array<ChatMessage>> {
-    return ChatClient.getInstance().chatManager.getMsgsWithKeyword({
+    return ChatClient.getInstance().chatManager.getConvMsgsWithKeyword({
       ...params,
       convId: this.convId,
       convType: this.convType,
@@ -662,8 +662,8 @@ export class ChatConversation {
   public async getMsgWithTimestamp(params: {
     startTime: number;
     endTime: number;
-    direction: ChatSearchDirection;
-    count: number;
+    direction?: ChatSearchDirection;
+    count?: number;
   }): Promise<Array<ChatMessage>> {
     return ChatClient.getInstance().chatManager.getMsgWithTimestamp({
       ...params,

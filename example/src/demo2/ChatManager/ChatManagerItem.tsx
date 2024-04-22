@@ -85,6 +85,7 @@ export interface StateChatMessage extends StateBase {
     maxCount: number;
     from: string;
     direction: number;
+    searchScope: number;
   };
   fetchGroupAcks: {
     msgId: string;
@@ -874,16 +875,17 @@ export class ChatManagerLeafScreen extends LeafScreenBase<StateChatMessage> {
         this.metaData.get(MN.fetchHistoryMessages)!.methodName
       );
     } else if (name === MN.searchMsgFromDB) {
-      const { keywords, timestamp, maxCount, from, direction } =
+      const { keywords, timestamp, maxCount, from, direction, searchScope } =
         this.state.searchMsgFromDB;
       this.tryCatch(
-        ChatClient.getInstance().chatManager.searchMsgFromDB(
+        ChatClient.getInstance().chatManager.getMsgsWithKeyword({
           keywords,
           timestamp,
           maxCount,
           from,
-          direction
-        ),
+          direction,
+          searchScope,
+        }),
         ChatManagerLeafScreen.TAG,
         this.metaData.get(MN.searchMsgFromDB)!.methodName
       );
@@ -1116,7 +1118,7 @@ export class ChatManagerLeafScreen extends LeafScreenBase<StateChatMessage> {
         searchScope,
       } = this.state.getMessagesWithKeyword;
       this.tryCatch(
-        ChatClient.getInstance().chatManager.getMsgsWithKeyword({
+        ChatClient.getInstance().chatManager.getConvMsgsWithKeyword({
           convId,
           convType: ChatConversationTypeFromNumber(convType),
           keywords,

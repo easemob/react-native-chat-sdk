@@ -1050,6 +1050,8 @@ export class ChatManager extends BaseManager {
    * @returns The list of retrieved messages (excluding the one with the starting timestamp). If no message is obtained, an empty list is returned.
    *
    * @throws A description of the exception. See {@link ChatError}.
+   *
+   * @deprecated 2024-04-22. Use {@link getMsgsWithKeyword} instead.
    */
   public async searchMsgFromDB(
     keywords: string,
@@ -1068,6 +1070,61 @@ export class ChatManager extends BaseManager {
         maxCount: maxCount,
         from: from,
         direction: direction === ChatSearchDirection.UP ? 'up' : 'down',
+      },
+    });
+    Native.checkErrorFromResult(r);
+    let ret = new Array<ChatMessage>(0);
+    const rr: Array<any> = r?.[MTsearchChatMsgFromDB];
+    if (rr) {
+      rr.forEach((element) => {
+        ret.push(new ChatMessage(element));
+      });
+    }
+    return ret;
+  }
+
+  /**
+   * Retrieves messages with keywords from the local database.
+   *
+   * @param keywords The keywords for query.
+   * @param timestamp The starting Unix timestamp in the message for query. The unit is millisecond. After this parameter is set, the SDK retrieves messages, starting from the specified one, according to the message search direction.
+   *                  If you set this parameter as a negative value, the SDK retrieves messages, starting from the current time, in the descending order of the timestamp included in them.
+   * @param maxCount The maximum number of messages to retrieve each time. The value range is [1,400].
+   * @param from The user ID or group ID for retrieval. Usually, it is the conversation ID.
+   * @param direction The message search direction. See {@link ChatSearchDirection}.
+   *                  - (Default) `ChatSearchDirection.Up`: Messages are retrieved in the descending order of the Unix timestamp included in them.
+   *                  - `ChatSearchDirection.Down`: Messages are retrieved in the ascending order of the Unix timestamp included in them.
+   * @returns The list of retrieved messages (excluding the one with the starting timestamp). If no message is obtained, an empty list is returned.
+   *
+   * @throws A description of the exception. See {@link ChatError}.
+   */
+  public async getMsgsWithKeyword(params: {
+    keywords: string;
+    timestamp?: number;
+    maxCount?: number;
+    from?: string;
+    direction?: ChatSearchDirection;
+    searchScope?: ChatMessageSearchScope;
+  }): Promise<Array<ChatMessage>> {
+    const {
+      keywords,
+      timestamp = -1,
+      maxCount = 20,
+      from = '',
+      direction = ChatSearchDirection.UP,
+      searchScope = ChatMessageSearchScope.All,
+    } = params;
+    chatlog.log(
+      `${ChatManager.TAG}: searchMsgFromDB: ${keywords}, ${timestamp}, ${maxCount}, ${from}`
+    );
+    let r: any = await Native._callMethod(MTsearchChatMsgFromDB, {
+      [MTsearchChatMsgFromDB]: {
+        keywords: keywords,
+        timeStamp: timestamp,
+        maxCount: maxCount,
+        from: from,
+        direction: direction === ChatSearchDirection.UP ? 'up' : 'down',
+        searchScope: searchScope,
       },
     });
     Native.checkErrorFromResult(r);
@@ -1772,11 +1829,11 @@ export class ChatManager extends BaseManager {
     convId: string;
     convType: ChatConversationType;
     msgType: ChatMessageType;
-    direction: ChatSearchDirection;
-    timestamp: number;
-    count: number;
+    direction?: ChatSearchDirection;
+    timestamp?: number;
+    count?: number;
     sender?: string;
-    isChatThread: boolean;
+    isChatThread?: boolean;
   }): Promise<Array<ChatMessage>> {
     const {
       convId,
@@ -1909,9 +1966,9 @@ export class ChatManager extends BaseManager {
     convId: string;
     convType: ChatConversationType;
     startMsgId: string;
-    direction: ChatSearchDirection;
-    loadCount: number;
-    isChatThread: boolean;
+    direction?: ChatSearchDirection;
+    loadCount?: number;
+    isChatThread?: boolean;
   }): Promise<Array<ChatMessage>> {
     const {
       convId,
@@ -1974,7 +2031,7 @@ export class ChatManager extends BaseManager {
    *
    * @throws A description of the exception. See {@link ChatError}.
    *
-   * @deprecated 2023-07-24 This method is deprecated. Use {@link getMsgsWithKeyword} instead.
+   * @deprecated 2023-07-24 This method is deprecated. Use {@link getConvMsgsWithKeyword} instead.
    */
   public async getMessagesWithKeyword(
     convId: string,
@@ -2045,16 +2102,16 @@ export class ChatManager extends BaseManager {
    *
    * @throws A description of the exception. See {@link ChatError}.
    */
-  public async getMsgsWithKeyword(params: {
+  public async getConvMsgsWithKeyword(params: {
     convId: string;
     convType: ChatConversationType;
     keywords: string;
-    direction: ChatSearchDirection;
-    timestamp: number;
-    count: number;
+    direction?: ChatSearchDirection;
+    timestamp?: number;
+    count?: number;
     sender?: string;
-    searchScope: ChatMessageSearchScope;
-    isChatThread: boolean;
+    searchScope?: ChatMessageSearchScope;
+    isChatThread?: boolean;
   }): Promise<Array<ChatMessage>> {
     const {
       convId,
@@ -2190,9 +2247,9 @@ export class ChatManager extends BaseManager {
     convType: ChatConversationType;
     startTime: number;
     endTime: number;
-    direction: ChatSearchDirection;
-    count: number;
-    isChatThread: boolean;
+    direction?: ChatSearchDirection;
+    count?: number;
+    isChatThread?: boolean;
   }): Promise<Array<ChatMessage>> {
     const {
       convId,
