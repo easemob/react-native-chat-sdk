@@ -67,7 +67,7 @@ import {
 } from './common/ChatGroup';
 
 /**
- * The group manager class, which defines how to manage groups, like group creation and destruction and member management.
+ * 群组管理类，用于管理群组的创建，删除及成员管理等操作。
  */
 export class ChatGroupManager extends BaseManager {
   protected static TAG = 'ChatGroupManager';
@@ -302,12 +302,12 @@ export class ChatGroupManager extends BaseManager {
   }
 
   /**
-   * Gets the group instance from the memory by group ID.
+   * 根据群组 ID，从内存中获取群组对象。
    *
-   * @param groupId The group ID.
-   * @returns The group instance. The SDK returns `undefined` if the group does not exist.
+   * @param groupId 群组 ID。
+   * @returns 群组实例。如果群组不存在，返回 `undefined`。
    *
-   * @throws A description of the exception. See {@link ChatError}.
+   * @throws 如果有异常会在这里抛出，包含错误码和错误描述，详见 {@link ChatError}。
    */
   public async getGroupWithId(groupId: string): Promise<ChatGroup | undefined> {
     chatlog.log(`${ChatGroupManager.TAG}: getGroupWithId: `, groupId);
@@ -325,13 +325,11 @@ export class ChatGroupManager extends BaseManager {
   }
 
   /**
-   * Gets the list of groups that the current user has joined.
+   * 从本地数据库获取当前用户已加入的群组。
    *
-   * This method gets data from the local database.
+   * @returns 群组列表。
    *
-   * @returns The group list.
-   *
-   * @throws A description of the exception. See {@link ChatError}.
+   * @throws 如果有异常会在这里抛出，包含错误码和错误描述，详见 {@link ChatError}。
    */
   public async getJoinedGroups(): Promise<Array<ChatGroup>> {
     chatlog.log(`${ChatGroupManager.TAG}: getJoinedGroups: `);
@@ -345,17 +343,15 @@ export class ChatGroupManager extends BaseManager {
   }
 
   /**
-   * Gets the list of groups that the current user has joined.
+   * 以分页方式从服务器获取当前用户已加入的群组。
    *
-   * This method gets data from the server.
+   * 此操作只返回群组列表，不包含群组的所有成员信息。如果要更新某个群组包括成员的全部信息，需要再调用 {@link #fetchMemberListFromServer}。
    *
-   * This method returns a group list which does not contain member information. If you want to update information of a group to include its member information, call {@link fetchMemberListFromServer}.
+   * @param pageSize 每页期望返回的群组数。[1, 20]
+   * @param pageNum 当前页码，从 0 开始。
+   * @returns 当前用户已加入的群组列表
    *
-   * @param pageSize The number of groups that you expect to return on each page [1, 20].
-   * @param pageNum The page number, starting from 0.
-   * @returns The list of groups that the current user joins.
-   *
-   * @throws A description of the exception. See {@link ChatError}.
+   * @throws 如果有异常会在这里抛出，包含错误码和错误描述，详见 {@link ChatError}。
    */
   public async fetchJoinedGroupsFromServer(
     pageSize: number,
@@ -385,13 +381,13 @@ export class ChatGroupManager extends BaseManager {
   }
 
   /**
-   * Gets public groups from the server with pagination.
+   * 分页从服务器获取公开群组。
    *
-   * @param pageSize The number of public groups that you expect on each page.
-   * @param cursor The cursor position from which to start to get data. At the first method call, if you set `cursor` as `null`, the SDK gets the data in the reverse chronological order of when groups are created.
-   * @returns The group list and the cursor for the next query. See {@link ChatCursorResult}.
+   * @param pageSize 每页期望返回的群组数。
+   * @param cursor 开始取数据的游标位置。首次调用时传 `null`，按群组创建时间的倒序获取。
+   * @returns 群组列表以及用于下次查询的 cursor。
    *
-   * @throws A description of the exception. See {@link ChatError}.
+   * @throws 如果有异常会在这里抛出，包含错误码和错误描述，详见 {@link ChatError}。
    */
   public async fetchPublicGroupsFromServer(
     pageSize: number,
@@ -422,25 +418,25 @@ export class ChatGroupManager extends BaseManager {
   }
 
   /**
-   * Creates a group instance.
+   * 创建群组。
    *
-   * After the group is created, the data in the memory and database will be updated and multiple devices will receive the notification event and update the group to the memory and database.
+   * 群组创建成功后，会更新内存及数据库中的数据，多端多设备会收到相应的通知事件，然后将群组更新到内存及数据库中。
    *
-   * You can set {@link ChatGroupEventListener} to listen for the event.
+   * 可通过设置 {@link ChatGroupEventListener} 监听相关事件。
    *
-   * @param options The options for creating a group. They are optional and cannot be `null`. See {@link ChatGroupOptions}.
-   * The options are as follows:
-   * - The maximum number of members allowed in the group. The default value is 200.
-   * - The group style. See {@link ChatGroupStyle}. The default value is {@link ChatGroupStyle.PrivateOnlyOwnerInvite}.
-   * - Whether to ask for permission when inviting a user to join the group. The default value is `false`, indicating that invitees are automatically added to the group without their permission.
-   * - The extension of group details.
-   * @param groupName The group name. It is optional. Pass `null` if you do not want to set this parameter.
-   * @param desc The group description. It is optional. Pass `null` if you do not want to set this parameter.
-   * @param inviteMembers The group member array. The group owner ID is optional. This parameter cannot be `null`.
-   * @param inviteReason The group joining invitation. It is optional. Pass `null` if you do not want to set this parameter.
-   * @returns The created group instance.
+   * @param options 群组创建时需设置的选项。该参数可选，不可为 `null`。详见 {@link ChatGroupOptions}.
+   * 群组的其他选项如下：
+   *                      - 群组最大成员数，默认值为 200；
+   *                      - 群组类型，详见 {@link ChatGroupStyle}。默认值为 {@link ChatGroupStyle#PrivateOnlyOwnerInvite}，即私有群，仅群主可邀请用户入群；
+   *                      - 邀请入群是否需要对方同意，默认为 `false`，即邀请后直接入群；
+   *                      - 群详情扩展。
+   * @param groupName 群组名称。该参数可选，不设置传 `null`。
+   * @param desc 群组描述。该参数可选，不设置传 `null`。
+   * @param inviteMembers 群成员列表。可选参数。该参数不可为 `null`。
+   * @param inviteReason 成员入群的邀请信息。该参数可选，不设置传 `null`。
+   * @returns 创建成功的群组实例。
    *
-   * @throws A description of the exception. See {@link ChatError}.
+   * @throws 如果有异常会在这里抛出，包含错误码和错误描述，详见 {@link ChatError}。
    */
   public async createGroup(
     options: ChatGroupOptions,
@@ -471,15 +467,15 @@ export class ChatGroupManager extends BaseManager {
   }
 
   /**
-   * Gets the group information from the server.
+   * 从服务器获取群组详情。
    *
-   * @param groupId The group ID.
-   * @param isFetchMembers Whether to get group member information:
-   *                       - `true`: Yes. This method can return information of at most 200 group members. To get information of all group members, you can call {@link fetchMemberListFromServer}.
-   *                       - `false`: No.
-   * @returns The group instance. The SDK returns `undefined` if the group does not exist.
+   * @param groupId 群组 ID。
+   * @param isFetchMembers 是否获取群组成员信息：
+   *                       - `true`：是；该方法最多可获取 200 个成员的信息。如需获取所有群组成员的信息，可调用 {@link fetchMemberListFromServer}。
+   *                       - `false`：否。
+   * @returns 群组实例。如果群组不存在，返回 `undefined`。
    *
-   * @throws A description of the exception. See {@link ChatError}.
+   * @throws 如果有异常会在这里抛出，包含错误码和错误描述，详见 {@link ChatError}。
    */
   public async fetchGroupInfoFromServer(
     groupId: string,
@@ -501,14 +497,14 @@ export class ChatGroupManager extends BaseManager {
   }
 
   /**
-   * Uses the pagination to get the member list of the group from the server.
+   * 从服务器分页获取群组成员。
    *
-   * @param groupId The group ID.
-   * @param pageSize The number of group members that you expect to get on each page.
-   * @param cursor The cursor position from which to start to get data. At the first method call, if you set `cursor` as `null`, the SDK gets the data in the reverse chronological order of when users join the group.
-   * @returns The group member list and the cursor for the next query. See {@link ChatCursorResult}.
+   * @param groupId 群组 ID。
+   * @param pageSize 每页获取的群组成员数量。
+   * @param cursor 开始取数据的游标位置。首次调用时传 `null`，按成员加入群组时间的倒序获取。
+   * @returns 群组成员列表以及下次查询的 cursor。详见 {@link ChatCursorResult}。
    *
-   * @throws A description of the exception. See {@link ChatError}.
+   * @throws 如果有异常会在这里抛出，包含错误码和错误描述，详见 {@link ChatError}。
    */
   public async fetchMemberListFromServer(
     groupId: string,
@@ -542,16 +538,16 @@ export class ChatGroupManager extends BaseManager {
   }
 
   /**
-   * Uses the pagination to get the group block list from the server.
+   * 从服务器分页获取群组黑名单列表。
    *
-   * Only the group owner or admin can call this method.
+   * 仅群主和管理员可调用此方法。
    *
-   * @param groupId The group ID.
-   * @param pageSize The number of group members on the block list that you expect to get on each page.
-   * @param pageNum The page number, starting from 1.
-   * @returns The group block list.
+   * @param groupId 群组 ID。
+   * @param pageSize 每页获取的数量。
+   * @param pageNum 当前页码，从 1 开始。
+   * @returns 群组黑名单列表。
    *
-   * @throws A description of the exception. See {@link ChatError}.
+   * @throws 如果有异常会在这里抛出，包含错误码和错误描述，详见 {@link ChatError}。
    */
   public async fetchBlockListFromServer(
     groupId: string,
@@ -577,16 +573,16 @@ export class ChatGroupManager extends BaseManager {
   }
 
   /**
-   * Uses the pagination to get the mute list of the group from the server.
+   * 从服务器分页获取群组禁言列表。
    *
-   * Only the group owner or admin can call this method.
+   * 仅群主和管理员可调用此方法。
    *
-   * @param groupId The group ID.
-   * @param pageSize The number of muted members that you expect to get on each page.
-   * @param pageNum The page number, starting from 1.
-   * @returns The group mute list.
+   * @param groupId 群组 ID。
+   * @param pageSize 每页获取的禁言成员数量。
+   * @param pageNum 当前页码，从 1 开始。
+   * @returns 群组禁言列表。
    *
-   * @throws A description of the exception. See {@link ChatError}.
+   * @throws 如果有异常会在这里抛出，包含错误码和错误描述，详见 {@link ChatError}。
    */
   public async fetchMuteListFromServer(
     groupId: string,
@@ -612,14 +608,14 @@ export class ChatGroupManager extends BaseManager {
   }
 
   /**
-   * Uses the pagination to get the allow list of the group from the server.
+   * 从服务器分页获取群组白名单列表。
    *
-   * Only the group owner or admin can call this method.
+   * 仅群主和管理员可调用此方法。
    *
-   * @param groupId The group ID.
-   * @returns The allow list of the group.
+   * @param groupId 群组 ID。
+   * @returns 群组白名单列表。
    *
-   * @throws A description of the exception. See {@link ChatError}.
+   * @throws 如果有异常会在这里抛出，包含错误码和错误描述，详见 {@link ChatError}。
    */
   public async fetchAllowListFromServer(
     groupId: string
@@ -636,14 +632,14 @@ export class ChatGroupManager extends BaseManager {
   }
 
   /**
-   * Gets whether the member is on the allow list of the group.
+   * 从服务器查询该用户是否在群组白名单上。
    *
-   * @param groupId The group ID.
-   * @returns Whether the current user is on the allow list of the group.
-   * - `true`: Yes.
-   * - `false`: No.
+   * @param groupId 群组 ID。
+   * @returns 该用户是否在群白名单上。
+   * - `true`：是。
+   * - `false`：否。
    *
-   * @throws A description of the exception. See {@link ChatError}.
+   * @throws 如果有异常会在这里抛出，包含错误码和错误描述，详见 {@link ChatError}。
    */
   public async isMemberInAllowListFromServer(
     groupId: string
@@ -663,14 +659,14 @@ export class ChatGroupManager extends BaseManager {
   }
 
   /**
-   * Uses the pagination to get the shared files of the group from the server.
+   * 从服务器分页获取群共享文件。
    *
-   * @param groupId The group ID.
-   * @param pageSize The number of shared files that you get on each page.
-   * @param pageNum The page number, starting from 1.
-   * @returns The shared file list.
+   * @param groupId 群组 ID。
+   * @param pageSize 每页获取的群共享文件数量。
+   * @param pageNum 当前页面，从 1 开始。
+   * @returns 群共享文档列表。
    *
-   * @throws A description of the exception. See {@link ChatError}.
+   * @throws 如果有异常会在这里抛出，包含错误码和错误描述，详见 {@link ChatError}。
    */
   public async fetchGroupFileListFromServer(
     groupId: string,
@@ -701,14 +697,14 @@ export class ChatGroupManager extends BaseManager {
   }
 
   /**
-   * Gets the group announcement from the server.
+   * 从服务器获取群组公告。
    *
-   * All group members can call this method.
+   * 所有群成员都可以调用该方法。
    *
-   * @param groupId The group ID.
-   * @returns The group announcement.
+   * @param groupId 群组 ID。
+   * @returns 群组公告。
    *
-   * @throws A description of the exception. See {@link ChatError}.
+   * @throws 如果有异常会在这里抛出，包含错误码和错误描述，详见 {@link ChatError}。
    */
   public async fetchAnnouncementFromServer(groupId: string): Promise<string> {
     chatlog.log(
@@ -726,15 +722,15 @@ export class ChatGroupManager extends BaseManager {
   }
 
   /**
-   * Adds users to the group.
+   * 向群组中添加新成员。
    *
-   * Only the group owner or admin can call this method.
+   * 仅群主和管理员可调用此方法。
    *
-   * @param groupId The group ID.
-   * @param members The array of new members to add.
-   * @param welcome (optional) The welcome message.
+   * @param groupId 群组 ID。
+   * @param members 要加入的成员列表。
+   * @param welcome (可选) 欢迎消息。
    *
-   * @throws A description of the exception. See {@link ChatError}.
+   * @throws 如果有异常会在这里抛出，包含错误码和错误描述，详见 {@link ChatError}。
    */
   public async addMembers(
     groupId: string,
@@ -758,18 +754,18 @@ export class ChatGroupManager extends BaseManager {
   }
 
   /**
-   * Invites users to join the group.
+   * 邀请用户加入群组。
    *
-   * This method works only for groups with the following styles:
-   * - `PrivateOnlyOwnerInvite` style: Only the group owner can invite users to join the group.
-   * - `PrivateMemberCanInvite` style: Each group member can invite users to join the group.
-   * - `PublicJoinNeedApproval` style: Each group member can invite users to join the group and users can join a group only after getting approval from the group owner or admins.
+   * 该方法只适用于以下三种类型的群组： `PrivateOnlyOwnerInvite`、`PrivateMemberCanInvite` 和 `PublicJoinNeedApproval`。
+   * 对于 `PrivateOnlyOwnerInvite` 类型，只有群主可以邀请其他用户加入群组。
+   * 对于 `PrivateMemberCanInvite` 类型，所有成员都可以邀请其他用户加入群组。
+   * 对于 `PublicJoinNeedApproval` 类型，所有成员都可以邀请其他用户加入群组，但邀请后需要群主或群管理员审批。
    *
-   * @param groupId The group ID.
-   * @param members The array of user IDs of new members to invite.
-   * @param reason The invitation reason.
+   * @param groupId 群组 ID。
+   * @param members 受邀用户的用户 ID 列表。
+   * @param reason 邀请理由。
    *
-   * @throws A description of the exception. See {@link ChatError}.
+   * @throws 如果有异常会在这里抛出，包含错误码和错误描述，详见 {@link ChatError}。
    */
   public async inviteUser(
     groupId: string,
@@ -793,14 +789,14 @@ export class ChatGroupManager extends BaseManager {
   }
 
   /**
-   * Removes a member from the group.
+   * 从群组中移除用户。
    *
-   * Only the group owner or admin can call this method.
+   * 仅群主和管理员可调用此方法。
    *
-   * @param groupId The group ID.
-   * @param members The user ID of the member to be removed.
+   * @param groupId 群组 ID。
+   * @param members 要移出群组的成员用户 ID 列表。
    *
-   * @throws A description of the exception. See {@link ChatError}.
+   * @throws 如果有异常会在这里抛出，包含错误码和错误描述，详见 {@link ChatError}。
    */
   public async removeMembers(
     groupId: string,
@@ -817,16 +813,16 @@ export class ChatGroupManager extends BaseManager {
   }
 
   /**
-   * Adds the user to the block list of the group.
+   * 将成员加入群组的黑名单列表。
    *
-   * Users will be first removed from the group they have joined before being added to the block list of the group. The users on the group block list cannot join the group again.
+   * 成功调用该方法后，该用户会先被移除出群组，然后加入群组黑名单。该用户无法接收、发送群消息，也无法申请再次加入群组。
    *
-   * Only the group owner or admin can call this method.
+   * 仅群主和管理员可调用此方法。
    *
-   * @param groupId The group ID.
-   * @param members The array of user IDs of members to be added to the block list.
+   * @param groupId 群组 ID。
+   * @param members 要加入群组黑名单的成员的用户 ID 列表。
    *
-   * @throws A description of the exception. See {@link ChatError}.
+   * @throws 如果有异常会在这里抛出，包含错误码和错误描述，详见 {@link ChatError}。
    */
   public async blockMembers(
     groupId: string,
@@ -843,14 +839,14 @@ export class ChatGroupManager extends BaseManager {
   }
 
   /**
-   * Removes users from the group block list.
+   * 将用户从群组黑名单中移除。
    *
-   * Only the group owner or admin can call this method.
+   * 仅群主和管理员可调用此方法。
    *
-   * @param groupId The group ID.
-   * @param members The user IDs of members to be removed from the group block list.
+   * @param groupId 群组 ID。
+   * @param members 要移出黑名单的用户 ID 列表。
    *
-   * @throws A description of the exception. See {@link ChatError}.
+   * @throws 如果有异常会在这里抛出，包含错误码和错误描述，详见 {@link ChatError}。
    */
   public async unblockMembers(
     groupId: string,
@@ -867,14 +863,14 @@ export class ChatGroupManager extends BaseManager {
   }
 
   /**
-   * Changes the group name.
+   * 修改群组名称。
    *
-   * Only the group owner or admin can call this method.
+   * 仅群主和管理员可调用此方法。
    *
-   * @param groupId The group ID.
-   * @param groupName The new group name.
+   * @param groupId 群组 ID。
+   * @param groupName 新的群组名称。
    *
-   * @throws A description of the exception. See {@link ChatError}.
+   * @throws 如果有异常会在这里抛出，包含错误码和错误描述，详见 {@link ChatError}。
    */
   public async changeGroupName(
     groupId: string,
@@ -895,14 +891,14 @@ export class ChatGroupManager extends BaseManager {
   }
 
   /**
-   * Modifies the group description.
+   * 修改群组描述。
    *
-   * Only the group owner or admin can call this method.
+   * 仅群主和管理员可调用此方法。
    *
-   * @param groupId The group ID.
-   * @param description The new group description.
+   * @param groupId 群组 ID。
+   * @param description 新的群组描述。
    *
-   * @throws A description of the exception. See {@link ChatError}.
+   * @throws 如果有异常会在这里抛出，包含错误码和错误描述，详见 {@link ChatError}。
    */
   public async changeGroupDescription(
     groupId: string,
@@ -923,11 +919,11 @@ export class ChatGroupManager extends BaseManager {
   }
 
   /**
-   * Leaves a group.
+   * 主动退出群组。
    *
-   * @param groupId The group ID.
+   * @param groupId 群组 ID。
    *
-   * @throws A description of the exception. See {@link ChatError}.
+   * @throws 如果有异常会在这里抛出，包含错误码和错误描述，详见 {@link ChatError}。
    */
   public async leaveGroup(groupId: string): Promise<void> {
     chatlog.log(`${ChatGroupManager.TAG}: leaveGroup: `, groupId);
@@ -940,13 +936,13 @@ export class ChatGroupManager extends BaseManager {
   }
 
   /**
-   * Destroys the group instance.
+   * 解散群组。
    *
-   * Only the group owner can call this method.
+   * 仅群主可调用此方法。
    *
-   * @param groupId The group ID.
+   * @param groupId 群组 ID。
    *
-   * @throws A description of the exception. See {@link ChatError}.
+   * @throws 如果有异常会在这里抛出，包含错误码和错误描述，详见 {@link ChatError}。
    */
   public async destroyGroup(groupId: string): Promise<void> {
     chatlog.log(`${ChatGroupManager.TAG}: destroyGroup: `, groupId);
@@ -959,13 +955,13 @@ export class ChatGroupManager extends BaseManager {
   }
 
   /**
-   * Blocks group messages.
+   * 屏蔽群消息。
    *
-   * The user that blocks group messages is still a group member, but cannot receive group messages.
+   * 屏蔽群消息的用户仍是群成员，但无法接收群消息。
    *
-   * @param groupId The group ID.
+   * @param groupId 群组 ID。
    *
-   * @throws A description of the exception. See {@link ChatError}.
+   * @throws 如果有异常会在这里抛出，包含错误码和错误描述，详见 {@link ChatError}。
    */
   public async blockGroup(groupId: string): Promise<void> {
     chatlog.log(`${ChatGroupManager.TAG}: blockGroup: `, groupId);
@@ -978,11 +974,11 @@ export class ChatGroupManager extends BaseManager {
   }
 
   /**
-   * Unblocks group messages.
+   * 解除屏蔽群消息。
    *
-   * @param groupId The group ID.
+   * @param groupId 群组 ID。
    *
-   * @throws A description of the exception. See {@link ChatError}.
+   * @throws 如果有异常会在这里抛出，包含错误码和错误描述，详见 {@link ChatError}。
    */
   public async unblockGroup(groupId: string): Promise<void> {
     chatlog.log(`${ChatGroupManager.TAG}: unblockGroup: `, groupId);
@@ -995,14 +991,14 @@ export class ChatGroupManager extends BaseManager {
   }
 
   /**
-   * Transfers the group ownership.
+   * 转移群主权限。
    *
-   * Only the group owner can call this method.
+   * 仅群主可调用此方法。
    *
-   * @param groupId The group ID.
-   * @param newOwner The user ID of the new group owner.
+   * @param groupId 群组 ID。
+   * @param newOwner 新群主的用户 ID。
    *
-   * @throws A description of the exception. See {@link ChatError}.
+   * @throws 如果有异常会在这里抛出，包含错误码和错误描述，详见 {@link ChatError}。
    */
   public async changeOwner(groupId: string, newOwner: string): Promise<void> {
     chatlog.log(`${ChatGroupManager.TAG}: changeOwner: `, groupId, newOwner);
@@ -1016,14 +1012,14 @@ export class ChatGroupManager extends BaseManager {
   }
 
   /**
-   * Adds a group admin.
+   * 添加群组管理员。
    *
-   * Only the group owner can call this method and group admins cannot.
+   * 仅群主可调用此方法。管理员不可调用该方法。
    *
-   * @param groupId The group ID.
-   * @param admin The user ID of the admin to add.
+   * @param groupId 群组 ID。
+   * @param admin 设置为群组管理员的成员用户 ID。
    *
-   * @throws A description of the exception. See {@link ChatError}.
+   * @throws 如果有异常会在这里抛出，包含错误码和错误描述，详见 {@link ChatError}。
    */
   public async addAdmin(groupId: string, admin: string): Promise<void> {
     chatlog.log(`${ChatGroupManager.TAG}: addAdmin: `, groupId, admin);
@@ -1037,14 +1033,14 @@ export class ChatGroupManager extends BaseManager {
   }
 
   /**
-   * Removes a group admin.
+   * 移除群组管理员权限。
    *
-   * Only the group owner can call this method.
+   * 仅群主可调用此方法。
    *
-   * @param groupId The group ID.
-   * @param admin The user ID of the group admin to remove.
+   * @param groupId 群组 ID。
+   * @param admin 移除群组管理员权限的成员用户 ID。
    *
-   * @throws A description of the exception. See {@link ChatError}.
+   * @throws 如果有异常会在这里抛出，包含错误码和错误描述，详见 {@link ChatError}。
    */
   public async removeAdmin(groupId: string, admin: string): Promise<void> {
     chatlog.log(`${ChatGroupManager.TAG}: removeAdmin: `, groupId, admin);
@@ -1058,15 +1054,15 @@ export class ChatGroupManager extends BaseManager {
   }
 
   /**
-   * Mutes group members.
+   * 禁言群组成员。
    *
-   * Only the group owner or admin can call this method.
+   * 仅群主和管理员可调用此方法。
    *
-   * @param groupId The group ID.
-   * @param members The list of user IDs of members to mute.
-   * @param duration The mute duration in milliseconds. It is a reserved parameter.
+   * @param groupId 群组 ID。
+   * @param members 要禁言的成员用户 ID 列表。
+   * @param duration 禁言时长。预留参数。
    *
-   * @throws A description of the exception. See {@link ChatError}.
+   * @throws 如果有异常会在这里抛出，包含错误码和错误描述，详见 {@link ChatError}。
    */
   public async muteMembers(
     groupId: string,
@@ -1090,14 +1086,14 @@ export class ChatGroupManager extends BaseManager {
   }
 
   /**
-   * Unmutes group members.
+   * 将成员移除群组禁言名单。
    *
-   * Only the group owner or admin can call this method.
+   * 仅群主和管理员可调用此方法。
    *
-   * @param groupId The group ID.
-   * @param members The array of user IDs of members to be unmuted.
+   * @param groupId 群组 ID。
+   * @param members 要移出禁言名单的用户 ID 列表。
    *
-   * @throws A description of the exception. See {@link ChatError}.
+   * @throws 如果有异常会在这里抛出，包含错误码和错误描述，详见 {@link ChatError}。
    */
   public async unMuteMembers(
     groupId: string,
@@ -1114,13 +1110,13 @@ export class ChatGroupManager extends BaseManager {
   }
 
   /**
-   * Mutes all members.
+   * 禁言全体群成员。
    *
-   * Only the group owner or admin can call this method.
+   * 仅群主和管理员可调用此方法。
    *
-   * @param groupId The group ID.
+   * @param groupId 群组 ID。
    *
-   * @throws A description of the exception. See {@link ChatError}.
+   * @throws 如果有异常会在这里抛出，包含错误码和错误描述，详见 {@link ChatError}。
    */
   public async muteAllMembers(groupId: string): Promise<void> {
     chatlog.log(`${ChatGroupManager.TAG}: muteAllMembers: `, groupId);
@@ -1133,13 +1129,13 @@ export class ChatGroupManager extends BaseManager {
   }
 
   /**
-   * Unmutes all group members.
+   * 解除全体成员禁言。
    *
-   * Only the group owner or admin can call this method.
+   * 仅群主和管理员可调用此方法。
    *
-   * @param groupId The group ID.
+   * @param groupId 群组 ID。
    *
-   * @throws A description of the exception. See {@link ChatError}.
+   * @throws 如果有异常会在这里抛出，包含错误码和错误描述，详见 {@link ChatError}。
    */
   public async unMuteAllMembers(groupId: string): Promise<void> {
     chatlog.log(`${ChatGroupManager.TAG}: unMuteAllMembers: `, groupId);
@@ -1152,14 +1148,14 @@ export class ChatGroupManager extends BaseManager {
   }
 
   /**
-   * Adds members to the allow list of the group.
+   * 将成员加入群组白名单。
    *
-   * Only the group owner or admin can call this method.
+   * 仅群主和管理员可调用此方法。
    *
-   * @param groupId The group ID.
-   * @param members The user IDs of members to be added to the allow list of the group.
+   * @param groupId 群组 ID。
+   * @param members 要加入群组白名单的用户 ID 列表。
    *
-   * @throws A description of the exception. See {@link ChatError}.
+   * @throws 如果有异常会在这里抛出，包含错误码和错误描述，详见 {@link ChatError}。
    */
   public async addAllowList(
     groupId: string,
@@ -1176,14 +1172,14 @@ export class ChatGroupManager extends BaseManager {
   }
 
   /**
-   * Removes members from the allow list of the group.
+   * 从群白名单中移出成员。
    *
-   * Only the group owner or admin can call this method.
+   * 仅群主和管理员可调用此方法。
    *
-   * @param groupId The group ID.
-   * @param members The user IDs of members to be removed from the allow list of the group.
+   * @param groupId 群组 ID。
+   * @param members 要移出群组白名单的成员列表。
    *
-   * @throws A description of the exception. See {@link ChatError}.
+   * @throws 如果有异常会在这里抛出，包含错误码和错误描述，详见 {@link ChatError}。
    */
   public async removeAllowList(
     groupId: string,
@@ -1200,15 +1196,15 @@ export class ChatGroupManager extends BaseManager {
   }
 
   /**
-   * Uploads the shared file to the group.
+   * 上传群组共享文件。
    *
-   * When a shared file is uploaded, the upload progress callback will be triggered.
+   * 上传成功时会触发群共享文件上传回调。
    *
-   * @param groupId The group ID.
-   * @param filePath The local path of the shared file.
-   * @param callback (Optional) The file upload result callback.
+   * @param groupId 群组 ID。
+   * @param filePath 群共享文件路径。
+   * @param callback (可选) 群共享文件上传结果回调。
    *
-   * @throws A description of the exception. See {@link ChatError}.
+   * @throws 如果有异常会在这里抛出，包含错误码和错误描述，详见 {@link ChatError}。
    */
   public async uploadGroupSharedFile(
     groupId: string,
@@ -1236,14 +1232,14 @@ export class ChatGroupManager extends BaseManager {
   }
 
   /**
-   * Downloads the shared file of the group.
+   * 下载群共享文件。
    *
-   * @param groupId The group ID.
-   * @param fileId The ID of the shared file.
-   * @param savePath The local path of the shared file.
-   * @param callback (Optional) The file upload result callback.
+   * @param groupId 群组 ID。
+   * @param fileId 群共享文件 ID。
+   * @param savePath 群共享文件保存地址。
+   * @param callback （可选）下载结果回调。
    *
-   * @throws A description of the exception. See {@link ChatError}.
+   * @throws 如果有异常会在这里抛出，包含错误码和错误描述，详见 {@link ChatError}。
    */
   public async downloadGroupSharedFile(
     groupId: string,
@@ -1274,14 +1270,14 @@ export class ChatGroupManager extends BaseManager {
   }
 
   /**
-   * Removes a shared file of the group.
+   * 删除指定群共享文件。
    *
-   * Group members can delete their own uploaded files. The group owner or admin can delete all shared files.
+   * 群成员可以删除自己上传的共享文件，群主或管理员可以删除所有人上传的共享文件。
    *
-   * @param groupId The group ID.
-   * @param fileId The ID of the shared file.
+   * @param groupId 群组 ID。
+   * @param fileId 群共享文件 ID。
    *
-   * @throws A description of the exception. See {@link ChatError}.
+   * @throws 如果有异常会在这里抛出，包含错误码和错误描述，详见 {@link ChatError}。
    */
   public async removeGroupSharedFile(
     groupId: string,
@@ -1302,14 +1298,14 @@ export class ChatGroupManager extends BaseManager {
   }
 
   /**
-   * Updates the group announcement.
+   * 更新群公告。
    *
-   * Only the group owner or admin can call this method.
+   * 仅群主和管理员可调用此方法。
    *
-   * @param groupId The group ID.
-   * @param announcement The group announcement.
+   * @param groupId 群组 ID。
+   * @param announcement 新的群公告。
    *
-   * @throws A description of the exception. See {@link ChatError}.
+   * @throws 如果有异常会在这里抛出，包含错误码和错误描述，详见 {@link ChatError}。
    */
   public async updateGroupAnnouncement(
     groupId: string,
@@ -1330,14 +1326,14 @@ export class ChatGroupManager extends BaseManager {
   }
 
   /**
-   * Updates the group extension field.
+   * 更新群组扩展字段信息。
    *
-   * Only the group owner or admin can call this method.
+   * 仅群主和管理员可调用此方法。
    *
-   * @param groupId The group ID.
-   * @param extension The updated group extension field.
+   * @param groupId 群组 ID。
+   * @param extension 更新后的群组扩展字段信息。
    *
-   * @throws A description of the exception. See {@link ChatError}.
+   * @throws 如果有异常会在这里抛出，包含错误码和错误描述，详见 {@link ChatError}。
    */
   public async updateGroupExtension(
     groupId: string,
@@ -1358,15 +1354,15 @@ export class ChatGroupManager extends BaseManager {
   }
 
   /**
-   * Joins a public group.
+   * 加入公开群组。
    *
-   * For a group that requires no authentication，users can join it freely without obtaining permissions from the group owner or admin.
+   * 若群组无需群主或管理员验证，可直接加入。
    *
-   * For a group that requires authentication, users need to wait for the group owner or admin to agree before joining the group. For details, see {@link ChatGroupStyle}.
+   * 若群组需要群主或管理员验证，用户需等待请求批准后才能加入。群组类型详见 {@link ChatGroupStyle}。
    *
-   * @param groupId The group ID.
+   * @param groupId 群组 ID。
    *
-   * @throws A description of the exception. See {@link ChatError}.
+   * @throws 如果有异常会在这里抛出，包含错误码和错误描述，详见 {@link ChatError}。
    */
   public async joinPublicGroup(groupId: string): Promise<void> {
     chatlog.log(`${ChatGroupManager.TAG}: joinPublicGroup: `, groupId);
@@ -1379,14 +1375,14 @@ export class ChatGroupManager extends BaseManager {
   }
 
   /**
-   * Requests to join a group.
+   * 申请加入群组。
    *
-   * You can call this method to only join public groups requiring authentication, i.e., groups with the style of {@link ChatGroupStyle.PublicJoinNeedApproval}.
+   * 该方法仅适用于群组类型为 {@link ChatGroupStyle.PublicJoinNeedApproval} 的公开群组。
    *
-   * @param groupId The group ID.
-   * @param reason The reason for requesting to join the group.
+   * @param groupId 群组 ID。
+   * @param reason 申请加入的理由。
    *
-   * @throws A description of the exception. See {@link ChatError}.
+   * @throws 如果有异常会在这里抛出，包含错误码和错误描述，详见 {@link ChatError}。
    */
   public async requestToJoinPublicGroup(
     groupId: string,
@@ -1407,14 +1403,14 @@ export class ChatGroupManager extends BaseManager {
   }
 
   /**
-   * Accepts a join request.
+   * 同意入群申请。
    *
-   * Only the group owner or admin can call this method.
+   * 仅群主和管理员可调用此方法。
    *
-   * @param groupId The group ID.
-   * @param userId The ID of the user who sends a request to join the group.
+   * @param groupId 群组 ID。
+   * @param username 申请入群的用户 ID。
    *
-   * @throws A description of the exception. See {@link ChatError}.
+   * @throws 如果有异常会在这里抛出，包含错误码和错误描述，详见 {@link ChatError}。
    */
   public async acceptJoinApplication(
     groupId: string,
@@ -1435,15 +1431,15 @@ export class ChatGroupManager extends BaseManager {
   }
 
   /**
-   * Declines a join request.
+   * 拒绝用户的入群申请。
    *
-   * Only the group owner or admin can call this method.
+   * 仅群主和管理员可调用此方法。
    *
-   * @param groupId The group ID.
-   * @param username The ID of the user who sends a request to join the group.
-   * @param reason The reason of declining the join request.
+   * @param groupId 群组 ID。
+   * @param username 申请入群的用户 ID。
+   * @param reason 拒绝理由。
    *
-   * @throws A description of the exception. See {@link ChatError}.
+   * @throws 如果有异常会在这里抛出，包含错误码和错误描述，详见 {@link ChatError}。
    */
   public async declineJoinApplication(
     groupId: string,
@@ -1467,12 +1463,12 @@ export class ChatGroupManager extends BaseManager {
   }
 
   /**
-   * Accepts a group invitation.
+   * 接受入群邀请。
    *
-   * @param groupId The group ID.
-   * @param inviter The user ID of the inviter.
+   * @param groupId 群组 ID。
+   * @param inviter 邀请人的用户 ID。
    *
-   * @throws A description of the exception. See {@link ChatError}.
+   * @throws 如果有异常会在这里抛出，包含错误码和错误描述，详见 {@link ChatError}。
    */
   public async acceptInvitation(
     groupId: string,
@@ -1493,13 +1489,13 @@ export class ChatGroupManager extends BaseManager {
   }
 
   /**
-   * Declines a group invitation.
+   * 拒绝入群邀请。
    *
-   * @param groupId The group ID.
-   * @param inviter The user ID of the inviter.
-   * @param reason The reason for declining the invitation.
+   * @param groupId 群组 ID。
+   * @param inviter 邀请人的用户 ID。
+   * @param reason 拒绝理由。
    *
-   * @throws A description of the exception. See {@link ChatError}.
+   * @throws 如果有异常会在这里抛出，包含错误码和错误描述，详见 {@link ChatError}。
    */
   public async declineInvitation(
     groupId: string,
@@ -1523,13 +1519,13 @@ export class ChatGroupManager extends BaseManager {
   }
 
   /**
-   * Sets custom attributes of a group member.
+   * 设置单个群成员的自定义属性。
    *
-   * @param groupId The group ID.
-   * @param member The array of user IDs of group members whose custom attributes are retrieved.(limitation is ten. More than callback error. )
-   * @param attribute The map of custom attributes in key-value format. In a key-value pair, if the value is set to an empty string, the custom attribute will be deleted.
+   * @param groupId 群组 ID。
+   * @param member 要设置自定义属性的群成员的用户 ID。
+   * @param attribute 要设置的群成员自定义属性的 map，为 key-value 格式。对于一个 key-value 键值对，若 value 设置空字符串即删除该自定义属性。
    *
-   * @throws A description of the exception. See {@link ChatError}.
+   * @throws 如果有异常会在这里抛出，包含错误码和错误描述，详见 {@link ChatError}。
    */
   public async setMemberAttribute(
     groupId: string,
@@ -1553,14 +1549,14 @@ export class ChatGroupManager extends BaseManager {
   }
 
   /**
-   * Gets all custom attributes of a group member.
+   * 获取单个群成员所有自定义属性。
    *
-   * @param groupId The group ID.
-   * @param member The user ID of the group member whose all custom attributes are retrieved.
+   * @param groupId 群组 ID。
+   * @param member 要获取的自定义属性的群成员的用户 ID。
    *
-   * @returns The user attributes.
+   * @returns 成员属性。
    *
-   * @throws A description of the exception. See {@link ChatError}.
+   * @throws 如果有异常会在这里抛出，包含错误码和错误描述，详见 {@link ChatError}。
    */
   public async fetchMemberAttributes(
     groupId: string,
@@ -1582,15 +1578,15 @@ export class ChatGroupManager extends BaseManager {
   }
 
   /**
-   * Gets custom attributes of multiple group members by attribute key.
+   * 根据指定的属性 key 获取多个群成员的自定义属性。
    *
-   * @param groupId The group ID.
-   * @param members The array of user IDs of group members whose custom attributes are retrieved.(limitation is ten. More than callback error. )
-   * @param attributeKeys The array of keys of custom attributes to be retrieved.
+   * @param groupId 群组 ID。
+   * @param members 要获取自定义属性的群成员的用户 ID 数组。
+   * @param attributeKeys 要获取自定义属性的 key 的数组。若 keys 为空数组或不传则获取这些群成员的所有自定义属性。
    *
-   * @returns The users attributes.
+   * @returns 指定成员指定关键字的属性。
    *
-   * @throws A description of the exception. See {@link ChatError}.
+   * @throws 如果有异常会在这里抛出，包含错误码和错误描述，详见 {@link ChatError}。
    */
   public async fetchMembersAttributes(
     groupId: string,
@@ -1621,11 +1617,11 @@ export class ChatGroupManager extends BaseManager {
   }
 
   /**
-   * Get joined group list count.
+   * 获取已加入的群组数目。
    *
-   * @returns the joined group list count.
+   * @returns 已加入群组的数目。
    *
-   * @throws A description of the exception. See {@link ChatError}.
+   * @throws 如果有异常会在这里抛出，包含错误码和错误描述，详见 {@link ChatError}。
    */
   public async fetchJoinedGroupCount(): Promise<number> {
     chatlog.log(`${ChatGroupManager.TAG}: fetchJoinedGroupCount: `);
@@ -1635,9 +1631,9 @@ export class ChatGroupManager extends BaseManager {
   }
 
   /**
-   * Adds a group listener.
+   * 添加群组监听器
    *
-   * @param listener The group listener to add.
+   * @param listener 将要添加的群组监听器。
    */
   public addGroupListener(listener: ChatGroupEventListener): void {
     chatlog.log(`${ChatGroupManager.TAG}: addGroupListener: `);
@@ -1645,9 +1641,9 @@ export class ChatGroupManager extends BaseManager {
   }
 
   /**
-   * Removes the group listener.
+   * 移除群组监听器。
    *
-   * @param listener The group listener to remove.
+   * @param listener 要移除的群组监听器。
    */
   public removeGroupListener(listener: ChatGroupEventListener): void {
     chatlog.log(`${ChatGroupManager.TAG}: removeGroupListener: `);
@@ -1655,7 +1651,7 @@ export class ChatGroupManager extends BaseManager {
   }
 
   /**
-   * Clears all group listeners.
+   * 清除群组监听器。
    */
   public removeAllGroupListener(): void {
     chatlog.log(`${ChatGroupManager.TAG}: removeAllGroupListener: `);

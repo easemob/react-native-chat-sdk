@@ -1,17 +1,17 @@
 /**
- * The translation language class, which contains the information of the translation languages.
+ * 翻译语言类，包含翻译语言相关信息。
  */
 export class ChatTranslateLanguage {
   /**
-   * The code of a target language. For example, the code for simplified Chinese is "zh-Hans".
+   * 目标语言代码，如中文简体为 "zh-Hans"。
    */
   code: string;
   /**
-   * The language name. For example, the name for simplified Chinese is "Chinese Simplified".
+   * 语言名称，如中文简体为 "Chinese Simplified"。
    */
   name: string;
   /**
-   * The native name of the language. For example, the native name of simplified Chinese is "Chinese (Simplified)".
+   * 语言的原生名称，如中文简体为 "中文 (简体)"。
    */
   nativeName: string;
   constructor(params: { code: string; name: string; nativeName: string }) {

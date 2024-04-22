@@ -9,183 +9,180 @@ import type { ChatPresence } from './common/ChatPresence';
 import type { ChatRoom } from './common/ChatRoom';
 
 /**
- *  The event types in multi-device login scenarios.
+ * 多设备登录事件类型。
  *
- * This class takes user A that uses both Device A1 and Device A2 as an example to describe when the various types of multi-device events are triggered.
+ * 本枚举类以用户 A 同时登录设备 A1 和 设备 A2 为例，描述多设备登录各事件的触发时机。
  */
 export enum ChatMultiDeviceEvent {
   /**
-   * If user A deletes a contact on Device A1, this event is triggered on Device A2.
+   * 用户 A 在设备 A1 上删除了好友，则设备 A2 上会收到该事件。
    */
   CONTACT_REMOVE = 2,
   /**
-   * If user A accepts a friend request on Device A1, this event is triggered on Device A2.
+   * 用户 A 在设备 A1 上同意了好友请求，则设备 A2 上会收到该事件。
    */
   CONTACT_ACCEPT,
   /**
-   * If user A declines a friend request on Device A1, this event is triggered on Device A2.
+   * 用户 A 在设备 A1 上拒绝了好友请求，则设备 A2 上会收到该事件。
    */
   CONTACT_DECLINE,
   /**
-   * If user A adds another user to the block list on Device A1, this event is triggered on Device A2.
+   * 用户 A 在设备 A1 上将其他用户加入了黑名单，则设备 A2 上会收到该事件。
    */
   CONTACT_BAN,
   /**
-   * If user A removes another user from the block list on Device A1, this event is triggered on Device A2.
+   * 用户 A 在设备 A1 上将其他用户移出了黑名单，则设备 A2 上会收到该事件。
    */
   CONTACT_ALLOW,
 
   /**
-   * If user A creates a chat group on Device A1, this event is triggered on Device A2.
+   * 用户 A 在设备 A1 上创建了群组，则设备 A2 上会收到该事件。
    */
   GROUP_CREATE = 10,
   /**
-   * If user A destroys a chat group on Device A1, this event is triggered on Device A2.
+   * 用户 A 在设备 A1 上销毁了群组，则设备 A2 上会收到该事件。
    */
   GROUP_DESTROY,
   /**
-   * If user A joins a chat group on Device A1, this event is triggered on Device A2.
+   * 用户 A 在设备 A1 上加入了群组，则设备 A2 会收到该事件。
    */
   GROUP_JOIN,
   /**
-   * If user A leaves a chat group on Device A1, this event is triggered on Device A2.
+   * 用户 A 在设备 A1 上退出群组，则设备 A2 会收到该事件。
    */
   GROUP_LEAVE,
   /**
-   * If user A requests to join a chat group on Device A1, this event is triggered on Device A2.
+   * 用户 A 在设备 A1 上申请加入群组，则设备 A2 会收到该事件。
    */
   GROUP_APPLY,
   /**
-   * If user A accepts a request to join the chat group on Device A1, this event is triggered on Device A2.
+   * 用户 A 在设备 A1 上收到了入群申请，则设备 A2 会收到该事件。
    */
   GROUP_APPLY_ACCEPT,
   /**
-   * If user A declines a request to join the chat group on Device A1, this event is triggered on Device A2.
+   * 用户 A 在设备 A1 上拒绝了入群申请，设备 A2 上会收到该事件。
    */
   GROUP_APPLY_DECLINE,
   /**
-   * If user A invites a user to join the chat group on Device A1, this event is triggered on Device A2.
+   * 用户 A 在设备 A1 上邀请了其他用户进入群组，则设备 A2 上会收到该事件。
    */
   GROUP_INVITE,
   /**
-   * If user A accepts a group invitation on Device A1, this event is triggered on Device A2.
+   * 用户 A 在设备 A1 上同意了其他用户的群组邀请，则设备 A2 上会收到该事件。
    */
   GROUP_INVITE_ACCEPT,
   /**
-   * If user A declines a group invitation on Device A1, this event is triggered on Device A2.
+   * 用户 A 在设备 A1 上拒绝了其他用户的群组邀请，则设备 A2 上会收到该事件。
    */
   GROUP_INVITE_DECLINE,
   /**
-   * If user A removes a user from a chat group on Device A1, this event is triggered on Device A2.
+   * 用户 A 在设备 A1 上将其他用户踢出群组，则设备 A2 上会收到该事件。
    */
   GROUP_KICK,
   /**
-   * If user A is added to the group block list on Device A1, this event is triggered on Device A2.
+   * 用户 A 在设备 A1 上被加入黑名单，则设备 A2 上会收到该事件。
    */
   GROUP_BAN,
   /**
-   * If user A is removed from the group block list on Device A1, this event is triggered on Device A2.
+   * 用户 A 在设备 A1 上将其他用户移出群组，则设备 A2 上会收到该事件。
    */
   GROUP_ALLOW,
   /**
-   * If user A blocks messages from a chat group on Device A1, this event is triggered on Device A2.
+   * 用户 A 在设备 A1 上屏蔽了某个群组的消息，设备 A2 上会收到该事件。
    */
   GROUP_BLOCK,
   /**
-   * If user A unblocks messages from a chat group on Device A1, this event is triggered on Device A2.
+   * 用户 A 在设备 A1 上取消屏蔽了某个群组的消息，设备 A2 上会收到该事件。
    */
   GROUP_UNBLOCK,
   /**
-   * If user A changes the group owner on Device A1, this event is triggered on Device A2.
+   * 用户 A 在设备 A1 上更新了群主，则设备 A2 上会收到该事件。
    */
   GROUP_ASSIGN_OWNER,
   /**
-   * If user A adds a group admin on Device A1, this event is triggered on Device A2.
+   * 用户 A 在设备 A1 上添加了群组管理员，则设备 A2 上会收到该事件。
    */
   GROUP_ADD_ADMIN,
   /**
-   * If user A removes a group admin on Device A1, this event is triggered on Device A2.
+   * 用户 A 在设备 A1 上移除了群组管理员，则设备 A2 上会收到该事件。
    */
   GROUP_REMOVE_ADMIN,
   /**
-   * If user A mutes a group member on Device A1, this event is triggered on Device A2.
+   * 用户 A 在设备 A1 上禁言了群成员，则设备 A2 上会收到该事件。
    */
   GROUP_ADD_MUTE,
   /**
-   * If user A unmutes a group member on Device A1, this event is triggered on Device A2.
+   * 用户 A 在设备 A1 上取消禁言了群成员，则设备 A2 上会收到该事件。
    */
   GROUP_REMOVE_MUTE,
   /**
-   * If user A adds other members to the allow list of the chat group on Device A1, this event is triggered on Device A2.
+   * 用户 A 在设备 A1 上将其他成员添加到群组白名单中，则设备 A2 上会收到该事件。
    */
   GROUP_ADD_USER_ALLOW_LIST,
   /**
-   * If user A removes other members from the allow list of the chat group on Device A1, this event is triggered on Device A2.
+   * 用户 A 在设备 A1 上将其他成员移除群组白名单，则设备 A2 上会收到该事件。
    */
   GROUP_REMOVE_USER_ALLOW_LIST,
   /**
-   * If user A mutes all chat group members on Device A1, this event is triggered on Device A2.
-   *
+   * 用户 A 在设备 A1 上将所有其他群组成员添加到群组禁言列表，则设备 A2 上会收到该事件。
    */
   GROUP_ALL_BAN,
   /**
-   * If user A unmutes all chat group members on Device A1, this event is triggered on Device A2.
-   *
-   * Even if all chat group members are unmuted, members on the mute list still cannot send messages in the group.
+   * 用户 A 在设备 A1 上将所有其他群组成员移除群组禁言列表，则设备 A2 上会收到该事件。
    */
   GROUP_REMOVE_ALL_BAN,
   /**
-   * The current user modified custom attributes of a group member on another device.
+   * 用户 A 在设备 A1 上修改群组成员属性，则设备 A2 上会收到该事件。
    */
   GROUP_METADATA_CHANGED,
 
   /**
-   * If user A creates a message thread on Device A1, this event is triggered on Device A2.
+   * 用户 A 在设备 A1 上创建了子区，则设备 A2 上会收到该事件。
    */
   THREAD_CREATE = 40,
   /**
-   * If user A destroys a message thread on Device A1, this event is triggered on Device A2.
+   * 用户 A 在设备 A1 上移除了子区，则设备 A2 上会收到该事件。
    */
   THREAD_DESTROY,
   /**
-   * If user A joins a message thread on Device A1, this event is triggered on Device A2.
+   * 用户 A 在设备 A1 上加入了子区，则设备 A2 上会收到该事件。
    */
   THREAD_JOIN,
   /**
-   * If user A leaves a message thread on Device A1, this event is triggered on Device A2.
+   * 用户 A 在设备 A1 上离开了子区，则设备 A2 上会收到该事件。
    */
   THREAD_LEAVE,
   /**
-   * If user A updates the message thread name, or sends or recalls a message in thread on Device A1, this event is triggered on Device A2.
+   * 用户 A 在设备 A1 上更新了子区信息，则设备 A2 上会收到该事件。
    */
   THREAD_UPDATE,
   /**
-   * If user A kicks a user from a message thread on Device A1, this event is triggered on Device A2.
+   * 用户 A 在设备 A1 上将其他用户踢出子区，则设备 A2 上会收到该事件。
    */
   THREAD_KICK,
   /**
-   * If user A pins a conversation on device A1, this event is triggered on device A2.
+   * 用户 A 在设备 A1 置顶会话，则设备 A2 上会收到该事件。
    */
   CONVERSATION_PINNED = 60,
   /**
-   * If user A unpins a conversation on device A1, this event is triggered on device A2.
+   * 用户 A 在设备 A1 取消置顶会话，则设备 A2 上会收到该事件。
    */
   CONVERSATION_UNPINNED = 61,
   /**
-   * If user A deletes a conversation on device A1, this event is triggered on device A2.
+   * 用户 A 在设备 A1 删除会话，则设备 A2 上会收到该事件。
    */
   CONVERSATION_DELETED = 62,
   /**
-   * The current user updated the conversation mark on another device.
+   * 用户 A 在设备 A1 更新会话标记，则设备 A2 上会收到该事件。
    */
   CONVERSATION_UPDATE_MARK,
 }
 
 /**
- * Converts the multi-device event from Int to enum.
+ * 将多设备事件从整型转换为枚举类型。
  *
- * @param params The multi-device event of the int type.
- * @returns The multi-device event of the enum type.
+ * @param params 整型的多设备事件。
+ * @returns 枚举类型的多设备事件。
  */
 export function ChatMultiDeviceEventFromNumber(
   params: number
@@ -290,15 +287,15 @@ export function ChatMultiDeviceEventFromNumber(
 }
 
 /**
- * The connection event listener.
+ * 网络连接状态监听器。
  *
- * In the case of disconnection in an unstable network environment, the app using the SDK receives the `onDisconnected` callback.
+ * 在不稳定的网络环境断网时，SDK 可以接收到已断开连接的回调。
  *
- * You do not need to reconnect manually as the chat SDK will handle it automatically.
+ * SDK 会自动尝试重连，不需要你手动操作。
  *
- * There are two connection-related callbacks:
- * - `onConnected`: Occurs when the connection is set up.
- * - `onDisconnected`: Occurs when the connection breaks down.
+ * 以下为两种连接状态回调：
+ * - `onConnected`: 当网络连接成功时提示已连接。
+ * - `onDisconnected`: 当网络连接断开时提示已断开连接。
  *
  * Adds a connection event listener:
  *
@@ -319,7 +316,8 @@ export function ChatMultiDeviceEventFromNumber(
  *  })();
  *  ChatClient.getInstance().addConnectionListener(listener);
  *  ```
- * Removes a connection event listener:
+ *
+ *  移除连接事件监听器：
  *
  *  ```typescript
  *  ChatClient.getInstance().removeConnectionListener(listener);
@@ -327,98 +325,98 @@ export function ChatMultiDeviceEventFromNumber(
  */
 export interface ChatConnectEventListener {
   /**
-   * Occurs when the SDK connects to the chat server successfully.
+   * 成功连接到 chat 服务器时触发的回调。
    */
   onConnected?(): void;
 
   /**
-   * Occurs when the SDK disconnects from the chat server.
+   * 和 chat 服务器断开连接时触发的回调。
    *
-   * The user also remains logged in. For the cases where the user is disconnected by the server, see {@link ChatConnectEventListener.onAppActiveNumberReachLimit}, {@link ChatConnectEventListener.onUserDidLoginFromOtherDevice}, {@link ChatConnectEventListener.onUserDidRemoveFromServer}, {@link ChatConnectEventListener.onUserDidForbidByServer}, {@link ChatConnectEventListener.onUserDidChangePassword}, {@link ChatConnectEventListener.onUserDidLoginTooManyDevice}, {@link ChatConnectEventListener.onUserKickedByOtherDevice}, {@link ChatConnectEventListener.onUserAuthenticationFailed}.
+   * 断开连接时底层不一定会登出。
+   *
+   * @param errorCode 错误码，详见 {@link ChatError}。
    */
   onDisconnected?(): void;
 
   /**
-   * Occurs when the Agora token is about to expire.
+   * Agora token 即将过期时触发。
    */
   onTokenWillExpire?(): void;
 
   /**
-   * Occurs when the Agora token has expired.
+   * Agora token 已过期时触发。
    */
   onTokenDidExpire?(): void;
 
   /**
-   * The number of daily active users (DAU) or monthly active users (MAU) for the app has reached the upper limit.
+   * 应用程序的日活跃用户数量（DAU）或月活跃用户数量（MAU）达到上限时回调。
    *
-   * The user is disconnected by the server.
+   * 服务器主动断开连接。
    */
   onAppActiveNumberReachLimit?(): void;
 
   /**
-   * Occurs when the current user account is logged in to another device.
+   * 其他设备登录通知。
    *
-   * The user is disconnected by the server.
+   * 服务器主动断开连接。
    */
   onUserDidLoginFromOtherDevice?(deviceName?: string): void;
 
   /**
-   * Occurs when the current chat user is removed from the server.
+   * 用户被移除通知。
    *
-   * The user is disconnected by the server.
+   * 服务器主动断开连接。
    */
   onUserDidRemoveFromServer?(): void;
 
   /**
-   * Occurs when the current chat user is banned from accessing the server.
+   * 被服务器禁止连接通知。
    *
-   * The user is disconnected by the server.
+   * 服务器主动断开连接。
    */
   onUserDidForbidByServer?(): void;
 
   /**
-   * Occurs when the current chat user changed the password.
+   * 用户密码变更通知。
    *
-   * The user is disconnected by the server.
+   * 服务器主动断开连接。
    */
   onUserDidChangePassword?(): void;
 
   /**
-   * Occurs when the current chat user logged in to many devices.
+   * 登录设备数量超限通知。
    *
-   * The user is disconnected by the server.
+   * 服务器主动断开连接。
    */
   onUserDidLoginTooManyDevice?(): void;
 
   /**
-   * Occurs when the current chat user is kicked out of the app by another device.
+   * 被其他设备踢掉通知。
    *
-   * The user is disconnected by the server.
+   * 服务器主动断开连接。
    */
   onUserKickedByOtherDevice?(): void;
 
   /**
-   * Occurs when the current chat user authentication failed.
+   * 鉴权失败通知。 典型触发通知场景：token 过期、token 验证失败。
    *
-   * This callback is triggered in the following typical scenarios: The token expires or token authentication fails.
-   *
-   * The user is disconnected by the server.
+   * 服务器主动断开连接。
    */
   onUserAuthenticationFailed?(): void;
 }
 
 /**
- * The multi-device event listener.
+ * 多设备事件监听器。
  *
- * The listener listens for the actions of the current user on other devices, including contact events, group events, thread events, and conversation events.
+ * 该监听器监听联系人事件、群组事件、子区事件和会话事件。
  */
 export interface ChatMultiDeviceEventListener {
   /**
-   * Occurs when a contact event occurs.
+   * 联系人事件监听回调。
    *
-   * @param event The event type.
-   * @param target The user ID.
-   * @param ext The extension of user information.
+   * @param event 事件类型。
+   * @param target 用户 ID。
+   * @param ext 用户相关的扩展信息。
    */
   onContactEvent?(
     event?: ChatMultiDeviceEvent,
@@ -427,11 +425,11 @@ export interface ChatMultiDeviceEventListener {
   ): void;
 
   /**
-   * Occurs when a group event occurs.
+   * 群组事件监听回调。
    *
-   * @param event The event type.
-   * @param target The group ID.
-   * @param usernames The array of user IDs.
+   * @param event 事件类型。
+   * @param target 群组 ID。
+   * @param usernames 用户 ID 数组。
    */
   onGroupEvent?(
     event?: ChatMultiDeviceEvent,
@@ -440,11 +438,11 @@ export interface ChatMultiDeviceEventListener {
   ): void;
 
   /**
-   * Occurs when a thread event occurs.
+   * 子区事件监听回调。
    *
-   * @param event The event type.
-   * @param target The group ID.
-   * @param usernames The array of user IDs.
+   * @param event 事件类型。
+   * @param target 目标，即群组 ID。
+   * @param usernames 用户 ID 数组。
    */
   onThreadEvent?(
     event?: ChatMultiDeviceEvent,
@@ -453,19 +451,19 @@ export interface ChatMultiDeviceEventListener {
   ): void;
 
   /**
-   * Callback to other devices after conversation deleted message from server after enabling multiple devices.
+   * 会话删除漫游消息后，其他设备收到该通知。
    *
-   * @param convId The conversation ID.
-   * @param deviceId The device ID.
+   * @param convId 会话 ID。
+   * @param deviceId 设备 ID。
    */
   onMessageRemoved?(convId?: string, deviceId?: string): void;
 
   /**
-   * Occurs when a conversation event occurs.
+   * 会话操作发生后，其他设备收到该通知。
    *
-   * @param event The event type.
-   * @param convId The conversation ID.
-   * @param convType The conversation type.
+   * @param event 事件类型。
+   * @param convId 会话 ID。
+   * @param convType 会话类型。
    */
   onConversationEvent?(
     event?: ChatMultiDeviceEvent,
@@ -475,24 +473,24 @@ export interface ChatMultiDeviceEventListener {
 }
 
 /**
- * The custom event listener.
+ * 自定义事件监听器。
  */
 export interface ChatCustomEventListener {
   onDataReceived(params: any): void;
 }
 
 /**
- * The message event listener.
+ * 消息事件监听器。
  *
- * This listener listens for message state changes:
+ * 该监听器用于监听消息变更状态：
  *
- * - If messages are sent successfully, a delivery receipt will be returned to the sender (the delivery receipt function needs to be enabled: {@link ChatOptions.requireDeliveryAck}.
+ * - 消息成功发送到对方后，发送方会收到送达回执（需开启送达回执功能，详见 {@link ChatOptions#requireDeliveryAck(boolean)}）。
  *
- * - If the recipient reads the received message, a read receipt will be returned to the sender (the read receipt function needs to be enabled: {@link ChatOptions.requireAck})
+ * - 对方阅读了这条消息，发送方会收到已读回执（需开启已读回执功能，详见 {@link ChatOptions#requireAck(boolean)}）。
  *
- * During message delivery, the message ID will be changed from a local uuid to a global unique ID that is generated by the server to uniquely identify a message on all devices using the SDK.
+ * 发送消息过程中，消息 ID 会从最初本地生成的 uuid 变更为服务器端生成的全局唯一 ID，该 ID 在使用 SDK 的所有设备上均唯一。
  *
- * Adds a message event listener:
+ *     添加消息事件监听器：
  *
  *   ```typescript
  *   let msgListener = new (class ss implements ChatMessageEventListener {
@@ -524,7 +522,7 @@ export interface ChatCustomEventListener {
  *   ChatClient.getInstance().chatManager.addListener(msgListener);
  *   ```
  *
- * Removes a message event listener:
+ * 移除消息事件监听器：
  *
  *   ```typescript
  *   ChatClient.getInstance().chatManager.delListener(this.msgListener);
@@ -532,120 +530,116 @@ export interface ChatCustomEventListener {
  */
 export interface ChatMessageEventListener {
   /**
-   * Occurs when a message is received.
+   * 收到消息回调。
    *
-   * This callback is triggered to notify the user of the message that is received, such as texts or an image, video, voice, location, or file.
+   * 在收到文本、图片、视频、语音、地理位置和文件等消息时，通过此回调通知用户。
    *
-   * @param messages The received message(s).
+   * @param messages 收到的消息。
    */
   onMessagesReceived?(messages: Array<ChatMessage>): void;
 
   /**
-   * Occurs when a command message is received.
+   * 收到命令消息回调。
    *
-   * Unlike {@link onMessagesReceived}, this callback only contains a command message body that is usually invisible to users.
+   * 与 {@link onMessagesReceived} 不同, 这个回调只包含命令的消息，命令消息通常不对用户展示。
    *
-   * @param messages The received command message(s).
+   * @param messages 收到的命令消息。
    */
   onCmdMessagesReceived?(messages: Array<ChatMessage>): void;
 
   /**
-   * Occurs when a read receipt is received for a message.
+   * 收到单聊消息已读回执的回调。
    *
-   * @param messages The read receipt(s).
+   * @param messages 消息的已读回执。
    */
   onMessagesRead?(messages: Array<ChatMessage>): void;
 
   /**
-   * Occurs when a read receipt is received for a group message.
+   * 收到群组消息的已读回执的回调。
    *
-   * @param groupMessageAcks The read receipt(s) for group message(s).
+   * @param groupMessageAcks 群组消息已读回执。
    */
   onGroupMessageRead?(groupMessageAcks: Array<ChatGroupMessageAck>): void;
 
   /**
-   * Occurs when a delivery receipt is received.
+   * 收到消息已送达回执的回调。
    *
-   * @param messages The message(s) for which delivery receipt(s) is sent.
+   * @param messages 送达回执对应的消息。
    */
   onMessagesDelivered?(messages: Array<ChatMessage>): void;
 
   /**
-   * Occurs when a received message is recalled.
+   * 已收到的消息被撤回的回调。
    *
-   * If the recipient is offline when the message is delivered and recalled, the recipient only receives this callback instead of the message.
-   *
-   * @param messages The recalled message(s).
+   * @param messages 撤回的消息。
    */
   onMessagesRecalled?(messages: Array<ChatMessage>): void;
 
   /**
-   * Occurs when the conversation is updated.
-   *
-   * This callback is triggered only when a conversation is added or removed.
+   * 会话更新事件回调。
    */
   onConversationsUpdate?(): void;
 
   /**
-   * Occurs when a conversation read receipt is received.
+   * 收到会话已读回执的回调。
    *
-   * This callback occurs in either of the following cases:
+   * 回调此方法的场景：
+   * （1）消息被接收方阅读，即接收方发送了会话已读回执。
+   * SDK 在接收到此事件时，会将本地数据库中该会话中消息的 `isAcked` 属性置为 `true`。
+   * （2）多端多设备登录场景下，一端发送会话已读回执，服务器端会将会话的未读消息数置为 0，
+   * 同时其他端会回调此方法，并将本地数据库中该会话中消息的 `isRead` 属性置为 `true`。
    *
-   * - The message is read by the recipient and the conversation read receipt is sent. Upon receiving this event, the SDK sets the `isAcked` property of the message in the conversation to `true` in the local database.
-   *
-   * - In a multi-device login scenario, when one device sends a conversation receipt, the server will set the number of unread messages to `0`, call the callback method on the other devices, and set the `isRead` property of the message in the conversation to `true` in the local database.
-   *
-   *  @param from The user who sends the conversation read receipt.
-   *  @param to The user who receives the conversation read receipt.
+   * @param from 发送已读回执的用户 ID。
+   * @param to 收到已读回执的用户 ID。
    */
   onConversationRead?(from: string, to?: string): void;
 
   /**
-   * Occurs when a message reaction changes.
+   * 消息表情回复（Reaction）变化监听器。
    *
-   * @param list The reaction change event.
+   * @param list Reaction 变化事件。
    */
   onMessageReactionDidChange?(list: Array<ChatMessageReactionEvent>): void;
 
   /**
-   * Occurs when a message thread is created.
+   * 子区创建回调。
    *
-   * Each member of the group where the message thread belongs can call this method.
+   * 子区所属群组的所有成员均可调用该方法。
    *
-   * @param event The message thread creation event.
+   * @param event 子区创建事件。
    */
   onChatMessageThreadCreated?(event: ChatMessageThreadEvent): void;
   /**
-   * Occurs when a message thread is updated.
+   * 子区更新回调。
    *
-   * This method is triggered when the message thread name is changed or a message in the message thread is updated.
+   * 子区所属群组的所有成员均可调用该方法。
    *
-   * Each member of the group where the message thread belongs can call this method.
+   * @param event 子区更新事件。
    *
    * @param event The message thread update event.
    */
   onChatMessageThreadUpdated?(event: ChatMessageThreadEvent): void;
   /**
-   * Occurs when a message thread is destroyed.
+   * 子区移除回调。
    *
-   * Each member of the group where the message thread belongs can call this method.
+   * @param event 子区移除事件。
    *
    * @param event The message thread destruction event.
    */
   onChatMessageThreadDestroyed?(event: ChatMessageThreadEvent): void;
   /**
-   * Occurs when the current user is removed from the message thread by the admin.
+   * 管理员移除子区用户的回调。
    *
-   * @param event The message thread user removal event.
+   * @param event 子区用户移除事件。
    */
   onChatMessageThreadUserRemoved?(event: ChatMessageThreadEvent): void;
 
   /**
-   * Occurs when the content of a text message is modified.
+   * 文本消息内容更改，其它设备收到该通知。
    *
-   * @param message The modified message.
-   * @param lastModifyOperatorId The user ID of the operator that modified the message last time.
-   * @param lastModifyTime The last message modification time. It is a UNIX timestamp in milliseconds.
+   * @param message 更改后的消息.
+   * @param lastModifyOperatorId 修改消息的人的 ID。
+   * @param lastModifyTime 修改消息的时间戳。
    */
   onMessageContentChanged?(
     message: ChatMessage,
@@ -654,12 +648,12 @@ export interface ChatMessageEventListener {
   ): void;
 
   /**
-   * Occurs when the content of a text message is pinned.
+   * 消息置顶状态变更。
    * @params params -
-   * - Param [messageId] The message ID.
-   * - Param [convId] The conversation ID.
-   * - Param [pinOperation] The pin operation. The value is 1.
-   * - Param [pinInfo] The pin information. see {@link ChatMessagePinInfo}.
+   * - Param [messageId] 消息ID。
+   * - Param [convId] 会话ID。
+   * - Param [pinOperation] 置顶操作类型。默认1.
+   * - Param [pinInfo] 置顶详情。 详见 {@link ChatMessagePinInfo}.
    */
   onMessagePinChanged?(params: {
     messageId: string;
@@ -670,21 +664,21 @@ export interface ChatMessageEventListener {
 }
 
 /**
- * The group event listener.
+ * 群组事件监听器。
  *
- * For descriptions of callback methods in the listener, user A acts as the current user and user B serves as the peer user.
+ * 该监听器的回调方法描述的举例中，用户 A 为当前用户，用户 B 为对端用户。
  */
 export interface ChatGroupEventListener {
   /**
-   * Occurs when the current user receives a group invitation.
+   * 当前用户收到入群邀请的回调。
    *
-   * For example, after user B sends user A a group invitation, user A receives this callback.
+   * 例如，用户 B 邀请用户 A 入群，则用户 A 会收到该回调。
    *
-   * @params The parameter set.
-   * - Param [groupId] The group ID.
-   * - Param [groupName] The group name.
-   * - Param [inviter] The user ID of the inviter.
-   * - Param [reason] The reason for invitation.
+   * @params 参数组。
+   * - Param [groupId] 群组 ID。
+   * - Param [groupName] 群组名称。
+   * - Param [inviter] 邀请人的用户 ID。
+   * - Param [reason] 邀请理由。
    */
   onInvitationReceived?(params: {
     groupId: string;
@@ -694,15 +688,15 @@ export interface ChatGroupEventListener {
   }): void;
 
   /**
-   * Occurs when a join request from the current user is received by the peer user.
+   * 对端用户接收群组申请的回调。
    *
-   * For example, after user A sends a join request to user B, user B receives this callback.
+   * 该回调是由对端用户接收当前用户发送的群组申请触发的。如，用户 A 向用户 B 发送群组申请，用户 B 收到该回调。
    *
-   * @params The parameter set.
-   * - Param [groupId] The group ID.
-   * - Param [groupName] The group name.
-   * - Param [applicant] The user ID of the applicant.
-   * - Param [reason] The reason for requesting to join the group.
+   * @params 参数组。
+   * - Param [groupId] 群组 ID。
+   * - Param [groupName] 群组名称。
+   * - Param [applicant] 申请人的用户 ID。
+   * - Param [reason] 申请加入原因。
    */
   onRequestToJoinReceived?(params: {
     groupId: string;
@@ -711,14 +705,14 @@ export interface ChatGroupEventListener {
     reason?: string;
   }): void;
   /**
-   * Occurs when a join request from the current user is accepted by the peer user.
+   * 对端用户接受当前用户发送的群组申请的回调。
    *
-   * For a group of the `PublicJoinNeedApproval` style, after user B accepts a join request from user A, user A receives this callback.
+   * 若群组类型为 `PublicJoinNeedApproval`，用户 B 接受用户 A 的群组申请后，用户 A 会收到该回调。
    *
-   * @params The parameter set.
-   * - Param [groupId] The group ID.
-   * - Param [groupName] The group name.
-   * - Param [accepter] The ID of the user that accepts the join request.
+   * @params 参数组。
+   * - Param [groupId] 群组 ID。
+   * - Param [groupName] 群组名称。
+   * - Param [accepter] 接受人的用户 ID。
    */
   onRequestToJoinAccepted?(params: {
     groupId: string;
@@ -726,16 +720,16 @@ export interface ChatGroupEventListener {
     groupName?: string;
   }): void;
   /**
-   * Occurs when a join request from the current user is declined by the peer user.
+   * 对端用户拒绝群组申请的回调。
    *
-   * For example, for a group of the `PublicJoinNeedApproval` style, after user B declines a join request from user A, user A receives this callback.
+   * 该回调是由对端用户拒绝当前用户发送的群组申请触发的。例如，用户 B 拒绝用户 A 的群组申请后，用户 A 会收到该回调。
    *
-   * @params The parameter set.
-   * - Param [groupId] The group ID.
-   * - Param [groupName] The group name.
-   * - Param [decliner] The ID of the user that declines the join request.
-   * - Param [applicant] The user ID of the applicant.
-   * - Param [reason] The reason for declining the join request.
+   * @params 参数组。
+   * - Param [groupId] 群组 ID。
+   * - Param [groupName] 群组名称。
+   * - Param [decliner] 拒绝人的用户 ID。
+   * - Param [applicant] 申请人的用户 ID。
+   * - Param [reason] 拒绝理由。
    */
   onRequestToJoinDeclined?(params: {
     groupId: string;
@@ -745,15 +739,15 @@ export interface ChatGroupEventListener {
     reason?: string;
   }): void;
   /**
-   * Occurs when a group invitation from the current user is accepted by the peer user.
+   * 当前用户收到对端用户同意入群邀请触发的回调。
    *
-   * For example, after user B accepts a group invitation from user A, user A receives this callback.
+   * 例如，用户 B 同意了用户 A 的群组邀请，用户 A 会收到该回调。
    *
-   * @params The parameter set.
-   * - Param [groupId] The group ID.
-   * - Param [groupName] The group name.
-   * - Param [invitee] The user ID of the invitee.
-   * - Param [reason] The reason for accepting the group invitation.
+   * @params 参数组。
+   * - Param [groupId] 群组 ID。
+   * - Param [groupName] 群组名称。
+   * - Param [invitee] 受邀人的用户 ID。
+   * - Param [reason] 接受理由。
    */
   onInvitationAccepted?(params: {
     groupId: string;
@@ -761,14 +755,14 @@ export interface ChatGroupEventListener {
     reason?: string;
   }): void;
   /**
-   * Occurs when a group invitation from the current user is declined by the peer user.
+   * 当前用户收到群组邀请被拒绝的回调。
    *
-   * For example, after user B declines a group invitation from user A, user A receives this callback.
+   * 该回调是由当前用户收到对端用户拒绝入群邀请触发的。例如，用户 B 拒绝了用户 A 的群组邀请，用户 A 会收到该回调。
    *
-   * @params The parameter set.
-   * - Param [groupId] The group ID.
-   * - Param [invitee] The user ID of the invitee.
-   * - Param [reason] The reason for accepting the group invitation.
+   * @params 参数组。
+   * - Param [groupId] 群组 ID。
+   * - Param [invitee] 受邀人的用户 ID。
+   * - Param [reason] 接受理由。
    */
   onInvitationDeclined?(params: {
     groupId: string;
@@ -776,30 +770,30 @@ export interface ChatGroupEventListener {
     reason?: string;
   }): void;
   /**
-   * Occurs when the current user is removed from the group.
+   * 当前用户被移出群组时的回调。
    *
-   * @params The parameter set.
-   * - Param [groupId] The group ID.
-   * - Param [groupName] The group name.
+   * @params 参数组。
+   * - Param [groupId] 群组 ID。
+   * - Param [groupName] 群组名称。
    */
   onMemberRemoved?(params: { groupId: string; groupName?: string }): void;
   /**
-   * Occurs when a group is destroyed.
+   * 当前用户收到群组被解散的回调。
    *
-   * @params The parameter set.
-   * - Param [groupId] The group ID.
-   * - Param [groupName] The group name.
+   * @params 参数组。
+   * - Param [groupId] 群组 ID。
+   * - Param [groupName] 群组名称。
    */
   onDestroyed?(params: { groupId: string; groupName?: string }): void;
   /**
-   * Occurs when the group invitation is accepted automatically by the current user.
+   * 当前用户自动同意入群邀请的回调。
    *
-   * For example, after user B invites user A to join the group, as user A sets {@link ChatOptions.autoAcceptGroupInvitation} to `true`, the invitee joins the group automatically and receives this callback.
+   * 例如，用户 B 邀请用户 A 入群，由于用户 A 设置了群组自动接受邀请 （{@link ChatOptions.autoAcceptGroupInvitation} 设置为 `true`），所以自动入群，收到该回调。
    *
-   * @params The parameter set.
-   * - Param [groupId]			The group ID.
-   * - Param [inviter]			The user ID of the inviter.
-   * - Param [inviteMessage]    The invitation message.
+   * @params 参数组。
+   * - Param [groupId]	群组 ID。
+   * - Param [inviter]	邀请人的用户 ID。
+   * - Param [inviteMessage]	邀请信息。
    */
   onAutoAcceptInvitation?(params: {
     groupId: string;
@@ -807,14 +801,14 @@ export interface ChatGroupEventListener {
     inviteMessage?: string;
   }): void;
   /**
-   * Occurs when one or more members are added to the mute list of the group.
+   * 有成员被禁言回调。
    *
-   * A user, when muted, can still see group messages, but cannot send messages in the group. However, a user on the block list can neither see nor send group messages.
+   * 用户禁言后，将无法在群中发送消息，但可查看群组中的消息，而黑名单中的用户无法查看和发送群组消息。
    *
-   * @params The parameter set.
-   * - Param [groupId] The group ID.
-   * - Param [mutes] The user ID(s) of member(s) that are muted.
-   * - Param [muteExpire] Reserved parameter. The Unix timestamp when the mute expires. The unit is millisecond.
+   * @params 参数组。
+   * - Param [groupId] 群组 ID。
+   * - Param [mutes] 被禁言成员的用户 ID。
+   * - Param [muteExpire] 预留参数。禁言时长。
    */
   onMuteListAdded?(params: {
     groupId: string;
@@ -822,36 +816,36 @@ export interface ChatGroupEventListener {
     muteExpire?: number;
   }): void;
   /**
-   * Occurs when one or more members are removed from the mute list of the group.
+   * 有成员被解除禁言的回调。
    *
-   * @params The parameter set.
-   * - Param [groupId] The group ID.
-   * - Param [mutes] The user ID(s) of member(s) that is removed from the mute list.
+   * @params 参数组。
+   * - Param [groupId] 群组 ID。
+   * - Param [mutes] 用户被解除禁言的列表
    */
   onMuteListRemoved?(params: { groupId: string; mutes: Array<string> }): void;
   /**
-   * Occurs when a member is set as an admin.
+   * 成员设置为管理员的回调。
    *
-   * @params The parameter set.
-   * - Param [groupId] The group ID.
-   * - Param [admin] The user ID of the member that is set as an admin.
+   * @params 参数组。
+   * - Param [groupId] 群组 ID。
+   * - Param [admin] 设置为管理员的成员的用户 ID。
    */
   onAdminAdded?(params: { groupId: string; admin: string }): void;
   /**
-   * Occurs when the administrative privileges of an admin are removed.
+   * 取消成员的管理员权限的回调。
    *
-   * @params The parameter set.
-   * - Param [groupId] The group ID.
-   * - Param [admin] The user ID of the admin whose administrative privileges are removed.
+   * @params 参数组。
+   * - Param [groupId] 群组 ID。
+   * - Param [admin] 被移除管理员的成员用户 ID。
    */
   onAdminRemoved?(params: { groupId: string; admin: string }): void;
   /**
-   * Occurs when the group ownership is transferred.
+   * 转移群主权限的回调。
    *
-   * @params The parameter set.
-   * - Param [groupId] The group ID.
-   * - Param [newOwner] The user ID of the new group owner.
-   * - Param [oldOwner] The user ID of the previous group owner.
+   * @params 参数组。
+   * - Param [groupId] 群组 ID。
+   * - Param [newOwner] 新群主的用户 ID。
+   * - Param [oldOwner] 原群主的用户 ID。
    */
   onOwnerChanged?(params: {
     groupId: string;
@@ -859,75 +853,75 @@ export interface ChatGroupEventListener {
     oldOwner: string;
   }): void;
   /**
-   * Occurs when a user joins a group.
+   * 新成员加入群组的回调。
    *
-   * @params The parameter set.
-   * - Param [groupId] The group ID.
-   * - Param [member] The user ID of the new member.
+   * @params 参数组。
+   * - Param [groupId] 群组 ID。
+   * - Param [member] 新成员的用户 ID。
    */
   onMemberJoined?(params: { groupId: string; member: string }): void;
   /**
-   * Occurs when a member voluntarily leaves the group.
+   * 群组成员主动退出回调。
    *
-   * @params The parameter set.
-   * - Param [groupId] The group ID.
-   * - Param [member] The user ID of the member leaving the group.
+   * @params 参数组。
+   * - Param [groupId] 群组 ID。
+   * - Param [member] 退群的成员的用户 ID。
    */
   onMemberExited?(params: { groupId: string; member: string }): void;
   /**
-   * Occurs when the group announcement is updated.
+   * 群公告更新回调。
    *
-   * @params The parameter set.
-   * - Param [groupId] The group ID.
-   * - Param [announcement] The new announcement.
+   * @params 参数组。
+   * - Param [groupId] 群组 ID。
+   * - Param [announcement] 新公告。
    */
   onAnnouncementChanged?(params: {
     groupId: string;
     announcement: string;
   }): void;
   /**
-   * Occurs when a shared file is added to the group.
+   * 群组添加共享文件回调。
    *
-   * @params The parameter set.
-   * - Param [groupId] The group ID.
-   * - Param [sharedFile] The ID of the new shared file.
+   * @params 参数组。
+   * - Param [groupId] 群组 ID。
+   * - Param [sharedFile] 添加的共享文件的 ID。
    */
   onSharedFileAdded?(params: { groupId: string; sharedFile: string }): void;
   /**
-   * Occurs when a shared file is removed from a group.
+   * 群组删除共享文件回调。
    *
-   * @params The parameter set.
-   * - Param [groupId] The group ID.
-   * - Param [fileId] The ID of the shared file that is deleted.
+   * @params 参数组。
+   * - Param [groupId] 群组 ID。
+   * - Param [fileId] 被删除的群共享文件 ID。
    */
   onSharedFileDeleted?(params: { groupId: string; fileId: string }): void;
   /**
-   * Occurs when one or more group members are added to the allow list.
+   * 成员加入群组白名单回调。
    *
-   * @params The parameter set.
-   * - Param [groupId] The group ID.
-   * - Param [members] The user IDs of members that are added to the allow list of the group.
+   * @params 参数组。
+   * - Param [groupId] 群组 ID。
+   * - Param [members] 被加入白名单的成员的用户 ID。
    */
   onAllowListAdded?(params: { groupId: string; members: Array<string> }): void;
   /**
-   * Occurs when one or more group members are removed from the allow list.
+   * 成员移出群组白名单回调。
    *
-   * @params The parameter set.
-   * - Param [groupId] The group ID.
-   * - Param [members] The user IDs of members that are removed from the allow list of the group.
+   * @params 参数组。
+   * - Param [groupId] 群组 ID。
+   * - Param [members] 移出白名单的成员的用户 ID。
    */
   onAllowListRemoved?(params: {
     groupId: string;
     members: Array<string>;
   }): void;
   /**
-   * Occurs when all group members are muted or unmuted.
+   * 全员禁言状态变化回调。
    *
-   * @params The parameter set.
-   * - Param [groupId] The group ID.
-   * - Param [isAllMuted] Whether all group members are muted.
-   *   - `true`: Yes.
-   *   - `false`: No.
+   * @params 参数组。
+   * - Param [groupId] 群组 ID。
+   * - Param [isAllMuted] 是否全员禁言。
+   *   - `true`：是；
+   *   - `false`：否。
    */
   onAllGroupMemberMuteStateChanged?(params: {
     groupId: string;
@@ -935,27 +929,27 @@ export interface ChatGroupEventListener {
   }): void;
 
   /**
-   * Occurs when the chat group detail change. All chat group members receive this event.
+   * 群组详情变更回调。群组所有成员会收到该事件。
    *
-   * @param group The chat group.
+   * @param group 群组对象。
    */
   onDetailChanged?(group: ChatGroup): void;
 
   /**
-   * Occurs when the disabled state of group changes.
+   * 群组状态变更回调。群组所有成员会收到该事件。
    *
-   * @param group The chat group.
+   * @param group 群组对象。
    */
   onStateChanged?(group: ChatGroup): void;
 
   /**
-   * Occurs when a custom attribute(s) of a group member is/are changed.
+   * 群组成员属性变化通知。
    *
-   * @params params
-   * - groupId: The group ID.
-   * - member: The group member.
-   * - attributes: The modified custom attributes, in key-value format.
-   * - operator: The user ID of the operator.
+   * @param params -
+   * - groupId: 群组ID。
+   * - member: 群组成员ID。
+   * - attributes: 群组成员属性，key-value格式。
+   * - operator: 修改属性的人。
    */
   onMemberAttributesChanged?(params: {
     groupId: string;
@@ -966,82 +960,82 @@ export interface ChatGroupEventListener {
 }
 
 /**
- * The contact update listener.
+ * 联系人更新监听器。
  *
- * It listens for contact changes, including adding or removing a friend and accepting and declining a friend request.
+ * 监听联系人变化，包括添加好友，移除好友，同意好友请求和拒绝好友请求等。
  *
- * For descriptions of callback methods in the listener, user A acts as the current user and user B serves as the peer user.
+ * 该监听器的回调方法描述的举例中，用户 A 为当前用户，用户 B 为对端用户。
  */
 export interface ChatContactEventListener {
   /**
-   * Occurs when a friend request from the current user is accepted by the peer user.
+   * 好友请求被接受的回调。
    *
-   * For example, after user B accepts a friend request from user A, user A receives this callback.
+   * 例如，用户 A 向 用户 B 发送好友请求，用户 B 同意后，用户 A 会收到这该回调。
    *
-   * @param userName The user ID of the user that accepts the friend request of the current user.
+   * @param userName 接受当前用户的好友请求的用户。
    */
   onContactAdded?(userName: string): void;
   /**
-   * Occurs when a friend request from the current user is declined by the peer user.
+   * 好友请求被拒绝的回调。
    *
-   * For example, after user B declines a friend request from user A, user A receives this callback.
+   * 例如，用户 A 向 用户 B 发送好友请求，用户 B 拒绝后，用户 A 会收到该回调。
    *
-   * @param userName The user that declines the friend request from the current user.
+   * @param userName 拒绝当前用户的好友请求的用户。
    */
   onContactDeleted?(userName: string): void;
   /**
-   * Occurs when a friend request is received by the current user.
+   * 当前用户收到好友请求的回调。
    *
-   * For example, after user A receives a friend request from user B, user A receives this callback.
+   * 例如，用户 B 向 用户 A 发送好友请求，用户 A 接收后会收到该回调。
    *
-   * @param userName The user who initiates the friend request.
-   * @param reason The invitation message.
+   * @param userName 发起好友请求的用户 ID。
+   * @param reason 邀请时的信息。
    */
   onContactInvited?(userName: string, reason?: string): void;
   /**
-   * Occurs when a friend request is accepted by the current user.
+   * 当前用户同意好友请求的回调。
    *
-   * For example, after user A accepts a friend request from user B, user A receives this callback.
+   * 例如，用户 B 向 用户 A 发送好友请求，用户 A 同意后会收到该回调。
    *
-   * @param userName The user who initiates the friend request.
+   * @param userName 发起好友请求的用户 ID。
    */
   onFriendRequestAccepted?(userName: string): void;
   /**
-   * Occurs when a friend request is declined by the current user.
+   * 拒绝好友请求的回调。
    *
-   * For example, after user A declines a friend request from user B, user A receives this callback.
+   * 例如，用户 B 向 用户 A 发送好友请求，用户 A 拒绝后会收到该回调。
    *
-   * @param userName The user who initiates the friend request.
+   * @param userName 发起好友请求的用户 ID。
    */
   onFriendRequestDeclined?(userName: string): void;
 }
 
 /**
- * The chat room event listener.
+ * 聊天室事件回调。
  */
 export interface ChatRoomEventListener {
   /**
-   * Occurs when the chat room is destroyed. All chat room members receive this event.
+   * 聊天室解散的回调。
    *
-   * @params The parameter set.
-   * - Param [roomId] The chat room ID.
-   * - Param [roomName] The name of the chat room.
+   * @params 参数组。
+   * - Param [roomId] 聊天室 ID。
+   * - Param [roomName] 聊天室名称。
    */
   onDestroyed?(params: { roomId: string; roomName?: string }): void;
   /**
-   * Occurs when a member joins the chat room. All chat room members, except the new member, receive this event.
+   * 聊天室加入新成员回调。
    *
-   * @params The parameter set.
-   * - Param [roomId] The chat room ID.
-   * - Param [participant] The user ID of the new member.
+   * @params 参数组。
+   * - Param [roomId] 聊天室 ID。
+   * - Param [participant] 新成员用户 ID。
    */
   onMemberJoined?(params: { roomId: string; participant: string }): void;
   /**
-   * Occurs when a member exits the chat room. All chat room members, except the member exiting the chat room, receive this event.
+   * 聊天室成员主动退出回调。
    *
-   * @params The parameter set.
-   * - Param [roomId] The chat room ID.
-   * - Param [participant] The user ID of the member who leaves the chat room.
+   * @params 参数组。
+   * - Param [roomId] 聊天室 ID。
+   * - Param [participant] 离开聊天室的用户 ID。
    */
   onMemberExited?(params: {
     roomId: string;
@@ -1049,13 +1043,13 @@ export interface ChatRoomEventListener {
     roomName?: string;
   }): void;
   /**
-   *  Occurs when a member is removed from a chat room. The member that is kicked out of the chat room receive this event.
+   * 聊天室成员被移除回调。
    *
-   * @params The parameter set.
-   * - Param [roomId] The chat room ID.
-   * - Param [roomName] The name of the chat room.
-   * - Param [participant] The user ID of the member that is removed from a chat room.
-   * - Param [reason] Reason for removal.
+   * @params 参数组。
+   * - Param [roomId] 聊天室 ID。
+   * - Param [roomName] 聊天室名称。
+   * - Param [participant] 被移出聊天室的用户 ID。
+   * - Param [reason] 移除的原因。
    */
   onMemberRemoved?(params: {
     roomId: string;
@@ -1064,12 +1058,12 @@ export interface ChatRoomEventListener {
     reason?: string;
   }): void;
   /**
-   * Occurs when the chat room member(s) is/are added to the mute list. The muted members receive this event.
+   * 有成员被禁言回调。
    *
-   * @params The parameter set.
-   * - Param [roomId] The chat room ID.
-   * - Param [mutes] The user ID(s) of muted member(s).
-   * - Param [expireTime] Reserved parameter. The Unix timestamp when the mute duration expires.
+   * @params 参数组。
+   * - Param [roomId] 聊天室 ID。
+   * - Param [mutes] 被禁言成员的用户 ID。
+   * - Param [expireTime] 预留参数，禁言过期时间戳。
    */
   onMuteListAdded?(params: {
     roomId: string;
@@ -1077,36 +1071,36 @@ export interface ChatRoomEventListener {
     expireTime?: string;
   }): void;
   /**
-   * Occurs when the chat room member(s) is/are removed from the mute list. The members that are removed from the mute list receive this event.
+   * 有成员从禁言列表中移除回调。
    *
-   * @params The parameter set.
-   * - Param [roomId] The chat room ID.
-   * - Param [mutes] The user ID(s) of unmuted member(s).
+   * @params 参数组。
+   * - Param [roomId] 聊天室 ID。
+   * - Param [mutes] 被移出禁言列表的用户 ID 列表。
    */
   onMuteListRemoved?(params: { roomId: string; mutes: Array<string> }): void;
   /**
-   * Occurs when a chat room member is set as an admin. The member set as the chat room admin receives this event.
+   *有成员设置为聊天室管理员的回调。
    *
-   * @params The parameter set.
-   * - Param [roomId] The chat room ID.
-   * - Param [admin]  The user ID of the member who is set as an admin.
+   * @params 参数组。
+   * - Param [roomId] 聊天室 ID。
+   * - Param [admin]  设置为管理员的成员的用户 ID。
    */
   onAdminAdded?(params: { roomId: string; admin: string }): void;
   /**
-   * Occurs when the chat room member(s) is/are removed from the admin list. The admin removed from the admin list receives this event.
+   * 移除聊天室管理员权限的回调。
    *
-   * @params The parameter set.
-   * - Param [roomId] The chat room ID.
-   * - Param [admin] The user ID of the admin whose administrative privileges are removed.
+   * @params 参数组。
+   * - Param [roomId] 聊天室 ID。
+   * - Param [admin] 被移出管理员权限的成员的用户 ID。
    */
   onAdminRemoved?(params: { roomId: string; admin: string }): void;
   /**
-   * Occurs when the chat room owner is changed. The chat room owner receives this event.
+   * 转移聊天室的所有权的回调。
    *
-   * @params The parameter set.
-   * - Param [roomId] The chat room ID.
-   * - Param [newOwner] The user ID of the new chat room owner.
-   * - Param [oldOwner] The user ID of the previous chat room owner.
+   * @params 参数组。
+   * - Param [roomId] 聊天室 ID。
+   * - Param [newOwner] 新聊天室所有者的用户 ID。
+   * - Param [oldOwner] 原来的聊天室所有者的用户 ID。
    */
   onOwnerChanged?(params: {
     roomId: string;
@@ -1114,40 +1108,40 @@ export interface ChatRoomEventListener {
     oldOwner: string;
   }): void;
   /**
-   * Occurs when the chat room announcement changes. All chat room members receive this event.
+   * 聊天室公告更新回调。
    *
-   * @params The parameter set.
-   * - Param [roomId] The chat room ID.
-   * - Param [announcement] The new announcement.
+   * @params 参数组。
+   * - Param [roomId] 聊天室 ID。
+   * - Param [announcement] 更新后的聊天室公告。
    */
   onAnnouncementChanged?(params: {
     roomId: string;
     announcement: string;
   }): void;
   /**
-   * Occurs when the chat room member(s) is/are added to the allow list. The members added to the allow list receive this event.
+   * 有成员被加入聊天室白名单的回调。
    *
-   * @params The parameter set.
-   * - Param [roomId] The chat room ID.
-   * - Param [members] The member(s) added to the allow list of the chat room.
+   * @params 参数组。
+   * - Param [roomId] 聊天室 ID。
+   * - Param [members] 被加入白名单的聊天室成员的用户 ID。
    */
   onAllowListAdded?(params: { roomId: string; members: Array<string> }): void;
   /**
-   * Occurs when the chat room member(s) is/are removed from the allow list. The members that are removed from the allow list receive this event.
+   * 有成员被移出聊天室白名单的回调。
    *
-   * @params The parameter set.
-   * - Param [roomId] The chat room ID.
-   * - Param [members] The member(s) removed from the allow list of the chat room.
+   * @params 参数组。
+   * - Param [roomId] 聊天室 ID。
+   * - Param [members] 被移出聊天室白名单列表的成员的用户 ID。
    */
   onAllowListRemoved?(params: { roomId: string; members: Array<string> }): void;
   /**
-   * Occurs when all members in the chat room are muted or unmuted. All chat room members receive this event.
+   * 聊天室全员禁言状态变化回调。
    *
-   * @params The parameter set.
-   * - Param [roomId] The chat room ID.
-   * - Param [isAllMuted] Whether all chat room members are muted.
-   *   - `true`: Yes.
-   *   - `false`: No.
+   * @params 参数组。
+   * - Param [roomId] 聊天室 ID。
+   * - Param [isAllMuted] 是否所有聊天室成员被禁言。
+   *   - `true`：是；
+   *   - `false`：否。
    */
   onAllChatRoomMemberMuteStateChanged?(params: {
     roomId: string;
@@ -1155,19 +1149,19 @@ export interface ChatRoomEventListener {
   }): void;
 
   /**
-   * Occurs when the chat room specifications changes. All chat room members receive this event.
+   * 聊天室详情变更回调。聊天室所有成员会收到该事件。
    *
-   * @param room The chat room.
+   * @param room 聊天室对象。
    */
   onSpecificationChanged?(room: ChatRoom): void;
 
   /**
-   * The custom chat room attribute(s) is/are updated. All chat room members receive this event.
+   * 聊天室自定义属性（key-value）更新回调。聊天室所有成员会收到该事件。
    *
-   * @params params
-   * - roomId: The chat room ID.
-   * - attributes: The list of custom chat room attributes (key-value) that are updated.
-   * - from: The user ID of the operator.
+   * @params 参数组。
+   * - roomId 聊天室 ID。
+   * - attributes 更新的聊天室自定义属性列表。
+   * - from 操作者的用户 ID。
    */
   onAttributesUpdated?(params: {
     roomId: string;
@@ -1176,12 +1170,11 @@ export interface ChatRoomEventListener {
   }): void;
 
   /**
-   * The custom chat room attribute(s) is/are removed. All chat room members receive this event.
-   *
-   * @params params
-   * - roomId: The chat room ID.
-   * - removedKeys: The key list of custom chat room attributes that are removed.
-   * - from: The user ID of the operator.
+   * 聊天室自定义属性（key-value）移除回调。聊天室所有成员会收到该事件。
+   * @params 参数组。
+   * - roomId：聊天室 ID。
+   * - removedKeys: 移除的聊天室自定义属性的属性 key 列表。
+   * - from: 操作者的用户 ID。
    */
   onAttributesRemoved?(params: {
     roomId: string;
@@ -1191,25 +1184,25 @@ export interface ChatRoomEventListener {
 }
 
 /**
- * The presence state change listener.
+ * 在线状态订阅监听器接口。
  */
 export interface ChatPresenceEventListener {
   /**
-   * The custom chat room attribute(s) is/are removed. All chat room members receive this event.
+   * 收到被订阅用户的在线状态发生变化。
    *
-   * @param list The new presence state of a subscribed user.
+   * @param list 被订阅用户更新后的在线状态。
    */
   onPresenceStatusChanged(list: Array<ChatPresence>): void;
 }
 
 export interface ChatExceptionEventListener {
   /**
-   * When an internal except occurs, this callback notification is triggered.
+   * 异常事件监听回调。
    *
    * @params -
-   * - Param [except] The except object.
-   * - Param [from] Where the except occurred.
-   * - Param [extra] The extra information.
+   * - Param [except] 异常对象。
+   * - Param [from] 异常来源。
+   * - Param [extra] 额外信息。
    */
   onExcept(params: {
     except: ChatException;
