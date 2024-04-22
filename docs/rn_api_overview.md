@@ -108,6 +108,7 @@ Agora Chat is a highly reliable global communication platform where your users c
 | {@link ChatManager.fetchHistoryMessages fetchHistoryMessages} | Uses the pagination to get messages in the specified conversation from the server. |
 | {@link ChatManager.fetchHistoryMessagesByOptions fetchHistoryMessagesByOptions} | retrieve the history message for the specified session from the server. |
 | {@link ChatManager.searchMsgFromDB searchMsgFromDB} | Retrieves messages with keywords in a conversation from the local database. |
+| {@link ChatManager.getMsgsWithKeyword getMsgsWithKeyword} | Retrieves messages with keywords from the local database. |
 | {@link ChatManager.fetchGroupAcks fetchGroupAcks} | Uses the pagination to get read receipts for group messages from the server. |
 | {@link ChatManager.removeConversationFromServer removeConversationFromServer} | Deletes the specified conversation and its historical messages from the server. |
 | {@link ChatManager.getConversation getConversation} | Gets the conversation by conversation ID and conversation type. |
@@ -130,7 +131,7 @@ Agora Chat is a highly reliable global communication platform where your users c
 | {@link ChatManager.getMessages getMessages} | Retrieves messages of a specified quantity in a conversation from the local database. |
 | {@link ChatManager.getMsgs getMsgs} | Retrieves messages of a specified quantity in a conversation from the local database. |
 | {@link ChatManager.getMessagesWithKeyword getMessagesWithKeyword} | Gets messages that the specified user sends in a conversation in a certain period. |
-| {@link ChatManager.getMsgsWithKeyword getMsgsWithKeyword} | Gets messages that the specified user sends in a conversation in a certain period. |
+| {@link ChatManager.getConvMsgsWithKeyword getConvMsgsWithKeyword} | Gets messages that the specified user sends in a conversation in a certain period. |
 | {@link ChatManager.getMessageWithTimestamp getMessageWithTimestamp} | Retrieves messages that are sent and received in a certain period in a conversation in the local database. |
 | {@link ChatManager.getMsgWithTimestamp getMsgWithTimestamp} | Retrieves messages that are sent and received in a certain period in a conversation in the local database. |
 | {@link ChatManager.translateMessage translateMessage} | Translates a text message. |

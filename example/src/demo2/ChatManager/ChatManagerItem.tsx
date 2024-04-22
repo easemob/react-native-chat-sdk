@@ -1,7 +1,9 @@
 import React, { ReactNode } from 'react';
-import { Text, View } from 'react-native';
+import { Pressable, Text, View } from 'react-native';
 import type {
+  ChatConversationFetchOptions,
   ChatFetchMessageOptions,
+  ChatMessagePinInfo,
   ChatMessageStatusCallback,
   ChatTextMessageBody,
 } from 'react-native-chat-sdk';
@@ -27,8 +29,12 @@ import {
 } from '../__internal__/LeafScreenBase';
 import { generateData } from '../__internal__/Utils';
 import { ChatManagerCache, metaDataList, MN } from './ChatManagerData';
+import { gMessageApiList } from './const';
+import { splitApiList } from './split';
 
 export interface StateChatMessage extends StateBase {
+  list: string[];
+  keyword: string;
   cb_result: string;
   resendMessage: {
     message: ChatMessage;
@@ -79,6 +85,7 @@ export interface StateChatMessage extends StateBase {
     maxCount: number;
     from: string;
     direction: number;
+    searchScope: number;
   };
   fetchGroupAcks: {
     msgId: string;
@@ -95,6 +102,7 @@ export interface StateChatMessage extends StateBase {
     convId: string;
     convType: number;
     createIfNeed: boolean;
+    isChatThread: boolean;
   };
   getAllConversations: {};
   fetchAllConversations: {};
@@ -105,41 +113,50 @@ export interface StateChatMessage extends StateBase {
   getLatestMessage: {
     convId: string;
     convType: number;
+    isChatThread: boolean;
   };
   getLastReceivedMessage: {
     convId: string;
     convType: number;
+    isChatThread: boolean;
   };
   getConversationUnreadCount: {
     convId: string;
     convType: number;
+    isChatThread: boolean;
   };
   getConversationMessageCount: {
     convId: string;
     convType: number;
+    isChatThread: boolean;
   };
   markMessageAsRead: {
     convId: string;
     convType: number;
     msgId: string;
+    isChatThread: boolean;
   };
   markAllMessagesAsRead: {
     convId: string;
     convType: number;
+    isChatThread: boolean;
   };
   updateConversationMessage: {
     convId: string;
     convType: number;
     msg: ChatMessage;
+    isChatThread: boolean;
   };
   deleteMessage: {
     convId: string;
     convType: number;
     msgId: string;
+    isChatThread: boolean;
   };
   deleteConversationAllMessages: {
     convId: string;
     convType: number;
+    isChatThread: boolean;
   };
   getMessagesWithMsgType: {
     convId: string;
@@ -149,6 +166,7 @@ export interface StateChatMessage extends StateBase {
     timestamp: number;
     count: number;
     sender: string;
+    isChatThread: boolean;
   };
   getMessages: {
     convId: string;
@@ -156,6 +174,7 @@ export interface StateChatMessage extends StateBase {
     direction: number;
     startMsgId: string;
     loadCount: number;
+    isChatThread: boolean;
   };
   getMessagesWithKeyword: {
     convId: string;
@@ -165,6 +184,8 @@ export interface StateChatMessage extends StateBase {
     timestamp: number;
     count: number;
     sender: string;
+    isChatThread: boolean;
+    searchScope: number;
   };
   getMessageWithTimestamp: {
     convId: string;
@@ -173,6 +194,7 @@ export interface StateChatMessage extends StateBase {
     endTime: number;
     direction: number;
     count: number;
+    isChatThread: boolean;
   };
   translateMessage: {
     msg: ChatMessage;
@@ -263,6 +285,7 @@ export interface StateChatMessage extends StateBase {
     convId: string;
     convType: number;
     ext: { [key: string]: string };
+    isChatThread: boolean;
   };
   insertMessage: {
     message: ChatMessage;
@@ -282,11 +305,13 @@ export interface StateChatMessage extends StateBase {
     convId: string;
     convType: number;
     msgIds: string[];
+    isChatThread: boolean;
   };
   removeMessagesFromServerWithTimestamp: {
     convId: string;
     convType: number;
     timestamp: number;
+    isChatThread: boolean;
   };
   fetchHistoryMessagesByOptions: {
     convId: string;
@@ -300,6 +325,7 @@ export interface StateChatMessage extends StateBase {
     convType: number;
     startTs: number;
     endTs: number;
+    isChatThread: boolean;
   };
   fetchConversationsFromServerWithCursor: {
     cursor?: string;
@@ -320,6 +346,39 @@ export interface StateChatMessage extends StateBase {
   fetchCombineMessageDetail: {
     message: ChatMessage;
   };
+  addRemoteAndLocalConversationsMark: {
+    convIds: string[];
+    mark: number;
+  };
+  deleteRemoteAndLocalConversationsMark: {
+    convIds: string[];
+    mark: number;
+  };
+  fetchConversationsByOptions: {
+    option: ChatConversationFetchOptions;
+  };
+  deleteAllMessageAndConversation: {
+    clearServerData: boolean;
+  };
+  pinMessage: {
+    messageId: string;
+  };
+  unpinMessage: {
+    messageId: string;
+  };
+  fetchPinnedMessages: {
+    convId: string;
+    convType: number;
+    isChatThread: boolean;
+  };
+  getPinnedMessages: {
+    convId: string;
+    convType: number;
+    isChatThread: boolean;
+  };
+  getMessagePinInfo: {
+    messageId: string;
+  };
 }
 
 export interface StatelessChatMessage extends StatelessBase {
@@ -334,6 +393,7 @@ export interface StatelessChatMessage extends StatelessBase {
   sendMessageReadAck: {
     message?: ChatMessage;
   };
+  apiListList: string[][];
 }
 
 export class ChatManagerLeafScreen extends LeafScreenBase<StateChatMessage> {
@@ -350,11 +410,14 @@ export class ChatManagerLeafScreen extends LeafScreenBase<StateChatMessage> {
       recvResult: '',
       exceptResult: '',
       cb_result: '',
+      list: [],
+      keyword: '',
     });
     this.statelessData = {
       sendMessage: {},
       resendMessage: {},
       sendMessageReadAck: {},
+      apiListList: splitApiList(gMessageApiList),
     };
     this.stateTemp = Object.assign({}, this.state);
   }
@@ -504,6 +567,16 @@ export class ChatManagerLeafScreen extends LeafScreenBase<StateChatMessage> {
           recvResult: `onMessageContentChanged: ${lastModifyOperatorId}, ${lastModifyTime}`,
         });
       }
+      onMessagePinChanged(params: {
+        messageId: string;
+        convId: string;
+        pinOperation: number;
+        pinInfo: ChatMessagePinInfo;
+      }): void {
+        this.that.setState({
+          recvResult: `onMessageContentChanged: ${params}`,
+        });
+      }
     })(this);
 
     ChatClient.getInstance().chatManager.removeAllMessageListener();
@@ -559,85 +632,58 @@ export class ChatManagerLeafScreen extends LeafScreenBase<StateChatMessage> {
     ];
   }
 
-  protected renderBody(): ReactNode {
-    // console.log(`${ChatManagerLeafScreen.TAG}: renderBody: `);
+  private onChangePage(key: string) {
+    console.log('test:zuoyu:key:', key, this === undefined);
+    if (key === 'thread') {
+      this.setState({ list: this.statelessData.apiListList[0]!, keyword: key });
+    } else if (key === 'message') {
+      this.setState({ list: this.statelessData.apiListList[1]!, keyword: key });
+    } else if (key === 'others') {
+      this.setState({ list: this.statelessData.apiListList[2]!, keyword: key });
+    }
+  }
+
+  private renderPageButton({ kw }: { kw: string }) {
+    const { keyword } = this.state;
     return (
-      <View style={styleValues.containerColumn}>{this.renderApiDom()}</View>
+      <Pressable
+        style={{
+          height: 20,
+          backgroundColor: keyword === kw ? 'orange' : undefined,
+          borderRadius: 4,
+        }}
+        onPress={() => {
+          this.onChangePage(kw);
+        }}
+      >
+        <Text>{kw}</Text>
+      </Pressable>
+    );
+  }
+
+  protected renderBody(): ReactNode {
+    return (
+      <View style={styleValues.containerColumn}>
+        <View
+          style={{
+            flexDirection: 'row',
+            justifyContent: 'space-evenly',
+            width: '100%',
+          }}
+        >
+          {this.renderPageButton({ kw: 'thread' })}
+          {this.renderPageButton({ kw: 'message' })}
+          {this.renderPageButton({ kw: 'others' })}
+        </View>
+
+        {this.renderApiDom()}
+      </View>
     );
   }
   protected renderApiDom(): ReactNode[] {
-    const apiList = [
-      'resendMessage',
-      'sendMessageReadAck',
-      'sendGroupMessageReadAck',
-      'sendConversationReadAck',
-      'recallMessage',
-      'getMessage',
-      'markAllConversationsAsRead',
-      'getUnreadCount',
-      'updateMessage',
-      'importMessages',
-      'downloadAttachment',
-      'downloadThumbnail',
-      'fetchHistoryMessages',
-      'searchMsgFromDB',
-      'fetchGroupAcks',
-      'removeConversationFromServer',
-      'getConversation',
-      'getAllConversations',
-      'fetchAllConversations',
-      'deleteConversation',
-      'getLatestMessage',
-      'getLastReceivedMessage',
-      'getConversationUnreadCount',
-      'getConversationMessageCount',
-      'markMessageAsRead',
-      'markAllMessagesAsRead',
-      'updateConversationMessage',
-      'deleteMessage',
-      'deleteConversationAllMessages',
-      'getMessagesWithMsgType',
-      'getMessages',
-      'getMessagesWithKeyword',
-      'getMessageWithTimestamp',
-      'translateMessage',
-      'fetchSupportLanguages',
-      'addReaction',
-      'removeReaction',
-      'fetchReactionList',
-      'fetchReactionDetail',
-      'reportMessage',
-      'getReactionList',
-      'groupAckCount',
-      'createChatThread',
-      'joinChatThread',
-      'leaveChatThread',
-      'destroyChatThread',
-      'updateChatThreadName',
-      'removeMemberWithChatThread',
-      'fetchMembersWithChatThreadFromServer',
-      'fetchJoinedChatThreadFromServer',
-      'fetchJoinedChatThreadWithParentFromServer',
-      'fetchChatThreadWithParentFromServer',
-      'fetchLastMessageWithChatThread',
-      'fetchChatThreadFromServer',
-      'getMessageThread',
-      'setConversationExtension',
-      'insertMessage',
-      'fetchConversationsFromServerWithPage',
-      'removeMessagesFromServerWithMsgIds',
-      'removeMessagesFromServerWithTimestamp',
-      'fetchHistoryMessagesByOptions',
-      'deleteMessagesWithTimestamp',
-      'fetchConversationsFromServerWithCursor',
-      'fetchPinnedConversationsFromServerWithCursor',
-      'pinConversation',
-      'modifyMessageBody',
-      'fetchCombineMessageDetail',
-    ];
     let renderDomAry: ({} | null | undefined)[] = [];
     const data = this.metaData;
-    apiList.forEach((apiItem) => {
+    this.state.list.forEach((apiItem) => {
       this.setKeyPrefix(apiItem);
       renderDomAry.push(
         this.renderParamWithText(data.get(apiItem)!.methodName)
@@ -829,16 +875,17 @@ export class ChatManagerLeafScreen extends LeafScreenBase<StateChatMessage> {
         this.metaData.get(MN.fetchHistoryMessages)!.methodName
       );
     } else if (name === MN.searchMsgFromDB) {
-      const { keywords, timestamp, maxCount, from, direction } =
+      const { keywords, timestamp, maxCount, from, direction, searchScope } =
         this.state.searchMsgFromDB;
       this.tryCatch(
-        ChatClient.getInstance().chatManager.searchMsgFromDB(
+        ChatClient.getInstance().chatManager.getMsgsWithKeyword({
           keywords,
           timestamp,
           maxCount,
           from,
-          direction
-        ),
+          direction,
+          searchScope,
+        }),
         ChatManagerLeafScreen.TAG,
         this.metaData.get(MN.searchMsgFromDB)!.methodName
       );
@@ -868,12 +915,14 @@ export class ChatManagerLeafScreen extends LeafScreenBase<StateChatMessage> {
         this.metaData.get(MN.removeConversationFromServer)!.methodName
       );
     } else if (name === MN.getConversation) {
-      const { convId, convType, createIfNeed } = this.state.getConversation;
+      const { convId, convType, createIfNeed, isChatThread } =
+        this.state.getConversation;
       this.tryCatch(
         ChatClient.getInstance().chatManager.getConversation(
           convId,
           convType,
-          createIfNeed
+          createIfNeed,
+          isChatThread
         ),
         ChatManagerLeafScreen.TAG,
         this.metaData.get(MN.getConversation)!.methodName
@@ -901,125 +950,158 @@ export class ChatManagerLeafScreen extends LeafScreenBase<StateChatMessage> {
         this.metaData.get(MN.deleteConversation)!.methodName
       );
     } else if (name === MN.getLatestMessage) {
-      const { convId, convType } = this.state.getLatestMessage;
+      const { convId, convType, isChatThread } = this.state.getLatestMessage;
       this.tryCatch(
         ChatClient.getInstance().chatManager.getLatestMessage(
           convId,
-          ChatConversationTypeFromNumber(convType)
+          ChatConversationTypeFromNumber(convType),
+          isChatThread
         ),
         ChatManagerLeafScreen.TAG,
         this.metaData.get(MN.getLatestMessage)!.methodName
       );
     } else if (name === MN.getLastReceivedMessage) {
-      const { convId, convType } = this.state.getLastReceivedMessage;
+      const { convId, convType, isChatThread } =
+        this.state.getLastReceivedMessage;
       this.tryCatch(
         ChatClient.getInstance().chatManager.getLatestReceivedMessage(
           convId,
-          ChatConversationTypeFromNumber(convType)
+          ChatConversationTypeFromNumber(convType),
+          isChatThread
         ),
         ChatManagerLeafScreen.TAG,
         this.metaData.get(MN.getLastReceivedMessage)!.methodName
       );
     } else if (name === MN.getConversationUnreadCount) {
-      const { convId, convType } = this.state.getConversationUnreadCount;
+      const { convId, convType, isChatThread } =
+        this.state.getConversationUnreadCount;
       this.tryCatch(
         ChatClient.getInstance().chatManager.getConversationUnreadCount(
           convId,
-          ChatConversationTypeFromNumber(convType)
+          ChatConversationTypeFromNumber(convType),
+          isChatThread
         ),
         ChatManagerLeafScreen.TAG,
         this.metaData.get(MN.getConversationUnreadCount)!.methodName
       );
     } else if (name === MN.getConversationMessageCount) {
-      const { convId, convType } = this.state.getConversationMessageCount;
+      const { convId, convType, isChatThread } =
+        this.state.getConversationMessageCount;
       this.tryCatch(
         ChatClient.getInstance().chatManager.getConversationMessageCount(
           convId,
-          ChatConversationTypeFromNumber(convType)
+          ChatConversationTypeFromNumber(convType),
+          isChatThread
         ),
         ChatManagerLeafScreen.TAG,
         this.metaData.get(MN.getConversationMessageCount)!.methodName
       );
     } else if (name === MN.markMessageAsRead) {
-      const { convId, convType, msgId } = this.state.markMessageAsRead;
+      const { convId, convType, msgId, isChatThread } =
+        this.state.markMessageAsRead;
       this.tryCatch(
         ChatClient.getInstance().chatManager.markMessageAsRead(
           convId,
           ChatConversationTypeFromNumber(convType),
-          msgId
+          msgId,
+          isChatThread
         ),
         ChatManagerLeafScreen.TAG,
         this.metaData.get(MN.markMessageAsRead)!.methodName
       );
     } else if (name === MN.markAllMessagesAsRead) {
-      const { convId, convType } = this.state.markAllMessagesAsRead;
+      const { convId, convType, isChatThread } =
+        this.state.markAllMessagesAsRead;
       this.tryCatch(
         ChatClient.getInstance().chatManager.markAllMessagesAsRead(
           convId,
-          ChatConversationTypeFromNumber(convType)
+          ChatConversationTypeFromNumber(convType),
+          isChatThread
         ),
         ChatManagerLeafScreen.TAG,
         this.metaData.get(MN.markAllMessagesAsRead)!.methodName
       );
     } else if (name === MN.updateConversationMessage) {
-      const { convId, convType, msg } = this.state.updateConversationMessage;
+      const { convId, convType, msg, isChatThread } =
+        this.state.updateConversationMessage;
       this.tryCatch(
         ChatClient.getInstance().chatManager.updateConversationMessage(
           convId,
           ChatConversationTypeFromNumber(convType),
-          msg
+          msg,
+          isChatThread
         ),
         ChatManagerLeafScreen.TAG,
         this.metaData.get(MN.updateConversationMessage)!.methodName
       );
     } else if (name === MN.deleteMessage) {
-      const { convId, convType, msgId } = this.state.deleteMessage;
+      const { convId, convType, msgId, isChatThread } =
+        this.state.deleteMessage;
       this.tryCatch(
         ChatClient.getInstance().chatManager.deleteMessage(
           convId,
           ChatConversationTypeFromNumber(convType),
-          msgId
+          msgId,
+          isChatThread
         ),
         ChatManagerLeafScreen.TAG,
         this.metaData.get(MN.deleteMessage)!.methodName
       );
     } else if (name === MN.deleteConversationAllMessages) {
-      const { convId, convType } = this.state.deleteConversationAllMessages;
+      const { convId, convType, isChatThread } =
+        this.state.deleteConversationAllMessages;
       this.tryCatch(
         ChatClient.getInstance().chatManager.deleteConversationAllMessages(
           convId,
-          ChatConversationTypeFromNumber(convType)
+          ChatConversationTypeFromNumber(convType),
+          isChatThread
         ),
         ChatManagerLeafScreen.TAG,
         this.metaData.get(MN.deleteConversationAllMessages)!.methodName
       );
     } else if (name === MN.getMessagesWithMsgType) {
-      const { convId, convType, msgType, direction, timestamp, count, sender } =
-        this.state.getMessagesWithMsgType;
+      const {
+        convId,
+        convType,
+        msgType,
+        direction,
+        timestamp,
+        count,
+        sender,
+        isChatThread,
+      } = this.state.getMessagesWithMsgType;
       this.tryCatch(
-        ChatClient.getInstance().chatManager.getMessagesWithMsgType(
+        ChatClient.getInstance().chatManager.getMsgsWithMsgType({
           convId,
-          ChatConversationTypeFromNumber(convType),
-          ChatMessageTypeFromString(msgType),
+          convType: ChatConversationTypeFromNumber(convType),
+          msgType: ChatMessageTypeFromString(msgType),
           direction,
           timestamp,
           count,
-          sender
-        ),
+          sender,
+          isChatThread,
+        }),
         ChatManagerLeafScreen.TAG,
         this.metaData.get(MN.getMessagesWithMsgType)!.methodName
       );
     } else if (name === MN.getMessages) {
-      const { convId, convType, startMsgId, direction, loadCount } =
-        this.state.getMessages;
+      const {
+        convId,
+        convType,
+        startMsgId,
+        direction,
+        loadCount,
+        isChatThread,
+      } = this.state.getMessages;
       this.tryCatch(
-        ChatClient.getInstance().chatManager.getMessages(
+        ChatClient.getInstance().chatManager.getMsgs({
           convId,
-          ChatConversationTypeFromNumber(convType),
+          convType: ChatConversationTypeFromNumber(convType),
           startMsgId,
           direction,
-          loadCount
-        ),
+          loadCount,
+          isChatThread,
+        }),
         ChatManagerLeafScreen.TAG,
         this.metaData.get(MN.getMessages)!.methodName
       );
@@ -1032,32 +1114,44 @@ export class ChatManagerLeafScreen extends LeafScreenBase<StateChatMessage> {
         timestamp,
         count,
         sender,
+        isChatThread,
+        searchScope,
       } = this.state.getMessagesWithKeyword;
       this.tryCatch(
-        ChatClient.getInstance().chatManager.getMessagesWithKeyword(
+        ChatClient.getInstance().chatManager.getConvMsgsWithKeyword({
           convId,
-          ChatConversationTypeFromNumber(convType),
+          convType: ChatConversationTypeFromNumber(convType),
           keywords,
           direction,
           timestamp,
           count,
-          sender
-        ),
+          sender,
+          isChatThread,
+          searchScope,
+        }),
         ChatManagerLeafScreen.TAG,
         this.metaData.get(MN.getMessagesWithKeyword)!.methodName
       );
     } else if (name === MN.getMessageWithTimestamp) {
-      const { convId, convType, startTime, endTime, direction, count } =
-        this.state.getMessageWithTimestamp;
+      const {
+        convId,
+        convType,
+        startTime,
+        endTime,
+        direction,
+        count,
+        isChatThread,
+      } = this.state.getMessageWithTimestamp;
       this.tryCatch(
-        ChatClient.getInstance().chatManager.getMessageWithTimestamp(
+        ChatClient.getInstance().chatManager.getMsgWithTimestamp({
           convId,
-          ChatConversationTypeFromNumber(convType),
+          convType: ChatConversationTypeFromNumber(convType),
           startTime,
           endTime,
           direction,
-          count
-        ),
+          count,
+          isChatThread,
+        }),
         ChatManagerLeafScreen.TAG,
         this.metaData.get(MN.getMessageWithTimestamp)!.methodName
       );
@@ -1257,12 +1351,14 @@ export class ChatManagerLeafScreen extends LeafScreenBase<StateChatMessage> {
         name
       );
     } else if (name === MN.setConversationExtension) {
-      const { convId, convType, ext } = this.state.setConversationExtension;
+      const { convId, convType, ext, isChatThread } =
+        this.state.setConversationExtension;
       this.tryCatch(
         ChatClient.getInstance().chatManager.setConversationExtension(
           convId,
           convType,
-          ext
+          ext,
+          isChatThread
         ),
         ChatManagerLeafScreen.TAG,
         name
@@ -1305,25 +1401,27 @@ export class ChatManagerLeafScreen extends LeafScreenBase<StateChatMessage> {
         name
       );
     } else if (name === MN.removeMessagesFromServerWithMsgIds) {
-      const { convId, convType, msgIds } =
+      const { convId, convType, msgIds, isChatThread } =
         this.state.removeMessagesFromServerWithMsgIds;
       this.tryCatch(
         ChatClient.getInstance().chatManager.removeMessagesFromServerWithMsgIds(
           convId,
           convType,
-          msgIds
+          msgIds,
+          isChatThread
         ),
         ChatManagerLeafScreen.TAG,
         name
       );
     } else if (name === MN.removeMessagesFromServerWithTimestamp) {
-      const { convId, convType, timestamp } =
+      const { convId, convType, timestamp, isChatThread } =
         this.state.removeMessagesFromServerWithTimestamp;
       this.tryCatch(
         ChatClient.getInstance().chatManager.removeMessagesFromServerWithTimestamp(
           convId,
           convType,
-          timestamp
+          timestamp,
+          isChatThread
         ),
         ChatManagerLeafScreen.TAG,
         name
@@ -1345,7 +1443,7 @@ export class ChatManagerLeafScreen extends LeafScreenBase<StateChatMessage> {
         name
       );
     } else if (name === MN.deleteMessagesWithTimestamp) {
-      const { convId, convType, startTs, endTs } =
+      const { convId, convType, startTs, endTs, isChatThread } =
         this.state.deleteMessagesWithTimestamp;
       this.tryCatch(
         ChatClient.getInstance().chatManager.deleteMessagesWithTimestamp(
@@ -1354,7 +1452,8 @@ export class ChatManagerLeafScreen extends LeafScreenBase<StateChatMessage> {
           {
             startTs,
             endTs,
-          }
+          },
+          isChatThread
         ),
         ChatManagerLeafScreen.TAG,
         name
@@ -1399,6 +1498,88 @@ export class ChatManagerLeafScreen extends LeafScreenBase<StateChatMessage> {
       const { message } = this.state.fetchCombineMessageDetail;
       this.tryCatch(
         ChatClient.getInstance().chatManager.fetchCombineMessageDetail(message),
+        ChatManagerLeafScreen.TAG,
+        name
+      );
+    } else if (name === MN.addRemoteAndLocalConversationsMark) {
+      const { convIds, mark } = this.state.addRemoteAndLocalConversationsMark;
+      this.tryCatch(
+        ChatClient.getInstance().chatManager.addRemoteAndLocalConversationsMark(
+          convIds,
+          mark
+        ),
+        ChatManagerLeafScreen.TAG,
+        name
+      );
+    } else if (name === MN.deleteRemoteAndLocalConversationsMark) {
+      const { convIds, mark } =
+        this.state.deleteRemoteAndLocalConversationsMark;
+      this.tryCatch(
+        ChatClient.getInstance().chatManager.deleteRemoteAndLocalConversationsMark(
+          convIds,
+          mark
+        ),
+        ChatManagerLeafScreen.TAG,
+        name
+      );
+    } else if (name === MN.deleteAllMessageAndConversation) {
+      const { clearServerData } = this.state.deleteAllMessageAndConversation;
+      this.tryCatch(
+        ChatClient.getInstance().chatManager.deleteAllMessageAndConversation(
+          clearServerData
+        ),
+        ChatManagerLeafScreen.TAG,
+        name
+      );
+    } else if (name === MN.fetchConversationsByOptions) {
+      const { option } = this.state.fetchConversationsByOptions;
+      this.tryCatch(
+        ChatClient.getInstance().chatManager.fetchConversationsByOptions(
+          option
+        ),
+        ChatManagerLeafScreen.TAG,
+        name
+      );
+    } else if (name === MN.pinMessage) {
+      const { messageId } = this.state.pinMessage;
+      this.tryCatch(
+        ChatClient.getInstance().chatManager.pinMessage(messageId),
+        ChatManagerLeafScreen.TAG,
+        name
+      );
+    } else if (name === MN.unpinMessage) {
+      const { messageId } = this.state.unpinMessage;
+      this.tryCatch(
+        ChatClient.getInstance().chatManager.unpinMessage(messageId),
+        ChatManagerLeafScreen.TAG,
+        name
+      );
+    } else if (name === MN.fetchPinnedMessages) {
+      const { convId, convType, isChatThread } = this.state.fetchPinnedMessages;
+      this.tryCatch(
+        ChatClient.getInstance().chatManager.fetchPinnedMessages(
+          convId,
+          convType,
+          isChatThread
+        ),
+        ChatManagerLeafScreen.TAG,
+        name
+      );
+    } else if (name === MN.getPinnedMessages) {
+      const { convId, convType, isChatThread } = this.state.getPinnedMessages;
+      this.tryCatch(
+        ChatClient.getInstance().chatManager.getPinnedMessages(
+          convId,
+          convType,
+          isChatThread
+        ),
+        ChatManagerLeafScreen.TAG,
+        name
+      );
+    } else if (name === MN.getMessagePinInfo) {
+      const { messageId } = this.state.getMessagePinInfo;
+      this.tryCatch(
+        ChatClient.getInstance().chatManager.getMessagePinInfo(messageId),
         ChatManagerLeafScreen.TAG,
         name
       );

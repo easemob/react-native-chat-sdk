@@ -11,6 +11,7 @@ import {
   ChatGroupMessageAck,
   ChatMessage,
   ChatMessageEventListener,
+  ChatMessagePinInfo,
   ChatMessageReactionEvent,
   ChatMessageThreadEvent,
   ChatMessageType,
@@ -377,6 +378,16 @@ export abstract class QuickTestScreenBase<
         );
         this.that.setState({
           conv_listener: `onMessageContentChanged: ${lastModifyOperatorId}, ${lastModifyTime}`,
+        });
+      }
+      onMessagePinChanged(params: {
+        messageId: string;
+        convId: string;
+        pinOperation: number;
+        pinInfo: ChatMessagePinInfo;
+      }): void {
+        this.that.setState({
+          conv_listener: `onMessageContentChanged: ${params}`,
         });
       }
     })(this);

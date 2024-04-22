@@ -2,6 +2,51 @@ _Chinese | [English](./CHANGELOG.md)_
 
 # Update Log
 
+## 1.4.0
+
+- 依赖的原生 SDK 升级到版本（`iOS` 4.5.0 和`Android` 4.5.0）。 添加原生 SDK 提供的新功能和修复的问题。
+- 新增全局配置选项
+  - `enableTLS`: 是否开启安全策略。默认关闭。
+  - `messagesReceiveCallbackIncludeSend`: 是否消息监听器接收发送消息的回调通知。默认关闭。
+  - `regardImportMessagesAsRead`: 是否将服务器导入的消息设置为已读。
+  - `useReplacedMessageContents`: 当发送的文本消息的内容被文本审核（Moderation）服务替换时，是否需要返回给发送方。
+- 新增消息回调通知
+  - `onMessagePinChanged`: 接收消息置顶的通知。
+- 新增多设备事件
+  - `CONVERSATION_UPDATE_MARK`: 多设备会话标记更新通知。
+- 新增消息管理器相关接口
+  - `addRemoteAndLocalConversationsMark`: 添加会话标记。
+  - `deleteRemoteAndLocalConversationsMark`: 删除会话标记。
+  - `fetchConversationsByOptions`: 获取指定条件的会话列表。
+  - `deleteAllMessageAndConversation`: 删除所有会话以及会话的消息。
+  - `pinMessage`: 置顶消息。
+  - `unpinMessage`: 取消置顶消息。
+  - `fetchPinnedMessages`: 获取指定会话的置顶消息。
+  - `getPinnedMessages`: 获取指定会话的本地的置顶消息。
+  - `getMessagePinInfo`: 获取消息置顶信息详情。
+- 新增消息属性
+  - `isContentReplaced`: 消息内容是否被修改。主要用户服务器端的消息审核。需要全局配置 `useReplacedMessageContents`。
+  - `getPinInfo`: 获取消息的置顶详情。
+- 作废接口说明
+  - `getMessagesWithKeyword`: `getMsgsWithKeyword` 替换该接口。
+  - `getMessages`: `getMsgs` 替换该接口。
+  - `getMessageWithTimestamp`: `getMsgWithTimestamp`替换该接口。
+  - `getMessagesWithMsgType`: `getConvMsgsWithMsgType`替换该接口。
+  - `searchMsgFromDB`: `getMsgsWithMsgType`替换该接口。
+
+## 1.3.1
+
+修复:
+
+- 接收不支持的多设备事件通知导致的程序崩溃。解决方法: 将不支持的类型包装为异常对象，通过监听器告知调用者。修改内容涉及联系人管理器、群组管理器、聊天室管理器。 相关类型 `ChatMultiDeviceEvent`。
+- 接收不支持的消息体类型导致程序崩溃。将不支持的类型包装为异常对象，通过监听器告知调用者。 相关类型 `ChatMessageType`。
+- `getConversation、getLatestMessage、getLatestReceivedMessage、getConversationUnreadCount、getConversationMessageCount、markMessageAsRead、markAllMessagesAsRead、updateConversationMessage、deleteMessage、deleteMessagesWithTimestamp、deleteConversationAllMessages、getMessagesWithMsgType、getMessages、getMessagesWithKeyword、getMessageWithTimestamp、setConversationExtension、removeMessagesFromServerWithMsgIds、removeMessagesFromServerWithTimestamp`、增加参数 `isChatThread` 默认值为 `false`.
+- `createSendMessage` 接口从私有声明变成公开声明。
+- `fetchMembersWithChatThreadFromServer` 修改返回值类型
+- `ChatTextMessageBody` 修改属性名称: 由 `targetLanguages` 修改为 `targetLanguageCodes`
+- 增加 `downloadAttachmentInCombine` 和 `downloadThumbnailInCombine` 接口。
+- 支持多 tag 模式的日志输出。
+
 ## 1.3.0
 
 新功能
@@ -14,7 +59,7 @@ _Chinese | [English](./CHANGELOG.md)_
 
 ## 1.2.2
 
-修复：
+修复:
 
 - 构造`ChatGroup`对象时，`permissionType`属性错误的问题。
 - 新增丢失的获取会话消息数目的方法 `getConversationMessageCount`。
@@ -23,7 +68,7 @@ _Chinese | [English](./CHANGELOG.md)_
 
 ## 1.2.1
 
-修复：
+修复:
 
 - 移除创建消息对象的参数 `secret`。该参数由服务器生成，在发送消息成功之后会获取到。
 
@@ -66,47 +111,47 @@ _Chinese | [English](./CHANGELOG.md)_
 
 更新的 API
 
-- `getLoggedInDevicesFromServer`：添加令牌支持。
-- `kickDevice`：添加令牌支持。
-- `kickAllDevices`：添加令牌支持。
+- `getLoggedInDevicesFromServer`: 添加令牌支持。
+- `kickDevice`: 添加令牌支持。
+- `kickAllDevices`: 添加令牌支持。
 
 添加了 API
 
-- `fetchConversationsFromServerWithCursor`：从服务器获取带分页的对话列表。
-- `fetchPinnedConversationsFromServerWithCursor`：通过分页从服务器获取固定对话列表。
-- `pinConversation`：设置是否固定对话。
-- `modifyMessageBody`：修改本地消息或服务器端消息。
-- `fetchCombineMessageDetail`：获取有关组合类型消息的信息。
-- `selectPushTemplate`：选择带有模板名称的推送模板进行离线推送。
-- `fetchSelectedPushTemplate`：获取选定的推送模板以进行离线推送。
+- `fetchConversationsFromServerWithCursor`: 从服务器获取带分页的对话列表。
+- `fetchPinnedConversationsFromServerWithCursor`: 通过分页从服务器获取固定对话列表。
+- `pinConversation`: 设置是否固定对话。
+- `modifyMessageBody`: 修改本地消息或服务器端消息。
+- `fetchCombineMessageDetail`: 获取有关组合类型消息的信息。
+- `selectPushTemplate`: 选择带有模板名称的推送模板进行离线推送。
+- `fetchSelectedPushTemplate`: 获取选定的推送模板以进行离线推送。
 
 已弃用的 API
 
-- fetchAllConversations：请改用`fetchConversationsFromServerWithCursor`。
+- fetchAllConversations: 请改用`fetchConversationsFromServerWithCursor`。
 
 更新数据对象
 
-- `ChatConversation`：添加 `isPinned` 和 `pinnedTime` 属性。
-- `ChatMessageType`：添加`COMBINE`类型消息正文。
-- `ChatMessage`：添加`receiverList`属性。
-- 创建发送消息：添加`secret`参数。
-- `ChatMessageBody`：添加 `lastModifyOperatorId`、`lastModifyTime` 和 `modifyCount` 属性。
-- `ChatOptions`：添加 `enableEmptyConversation`、`customDeviceName` 和 `customOSType` 属性。
-- `ChatMultiDeviceEvent`：添加 `CONVERSATION_PINNED`、`CONVERSATION_UNPINNED` 和 `CONVERSATION_DELETED`。
+- `ChatConversation`: 添加 `isPinned` 和 `pinnedTime` 属性。
+- `ChatMessageType`: 添加`COMBINE`类型消息正文。
+- `ChatMessage`: 添加`receiverList`属性。
+- 创建发送消息: 添加`secret`参数。
+- `ChatMessageBody`: 添加 `lastModifyOperatorId`、`lastModifyTime` 和 `modifyCount` 属性。
+- `ChatOptions`: 添加 `enableEmptyConversation`、`customDeviceName` 和 `customOSType` 属性。
+- `ChatMultiDeviceEvent`: 添加 `CONVERSATION_PINNED`、`CONVERSATION_UNPINNED` 和 `CONVERSATION_DELETED`。
 
 添加数据对象
 
-- `ChatCombineMessageBody`：添加组合消息正文对象。
+- `ChatCombineMessageBody`: 添加组合消息正文对象。
 
 更新监听器
 
-- `ChatConnectEventListener.onUserDidLoginFromOtherDevice`：添加`deviceName`参数。
-- `ChatConnectEventListener`：添加 `onUserDidRemoveFromServer`、`onUserDidForbidByServer`、`onUserDidChangePassword`、`onUserDidLoginTooManyDevice`、`onUserKickedByOtherDevice`、`onUserAuthenticationFailed` 事件通知。
-- `ChatConnectEventListener.onDisconnected`：删除代码参数。
-- `ChatMultiDeviceEventListener`：添加`onMessageRemoved`事件通知。
-- `ChatMultiDeviceEventListener`：添加`onConversationEvent`事件通知。
-- `ChatMessageEventListener`：添加`onMessageContentChanged`事件通知。
-- `ChatRoomEventListener.onRemoved`：添加`reason`参数。
+- `ChatConnectEventListener.onUserDidLoginFromOtherDevice`: 添加`deviceName`参数。
+- `ChatConnectEventListener`: 添加 `onUserDidRemoveFromServer`、`onUserDidForbidByServer`、`onUserDidChangePassword`、`onUserDidLoginTooManyDevice`、`onUserKickedByOtherDevice`、`onUserAuthenticationFailed` 事件通知。
+- `ChatConnectEventListener.onDisconnected`: 删除代码参数。
+- `ChatMultiDeviceEventListener`: 添加`onMessageRemoved`事件通知。
+- `ChatMultiDeviceEventListener`: 添加`onConversationEvent`事件通知。
+- `ChatMessageEventListener`: 添加`onMessageContentChanged`事件通知。
+- `ChatRoomEventListener.onRemoved`: 添加`reason`参数。
 
 ## 1.1.2
 
@@ -132,11 +177,11 @@ _Chinese | [English](./CHANGELOG.md)_
 问题修复
 
 - `renewAgoraToken`: 修复更新 token 接口。
-- 安卓平台：修复发送视频消息失败的问题。
+- 安卓平台: 修复发送视频消息失败的问题。
 
 ## 1.1.1
 
-修复：
+修复:
 
 - `fetchJoinedGroupsFromServer` 修复获取加入的公开群的扩展属性为空的问题。
 
@@ -144,7 +189,7 @@ _Chinese | [English](./CHANGELOG.md)_
 
 ## 1.1.0
 
-新增特性：
+新增特性:
 
 - 依赖的原生 SDK 升级为 4.0.0 版本 (`iOS` 和 `Android`)。
 - 新增实现聊天室属性自定义功能。
@@ -152,14 +197,14 @@ _Chinese | [English](./CHANGELOG.md)_
 - 新增 `ChatMessage#messagePriority` 实现聊天室消息优先级功能。
 - 新增 `removeMessagesFromServerWithTimestamp` 和 `removeMessagesFromServerWithMsgIds` 实现单向删除服务端历史消息。
 
-优化：
+优化:
 
 - 去除测试数据的敏感信息。
 - ChatGroupManager 类方法 `inviterUser` 更名为 `inviteUser`
 - ChatMultiDeviceEvent 枚举类型 `GROUP_ADD_USER_WHITE_LIST` 更名为 `GROUP_ADD_USER_ALLOW_LIST`
 - ChatMultiDeviceEvent 枚举类型 `GROUP_REMOVE_USER_WHITE_LIST` 更名为 `GROUP_REMOVE_USER_ALLOW_LIST`
 
-修复：
+修复:
 
 - 原生部分修复不安全代码。
 - 获取会话可能失败的问题。
@@ -169,11 +214,11 @@ _Chinese | [English](./CHANGELOG.md)_
 
 ## 1.0.11
 
-更新内容：
+更新内容:
 
 - 依赖的原生 SDK 升级为 3.9.9 版本 (`iOS` 和 `Android`)。
 
-修复内容：
+修复内容:
 
 - 修复极端情况下 SDK 崩溃的问题。
 - 其它修复内容，详见 3.9.8 和 3.9.9 版本(`iOS` 和 `Android`)。
@@ -182,7 +227,7 @@ _Chinese | [English](./CHANGELOG.md)_
 
 ## 1.0.10
 
-修复内容：
+修复内容:
 
 - android 平台进行 json 转换可能出现超限问题，返回结果的数据元素超过 50 个会抛出异常。涉及返回数组的接口。
 
@@ -190,16 +235,16 @@ _Chinese | [English](./CHANGELOG.md)_
 
 ## 1.0.9
 
-主要变更：
+主要变更:
 
 - 依赖的原生 SDK 升级为 3.9.7.1 版本 (仅升级 `iOS` 版本)。
 
-修复内容：
+修复内容:
 
 - 修复聊天室属性相关问题。
 - 更新群组监听器。
 
-更新内容：
+更新内容:
 
 - `ChatGroupEventListener` add `onDetailChanged` notification.
 - `ChatGroupEventListener` add `onStateChanged` notification.

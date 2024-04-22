@@ -108,7 +108,8 @@ Agora Chat 是一个高度可靠的全球交流平台，您的用户可以在其
 | {@link ChatManager.fetchHistoryMessages fetchHistoryMessages} | 分页获取指定会话的历史消息。 |
 | {@link ChatManager.fetchHistoryMessagesByOptions fetchHistoryMessagesByOptions} | 根据消息拉取参数配置从服务器分页获取指定会话的历史消息。 |
 | {@link ChatManager.searchMsgFromDB searchMsgFromDB} | 从本地数据库获取指定会话中包含特定关键字的消息。 |
-| {@link ChatManager.fetchGroupAcks fetchGroupAcks} | 从服务器分页获取群组消息已读回执详情。 |
+| {@link ChatManager.getMsgsWithKeyword getMsgsWithKeyword} | Retrieves messages with keywords from the local database. |
+| {@link ChatManager.fetchGroupAcks fetchGroupAcks} | Uses the pagination to get read receipts for group messages from the server. |
 | {@link ChatManager.removeConversationFromServer removeConversationFromServer} | 删除服务端的指定会话及其历史消息。 |
 | {@link ChatManager.getConversation getConversation} | 根据会话ID和会话类型获取会话。 |
 | {@link ChatManager.getAllConversations getAllConversations} | 获取本地数据库中所有会话。 |
@@ -130,7 +131,7 @@ Agora Chat 是一个高度可靠的全球交流平台，您的用户可以在其
 | {@link ChatManager.getMessages getMessages} | 从本地数据库中检索会话中指定数量的消息。 |
 | {@link ChatManager.getMsgs getMsgs} | 从本地数据库中检索会话中指定数量的消息。 |
 | {@link ChatManager.getMessagesWithKeyword getMessagesWithKeyword} | 获取指定用户在一定时间内的会话中发送的消息。 |
-| {@link ChatManager.getMsgsWithKeyword getMsgsWithKeyword} | 获取指定用户在一定时间内的会话中发送的消息。 |
+| {@link ChatManager.getConvMsgsWithKeyword getConvMsgsWithKeyword} | 获取指定用户在一定时间内的会话中发送的消息。 |
 | {@link ChatManager.getMessageWithTimestamp getMessageWithTimestamp} | 检索本地数据库中某个会话在一定时间内发送和接收的消息。 |
 | {@link ChatManager.getMsgWithTimestamp getMsgWithTimestamp} | 检索本地数据库中某个会话在一定时间内发送和接收的消息。 |
 | {@link ChatManager.translateMessage translateMessage} | 翻译短信。 |

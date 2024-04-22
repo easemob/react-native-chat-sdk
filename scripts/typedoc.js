@@ -7,22 +7,20 @@ const path = require('path');
 // Step 1: Delete the contents of all files in the specified directory "xxx"
 function deleteContent(dir, xxx) {
   console.log('test:deleteContent:', dir, xxx);
-  fs.readdir(dir, (err, files) => {
-    if (err) throw err;
-    files.forEach((file) => {
-      const filePath = path.join(dir, file);
-      fs.stat(filePath, (_err, stat) => {
-        if (_err) throw _err;
-        if (stat.isFile()) {
-          let content = fs.readFileSync(filePath, 'utf8');
-          content = content.replace(xxx, '');
-          fs.writeFileSync(filePath, content);
-        } else if (stat.isDirectory()) {
-          if (filePath.includes('assets') === false) {
-            deleteContent(filePath, xxx);
-          }
+  const files = fs.readdirSync(dir);
+  files.forEach((file) => {
+    const filePath = path.join(dir, file);
+    fs.stat(filePath, (_err, stat) => {
+      if (_err) throw _err;
+      if (stat.isFile()) {
+        let content = fs.readFileSync(filePath, 'utf8');
+        content = content.replace(xxx, '');
+        fs.writeFileSync(filePath, content);
+      } else if (stat.isDirectory()) {
+        if (filePath.includes('assets') === false) {
+          deleteContent(filePath, xxx);
         }
-      });
+      }
     });
   });
 }
@@ -30,22 +28,20 @@ function deleteContent(dir, xxx) {
 // Step 2: Replace all file content "aaa" with "bbb"
 function replaceContent(dir, aaa, bbb) {
   console.log('test:replaceContent:', dir, aaa, bbb);
-  fs.readdir(dir, (err, files) => {
-    if (err) throw err;
-    files.forEach((file) => {
-      const filePath = path.join(dir, file);
-      fs.stat(filePath, (_err, stat) => {
-        if (_err) throw _err;
-        if (stat.isFile()) {
-          let content = fs.readFileSync(filePath, 'utf8');
-          content = content.replace(aaa, bbb);
-          fs.writeFileSync(filePath, content);
-        } else if (stat.isDirectory()) {
-          if (filePath.includes('assets') === false) {
-            replaceContent(filePath, aaa, bbb);
-          }
+  const files = fs.readdirSync(dir);
+  files.forEach((file) => {
+    const filePath = path.join(dir, file);
+    fs.stat(filePath, (_err, stat) => {
+      if (_err) throw _err;
+      if (stat.isFile()) {
+        let content = fs.readFileSync(filePath, 'utf8');
+        content = content.replace(aaa, bbb);
+        fs.writeFileSync(filePath, content);
+      } else if (stat.isDirectory()) {
+        if (filePath.includes('assets') === false) {
+          replaceContent(filePath, aaa, bbb);
         }
-      });
+      }
     });
   });
 }
