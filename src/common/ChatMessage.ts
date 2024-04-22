@@ -322,7 +322,7 @@ export interface ChatMessageStatusCallback {
    *
    * @param progress 消息上传或下载的进度值，取值范围为 [0,100]。
    */
-  onProgress(localMsgId: string, progress: number): void;
+  onProgress?(localMsgId: string, progress: number): void;
 
   /**
    * 消息错误回调。
