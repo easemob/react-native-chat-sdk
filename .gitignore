@@ -693,3 +693,4 @@ native_src/output/**
 
 env.ts
 version.ts
+*.tgz
