@@ -1119,7 +1119,7 @@ export class ChatMessage {
   /**
    * Gets the count of read receipts of a group message.
    */
-  public get groupReadCount(): Promise<number> {
+  public get groupReadCount(): Promise<number | undefined> {
     return ChatClient.getInstance().chatManager.groupAckCount(this.msgId);
   }
 

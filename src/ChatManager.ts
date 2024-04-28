@@ -2545,9 +2545,11 @@ export class ChatManager extends BaseManager {
     });
     ChatManager.checkErrorFromResult(r);
     const ret: Array<ChatMessageReaction> = [];
-    Object.entries(r?.[MTgetReactionList]).forEach((value: [string, any]) => {
-      ret.push(new ChatMessageReaction(value[1]));
-    });
+    if (r?.[MTgetReactionList]) {
+      Object.entries(r?.[MTgetReactionList]).forEach((value: [string, any]) => {
+        ret.push(new ChatMessageReaction(value[1]));
+      });
+    }
     return ret;
   }
 
@@ -2559,7 +2561,7 @@ export class ChatManager extends BaseManager {
    *
    * @throws A description of the exception. See {@link ChatError}.
    */
-  public async groupAckCount(msgId: string): Promise<number> {
+  public async groupAckCount(msgId: string): Promise<number | undefined> {
     chatlog.log(`${ChatManager.TAG}: groupAckCount: `, msgId);
     let r: any = await Native._callMethod(MTgroupAckCount, {
       [MTgroupAckCount]: {
@@ -2567,7 +2569,10 @@ export class ChatManager extends BaseManager {
       },
     });
     ChatManager.checkErrorFromResult(r);
-    return r?.[MTgroupAckCount] as number;
+    if (r?.[MTgroupAckCount] !== undefined) {
+      return r?.[MTgroupAckCount] as number;
+    }
+    return undefined;
   }
 
   /**
@@ -3609,13 +3614,8 @@ export class ChatManager extends BaseManager {
         msgId: messageId,
       },
     });
-    try {
-      ChatManager.checkErrorFromResult(r);
-    } catch (error) {
-      chatlog.log(`${ChatManager.TAG}: getMessagePinInfo:`, error);
-      return undefined;
-    }
-    if (r[MTgetPinInfo]) {
+    ChatManager.checkErrorFromResult(r);
+    if (r?.[MTgetPinInfo]) {
       return new ChatMessagePinInfo(r[MTgetPinInfo]);
     }
     return undefined;

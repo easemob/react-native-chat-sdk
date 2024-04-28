@@ -1,5 +1,6 @@
 import {
   ChatConversationFetchOptions,
+  ChatConversationMarkType,
   ChatConversationType,
   ChatMessageChatType,
   ChatMessageType,
@@ -211,7 +212,7 @@ export const metaDataList = new Map<string, ApiParams>([
         {
           paramName: 'msgId',
           paramType: 'string',
-          paramDefaultValue: '1141613476800632280',
+          paramDefaultValue: '1274466998939555292',
         },
       ],
     },
@@ -1048,7 +1049,7 @@ export const metaDataList = new Map<string, ApiParams>([
         {
           paramName: 'msgId',
           paramType: 'string',
-          paramDefaultValue: '1017220072558561848',
+          paramDefaultValue: '1274466998939555292',
         },
       ],
     },
@@ -1061,7 +1062,7 @@ export const metaDataList = new Map<string, ApiParams>([
         {
           paramName: 'msgId',
           paramType: 'string',
-          paramDefaultValue: '10172200725585618481',
+          paramDefaultValue: '1274466998939555292',
         },
       ],
     },
@@ -1656,7 +1657,7 @@ export const metaDataList = new Map<string, ApiParams>([
         {
           paramName: 'convIds',
           paramType: 'json',
-          paramDefaultValue: ['1171296473862636988'],
+          paramDefaultValue: ['246309662556169'],
         },
         {
           paramName: 'mark',
@@ -1674,7 +1675,7 @@ export const metaDataList = new Map<string, ApiParams>([
         {
           paramName: 'convIds',
           paramType: 'json',
-          paramDefaultValue: ['1171296473862636988'],
+          paramDefaultValue: ['246309662556169'],
         },
         {
           paramName: 'mark',
@@ -1692,7 +1693,9 @@ export const metaDataList = new Map<string, ApiParams>([
         {
           paramName: 'option',
           paramType: 'json',
-          paramDefaultValue: ChatConversationFetchOptions.default(),
+          paramDefaultValue: ChatConversationFetchOptions.withMark(
+            ChatConversationMarkType.Type0
+          ),
         },
       ],
     },
@@ -1705,7 +1708,7 @@ export const metaDataList = new Map<string, ApiParams>([
         {
           paramName: 'clearServerData',
           paramType: 'boolean',
-          paramDefaultValue: false,
+          paramDefaultValue: true,
         },
       ],
     },
@@ -1718,7 +1721,7 @@ export const metaDataList = new Map<string, ApiParams>([
         {
           paramName: 'messageId',
           paramType: 'string',
-          paramDefaultValue: '123',
+          paramDefaultValue: '1274466998939555292',
         },
       ],
     },
@@ -1731,7 +1734,7 @@ export const metaDataList = new Map<string, ApiParams>([
         {
           paramName: 'messageId',
           paramType: 'string',
-          paramDefaultValue: '123',
+          paramDefaultValue: '1274466998939555292',
         },
       ],
     },
@@ -1744,12 +1747,12 @@ export const metaDataList = new Map<string, ApiParams>([
         {
           paramName: 'convId',
           paramType: 'string',
-          paramDefaultValue: '123',
+          paramDefaultValue: '246309662556169',
         },
         {
           paramName: 'convType',
           paramType: 'number',
-          paramDefaultValue: 0,
+          paramDefaultValue: 1,
         },
         {
           paramName: 'isChatThread',
@@ -1768,12 +1771,12 @@ export const metaDataList = new Map<string, ApiParams>([
         {
           paramName: 'convId',
           paramType: 'string',
-          paramDefaultValue: '123',
+          paramDefaultValue: '246309662556169',
         },
         {
           paramName: 'convType',
           paramType: 'number',
-          paramDefaultValue: 0,
+          paramDefaultValue: 1,
         },
         {
           paramName: 'isChatThread',
@@ -1792,7 +1795,7 @@ export const metaDataList = new Map<string, ApiParams>([
         {
           paramName: 'messageId',
           paramType: 'string',
-          paramDefaultValue: '123',
+          paramDefaultValue: '1274466998939555292',
         },
       ],
     },
