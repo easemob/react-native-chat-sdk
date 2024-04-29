@@ -147,15 +147,15 @@ export enum ChatRoomMessagePriority {
 }
 
 /**
- * 消息置顶选项
+ * 消息置顶和取消置顶操作。
  */
 export enum ChatMessagePinOperation {
   /**
-   * 置顶状态
+   * 置顶。
    */
   Pin,
   /**
-   * 取消置顶状态
+   * 取消置顶。
    */
   Unpin,
 }
@@ -165,15 +165,15 @@ export enum ChatMessagePinOperation {
  */
 export enum ChatMessageSearchScope {
   /**
-   * 搜索消息内容
+   * 按消息内容搜索。
    */
   Content,
   /**
-   * 搜索消息属性
+   * 按索消息扩展属性搜索。
    */
   Attribute,
   /**
-   * 以上两种全部搜索。
+   * 按消息内容和扩展属性搜索。
    */
   All,
 }
@@ -486,9 +486,9 @@ export class ChatMessage {
    */
   isBroadcast: boolean;
   /**
-   * Whether the message content is replaced.
+   * 消息内容是否被替换过。
    *
-   * It is valid after `ChatOptions.useReplacedMessageContents` is enabled.
+   * 该属性仅在 `ChatOptions.useReplacedMessageContents` 开启时有效。
    */
   isContentReplaced: boolean;
 

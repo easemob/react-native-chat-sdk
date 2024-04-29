@@ -43,9 +43,12 @@ export class ChatOptions {
    */
   autoAcceptGroupInvitation: boolean;
   /**
-   * 是否需要接收方发送已读回执。这个设置对于 {@link ChatManager.sendConversationReadAck} 无效。
+   * 是否需要接收方阅读消息后发送已读回执。
    * - （默认） `true`：是；
    * - `false`：否。
+   *
+   * 该设置对于 {@link ChatManager.sendConversationReadAck} 无效。
+   *
    */
   requireAck: boolean;
   /**
@@ -141,7 +144,9 @@ export class ChatOptions {
    */
   enableTLS: boolean;
   /**
-   * 接收消息通知是否包含发送消息。
+   * 接收消息通知是否包含发送成功的消息。
+   * - `true`：是。接收消息通知中包含发送成功的消息。
+   * - （默认）`false`：否。接收消息通知中只包含接收的消息。
    */
   messagesReceiveCallbackIncludeSend: boolean;
   /**
@@ -179,9 +184,9 @@ export class ChatOptions {
   customOSType?: number;
 
   /**
-   * 服务器是否在文本审核期间向发送者返回文本消息并替换内容。
-   *
-   * 默认为假。
+   * 设置当发送的文本消息的内容被文本审核（Moderation）服务替换时，是否需要返回给发送方。
+   *  - true：将内容替换后的消息返回给发送方。
+   *  - （默认）false：将原消息返回给发送方。
    */
   useReplacedMessageContents: boolean;
 

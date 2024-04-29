@@ -1631,7 +1631,7 @@ export class ChatGroupManager extends BaseManager {
   }
 
   /**
-   * 添加群组监听器
+   * 添加群组监听器。
    *
    * @param listener 将要添加的群组监听器。
    */

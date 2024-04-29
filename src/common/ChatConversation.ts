@@ -41,7 +41,8 @@ export enum ChatConversationType {
 /**
  * 每种类型的会话标记与其实际含义之间的映射由开发者维护。
  *
- * 相比会话扩展字段，可以支持搜索。
+ * 与会话扩展字段不同，会话标记支持搜索。
+ *
  */
 export enum ChatConversationMarkType {
   Type0,
@@ -119,7 +120,7 @@ export class ChatConversation {
    */
   convType: ChatConversationType;
   /**
-   * 是否是子区会话。
+   * 是否是子区会话：
    * 
    * - `true`: 是；
    * - `false`: 否。
@@ -459,7 +460,7 @@ export class ChatConversation {
   /**
    * 从本地数据库中检索会话中一定数量的消息。
    *
-   * **笔记**
+   * **注意**
    *
    * 获取的消息也会加入到内存中存储的会话的现有消息中。
    *
@@ -533,11 +534,11 @@ export class ChatConversation {
    * - `ChatSearchDirection.Down`：按照消息中包含的 Unix 时间戳 ({@link ChatOptions.sortMessageByServerTime}) 的升序检索消息。
    * @param timestamp 用于查询的消息中的起始 Unix 时间戳。 单位是毫秒。 设置该参数后，SDK按照消息搜索方向，从指定的消息开始检索消息。
    * 如果将此参数设置为负值，则 SDK 从当前时间开始，按照消息中包含的 Unix 时间戳 ({@link ChatOptions.sortMessageByServerTime}) 的降序顺序检索消息。
-   * @param count 每次检索的最大消息数。 取值范围为[1,400]。
-   * @param sender 用于检索的用户 ID 或组 ID。 通常，它是会话 ID。
-   * @returns 检索到的消息列表（不包括具有起始时间戳的消息）。 如果没有获取到消息，则返回空列表。
+   * @param count 每次检索的最大消息数。取值范围为[1,400]。
+   * @param sender 用于检索的用户 ID 或组 ID。
+   * @returns 检索到的消息列表（不包括具有起始时间戳的消息）。如果没有获取到消息，则返回空列表。
    *
-   * @throws 异常的描述。 请参阅{@link ChatError}。
+   * @throws 异常的描述。请参阅{@link ChatError}。
    *
    * @deprecated 2024-04-17 此方法已弃用。 请改用 {@link getMsgsWithKeyword}。
    */
@@ -561,26 +562,25 @@ export class ChatConversation {
   }
 
   /**
-   * Gets messages that the specified user sends in a conversation in a certain period.
+   * 获取指定用户在一定时间段内在会话中发送的消息。
    *
-   * This method gets data from the local database.
+   * 该方法搜索本地数据库中的消息。
    *
-   * **note** If the conversation object does not exist, this method will create it.
+   * **注意** 如果会话对象不存在，此方法将创建它。
    *
    * @params -
-   * - keywords The keywords for query.
-   * - direction The message search direction. See {@link ChatSearchDirection}.
-   * - (Default) `ChatSearchDirection.UP`: Messages are retrieved in the descending order of the Unix timestamp included in them.
-   * - `ChatSearchDirection.DOWN`: Messages are retrieved in the ascending order of the Unix timestamp included in them.
-   * - timestamp The starting Unix timestamp in the message for query. The unit is millisecond. After this parameter is set, the SDK retrieves messages, starting from the specified one, according to the message search direction.
-   * - searchScope The message search scope. See {@link ChatMessageSearchScope}.
-   *                  If you set this parameter as a negative value, the SDK retrieves messages, starting from the current time, in the descending order of the timestamp included in them.
-   * - count The maximum number of messages to retrieve each time. The value range is [1,400].
-   * - sender The user ID or group ID for retrieval. Usually, it is the conversation ID.
+   * - keywords 查询的关键字。
+   * - direction 消息搜索方向。请参阅 {@link ChatSearchDirection}。
+   * - (Default) `ChatSearchDirection.UP`：按照消息中包含的 Unix 时间戳 ({@link ChatOptions.sortMessageByServerTime}) 的降序顺序检索消息。
+   * - `ChatSearchDirection.DOWN`: 按照消息中包含的 Unix 时间戳 ({@link ChatOptions.sortMessageByServerTime}) 的升序检索消息。
+   * - timestamp 用于查询的消息中的起始 Unix 时间戳。 单位是毫秒。 设置该参数后，SDK按照消息搜索方向，从指定的消息开始检索消息。
+   * - searchScope 搜索范围，请参阅 {@link ChatMessageSearchScope}。
+   * - count 每次检索的最大消息数。 取值范围为[1,400]。
+   * - sender 用于检索的用户 ID 或组 ID。
    *
-   * @returns The list of retrieved messages (excluding the one with the starting timestamp). If no message is obtained, an empty list is returned.
+   * @returns 检索到的消息列表（不包括具有起始时间戳的消息）。 如果没有获取到消息，则返回空列表。
    *
-   * @throws A description of the exception. See {@link ChatError}.
+   * @throws 异常的描述。请参阅 {@link ChatError}。
    */
   public async getMsgsWithKeyword(params: {
     keywords: string;
@@ -698,9 +698,9 @@ export class ChatConversation {
   }
 
   /**
-   * 从本地获取会话中的顶置消息。
+   * 从本地获取会话中的置顶消息。
    *
-   * @returns 顶置消息列表。 如果没有获取到消息，则返回空列表。
+   * @returns 置顶消息列表。如果没有获取到消息，则返回空列表。
    *
    * @throws 异常的描述。 请参阅{@link ChatError}。
    */
@@ -733,19 +733,19 @@ export class ChatConversation {
  */
 export class ChatConversationFetchOptions {
   /**
-   * 会话的页面大小，当使用mark时，取值范围为[1,10]，默认为10。否则，取值范围为[1,50]。
+   * 每页查询的会话数量。查询标记的会话时，取值范围为 [1,10]，默认为 10。否则，取值范围为[1,50]。
    */
   pageSize?: number;
   /**
-   * 会话的游标。
+   * 查询游标，即会话查询的起始位置。
    */
   cursor?: string;
   /**
-   * 是否已经置顶。
+   * 是否获取置顶的会话。
    */
   pinned?: boolean;
   /**
-   * 是否已经标记。
+   * 是否获取添加标记的会话。
    */
   mark?: ChatConversationMarkType;
   constructor(params: {

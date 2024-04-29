@@ -648,12 +648,12 @@ export interface ChatMessageEventListener {
   ): void;
 
   /**
-   * 消息置顶状态变更。
+   * 收到消息置顶状态变更回调。
    * @params params -
-   * - Param [messageId] 消息ID。
-   * - Param [convId] 会话ID。
-   * - Param [pinOperation] 置顶操作类型。默认1.
-   * - Param [pinInfo] 置顶详情。 详见 {@link ChatMessagePinInfo}.
+   * - Param [messageId] 置顶状态变更的消息 ID。
+   * - Param [convId] 消息所在会话 ID。
+   * - Param [pinOperation] 置顶操作类型。
+   * - Param [pinInfo] 置顶或取消置顶操作信息，包括操作时间，操作者的用户 ID。 详见 {@link ChatMessagePinInfo}.
    */
   onMessagePinChanged?(params: {
     messageId: string;
