@@ -127,7 +127,7 @@ export const metaDataList = new Map<string, ApiParams>([
           paramDefaultValue: 'This is a test group',
         },
         {
-          paramName: 'allMembers',
+          paramName: 'inviteMembers',
           paramType: 'json',
           paramDefaultValue: [
             datasheet.accounts[0]!.id,
@@ -137,7 +137,7 @@ export const metaDataList = new Map<string, ApiParams>([
           ],
         },
         {
-          paramName: 'reason',
+          paramName: 'inviteReason',
           paramType: 'string',
           paramDefaultValue: 'hello',
         },

@@ -1458,7 +1458,7 @@ export const metaDataList = new Map<string, ApiParams>([
         {
           paramName: 'convType',
           paramType: 'number',
-          paramDefaultValue: 0,
+          paramDefaultValue: 2,
         },
         {
           paramName: 'cursor',
@@ -1468,16 +1468,16 @@ export const metaDataList = new Map<string, ApiParams>([
         {
           paramName: 'pageSize',
           paramType: 'number',
-          paramDefaultValue: 2,
+          paramDefaultValue: 20,
         },
         {
           paramName: 'options',
           paramType: 'json',
           paramDefaultValue: {
-            from: datasheet.accounts[2]!.id,
-            msgTypes: [ChatMessageType.FILE],
-            startTs: 0,
-            endTs: 0,
+            // from: datasheet.accounts[2]!.id,
+            // msgTypes: [ChatMessageType.FILE],
+            startTs: -1,
+            endTs: -1,
             direction: ChatSearchDirection.UP,
             needSave: false,
           },

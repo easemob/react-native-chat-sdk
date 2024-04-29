@@ -104,6 +104,7 @@ export class AppKeyScreen extends Component<{ navigation: any }, State, any> {
           enableEmptyConversation: false,
           requireAck: false,
           requireDeliveryAck: false,
+          autoAcceptGroupInvitation: true,
           // pushConfig: pushConfig,
         })
       )

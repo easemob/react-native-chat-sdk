@@ -1,6 +1,6 @@
 import React, { ReactNode } from 'react';
 import { Pressable, Text, View } from 'react-native';
-import type {
+import {
   ChatConversationFetchOptions,
   ChatFetchMessageOptions,
   ChatMessagePinInfo,
@@ -574,7 +574,7 @@ export class ChatManagerLeafScreen extends LeafScreenBase<StateChatMessage> {
         pinInfo: ChatMessagePinInfo;
       }): void {
         this.that.setState({
-          recvResult: `onMessageContentChanged: ${params}`,
+          recvResult: `onMessageContentChanged: ${JSON.stringify(params)}`,
         });
       }
     })(this);
