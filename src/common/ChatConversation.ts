@@ -50,7 +50,7 @@ export enum ChatConversationType {
 /**
  * The mapping between each type of conversation mark and their actual meanings is maintained by the developer.
  *
- * Compared to conversation extension fields, search can be supported.
+ * Unlike conversation extension fields, conversation marks are searchable.
  */
 export enum ChatConversationMarkType {
   Type0,
@@ -155,7 +155,7 @@ export class ChatConversation {
   pinnedTime?: number;
 
   /**
-   * The conversation remarks.
+   * The conversation marks.
    */
   marks?: ChatConversationMarkType[];
 
@@ -399,7 +399,7 @@ export class ChatConversation {
   }
 
   /**
-   * Retrieves messages of a certain type that a specified user sends in a conversation.
+   * Gets messages of a certain type that a specified user sends in a conversation.
    *
    * @param msgType The message type. See {@link ChatMessageType}.
    * @param direction The message search direction. See {@link ChatSearchDirection}.
@@ -435,7 +435,7 @@ export class ChatConversation {
   }
 
   /**
-   * Retrieves messages of a certain type in the conversation from the local database.
+   * Gets messages of a certain type in the conversation from the local database.
    *
    * **note** If the conversation object does not exist, this method will create it.
    *
@@ -469,7 +469,7 @@ export class ChatConversation {
   }
 
   /**
-   * Retrieves messages of a certain quantity in a conversation from the local database.
+   * Gets messages of a certain quantity in a conversation from the local database.
    *
    * **Note**
    *
@@ -505,7 +505,7 @@ export class ChatConversation {
   }
 
   /**
-   * Retrieves messages of a specified quantity in a conversation from the local database.
+   * Gets messages of a specified quantity in a conversation from the local database.
    *
    * The retrieved messages will also be put in the conversation in the memory according to the timestamp included in them.
    *
@@ -537,7 +537,7 @@ export class ChatConversation {
   }
 
   /**
-   * Retrieves messages with keywords in a conversation in the local database.
+   * Gets messages with keywords in a conversation in the local database.
    *
    * @param keywords The keywords for query.
    * @param direction The message search direction. See {@link ChatSearchDirection}.
@@ -643,7 +643,7 @@ export class ChatConversation {
   }
 
   /**
-   * Retrieves messages that are sent and received in a certain period in a conversation in the local database.
+   * Gets messages that are sent and received in a certain period in a conversation in the local database.
    *
    * **note** If the conversation object does not exist, this method will create it.
    *
@@ -710,7 +710,7 @@ export class ChatConversation {
   }
 
   /**
-   * Get the pinned messages in the conversation from local.
+   * Gets the pinned messages in the conversation from the local database.
    *
    * @returns The list of pinned messages. If no message is obtained, an empty list is returned.
    *
@@ -725,7 +725,7 @@ export class ChatConversation {
   }
 
   /**
-   * Get the pinned messages in the conversation from server.
+   * Gets the pinned messages in the conversation from the server.
    *
    * @returns The list of pinned messages. If no message is obtained, an empty list is returned.
    *
@@ -745,19 +745,25 @@ export class ChatConversation {
  */
 export class ChatConversationFetchOptions {
   /**
-   * The page size of the conversation, when using mark, the value range is [1,10], default is 10. Otherwise, the value range is [1,50].
+   * The number of conversations to retrieve.
+   *
+   * If you retrieve marked conversations, the value range is [1,10], with 10 as the default. Otherwise, the value range is [1,50].
    */
   pageSize?: number;
   /**
-   * The cursor of the conversation.
+   * The cursor to specify where to start retrieving conversations.
    */
   cursor?: string;
   /**
-   * Whether to get pinned conversation.
+   * Whether to get pinned conversations.
+   * - `true`: Yes.
+   * - `false`: No.
    */
   pinned?: boolean;
   /**
-   * Whether to get pinned conversation.
+   * Whether to get marked conversations.
+   * - `true`: Yes.
+   * - `false`: No.
    */
   mark?: ChatConversationMarkType;
   constructor(params: {

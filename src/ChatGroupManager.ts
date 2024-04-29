@@ -1621,9 +1621,9 @@ export class ChatGroupManager extends BaseManager {
   }
 
   /**
-   * Get joined group list count.
+   * Gets the number of groups joined by the current user.
    *
-   * @returns the joined group list count.
+   * @returns The list of joined groups of the current user.
    *
    * @throws A description of the exception. See {@link ChatError}.
    */

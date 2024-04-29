@@ -1235,7 +1235,7 @@ export class ChatManager extends BaseManager {
    * @param createIfNeed Whether to create a conversation if the specified conversation is not found:
    * - (Default) `true`: Yes.
    * - `false`: No.
-   * @param isChatThread Whether the conversation is a chat thread.
+   * @param isChatThread Whether the conversation is a thread conversation.
    * - (Default) `false`: No.
    * - `true`: Yes.
    *
@@ -1361,7 +1361,7 @@ export class ChatManager extends BaseManager {
    *
    * @param convId The conversation ID.
    * @param convType The conversation type. See {@link ChatConversationType}.
-   * @param isChatThread Whether the conversation is a chat thread.
+   * @param isChatThread Whether the conversation is a thread conversation.
    *
    * @returns The message instance. The SDK returns `undefined` if the message does not exist.
    *
@@ -1400,7 +1400,7 @@ export class ChatManager extends BaseManager {
    *
    * @param convId The conversation ID.
    * @param convType The conversation type. See {@link ChatConversationType}.
-   * @param isChatThread Whether the conversation is a chat thread.
+   * @param isChatThread Whether the conversation is a thread conversation.
    *
    * @returns The message instance. The SDK returns `undefined` if the message does not exist.
    *
@@ -1439,7 +1439,7 @@ export class ChatManager extends BaseManager {
    *
    * @param convId The conversation ID.
    * @param convType The conversation type. See {@link ChatConversationType}.
-   * @param isChatThread Whether the conversation is a chat thread.
+   * @param isChatThread Whether the conversation is a thread conversation.
    *
    * @returns The unread message count.
    *
@@ -1475,7 +1475,7 @@ export class ChatManager extends BaseManager {
    *
    * @param convId The conversation ID.
    * @param convType The conversation type. See {@link ChatConversationType}.
-   * @param isChatThread Whether the conversation is a chat thread.
+   * @param isChatThread Whether the conversation is a thread conversation.
    *
    * @returns The message count.
    *getMessageCount
@@ -1511,7 +1511,7 @@ export class ChatManager extends BaseManager {
    *
    * @param convId The conversation ID.
    * @param convType The conversation type. See {@link ChatConversationType}.
-   * @param isChatThread Whether the conversation is a chat thread.
+   * @param isChatThread Whether the conversation is a thread conversation.
    *
    * @param msgId The message ID.
    *
@@ -1548,7 +1548,7 @@ export class ChatManager extends BaseManager {
    *
    * @param convId The conversation ID.
    * @param convType The conversation type. See {@link ChatConversationType}.
-   * @param isChatThread Whether the conversation is a chat thread.
+   * @param isChatThread Whether the conversation is a thread conversation.
    *
    * @throws A description of the exception. See {@link ChatError}.
    */
@@ -1582,7 +1582,7 @@ export class ChatManager extends BaseManager {
    *
    * @param convId The conversation ID.
    * @param convType The conversation type. See {@link ChatConversationType}.
-   * @param isChatThread Whether the conversation is a chat thread.
+   * @param isChatThread Whether the conversation is a thread conversation.
    *
    * @param msg The ID of the message to update.
    *
@@ -1619,7 +1619,7 @@ export class ChatManager extends BaseManager {
    *
    * @param convId The conversation ID.
    * @param convType The conversation type. See {@link ChatConversationType}.
-   * @param isChatThread Whether the conversation is a chat thread.
+   * @param isChatThread Whether the conversation is a thread conversation.
    *
    * @param msgId The ID of the message to delete.
    *
@@ -1652,7 +1652,7 @@ export class ChatManager extends BaseManager {
    *
    * @param convId The conversation ID.
    * @param convType The conversation type. See {@link ChatConversationType}.
-   * @param isChatThread Whether the conversation is a chat thread.
+   * @param isChatThread Whether the conversation is a thread conversation.
    *
    * @params params
    * - startTs: The starting UNIX timestamp for message deletion. The unit is millisecond.
@@ -1691,7 +1691,7 @@ export class ChatManager extends BaseManager {
    *
    * @param convId The conversation ID.
    * @param convType The conversation type. See {@link ChatConversationType}.
-   * @param isChatThread Whether the conversation is a chat thread.
+   * @param isChatThread Whether the conversation is a thread conversation.
    *
    * @throws A description of the exception. See {@link ChatError}.
    */
@@ -1751,7 +1751,7 @@ export class ChatManager extends BaseManager {
    *                  If you set this parameter as a negative value, the SDK retrieves messages, starting from the current time, in the descending order of the timestamp included in them.
    * @param count The maximum number of messages to retrieve each time. The value range is [1,400].
    * @param sender The user ID or group ID for retrieval. Usually, it is the conversation ID.
-   * @param isChatThread Whether the conversation is a chat thread.
+   * @param isChatThread Whether the conversation is a thread conversation.
    *
    * @returns The list of retrieved messages (excluding the one with the starting timestamp). If no message is obtained, an empty list is returned.
    *
@@ -1819,7 +1819,7 @@ export class ChatManager extends BaseManager {
    *                  If you set this parameter as a negative value, the SDK retrieves messages, starting from the current time, in the descending order of the timestamp included in them.
    * @param count The maximum number of messages to retrieve each time. The value range is [1,400].
    * @param sender The user ID or group ID for retrieval. Usually, it is the conversation ID.
-   * @param isChatThread Whether the conversation is a chat thread.
+   * @param isChatThread Whether the conversation is a thread conversation.
    *
    * @returns The list of retrieved messages (excluding the one with the starting timestamp). If no message is obtained, an empty list is returned.
    *
@@ -1894,7 +1894,7 @@ export class ChatManager extends BaseManager {
    * - (Default) `ChatSearchDirection.UP`: Messages are retrieved in the descending order of the Unix timestamp included in them.
    * - `ChatSearchDirection.DOWN`: Messages are retrieved in the ascending order of the Unix timestamp included in them.
    * @param loadCount The maximum number of messages to retrieve each time. The value range is [1,50].
-   * @param isChatThread Whether the conversation is a chat thread.
+   * @param isChatThread Whether the conversation is a thread conversation.
    *
    * @returns The list of retrieved messages (excluding the one with the starting timestamp). If no message is obtained, an empty list is returned.
    *
@@ -1956,7 +1956,7 @@ export class ChatManager extends BaseManager {
    * - (Default) `ChatSearchDirection.UP`: Messages are retrieved in the descending order of the Unix timestamp included in them.
    * - `ChatSearchDirection.DOWN`: Messages are retrieved in the ascending order of the Unix timestamp included in them.
    * @param loadCount The maximum number of messages to retrieve each time. The value range is [1,50].
-   * @param isChatThread Whether the conversation is a chat thread.
+   * @param isChatThread Whether the conversation is a thread conversation.
    *
    * @returns The list of retrieved messages (excluding the one with the starting timestamp). If no message is obtained, an empty list is returned.
    *
@@ -2025,7 +2025,7 @@ export class ChatManager extends BaseManager {
    *                  If you set this parameter as a negative value, the SDK retrieves messages, starting from the current time, in the descending order of the timestamp included in them.
    * @param count The maximum number of messages to retrieve each time. The value range is [1,400].
    * @param sender The user ID or group ID for retrieval. Usually, it is the conversation ID.
-   * @param isChatThread Whether the conversation is a chat thread.
+   * @param isChatThread Whether the conversation is a thread conversation.
    *
    * @returns The list of retrieved messages (excluding the one with the starting timestamp). If no message is obtained, an empty list is returned.
    *
@@ -2096,7 +2096,7 @@ export class ChatManager extends BaseManager {
    *                  If you set this parameter as a negative value, the SDK retrieves messages, starting from the current time, in the descending order of the timestamp included in them.
    * - count The maximum number of messages to retrieve each time. The value range is [1,400].
    * - sender The user ID or group ID for retrieval. Usually, it is the conversation ID.
-   * - isChatThread Whether the conversation is a chat thread.
+   * - isChatThread Whether the conversation is a thread conversation.
    *
    * @returns The list of retrieved messages (excluding the one with the starting timestamp). If no message is obtained, an empty list is returned.
    *
@@ -2173,7 +2173,7 @@ export class ChatManager extends BaseManager {
    * - (Default) `ChatSearchDirection.UP`: Messages are retrieved in the descending order of the Unix timestamp included in them.
    * - `ChatSearchDirection.DOWN`: Messages are retrieved in the ascending order of the Unix timestamp included in them.
    * @param count The maximum number of messages to retrieve each time. The value range is [1,400].
-   * @param isChatThread Whether the conversation is a chat thread.
+   * @param isChatThread Whether the conversation is a thread conversation.
    *
    * @returns The list of retrieved messages (excluding with the ones with the starting or ending timestamp). If no message is obtained, an empty list is returned.
    *
@@ -2236,7 +2236,7 @@ export class ChatManager extends BaseManager {
    * - (Default) `ChatSearchDirection.UP`: Messages are retrieved in the descending order of the Unix timestamp included in them.
    * - `ChatSearchDirection.DOWN`: Messages are retrieved in the ascending order of the Unix timestamp included in them.
    * @param count The maximum number of messages to retrieve each time. The value range is [1,400].
-   * @param isChatThread Whether the conversation is a chat thread.
+   * @param isChatThread Whether the conversation is a thread conversation.
    *
    * @returns The list of retrieved messages (excluding with the ones with the starting or ending timestamp). If no message is obtained, an empty list is returned.
    *
@@ -2347,7 +2347,7 @@ export class ChatManager extends BaseManager {
    *
    * @param convId The conversation ID.
    * @param convType The conversation type. See {@link ChatConversationType}.
-   * @param isChatThread Whether the conversation is a chat thread.
+   * @param isChatThread Whether the conversation is a thread conversation.
    *
    * @param ext The extension information. This parameter must be key-value type.
    */
@@ -3094,7 +3094,7 @@ export class ChatManager extends BaseManager {
    *
    * @param convId The conversation ID.
    * @param convType The conversation Type.
-   * @param isChatThread Whether the conversation is a chat thread.
+   * @param isChatThread Whether the conversation is a thread conversation.
    *
    * @param msgIds The IDs of messages to delete from the current conversation.
    *
@@ -3148,7 +3148,7 @@ export class ChatManager extends BaseManager {
    *
    * @param convId The conversation ID.
    * @param convType The conversation Type.
-   * @param isChatThread Whether the conversation is a chat thread.
+   * @param isChatThread Whether the conversation is a thread conversation.
    *
    * @param timestamp The message timestamp in millisecond. The messages with the timestamp smaller than the specified one will be deleted.
    *
@@ -3380,10 +3380,12 @@ export class ChatManager extends BaseManager {
   }
 
   /**
-   * This method marks conversations both locally and on the server.
+   *  Marks conversations.
    *
-   * @param convIds The conversation ID list.
-   * @param mark The conversation tag. See {@link ChatConversationMarkType}.
+   *  This method marks conversations both locally and on the server.
+   *
+   * @param convIds The list of conversation IDs.
+   * @param mark The mark to add for the conversations. See {@link ChatConversationMarkType}.
    *
    * @throws A description of the exception. See {@link ChatError}.
    */
@@ -3407,10 +3409,12 @@ export class ChatManager extends BaseManager {
   }
 
   /**
-   * his method unmarks conversations both locally and on the server.
+   *  Unmarks conversations.
    *
-   * @param convIds The conversation ID list.
-   * @param mark The conversation tag. See {@link ChatConversationMarkType}.
+   *  This method unmarks conversations both locally and on the server.
+   *
+   * @param convIds The list of conversation IDs.
+   * @param mark The conversation mark to remove. See {@link ChatConversationMarkType}.
    *
    * @throws A description of the exception. See {@link ChatError}.
    */
@@ -3434,11 +3438,11 @@ export class ChatManager extends BaseManager {
   }
 
   /**
-   * Fetches conversations by options.
+   * Gets the conversations from the server by conversation filter options.
    *
-   * @param option The fetch options. See {@link ChatConversationFetchOptions}.
+   * @param option The conversation filter options. See {@link ChatConversationFetchOptions}.
    *
-   * @returns The conversation list result. See {@link ChatCursorResult}.
+   * @returns The retrieved list of conversations. See {@link ChatCursorResult}.
    */
   public async fetchConversationsByOptions(
     option: ChatConversationFetchOptions
@@ -3465,7 +3469,10 @@ export class ChatManager extends BaseManager {
   /**
    * Clears all conversations and all messages in them.
    *
-   * @param clearServerData Whether to clear the server data. default is false.
+   * @param clearServerData Whether to clear all conversations and all messages in them on the server.
+   *   - `true`：Yes. All conversations and all messages in them will be cleared on the server side.
+   *   The current user cannot retrieve messages and conversations from the server, while this has no impact on other users.
+   *  - (Default) `false`：No. All local conversations and all messages in them will be cleared, while those on the server remain.
    *
    * @throws A description of the exception. See {@link ChatError}.
    */
@@ -3518,11 +3525,11 @@ export class ChatManager extends BaseManager {
   }
 
   /**
-   * Get the pinned messages in the conversation from server.
+   * Gets the list of pinned messages in the conversation from the server.
    *
    * @param convId The conversation ID.
    * @param convType The conversation type. See {@link ChatConversationType}.
-   * @param isChatThread Whether the conversation is a chat thread.
+   * @param isChatThread Whether the conversation is a thread conversation.
    *
    * @returns The list of pinned messages. If no message is obtained, an empty list is returned.
    *
@@ -3558,11 +3565,11 @@ export class ChatManager extends BaseManager {
   }
 
   /**
-   * Get the pinned messages in the conversation from local.
+   * Gets the pinned messages in a local conversation.
    *
    * @param convId The conversation ID.
    * @param convType The conversation type. See {@link ChatConversationType}.
-   * @param isChatThread Whether the conversation is a chat thread.
+   * @param isChatThread Whether the conversation is a thread conversation.
    *
    * @returns The list of pinned messages. If no message is obtained, an empty list is returned.
    *
@@ -3598,10 +3605,10 @@ export class ChatManager extends BaseManager {
   }
 
   /**
-   * Get the pinned messages in the conversation.
+   * Gets the pinning information of a message.
    *
    * @param messageId The message ID.
-   * @returns The message pin information. If no message is obtained, an empty list is returned.
+   * @returns The message pinning information. If the message does not exit or is not pinned, `undefined` is returned.
    *
    * @throws A description of the exception. See {@link ChatError}.
    */

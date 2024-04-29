@@ -578,7 +578,7 @@ export class ChatClient extends BaseManager {
    * - Through an SDK API. See {@link createAccount} or {@link getAccessToken}.
    * - Through the console.
    *
-   * The token expiration reminder is notified by the two callback methods: {@link ChatConnectEventListener.onTokenWillExpire} and {@link ChatConnectEventListener.onTokenDidExpire}.
+   * The token expiration reminder is returned by the two callback methods: {@link ChatConnectEventListener.onTokenWillExpire} and {@link ChatConnectEventListener.onTokenDidExpire}.
    *
    * @param userId    The user ID. See {@link createAccount}.
    * @param pwdOrToken  The password or token. See {@link createAccount} or {@link getAccessToken}

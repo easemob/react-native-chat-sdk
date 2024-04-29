@@ -147,15 +147,15 @@ export enum ChatRoomMessagePriority {
 }
 
 /**
- * The message pin operation.
+ * The message pinning and unpinning operations.
  */
 export enum ChatMessagePinOperation {
   /**
-   * Message pin status.
+   * Pin the message.
    */
   Pin,
   /**
-   * Message unpin status.
+   * Unpin the message.
    */
   Unpin,
 }
@@ -169,11 +169,11 @@ export enum ChatMessageSearchScope {
    */
   Content,
   /**
-   * Search by message attributes.
+   * Search by message extension.
    */
   Attribute,
   /**
-   * Search by message content and attributes.
+   * Search by message content and extension.
    */
   All,
 }
@@ -1131,7 +1131,7 @@ export class ChatMessage {
   }
 
   /**
-   * Get the pinned messages in the conversation.
+   * Get the list of pinned messages in the conversation.
    */
   public get getPinInfo(): Promise<ChatMessagePinInfo | undefined> {
     return ChatClient.getInstance().chatManager.getMessagePinInfo(this.msgId);
@@ -1631,15 +1631,15 @@ export class ChatCombineMessageBody extends _ChatFileMessageBody {
 }
 
 /**
- * The message pinning information.
+ * The pinning or unpinning information of the message.
  */
 export class ChatMessagePinInfo {
   /**
-   * The pin time.
+   * The time when the message is pinned or unpinned.
    */
   pinTime: number;
   /**
-   * The operator id.
+   * The user ID of the operator that pins or unpins the message.
    */
   operatorId: string;
 

@@ -46,10 +46,13 @@ export class ChatOptions {
    */
   autoAcceptGroupInvitation: boolean;
   /**
-   * Whether to require the read receipt. This setting has no effect on {@link ChatManager.sendConversationReadAck}.
+   * Whether to require the message read receipt from the recipient.
    *
    * - (Default) `true`: Yes.
    * - `false`: No.
+   *
+   * This property does not take effect for {@link ChatManager.sendConversationReadAck}.
+   *
    */
   requireAck: boolean;
   /**
@@ -80,7 +83,7 @@ export class ChatOptions {
   /**
    * Whether to allow the chat room owner to leave the chat room.
    *
-   * - (Default) `true`: Yes. When leaving the chat room, the chat room owner still has all privileges, except for receive messages in the chat room.
+   * - (Default) `true`: Yes. Even if the chat room owner leaves the chat room, the owner still has all privileges, except for receiving messages in the chat room.
    * - `false`: No.
    */
   isChatRoomOwnerLeaveAllowed: boolean;
@@ -152,15 +155,19 @@ export class ChatOptions {
    */
   imPort: number;
   /**
-   * Whether to enable TLS connection, which takes effect during initialization and is false by default.
+   * Whether to enable TLS connection, which takes effect during initialization and is `false` by default.
    */
   enableTLS: boolean;
   /**
-   * Whether the sent message is included in `ChatMessageEventListener.onMessagesReceived,` default is false.
+   * Whether the sent message is included in `ChatMessageEventListener.onMessagesReceived`.
+   * - `true`: Yes. Besides the received message, the sent message is also included in `ChatMessageEventListener.onMessagesReceived`.
+   * - (Default)`false`: No. Only the received message is included in `ChatMessageEventListener.onMessagesReceived`.
    */
   messagesReceiveCallbackIncludeSend: boolean;
   /**
-   * Whether to set messages from the server side as read. default is false.
+   * Whether to set messages from the server side as read.
+   * - `true`: Yes.
+   * - (Default) `false`: No.
    */
   regardImportMessagesAsRead: boolean;
   /**
@@ -194,9 +201,9 @@ export class ChatOptions {
   customOSType?: number;
 
   /**
-   * Whether the server returns the sender the text message with the content replaced during text moderation.
-   *
-   * default is false.
+   * Whether the server returns the sender the text message with the content replaced during text moderation:
+   * - `true`: Yes.
+   * - (Default) `false`: No. The server returns the original message to the sender.
    */
   useReplacedMessageContents: boolean;
 

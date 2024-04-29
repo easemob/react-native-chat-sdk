@@ -176,7 +176,7 @@ export enum ChatMultiDeviceEvent {
    */
   CONVERSATION_DELETED = 62,
   /**
-   * The current user updated the conversation mark on another device.
+   * If user A updates a conversation mark on device A1, this event is triggered on device A2.
    */
   CONVERSATION_UPDATE_MARK,
 }
@@ -654,12 +654,12 @@ export interface ChatMessageEventListener {
   ): void;
 
   /**
-   * Occurs when the content of a text message is pinned.
+   * Occurs when the message pinning status changed.
    * @params params -
-   * - Param [messageId] The message ID.
-   * - Param [convId] The conversation ID.
-   * - Param [pinOperation] The pin operation. The value is 1.
-   * - Param [pinInfo] The pin information. see {@link ChatMessagePinInfo}.
+   * - Param [messageId] The ID of the message with the changed pinning status.
+   * - Param [convId] The ID of the conversation that contains the message.
+   * - Param [pinOperation] The message pinning or unpinning operation.
+   * - Param [pinInfo] The information about message pinning or unpinning, including the operation time and the user ID of the operator. See {@link ChatMessagePinInfo}.
    */
   onMessagePinChanged?(params: {
     messageId: string;
