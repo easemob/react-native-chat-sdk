@@ -166,15 +166,15 @@ Agora Chat is a highly reliable global communication platform where your users c
 | {@link ChatManager.pinConversation pinConversation} | Sets whether to pin a conversation. |
 | {@link ChatManager.modifyMessageBody modifyMessageBody} | Modifies a message. |
 | {@link ChatManager.fetchCombineMessageDetail fetchCombineMessageDetail} | Gets the list of original messages included in a combined message. |
-| {@link ChatManager.addRemoteAndLocalConversationsMark addRemoteAndLocalConversationsMark} | This method marks conversations both locally and on the server. |
-| {@link ChatManager.deleteRemoteAndLocalConversationsMark deleteRemoteAndLocalConversationsMark} | his method unmarks conversations both locally and on the server. |
-| {@link ChatManager.fetchConversationsByOptions fetchConversationsByOptions} | Fetches conversations by options. |
+| {@link ChatManager.addRemoteAndLocalConversationsMark addRemoteAndLocalConversationsMark} | Marks conversations. |
+| {@link ChatManager.deleteRemoteAndLocalConversationsMark deleteRemoteAndLocalConversationsMark} | Unmarks conversations. |
+| {@link ChatManager.fetchConversationsByOptions fetchConversationsByOptions} | Gets the conversations from the server by conversation filter options. |
 | {@link ChatManager.deleteAllMessageAndConversation deleteAllMessageAndConversation} | Clears all conversations and all messages in them. |
 | {@link ChatManager.pinMessage pinMessage} | Pins a message. |
 | {@link ChatManager.unpinMessage unpinMessage} | Unpins a message. |
-| {@link ChatManager.fetchPinnedMessages fetchPinnedMessages} | Get the pinned messages in the conversation from server. |
-| {@link ChatManager.getPinnedMessages getPinnedMessages} | Get the pinned messages in the conversation from local. |
-| {@link ChatManager.getMessagePinInfo getMessagePinInfo} | Get the pinned messages in the conversation. |
+| {@link ChatManager.fetchPinnedMessages fetchPinnedMessages} | Gets the list of pinned messages in the conversation from the server. |
+| {@link ChatManager.getPinnedMessages getPinnedMessages} | Gets the pinned messages in a local conversation. |
+| {@link ChatManager.getMessagePinInfo getMessagePinInfo} | Gets the pinning information of a message. |
 
 | Event | Description |
 | :----- | :---------- |
@@ -192,7 +192,7 @@ Agora Chat is a highly reliable global communication platform where your users c
 | {@link ChatMessageEventListener.onChatMessageThreadDestroyed onChatMessageThreadDestroyed} | Occurs when a message thread is destroyed. |
 | {@link ChatMessageEventListener.onChatMessageThreadUserRemoved onChatMessageThreadUserRemoved} | Occurs when the current user is removed from the message thread by the admin. |
 | {@link ChatMessageEventListener.onMessageContentChanged onMessageContentChanged} | Occurs when the content of a text message is modified. |
-| {@link ChatMessageEventListener.onMessagePinChanged onMessagePinChanged} | Occurs when the content of a text message is pinned. |
+| {@link ChatMessageEventListener.onMessagePinChanged onMessagePinChanged} | Occurs when the message pinning status changed. |
 ## ChatContactManager
 | Method | Description |
 | :----- | :---------- |
@@ -275,7 +275,7 @@ Agora Chat is a highly reliable global communication platform where your users c
 | {@link ChatGroupManager.setMemberAttribute setMemberAttribute} | Sets custom attributes of a group member. |
 | {@link ChatGroupManager.fetchMemberAttributes fetchMemberAttributes} | Gets all custom attributes of a group member. |
 | {@link ChatGroupManager.fetchMembersAttributes fetchMembersAttributes} | Gets custom attributes of multiple group members by attribute key. |
-| {@link ChatGroupManager.fetchJoinedGroupCount fetchJoinedGroupCount} | Get joined group list count. |
+| {@link ChatGroupManager.fetchJoinedGroupCount fetchJoinedGroupCount} | Gets the number of groups joined by the current user. |
 | {@link ChatGroupManager.addGroupListener addGroupListener} | Adds a group listener. |
 | {@link ChatGroupManager.removeGroupListener removeGroupListener} | Removes the group listener. |
 | {@link ChatGroupManager.removeAllGroupListener removeAllGroupListener} | Clears all group listeners. |
@@ -421,7 +421,7 @@ Agora Chat is a highly reliable global communication platform where your users c
 | {@link ChatMessage.reactionList reactionList} | Gets the list of Reactions. |
 | {@link ChatMessage.groupReadCount groupReadCount} | Gets the count of read receipts of a group message. |
 | {@link ChatMessage.threadInfo threadInfo} | Gets details of a message thread. |
-| {@link ChatMessage.getPinInfo getPinInfo} | Get the pinned messages in the conversation. |
+| {@link ChatMessage.getPinInfo getPinInfo} | Get the list of pinned messages in the conversation. |
 | {@link ChatMessage.messagePriority messagePriority} | Set the chat room message priority. |
 ## ChatConversation
 | Method | Description |
@@ -438,15 +438,15 @@ Agora Chat is a highly reliable global communication platform where your users c
 | {@link ChatConversation.deleteMessage deleteMessage} | Deletes a message from the local database. |
 | {@link ChatConversation.deleteMessagesWithTimestamp deleteMessagesWithTimestamp} | Deletes messages sent or received in a certain period from the local database. |
 | {@link ChatConversation.deleteAllMessages deleteAllMessages} | Deletes all the messages of the conversation. |
-| {@link ChatConversation.getMessagesWithMsgType getMessagesWithMsgType} | Retrieves messages of a certain type that a specified user sends in a conversation. |
-| {@link ChatConversation.getMsgsWithMsgType getMsgsWithMsgType} | Retrieves messages of a certain type in the conversation from the local database. |
-| {@link ChatConversation.getMessages getMessages} | Retrieves messages of a certain quantity in a conversation from the local database. |
-| {@link ChatConversation.getMsgs getMsgs} | Retrieves messages of a specified quantity in a conversation from the local database. |
-| {@link ChatConversation.getMessagesWithKeyword getMessagesWithKeyword} | Retrieves messages with keywords in a conversation in the local database. |
+| {@link ChatConversation.getMessagesWithMsgType getMessagesWithMsgType} | Gets messages of a certain type that a specified user sends in a conversation. |
+| {@link ChatConversation.getMsgsWithMsgType getMsgsWithMsgType} | Gets messages of a certain type in the conversation from the local database. |
+| {@link ChatConversation.getMessages getMessages} | Gets messages of a certain quantity in a conversation from the local database. |
+| {@link ChatConversation.getMsgs getMsgs} | Gets messages of a specified quantity in a conversation from the local database. |
+| {@link ChatConversation.getMessagesWithKeyword getMessagesWithKeyword} | Gets messages with keywords in a conversation in the local database. |
 | {@link ChatConversation.getMsgsWithKeyword getMsgsWithKeyword} | Gets messages that the specified user sends in a conversation in a certain period. |
 | {@link ChatConversation.getMessageWithTimestamp getMessageWithTimestamp} | Gets messages that are sent and received in a certain period in a conversation in the local database. |
-| {@link ChatConversation.getMsgWithTimestamp getMsgWithTimestamp} | Retrieves messages that are sent and received in a certain period in a conversation in the local database. |
+| {@link ChatConversation.getMsgWithTimestamp getMsgWithTimestamp} | Gets messages that are sent and received in a certain period in a conversation in the local database. |
 | {@link ChatConversation.removeMessagesFromServerWithMsgIds removeMessagesFromServerWithMsgIds} | Deletes messages from the conversation (from both local storage and server). |
 | {@link ChatConversation.removeMessagesFromServerWithTimestamp removeMessagesFromServerWithTimestamp} | Deletes messages from the conversation (from both local storage and server). |
-| {@link ChatConversation.getPinnedMessages getPinnedMessages} | Get the pinned messages in the conversation from local. |
-| {@link ChatConversation.fetchPinnedMessages fetchPinnedMessages} | Get the pinned messages in the conversation from server. |
+| {@link ChatConversation.getPinnedMessages getPinnedMessages} | Gets the pinned messages in the conversation from the local database. |
+| {@link ChatConversation.fetchPinnedMessages fetchPinnedMessages} | Gets the pinned messages in the conversation from the server. |
