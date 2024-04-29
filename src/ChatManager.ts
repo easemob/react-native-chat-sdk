@@ -1045,6 +1045,8 @@ export class ChatManager extends BaseManager {
    * @returns 消息列表（不包含查询起始时间戳对应的消息）。若未查找到任何消息，返回空列表。
    *
    * @throws 如果有异常会在这里抛出，包含错误码和错误描述，详见 {@link ChatError}。
+   *
+   * @deprecated 2024-04-22. Use {@link getMsgsWithKeyword} instead.
    */
   public async searchMsgFromDB(
     keywords: string,
@@ -1077,19 +1079,26 @@ export class ChatManager extends BaseManager {
   }
 
   /**
-   * Retrieves messages with keywords from the local database.
+   * 获取所有会话在一定时间内的会话中发送的消息。
    *
-   * @param keywords The keywords for query.
-   * @param timestamp The starting Unix timestamp in the message for query. The unit is millisecond. After this parameter is set, the SDK retrieves messages, starting from the specified one, according to the message search direction.
-   *                  If you set this parameter as a negative value, the SDK retrieves messages, starting from the current time, in the descending order of the timestamp included in them.
-   * @param maxCount The maximum number of messages to retrieve each time. The value range is [1,400].
-   * @param from The user ID or group ID for retrieval. Usually, it is the conversation ID.
-   * @param direction The message search direction. See {@link ChatSearchDirection}.
-   *                  - (Default) `ChatSearchDirection.Up`: Messages are retrieved in the descending order of the Unix timestamp included in them.
-   *                  - `ChatSearchDirection.Down`: Messages are retrieved in the ascending order of the Unix timestamp included in them.
-   * @returns The list of retrieved messages (excluding the one with the starting timestamp). If no message is obtained, an empty list is returned.
+   * 该方法从本地数据库获取数据。
    *
-   * @throws A description of the exception. See {@link ChatError}.
+   * **注意** 如果会话对象不存在，此方法将创建它。
+   *
+   * @params -
+   * - keywords 查询的关键字。
+   * - direction 消息搜索方向。请参阅 {@link ChatSearchDirection}。
+   * - （默认）`ChatSearchDirection.UP` 按照消息中包含的 Unix 时间戳的降序检索消息。
+   * - `ChatSearchDirection.DOWN` 按照消息中包含的 Unix 时间戳的升序检索消息。
+   * - timestamp 用于查询的消息中的起始 Unix 时间戳。单位是毫秒。设置该参数后，SDK 按照消息搜索方向，从指定的消息开始检索消息。
+   *   如果将此参数设置为负值，则 SDK 从当前时间开始，按照消息中时间戳的降序顺序检索消息。
+   * - searchScope 消息搜索范围。请参阅 {@link ChatMessageSearchScope}。
+   * - maxCount 每次检索的最大消息数。取值范围为 [1,400]。
+   * - from 用于检索的用户 ID 或群组 ID。
+   *
+   * @returns 检索到的消息列表（不包括具有起始时间戳的消息）。如果没有获取到消息，返回空列表。
+   *
+   * @throws 如果有异常会在此抛出，包括错误码和错误信息，详见 {@link ChatError}。
    */
   public async getMsgsWithKeyword(params: {
     keywords: string;
@@ -2529,9 +2538,11 @@ export class ChatManager extends BaseManager {
     });
     ChatManager.checkErrorFromResult(r);
     const ret: Array<ChatMessageReaction> = [];
-    Object.entries(r?.[MTgetReactionList]).forEach((value: [string, any]) => {
-      ret.push(new ChatMessageReaction(value[1]));
-    });
+    if (r?.[MTgetReactionList]) {
+      Object.entries(r?.[MTgetReactionList]).forEach((value: [string, any]) => {
+        ret.push(new ChatMessageReaction(value[1]));
+      });
+    }
     return ret;
   }
 
@@ -2543,7 +2554,7 @@ export class ChatManager extends BaseManager {
    *
    * @throws 如果有异常会在此抛出，包括错误码和错误信息，详见 {@link ChatError}。
    */
-  public async groupAckCount(msgId: string): Promise<number> {
+  public async groupAckCount(msgId: string): Promise<number | undefined> {
     chatlog.log(`${ChatManager.TAG}: groupAckCount: `, msgId);
     let r: any = await Native._callMethod(MTgroupAckCount, {
       [MTgroupAckCount]: {
@@ -2551,7 +2562,10 @@ export class ChatManager extends BaseManager {
       },
     });
     ChatManager.checkErrorFromResult(r);
-    return r?.[MTgroupAckCount] as number;
+    if (r?.[MTgroupAckCount] !== undefined) {
+      return r?.[MTgroupAckCount] as number;
+    }
+    return undefined;
   }
 
   /**
@@ -3595,13 +3609,8 @@ export class ChatManager extends BaseManager {
         msgId: messageId,
       },
     });
-    try {
-      ChatManager.checkErrorFromResult(r);
-    } catch (error) {
-      chatlog.log(`${ChatManager.TAG}: getMessagePinInfo:`, error);
-      return undefined;
-    }
-    if (r[MTgetPinInfo]) {
+    ChatManager.checkErrorFromResult(r);
+    if (r?.[MTgetPinInfo]) {
       return new ChatMessagePinInfo(r[MTgetPinInfo]);
     }
     return undefined;

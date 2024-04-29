@@ -1097,7 +1097,7 @@ export class ChatMessage {
    * 获取群组消息的已读人数。
    *
    */
-  public get groupReadCount(): Promise<number> {
+  public get groupReadCount(): Promise<number | undefined> {
     return ChatClient.getInstance().chatManager.groupAckCount(this.msgId);
   }
 
@@ -1127,7 +1127,7 @@ export class ChatMessage {
 /**
  * 消息体基类。
  */
-export class ChatMessageBody {
+export abstract class ChatMessageBody {
   /**
    * 消息类型，详见 {@link ChatMessageType}。
    */
