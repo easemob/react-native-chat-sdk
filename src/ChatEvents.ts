@@ -56,7 +56,7 @@ export enum ChatMultiDeviceEvent {
    */
   GROUP_APPLY,
   /**
-   * 用户 A 在设备 A1 上收到了入群申请，则设备 A2 会收到该事件。
+   * 用户 A 在设备 A1 上接受了入群申请，则设备 A2 会收到该事件。
    */
   GROUP_APPLY_ACCEPT,
   /**
@@ -80,11 +80,11 @@ export enum ChatMultiDeviceEvent {
    */
   GROUP_KICK,
   /**
-   * 用户 A 在设备 A1 上被加入黑名单，则设备 A2 上会收到该事件。
+   * 用户 A 在设备 A1 上将其他用户加入群组黑名单，则设备 A2 上会收到该事件。
    */
   GROUP_BAN,
   /**
-   * 用户 A 在设备 A1 上将其他用户移出群组，则设备 A2 上会收到该事件。
+   * 用户 A 在设备 A1 上将其他用户移出群组黑名单，则设备 A2 上会收到该事件。
    */
   GROUP_ALLOW,
   /**
@@ -92,11 +92,11 @@ export enum ChatMultiDeviceEvent {
    */
   GROUP_BLOCK,
   /**
-   * 用户 A 在设备 A1 上取消屏蔽了某个群组的消息，设备 A2 上会收到该事件。
+   * 用户 A 在设备 A1 上屏蔽了某个群组的消息，设备 A2 上会收到该事件。
    */
   GROUP_UNBLOCK,
   /**
-   * 用户 A 在设备 A1 上更新了群主，则设备 A2 上会收到该事件。
+   * 用户 A 在设备 A1 上取消屏蔽了某个群组的消息，设备 A2 上会收到该事件。
    */
   GROUP_ASSIGN_OWNER,
   /**

@@ -1038,7 +1038,7 @@ export class ChatManager extends BaseManager {
    * @param keywords 查询关键字。
    * @param timestamp 查询的起始消息 Unix 时间戳，单位为毫秒。该参数设置后，SDK 从指定时间戳的消息开始，按消息搜索方向获取。 如果该参数设置为负数，SDK 从当前时间开始搜索。
    * @param maxCount 每次获取的最大消息数。取值范围为 [1,400]。
-   * @param from 单聊或群聊中的消息发送方的用户 ID。若设置为 `null` 或空字符串，SDK 将在整个会话中搜索消息。
+   * @param from 消息发送方的用户 ID。若不设置该参数，SDK 搜索消息时会忽略该参数。
    * @param direction 消息搜索方向。详见  {@link ChatSearchDirection}.
    *                  - (Default) `ChatSearchDirection.UP`: 按照消息中的时间戳的逆序查询
    *                  - `ChatSearchDirection.DOWN`: 按照消息中的时间戳的正序查询。
@@ -1094,7 +1094,7 @@ export class ChatManager extends BaseManager {
    *   如果将此参数设置为负值，则 SDK 从当前时间开始，按照消息中时间戳的降序顺序检索消息。
    * - searchScope 消息搜索范围。请参阅 {@link ChatMessageSearchScope}。
    * - maxCount 每次检索的最大消息数。取值范围为 [1,400]。
-   * - from 用于检索的用户 ID 或群组 ID。
+   * - from 消息发送方的用户 ID。若不设置该参数，SDK 搜索消息时会忽略该参数。
    *
    * @returns 检索到的消息列表（不包括具有起始时间戳的消息）。如果没有获取到消息，返回空列表。
    *
@@ -1743,7 +1743,7 @@ export class ChatManager extends BaseManager {
    * @param timestamp 用于查询的消息中的起始 Unix 时间戳。 单位是毫秒。 设置该参数后，SDK按照消息搜索方向，从指定的消息开始检索消息。
    * 如果将此参数设置为负值，则SDK从当前时间开始，按照消息中时间戳的降序顺序检索消息。
    * @param count 每次检索的最大消息数。 取值范围为[1,400]。
-   * @param sender 用于检索的用户 ID 或组 ID。 通常，它是会话 ID。
+   * @param sender 消息发送方的用户 ID。若不设置该参数，SDK 搜索消息时会忽略该参数。
    * @param isChatThread 会话是否为子区会话。
    *
    * @returns 检索到的消息列表（不包括具有起始时间戳的消息）。 如果没有获取到消息，则返回空列表。
@@ -1811,7 +1811,7 @@ export class ChatManager extends BaseManager {
    * @param timestamp 用于查询的消息中的起始 Unix 时间戳。 单位是毫秒。 设置该参数后，SDK按照消息搜索方向，从指定的消息开始检索消息。
    * 如果将此参数设置为负值，则SDK从当前时间开始，按照消息中时间戳的降序顺序检索消息。
    * @param count 每次检索的最大消息数。 取值范围为[1,400]。
-   * @param sender 用于检索的用户 ID 或组 ID。 通常，它是会话 ID。
+   * @param sender 消息发送方的用户 ID。若不设置该参数，SDK 搜索消息时会忽略该参数。
    * @param isChatThread 会话是否为子区会话。
    *
    * @returns 检索到的消息列表（不包括具有起始时间戳的消息）。 如果没有获取到消息，则返回空列表。
@@ -2017,7 +2017,7 @@ export class ChatManager extends BaseManager {
    * @param timestamp 用于查询的消息中的起始 Unix 时间戳。单位是毫秒。设置该参数后，SDK 按照消息搜索方向，从指定的消息开始检索消息。
    * 如果将此参数设置为负值，则 SDK 从当前时间开始，按照消息中时间戳的降序顺序检索消息。
    * @param count 每次检索的最大消息数。取值范围为 [1,400]。
-   * @param sender 用于检索的用户 ID 或群组 ID。
+   * @param sender 消息发送方的用户 ID。若不设置该参数，SDK 搜索消息时会忽略该参数。
    * @param isChatThread 会话是否是子区会话。
    *
    * @returns 检索到的消息列表（不包括具有起始时间戳的消息）。如果没有获取到消息，则返回空列表。
@@ -2088,7 +2088,7 @@ export class ChatManager extends BaseManager {
    *   如果将此参数设置为负值，则 SDK 从当前时间开始，按照消息中时间戳的降序顺序检索消息。
    * - searchScope 消息搜索范围。请参阅 {@link ChatMessageSearchScope}。
    * - count 每次检索的最大消息数。取值范围为 [1,400]。
-   * - sender 用于检索的用户 ID 或群组 ID。
+   * - sender 消息发送方的用户 ID。若不设置该参数，SDK 搜索消息时会忽略该参数。
    * - isChatThread 会话是否为子区会话。
    *
    * @returns 检索到的消息列表（不包括具有起始时间戳的消息）。如果没有获取到消息，返回空列表。
