@@ -80,11 +80,11 @@ export enum ChatMultiDeviceEvent {
    */
   GROUP_KICK,
   /**
-   * If user A is added to the group block list on Device A1, this event is triggered on Device A2.
+   * If user A adds a member to a group block list on Device A1, this event is triggered on Device A2.
    */
   GROUP_BAN,
   /**
-   * If user A is removed from the group block list on Device A1, this event is triggered on Device A2.
+   * If user A removes a member from a group block list on Device A1, this event is triggered on Device A2.
    */
   GROUP_ALLOW,
   /**
@@ -96,7 +96,7 @@ export enum ChatMultiDeviceEvent {
    */
   GROUP_UNBLOCK,
   /**
-   * If user A changes the group owner on Device A1, this event is triggered on Device A2.
+   * If user A transfers the group ownership on Device A1, this event is triggered on Device A2.
    */
   GROUP_ASSIGN_OWNER,
   /**

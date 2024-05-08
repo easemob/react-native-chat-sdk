@@ -1043,7 +1043,7 @@ export class ChatManager extends BaseManager {
    * @param timestamp The starting Unix timestamp in the message for query. The unit is millisecond. After this parameter is set, the SDK retrieves messages, starting from the specified one, according to the message search direction.
    *                  If you set this parameter as a negative value, the SDK retrieves messages, starting from the current time, in the descending order of the timestamp included in them.
    * @param maxCount The maximum number of messages to retrieve each time. The value range is [1,400].
-   * @param from The user ID or group ID for retrieval. Usually, it is the conversation ID.
+   * @param from     The user ID of the message sender. If you do not set this parameter, the SDK ignores this parameter when retrieving messages.
    * @param direction The message search direction. See {@link ChatSearchDirection}.
    *                  - (Default) `ChatSearchDirection.Up`: Messages are retrieved in the descending order of the Unix timestamp included in them.
    *                  - `ChatSearchDirection.Down`: Messages are retrieved in the ascending order of the Unix timestamp included in them.
@@ -1090,7 +1090,7 @@ export class ChatManager extends BaseManager {
    * @param timestamp The starting Unix timestamp in the message for query. The unit is millisecond. After this parameter is set, the SDK retrieves messages, starting from the specified one, according to the message search direction.
    *                  If you set this parameter as a negative value, the SDK retrieves messages, starting from the current time, in the descending order of the timestamp included in them.
    * @param maxCount The maximum number of messages to retrieve each time. The value range is [1,400].
-   * @param from The user ID or group ID for retrieval. Usually, it is the conversation ID.
+   * @param from The user ID of the message sender. If you do not set this parameter, the SDK ignores this parameter when retrieving messages.
    * @param direction The message search direction. See {@link ChatSearchDirection}.
    *                  - (Default) `ChatSearchDirection.Up`: Messages are retrieved in the descending order of the Unix timestamp included in them.
    *                  - `ChatSearchDirection.Down`: Messages are retrieved in the ascending order of the Unix timestamp included in them.
@@ -1737,7 +1737,7 @@ export class ChatManager extends BaseManager {
   }
 
   /**
-   * Retrieves messages of a certain type in the conversation from the local database.
+   * Retrieves messages of a certain type in a conversation from the local database.
    *
    * **note** If the conversation object does not exist, this method will create it.
    *
@@ -1750,7 +1750,7 @@ export class ChatManager extends BaseManager {
    * @param timestamp The starting Unix timestamp in the message for query. The unit is millisecond. After this parameter is set, the SDK retrieves messages, starting from the specified one, according to the message search direction.
    *                  If you set this parameter as a negative value, the SDK retrieves messages, starting from the current time, in the descending order of the timestamp included in them.
    * @param count The maximum number of messages to retrieve each time. The value range is [1,400].
-   * @param sender The user ID or group ID for retrieval. Usually, it is the conversation ID.
+   * @param sender The message sender, which is the user ID of the peer user for one-to-one chat or group ID for group chat.
    * @param isChatThread Whether the conversation is a thread conversation.
    *
    * @returns The list of retrieved messages (excluding the one with the starting timestamp). If no message is obtained, an empty list is returned.
@@ -1818,7 +1818,7 @@ export class ChatManager extends BaseManager {
    * @param timestamp The starting Unix timestamp in the message for query. The unit is millisecond. After this parameter is set, the SDK retrieves messages, starting from the specified one, according to the message search direction.
    *                  If you set this parameter as a negative value, the SDK retrieves messages, starting from the current time, in the descending order of the timestamp included in them.
    * @param count The maximum number of messages to retrieve each time. The value range is [1,400].
-   * @param sender The user ID or group ID for retrieval. Usually, it is the conversation ID.
+   * @param sender The user ID of the message sender. If you do not set this parameter, the SDK ignores this parameter when retrieving messages.
    * @param isChatThread Whether the conversation is a thread conversation.
    *
    * @returns The list of retrieved messages (excluding the one with the starting timestamp). If no message is obtained, an empty list is returned.
@@ -2024,7 +2024,7 @@ export class ChatManager extends BaseManager {
    * @param timestamp The starting Unix timestamp in the message for query. The unit is millisecond. After this parameter is set, the SDK retrieves messages, starting from the specified one, according to the message search direction.
    *                  If you set this parameter as a negative value, the SDK retrieves messages, starting from the current time, in the descending order of the timestamp included in them.
    * @param count The maximum number of messages to retrieve each time. The value range is [1,400].
-   * @param sender The user ID or group ID for retrieval. Usually, it is the conversation ID.
+   * @param sender The user ID of the message sender. If you do not set this parameter, the SDK ignores this parameter when retrieving messages.
    * @param isChatThread Whether the conversation is a thread conversation.
    *
    * @returns The list of retrieved messages (excluding the one with the starting timestamp). If no message is obtained, an empty list is returned.
@@ -2095,7 +2095,7 @@ export class ChatManager extends BaseManager {
    * - searchScope The message search scope. See {@link ChatMessageSearchScope}.
    *                  If you set this parameter as a negative value, the SDK retrieves messages, starting from the current time, in the descending order of the timestamp included in them.
    * - count The maximum number of messages to retrieve each time. The value range is [1,400].
-   * - sender The user ID or group ID for retrieval. Usually, it is the conversation ID.
+   * - sender The user ID of the message sender. If you do not set this parameter, the SDK ignores this parameter when retrieving messages.
    * - isChatThread Whether the conversation is a thread conversation.
    *
    * @returns The list of retrieved messages (excluding the one with the starting timestamp). If no message is obtained, an empty list is returned.
