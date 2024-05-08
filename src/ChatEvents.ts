@@ -135,10 +135,13 @@ export enum ChatMultiDeviceEvent {
    */
   GROUP_REMOVE_ALL_BAN,
   /**
-   * The current user modified custom attributes of a group member on another device.
+   * The current user are group disable on another device.
    */
-  GROUP_METADATA_CHANGED,
-
+  GROUP_DISABLED,
+  /**
+   * The current user are group able on another device.
+   */
+  GROUP_ABLE,
   /**
    * If user A creates a message thread on Device A1, this event is triggered on Device A2.
    */
@@ -163,6 +166,10 @@ export enum ChatMultiDeviceEvent {
    * If user A kicks a user from a message thread on Device A1, this event is triggered on Device A2.
    */
   THREAD_KICK,
+  /**
+   * The current user modified custom attributes of a group member on another device.
+   */
+  GROUP_METADATA_CHANGED = 52,
   /**
    * If user A pins a conversation on device A1, this event is triggered on device A2.
    */
@@ -250,6 +257,10 @@ export function ChatMultiDeviceEventFromNumber(
       return ChatMultiDeviceEvent.GROUP_ALL_BAN;
     case 33:
       return ChatMultiDeviceEvent.GROUP_REMOVE_ALL_BAN;
+    case 34:
+      return ChatMultiDeviceEvent.GROUP_DISABLED;
+    case 35:
+      return ChatMultiDeviceEvent.GROUP_ABLE;
 
     case 40:
       return ChatMultiDeviceEvent.THREAD_CREATE;
