@@ -2,6 +2,15 @@ _Chinese | [English](./CHANGELOG.md)_
 
 # Update Log
 
+## 1.5.0
+
+- 依赖的原生 SDK 升级到版本（`iOS` 4.6.1 和`Android` 4.6.1）。 添加原生 SDK 提供的新功能和修复的问题。
+- 更新接口 `recallMessage`, 增加扩展参数。
+- 添加撤销消息通知 `onMessagesRecalledInfo`, 作废原来的通知 `onMessagesRecalled`。
+- native: 修复服务端获取好友列表（包含好友备注）时，在好友列表无变化时，第二次请求获取不到数据的问题。
+- native: 修复特殊情况下附件发送失败，消息仍然成功发送的问题。
+- native: 修复拉取漫游消息时 `nextkey` 错误的问题。
+
 ## 1.4.0
 
 - 依赖的原生 SDK 升级到版本（`iOS` 4.5.0 和`Android` 4.5.0）。 添加原生 SDK 提供的新功能和修复的问题。

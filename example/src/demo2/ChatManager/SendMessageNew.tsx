@@ -12,6 +12,7 @@ import {
   ChatMessageStatusCallback,
   ChatMessageThreadEvent,
   ChatMessageType,
+  ChatRecalledMessageInfo,
   ChatRoomMessagePriority,
 } from 'react-native-chat-sdk';
 
@@ -352,6 +353,12 @@ export class SendMessageLeafScreen extends LeafScreenBase<StateSendMessage> {
         );
         this.that.setState({
           recvResult: `onMessagesRecalled: ${messages.length}: ` + messages,
+        });
+      }
+      onMessagesRecalledInfo(info: Array<ChatRecalledMessageInfo>): void {
+        console.log(`${SendMessageLeafScreen.TAG}: onMessagesRecalled: `, info);
+        this.that.setState({
+          recvResult: `onMessagesRecalled: ${info.length}: ` + info,
         });
       }
       onConversationsUpdate(): void {

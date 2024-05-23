@@ -5,6 +5,7 @@ import {
   ChatFetchMessageOptions,
   ChatMessagePinInfo,
   ChatMessageStatusCallback,
+  ChatRecalledMessageInfo,
   ChatTextMessageBody,
 } from 'react-native-chat-sdk';
 import {
@@ -52,6 +53,7 @@ export interface StateChatMessage extends StateBase {
   };
   recallMessage: {
     msgId: string;
+    ext?: string;
   };
   getMessage: {
     msgId: string;
@@ -538,6 +540,15 @@ export class ChatManagerLeafScreen extends LeafScreenBase<StateChatMessage> {
           recvResult: `onMessagesRecalled: ${messages.length}: ` + messages,
         });
       }
+      onMessagesRecalledInfo(info: Array<ChatRecalledMessageInfo>): void {
+        console.log(
+          `${ChatManagerLeafScreen.TAG}: onMessagesRecalledInfo: `,
+          info
+        );
+        this.that.setState({
+          recvResult: `onMessagesRecalledInfo: ${info.length}: ` + info,
+        });
+      }
       onConversationsUpdate(): void {
         console.log(`${ChatManagerLeafScreen.TAG}: onConversationsUpdate: `);
         this.that.setState({ recvResult: 'onConversationsUpdate' });
@@ -797,9 +808,9 @@ export class ChatManagerLeafScreen extends LeafScreenBase<StateChatMessage> {
         this.metaData.get(MN.sendConversationReadAck)!.methodName
       );
     } else if (name === MN.recallMessage) {
-      const { msgId } = this.state.recallMessage;
+      const { msgId, ext } = this.state.recallMessage;
       this.tryCatch(
-        ChatClient.getInstance().chatManager.recallMessage(msgId),
+        ChatClient.getInstance().chatManager.recallMessage(msgId, { ext }),
         ChatManagerLeafScreen.TAG,
         this.metaData.get(MN.recallMessage)!.methodName
       );

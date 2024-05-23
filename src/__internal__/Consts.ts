@@ -120,7 +120,8 @@ export const MTonCmdMessagesReceived = 'onCmdMessagesReceived';
 export const MTonMessagesRead = 'onMessagesRead';
 export const MTonGroupMessageRead = 'onGroupMessageRead';
 export const MTonMessagesDelivered = 'onMessagesDelivered';
-export const MTonMessagesRecalled = 'onMessagesRecalled';
+export const MTonMessagesRecalled = 'onMessagesRecalled'; // deprecated 2024-05-23
+export const MTonMessagesRecalledInfo = 'onMessagesRecalledInfo';
 
 export const MTonConversationUpdate = 'onConversationUpdate';
 export const MTonConversationHasRead = 'onConversationHasRead';

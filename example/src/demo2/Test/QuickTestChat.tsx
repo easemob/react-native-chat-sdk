@@ -409,8 +409,10 @@ export class QuickTestScreenChat extends QuickTestScreenBase<
           console.log(`${MN.recallMessage} === ${methodName}`);
           const msgId = this.metaData.get(MN.recallMessage)!.params[0]!
             .paramDefaultValue;
+          const ext = this.metaData.get(MN.recallMessage)!.params[1]!
+            .paramDefaultValue;
           this.tryCatch(
-            ChatClient.getInstance().chatManager.recallMessage(msgId),
+            ChatClient.getInstance().chatManager.recallMessage(msgId, { ext }),
             QuickTestScreenChat.TAG,
             MN.recallMessage
           );

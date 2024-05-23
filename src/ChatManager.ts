@@ -78,6 +78,7 @@ import {
   MTonMessagesDelivered,
   MTonMessagesRead,
   MTonMessagesRecalled,
+  MTonMessagesRecalledInfo,
   MTonMessagesReceived,
   MTonReadAckForGroupMessageUpdated,
   MTpinConversation,
@@ -124,6 +125,7 @@ import {
   ChatMessageStatus,
   ChatMessageStatusCallback,
   ChatMessageType,
+  ChatRecalledMessageInfo,
 } from './common/ChatMessage';
 import {
   ChatMessageReaction,
@@ -206,6 +208,11 @@ export class ChatManager extends BaseManager {
     );
     event.removeAllListeners(MTonMessagesRecalled);
     event.addListener(MTonMessagesRecalled, this.onMessagesRecalled.bind(this));
+    event.removeAllListeners(MTonMessagesRecalledInfo);
+    event.addListener(
+      MTonMessagesRecalledInfo,
+      this.onMessagesRecalledInfo.bind(this)
+    );
     event.removeAllListeners(MTonConversationUpdate);
     event.addListener(
       MTonConversationUpdate,
@@ -274,6 +281,22 @@ export class ChatManager extends BaseManager {
     return this.filterUnsupportedMessage(list);
   }
 
+  private createReceiveRecallMessage(params: any[]): ChatRecalledMessageInfo[] {
+    let list: Array<ChatRecalledMessageInfo> = [];
+    params.forEach((param: any) => {
+      const m = new ChatRecalledMessageInfo({
+        recalledMessage: param.recalledMessage
+          ? ChatMessage.createReceiveMessage(param.recalledMessage)
+          : undefined,
+        recalledBy: param.recalledBy,
+        recalledExt: param.recalledExt,
+        recalledMessageId: param.recalledMessageId,
+      });
+      list.push(m);
+    });
+    return list;
+  }
+
   private onMessagesReceived(messages: any[]): void {
     chatlog.log(`${ChatManager.TAG}: onMessagesReceived: `, messages);
     if (this._messageListeners.size === 0) {
@@ -336,6 +359,17 @@ export class ChatManager extends BaseManager {
     let list: Array<ChatMessage> = this.createReceiveMessage(messages);
     this._messageListeners.forEach((listener: ChatMessageEventListener) => {
       listener.onMessagesRecalled?.(list);
+    });
+  }
+  private onMessagesRecalledInfo(params: any[]): void {
+    chatlog.log(`${ChatManager.TAG}: onMessagesRecalledInfo: `, params);
+    if (this._messageListeners.size === 0) {
+      return;
+    }
+    let list: Array<ChatRecalledMessageInfo> =
+      this.createReceiveRecallMessage(params);
+    this._messageListeners.forEach((listener: ChatMessageEventListener) => {
+      listener.onMessagesRecalledInfo?.(list);
     });
   }
   private onConversationsUpdate(): void {
@@ -687,14 +721,19 @@ export class ChatManager extends BaseManager {
    * Recalls the sent message.
    *
    * @param msgId The message ID.
+   * @param option The extension information.
    *
    * @throws A description of the exception. See {@link ChatError}.
    */
-  public async recallMessage(msgId: string): Promise<void> {
+  public async recallMessage(
+    msgId: string,
+    option?: { ext?: string }
+  ): Promise<void> {
     chatlog.log(`${ChatManager.TAG}: recallMessage: ${msgId}`);
     let r: any = await Native._callMethod(MTrecallMessage, {
       [MTrecallMessage]: {
         msg_id: msgId,
+        ext: option?.ext,
       },
     });
     Native.checkErrorFromResult(r);

@@ -2,7 +2,11 @@ import { ExceptionHandler } from './__internal__/ErrorHandler';
 import type { ChatConversationType } from './common/ChatConversation';
 import { ChatException } from './common/ChatError';
 import type { ChatGroup, ChatGroupMessageAck } from './common/ChatGroup';
-import type { ChatMessage, ChatMessagePinInfo } from './common/ChatMessage';
+import type {
+  ChatMessage,
+  ChatMessagePinInfo,
+  ChatRecalledMessageInfo,
+} from './common/ChatMessage';
 import type { ChatMessageReactionEvent } from './common/ChatMessageReaction';
 import type { ChatMessageThreadEvent } from './common/ChatMessageThread';
 import type { ChatPresence } from './common/ChatPresence';
@@ -587,8 +591,19 @@ export interface ChatMessageEventListener {
    * If the recipient is offline when the message is delivered and recalled, the recipient only receives this callback instead of the message.
    *
    * @param messages The recalled message(s).
+   *
+   * @deprecated 2024-05-23 This method is deprecated. Use {@link onMessagesRecalledInfo} instead.
    */
   onMessagesRecalled?(messages: Array<ChatMessage>): void;
+
+  /**
+   * Occurs when a received message is recalled.
+   *
+   * If the recipient is offline when the message is delivered and recalled, the recipient only receives this callback instead of the message.
+   *
+   * @param params The recalled message information.
+   */
+  onMessagesRecalledInfo?(info: Array<ChatRecalledMessageInfo>): void;
 
   /**
    * Occurs when the conversation is updated.
