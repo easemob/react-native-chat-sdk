@@ -322,7 +322,8 @@ export class SendMessageLeafScreen extends LeafScreenBase<StateSendMessage> {
           JSON.stringify(messages)
         );
         this.that.setState({
-          recvResult: `onMessagesRead: ${messages.length}: ` + messages,
+          recvResult:
+            `onMessagesRead: ${messages.length}: ` + JSON.stringify(messages),
         });
       }
       onGroupMessageRead(groupMessageAcks: ChatGroupMessageAck[]): void {
@@ -333,7 +334,7 @@ export class SendMessageLeafScreen extends LeafScreenBase<StateSendMessage> {
         this.that.setState({
           recvResult:
             `onGroupMessageRead: ${groupMessageAcks.length}: ` +
-            groupMessageAcks,
+            JSON.stringify(groupMessageAcks),
         });
       }
       onMessagesDelivered(messages: ChatMessage[]): void {
@@ -343,7 +344,9 @@ export class SendMessageLeafScreen extends LeafScreenBase<StateSendMessage> {
           messages
         );
         this.that.setState({
-          recvResult: `onMessagesDelivered: ${messages.length}: ` + messages,
+          recvResult:
+            `onMessagesDelivered: ${messages.length}: ` +
+            JSON.stringify(messages),
         });
       }
       onMessagesRecalled(messages: ChatMessage[]): void {
@@ -352,13 +355,16 @@ export class SendMessageLeafScreen extends LeafScreenBase<StateSendMessage> {
           messages
         );
         this.that.setState({
-          recvResult: `onMessagesRecalled: ${messages.length}: ` + messages,
+          recvResult:
+            `onMessagesRecalled: ${messages.length}: ` +
+            JSON.stringify(messages),
         });
       }
       onMessagesRecalledInfo(info: Array<ChatRecalledMessageInfo>): void {
         console.log(`${SendMessageLeafScreen.TAG}: onMessagesRecalled: `, info);
         this.that.setState({
-          recvResult: `onMessagesRecalled: ${info.length}: ` + info,
+          recvResult:
+            `onMessagesRecalled: ${info.length}: ` + JSON.stringify(info),
         });
       }
       onConversationsUpdate(): void {

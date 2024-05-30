@@ -1057,7 +1057,10 @@ export abstract class QuickTestScreenBase<
         );
         this.that.setState({
           presence_listener:
-            `onPresenceStatusChanged: ` + list.length + ': ' + list,
+            `onPresenceStatusChanged: ` +
+            list.length +
+            ': ' +
+            JSON.stringify(list),
         });
       }
     })(this);

@@ -507,7 +507,8 @@ export class ChatManagerLeafScreen extends LeafScreenBase<StateChatMessage> {
       onMessagesRead(messages: ChatMessage[]): void {
         console.log(`${ChatManagerLeafScreen.TAG}: onMessagesRead: `, messages);
         this.that.setState({
-          recvResult: `onMessagesRead: ${messages.length}: ` + messages,
+          recvResult:
+            `onMessagesRead: ${messages.length}: ` + JSON.stringify(messages),
         });
       }
       onGroupMessageRead(groupMessageAcks: ChatGroupMessageAck[]): void {
@@ -518,7 +519,7 @@ export class ChatManagerLeafScreen extends LeafScreenBase<StateChatMessage> {
         this.that.setState({
           recvResult:
             `onGroupMessageRead: ${groupMessageAcks.length}: ` +
-            groupMessageAcks,
+            JSON.stringify(groupMessageAcks),
         });
       }
       onMessagesDelivered(messages: ChatMessage[]): void {
@@ -528,7 +529,9 @@ export class ChatManagerLeafScreen extends LeafScreenBase<StateChatMessage> {
           messages
         );
         this.that.setState({
-          recvResult: `onMessagesDelivered: ${messages.length}: ` + messages,
+          recvResult:
+            `onMessagesDelivered: ${messages.length}: ` +
+            JSON.stringify(messages),
         });
       }
       onMessagesRecalled(messages: ChatMessage[]): void {
@@ -537,7 +540,9 @@ export class ChatManagerLeafScreen extends LeafScreenBase<StateChatMessage> {
           messages
         );
         this.that.setState({
-          recvResult: `onMessagesRecalled: ${messages.length}: ` + messages,
+          recvResult:
+            `onMessagesRecalled: ${messages.length}: ` +
+            JSON.stringify(messages),
         });
       }
       onMessagesRecalledInfo(info: Array<ChatRecalledMessageInfo>): void {
@@ -546,7 +551,8 @@ export class ChatManagerLeafScreen extends LeafScreenBase<StateChatMessage> {
           info
         );
         this.that.setState({
-          recvResult: `onMessagesRecalledInfo: ${info.length}: ` + info,
+          recvResult:
+            `onMessagesRecalledInfo: ${info.length}: ` + JSON.stringify(info),
         });
       }
       onConversationsUpdate(): void {
