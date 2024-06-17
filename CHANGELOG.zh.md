@@ -2,6 +2,10 @@ _Chinese | [English](./CHANGELOG.md)_
 
 # Update Log
 
+## 1.5.1
+
+- 依赖的原生 SDK 升级到版本（`iOS` 4.7.0 和`Android` 4.7.0）。 仅解决原生出现的问题。
+
 ## 1.5.0
 
 - 依赖的原生 SDK 升级到版本（`iOS` 4.6.1 和`Android` 4.6.1）。 添加原生 SDK 提供的新功能和修复的问题。
