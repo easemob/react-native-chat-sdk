@@ -2,6 +2,7 @@ import type { ApiParams } from '../__internal__/DataTypes';
 
 export const MN = {
   joinChatRoom: 'joinChatRoom',
+  joinChatRoomEx: 'joinChatRoomEx',
   leaveChatRoom: 'leaveChatRoom',
   fetchPublicChatRoomsFromServer: 'fetchPublicChatRoomsFromServer',
   fetchChatRoomInfoFromServer: 'fetchChatRoomInfoFromServer',
@@ -45,6 +46,32 @@ export const metaDataList = new Map<string, ApiParams>([
           paramName: 'roomId',
           paramType: 'string',
           paramDefaultValue: '221008568057862',
+          domType: 'input',
+        },
+      ],
+    },
+  ],
+  [
+    MN.joinChatRoomEx,
+    {
+      methodName: MN.joinChatRoomEx,
+      params: [
+        {
+          paramName: 'roomId',
+          paramType: 'string',
+          paramDefaultValue: '221008568057862',
+          domType: 'input',
+        },
+        {
+          paramName: 'exitOtherRoom',
+          paramType: 'boolean',
+          paramDefaultValue: false,
+          domType: 'input',
+        },
+        {
+          paramName: 'ext',
+          paramType: 'string',
+          paramDefaultValue: 'rn-room-test',
           domType: 'input',
         },
       ],

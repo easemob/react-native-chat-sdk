@@ -153,6 +153,19 @@ export class LoginAndLogoutScreen extends Component<
         this.that.setState({ listenerStatus: 'onUserDidLoginFromOtherDevice' });
       }
 
+      onUserDidLoginFromOtherDeviceWithInfo(params: {
+        deviceName?: string;
+        ext?: string;
+      }): void {
+        console.log(
+          'LoginAndLogoutScreen.onUserDidLoginFromOtherDeviceWithInfo',
+          params
+        );
+        this.that.setState({
+          listenerStatus: 'onUserDidLoginFromOtherDeviceWithInfo',
+        });
+      }
+
       onUserDidRemoveFromServer(): void {
         console.log('LoginAndLogoutScreen.onAppActiveNumberReachLimit');
         this.that.setState({ listenerStatus: 'onAppActiveNumberReachLimit' });

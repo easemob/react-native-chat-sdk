@@ -5,6 +5,7 @@ import {
   ChatFetchMessageOptions,
   ChatMessagePinInfo,
   ChatMessageStatusCallback,
+  ChatMessageType,
   ChatRecalledMessageInfo,
   ChatTextMessageBody,
 } from 'react-native-chat-sdk';
@@ -380,6 +381,37 @@ export interface StateChatMessage extends StateBase {
   };
   getMessagePinInfo: {
     messageId: string;
+  };
+  searchMessages: {
+    msgTypes: string[];
+    timestamp: number;
+    count: number;
+    from: string;
+    direction: number;
+    isChatThread: boolean;
+  };
+  searchMessagesInConversation: {
+    convId: string;
+    convType: number;
+    msgTypes: string[];
+    timestamp: number;
+    count: number;
+    from: string;
+    direction: number;
+    isChatThread: boolean;
+  };
+  removeMessagesWithTimestamp: {
+    convId: string;
+    convType: number;
+    timestamp: number;
+    isChatThread: boolean;
+  };
+  getMessageCountWithTimestamp: {
+    convId: string;
+    convType: number;
+    start: number;
+    end: number;
+    isChatThread: boolean;
   };
 }
 
@@ -1597,6 +1629,42 @@ export class ChatManagerLeafScreen extends LeafScreenBase<StateChatMessage> {
       const { messageId } = this.state.getMessagePinInfo;
       this.tryCatch(
         ChatClient.getInstance().chatManager.getMessagePinInfo(messageId),
+        ChatManagerLeafScreen.TAG,
+        name
+      );
+    } else if (name === MN.searchMessages) {
+      const { msgTypes } = this.state.searchMessages;
+      this.tryCatch(
+        ChatClient.getInstance().chatManager.searchMessages({
+          ...this.state.searchMessages,
+          msgTypes: msgTypes as ChatMessageType[],
+        }),
+        ChatManagerLeafScreen.TAG,
+        name
+      );
+    } else if (name === MN.searchMessagesInConversation) {
+      const { msgTypes } = this.state.searchMessagesInConversation;
+      this.tryCatch(
+        ChatClient.getInstance().chatManager.searchMessagesInConversation({
+          ...this.state.searchMessagesInConversation,
+          msgTypes: msgTypes as ChatMessageType[],
+        }),
+        ChatManagerLeafScreen.TAG,
+        name
+      );
+    } else if (name === MN.removeMessagesWithTimestamp) {
+      this.tryCatch(
+        ChatClient.getInstance().chatManager.removeMessagesWithTimestamp({
+          ...this.state.removeMessagesWithTimestamp,
+        }),
+        ChatManagerLeafScreen.TAG,
+        name
+      );
+    } else if (name === MN.getMessageCountWithTimestamp) {
+      this.tryCatch(
+        ChatClient.getInstance().chatManager.getMessageCountWithTimestamp({
+          ...this.state.getMessageCountWithTimestamp,
+        }),
         ChatManagerLeafScreen.TAG,
         name
       );

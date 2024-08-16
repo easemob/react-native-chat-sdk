@@ -189,7 +189,13 @@ export enum ChatMultiDeviceEvent {
   /**
    * If user A updates a conversation mark on device A1, this event is triggered on device A2.
    */
-  CONVERSATION_UPDATE_MARK,
+  CONVERSATION_UPDATE_MARK = 63,
+  /**
+   * If user A mutes a conversation on device A1, this event is triggered on device A2.
+   *
+   * Upon receiving this event, the system will automatically update the push mode information of the conversation. You need to call the corresponding method to update the conversation.
+   */
+  CONVERSATION_MUTE_CHANGED = 64,
 }
 
 /**
@@ -290,6 +296,8 @@ export function ChatMultiDeviceEventFromNumber(
       return ChatMultiDeviceEvent.CONVERSATION_DELETED;
     case 63:
       return ChatMultiDeviceEvent.CONVERSATION_UPDATE_MARK;
+    case 64:
+      return ChatMultiDeviceEvent.CONVERSATION_MUTE_CHANGED;
 
     default:
       const ret = params as ChatMultiDeviceEvent;
@@ -349,7 +357,7 @@ export interface ChatConnectEventListener {
   /**
    * Occurs when the SDK disconnects from the chat server.
    *
-   * The user also remains logged in. For the cases where the user is disconnected by the server, see {@link ChatConnectEventListener.onAppActiveNumberReachLimit}, {@link ChatConnectEventListener.onUserDidLoginFromOtherDevice}, {@link ChatConnectEventListener.onUserDidRemoveFromServer}, {@link ChatConnectEventListener.onUserDidForbidByServer}, {@link ChatConnectEventListener.onUserDidChangePassword}, {@link ChatConnectEventListener.onUserDidLoginTooManyDevice}, {@link ChatConnectEventListener.onUserKickedByOtherDevice}, {@link ChatConnectEventListener.onUserAuthenticationFailed}.
+   * The user also remains logged in. For the cases where the user is disconnected by the server, see {@link ChatConnectEventListener.onAppActiveNumberReachLimit}, {@link ChatConnectEventListener.onUserDidLoginFromOtherDeviceWithInfo}, {@link ChatConnectEventListener.onUserDidRemoveFromServer}, {@link ChatConnectEventListener.onUserDidForbidByServer}, {@link ChatConnectEventListener.onUserDidChangePassword}, {@link ChatConnectEventListener.onUserDidLoginTooManyDevice}, {@link ChatConnectEventListener.onUserKickedByOtherDevice}, {@link ChatConnectEventListener.onUserAuthenticationFailed}.
    */
   onDisconnected?(): void;
 
@@ -374,8 +382,25 @@ export interface ChatConnectEventListener {
    * Occurs when the current user account is logged in to another device.
    *
    * The user is disconnected by the server.
+   *
+   * @deprecated 2024-08-15 replace with {@link onUserDidLoginFromOtherDeviceWithInfo}
    */
   onUserDidLoginFromOtherDevice?(deviceName?: string): void;
+
+  /**
+   * Occurs when the current user account is logged in to another device.
+   *
+   * The user is disconnected by the server.
+   *
+   * @params -
+   * - Param [deviceName] The device name.
+   * - Param [ext] The extension of user information. see {@link ChatOptions.loginExtraInfo}.
+   *
+   */
+  onUserDidLoginFromOtherDeviceWithInfo?(params: {
+    deviceName: string;
+    ext?: string;
+  }): void;
 
   /**
    * Occurs when the current chat user is removed from the server.
@@ -1061,7 +1086,11 @@ export interface ChatRoomEventListener {
    * - Param [roomId] The chat room ID.
    * - Param [participant] The user ID of the new member.
    */
-  onMemberJoined?(params: { roomId: string; participant: string }): void;
+  onMemberJoined?(params: {
+    roomId: string;
+    participant: string;
+    ext?: string;
+  }): void;
   /**
    * Occurs when a member exits the chat room. All chat room members, except the member exiting the chat room, receive this event.
    *

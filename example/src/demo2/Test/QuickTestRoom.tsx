@@ -78,6 +78,27 @@ export class QuickTestScreenRoom extends QuickTestScreenBase<
           );
         }
         break;
+      case MN.joinChatRoomEx:
+        {
+          const methodName = this.metaData.get(MN.joinChatRoomEx)!.methodName;
+          console.log(`${MN.joinChatRoomEx} === ${methodName}`);
+          const roomId = this.metaData.get(MN.joinChatRoomEx)!.params[0]!
+            .paramDefaultValue;
+          const exitOtherRoom = this.metaData.get(MN.joinChatRoomEx)!.params[1]!
+            .paramDefaultValue;
+          const ext = this.metaData.get(MN.joinChatRoomEx)!.params[2]!
+            .paramDefaultValue;
+          this.tryCatch(
+            ChatClient.getInstance().roomManager.joinChatRoomEx({
+              roomId,
+              exitOtherRoom,
+              ext,
+            }),
+            QuickTestScreenRoom.TAG,
+            MN.joinChatRoomEx
+          );
+        }
+        break;
       case MN.leaveChatRoom:
         {
           const methodName = this.metaData.get(MN.leaveChatRoom)!.methodName;

@@ -94,6 +94,13 @@ const LoginListScreen = (): JSX.Element => {
         console.log('onUserDidLoginFromOtherDevice', deviceName);
       },
 
+      onUserDidLoginFromOtherDeviceWithInfo(params: {
+        deviceName?: string;
+        ext?: string;
+      }): void {
+        console.log('onUserDidLoginFromOtherDeviceWithInfo', params);
+      },
+
       onUserDidRemoveFromServer(): void {
         console.log('onUserDidRemoveFromServer');
       },

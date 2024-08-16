@@ -207,6 +207,13 @@ export class ChatOptions {
    */
   useReplacedMessageContents: boolean;
 
+  /**
+   * Extra login information. Can be a string in json format.
+   *
+   * This attribute is used to pass extra login information to the server. The server can use this information to verify the user's identity.
+   */
+  loginExtraInfo?: string;
+
   constructor(params: {
     appKey: string;
     autoLogin?: boolean;
@@ -238,6 +245,7 @@ export class ChatOptions {
     messagesReceiveCallbackIncludeSend?: boolean;
     regardImportMessagesAsRead?: boolean;
     useReplacedMessageContents?: boolean;
+    loginExtraInfo?: string;
   }) {
     this.appKey = params.appKey;
     this.autoLogin = params.autoLogin ?? true;
@@ -275,5 +283,6 @@ export class ChatOptions {
       params.regardImportMessagesAsRead ?? false;
     this.useReplacedMessageContents =
       params.useReplacedMessageContents ?? false;
+    this.loginExtraInfo = params.loginExtraInfo;
   }
 }

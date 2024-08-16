@@ -115,6 +115,19 @@ export abstract class QuickTestScreenBase<
         });
       }
 
+      onUserDidLoginFromOtherDeviceWithInfo(params: {
+        deviceName?: string;
+        ext?: string;
+      }): void {
+        console.log(
+          'QuickTestScreenBase.onUserDidLoginFromOtherDeviceWithInfo',
+          params
+        );
+        this.that.setState({
+          connect_listener: 'onUserDidLoginFromOtherDeviceWithInfo',
+        });
+      }
+
       onUserDidRemoveFromServer(): void {
         console.log('QuickTestScreenBase.onAppActiveNumberReachLimit');
         this.that.setState({ connect_listener: 'onAppActiveNumberReachLimit' });

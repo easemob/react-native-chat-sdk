@@ -85,6 +85,7 @@ export class ChatRoomManager extends Native {
           listener.onMemberJoined?.({
             roomId: params.roomId,
             participant: params.participant,
+            ext: params.ext,
           });
           break;
         case 'onMemberExited':
@@ -228,12 +229,40 @@ export class ChatRoomManager extends Native {
    * @param roomId The ID of the chat room to join.
    *
    * @throws A description of the exception. See {@link ChatError}.
+   *
+   * @deprecated 2024-08-15 replaced by {@link joinChatRoomEx}
    */
   public async joinChatRoom(roomId: string): Promise<void> {
     chatlog.log(`${ChatRoomManager.TAG}: joinChatRoom: ${roomId}`);
     let r: any = await Native._callMethod(MTjoinChatRoom, {
       [MTjoinChatRoom]: {
         roomId: roomId,
+      },
+    });
+    ChatRoomManager.checkErrorFromResult(r);
+  }
+
+  /**
+   * Joins the chat room.
+   *
+   * To leave the chat room, you can call {@link leaveChatRoom}.
+   *
+   * @params -
+   * @param roomId The ID of the chat room to join.
+   * @param exitOtherRoom Whether to exit the others chat room before joining the new chat room.
+   * @param ext The extended information.
+   *
+   * @throws A description of the exception. See {@link ChatError}.
+   */
+  public async joinChatRoomEx(params: {
+    roomId: string;
+    exitOtherRoom?: boolean;
+    ext?: string;
+  }): Promise<void> {
+    chatlog.log(`${ChatRoomManager.TAG}: joinChatRoomEx: ${params}`);
+    let r: any = await Native._callMethod(MTjoinChatRoom, {
+      [MTjoinChatRoom]: {
+        ...params,
       },
     });
     ChatRoomManager.checkErrorFromResult(r);

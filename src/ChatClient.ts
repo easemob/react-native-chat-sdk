@@ -37,6 +37,7 @@ import {
   MTonUserDidChangePassword,
   MTonUserDidForbidByServer,
   MTonUserDidLoginFromOtherDevice,
+  MTonUserDidLoginFromOtherDeviceWithInfo,
   MTonUserDidLoginTooManyDevice,
   MTonUserDidRemoveFromServer,
   MTonUserKickedByOtherDevice,
@@ -210,6 +211,13 @@ export class ChatClient extends BaseManager {
       )
     );
     this._connectionSubscriptions.set(
+      MTonUserDidLoginFromOtherDeviceWithInfo,
+      event.addListener(
+        MTonUserDidLoginFromOtherDeviceWithInfo,
+        this.onUserDidLoginFromOtherDeviceWithInfo.bind(this)
+      )
+    );
+    this._connectionSubscriptions.set(
       MTonUserDidRemoveFromServer,
       event.addListener(
         MTonUserDidRemoveFromServer,
@@ -345,6 +353,12 @@ export class ChatClient extends BaseManager {
     this._connectionListeners.forEach((element) => {
       const deviceName = params.deviceName as string | undefined;
       element.onUserDidLoginFromOtherDevice?.(deviceName);
+    });
+  }
+  private onUserDidLoginFromOtherDeviceWithInfo(params: any): void {
+    chatlog.log(`${ChatClient.TAG}: onUserDidLoginFromOtherDeviceWithInfo: `);
+    this._connectionListeners.forEach((element) => {
+      element.onUserDidLoginFromOtherDeviceWithInfo?.(params);
     });
   }
   private onUserDidRemoveFromServer(): void {

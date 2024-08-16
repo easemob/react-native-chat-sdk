@@ -106,6 +106,7 @@ export class AppKeyScreen extends Component<{ navigation: any }, State, any> {
           requireDeliveryAck: false,
           autoAcceptGroupInvitation: true,
           // pushConfig: pushConfig,
+          loginExtraInfo: 'rn-test',
         })
       )
       .then(() => {

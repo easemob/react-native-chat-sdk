@@ -37,7 +37,9 @@ export const MTonMultiDeviceEventRemoveMessage =
 export const MTonMultiDeviceEventConversation =
   'onMultiDeviceEventConversation';
 
-export const MTonUserDidLoginFromOtherDevice = 'onUserDidLoginFromOtherDevice';
+export const MTonUserDidLoginFromOtherDevice = 'onUserDidLoginFromOtherDevice'; // deprecated 2024-08-15 use onUserDidLoginFromOtherDeviceWithInfo instead
+export const MTonUserDidLoginFromOtherDeviceWithInfo =
+  'onUserDidLoginFromOtherDeviceWithInfo';
 export const MTonUserDidRemoveFromServer = 'onUserDidRemoveFromServer';
 export const MTonUserDidForbidByServer = 'onUserDidForbidByServer';
 export const MTonUserDidChangePassword = 'onUserDidChangePassword';
@@ -367,3 +369,9 @@ export const MTdeleteAllMessageAndConversation =
 export const MTpinMessage = 'pinMessage';
 export const MTunpinMessage = 'unpinMessage';
 export const MTfetchPinnedMessages = 'fetchPinnedMessages';
+
+// 2024-08-15 added
+export const MTsearchMessages = 'searchMessages';
+export const MTsearchMessagesInConversation = 'searchMessagesInConversation';
+export const MTremoveMessagesWithTimestamp = 'removeMessagesWithTimestamp';
+export const MTgetMessageCountWithTimestamp = 'getMessageCountWithTimestamp';

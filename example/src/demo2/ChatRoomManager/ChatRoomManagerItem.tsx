@@ -29,6 +29,11 @@ export interface StateChatRoomMessage extends StateBase {
   joinChatRoom: {
     roomId: string;
   };
+  joinChatRoomEx: {
+    roomId: string;
+    exitOtherRoom: boolean;
+    ext: string;
+  };
   leaveChatRoom: {
     roomId: string;
   };
@@ -158,6 +163,7 @@ export class ChatRoomManagerLeafScreen extends LeafScreenBase<StateChatRoomMessa
   protected renderApiDom(): ReactNode[] {
     const apiList = [
       'joinChatRoom',
+      'joinChatRoomEx',
       'leaveChatRoom',
       'fetchPublicChatRoomsFromServer',
       'fetchChatRoomInfoFromServer',
@@ -279,6 +285,19 @@ export class ChatRoomManagerLeafScreen extends LeafScreenBase<StateChatRoomMessa
         const { roomId } = this.state.joinChatRoom;
         this.tryCatch(
           ChatClient.getInstance().roomManager.joinChatRoom(roomId),
+          ChatRoomManagerLeafScreen.TAG,
+          name
+        );
+        break;
+      }
+      case MN.joinChatRoomEx: {
+        const { roomId, exitOtherRoom, ext } = this.state.joinChatRoomEx;
+        this.tryCatch(
+          ChatClient.getInstance().roomManager.joinChatRoomEx({
+            roomId,
+            exitOtherRoom,
+            ext,
+          }),
           ChatRoomManagerLeafScreen.TAG,
           name
         );
@@ -584,6 +603,16 @@ export class ChatRoomManagerLeafScreen extends LeafScreenBase<StateChatRoomMessa
             roomId,
             keys,
             forced,
+          }),
+          ChatRoomManagerLeafScreen.TAG,
+          name
+        );
+        break;
+      }
+      case MN.joinChatRoomEx: {
+        this.tryCatch(
+          ChatClient.getInstance().roomManager.joinChatRoomEx({
+            ...this.state.joinChatRoomEx,
           }),
           ChatRoomManagerLeafScreen.TAG,
           name

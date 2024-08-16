@@ -1967,6 +1967,131 @@ export class QuickTestScreenChat extends QuickTestScreenBase<
           );
         }
         break;
+      case MN.searchMessages:
+        {
+          const methodName = this.metaData.get(MN.searchMessages)!.methodName;
+          console.log(`${MN.searchMessages} === ${methodName}`);
+          const msgTypes = this.metaData.get(MN.searchMessages)?.params[0]!
+            .paramDefaultValue;
+          const timestamp = this.metaData.get(MN.searchMessages)?.params[1]!
+            .paramDefaultValue;
+          const count = this.metaData.get(MN.searchMessages)?.params[2]!
+            .paramDefaultValue;
+          const from = this.metaData.get(MN.searchMessages)?.params[3]!
+            .paramDefaultValue;
+          const direction = this.metaData.get(MN.searchMessages)?.params[4]!
+            .paramDefaultValue;
+          const isChatThread = this.metaData.get(MN.searchMessages)?.params[5]!
+            .paramDefaultValue;
+          this.tryCatch(
+            ChatClient.getInstance().chatManager.searchMessages({
+              msgTypes,
+              timestamp,
+              count,
+              from,
+              direction,
+              isChatThread,
+            }),
+            QuickTestScreenChat.TAG,
+            name
+          );
+        }
+        break;
+      case MN.searchMessagesInConversation:
+        {
+          const methodName = this.metaData.get(
+            MN.searchMessagesInConversation
+          )!.methodName;
+          console.log(`${MN.searchMessagesInConversation} === ${methodName}`);
+          const convId = this.metaData.get(MN.searchMessagesInConversation)
+            ?.params[0]!.paramDefaultValue;
+          const convType = this.metaData.get(MN.searchMessagesInConversation)
+            ?.params[1]!.paramDefaultValue;
+          const msgTypes = this.metaData.get(MN.searchMessagesInConversation)
+            ?.params[2]!.paramDefaultValue;
+          const timestamp = this.metaData.get(MN.searchMessagesInConversation)
+            ?.params[3]!.paramDefaultValue;
+          const count = this.metaData.get(MN.searchMessagesInConversation)
+            ?.params[4]!.paramDefaultValue;
+          const from = this.metaData.get(MN.searchMessagesInConversation)
+            ?.params[5]!.paramDefaultValue;
+          const direction = this.metaData.get(MN.searchMessagesInConversation)
+            ?.params[6]!.paramDefaultValue;
+          const isChatThread = this.metaData.get(
+            MN.searchMessagesInConversation
+          )?.params[7]!.paramDefaultValue;
+          this.tryCatch(
+            ChatClient.getInstance().chatManager.searchMessagesInConversation({
+              convId,
+              convType,
+              msgTypes,
+              timestamp,
+              count,
+              from,
+              direction,
+              isChatThread,
+            }),
+            QuickTestScreenChat.TAG,
+            name
+          );
+        }
+        break;
+      case MN.removeMessagesWithTimestamp:
+        {
+          const methodName = this.metaData.get(
+            MN.removeMessagesWithTimestamp
+          )!.methodName;
+          console.log(`${MN.removeMessagesWithTimestamp} === ${methodName}`);
+          const convId = this.metaData.get(MN.removeMessagesWithTimestamp)
+            ?.params[0]!.paramDefaultValue;
+          const convType = this.metaData.get(MN.removeMessagesWithTimestamp)
+            ?.params[1]!.paramDefaultValue;
+          const timestamp = this.metaData.get(MN.removeMessagesWithTimestamp)
+            ?.params[2]!.paramDefaultValue;
+          const isChatThread = this.metaData.get(MN.removeMessagesWithTimestamp)
+            ?.params[3]!.paramDefaultValue;
+          this.tryCatch(
+            ChatClient.getInstance().chatManager.removeMessagesWithTimestamp({
+              convId,
+              convType,
+              timestamp,
+              isChatThread,
+            }),
+            QuickTestScreenChat.TAG,
+            name
+          );
+        }
+        break;
+      case MN.getMessageCountWithTimestamp:
+        {
+          const methodName = this.metaData.get(
+            MN.getMessageCountWithTimestamp
+          )!.methodName;
+          console.log(`${MN.getMessageCountWithTimestamp} === ${methodName}`);
+          const convId = this.metaData.get(MN.getMessageCountWithTimestamp)
+            ?.params[0]!.paramDefaultValue;
+          const convType = this.metaData.get(MN.getMessageCountWithTimestamp)
+            ?.params[1]!.paramDefaultValue;
+          const start = this.metaData.get(MN.getMessageCountWithTimestamp)
+            ?.params[2]!.paramDefaultValue;
+          const end = this.metaData.get(MN.getMessageCountWithTimestamp)
+            ?.params[3]!.paramDefaultValue;
+          const isChatThread = this.metaData.get(
+            MN.getMessageCountWithTimestamp
+          )?.params[4]!.paramDefaultValue;
+          this.tryCatch(
+            ChatClient.getInstance().chatManager.getMessageCountWithTimestamp({
+              convId,
+              convType,
+              start,
+              end,
+              isChatThread,
+            }),
+            QuickTestScreenChat.TAG,
+            name
+          );
+        }
+        break;
       default:
         break;
     }

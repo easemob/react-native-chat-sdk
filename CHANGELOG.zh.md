@@ -2,6 +2,26 @@ _Chinese | [English](./CHANGELOG.md)_
 
 # Update Log
 
+## 1.6.0
+
+- 依赖的原生 SDK 升级到版本（`iOS` 4.8.1 和`Android` 4.8.2）。 
+- 新增登录携带扩展信息，其它设备被踢收到该扩展信息。（详见ChatOptions.loginExtraInfo，ChatConnectEventListener.onUserDidLoginFromOtherDeviceWithInfo）
+- 新增搜索消息接口：支持一次搜索多种类型的消息。（详见ChatManager.searchMessages）
+- 新增搜素指定会话消息的接口：支持一次搜索多种类型的消息。（详见ChatManager.searchMessagesInConversation）
+- 新增只删除服务器端的聊天室消息。（详见ChatManager.removeMessagesWithTimestamp）
+- 新增加入聊天室接口，可以携带扩展信息，可以决定退出所有的聊天室。携带扩展信息的用户加入聊天室，其他人收到通知。（详见ChatRoomManager.joinChatRoomEx，ChatRoomEventListener.onMemberJoined）
+- 新增会话接口：从数据库中获取指定会话指定时间段的消息数。（详见ChatManager.getMessageCountWithTimestamp）
+- native: 新增错误码 407
+- native: 修复服务端获取好友列表（包含好友备注）时，在好友列表无变化时，第二次请求获取不到数据的问题。
+- native: 修复特殊情况下附件发送失败，消息仍然成功发送的问题。
+- native: 修复拉取漫游消息时 nextkey 错误的问题。
+- native: 优化弱网服务器连接成功率。
+- native: 修复拉黑联系人时缓存未及时更新的问题。
+- native: 修复退出登录再登录后推送可能不工作的问题。
+- 更新`ChatConnectEventListener`接口：`onUserDidLoginFromOtherDevice`作废，由`onUserDidLoginFromOtherDeviceWithInfo` 替代。
+- `fetchHistoryMessages`作废，由`fetchHistoryMessagesByOptions`替代。
+- `joinChatRoom`作废，由`joinChatRoomEx`替代。
+
 ## 1.5.1
 
 - 依赖的原生 SDK 升级到版本（`iOS` 4.7.0 和`Android` 4.7.0）。 仅解决原生出现的问题。

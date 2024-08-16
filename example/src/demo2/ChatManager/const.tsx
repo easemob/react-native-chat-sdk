@@ -75,4 +75,8 @@ export const gMessageApiList = [
   'fetchPinnedMessages',
   'getPinnedMessages',
   'getMessagePinInfo',
+  'searchMessages',
+  'searchMessagesInConversation',
+  'removeMessagesWithTimestamp',
+  'getMessageCountWithTimestamp',
 ];

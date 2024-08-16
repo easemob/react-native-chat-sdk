@@ -5,6 +5,7 @@ import type {
   ChatMessageSearchScope,
   ChatMessageType,
 } from './ChatMessage';
+import { ChatPushRemindType } from './ChatSilentMode';
 
 /**
  * The message search directions.
@@ -159,6 +160,11 @@ export class ChatConversation {
    */
   marks?: ChatConversationMarkType[];
 
+  /**
+   * The conversation remind type.
+   */
+  remindType?: ChatPushRemindType;
+
   constructor(params: {
     convId: string;
     convType: ChatConversationType;
@@ -167,6 +173,7 @@ export class ChatConversation {
     isPinned?: boolean;
     pinnedTime?: number;
     marks?: ChatConversationMarkType[];
+    remindType?: ChatPushRemindType;
   }) {
     this.convId = params.convId;
     this.convType = params.convType;
@@ -175,6 +182,7 @@ export class ChatConversation {
     this.isPinned = params.isPinned ?? false;
     this.pinnedTime = params.pinnedTime ?? 0;
     this.marks = params.marks;
+    this.remindType = params.remindType ?? ChatPushRemindType.ALL;
   }
 
   /**
@@ -241,6 +249,28 @@ export class ChatConversation {
       this.convType,
       this.isChatThread
     );
+  }
+
+  /**
+   * Gets the count of messages in the conversation.
+   *
+   * @param start: The start timestamp.
+   * @param end: The end timestamp.
+   *
+   * @returns The count of messages.
+   * @throws A description of the exception. See {@link ChatError}.
+   */
+  public async getMessageCountWithTimestamp(
+    start: number,
+    end: number
+  ): Promise<number> {
+    return ChatClient.getInstance().chatManager.getMessageCountWithTimestamp({
+      start: start,
+      end: end,
+      convId: this.convId,
+      convType: this.convType,
+      isChatThread: this.isChatThread,
+    });
   }
 
   /**
@@ -737,6 +767,53 @@ export class ChatConversation {
       this.convType,
       this.isChatThread
     );
+  }
+
+  /**
+   * Searches for messages.
+   *
+   * @params - params
+   * - msgTypes: The message types to search for. See {@link ChatMessageType}.
+   * - timestamp: The timestamp of the message to search for.
+   * - count: The number of messages to search for. The value range is [1,100]. The default value is 20.
+   * - from: The message ID to start searching from.
+   * - direction: The search direction. See {@link ChatSearchDirection}.
+   *
+   * @returns The list of messages that meet the search criteria.
+   *
+   * @throws A description of the exception. See {@link ChatError}.
+   */
+  public async searchMessages(params: {
+    msgTypes: ChatMessageType[];
+    timestamp: number;
+    count?: number;
+    from?: string;
+    direction?: ChatSearchDirection;
+  }): Promise<ChatMessage[]> {
+    return ChatClient.getInstance().chatManager.searchMessagesInConversation({
+      ...params,
+      convId: this.convId,
+      convType: this.convType,
+      isChatThread: this.isChatThread,
+    });
+  }
+
+  /**
+   * Delete the local and server messages of the current user. The server messages of other users in the single chat or group chat with the user will not be affected and can be obtained through roaming.
+   * @param params -
+   * - timestamp: Messages before this timestamp will be deleted.
+   *
+   * @throws A description of the exception. See {@link ChatError}.
+   */
+  public async removeMessagesWithTimestamp(params: {
+    timestamp: number;
+  }): Promise<void> {
+    return ChatClient.getInstance().chatManager.removeMessagesWithTimestamp({
+      ...params,
+      convId: this.convId,
+      convType: this.convType,
+      isChatThread: this.isChatThread,
+    });
   }
 }
 

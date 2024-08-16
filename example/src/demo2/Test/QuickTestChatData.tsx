@@ -96,6 +96,10 @@ export const MN = {
   fetchPinnedMessages: 'fetchPinnedMessages',
   getPinnedMessages: 'getPinnedMessages',
   getMessagePinInfo: 'getMessagePinInfo',
+  searchMessages: 'searchMessages',
+  searchMessagesInConversation: 'searchMessagesInConversation',
+  removeMessagesWithTimestamp: 'removeMessagesWithTimestamp',
+  getMessageCountWithTimestamp: 'getMessageCountWithTimestamp',
 };
 
 export const metaDataList = new Map<string, ApiParams>([
@@ -1801,6 +1805,153 @@ export const metaDataList = new Map<string, ApiParams>([
           paramName: 'messageId',
           paramType: 'string',
           paramDefaultValue: '1274466998939555292',
+        },
+      ],
+    },
+  ],
+  [
+    MN.searchMessages,
+    {
+      methodName: MN.searchMessages,
+      params: [
+        {
+          paramName: 'msgTypes',
+          paramType: 'json',
+          paramDefaultValue: ['txt'],
+        },
+        {
+          paramName: 'timestamp',
+          paramType: 'number',
+          paramDefaultValue: -1,
+        },
+        {
+          paramName: 'count',
+          paramType: 'number',
+          paramDefaultValue: 2,
+        },
+        {
+          paramName: 'from',
+          paramType: 'string',
+          paramDefaultValue: datasheet.accounts[2]!.id,
+        },
+        {
+          paramName: 'direction',
+          paramType: 'number',
+          paramDefaultValue: 0,
+        },
+        {
+          paramName: 'isChatThread',
+          paramType: 'boolean',
+          paramDefaultValue: false,
+        },
+      ],
+    },
+  ],
+  [
+    MN.searchMessagesInConversation,
+    {
+      methodName: MN.searchMessagesInConversation,
+      params: [
+        {
+          paramName: 'convId',
+          paramType: 'string',
+          paramDefaultValue: datasheet.accounts[2]!.id,
+        },
+        {
+          paramName: 'convType',
+          paramType: 'number',
+          paramDefaultValue: 0,
+        },
+        {
+          paramName: 'msgTypes',
+          paramType: 'json',
+          paramDefaultValue: ['txt'],
+        },
+        {
+          paramName: 'timestamp',
+          paramType: 'number',
+          paramDefaultValue: -1,
+        },
+        {
+          paramName: 'count',
+          paramType: 'number',
+          paramDefaultValue: 2,
+        },
+        {
+          paramName: 'from',
+          paramType: 'string',
+          paramDefaultValue: datasheet.accounts[2]!.id,
+        },
+        {
+          paramName: 'direction',
+          paramType: 'number',
+          paramDefaultValue: 0,
+        },
+        {
+          paramName: 'isChatThread',
+          paramType: 'boolean',
+          paramDefaultValue: false,
+        },
+      ],
+    },
+  ],
+  [
+    MN.removeMessagesWithTimestamp,
+    {
+      methodName: MN.removeMessagesWithTimestamp,
+      params: [
+        {
+          paramName: 'convId',
+          paramType: 'string',
+          paramDefaultValue: datasheet.accounts[2]!.id,
+        },
+        {
+          paramName: 'convType',
+          paramType: 'number',
+          paramDefaultValue: 0,
+        },
+        {
+          paramName: 'timestamp',
+          paramType: 'number',
+          paramDefaultValue: -1,
+        },
+        {
+          paramName: 'isChatThread',
+          paramType: 'boolean',
+          paramDefaultValue: false,
+        },
+      ],
+    },
+  ],
+  [
+    MN.getMessageCountWithTimestamp,
+    {
+      methodName: MN.getMessageCountWithTimestamp,
+      params: [
+        {
+          paramName: 'convId',
+          paramType: 'string',
+          paramDefaultValue: datasheet.accounts[2]!.id,
+        },
+        {
+          paramName: 'convType',
+          paramType: 'number',
+          paramDefaultValue: 0,
+        },
+        {
+          paramName: 'start',
+          paramType: 'number',
+          paramDefaultValue: -1,
+        },
+        {
+          paramName: 'end',
+          paramType: 'number',
+          paramDefaultValue: -1,
+        },
+        {
+          paramName: 'isChatThread',
+          paramType: 'boolean',
+          paramDefaultValue: false,
         },
       ],
     },

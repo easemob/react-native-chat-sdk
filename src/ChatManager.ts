@@ -42,6 +42,7 @@ import {
   MTgetLatestMessage,
   MTgetLatestMessageFromOthers,
   MTgetMessage,
+  MTgetMessageCountWithTimestamp,
   MTgetMessageThread,
   MTgetMsgCount,
   MTgetPinInfo,
@@ -89,10 +90,13 @@ import {
   MTremoveMessage,
   MTremoveMessagesFromServerWithMsgIds,
   MTremoveMessagesFromServerWithTs,
+  MTremoveMessagesWithTimestamp,
   MTremoveReaction,
   MTreportMessage,
   MTresendMessage,
   MTsearchChatMsgFromDB,
+  MTsearchMessages,
+  MTsearchMessagesInConversation,
   MTsendMessage,
   MTsyncConversationExt,
   MTtranslateMessage,
@@ -990,6 +994,8 @@ export class ChatManager extends BaseManager {
    * @returns The list of retrieved messages (excluding the one with the starting ID) and the cursor for the next query.
    *
    * @throws A description of the exception. See {@link ChatError}.
+   *
+   * @deprecated 2024-08-15 Use {@link fetchHistoryMessagesByOptions} instead.
    */
   public async fetchHistoryMessages(
     convId: string,
@@ -1331,7 +1337,7 @@ export class ChatManager extends BaseManager {
   }
 
   /**
-   * @deprecated 2023-07-24
+   * @deprecated 2023-07-24 Use {@link fetchConversationsFromServerWithCursor} instead.
    *
    * Gets the conversation list from the server.
    *
@@ -3096,6 +3102,8 @@ export class ChatManager extends BaseManager {
    * @returns If success, the list of conversations is returned; otherwise, an exception will be thrown.
    *
    * @throws A description of the exception. See {@link ChatError}.
+   *
+   * @deprecated 2024-08-13 replace with {@link fetchConversationsFromServerWithCursor}
    */
   public async fetchConversationsFromServerWithPage(
     pageSize: number,
@@ -3665,5 +3673,161 @@ export class ChatManager extends BaseManager {
       return new ChatMessagePinInfo(r[MTgetPinInfo]);
     }
     return undefined;
+  }
+
+  /**
+   * Searches for messages.
+   *
+   * @params - params
+   * - msgTypes: The message types to search for. See {@link ChatMessageType}.
+   * - timestamp: The timestamp of the message to search for.
+   * - count: The number of messages to search for. The value range is [1,100]. The default value is 20.
+   * - from: The message ID to start searching from.
+   * - direction: The search direction. See {@link ChatSearchDirection}.
+   * - isChatThread: Whether the conversation is a thread conversation.
+   *
+   * @returns The list of messages that meet the search criteria.
+   *
+   * @throws A description of the exception. See {@link ChatError}.
+   */
+  public async searchMessages(params: {
+    msgTypes: ChatMessageType[];
+    timestamp: number;
+    count?: number;
+    from?: string;
+    direction?: ChatSearchDirection;
+    isChatThread?: boolean;
+  }): Promise<ChatMessage[]> {
+    chatlog.log(`${ChatManager.TAG}: searchMessages:`, params);
+    const { direction = ChatSearchDirection.UP } = params;
+    let r: any = await Native._callMethod(MTsearchMessages, {
+      [MTsearchMessages]: {
+        types: params.msgTypes,
+        timestamp: params.timestamp,
+        count: params.count ?? 20,
+        from: params.from,
+        direction: direction === ChatSearchDirection.UP ? 'up' : 'down',
+        isChatThread: params.isChatThread,
+      },
+    });
+    ChatManager.checkErrorFromResult(r);
+    const nativeReturn = r?.[MTsearchMessages];
+    const ret: ChatMessage[] = [];
+    if (nativeReturn) {
+      Object.entries(nativeReturn).forEach((value: [string, any]) => {
+        ret.push(new ChatMessage(value[1]));
+      });
+    }
+    return ret;
+  }
+
+  /**
+   * Searches for messages in a conversation.
+   *
+   * @params - params
+   * - convId: The conversation ID.
+   * - convType: The conversation type. See {@link ChatConversationType}.
+   * - msgTypes: The message types to search for. See {@link ChatMessageType}.
+   * - timestamp: The timestamp of the message to search for.
+   * - count: The number of messages to search for. The value range is [1,100]. The default value is 20.
+   * - from: The message ID to start searching from.
+   * - direction: The search direction. See {@link ChatSearchDirection}.
+   * - isChatThread: Whether the conversation is a thread conversation.
+   *
+   * @returns The list of messages that meet the search criteria.
+   *
+   * @throws A description of the exception. See {@link ChatError}.
+   */
+  public async searchMessagesInConversation(params: {
+    convId: string;
+    convType: ChatConversationType;
+    msgTypes: ChatMessageType[];
+    timestamp: number;
+    count?: number;
+    from?: string;
+    direction?: ChatSearchDirection;
+    isChatThread?: boolean;
+  }): Promise<ChatMessage[]> {
+    chatlog.log(`${ChatManager.TAG}: searchMessagesInConversation:`, params);
+    const { direction = ChatSearchDirection.UP } = params;
+    let r: any = await Native._callMethod(MTsearchMessagesInConversation, {
+      [MTsearchMessagesInConversation]: {
+        convId: params.convId,
+        convType: params.convType,
+        types: params.msgTypes,
+        timestamp: params.timestamp,
+        count: params.count ?? 20,
+        from: params.from,
+        direction: direction === ChatSearchDirection.UP ? 'up' : 'down',
+        isChatThread: params.isChatThread,
+      },
+    });
+    ChatManager.checkErrorFromResult(r);
+    const nativeReturn = r?.[MTsearchMessagesInConversation];
+    const ret: ChatMessage[] = [];
+    if (nativeReturn) {
+      Object.entries(nativeReturn).forEach((value: [string, any]) => {
+        ret.push(new ChatMessage(value[1]));
+      });
+    }
+    return ret;
+  }
+
+  /**
+   * Delete the local and server messages of the current user. The server messages of other users in the single chat or group chat with the user will not be affected and can be obtained through roaming.
+   * @param params -
+   * - convId: The conversation ID.
+   * - convType: The conversation type. See {@link ChatConversationType}.
+   * - timestamp: Messages before this timestamp will be deleted.
+   * - isChatThread: Whether the conversation is a thread conversation.
+   *
+   * @throws A description of the exception. See {@link ChatError}.
+   */
+  public async removeMessagesWithTimestamp(params: {
+    convId: string;
+    convType: ChatConversationType;
+    timestamp: number;
+    isChatThread?: boolean;
+  }): Promise<void> {
+    chatlog.log(`${ChatManager.TAG}: removeMessagesWithTimestamp:`, params);
+    let r: any = await Native._callMethod(MTremoveMessagesWithTimestamp, {
+      [MTremoveMessagesWithTimestamp]: {
+        convId: params.convId,
+        convType: params.convType,
+        timestamp: params.timestamp,
+        isChatThread: params.isChatThread,
+      },
+    });
+    ChatManager.checkErrorFromResult(r);
+  }
+
+  /**
+   * Gets the count of messages in the conversation.
+   *
+   * @params -
+   * - convId: The conversation ID.
+   * - convType: The conversation type. See {@link ChatConversationType}.
+   * - isChatThread: Whether the conversation is a thread conversation.
+   * - start: The start timestamp.
+   * - end: The end timestamp.
+   *
+   * @returns The count of messages.
+   * @throws A description of the exception. See {@link ChatError}.
+   */
+  public async getMessageCountWithTimestamp(params: {
+    convId: string;
+    convType: ChatConversationType;
+    start: number;
+    end: number;
+    isChatThread?: boolean;
+  }): Promise<number> {
+    chatlog.log(`${ChatManager.TAG}: getMessageCountWithTimestamp:`, params);
+    let r: any = await Native._callMethod(MTgetMessageCountWithTimestamp, {
+      [MTgetMessageCountWithTimestamp]: {
+        ...params,
+      },
+    });
+    ChatManager.checkErrorFromResult(r);
+    return r?.[MTgetMessageCountWithTimestamp];
   }
 }
