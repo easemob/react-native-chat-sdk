@@ -111,7 +111,7 @@ export abstract class QuickTestScreenBase<
           deviceName
         );
         this.that.setState({
-          connect_listener: 'onUserDidLoginFromOtherDevice',
+          connect_listener: 'onUserDidLoginFromOtherDevice' + deviceName,
         });
       }
 
@@ -124,7 +124,8 @@ export abstract class QuickTestScreenBase<
           params
         );
         this.that.setState({
-          connect_listener: 'onUserDidLoginFromOtherDeviceWithInfo',
+          connect_listener:
+            'onUserDidLoginFromOtherDeviceWithInfo' + JSON.stringify(params),
         });
       }
 

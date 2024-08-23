@@ -150,7 +150,9 @@ export class LoginAndLogoutScreen extends Component<
           'LoginAndLogoutScreen.onUserDidLoginFromOtherDevice',
           deviceName
         );
-        this.that.setState({ listenerStatus: 'onUserDidLoginFromOtherDevice' });
+        this.that.setState({
+          listenerStatus: 'onUserDidLoginFromOtherDevice' + deviceName,
+        });
       }
 
       onUserDidLoginFromOtherDeviceWithInfo(params: {
@@ -162,7 +164,8 @@ export class LoginAndLogoutScreen extends Component<
           params
         );
         this.that.setState({
-          listenerStatus: 'onUserDidLoginFromOtherDeviceWithInfo',
+          listenerStatus:
+            'onUserDidLoginFromOtherDeviceWithInfo' + JSON.stringify(params),
         });
       }
 
