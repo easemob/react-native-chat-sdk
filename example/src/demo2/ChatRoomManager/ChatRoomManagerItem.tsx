@@ -654,11 +654,16 @@ export class ChatRoomManagerLeafScreen extends LeafScreenBase<StateChatRoomMessa
           recvResult: `onDestroyed: ` + params.roomId + params.roomName,
         });
       }
-      onMemberJoined(params: { roomId: string; participant: string }): void {
+      onMemberJoined(params: {
+        roomId: string;
+        participant: string;
+        ext?: string;
+      }): void {
         console.log(
           `${ChatRoomManagerLeafScreen.TAG}: onMemberJoined:`,
           params.roomId,
-          params.participant
+          params.participant,
+          params.ext
         );
         this.that.setState({
           recvResult: `onMemberJoined: ` + params.roomId + params.participant,
