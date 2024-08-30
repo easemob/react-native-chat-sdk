@@ -163,11 +163,11 @@ export abstract class LeafScreenBase<
   }
 
   protected addSpaces(): ReactNode[] {
-    let list = [];
-    for (let index = 0; index < 20; index++) {
-      list.push(this.renderDivider());
-    }
-    return list;
+    return [
+      <View style={{ height: 400 }}>
+        <Text style={{ color: 'yellow', fontSize: 100 }}>{'END'}</Text>
+      </View>,
+    ];
   }
 
   protected renderSendResult(): ReactNode[] {
