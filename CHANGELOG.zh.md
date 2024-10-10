@@ -2,6 +2,10 @@ _Chinese | [English](./CHANGELOG.md)_
 
 # Update Log
 
+## 1.6.2
+
+- 修复 android 平台下推送提醒类型数据转换错误的问题。
+
 ## 1.6.1
 
 - 修复 android 平台下编译报错找不到 `CMakeLists.txt` 的问题。
