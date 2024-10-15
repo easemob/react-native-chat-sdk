@@ -205,3 +205,7 @@ find and replace `react-native-chat-sdk` to `react-native-agora-chat` in all fil
 ---
 
 ## Q & A
+
+1.  `react-native-modal-dropdown` may be error.
+
+        https://github.com/siemiatj/react-native-modal-dropdown/issues/81

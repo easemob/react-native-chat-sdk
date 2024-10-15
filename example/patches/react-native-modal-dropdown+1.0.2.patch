@@ -1,0 +1,13 @@
+diff --git a/node_modules/react-native-modal-dropdown/components/ModalDropdown.js b/node_modules/react-native-modal-dropdown/components/ModalDropdown.js
+index c7e4b4f..e3208df 100644
+--- a/node_modules/react-native-modal-dropdown/components/ModalDropdown.js
++++ b/node_modules/react-native-modal-dropdown/components/ModalDropdown.js
+@@ -434,7 +434,7 @@ export default class ModalDropdown extends Component {
+         data={options}
+         ref={component => (this.flatList = component)}
+         scrollEnabled={scrollEnabled}
+-        initialScrollIndex={saveScrollPosition ? selectedIndex : -1}
++        // initialScrollIndex={saveScrollPosition ? selectedIndex : -1}
+         style={styles.list}
+         keyExtractor={(item, i) => (`key-${i}`)}
+         renderItem={this._renderItem}

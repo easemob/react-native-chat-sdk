@@ -303,6 +303,7 @@ export class SendMessageLeafScreen extends LeafScreenBase<StateSendMessage> {
           ChatManagerCache.getInstance().addRecvMessage(
             messages[messages.length - 1]!
           );
+          this.that.setState({ recvResult: JSON.stringify(messages) });
         }
       }
       onCmdMessagesReceived(messages: ChatMessage[]): void {

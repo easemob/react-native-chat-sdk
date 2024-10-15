@@ -111,7 +111,7 @@ export class PresenceLeafScreen extends LeafScreenBase<StateChatPresence> {
                   pv[apiItem] = Object.assign(
                     {},
                     this.state[apiItem as keyof typeof this.state],
-                    inputData
+                    { [item.paramName]: inputData }
                   );
                   return this.setState(pv);
                 }

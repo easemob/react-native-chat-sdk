@@ -10,14 +10,14 @@
     "start": "react-native start",
     "startr": "react-native start --reset-cache",
     "startr8888": "react-native start --reset-cache --port 8888",
-    "pods": "pod-install --quiet"
+    "pods": "pod-install --quiet",
+    "postinstall": "patch-package"
   },
   "dependencies": {
     "@react-navigation/bottom-tabs": "^6.5.7",
     "@react-navigation/native": "^6.1.6",
     "@react-navigation/native-stack": "^6.9.12",
     "@types/react-native-modal-dropdown": "^1.0.1",
-
     "react": "18.2.0",
     "react-native": "0.71.11",
     "react-native-document-picker": "^9.0.1",
@@ -33,6 +33,7 @@
     "@babel/preset-env": "^7.20.0",
     "@babel/runtime": "^7.20.0",
     "babel-plugin-module-resolver": "^4.1.0",
-    "metro-react-native-babel-preset": "0.73.9"
+    "metro-react-native-babel-preset": "0.73.9",
+    "patch-package": "^7.0.1"
   }
 }

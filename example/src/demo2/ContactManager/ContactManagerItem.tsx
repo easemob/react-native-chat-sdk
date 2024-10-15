@@ -141,7 +141,7 @@ export class ContactLeafScreen extends LeafScreenBase<StateChatContact> {
                   pv[apiItem] = Object.assign(
                     {},
                     this.state[apiItem as keyof typeof this.state],
-                    inputData
+                    { [item.paramName]: inputData }
                   );
                   return this.setState(pv);
                 }

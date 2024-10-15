@@ -10,6 +10,10 @@ interface State {
   result: string;
   appKey: string;
   enablePush: string;
+  enableTLS: string;
+  messagesReceiveCallbackIncludeSend: string;
+  regardImportMessagesAsRead: string;
+  useReplacedMessageContents: string;
 }
 
 let gAppkey = datasheet.AppKey[1] ?? '';
@@ -26,6 +30,10 @@ export class AppKeyScreen extends Component<{ navigation: any }, State, any> {
       result: '',
       appKey: gAppkey,
       enablePush: '0',
+      useReplacedMessageContents: '0',
+      enableTLS: '0',
+      messagesReceiveCallbackIncludeSend: '0',
+      regardImportMessagesAsRead: '0',
     };
   }
 
@@ -81,7 +89,7 @@ export class AppKeyScreen extends Component<{ navigation: any }, State, any> {
 
   private async initSDK(): Promise<void> {
     // from: https://console.firebase.google.com/project/test-push-6b4b6/settings/cloudmessaging/ios:com.easemob.reactnativechatsdk?hl=zh-cn
-    console.log('initSDK: ', this.state.enablePush);
+    console.log('initSDK: ', this.state);
     // await this.requestUserPermission();
     // await this.checkApplicationPermission();
     // let fcmToken: string;
@@ -95,16 +103,31 @@ export class AppKeyScreen extends Component<{ navigation: any }, State, any> {
     //   // this.onListenerNotification();
     // }
 
+    const {
+      appKey,
+      enableTLS,
+      useReplacedMessageContents,
+      messagesReceiveCallbackIncludeSend,
+      regardImportMessagesAsRead,
+    } = this.state;
+
     ChatClient.getInstance()
       .init(
         new ChatOptions({
-          appKey: this.state.appKey,
+          appKey: appKey,
           autoLogin: false,
           debugModel: true,
           enableEmptyConversation: false,
           requireAck: false,
           requireDeliveryAck: false,
           autoAcceptGroupInvitation: true,
+          enableTLS: enableTLS === '0' ? false : true,
+          useReplacedMessageContents:
+            useReplacedMessageContents === '0' ? false : true,
+          messagesReceiveCallbackIncludeSend:
+            messagesReceiveCallbackIncludeSend === '0' ? false : true,
+          regardImportMessagesAsRead:
+            regardImportMessagesAsRead === '0' ? false : true,
           // pushConfig: pushConfig,
           loginExtraInfo: 'rn-test',
         })
@@ -127,7 +150,15 @@ export class AppKeyScreen extends Component<{ navigation: any }, State, any> {
   }
 
   render(): ReactNode {
-    const { result, appKey, enablePush } = this.state;
+    const {
+      result,
+      appKey,
+      enablePush,
+      enableTLS,
+      useReplacedMessageContents,
+      messagesReceiveCallbackIncludeSend,
+      regardImportMessagesAsRead,
+    } = this.state;
     return (
       <ScrollView>
         <View style={styleValues.containerColumn}>
@@ -154,6 +185,63 @@ export class AppKeyScreen extends Component<{ navigation: any }, State, any> {
               {enablePush}
             </TextInput>
           </View>
+          <View style={styleValues.containerRow}>
+            <Text style={styleValues.textStyle}>enableTLS: </Text>
+            <TextInput
+              style={styleValues.textInputStyle}
+              onChangeText={(text: string) => {
+                this.setState({ enableTLS: text === '1' ? '1' : '0' });
+              }}
+            >
+              {enableTLS}
+            </TextInput>
+          </View>
+          <View style={styleValues.containerRow}>
+            <Text style={styleValues.textStyle}>messagesReceiveCallback: </Text>
+            <TextInput
+              style={styleValues.textInputStyle}
+              onChangeText={(text: string) => {
+                this.setState({
+                  messagesReceiveCallbackIncludeSend: text === '1' ? '1' : '0',
+                });
+              }}
+            >
+              {messagesReceiveCallbackIncludeSend}
+            </TextInput>
+          </View>
+
+          <View style={styleValues.containerRow}>
+            <Text style={styleValues.textStyle}>
+              regardImportMessagesAsRead:{' '}
+            </Text>
+            <TextInput
+              style={styleValues.textInputStyle}
+              onChangeText={(text: string) => {
+                this.setState({
+                  regardImportMessagesAsRead: text === '1' ? '1' : '0',
+                });
+              }}
+            >
+              {regardImportMessagesAsRead}
+            </TextInput>
+          </View>
+
+          <View style={styleValues.containerRow}>
+            <Text style={styleValues.textStyle}>
+              useReplacedMessageContents:{' '}
+            </Text>
+            <TextInput
+              style={styleValues.textInputStyle}
+              onChangeText={(text: string) => {
+                this.setState({
+                  useReplacedMessageContents: text === '1' ? '1' : '0',
+                });
+              }}
+            >
+              {useReplacedMessageContents}
+            </TextInput>
+          </View>
+
           <View style={styleValues.containerRow}>
             <Button
               title="appKey"

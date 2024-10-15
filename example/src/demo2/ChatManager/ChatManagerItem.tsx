@@ -749,14 +749,14 @@ export class ChatManagerLeafScreen extends LeafScreenBase<StateChatMessage> {
               this.renderParamWithEnum(
                 item.paramName,
                 ['true', 'false'],
-                itemValue ? 'true' : 'false',
+                itemValue === true ? 'true' : 'false',
                 (index: string, option: any) => {
                   let inputData = option === 'true' ? true : false;
                   let pv: any = {};
                   pv[apiItem] = Object.assign(
                     {},
                     this.state[apiItem as keyof typeof this.state],
-                    inputData
+                    { [item.paramName]: inputData }
                   );
                   return this.setState(pv);
                 }
