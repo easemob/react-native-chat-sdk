@@ -2,31 +2,13 @@
 
 # readme
 #
-# sh publish_agora_package.sh [suffix] [version]|[tag] [directory]
+# sh publish_agora_package.sh [original-version] [target-version]
+#
 # See `npm help install`
-# [suffix]: (optional) generate package name's suffix
-# For example: suffix is 1.0.5-rc.1, package name is react-native-agora-chat-1.0.5-rc.1
-# [version]: (optional) specified version
-# [tag]: (optional) package tag, see `npm help dist-tag`, common ones are alpha, beta, rc and latest.
-# [directory]: (optional) specified output zip directory
 #
-# download latest release version
-# sh publish_agora_package.sh 0.4.5 latest
-# or
-# sh publish_agora_package.sh 0.4.5
+# For example:
+# sh '/Users/asterisk/Codes/rn/react-native-chat-sdk-1.3.1/scripts/publish_agora_package_1.4.0.sh' 1.4.0 1.3.1-beta.2
 #
-# download tag latest version
-# sh publish_agora_package.sh 1.0.5 rc
-#
-# download specified version
-# sh publish_agora_package.sh 0.4.4 0.4.4
-#
-# any directory execute this bash script is ok.
-# For example: sh publish_agora_package.sh
-#
-# npm package version list: `npm dist-tag react-native-chat-sdk`
-#
-# npm pack
 
 function now() {
   local lv_var=$1
@@ -51,15 +33,13 @@ output_dir=${current_dir}/../build/agora
 
 mkdir -p "${output_dir}"
 
-old_package_name=react-native-chat-sdk
 new_package_name=react-native-agora-chat
-suffix=$1
-tagOrVersion=$2
-# output_dir=$3
+orignialVersion=$1
+targetVersion=$2
 
 log package name: "${new_package_name}"
-log package zip suffix: "${suffix}"
-log package tag or version: "${tagOrVersion}"
+log package target version: "${targetVersion}"
+log package original version: "${orignialVersion}"
 log package output directory: "${output_dir}"
 
 # todo: 判断工具是否存在 `npm`, `jq`, `tar`
@@ -80,7 +60,7 @@ fi
 npm pack
 
 # todo: 解压缩包
-tar -zxvf react-native-chat-sdk-1.4.0.tgz
+tar -zxvf react-native-chat-sdk-"${orignialVersion}".tgz
 
 # todo: 修改 package.json
 pushd package || exit
@@ -88,7 +68,7 @@ pushd package || exit
 # 修改 name
 jq '.name = "react-native-agora-chat"' package.json >tmp.json && mv tmp.json package.json
 # 修改 version
-jq --arg version "${tagOrVersion}" '.version = $version' package.json >tmp.json && mv tmp.json package.json
+jq --arg version "${targetVersion}" '.version = $version' package.json >tmp.json && mv tmp.json package.json
 # 修改 types
 jq --arg types "lib/typescript/src/index.d.ts" '.types = $types' package.json >tmp.json && mv tmp.json package.json
 # 修改 repository
@@ -106,6 +86,13 @@ sed -i '' 's/https:\/\/docs-im.easemob.com\/ccim\/rn\/quickstart/https:\/\/docs.
 sed -i '' 's/https:\/\/github.com\/easemob\/react-native-chat-sdk\/tree\/dev\/examples//g' ./README.md
 sed -i '' 's/react-native-chat-sdk/react-native-agora-chat/g' ./README.md
 
+# todo: 修改 版本号
+# 替换 `1.4.0` 为 `1.3.1-beta.2`
+sed -i '' "s/$orignialVersion/$targetVersion/g" ./lib/typescript/src/version.d.ts
+sed -i '' "s/$orignialVersion/$targetVersion/g" ./lib/module/version.js
+sed -i '' "s/$orignialVersion/$targetVersion/g" ./lib/commonjs/version.js
+sed -i '' "s/$orignialVersion/$targetVersion/g" ./src/version.ts
+
 # todo: 修改 LICENSE
 # 替换 `easemob` 为 `agora`
 sed -i '' 's/easemob/agora/g' ./LICENSE
@@ -117,13 +104,13 @@ rm -f native_src/cpp/CMakeLists.txt.rn
 # todo: 删除文件 `native_src/cpp/CMakeLists.txt.flutter`
 rm -f native_src/cpp/CMakeLists.txt.flutter
 
-# todo: 将 `package` 添加到压缩包 `${new_package_name}-${suffix}.zip`
-if [ "${suffix}" == "" ]; then
+# todo: 将 `package` 添加到压缩包 `${new_package_name}-${targetVersion}.zip`
+if [ "${targetVersion}" == "" ]; then
   zip -r -1 -q -b ${output_dir} ${new_package_name}.zip *
   mv ${new_package_name}.zip ${output_dir}
 else
-  zip -r -1 -q -b ${output_dir} ${new_package_name}-${suffix}.zip *
-  mv ${new_package_name}-${suffix}.zip ${output_dir}
+  zip -r -1 -q -b ${output_dir} ${new_package_name}-${targetVersion}.zip *
+  mv ${new_package_name}-${targetVersion}.zip ${output_dir}
 fi
 
 # todo: 返回上级目录
