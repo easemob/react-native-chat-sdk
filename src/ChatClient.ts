@@ -1,9 +1,4 @@
-import {
-  EmitterSubscription,
-  NativeEventEmitter,
-  NativeModules,
-  Platform,
-} from 'react-native';
+import { type EmitterSubscription, NativeEventEmitter } from 'react-native';
 
 import { BaseManager } from './__internal__/Base';
 import {
@@ -45,14 +40,13 @@ import {
   MTupdatePushConfig,
 } from './__internal__/Consts';
 import { ExceptionHandler } from './__internal__/ErrorHandler';
-import { Native } from './__internal__/Native';
 import { ChatContactManager } from './ChatContactManager';
 import {
-  ChatConnectEventListener,
-  ChatCustomEventListener,
-  ChatExceptionEventListener,
+  type ChatConnectEventListener,
+  type ChatCustomEventListener,
+  type ChatExceptionEventListener,
   ChatMultiDeviceEventFromNumber,
-  ChatMultiDeviceEventListener,
+  type ChatMultiDeviceEventListener,
 } from './ChatEvents';
 import { ChatGroupManager } from './ChatGroupManager';
 import { ChatManager } from './ChatManager';
@@ -62,28 +56,12 @@ import { ChatRoomManager } from './ChatRoomManager';
 import { ChatUserInfoManager } from './ChatUserInfoManager';
 import { chatlog } from './common/ChatConst';
 import { ChatDeviceInfo } from './common/ChatDeviceInfo';
-import { ChatError } from './common/ChatError';
 import { ChatOptions } from './common/ChatOptions';
 import { ChatPushConfig } from './common/ChatPushConfig';
+import { eventEmitter } from './__specs__';
+import { Native } from './__internal__/Native';
 
-const LINKING_ERROR =
-  `The package 'react-native-chat-sdk' doesn't seem to be linked. Make sure: \n\n` +
-  Platform.select({ ios: "- You have run 'pod install'\n", default: '' }) +
-  '- You rebuilt the app after installing the package\n' +
-  '- You are not using Expo managed workflow\n';
-
-const ExtSdkApiRN = NativeModules.ExtSdkApiRN
-  ? NativeModules.ExtSdkApiRN
-  : new Proxy(
-      {},
-      {
-        get() {
-          throw new ChatError({ code: 1, description: LINKING_ERROR });
-        },
-      }
-    );
-const eventEmitter = new NativeEventEmitter(ExtSdkApiRN);
-chatlog.log('eventEmitter: ', eventEmitter);
+chatlog.log('dev:eventEmitter: ', eventEmitter);
 
 /**
  * The chat client class, which is the entry of the chat SDK. It defines how to log in to and log out of the chat app and how to manage the connection between the SDK and the chat server.
@@ -130,9 +108,7 @@ export class ChatClient extends BaseManager {
   private _customListeners: Set<ChatCustomEventListener>;
 
   private _options?: ChatOptions;
-  private readonly _sdkVersion: string = '4.0.0';
   private readonly _rnSdkVersion: string = '1.1.0';
-  private _isInit: boolean = false;
   private _currentUsername: string = '';
 
   private constructor() {
@@ -465,7 +441,6 @@ export class ChatClient extends BaseManager {
     chatlog.tag = options.logTag ?? '[chat]';
     const r = await Native._callMethod(MTinit, { options });
     ChatClient.checkErrorFromResult(r);
-    this._isInit = true;
   }
 
   /**

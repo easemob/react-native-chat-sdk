@@ -1,9 +1,10 @@
-import React, { Component, ReactNode } from 'react';
-import { Button, ScrollView, Text, TextInput, View } from 'react-native';
+import React, { Component, type ReactNode } from 'react';
+import { ScrollView, Text, TextInput, View } from 'react-native';
 import { ChatClient, ChatOptions } from 'react-native-chat-sdk';
 
 import { datasheet } from '../__default__/Datasheet';
 import { styleValues } from '../__internal__/Css';
+import { Button } from '../__internal__/Button';
 // import messaging from '@react-native-firebase/messaging';
 
 interface State {

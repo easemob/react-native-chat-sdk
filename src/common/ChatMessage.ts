@@ -446,7 +446,7 @@ export class ChatMessage {
 
   /**
    * Whether it is a message in a message thread.
-   * 
+   *
    * - `true`: Yes. In this case, you need to set the user ID of the message recipient to the message thread ID. See {@link to}.
    * - `false`: No.
    *
@@ -468,6 +468,7 @@ export class ChatMessage {
    * The delivery priorities of chat room messages.
    * **Note** Only for chat rooms.
    */
+  // @ts-expect-error
   private priority?: ChatRoomMessagePriority;
 
   /**
@@ -1342,7 +1343,7 @@ export class ChatFileMessageBody extends _ChatFileMessageBody {
 export class ChatImageMessageBody extends _ChatFileMessageBody {
   /**
    Whether to send the original image.
-  * - `true`: Yes. 
+  * - `true`: Yes.
   * - (Default) `false`: No. If the image is smaller than 100 KB, the SDK sends the original image. If the image is equal to or greater than 100 KB, the SDK will compress it before sending the compressed image.
    */
   sendOriginalImage: boolean;

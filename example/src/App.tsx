@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { Pressable, StyleSheet, Text, View } from 'react-native';
 // import { multiply } from 'react-native-chat-sdk';
 
 export default function App() {
@@ -12,6 +12,14 @@ export default function App() {
   return (
     <View style={styles.container}>
       <Text>Result: {result}</Text>
+      <Pressable
+        style={{ height: 100, width: 100, backgroundColor: 'red' }}
+        onPress={() => {
+          console.log('test:onclicked');
+        }}
+      >
+        <Text>{'test'}</Text>
+      </Pressable>
     </View>
   );
 }

@@ -1,8 +1,9 @@
 import React from 'react';
-import { Button, ScrollView, View } from 'react-native';
+import { ScrollView, View } from 'react-native';
 
 import { styleValues } from './__internal__/Css';
-import { getComponentList, ScreenComponent } from './__internal__/Utils';
+import { getComponentList, type ScreenComponent } from './__internal__/Utils';
+import { Button } from './__internal__/Button';
 
 export const PresenceManagerRoute = 'PresenceManagerScreen';
 export function PresenceManagerScreen(params: {

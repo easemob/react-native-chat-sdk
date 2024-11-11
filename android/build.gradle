@@ -15,9 +15,6 @@ def isNewArchitectureEnabled() {
 
 apply plugin: "com.android.library"
 
-
-def appProject = rootProject.allprojects.find { it.plugins.hasPlugin('com.android.application') }
-
 if (isNewArchitectureEnabled()) {
   apply plugin: "com.facebook.react"
 }
@@ -30,19 +27,48 @@ def getExtOrIntegerDefault(name) {
   return rootProject.ext.has(name) ? rootProject.ext.get(name) : (project.properties["ChatSdk_" + name]).toInteger()
 }
 
+def supportsNamespace() {
+  def parsed = com.android.Version.ANDROID_GRADLE_PLUGIN_VERSION.tokenize('.')
+  def major = parsed[0].toInteger()
+  def minor = parsed[1].toInteger()
+
+  // Namespace support was added in 7.3.0
+  return (major == 7 && minor >= 3) || major >= 8
+}
+
 android {
+  if (supportsNamespace()) {
+    namespace "com.chatsdk"
+
+    sourceSets {
+      main {
+        manifest.srcFile "src/main/AndroidManifestNew.xml"
+      }
+    }
+  }
+
   compileSdkVersion getExtOrIntegerDefault("compileSdkVersion")
 
   defaultConfig {
     minSdkVersion getExtOrIntegerDefault("minSdkVersion")
     targetSdkVersion getExtOrIntegerDefault("targetSdkVersion")
     buildConfigField "boolean", "IS_NEW_ARCHITECTURE_ENABLED", isNewArchitectureEnabled().toString()
+
     externalNativeBuild {
       cmake {
-        cppFlags ''
+        arguments.add "-DANDROID_PLATFORM=android-21"
+        arguments.add "-DANDROID_ARM_NEON=TRUE"
+        arguments.add "-DANDROID_TOOLCHAIN=clang"
+        cFlags "-Wall", "-Werror", "-fexceptions", "-frtti", "-DWITH_INSPECTOR=1"
+        cppFlags "-std=c++17"
       }
     }
   }
+
+  buildFeatures {
+    buildConfig true
+  }
+
   buildTypes {
     release {
       minifyEnabled false
@@ -57,25 +83,37 @@ android {
     sourceCompatibility JavaVersion.VERSION_1_8
     targetCompatibility JavaVersion.VERSION_1_8
   }
+
   externalNativeBuild {
     cmake {
-      path file('src/main/cpp/CMakeLists.txt')
+//       path file('src/main/cpp/CMakeLists.txt')
+      path file('../modules/cpp/CMakeLists.txt')
 //       version '3.22.1'
     }
   }
+
   sourceSets {
-    main.java {
-      srcDir '../native_src/java'
-      exclude 'com/easemob/ext_sdk/flutter/*.java'
+    main {
+      if (isNewArchitectureEnabled()) {
+        java.srcDirs += [
+          "../modules/java",
+          "src/newarch",
+          // This is needed to build Kotlin project with NewArch enabled
+          "${project.buildDir}/generated/source/codegen/java"
+        ]
+        java.excludes = ["com/chatsdk/flutter"]
+      } else {
+        java.srcDirs += [
+          "../modules/java",
+          "src/oldarch"
+        ]
+        java.exclude "com/chatsdk/flutter/*.java"
+      }
     }
-//    main.jniLibs {
-//      srcDirs = ["libs"]
-//    }
   }
 }
 
 repositories {
-  // mavenLocal()
   mavenCentral()
   google()
 }

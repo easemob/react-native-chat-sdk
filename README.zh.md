@@ -8,25 +8,24 @@ _Chinese | [English](./README.md)_
 
 ## 目录说明
 
-├── CHANGELOG.md // 发版说明文档  
-├── CONTRIBUTING.md // 贡献者说明文档  
-├── LICENSE // 许可证文件  
-├── README.md // 项目介绍文档  
-├── README.zh.md // 项目介绍文档（中文版本）  
-├── android // react native SDK android 平台文件夹  
-├── docs // 文档文件夹  
-├── example // 项目内置 demo  
-├── examples // 项目外置的独立 demo  
-├── ios // react native SDK ios 平台文件夹  
-├── lib // react native SDK 生成产品文件夹  
-├── native_src // react native SDK native 源码文件夹  
-├── node_modules // react native depends 文件夹，通过`yarn`或者`npm`命令生成  
-├── package.json // react native project 管理文件  
-├── scripts // react native 脚本文件夹  
-├── src // react native 源码文件夹  
-├── tsconfig.build.json // typescript 语言构建配置文件  
-├── tsconfig.json // typescript 语言配置文件  
-└── yarn.lock // yarn 项目依赖版本配置文件
+    ├── CHANGELOG.md // 发版说明文档
+    ├── CONTRIBUTING.md // 贡献者说明文档
+    ├── LICENSE // 许可证文件
+    ├── README.md // 项目介绍文档
+    ├── README.zh.md // 项目介绍文档（中文版本）
+    ├── android // react native SDK android 平台文件夹
+    ├── docs // 文档文件夹
+    ├── example // 项目内置 demo
+    ├── ios // react native SDK ios 平台文件夹
+    ├── lib // react native SDK 生成产品文件夹
+    ├── modules // react native SDK native 源码文件夹
+    ├── node_modules // react native depends 文件夹，通过`yarn`或者`npm`命令生成
+    ├── package.json // react native project 管理文件
+    ├── scripts // react native 脚本文件夹
+    ├── src // react native 源码文件夹
+    ├── tsconfig.build.json // typescript 语言构建配置文件
+    ├── tsconfig.json // typescript 语言配置文件
+    └── yarn.lock // yarn 项目依赖版本配置文件
 
 ## 项目开发环境要求
 
@@ -95,7 +94,7 @@ ChatClient.getInstance()
 
 ## demo 体验
 
-详见运行体验 api 的 demo。 [传送门](./example/package.json)。  
+详见运行体验 api 的 demo。 [传送门](./example/package.json)。
 详见运行体验登录、退出、发送、接收消息的 demo。[传送门](./examples/simple_demo/package.json)。
 
 ## 贡献者

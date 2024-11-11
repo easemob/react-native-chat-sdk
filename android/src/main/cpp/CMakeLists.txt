@@ -8,4 +8,4 @@ cmake_minimum_required(VERSION 3.10.2)
 
 project("ext_sdk")
 
-add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/../../../../native_src/cpp ${CMAKE_CURRENT_SOURCE_DIR}/../../../../native_src/output/cpp/build)
+add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/../../../../modules/cpp ${CMAKE_CURRENT_SOURCE_DIR}/../../../../modules/build/cpp)

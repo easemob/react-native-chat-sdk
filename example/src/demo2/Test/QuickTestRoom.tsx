@@ -4,8 +4,8 @@ import { ChatClient } from 'react-native-chat-sdk';
 import { metaDataList, MN } from './QuickTestRoomData';
 import {
   QuickTestScreenBase,
-  QuickTestState,
-  QuickTestStateless,
+  type QuickTestState,
+  type QuickTestStateless,
   registerStateDataList,
 } from './QuickTestScreenBase';
 

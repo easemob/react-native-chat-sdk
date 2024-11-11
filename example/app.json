@@ -1,4 +1,9 @@
 {
   "name": "ChatSdkExample",
-  "displayName": "ChatSdkExample"
+  "displayName": "ChatSdkExample",
+  "extra": {
+    "eas": {
+      "projectId": "80d8e009-e59c-47f7-811d-e4f6df8d5aaf"
+    }
+  }
 }

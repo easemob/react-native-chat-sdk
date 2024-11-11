@@ -1,34 +1,34 @@
-import React, { ReactNode } from 'react';
+import React, { type ReactNode } from 'react';
 import { View } from 'react-native';
 import {
   ChatClient,
   ChatCmdMessageBody,
-  ChatConnectEventListener,
-  ChatContactEventListener,
-  ChatCustomEventListener,
+  type ChatConnectEventListener,
+  type ChatContactEventListener,
+  type ChatCustomEventListener,
   ChatGroup,
-  ChatGroupEventListener,
+  type ChatGroupEventListener,
   ChatGroupMessageAck,
   ChatMessage,
-  ChatMessageEventListener,
+  type ChatMessageEventListener,
   ChatMessagePinInfo,
   ChatMessageReactionEvent,
   ChatMessageThreadEvent,
   ChatMessageType,
   ChatMultiDeviceEvent,
-  ChatMultiDeviceEventListener,
+  type ChatMultiDeviceEventListener,
   ChatPresence,
-  ChatPresenceEventListener,
+  type ChatPresenceEventListener,
   ChatRoom,
-  ChatRoomEventListener,
+  type ChatRoomEventListener,
 } from 'react-native-chat-sdk';
 
 import { styleValues } from '../__internal__/Css';
 import type { ApiParams } from '../__internal__/DataTypes';
 import {
   LeafScreenBase,
-  StateBase,
-  StatelessBase,
+  type StateBase,
+  type StatelessBase,
 } from '../__internal__/LeafScreenBase';
 
 export const metaData = new Map<string, ApiParams>();

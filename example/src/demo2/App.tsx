@@ -1,82 +1,105 @@
-import { NavigationContainer } from '@react-navigation/native';
+import {
+  NavigationContainer,
+  type NavigationState,
+} from '@react-navigation/native';
 import React from 'react';
-import { Button, ScrollView, View } from 'react-native';
+import { SafeAreaView, View } from 'react-native';
 
 import { screenComponents } from './__internal__/Components';
 import { styleValues } from './__internal__/Css';
 import {
   getComponentList,
   registerComponent,
-  ScreenComponent,
+  type ScreenComponent,
   Stack,
   unregisterComponents,
 } from './__internal__/Utils';
 import { AppServerClient } from './Client/AppServer';
+import {
+  isHermesEnabled,
+  isTurboModuleEnabled,
+} from './__internal__/rn_features';
+import { Button } from './__internal__/Button';
 // import messaging from '@react-native-firebase/messaging';
 
 function HomeScreen(params: { navigation: any }) {
+  const { navigation } = params;
   return (
-    <ScrollView>
+    <>
       {getComponentList()
         .filter((component: ScreenComponent) => component.isNavigation)
         .map((component: ScreenComponent) => {
-          console.log(`route: ${component.route}`);
           return (
             <View key={component.route} style={styleValues.scrollView}>
               <Button
                 title={component.route}
-                onPress={() => params.navigation?.navigate(component.route)}
+                onPress={() => {
+                  navigation?.navigate(component.route);
+                }}
               />
             </View>
           );
         })}
-    </ScrollView>
+    </>
   );
+}
+
+export function formatNavigationState(
+  state: NavigationState | undefined,
+  result: string[] & string[][]
+) {
+  if (state) {
+    const ret: string[] & string[][] = [];
+    for (const route of state.routes) {
+      ret.push(route.name);
+      if (route.state) {
+        formatNavigationState(route.state as NavigationState | undefined, ret);
+      }
+    }
+    result.push(ret);
+  }
 }
 
 function App() {
-  console.log('test:hermes:', !!(global as any).HermesInternal);
+  console.log('dev:features:', isTurboModuleEnabled(), isHermesEnabled());
   AppServerClient.regUrl = 'https://a41.chat.agora.io/app/chat/user/register';
   AppServerClient.tokenUrl = 'https://a41.chat.agora.io/app/chat/user/login';
+
+  const onStateChange = React.useCallback(
+    (state: NavigationState | undefined) => {
+      const rr: string[] & string[][] = [];
+      formatNavigationState(state, rr);
+      console.log('dev:onStateChange:', JSON.stringify(rr, undefined, '  '));
+    },
+    []
+  );
+
   return (
-    <NavigationContainer>
-      <Stack.Navigator initialRouteName="Home">
-        <Stack.Screen
-          name="Home"
-          component={HomeScreen}
-          options={{
-            headerShown: true,
-            title: 'React Native Chat SDK Test List',
-          }}
-        />
-        {getComponentList().map((component: ScreenComponent) => {
-          return (
-            <Stack.Screen
-              key={component.route}
-              name={component.route}
-              component={component.screen as any}
-            />
-          );
-        })}
-      </Stack.Navigator>
+    <NavigationContainer onStateChange={onStateChange}>
+      <SafeAreaView style={{ flex: 1 }}>
+        <Stack.Navigator initialRouteName="Home">
+          <Stack.Screen
+            name="Home"
+            component={HomeScreen}
+            options={{
+              headerShown: true,
+              title: 'React Native Chat SDK Test List',
+            }}
+          />
+          {getComponentList().map((component: ScreenComponent) => {
+            return (
+              <Stack.Screen
+                key={component.route}
+                name={component.route}
+                component={component.screen as any}
+              />
+            );
+          })}
+        </Stack.Navigator>
+      </SafeAreaView>
     </NavigationContainer>
   );
 }
-
-// (function onListenerNotification(): void {
-//   console.log('fcm message listener:');
-//   messaging().onMessage(async (remoteMessage) => {
-//     const l = 'init: onMessage:' + JSON.stringify(remoteMessage);
-//     Alert.alert(l);
-//     console.log(l);
-//   });
-//   messaging().setBackgroundMessageHandler(async (remoteMessage) => {
-//     const l =
-//       'init: setBackgroundMessageHandler: ' + JSON.stringify(remoteMessage);
-//     Alert.alert(l);
-//     console.log(l);
-//   });
-// })();
 
 unregisterComponents();
 screenComponents.forEach((value: ScreenComponent) => {

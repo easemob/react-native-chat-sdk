@@ -1,8 +1,9 @@
-import React, { Component, ReactNode } from 'react';
-import { Button, ScrollView, Text, View } from 'react-native';
+import React, { Component, type ReactNode } from 'react';
+import { ScrollView, Text, View } from 'react-native';
 import { ChatClient } from 'react-native-chat-sdk';
 
 import { styleValues } from '../__internal__/Css';
+import { Button } from '../__internal__/Button';
 
 interface State {
   result: string;

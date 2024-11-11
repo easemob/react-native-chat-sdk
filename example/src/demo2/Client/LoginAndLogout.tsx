@@ -1,22 +1,22 @@
-import React, { Component, ReactNode } from 'react';
+import React, { Component, type ReactNode } from 'react';
 import {
-  Button,
-  NativeSyntheticEvent,
+  type NativeSyntheticEvent,
   ScrollView,
   Text,
   TextInput,
-  TextInputChangeEventData,
+  type TextInputChangeEventData,
   View,
 } from 'react-native';
 import {
   ChatClient,
-  ChatConnectEventListener,
+  type ChatConnectEventListener,
   ChatMultiDeviceEvent,
-  ChatMultiDeviceEventListener,
+  type ChatMultiDeviceEventListener,
 } from 'react-native-chat-sdk';
 
 import { datasheet } from '../__default__/Datasheet';
 import { styleValues } from '../__internal__/Css';
+import { Button } from '../__internal__/Button';
 import { AppServerClient } from './AppServer';
 
 interface State {
@@ -60,7 +60,6 @@ export class LoginAndLogoutScreen extends Component<
         userId: this.state.useName,
         userPassword: this.state.password,
         onResult: (params: { data?: any; error?: any }) => {
-          console.log('test:getAccountToken:', params);
           if (params.error === undefined) {
             ChatClient.getInstance()
               .loginWithAgoraToken(this.state.useName, params.data.token)

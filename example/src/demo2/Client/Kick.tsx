@@ -1,17 +1,17 @@
-import React, { Component, ReactNode } from 'react';
+import React, { Component, type ReactNode } from 'react';
 import {
-  Button,
-  NativeSyntheticEvent,
+  type NativeSyntheticEvent,
   ScrollView,
   Switch,
   Text,
   TextInput,
-  TextInputChangeEventData,
+  type TextInputChangeEventData,
   View,
 } from 'react-native';
 import { ChatClient, ChatDeviceInfo } from 'react-native-chat-sdk';
 
 import { styleValues } from '../__internal__/Css';
+import { Button } from '../__internal__/Button';
 
 interface State {
   result: string;

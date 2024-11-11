@@ -130,7 +130,7 @@ export class ChatConversation {
   convType: ChatConversationType;
   /**
    * Whether the current conversation is a thread conversation.
-   * 
+   *
    * - `true`: Yes.
    * - `false`: No.
    *
@@ -196,7 +196,7 @@ export class ChatConversation {
         this.convId,
       ]);
       if (ret.size > 0) {
-        return ret.values().next().value.nickName;
+        return ret.values().next().value?.nickName;
       }
     } else if (this.convType === ChatConversationType.GroupChat) {
       const ret =

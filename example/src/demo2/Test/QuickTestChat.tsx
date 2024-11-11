@@ -6,10 +6,10 @@ import {
   ChatGroupMessageAck,
   ChatMessage,
   ChatMessageChatType,
-  ChatMessageEventListener,
+  type ChatMessageEventListener,
   ChatMessagePinInfo,
   ChatMessageReactionEvent,
-  ChatMessageStatusCallback,
+  type ChatMessageStatusCallback,
   ChatMessageThreadEvent,
   ChatMessageType,
 } from 'react-native-chat-sdk';
@@ -18,8 +18,8 @@ import { ChatManagerCache } from './ChatManagerCache';
 import { metaDataList, MN } from './QuickTestChatData';
 import {
   QuickTestScreenBase,
-  QuickTestState,
-  QuickTestStateless,
+  type QuickTestState,
+  type QuickTestStateless,
   registerStateDataList,
 } from './QuickTestScreenBase';
 

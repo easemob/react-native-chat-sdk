@@ -12,14 +12,34 @@ Pod::Spec.new do |s|
   s.authors      = package["author"]
 
   s.platforms    = { :ios => "11.0" }
-  s.source       = { :git => "https://github.com/easemob/react-native-chat-sdk.git", :tag => "#{s.version}" }
+  s.source       = { :git => "https://github.com/AsteriskZuo/react-native-chat-sdk.git", :tag => "#{s.version}" }
 
-  s.source_files = ['ios/**/*.{h,m,mm}', 'native_src/cpp/**/*.{h,cpp,mm}', 'native_src/objc/**/*']
-  s.private_header_files = ['native_src/cpp/**/*.h']
-  s.exclude_files = ['native_src/cpp/java/**/*', 'native_src/cpp/android/**/*', 'native_src/objc/flutter/**/*']
+  s.source_files = ['ios/**/*.{h,m,mm}', 'modules/cpp/**/*.{h,cpp,mm}', 'modules/objc/**/*']
+  s.private_header_files = ['modules/cpp/**/*.h']
+  s.exclude_files = ['modules/cpp/java/**/*', 'modules/cpp/android/**/*', 'modules/objc/flutter/**/*']
 
-  s.dependency "React-Core"
-  s.dependency 'HyphenateChat','4.8.1'
+  # Use install_modules_dependencies helper to install the dependencies if React Native version >=0.71.0.
+  # See https://github.com/facebook/react-native/blob/febf6b7f33fdb4904669f99d795eba4c0f95d7bf/scripts/cocoapods/new_architecture.rb#L79.
+  if respond_to?(:install_modules_dependencies, true)
+    install_modules_dependencies(s)
+  else
+    s.dependency "React-Core"
+
+    # Don't install the dependencies when we run `pod install` in the old architecture.
+    if ENV['RCT_NEW_ARCH_ENABLED'] == '1' then
+      puts "log: enable rct new arch."
+      s.compiler_flags = folly_compiler_flags + " -DRCT_NEW_ARCH_ENABLED=1"
+      s.dependency "React-Codegen"
+      s.dependency "RCT-Folly"
+      s.dependency "RCTRequired"
+      s.dependency "RCTTypeSafety"
+      s.dependency "ReactCommon/turbomodule/core"
+    else
+      puts "log: disable rct new arch."
+    end
+  end
+
+  s.dependency 'HyphenateChat','~> 4.8.1'
 
   s.xcconfig = {
     "OTHER_LDFLAGS": "-ObjC",
@@ -30,45 +50,17 @@ Pod::Spec.new do |s|
     ]
   }
 
-  # Don't install the dependencies when we run `pod install` in the old architecture.
-  if ENV['RCT_NEW_ARCH_ENABLED'] == '1' then
-    puts "log: enable rct new arch."
-    s.compiler_flags = folly_compiler_flags + " -DRCT_NEW_ARCH_ENABLED=1"
-    s.pod_target_xcconfig    = {
-      "OTHER_CPLUSPLUSFLAGS" => "-DFOLLY_NO_CONFIG -DFOLLY_MOBILE=1 -DFOLLY_USE_LIBCPP=1",
-      "CLANG_CXX_LANGUAGE_STANDARD" => "c++17",
-      'HEADER_SEARCH_PATHS' => [
-        "$(PODS_ROOT)/boost",
-        "$(PODS_TARGET_SRCROOT)/native_src/cpp/common",
-        "$(PODS_TARGET_SRCROOT)/native_src/cpp/core",
-        "$(PODS_TARGET_SRCROOT)/native_src/cpp/objc",
-        "$(PODS_TARGET_SRCROOT)/native_src/objc/common",
-        "$(PODS_TARGET_SRCROOT)/native_src/objc/dispatch",
-        "$(PODS_TARGET_SRCROOT)/native_src/objc/rn"
-      ]
-    }
-    s.dependency "React-Codegen"
-    s.dependency "RCT-Folly"
-    s.dependency "RCTRequired"
-    s.dependency "RCTTypeSafety"
-    s.dependency "ReactCommon/turbomodule/core"
-  else
-    puts "log: disable rct new arch."
-    s.pod_target_xcconfig    = {
-      "CLANG_CXX_LANGUAGE_STANDARD" => "c++17",
-      'OTHER_LDFLAGS' => [
-        '-Wunused-function',
-        '-Wunreachable-code',
-        '-Wunused-variable'
-      ],
-      'HEADER_SEARCH_PATHS' => [
-        "$(PODS_TARGET_SRCROOT)/native_src/cpp/common",
-        "$(PODS_TARGET_SRCROOT)/native_src/cpp/core",
-        "$(PODS_TARGET_SRCROOT)/native_src/cpp/objc",
-        "$(PODS_TARGET_SRCROOT)/native_src/objc/common",
-        "$(PODS_TARGET_SRCROOT)/native_src/objc/dispatch",
-        "$(PODS_TARGET_SRCROOT)/native_src/objc/rn"
-      ]
-   }
-  end
+  s.pod_target_xcconfig    = {
+    "OTHER_CPLUSPLUSFLAGS" => "-DFOLLY_NO_CONFIG -DFOLLY_MOBILE=1 -DFOLLY_USE_LIBCPP=1",
+    "CLANG_CXX_LANGUAGE_STANDARD" => "c++17",
+    'HEADER_SEARCH_PATHS' => [
+      "$(PODS_ROOT)/boost",
+      "$(PODS_TARGET_SRCROOT)/modules/cpp/common",
+      "$(PODS_TARGET_SRCROOT)/modules/cpp/core",
+      "$(PODS_TARGET_SRCROOT)/modules/cpp/objc",
+      "$(PODS_TARGET_SRCROOT)/modules/objc/common",
+      "$(PODS_TARGET_SRCROOT)/modules/objc/dispatch",
+      "$(PODS_TARGET_SRCROOT)/modules/objc/rn"
+    ]
+  }
 end

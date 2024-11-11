@@ -2,11 +2,11 @@ import * as React from 'react';
 import { Text, View } from 'react-native';
 import {
   ChatClient,
+  ChatException,
   type ChatExceptionEventListener,
   type ChatMessageEventListener,
 } from 'react-native-chat-sdk';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
-import type { ChatException } from 'src/common/ChatError';
 
 type Props = {
   navigation: any;
@@ -16,7 +16,7 @@ type State = {
 };
 export class UnsupportedScreen extends React.Component<Props, State> {
   public static route = 'Unsupported';
-  private static TAG = 'Unsupported';
+  // private static TAG = 'Unsupported';
   private listener: ChatExceptionEventListener;
   private msgListener: ChatMessageEventListener;
   constructor(props: Props) {

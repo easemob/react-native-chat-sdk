@@ -1,14 +1,14 @@
-import React, { ReactNode } from 'react';
+import React, { type ReactNode } from 'react';
 import { View } from 'react-native';
 import {
   ChatClient,
   ChatRoom,
-  ChatRoomEventListener,
+  type ChatRoomEventListener,
 } from 'react-native-chat-sdk';
 
 import { styleValues } from '../__internal__/Css';
 import type { ApiParams } from '../__internal__/DataTypes';
-import { LeafScreenBase, StateBase } from '../__internal__/LeafScreenBase';
+import { LeafScreenBase, type StateBase } from '../__internal__/LeafScreenBase';
 import { generateData } from '../__internal__/Utils';
 import { metaDataList, MN } from './ChatRoomManagerData';
 export interface StateChatRoomMessage extends StateBase {

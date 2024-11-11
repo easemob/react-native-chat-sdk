@@ -2,11 +2,8 @@
  * Call native api
  */
 
-import { NativeModules } from 'react-native';
-
+import { ExtSdkApiRN, isTurboModuleEnabled } from '../__specs__';
 import { ChatError } from '../common/ChatError';
-
-const { ExtSdkApiRN } = NativeModules;
 
 export class Native {
   protected static checkErrorFromResult(result: any): void {
@@ -14,7 +11,12 @@ export class Native {
       throw new ChatError(result.error);
     }
   }
-  protected static _callMethod<T>(method: string, args?: {}): Promise<T> {
-    return ExtSdkApiRN.callMethod(method, args);
+  protected static _callMethod<T>(method: string, args?: Object): Promise<T> {
+    if (isTurboModuleEnabled === true) {
+      // return ExtSdkApiRN.callMethodA({ method, args });
+      return ExtSdkApiRN.callMethodB(method, args);
+    } else {
+      return ExtSdkApiRN.callMethod(method, args);
+    }
   }
 }

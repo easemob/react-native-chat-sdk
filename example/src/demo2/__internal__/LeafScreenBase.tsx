@@ -1,6 +1,5 @@
-import React, { ReactNode } from 'react';
+import React, { type ReactNode } from 'react';
 import {
-  Button,
   Dimensions,
   Platform,
   ScrollView,
@@ -9,14 +8,15 @@ import {
   View,
 } from 'react-native';
 import DocumentPicker, {
-  DocumentPickerResponse,
+  type DocumentPickerResponse,
 } from 'react-native-document-picker';
 import type ImagePicker from 'react-native-image-picker';
 import {
-  ImagePickerResponse,
+  type ImagePickerResponse,
   launchImageLibrary,
 } from 'react-native-image-picker';
 import ModalDropdown from 'react-native-modal-dropdown';
+import { Button } from './Button';
 
 import { styleValues } from './Css';
 import type { MediaType } from './Types';
@@ -273,23 +273,23 @@ export abstract class LeafScreenBase<
     multiLine: boolean = true
   ): ReactNode {
     //"string" | "number" | "bigint" | "boolean" | "symbol" | "undefined" | "object" | "function" | "json"
-    const parse = (type: string, value: string) => {
-      if (type === 'string') {
-        return value;
-      } else if (type === 'number') {
-        if (value.includes('.')) {
-          return parseFloat(value);
+    const parse = (t: string, v: string) => {
+      if (t === 'string') {
+        return v;
+      } else if (t === 'number') {
+        if (v.includes('.')) {
+          return parseFloat(v);
         } else {
-          return parseInt(value, 10);
+          return parseInt(v, 10);
         }
-      } else if (type === 'bigint') {
-        return parseInt(value, 10);
-      } else if (type === 'boolean') {
-        return value === '0' ? false : true;
-      } else if (type === 'json') {
-        return JSON.parse(value);
+      } else if (t === 'bigint') {
+        return parseInt(v, 10);
+      } else if (t === 'boolean') {
+        return v === '0' ? false : true;
+      } else if (t === 'json') {
+        return JSON.parse(v);
       } else {
-        return value;
+        return v;
       }
     };
     return (
@@ -577,7 +577,7 @@ export abstract class LeafScreenBase<
                     oct(
                       JSON.stringify(
                         `{
-                            localPath: ${s}, 
+                            localPath: ${s},
                             width: ${response.assets[0]!.width!},
                             height: ${response.assets[0]!.height!},
                             name: ${response.assets[0]!.fileName!},

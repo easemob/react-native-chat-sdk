@@ -209,3 +209,7 @@ find and replace `react-native-chat-sdk` to `react-native-agora-chat` in all fil
 1.  `react-native-modal-dropdown` may be error.
 
         https://github.com/siemiatj/react-native-modal-dropdown/issues/81
+
+2.  Creation of .xcode.env.local points to a temp file for node when run using yarn
+    [ref](https://github.com/facebook/react-native/issues/43285)
+    Delete `.xcode.env.local` if it exists, and then run `bundle exec pod install` directly, not using yarn, or run `npx expo prebuild` if you're using a recent expo project that uses prebuild. This should generate the `.xcode.env.local` file correctly.

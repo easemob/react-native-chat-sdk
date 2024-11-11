@@ -1,10 +1,13 @@
-import { ChatClient, ChatContactEventListener } from 'react-native-chat-sdk';
+import {
+  ChatClient,
+  type ChatContactEventListener,
+} from 'react-native-chat-sdk';
 
 import { metaDataList, MN } from './QuickTestContactData';
 import {
   QuickTestScreenBase,
-  QuickTestState,
-  QuickTestStateless,
+  type QuickTestState,
+  type QuickTestStateless,
   registerStateDataList,
 } from './QuickTestScreenBase';
 

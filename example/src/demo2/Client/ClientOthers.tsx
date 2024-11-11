@@ -1,11 +1,16 @@
-import type { ChatTextMessageBody } from 'lib/typescript';
-import React, { Component, ReactNode } from 'react';
-import { Button, ScrollView, Text, TextInput, View } from 'react-native';
-import { ChatClient, ChatMessage, ChatPushConfig } from 'react-native-chat-sdk';
+import React, { Component, type ReactNode } from 'react';
+import { ScrollView, Text, TextInput, View } from 'react-native';
+import {
+  ChatClient,
+  ChatMessage,
+  ChatPushConfig,
+  ChatTextMessageBody,
+} from 'react-native-chat-sdk';
 
 // import messaging from '@react-native-firebase/messaging';
 import { datasheet } from '../__default__/Datasheet';
 import { styleValues } from '../__internal__/Css';
+import { Button } from '../__internal__/Button';
 
 interface State {
   result: string;
@@ -127,16 +132,13 @@ export class ClientOthersScreen extends Component<
     ChatClient.getInstance()
       .chatManager.sendMessage(newMsg2, {
         onSuccess: (message) => {
-          console.log('test:zuoyu:sendMessage', message);
           ChatClient.getInstance()
             .chatManager.translateMessage(message, ['zh-Hans'])
             .then((msg) => {
-              console.log('test:zuoyu:translateMessage', msg);
               msg.attributes = { test: 'test' };
               ChatClient.getInstance()
                 .chatManager.updateMessage(msg)
-                .then((result) => {
-                  console.log('test:zuoyu:updateMessage', result);
+                .then((_) => {
                   const text = msg.body as ChatTextMessageBody;
                   const body = {
                     ...text,
@@ -144,9 +146,7 @@ export class ClientOthersScreen extends Component<
                   } as ChatTextMessageBody;
                   ChatClient.getInstance()
                     .chatManager.modifyMessageBody(msg.msgId, body)
-                    .then((r) => {
-                      console.log('test:zuoyu:modifyMessageBody', r);
-                    })
+                    .then()
                     .catch();
                 })
                 .catch();

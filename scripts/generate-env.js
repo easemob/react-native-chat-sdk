@@ -2,6 +2,7 @@
 
 const path = require('node:path');
 const fs = require('node:fs');
+const chalk = require('chalk');
 
 const project_root = path.resolve(__dirname, '..');
 
@@ -14,4 +15,5 @@ export const groups = [{ id: undefined, owner: undefined, name: undefined }];
 `;
 if (fs.existsSync(file) === false) {
   fs.writeFileSync(file, content, 'utf-8');
+  console.log(chalk.green(`${file} generated successfully`));
 }

@@ -127,7 +127,7 @@ import {
   ChatMessagePinInfo,
   ChatMessageSearchScope,
   ChatMessageStatus,
-  ChatMessageStatusCallback,
+  type ChatMessageStatusCallback,
   ChatMessageType,
   ChatRecalledMessageInfo,
 } from './common/ChatMessage';

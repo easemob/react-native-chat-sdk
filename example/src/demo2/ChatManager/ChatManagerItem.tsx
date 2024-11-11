@@ -1,10 +1,10 @@
-import React, { ReactNode } from 'react';
-import { Pressable, Text, View } from 'react-native';
+import React, { type ReactNode } from 'react';
+import { Text, View } from 'react-native';
 import {
   ChatConversationFetchOptions,
   ChatFetchMessageOptions,
   ChatMessagePinInfo,
-  ChatMessageStatusCallback,
+  type ChatMessageStatusCallback,
   ChatMessageType,
   ChatRecalledMessageInfo,
   ChatTextMessageBody,
@@ -16,7 +16,7 @@ import {
   ChatGroupMessageAck,
   ChatMessage,
   ChatMessageChatTypeFromNumber,
-  ChatMessageEventListener,
+  type ChatMessageEventListener,
   ChatMessageReactionEvent,
   ChatMessageThreadEvent,
   ChatMessageTypeFromString,
@@ -26,13 +26,14 @@ import { styleValues } from '../__internal__/Css';
 import type { ApiParams } from '../__internal__/DataTypes';
 import {
   LeafScreenBase,
-  StateBase,
-  StatelessBase,
+  type StateBase,
+  type StatelessBase,
 } from '../__internal__/LeafScreenBase';
 import { generateData } from '../__internal__/Utils';
 import { ChatManagerCache, metaDataList, MN } from './ChatManagerData';
 import { gMessageApiList } from './const';
 import { splitApiList } from './split';
+import { Button } from '../__internal__/Button';
 
 export interface StateChatMessage extends StateBase {
   list: string[];
@@ -682,7 +683,6 @@ export class ChatManagerLeafScreen extends LeafScreenBase<StateChatMessage> {
   }
 
   private onChangePage(key: string) {
-    console.log('test:zuoyu:key:', key, this === undefined);
     if (key === 'thread') {
       this.setState({ list: this.statelessData.apiListList[0]!, keyword: key });
     } else if (key === 'message') {
@@ -695,18 +695,13 @@ export class ChatManagerLeafScreen extends LeafScreenBase<StateChatMessage> {
   private renderPageButton({ kw }: { kw: string }) {
     const { keyword } = this.state;
     return (
-      <Pressable
-        style={{
-          height: 20,
-          backgroundColor: keyword === kw ? 'orange' : undefined,
-          borderRadius: 4,
-        }}
+      <Button
+        color={keyword === kw ? 'orange' : 'black'}
+        title={kw}
         onPress={() => {
           this.onChangePage(kw);
         }}
-      >
-        <Text>{kw}</Text>
-      </Pressable>
+      />
     );
   }
 
@@ -750,7 +745,7 @@ export class ChatManagerLeafScreen extends LeafScreenBase<StateChatMessage> {
                 item.paramName,
                 ['true', 'false'],
                 itemValue === true ? 'true' : 'false',
-                (index: string, option: any) => {
+                (_: string, option: any) => {
                   let inputData = option === 'true' ? true : false;
                   let pv: any = {};
                   pv[apiItem] = Object.assign(
@@ -765,16 +760,6 @@ export class ChatManagerLeafScreen extends LeafScreenBase<StateChatMessage> {
           }
         } else {
           let value = this.parseValue(item.paramType, itemValue);
-          // console.log(
-          //   'test: method: ',
-          //   data.get(apiItem)!.methodName,
-          //   'paramName: ',
-          //   item.paramName,
-          //   'paramType: ',
-          //   item.paramType,
-          //   'paramValue: ',
-          //   value
-          // );
           renderDomAry.push(
             this.renderGroupParamWithInput(
               item.paramName,

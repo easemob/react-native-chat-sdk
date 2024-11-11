@@ -1,19 +1,22 @@
 package com.chatsdk;
 
+import android.util.Log;
+
 import androidx.annotation.NonNull;
 
+import com.facebook.proguard.annotations.DoNotStrip;
 import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
-import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
-import com.facebook.react.module.annotations.ReactModule;
+import com.facebook.react.bridge.ReadableMap;
 
-@ReactModule(name = ChatSdkModule.NAME)
-public class ChatSdkModule extends ReactContextBaseJavaModule {
+import javax.annotation.Nullable;
+
+public class ChatSdkModule extends ChatSdkSpec {
   public static final String NAME = "ChatSdk";
 
-  public ChatSdkModule(ReactApplicationContext reactContext) {
-    super(reactContext);
+  ChatSdkModule(ReactApplicationContext context) {
+    super(context);
   }
 
   @Override
@@ -26,7 +29,30 @@ public class ChatSdkModule extends ReactContextBaseJavaModule {
   // Example method
   // See https://reactnative.dev/docs/native-modules-android
   @ReactMethod
+  @Override
   public void multiply(double a, double b, Promise promise) {
+    Log.d(getName(), "multiply");
     promise.resolve(a * b);
   }
+
+  // @ReactMethod
+  // public void callMethodA(ReadableMap params, Promise promise) {
+  //   Log.d(getName(), "callMethodA");
+  //   promise.resolve(null);
+  // }
+
+  @ReactMethod
+  public void callMethodB(String method, @Nullable ReadableMap args, Promise promise) {
+    Log.d(getName(), "callMethodB");
+    promise.resolve(null);
+  }
+
+  @ReactMethod
+  public void addListener(String eventName) {}
+
+  @ReactMethod
+  public void removeListeners(double count) {}
+
+  @ReactMethod
+  public void removeAllListeners() {}
 }

@@ -60,7 +60,7 @@ import { ChatCursorResult } from './common/ChatCursorResult';
 import { ChatException } from './common/ChatError';
 import {
   ChatGroup,
-  ChatGroupFileStatusCallback,
+  type ChatGroupFileStatusCallback,
   ChatGroupInfo,
   ChatGroupOptions,
   ChatGroupSharedFile,

@@ -1,4 +1,4 @@
-import React, { ReactNode } from 'react';
+import React, { type ReactNode } from 'react';
 import { Text, View } from 'react-native';
 import {
   ChatClient,
@@ -6,10 +6,10 @@ import {
   ChatGroupMessageAck,
   ChatMessage,
   ChatMessageChatType,
-  ChatMessageEventListener,
+  type ChatMessageEventListener,
   ChatMessagePinInfo,
   ChatMessageReactionEvent,
-  ChatMessageStatusCallback,
+  type ChatMessageStatusCallback,
   ChatMessageThreadEvent,
   ChatMessageType,
   ChatRecalledMessageInfo,
@@ -21,8 +21,8 @@ import { styleValues } from '../__internal__/Css';
 import type { ApiParams } from '../__internal__/DataTypes';
 import {
   LeafScreenBase,
-  StateBase,
-  StatelessBase,
+  type StateBase,
+  type StatelessBase,
 } from '../__internal__/LeafScreenBase';
 import { ChatManagerCache } from './ChatManagerData';
 
@@ -715,7 +715,7 @@ export class SendMessageLeafScreen extends LeafScreenBase<StateSendMessage> {
       data.params[5]!.paramName,
       ['High', 'Normal', 'Low'],
       getPriority(priority ?? ChatRoomMessagePriority.PriorityNormal),
-      (index: string, option: any) => {
+      (_: string, option: any) => {
         let tt = ChatRoomMessagePriority.PriorityNormal;
         if (option === 'High') {
           tt = ChatRoomMessagePriority.PriorityHigh;
@@ -756,7 +756,7 @@ export class SendMessageLeafScreen extends LeafScreenBase<StateSendMessage> {
         data.params[4]!.paramName,
         ['true', 'false'],
         isChatThread === true ? 'true' : 'false',
-        (index: string, option: any) => {
+        (_: string, option: any) => {
           let ic = option === 'true' ? true : false;
           this.setState({
             isChatThread: ic,
@@ -772,7 +772,7 @@ export class SendMessageLeafScreen extends LeafScreenBase<StateSendMessage> {
         data.params[1]!.paramName,
         ['PeerChat', 'GroupChat', 'ChatRoom'],
         getTargetId(targetType),
-        (index: string, option: any) => {
+        (_: string, option: any) => {
           let tt = ChatMessageChatType.PeerChat;
           if (option === 'PeerChat') {
             tt = ChatMessageChatType.PeerChat;
@@ -804,7 +804,7 @@ export class SendMessageLeafScreen extends LeafScreenBase<StateSendMessage> {
           ChatMessageType.COMBINE,
         ],
         messageType,
-        (index: string, option: any) => {
+        (_: string, option: any) => {
           let bt = ChatMessageType.TXT;
           if (option === ChatMessageType.TXT) {
             bt = ChatMessageType.TXT;

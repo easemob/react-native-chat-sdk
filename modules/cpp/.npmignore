@@ -1,0 +1,7 @@
+# https://docs.npmjs.com/cli/v10/using-npm/developers#keeping-files-out-of-your-package
+
+# Ignore everything
+# *
+
+# Except these files
+!CMakeLists.txt

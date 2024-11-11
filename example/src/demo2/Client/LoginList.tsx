@@ -1,10 +1,13 @@
-import type { ChatConnectEventListener } from 'lib/typescript';
 import * as React from 'react';
-import { Button, Text, View } from 'react-native';
-import { ChatClient } from 'react-native-chat-sdk';
+import { Text, View } from 'react-native';
+import {
+  ChatClient,
+  type ChatConnectEventListener,
+} from 'react-native-chat-sdk';
 import ModalDropdown from 'react-native-modal-dropdown';
 
 import { datasheet } from '../__default__/Datasheet';
+import { Button } from '../__internal__/Button';
 
 const LoginListScreen = (): JSX.Element => {
   const accounts = datasheet.accounts;

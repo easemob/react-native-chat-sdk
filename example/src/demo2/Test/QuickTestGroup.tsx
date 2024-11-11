@@ -1,15 +1,15 @@
 import {
   ChatClient,
   ChatError,
-  ChatGroupFileStatusCallback,
+  type ChatGroupFileStatusCallback,
   ChatGroupOptions,
 } from 'react-native-chat-sdk';
 
 import { metaDataList, MN } from './QuickTestGroupData';
 import {
   QuickTestScreenBase,
-  QuickTestState,
-  QuickTestStateless,
+  type QuickTestState,
+  type QuickTestStateless,
   registerStateDataList,
 } from './QuickTestScreenBase';
 
