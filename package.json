@@ -101,7 +101,7 @@
   "workspaces": [
     "example"
   ],
-  "packageManager": "yarn@4.5.1",
+  "packageManager": "yarn@3.6.1",
   "engines": {
     "node": ">= 18.0.0"
   },
