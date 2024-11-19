@@ -15,5 +15,6 @@
     "podspec",
     "Pressable",
     "typecheck"
-  ]
+  ],
+  "cmake.sourceDirectory": "/Users/asterisk/Codes/rn/react-native-chat-sdk/modules/cpp"
 }
