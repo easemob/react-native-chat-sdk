@@ -17,6 +17,8 @@
     "modules/java/**",
     "modules/objc/**",
     "modules/cpp/CMakeLists.txt",
+    "scripts/generate-cmake.js",
+    "scripts/generate-version.js",
     "CHANGELOG.md",
     "*.podspec",
     "!ios/build",
