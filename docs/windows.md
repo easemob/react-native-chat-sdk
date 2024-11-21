@@ -1,16 +1,16 @@
-Update time: 2022-06-16
+Update time: 2024-11-21
 
 **Here are only the things that are different from MacOS.**
 
 ## Environment Requirements
 
 - Windows 10 or later
-- Android Studio 4.0 or later, including JDK 1.8 or later
-- NodeJs 16 or later, including npm
+- Android Studio 2022 or later, including JDK 1.8 or later
+- NodeJs 18 or later, including npm
 - Yarn
 - React Native CLI
-- react 16.13.1 or later
-- react-native 0.63.4 or later
+- react 18 or later
+- react-native 0.66.5 or later
 
 ## Integrate the Chat React Native SDK
 

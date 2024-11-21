@@ -31,12 +31,10 @@ _Chinese | [English](./README.md)_
 
 要求如下：
 
-- React Native 0.63.4 or above
-- NodeJs 16 or above
+- React Native 0.66.5 or above
+- NodeJs 18 or above
 - Xcode 12.4 or above for iOS application
 - Android Studio 4.2 or above for Android application
-
-有关详细信息，请参阅快速入门演示。 [Portal](./docs/quick-start.md)
 
 ## 添加 SDK 到现有项目
 
@@ -123,7 +121,7 @@ MIT
 
 ## 常见问题和解决方法
 
-如果遇到问题可以参考这里。[传送门](./docs/others.md)。
+如果遇到问题可以参考这里。[传送门](./docs/qa.md)。
 
 ## 引用
 

@@ -30,12 +30,10 @@ Instant messaging connects people wherever they are and allows them to communica
 
 The requirements are as follows:
 
-- React Native 0.63.4 or above
+- React Native 0.66.5 or above
 - NodeJs 18 or above
 - Xcode 13 or above for iOS application
 - Android Studio 2022 or above for Android application
-
-For details, please refer to the Quick Start demo. [Portal](./docs/quick-start.md)
 
 ## Add SDK to existing application
 
@@ -119,7 +117,7 @@ MIT
 
 ## Q & A
 
-If you encounter problems, please refer to here. [Portal](./docs/others.md).
+If you encounter problems, please refer to here. [Portal](./docs/qa.md).
 
 ## References
 
