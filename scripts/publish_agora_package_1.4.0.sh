@@ -97,12 +97,12 @@ sed -i '' "s/$orignialVersion/$targetVersion/g" ./src/version.ts
 # 替换 `easemob` 为 `agora`
 sed -i '' 's/easemob/agora/g' ./LICENSE
 
-# todo: 拷贝文件 `native_src/cpp/CMakeLists.txt.rn` 为 `native_src/cpp/CMakeLists.txt`
-cp native_src/cpp/CMakeLists.txt.rn native_src/cpp/CMakeLists.txt
-# todo: 删除文件 `native_src/cpp/CMakeLists.txt.rn`
-rm -f native_src/cpp/CMakeLists.txt.rn
-# todo: 删除文件 `native_src/cpp/CMakeLists.txt.flutter`
-rm -f native_src/cpp/CMakeLists.txt.flutter
+# todo: 拷贝文件 `modules/cpp/CMakeLists.txt.rn` 为 `modules/cpp/CMakeLists.txt`
+cp modules/cpp/CMakeLists.txt.rn modules/cpp/CMakeLists.txt
+# todo: 删除文件 `modules/cpp/CMakeLists.txt.rn`
+rm -f modules/cpp/CMakeLists.txt.rn
+# todo: 删除文件 `modules/cpp/CMakeLists.txt.flutter`
+rm -f modules/cpp/CMakeLists.txt.flutter
 
 # todo: 将 `package` 添加到压缩包 `${new_package_name}-${targetVersion}.zip`
 if [ "${targetVersion}" == "" ]; then
