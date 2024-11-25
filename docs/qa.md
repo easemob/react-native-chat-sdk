@@ -14,3 +14,7 @@
     `yarn react-native info`
 5.  In debug mode, after the Android platform is started, no page is displayed and a prompt is displayed to run `react-native start`.
     Earlier versions of `react-native` may require manual data forwarding, `adb reverse tcp:8081 tcp:8081`.
+6.  Compilation error for lower version ios. (react native version <= 0.67)
+    https://gist.github.com/AsteriskZuo/70cd2a4e0515e2f44f151b66187c819b
+
+7.
