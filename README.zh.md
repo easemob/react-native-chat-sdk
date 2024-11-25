@@ -32,7 +32,7 @@ _Chinese | [English](./README.md)_
 要求如下：
 
 - React Native 0.66.5 or above
-- NodeJs 18 or above
+- NodeJs 16 or above (Recommended 18 or above)
 - Xcode 12.4 or above for iOS application
 - Android Studio 4.2 or above for Android application
 
@@ -127,3 +127,7 @@ MIT
 
 [Github 仓库地址](https://github.com/easemob/react-native-chat-sdk)
 [官网网站地址](https://docs-im.easemob.com/ccim/rn/quickstart)
+
+## 版本兼容性
+
+[详见](./docs/rn.md)

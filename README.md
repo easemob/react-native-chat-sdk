@@ -31,7 +31,7 @@ Instant messaging connects people wherever they are and allows them to communica
 The requirements are as follows:
 
 - React Native 0.66.5 or above
-- NodeJs 18 or above
+- NodeJs 16 or above (Recommended 18 or above)
 - Xcode 13 or above for iOS application
 - Android Studio 2022 or above for Android application
 
@@ -122,6 +122,10 @@ If you encounter problems, please refer to here. [Portal](./docs/qa.md).
 ## References
 
 [Official website document address](https://docs.agora.io/en/agora-chat/landing-page?platform=React%20Native)
+
+## Version compatibility
+
+Version compatibility verification. [Portal](./docs/rn.md)
 
 ---
 
