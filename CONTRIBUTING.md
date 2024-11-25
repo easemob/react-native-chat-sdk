@@ -17,6 +17,12 @@ To get started with the project, run `yarn` in the root directory to install the
 yarn
 ```
 
+Initialize the projects for SDK and example.
+
+```sh
+yarn prepare
+```
+
 > Since the project relies on Yarn workspaces, you cannot use [`npm`](https://github.com/npm/cli) for development.
 
 The [example app](/example/) demonstrates usage of the library. You need to run it to test any changes you make.
