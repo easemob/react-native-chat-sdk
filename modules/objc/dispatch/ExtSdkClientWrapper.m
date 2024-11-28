@@ -377,9 +377,22 @@
           withMethodType:(NSString *)aChannelName
                   result:(nonnull id<ExtSdkCallbackObjc>)result {
     NSDictionary *dict = param[@"config"];
+    NSString *deviceId = dict[@"deviceId"];
     NSString *deviceToken = dict[@"deviceToken"];
-    NSData *deviceTokenData =
-        [deviceToken dataUsingEncoding:NSUTF8StringEncoding];
+//    NSData *deviceTokenData =
+//        [deviceToken dataUsingEncoding:NSUTF8StringEncoding];
+
+    __weak typeof(self) weakSelf = self;
+    [EMClient.sharedClient
+        registerForRemoteNotificationsWithCertName:deviceId
+                                       deviceToken:deviceToken
+                                        completion:^(
+                                            EMError *_Nullable aError) {
+                                          [weakSelf onResult:result
+                                              withMethodType:aChannelName
+                                                   withError:aError
+                                                  withParams:nil];
+                                        }];
     //    EMError* error = [EMClient.sharedClient bindDeviceToken:[deviceToken
     //    dataUsingEncoding:NSUTF8StringEncoding]]; [self onResult:result
     //    withMethodType:aChannelName withError:error withParams:nil];
@@ -394,15 +407,16 @@
     //    }];
 
     // must be NSString* type for deviceToken
-    [EMClient.sharedClient
-        registerForRemoteNotificationsWithDeviceToken:deviceToken
-                                           completion:^(
-                                               EMError *_Nullable aError) {
-                                             [self onResult:result
-                                                 withMethodType:aChannelName
-                                                      withError:aError
-                                                     withParams:nil];
-                                           }];
+    //    [EMClient.sharedClient
+    //        registerForRemoteNotificationsWithDeviceToken:deviceToken
+    //                                           completion:^(
+    //                                               EMError *_Nullable aError)
+    //                                               {
+    //                                             [self onResult:result
+    //                                                 withMethodType:aChannelName
+    //                                                      withError:aError
+    //                                                     withParams:nil];
+    //                                           }];
 }
 
 - (void)activeNumbersReachLimitation {
@@ -434,6 +448,14 @@
 
 - (void)tokenDidExpire:(EMErrorCode)aErrorCode {
     [self onReceive:ExtSdkMethodKeyOnTokenDidExpire withParams:nil];
+}
+
+- (void)onOfflineMessageSyncStart {
+    [self onReceive:ExtSdkMethodKeyOnOfflineMessageSyncStart withParams:nil];
+}
+
+- (void)onOfflineMessageSyncFinish {
+    [self onReceive:ExtSdkMethodKeyOnOfflineMessageSyncFinish withParams:nil];
 }
 
 - (void)userAccountDidLoginFromOtherDevice:(NSString *_Nullable)aDeviceName {

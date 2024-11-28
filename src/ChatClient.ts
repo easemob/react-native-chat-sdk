@@ -26,6 +26,8 @@ import {
   MTonMultiDeviceEventGroup,
   MTonMultiDeviceEventRemoveMessage,
   MTonMultiDeviceEventThread,
+  MTonOfflineMessageSyncFinish,
+  MTonOfflineMessageSyncStart,
   MTonTokenDidExpire,
   MTonTokenWillExpire,
   MTonUserAuthenticationFailed,
@@ -242,6 +244,20 @@ export class ChatClient extends BaseManager {
         this.onAppActiveNumberReachLimit.bind(this)
       )
     );
+    this._connectionSubscriptions.set(
+      MTonOfflineMessageSyncStart,
+      event.addListener(
+        MTonOfflineMessageSyncStart,
+        this.onOfflineMessageSyncStart.bind(this)
+      )
+    );
+    this._connectionSubscriptions.set(
+      MTonOfflineMessageSyncFinish,
+      event.addListener(
+        MTonOfflineMessageSyncFinish,
+        this.onOfflineMessageSyncFinish.bind(this)
+      )
+    );
   }
 
   private onConnected(): void {
@@ -377,6 +393,18 @@ export class ChatClient extends BaseManager {
     chatlog.log(`${ChatClient.TAG}: onAppActiveNumberReachLimit: `);
     this._connectionListeners.forEach((element) => {
       element.onAppActiveNumberReachLimit?.();
+    });
+  }
+  private onOfflineMessageSyncStart(): void {
+    chatlog.log(`${ChatClient.TAG}: onOfflineMessageSyncStart: `);
+    this._connectionListeners.forEach((element) => {
+      element.onOfflineMessageSyncStart?.();
+    });
+  }
+  private onOfflineMessageSyncFinish(): void {
+    chatlog.log(`${ChatClient.TAG}: onOfflineMessageSyncFinish: `);
+    this._connectionListeners.forEach((element) => {
+      element.onOfflineMessageSyncFinish?.();
     });
   }
 

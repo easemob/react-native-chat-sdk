@@ -42,6 +42,7 @@ import {
   MTgetLatestMessage,
   MTgetLatestMessageFromOthers,
   MTgetMessage,
+  MTgetMessageCount,
   MTgetMessageCountWithTimestamp,
   MTgetMessageThread,
   MTgetMsgCount,
@@ -3829,5 +3830,19 @@ export class ChatManager extends BaseManager {
     });
     ChatManager.checkErrorFromResult(r);
     return r?.[MTgetMessageCountWithTimestamp];
+  }
+
+  /**
+   * Gets the count of messages in the local database.
+   *
+   * @returns The count of messages.
+   *
+   * @throws A description of the exception. See {@link ChatError}.
+   */
+  public async getMessageCount(): Promise<number> {
+    chatlog.log(`${ChatManager.TAG}: getMessageCount: `);
+    let r: any = await Native._callMethod(MTgetMessageCount);
+    Native.checkErrorFromResult(r);
+    return r?.[MTgetMessageCount] as number;
   }
 }

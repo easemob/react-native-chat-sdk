@@ -333,6 +333,8 @@
           ExtSdkMethodKeyOnMultiDeviceEventThread : @(ExtSdkMethodKeyOnMultiDeviceEventThreadValue),
           ExtSdkMethodKeyOnMultiDeviceEventRemoveMessage : @(ExtSdkMethodKeyOnMultiDeviceEventRemoveMessageValue),
           ExtSdkMethodKeyOnMultiDeviceEventConversation : @(ExtSdkMethodKeyOnMultiDeviceEventConversationValue),
+          ExtSdkMethodKeyOnOfflineMessageSyncStart : @(ExtSdkMethodKeyOnOfflineMessageSyncStartValue),
+          ExtSdkMethodKeyOnOfflineMessageSyncFinish : @(ExtSdkMethodKeyOnOfflineMessageSyncFinishValue),
           
           ExtSdkMethodKeyGetMsgCount : @(ExtSdkMethodKeyGetMsgCountValue),
           
@@ -360,6 +362,8 @@
           ExtSdkMethodKeysearchMessagesInConversation : @(ExtSdkMethodKeysearchMessagesInConversationValue),
           ExtSdkMethodKeyremoveMessagesWithTimestamp : @(ExtSdkMethodKeyremoveMessagesWithTimestampValue),
           ExtSdkMethodKeygetMessageCountWithTimestamp : @(ExtSdkMethodKeygetMessageCountWithTimestampValue),
+          
+          ExtSdkMethodKeygetMessageCount : @(ExtSdkMethodKeygetMessageCountValue),
       };
     });
     if (nil != key) {

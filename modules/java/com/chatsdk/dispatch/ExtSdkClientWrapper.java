@@ -427,6 +427,18 @@ public class ExtSdkClientWrapper extends ExtSdkWrapper {
                 attributes.put("ext", info.getDeviceExt());
                 onReceive(ExtSdkMethodType.onUserDidLoginFromOtherDeviceWithInfo, attributes);
             }
+
+          @Override
+          public void onOfflineMessageSyncStart() {
+            Map<String, String> attributes = new HashMap<>();
+            onReceive(ExtSdkMethodType.onOfflineMessageSyncStart, attributes);
+          }
+
+          @Override
+          public void onOfflineMessageSyncFinish() {
+            Map<String, String> attributes = new HashMap<>();
+            onReceive(ExtSdkMethodType.onOfflineMessageSyncFinish, attributes);
+          }
         };
 
         // setup connection listener

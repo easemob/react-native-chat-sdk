@@ -1178,6 +1178,21 @@ public class ExtSdkChatManagerWrapper extends ExtSdkWrapper {
         });
     }
 
+  public void getMessageCount(JSONObject param, String channelName, ExtSdkCallback result)
+    throws JSONException {
+    EMClient.getInstance().chatManager().asyncGetMessageCount(new EMValueCallBack<Integer>() {
+      @Override
+      public void onSuccess(Integer value) {
+        ExtSdkWrapper.onSuccess(result, channelName, value);
+      }
+
+      @Override
+      public void onError(int i, String s) {
+        ExtSdkWrapper.onError(result, i, s);
+      }
+    });
+  }
+
     private void registerEaseListener() {
         if (this.messageListener != null) {
             EMClient.getInstance().chatManager().removeMessageListener(this.messageListener);

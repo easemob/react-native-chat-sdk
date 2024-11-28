@@ -1686,6 +1686,9 @@ class ExtSdkRecalledMessageInfoHelper {
         if (info.getRecallMessage() != null) {
             data.put("recalledMessage", ExtSdkMessageHelper.toJson(info.getRecallMessage()));
         }
+        if (info.getConversationId() != null) {
+          data.put("recalledConvId", info.getConversationId());
+        }
         return data;
     }
 }

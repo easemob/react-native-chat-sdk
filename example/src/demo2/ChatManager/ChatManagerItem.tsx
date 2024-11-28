@@ -414,6 +414,7 @@ export interface StateChatMessage extends StateBase {
     end: number;
     isChatThread: boolean;
   };
+  getMessageCount: {};
 }
 
 export interface StatelessChatMessage extends StatelessBase {
@@ -1650,6 +1651,12 @@ export class ChatManagerLeafScreen extends LeafScreenBase<StateChatMessage> {
         ChatClient.getInstance().chatManager.getMessageCountWithTimestamp({
           ...this.state.getMessageCountWithTimestamp,
         }),
+        ChatManagerLeafScreen.TAG,
+        name
+      );
+    } else if (name === MN.getMessageCount) {
+      this.tryCatch(
+        ChatClient.getInstance().chatManager.getMessageCount(),
         ChatManagerLeafScreen.TAG,
         name
       );

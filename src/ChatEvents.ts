@@ -379,6 +379,16 @@ export interface ChatConnectEventListener {
   onAppActiveNumberReachLimit?(): void;
 
   /**
+   * Callback invoked when the synchronization of offline messages starts.
+   */
+  onOfflineMessageSyncStart?(): void;
+
+  /**
+   * Callback invoked when the synchronization of offline messages finishes.
+   */
+  onOfflineMessageSyncFinish?(): void;
+
+  /**
    * Occurs when the current user account is logged in to another device.
    *
    * The user is disconnected by the server.

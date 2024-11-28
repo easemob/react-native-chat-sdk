@@ -127,6 +127,14 @@ const LoginListScreen = (): JSX.Element => {
       onUserAuthenticationFailed(): void {
         console.log('onUserAuthenticationFailed');
       },
+
+      onOfflineMessageSyncFinish(): void {
+        console.log('onOfflineMessageSyncFinish');
+      },
+
+      onOfflineMessageSyncStart(): void {
+        console.log('onOfflineMessageSyncStart');
+      },
     } as ChatConnectEventListener);
   }, []);
 

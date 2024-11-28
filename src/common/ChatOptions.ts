@@ -214,6 +214,15 @@ export class ChatOptions {
    */
   loginExtraInfo?: string;
 
+  /**
+   * Whether the work path is copyable.
+   *
+   * **Note** This attribute is used only for the iOS platform.
+   *
+   * default is `false`
+   */
+  workPathCopiable?: boolean;
+
   constructor(params: {
     appKey: string;
     autoLogin?: boolean;
@@ -246,6 +255,7 @@ export class ChatOptions {
     regardImportMessagesAsRead?: boolean;
     useReplacedMessageContents?: boolean;
     loginExtraInfo?: string;
+    workPathCopiable?: boolean;
   }) {
     this.appKey = params.appKey;
     this.autoLogin = params.autoLogin ?? true;
@@ -284,5 +294,6 @@ export class ChatOptions {
     this.useReplacedMessageContents =
       params.useReplacedMessageContents ?? false;
     this.loginExtraInfo = params.loginExtraInfo;
+    this.workPathCopiable = params.workPathCopiable ?? false;
   }
 }

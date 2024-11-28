@@ -1714,6 +1714,10 @@ export class ChatRecalledMessageInfo {
    * The extension information of the recalled message.
    */
   recalledExt?: string;
+  /**
+   * The conversation ID of the recalled message.
+   */
+  recalledConvId?: string;
 
   /**
    * Creates a recall message instance.
@@ -1722,16 +1726,19 @@ export class ChatRecalledMessageInfo {
    * - recalledMessage: The recalled message.
    * - recalledBy: The user ID of the operator that recalls the message.
    * - recalledExt: The extension information of the recalled message.
+   * - recalledConvId: The conversation ID of the recalled message.
    */
   constructor(params: {
     recalledMessageId: string;
     recalledMessage?: ChatMessage;
     recalledBy: string;
     recalledExt?: string;
+    recalledConvId?: string;
   }) {
     this.recalledMessageId = params.recalledMessageId;
     this.recalledMessage = params.recalledMessage;
     this.recalledBy = params.recalledBy;
     this.recalledExt = params.recalledExt;
+    this.recalledConvId = params.recalledConvId;
   }
 }

@@ -179,6 +179,8 @@ RCT_EXPORT_METHOD(multiply : (double)a b : (double)b resolve : (
         ExtSdkMethodKeyOnConnected, ExtSdkMethodKeyOnDisconnected,
         ExtSdkMethodKeyOnMultiDeviceEvent, ExtSdkMethodKeySendDataToFlutter,
         ExtSdkMethodKeyOnTokenWillExpire, ExtSdkMethodKeyOnTokenDidExpire,
+        ExtSdkMethodKeyOnOfflineMessageSyncStart,
+        ExtSdkMethodKeyOnOfflineMessageSyncFinish,
 
         ExtSdkMethodKeyOnUserDidLoginFromOtherDevice,
         ExtSdkMethodKeyOnUserDidRemoveFromServer,
@@ -431,7 +433,8 @@ RCT_EXPORT_METHOD(multiply : (double)a b : (double)b resolve : (
         ExtSdkMethodKeysearchMessagesInConversation,
         ExtSdkMethodKeyremoveMessagesWithTimestamp,
         ExtSdkMethodKeygetMessageCountWithTimestamp,
-        ExtSdkMethodKeyOnUserDidLoginFromOtherDeviceWithInfo
+        ExtSdkMethodKeyOnUserDidLoginFromOtherDeviceWithInfo,
+        ExtSdkMethodKeygetMessageCount
     ];
     //    NSLog(@"%@: supportedEvents: %@", TAG, ret);
     return ret;

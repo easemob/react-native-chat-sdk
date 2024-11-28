@@ -34,6 +34,8 @@ public class ExtSdkMethodType {
 
     public static final String onUserDidLoginFromOtherDevice = "onUserDidLoginFromOtherDevice";
     public static final String onUserDidLoginFromOtherDeviceWithInfo = "onUserDidLoginFromOtherDeviceWithInfo";
+    public static final String onOfflineMessageSyncStart = "onOfflineMessageSyncStart";
+    public static final String onOfflineMessageSyncFinish = "onOfflineMessageSyncFinish";
     public static final String onUserDidRemoveFromServer = "onUserDidRemoveFromServer";
     public static final String onUserDidForbidByServer = "onUserDidForbidByServer";
     public static final String onUserDidChangePassword = "onUserDidChangePassword";
@@ -343,6 +345,8 @@ public class ExtSdkMethodType {
     public static final String searchMessagesInConversation = "searchMessagesInConversation";
     public static final String removeMessagesWithTimestamp = "removeMessagesWithTimestamp";
     public static final String getMessageCountWithTimestamp = "getMessageCountWithTimestamp";
+
+    public static final String getMessageCount = "getMessageCount";
 
     // TODO: EMChatThreadManagerListener
 }

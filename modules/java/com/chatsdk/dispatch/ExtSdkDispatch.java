@@ -929,6 +929,9 @@ public class ExtSdkDispatch implements ExtSdkApi {
             case ExtSdkMethodType.getMessageCountWithTimestamp:
                 ExtSdkConversationWrapper.getInstance().getMessageCountWithTimestamp(jsonParams, methodType, callback);
                 break;
+              case ExtSdkMethodType.getMessageCount:
+                ExtSdkChatManagerWrapper.getInstance().getMessageCount(jsonParams, methodType, callback);
+                break;
 
             default:
                 callback.fail(1, "no implement: " + methodType);

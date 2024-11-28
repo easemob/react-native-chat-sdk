@@ -100,6 +100,7 @@ export const MN = {
   searchMessagesInConversation: 'searchMessagesInConversation',
   removeMessagesWithTimestamp: 'removeMessagesWithTimestamp',
   getMessageCountWithTimestamp: 'getMessageCountWithTimestamp',
+  getMessageCount: 'getMessageCount',
 };
 
 export const metaDataList = new Map<string, ApiParams>([
@@ -1954,6 +1955,13 @@ export const metaDataList = new Map<string, ApiParams>([
           paramDefaultValue: false,
         },
       ],
+    },
+  ],
+  [
+    MN.getMessageCount,
+    {
+      methodName: MN.getMessageCount,
+      params: [],
     },
   ],
 ]);

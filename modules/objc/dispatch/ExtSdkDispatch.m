@@ -943,6 +943,9 @@ static NSString *const TAG = @"ExtSdkDispatch";
     case ExtSdkMethodKeygetMessageCountWithTimestampValue:
         [[ExtSdkConversationWrapper getInstance] getMessageCountWithTimestamp:ps withMethodType:methodType result:callback];
         break;
+    case ExtSdkMethodKeygetMessageCountValue:
+        [[ExtSdkChatManagerWrapper getInstance] getMessageCount:ps withMethodType:methodType result:callback];
+        break;
 
     default:
         [callback onFail:1 withExtension:[NSString stringWithFormat:@"not implement: %@", methodType]];

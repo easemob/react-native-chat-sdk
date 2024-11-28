@@ -158,6 +158,16 @@ export abstract class QuickTestScreenBase<
         console.log('QuickTestScreenBase.onUserAuthenticationFailed');
         this.that.setState({ connect_listener: 'onUserAuthenticationFailed' });
       }
+
+      onOfflineMessageSyncStart(): void {
+        console.log('QuickTestScreenBase.onOfflineMessageSyncStart');
+        this.that.setState({ connect_listener: 'onOfflineMessageSyncStart' });
+      }
+
+      onOfflineMessageSyncFinish(): void {
+        console.log('QuickTestScreenBase.onOfflineMessageSyncFinish');
+        this.that.setState({ connect_listener: 'onOfflineMessageSyncFinish' });
+      }
     })(this);
     ChatClient.getInstance().removeAllConnectionListener();
     ChatClient.getInstance().addConnectionListener(connectListener);

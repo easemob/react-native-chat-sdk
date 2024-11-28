@@ -375,3 +375,8 @@ export const MTsearchMessages = 'searchMessages';
 export const MTsearchMessagesInConversation = 'searchMessagesInConversation';
 export const MTremoveMessagesWithTimestamp = 'removeMessagesWithTimestamp';
 export const MTgetMessageCountWithTimestamp = 'getMessageCountWithTimestamp';
+
+// 2024-11-28 added
+export const MTgetMessageCount = 'getMessageCount';
+export const MTonOfflineMessageSyncStart = 'onOfflineMessageSyncStart';
+export const MTonOfflineMessageSyncFinish = 'onOfflineMessageSyncFinish';

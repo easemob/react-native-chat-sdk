@@ -79,4 +79,5 @@ export const gMessageApiList = [
   'searchMessagesInConversation',
   'removeMessagesWithTimestamp',
   'getMessageCountWithTimestamp',
+  'getMessageCount',
 ];

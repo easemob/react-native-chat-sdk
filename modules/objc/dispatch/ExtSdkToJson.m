@@ -1080,6 +1080,7 @@
         @(self.includeSendMessageInMessageListener);
     data[@"regardImportMessagesAsRead"] = @(self.regardImportMessagesAsRead);
     data[@"loginExtraInfo"] = self.loginExtensionInfo;
+    data[@"workPathCopiable"] = @(self.workPathCopiable);
 
     return data;
 }
@@ -1160,6 +1161,7 @@
         [aJson[@"regardImportMessagesAsRead"] boolValue];
 
     options.loginExtensionInfo = aJson[@"loginExtraInfo"];
+    options.workPathCopiable = aJson[@"workPathCopiable"];
 
     return options;
 }
@@ -1581,6 +1583,7 @@
     ret[@"recalledBy"] = self.recallBy;
     ret[@"recalledExt"] = self.ext;
     ret[@"recalledMessage"] = [self.recallMessage toJsonObject];
+    ret[@"recalledConvId"] = self.conversationId;
     return ret;
 }
 @end

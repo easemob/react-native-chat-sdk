@@ -89,7 +89,8 @@ export class ClientOthersScreen extends Component<
   }
 
   private async updatePush(): Promise<void> {
-    const deviceId = ChatClient.getInstance().options?.pushConfig?.deviceId;
+    const deviceId =
+      ChatClient.getInstance().options?.pushConfig?.deviceId ?? 'test_name';
     const deviceToken = await this.requestFcmToken();
     ChatClient.getInstance()
       .updatePushConfig(new ChatPushConfig({ deviceId, deviceToken }))

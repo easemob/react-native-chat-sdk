@@ -2092,6 +2092,17 @@ export class QuickTestScreenChat extends QuickTestScreenBase<
           );
         }
         break;
+      case MN.getMessageCount:
+        {
+          const methodName = this.metaData.get(MN.getMessageCount)!.methodName;
+          console.log(`${MN.getMessageCount} === ${methodName}`);
+          this.tryCatch(
+            ChatClient.getInstance().chatManager.getMessageCount(),
+            QuickTestScreenChat.TAG,
+            name
+          );
+        }
+        break;
       default:
         break;
     }

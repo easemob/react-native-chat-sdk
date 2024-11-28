@@ -242,6 +242,20 @@
             withParams:nil];
 }
 
+- (void)getMessageCount:(NSDictionary *)param
+                       withMethodType:(NSString *)aChannelName
+                               result:(nonnull id<ExtSdkCallbackObjc>)result {
+    __weak typeof(self) weakSelf = self;
+    [EMClient.sharedClient.chatManager
+        getMessageCountWithCompletion:^(NSInteger count,
+                                        EMError *_Nullable aError) {
+          [weakSelf onResult:result
+              withMethodType:aChannelName
+                   withError:aError
+                  withParams:@(count)];
+        }];
+}
+
 - (void)getUnreadMessageCount:(NSDictionary *)param
                withMethodType:(NSString *)aChannelName
                        result:(nonnull id<ExtSdkCallbackObjc>)result {
@@ -1243,8 +1257,9 @@
     __weak typeof(self) weakSelf = self;
     NSArray *typesJson = param[@"types"];
     NSMutableArray *types = [NSMutableArray array];
-    for (NSString* type in typesJson) {
-        [types addObject: [NSNumber numberWithInteger:[EMMessageBody fromString:type]]];
+    for (NSString *type in typesJson) {
+        [types addObject:[NSNumber numberWithInteger:[EMMessageBody
+                                                         fromString:type]]];
     }
     long long timestamp = [param[@"timestamp"] longLongValue];
     int count = [param[@"count"] intValue];

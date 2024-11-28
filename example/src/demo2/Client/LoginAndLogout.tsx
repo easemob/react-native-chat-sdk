@@ -197,6 +197,14 @@ export class LoginAndLogoutScreen extends Component<
         console.log('LoginAndLogoutScreen.onUserAuthenticationFailed');
         this.that.setState({ listenerStatus: 'onUserAuthenticationFailed' });
       }
+      onOfflineMessageSyncStart(): void {
+        console.log('LoginAndLogoutScreen.onOfflineMessageSyncStart');
+        this.that.setState({ listenerStatus: 'onOfflineMessageSyncStart' });
+      }
+      onOfflineMessageSyncFinish(): void {
+        console.log('LoginAndLogoutScreen.onOfflineMessageSyncFinish');
+        this.that.setState({ listenerStatus: 'onOfflineMessageSyncFinish' });
+      }
     })(this);
     ChatClient.getInstance().removeAllConnectionListener();
     ChatClient.getInstance().addConnectionListener(listener);

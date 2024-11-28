@@ -1,6 +1,6 @@
 import React, { Component, type ReactNode } from 'react';
 import { ScrollView, Text, TextInput, View } from 'react-native';
-import { ChatClient, ChatOptions } from 'react-native-chat-sdk';
+import { ChatClient, ChatOptions, ChatPushConfig } from 'react-native-chat-sdk';
 
 import { datasheet } from '../__default__/Datasheet';
 import { styleValues } from '../__internal__/Css';
@@ -94,15 +94,16 @@ export class AppKeyScreen extends Component<{ navigation: any }, State, any> {
     // await this.requestUserPermission();
     // await this.checkApplicationPermission();
     // let fcmToken: string;
-    // let pushConfig: any;
-    // if (this.state.enablePush === '1') {
-    //   // fcmToken = await this.requestFcmToken();
-    //   pushConfig = new ChatPushConfig({
-    //     deviceId: datasheet.PushInfo.sendId,
-    //     deviceToken: fcmToken,
-    //   });
-    //   // this.onListenerNotification();
-    // }
+    let pushConfig: any;
+    if (this.state.enablePush === '1') {
+      // fcmToken = await this.requestFcmToken();
+      pushConfig = new ChatPushConfig({
+        deviceId: 'test_device_id',
+        deviceToken:
+          'a215705b9bff79748cfb5ae73560c1b204c403344608b8ff40bf829c44d56a03',
+      });
+      // this.onListenerNotification();
+    }
 
     const {
       appKey,
@@ -129,7 +130,7 @@ export class AppKeyScreen extends Component<{ navigation: any }, State, any> {
             messagesReceiveCallbackIncludeSend === '0' ? false : true,
           regardImportMessagesAsRead:
             regardImportMessagesAsRead === '0' ? false : true,
-          // pushConfig: pushConfig,
+          pushConfig: pushConfig,
           loginExtraInfo: 'rn-test',
         })
       )

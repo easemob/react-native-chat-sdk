@@ -26,6 +26,8 @@ static NSString *_Nonnull const ExtSdkMethodKeyOnMultiDeviceEvent = @"onMultiDev
 static NSString *_Nonnull const ExtSdkMethodKeySendDataToFlutter = @"onSendDataToFlutter";
 static NSString *_Nonnull const ExtSdkMethodKeyOnTokenWillExpire = @"onTokenWillExpire";
 static NSString *_Nonnull const ExtSdkMethodKeyOnTokenDidExpire = @"onTokenDidExpire";
+static NSString *_Nonnull const ExtSdkMethodKeyOnOfflineMessageSyncStart = @"onOfflineMessageSyncStart";
+static NSString *_Nonnull const ExtSdkMethodKeyOnOfflineMessageSyncFinish = @"onOfflineMessageSyncFinish";
 
 static NSString *_Nonnull const ExtSdkMethodKeyOnMultiDeviceEventContact = @"onMultiDeviceEventContact";
 static NSString *_Nonnull const ExtSdkMethodKeyOnMultiDeviceEventGroup = @"onMultiDeviceEventGroup";
@@ -353,6 +355,9 @@ static NSString *_Nonnull const ExtSdkMethodKeysearchMessagesInConversation = @"
 static NSString *_Nonnull const ExtSdkMethodKeyremoveMessagesWithTimestamp = @"removeMessagesWithTimestamp";
 static NSString *_Nonnull const ExtSdkMethodKeygetMessageCountWithTimestamp = @"getMessageCountWithTimestamp";
 
+// 2024-11-28
+static NSString *_Nonnull const ExtSdkMethodKeygetMessageCount = @"getMessageCount";
+
 // ############################################################################
 // value start
 // ############################################################################
@@ -397,6 +402,8 @@ static const int ExtSdkMethodKeyOnMultiDeviceEventGroupValue = 215;
 static const int ExtSdkMethodKeyOnMultiDeviceEventThreadValue = 216;
 static const int ExtSdkMethodKeyOnMultiDeviceEventRemoveMessageValue = 217;
 static const int ExtSdkMethodKeyOnMultiDeviceEventConversationValue = 218;
+static const int ExtSdkMethodKeyOnOfflineMessageSyncStartValue = 221;
+static const int ExtSdkMethodKeyOnOfflineMessageSyncFinishValue = 220;
 
 #pragma mark - EMContactManagerWrapper value
 static const int ExtSdkMethodKeyAddContactValue = 300;
@@ -707,6 +714,9 @@ static const int ExtSdkMethodKeysearchMessagesValue = 2016;
 static const int ExtSdkMethodKeysearchMessagesInConversationValue = 2017;
 static const int ExtSdkMethodKeyremoveMessagesWithTimestampValue = 2018;
 static const int ExtSdkMethodKeygetMessageCountWithTimestampValue = 2019;
+
+//2024-11-28
+static const int ExtSdkMethodKeygetMessageCountValue = 2020;
 
 @interface ExtSdkMethodTypeObjc : NSObject
 
