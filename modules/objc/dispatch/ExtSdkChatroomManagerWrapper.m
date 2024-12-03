@@ -763,6 +763,21 @@
 }
 
 - (void)chatroomMuteListDidUpdate:(EMChatroom *)aChatroom
+                addedMutedMembers:
+                    (NSDictionary<NSString *, NSNumber *> *)aMutes {
+    NSMutableArray *array = [NSMutableArray array];
+    for (NSString *key in aMutes) {
+        [array addObject:key];
+    }
+    NSDictionary *map = @{
+        @"type" : @"onMuteListAdded",
+        @"roomId" : aChatroom.chatroomId,
+        @"muteKVs" : aMutes,
+    };
+    [self onReceive:ExtSdkMethodKeyChatroomChanged withParams:map];
+}
+
+- (void)chatroomMuteListDidUpdate:(EMChatroom *)aChatroom
               removedMutedMembers:(NSArray *)aMutes {
     NSDictionary *map = @{
         @"type" : @"onMuteListRemoved",

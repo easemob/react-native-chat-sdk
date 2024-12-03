@@ -561,8 +561,8 @@ export interface ChatCustomEventListener {
  *     onMessagesDelivered(messages: ChatMessage[]): void {
  *       chatlog.log('ConnectScreen.onMessagesDelivered', messages);
  *     }
- *     onMessagesRecalled(messages: ChatMessage[]): void {
- *       chatlog.log('ConnectScreen.onMessagesRecalled', messages);
+ *     onMessagesRecalledInfo(messages: ChatRecalledMessageInfo[]): void {
+ *       chatlog.log('ConnectScreen.onMessagesRecalledInfo', messages);
  *     }
  *     onConversationsUpdate(): void {
  *       chatlog.log('ConnectScreen.onConversationsUpdate');
@@ -619,17 +619,6 @@ export interface ChatMessageEventListener {
    * @param messages The message(s) for which delivery receipt(s) is sent.
    */
   onMessagesDelivered?(messages: Array<ChatMessage>): void;
-
-  /**
-   * Occurs when a received message is recalled.
-   *
-   * If the recipient is offline when the message is delivered and recalled, the recipient only receives this callback instead of the message.
-   *
-   * @param messages The recalled message(s).
-   *
-   * @deprecated 2024-05-23 This method is deprecated. Use {@link onMessagesRecalledInfo} instead.
-   */
-  onMessagesRecalled?(messages: Array<ChatMessage>): void;
 
   /**
    * Occurs when a received message is recalled.
@@ -1135,11 +1124,25 @@ export interface ChatRoomEventListener {
    * - Param [roomId] The chat room ID.
    * - Param [mutes] The user ID(s) of muted member(s).
    * - Param [expireTime] Reserved parameter. The Unix timestamp when the mute duration expires.
+   *
+   * @deprecated 2024-12-03, Please use {@link onMuteListAddedV2} instead.
    */
   onMuteListAdded?(params: {
     roomId: string;
     mutes: Array<string>;
     expireTime?: string;
+  }): void;
+
+  /**
+   * Occurs when the chat room member(s) is/are added to the mute list. The muted members receive this event.
+   *
+   * @params The parameter set.
+   * - Param [roomId] The chat room ID.
+   * - Param [mutes] The user list. key is User ID, value is the mute expire time.
+   */
+  onMuteListAddedV2?(params: {
+    roomId: string;
+    mutes: Record<string, number>;
   }): void;
   /**
    * Occurs when the chat room member(s) is/are removed from the mute list. The members that are removed from the mute list receive this event.

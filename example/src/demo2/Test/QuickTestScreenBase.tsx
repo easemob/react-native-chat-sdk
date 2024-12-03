@@ -19,6 +19,7 @@ import {
   type ChatMultiDeviceEventListener,
   ChatPresence,
   type ChatPresenceEventListener,
+  ChatRecalledMessageInfo,
   ChatRoom,
   type ChatRoomEventListener,
 } from 'react-native-chat-sdk';
@@ -364,15 +365,14 @@ export abstract class QuickTestScreenBase<
             JSON.stringify(messages),
         });
       }
-      onMessagesRecalled(messages: ChatMessage[]): void {
+      onMessagesRecalledInfo(info: Array<ChatRecalledMessageInfo>): void {
         console.log(
-          `${QuickTestScreenBase.TAG}: onMessagesRecalled: `,
-          messages
+          `${QuickTestScreenBase.TAG}: onMessagesRecalledInfo: `,
+          info
         );
         this.that.setState({
           chat_listener:
-            `onMessagesRecalled: ${messages.length}: ` +
-            JSON.stringify(messages),
+            `onMessagesRecalledInfo: ${info.length}: ` + JSON.stringify(info),
         });
       }
       onConversationsUpdate(): void {
@@ -918,6 +918,19 @@ export abstract class QuickTestScreenBase<
             params.roomId +
             params.mutes +
             params.expireTime,
+        });
+      }
+      onMuteListAddedV2(params: {
+        roomId: string;
+        mutes: Record<string, number>;
+      }): void {
+        console.log(
+          `${QuickTestScreenBase.TAG}: onMuteListAddedV2:`,
+          params.roomId,
+          params.mutes
+        );
+        this.that.setState({
+          room_listener: `onMuteListAddedV2: ` + params.roomId + params.mutes,
         });
       }
       onMuteListRemoved(params: { roomId: string; mutes: string[] }): void {

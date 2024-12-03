@@ -1354,15 +1354,6 @@
     [self onReceive:ExtSdkMethodKeyOnMessagesDelivered withParams:list];
 }
 
-- (void)messagesDidRecall:(NSArray *)messages {
-    NSMutableArray *list = [NSMutableArray array];
-    for (EMChatMessage *msg in messages) {
-        [list addObject:[msg toJsonObject]];
-    }
-
-    [self onReceive:ExtSdkMethodKeyOnMessagesRecalled withParams:list];
-}
-
 - (void)messagesInfoDidRecall:
     (NSArray<EMRecallMessageInfo *> *)aRecallMessagesInfo {
     NSMutableArray *list = [NSMutableArray array];

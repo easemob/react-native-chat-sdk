@@ -350,22 +350,14 @@ export class SendMessageLeafScreen extends LeafScreenBase<StateSendMessage> {
             JSON.stringify(messages),
         });
       }
-      onMessagesRecalled(messages: ChatMessage[]): void {
+      onMessagesRecalledInfo(info: Array<ChatRecalledMessageInfo>): void {
         console.log(
-          `${SendMessageLeafScreen.TAG}: onMessagesRecalled: `,
-          messages
+          `${SendMessageLeafScreen.TAG}: onMessagesRecalledInfo: `,
+          info
         );
         this.that.setState({
           recvResult:
-            `onMessagesRecalled: ${messages.length}: ` +
-            JSON.stringify(messages),
-        });
-      }
-      onMessagesRecalledInfo(info: Array<ChatRecalledMessageInfo>): void {
-        console.log(`${SendMessageLeafScreen.TAG}: onMessagesRecalled: `, info);
-        this.that.setState({
-          recvResult:
-            `onMessagesRecalled: ${info.length}: ` + JSON.stringify(info),
+            `onMessagesRecalledInfo: ${info.length}: ` + JSON.stringify(info),
         });
       }
       onConversationsUpdate(): void {

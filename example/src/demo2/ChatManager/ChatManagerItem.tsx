@@ -568,17 +568,6 @@ export class ChatManagerLeafScreen extends LeafScreenBase<StateChatMessage> {
             JSON.stringify(messages),
         });
       }
-      onMessagesRecalled(messages: ChatMessage[]): void {
-        console.log(
-          `${ChatManagerLeafScreen.TAG}: onMessagesRecalled: `,
-          messages
-        );
-        this.that.setState({
-          recvResult:
-            `onMessagesRecalled: ${messages.length}: ` +
-            JSON.stringify(messages),
-        });
-      }
       onMessagesRecalledInfo(info: Array<ChatRecalledMessageInfo>): void {
         console.log(
           `${ChatManagerLeafScreen.TAG}: onMessagesRecalledInfo: `,

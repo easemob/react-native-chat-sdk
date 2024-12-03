@@ -79,7 +79,6 @@ import {
   MTonMessagePinChanged,
   MTonMessagesDelivered,
   MTonMessagesRead,
-  MTonMessagesRecalled,
   MTonMessagesRecalledInfo,
   MTonMessagesReceived,
   MTonReadAckForGroupMessageUpdated,
@@ -211,8 +210,6 @@ export class ChatManager extends BaseManager {
       MTonMessagesDelivered,
       this.onMessagesDelivered.bind(this)
     );
-    event.removeAllListeners(MTonMessagesRecalled);
-    event.addListener(MTonMessagesRecalled, this.onMessagesRecalled.bind(this));
     event.removeAllListeners(MTonMessagesRecalledInfo);
     event.addListener(
       MTonMessagesRecalledInfo,
@@ -354,16 +351,6 @@ export class ChatManager extends BaseManager {
     let list: Array<ChatMessage> = this.createReceiveMessage(messages);
     this._messageListeners.forEach((listener: ChatMessageEventListener) => {
       listener.onMessagesDelivered?.(list);
-    });
-  }
-  private onMessagesRecalled(messages: any[]): void {
-    chatlog.log(`${ChatManager.TAG}: onMessagesRecalled: `, messages);
-    if (this._messageListeners.size === 0) {
-      return;
-    }
-    let list: Array<ChatMessage> = this.createReceiveMessage(messages);
-    this._messageListeners.forEach((listener: ChatMessageEventListener) => {
-      listener.onMessagesRecalled?.(list);
     });
   }
   private onMessagesRecalledInfo(params: any[]): void {

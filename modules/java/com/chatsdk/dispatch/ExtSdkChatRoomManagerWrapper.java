@@ -650,6 +650,15 @@ public class ExtSdkChatRoomManagerWrapper extends ExtSdkWrapper {
             }
 
             @Override
+            public void onMuteListAdded(String chatRoomId, Map<String, Long> muteInfo) {
+                Map<String, Object> data = new HashMap<>();
+                data.put("roomId", chatRoomId);
+                data.put("muteKVs", muteInfo);
+                data.put("type", "onMuteListAdded");
+                ExtSdkWrapper.onReceive(ExtSdkMethodType.chatRoomChange, data);
+            }
+
+            @Override
             public void onMuteListRemoved(String chatRoomId, List<String> mutes) {
                 Map<String, Object> data = new HashMap<>();
                 data.put("roomId", chatRoomId);

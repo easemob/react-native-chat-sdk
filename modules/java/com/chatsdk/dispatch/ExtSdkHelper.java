@@ -306,10 +306,13 @@ class ExtSdkChatRoomHelper {
         data.put("memberList", chatRoom.getMemberList());
         data.put("blockList", chatRoom.getBlacklist());
         List<String> muteList = new ArrayList<String>();
+        HashMap muteKVList = new HashMap<String, Long>();
         for (Map.Entry<String, Long> item : chatRoom.getMuteList().entrySet()) {
             muteList.add(item.getKey());
+            muteKVList.put(item.getKey(), item.getValue());
         }
         data.put("muteList", muteList);
+        data.put("muteKVList", muteKVList);
         data.put("isAllMemberMuted", chatRoom.isAllMemberMuted());
         data.put("announcement", chatRoom.getAnnouncement());
         data.put("permissionType", intTypeFromPermissionType(chatRoom.getChatRoomPermissionType()));
@@ -1269,9 +1272,6 @@ class ExtSdkErrorHelper {
 class ExtSdkPushConfigsHelper {
     static Map<String, Object> toJson(EMPushConfigs pushConfigs) {
         Map<String, Object> data = new HashMap<>();
-        data.put("noDisturb", pushConfigs.silentModeEnabled());
-        data.put("noDisturbEndHour", pushConfigs.getSilentModeEnd());
-        data.put("noDisturbStartHour", pushConfigs.getSilentModeStart());
         data.put("displayStyle", pushConfigs.getDisplayStyle().ordinal());
         data.put("displayName", pushConfigs.getDisplayNickname());
         return data;
@@ -1687,7 +1687,7 @@ class ExtSdkRecalledMessageInfoHelper {
             data.put("recalledMessage", ExtSdkMessageHelper.toJson(info.getRecallMessage()));
         }
         if (info.getConversationId() != null) {
-          data.put("recalledConvId", info.getConversationId());
+            data.put("recalledConvId", info.getConversationId());
         }
         return data;
     }

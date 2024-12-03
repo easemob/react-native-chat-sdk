@@ -729,6 +729,19 @@ export class ChatRoomManagerLeafScreen extends LeafScreenBase<StateChatRoomMessa
             params.expireTime,
         });
       }
+      onMuteListAddedV2(params: {
+        roomId: string;
+        mutes: Record<string, number>;
+      }): void {
+        console.log(
+          `${ChatRoomManagerLeafScreen.TAG}: onMuteListAddedV2:`,
+          params.roomId,
+          params.mutes
+        );
+        this.that.setState({
+          recvResult: `onMuteListAddedV2: ` + params.roomId + params.mutes,
+        });
+      }
       onMuteListRemoved(params: { roomId: string; mutes: string[] }): void {
         console.log(
           `${ChatRoomManagerLeafScreen.TAG}: onMuteListRemoved:`,

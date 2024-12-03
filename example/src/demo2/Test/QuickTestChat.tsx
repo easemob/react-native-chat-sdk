@@ -12,6 +12,7 @@ import {
   type ChatMessageStatusCallback,
   ChatMessageThreadEvent,
   ChatMessageType,
+  ChatRecalledMessageInfo,
 } from 'react-native-chat-sdk';
 
 import { ChatManagerCache } from './ChatManagerCache';
@@ -175,15 +176,14 @@ export class QuickTestScreenChat extends QuickTestScreenBase<
               JSON.stringify(messages),
           });
         }
-        onMessagesRecalled(messages: ChatMessage[]): void {
+        onMessagesRecalledInfo(info: Array<ChatRecalledMessageInfo>): void {
           console.log(
-            `${QuickTestScreenChat.TAG}: onMessagesRecalled: `,
-            messages
+            `${QuickTestScreenChat.TAG}: onMessagesRecalledInfo: `,
+            info
           );
           this.that.setState({
             chat_listener:
-              `onMessagesRecalled: ${messages.length}: ` +
-              JSON.stringify(messages),
+              `onMessagesRecalledInfo: ${info.length}: ` + JSON.stringify(info),
           });
         }
         onConversationsUpdate(): void {

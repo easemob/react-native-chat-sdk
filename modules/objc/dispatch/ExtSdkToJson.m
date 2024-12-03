@@ -16,6 +16,7 @@
     ret[@"memberList"] = self.memberList;
     ret[@"blockList"] = self.blacklist;
     ret[@"muteList"] = self.muteList;
+    ret[@"muteKVList"] = self.muteMembers;
     ret[@"isAllMemberMuted"] = @(self.isMuteAllMembers);
     ret[@"announcement"] = self.announcement;
     ret[@"permissionType"] = @([self premissionTypeToInt:self.permissionType]);
@@ -1185,10 +1186,7 @@
 @implementation EMPushOptions (Json)
 - (NSDictionary *)toJsonObject {
     NSMutableDictionary *data = [NSMutableDictionary dictionary];
-    data[@"noDisturb"] = @(self.silentModeEnabled);
     data[@"pushStyle"] = @(self.displayStyle != EMPushDisplayStyleSimpleBanner);
-    data[@"noDisturbStartHour"] = @(self.silentModeStart);
-    data[@"noDisturbEndHour"] = @(self.silentModeEnd);
     data[@"displayStyle"] = @(self.displayStyle);
     data[@"displayName"] = self.displayName;
     return data;

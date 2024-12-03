@@ -1178,20 +1178,19 @@ public class ExtSdkChatManagerWrapper extends ExtSdkWrapper {
         });
     }
 
-  public void getMessageCount(JSONObject param, String channelName, ExtSdkCallback result)
-    throws JSONException {
-    EMClient.getInstance().chatManager().asyncGetMessageCount(new EMValueCallBack<Integer>() {
-      @Override
-      public void onSuccess(Integer value) {
-        ExtSdkWrapper.onSuccess(result, channelName, value);
-      }
+    public void getMessageCount(JSONObject param, String channelName, ExtSdkCallback result) throws JSONException {
+        EMClient.getInstance().chatManager().asyncGetMessageCount(new EMValueCallBack<Integer>() {
+            @Override
+            public void onSuccess(Integer value) {
+                ExtSdkWrapper.onSuccess(result, channelName, value);
+            }
 
-      @Override
-      public void onError(int i, String s) {
-        ExtSdkWrapper.onError(result, i, s);
-      }
-    });
-  }
+            @Override
+            public void onError(int i, String s) {
+                ExtSdkWrapper.onError(result, i, s);
+            }
+        });
+    }
 
     private void registerEaseListener() {
         if (this.messageListener != null) {
@@ -1236,15 +1235,6 @@ public class ExtSdkChatManagerWrapper extends ExtSdkWrapper {
                     ExtSdkWrapper.onReceive(ExtSdkMethodType.onMessageDeliveryAck, ExtSdkMessageHelper.toJson(message));
                 }
                 ExtSdkWrapper.onReceive(ExtSdkMethodType.onMessagesDelivered, msgList);
-            }
-
-            @Override
-            public void onMessageRecalled(List<EMMessage> messages) {
-                ArrayList<Map<String, Object>> msgList = new ArrayList<>();
-                for (EMMessage message : messages) {
-                    msgList.add(ExtSdkMessageHelper.toJson(message));
-                }
-                ExtSdkWrapper.onReceive(ExtSdkMethodType.onMessagesRecalled, msgList);
             }
 
             @Override

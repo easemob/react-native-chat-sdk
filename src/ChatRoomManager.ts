@@ -104,11 +104,21 @@ export class ChatRoomManager extends Native {
           });
           break;
         case 'onMuteListAdded':
-          listener.onMuteListAdded?.({
-            roomId: params.roomId,
-            mutes: params.mutes,
-            expireTime: params.expireTime,
-          });
+          {
+            const hasKV = params.muteKVs;
+            if (hasKV) {
+              listener.onMuteListAddedV2?.({
+                roomId: params.roomId,
+                mutes: params.muteKVs,
+              });
+            } else {
+              listener.onMuteListAdded?.({
+                roomId: params.roomId,
+                mutes: params.mutes,
+                expireTime: params.expireTime,
+              });
+            }
+          }
           break;
         case 'onMuteListRemoved':
           listener.onMuteListRemoved?.({
