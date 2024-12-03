@@ -2,6 +2,14 @@ _Chinese | [English](./CHANGELOG.md)_
 
 # Update Log
 
+## 1.7.0
+
+- 依赖的原生 SDK 升级到版本（`iOS` 4.11.0 和`Android` 4.11.0）。
+- 更新服务器连接状态监听器 `ChatConnectEventListener`，新增 `onOfflineMessageSyncStart` 和 `onOfflineMessageSyncFinish`
+- 更新聊天室监听器 `ChatRoomEventListener`, 作废 `onMuteListAdded`，替换为 `onMuteListAddedV2`
+- 更新消息监听器 `ChatMessageEventListener`, 移除作废的接口 `onMessagesRecalled`
+- 新增消息管理器 `ChatManager` 接口 `getMessageCount`
+
 ## 1.6.2
 
 - 修复 android 平台下推送提醒类型数据转换错误的问题。

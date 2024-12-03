@@ -16,5 +16,6 @@
     "Pressable",
     "typecheck"
   ],
-  "cmake.sourceDirectory": "/Users/asterisk/Codes/rn/react-native-chat-sdk/modules/cpp"
+  "cmake.sourceDirectory": "/Users/asterisk/Codes/rn/react-native-chat-sdk/modules/cpp",
+  "CodeGPT.apiKey": "CodeGPT Plus Beta"
 }
