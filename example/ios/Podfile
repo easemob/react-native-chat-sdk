@@ -8,6 +8,118 @@ require Pod::Executable.execute_command('node', ['-p',
 platform :ios, min_ios_version_supported
 prepare_react_native_project!
 
+def __apply_flipper_post_install_workaround(installer)
+  # https://github.com/facebook/react-native/issues/43335#issuecomment-1982794252
+  installer.pods_project.targets.each do |target|
+    if target.name == 'Flipper'
+      file_path = 'Pods/Flipper/xplat/Flipper/FlipperTransportTypes.h'
+      if File.exist?(file_path)
+        File.chmod(0644, file_path)
+        contents = File.read(file_path)
+        unless contents.include?('#include <functional>')
+          File.open(file_path, 'w') do |file|
+            file.puts('#include <functional>')
+            file.puts(contents)
+          end
+        end
+      end
+    end
+  end
+end
+
+def __apply_Xcode_15_cxx17_post_install_workaround(installer)
+  # https://github.com/facebook/react-native/issues/43335#issuecomment-1982794252
+  installer.pods_project.targets.each do |target|
+    target.build_configurations.each do |config|
+      config.build_settings['GCC_PREPROCESSOR_DEFINITIONS'] ||= ''
+      if !config.build_settings['GCC_PREPROCESSOR_DEFINITIONS'].include?('$(inherited)')
+        config.build_settings['GCC_PREPROCESSOR_DEFINITIONS'] << ' '
+        config.build_settings['GCC_PREPROCESSOR_DEFINITIONS'] << '$(inherited)'
+      end
+      if !config.build_settings['GCC_PREPROCESSOR_DEFINITIONS'].include?('_LIBCPP_ENABLE_CXX17_REMOVED_UNARY_BINARY_FUNCTION')
+        config.build_settings['GCC_PREPROCESSOR_DEFINITIONS'] << ' '
+        config.build_settings['GCC_PREPROCESSOR_DEFINITIONS'] << '_LIBCPP_ENABLE_CXX17_REMOVED_UNARY_BINARY_FUNCTION'
+      end
+    end
+  end
+end
+
+def __apply_yoga_post_install_workaround(installer)
+  # https://github.com/facebook/react-native/issues/36758
+  # https://ruby-doc.org/3.3.6/String.html
+  installer.pods_project.targets.each do |target|
+    if target.name == 'Yoga'
+      file_path = File.join(__dir__, '../node_modules/react-native/ReactCommon/yoga/yoga/Yoga.cpp')
+      if File.exist?(file_path)
+        file_content = File.read(file_path)
+        puts file_content.include?('node->getLayout().hadOverflow() ||')
+        if file_content.include?('node->getLayout().hadOverflow() |') && !file_content.include?('node->getLayout().hadOverflow() ||')
+          new_content = file_content.gsub('node->getLayout().hadOverflow() |', 'node->getLayout().hadOverflow() ||')
+          # File.write(file_path, new_content)
+          File.open(file_path, 'w') { |file| file.puts new_content }
+        end
+      end
+    end
+  end
+end
+
+#  boost/boost/container_hash/hash.hpp:131:33: No template named 'unary_function' in namespace 'std'; did you mean '__unary_function'?
+def __apply_boost_post_install_workaround(installer)
+  installer.pods_project.targets.each do |target|
+    if target.name == 'boost'
+      file_path = 'Pods/boost/boost/container_hash/hash.hpp'
+      if File.exist?(file_path)
+        file_content = File.read(file_path)
+        puts file_content.include?('std::unary_function')
+        if file_content.include?('std::unary_function')
+          new_content = file_content.gsub('std::unary_function', 'std::__unary_function')
+          # File.write(file_path, new_content)
+          File.open(file_path, 'w') { |file| file.puts new_content }
+        end
+      end
+    end
+  end
+end
+
+# Force pods to match minimum iOS version for React Native
+# Fixes build issue on Xcode Cloud where some pods
+# Use iOS 12 calls despite being set as iOS 11
+def __apply_minimum_target_post_install_workaround(installer)
+  installer.pods_project.targets.each do |target|
+    target.build_configurations.each do |config|
+      current_target = config.build_settings['IPHONEOS_DEPLOYMENT_TARGET']
+      minimum_target = defined?(min_ios_version_supported) ? min_ios_version_supported : 12.4
+      minimum_target = 12.4
+      if current_target.to_f < minimum_target
+        config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = minimum_target
+      end
+    end
+  end
+end
+
+def __apply_rn_068_chatsdk_post_install_workaround(installer)
+  # https://github.com/facebook/react-native/issues/36758
+  # https://ruby-doc.org/3.3.6/String.html
+  installer.pods_project.targets.each do |target|
+    if target.name == 'react-native-chat-sdk'
+      target.build_configurations.each do |config|
+        xcconfig = config.build_settings
+
+        xcconfig['OTHER_LDFLAGS'] ||= ''
+        xcconfig['OTHER_LDFLAGS'] << ' -ObjC'
+
+        xcconfig['GCC_PREPROCESSOR_DEFINITIONS'] ||= []
+        xcconfig['GCC_PREPROCESSOR_DEFINITIONS'] += [
+          '$(inherited)',
+          'OBJC_LANGUAGE',
+          'REACT_NATIVE_ARCHITECTURE',
+          'IOS_PLATFORM'
+        ]
+      end
+    end
+  end
+end
+
 # If you are using a `react-native-flipper` your iOS build will fail when `NO_FLIPPER=1` is set.
 # because `react-native-flipper` depends on (FlipperKit,...) that will be excluded
 #
