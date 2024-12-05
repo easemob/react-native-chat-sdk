@@ -2,6 +2,57 @@ _English | [Chinese](./CHANGELOG.zh.md)_
 
 # Update Log
 
+## 1.7.0
+
+- Upgraded the dependent native SDK to version (iOS 4.11.0 and Android 4.11.0).
+
+- Updated the server connection status listener `ChatConnectEventListener`, added `onOfflineMessageSyncStart` and `onOfflineMessageSyncFinish`.
+- Updated the chat room listener `ChatRoomEventListener`, deprecated `onMuteListAdded`, replaced with `onMuteListAddedV2`.
+- Updated the message listener `ChatMessageEventListener`, removed the deprecated interface `onMessagesRecalled`.
+- Added the message manager `ChatManager` interface `getMessageCount`.
+
+## 1.6.2
+
+- Fixed the issue of data conversion error in push notification type on the Android platform.
+
+## 1.6.1
+
+- Fixed the issue of compilation error on the Android platform where `CMakeLists.txt` could not be found.
+
+## 1.6.0
+
+- Upgraded the dependent native SDK to version (iOS 4.8.1 and Android 4.8.2).
+- Added login with extended information, other devices being kicked out will receive this extended information. (See ChatOptions.loginExtraInfo, ChatConnectEventListener.onUserDidLoginFromOtherDeviceWithInfo)
+- Added search message interface: supports searching multiple types of messages at once. (See ChatManager.searchMessages)
+- Added interface to search messages in a specified conversation: supports searching multiple types of messages at once. (See ChatManager.searchMessagesInConversation)
+- Added the ability to delete chat room messages only on the server side. (See ChatManager.removeMessagesWithTimestamp)
+- Added interface to join chat rooms with extended information, can decide to exit all chat rooms. Users joining chat rooms with extended information will notify others. (See ChatRoomManager.joinChatRoomEx, ChatRoomEventListener.onMemberJoined)
+- Added conversation interface: get the number of messages in a specified time period from the database. (See ChatManager.getMessageCountWithTimestamp)
+- native: Added error code 407.
+- native: Fixed the issue where the second request to get the friend list (including friend remarks) from the server would not get data if there was no change in the friend list.
+- native: Fixed the issue where the message would still be sent successfully when the attachment failed to send under special circumstances.
+- native: Fixed the issue of incorrect nextkey when pulling roaming messages.
+- native: Optimized the success rate of server connection under weak network conditions.
+- native: Fixed the issue where the cache was not updated in time when blacklisting contacts.
+- native: Fixed the issue where push notifications might not work after logging out and logging back in.
+- Updated `ChatConnectEventListener` interface: deprecated `onUserDidLoginFromOtherDevice`, replaced with `onUserDidLoginFromOtherDeviceWithInfo`.
+- Deprecated `fetchHistoryMessages`, replaced with `fetchHistoryMessagesByOptions`.
+- Deprecated `joinChatRoom`, replaced with `joinChatRoomEx`.
+
+## 1.5.1
+
+- Upgraded the dependent native SDK to version (iOS 4.7.0 and Android 4.7.0). Only resolved issues that occurred in the native SDK.
+
+## 1.5.0
+
+- Upgraded the dependent native SDK to version (iOS 4.6.1 and Android 4.6.1).
+- Added new features and fixed issues provided by the native SDK.
+- Updated the interface `recallMessage`, added extended parameters.
+- Added message recall notification `onMessagesRecalledInfo`, deprecated the original notification `onMessagesRecalled`.
+- native: Fixed the issue where the second request to get the friend list (including friend remarks) from the server would not get data if there was no change in the friend list.
+- native: Fixed the issue where the message would still be sent successfully when the attachment failed to send under special circumstances.
+- native: Fixed the issue of incorrect nextkey when pulling roaming messages.
+
 ## 1.4.0
 
 - The dependent native SDKs are upgraded to versions (`iOS` 4.5.0 and `Android` 4.5.0). Adds new features and fixed issues provided by the native SDK.
