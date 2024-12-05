@@ -50,8 +50,10 @@
     "gen:xcode:env": "echo export NODE_BINARY=$(command -v node) > example/ios/.xcode.env.local",
     "build:exports": "bob build",
     "yarn_pack": "mkdir build && yarn run prepare && yarn pack --out build/react-native-chat-sdk.tgz",
-    "doc:en": "yarn exec typedoc --out ./docs/build/en --json ./docs/build/typedoc.json --tsconfig ./tsconfig.json --readme ./docs/rn_api_overview.md ./src/index.tsx",
-    "doc:cn": "yarn exec typedoc --out ./docs/build/cn --json ./docs/build/typedoc.json --tsconfig ./tsconfig.json --readme ./docs/rn_api_overview.zh.md ./src/index.tsx",
+    "doc:en": "mkdir -p ./docs/build/en && yarn exec typedoc --out ./docs/build/en --json ./docs/build/typedoc.json --tsconfig ./tsconfig.json --readme ./docs/rn_api_overview.md ./src/index.ts",
+    "doc:cn": "mkdir -p ./docs/build/cn && yarn exec typedoc --out ./docs/build/cn --json ./docs/build/typedoc.json --tsconfig ./tsconfig.json --readme ./docs/rn_api_overview.zh.md ./src/index.ts",
+    "doc:cn:update": "node ./scripts/update_api_docs.js 1.7.0 undefined easemob cn",
+    "doc:en:update": "node ./scripts/update_api_docs.js 1.4.0 undefined agora en",
     "release": "release-it"
   },
   "keywords": [

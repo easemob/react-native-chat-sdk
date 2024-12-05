@@ -63,6 +63,8 @@ Agora Chat 是一个高度可靠的全球交流平台，您的用户可以在其
 | {@link ChatConnectEventListener.onTokenWillExpire onTokenWillExpire} | Agora token 即将过期时触发。 |
 | {@link ChatConnectEventListener.onTokenDidExpire onTokenDidExpire} | Agora token 已过期时触发。 |
 | {@link ChatConnectEventListener.onAppActiveNumberReachLimit onAppActiveNumberReachLimit} | 应用程序的日活跃用户数量（DAU）或月活跃用户数量（MAU）达到上限时回调。 |
+| {@link ChatConnectEventListener.onOfflineMessageSyncStart onOfflineMessageSyncStart} | 开始接收离线消息的时候触发。 |
+| {@link ChatConnectEventListener.onOfflineMessageSyncFinish onOfflineMessageSyncFinish} | 结束接收离线消息的时候触发。 |
 | {@link ChatConnectEventListener.onUserDidLoginFromOtherDevice onUserDidLoginFromOtherDevice} | 其他设备登录通知。 |
 | {@link ChatConnectEventListener.onUserDidLoginFromOtherDeviceWithInfo onUserDidLoginFromOtherDeviceWithInfo} | 用户在其它设备登录。 |
 | {@link ChatConnectEventListener.onUserDidRemoveFromServer onUserDidRemoveFromServer} | 用户被移除通知。 |
@@ -180,6 +182,7 @@ Agora Chat 是一个高度可靠的全球交流平台，您的用户可以在其
 | {@link ChatManager.searchMessagesInConversation searchMessagesInConversation} | 搜索指定会话的消息。 |
 | {@link ChatManager.removeMessagesWithTimestamp removeMessagesWithTimestamp} | 从本地和服务器端删除指定会话的消息。 |
 | {@link ChatManager.getMessageCountWithTimestamp getMessageCountWithTimestamp} | 获取消息数量。 |
+| {@link ChatManager.getMessageCount getMessageCount} | 获取本地消息数量。 |
 
 | Event | Description |
 | :----- | :---------- |
@@ -188,7 +191,6 @@ Agora Chat 是一个高度可靠的全球交流平台，您的用户可以在其
 | {@link ChatMessageEventListener.onMessagesRead onMessagesRead} | 收到单聊消息已读回执的回调。 |
 | {@link ChatMessageEventListener.onGroupMessageRead onGroupMessageRead} | 收到群组消息的已读回执的回调。 |
 | {@link ChatMessageEventListener.onMessagesDelivered onMessagesDelivered} | 收到消息已送达回执的回调。 |
-| {@link ChatMessageEventListener.onMessagesRecalled onMessagesRecalled} | 已收到的消息被撤回的回调。 |
 | {@link ChatMessageEventListener.onMessagesRecalledInfo onMessagesRecalledInfo} | 收到消息撤销通知的回调。 |
 | {@link ChatMessageEventListener.onConversationsUpdate onConversationsUpdate} | 会话更新事件回调。 |
 | {@link ChatMessageEventListener.onConversationRead onConversationRead} | 收到会话已读回执的回调。 |
@@ -360,6 +362,7 @@ Agora Chat 是一个高度可靠的全球交流平台，您的用户可以在其
 | {@link ChatRoomEventListener.onMemberExited onMemberExited} | 聊天室成员主动退出回调。 |
 | {@link ChatRoomEventListener.onMemberRemoved onMemberRemoved} | 聊天室成员被移除回调。 |
 | {@link ChatRoomEventListener.onMuteListAdded onMuteListAdded} | 有成员被禁言回调。 |
+| {@link ChatRoomEventListener.onMuteListAddedV2 onMuteListAddedV2} | 增加禁言成员时候回调。 |
 | {@link ChatRoomEventListener.onMuteListRemoved onMuteListRemoved} | 有成员从禁言列表中移除回调。 |
 | {@link ChatRoomEventListener.onAdminAdded onAdminAdded} | 有成员设置为聊天室管理员的回调。 |
 | {@link ChatRoomEventListener.onAdminRemoved onAdminRemoved} | 移除聊天室管理员权限的回调。 |
