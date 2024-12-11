@@ -17,4 +17,5 @@
 6.  Compilation error for lower version ios. (react native version <= 0.67)
     https://gist.github.com/AsteriskZuo/70cd2a4e0515e2f44f151b66187c819b
 
-7.
+7.  /Users/asterisk/Library/Caches/CocoaPods/Pods/Release/Flipper-Glog/0.3.6-1dfd6/missing: Unknown `--is-lightweight' option. Try `/Users/asterisk/Library/Caches/CocoaPods/Pods/Release/Flipper-Glog/0.3.6-1dfd6/missing --help' for more information.
+    Upgrade `Flipper-Glog` to 0.3.9
