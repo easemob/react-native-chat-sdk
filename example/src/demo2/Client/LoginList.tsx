@@ -47,7 +47,7 @@ const LoginListScreen = (): JSX.Element => {
   };
   const loginWithToken = () => {
     ChatClient.getInstance()
-      .loginWithAgoraToken(userId, userToken)
+      .loginWithToken(userId, userToken)
       .then(() => {
         console.log('login success.');
       })

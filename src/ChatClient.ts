@@ -604,6 +604,8 @@ export class ChatClient extends BaseManager {
    *                    - (Default) `false`: A password is used.
    *
    * @throws A description of the exception. See {@link ChatError}.
+   *
+   * @deprecated Please use with {@link loginWithToken} instead.
    */
   public async login(
     userId: string,
@@ -627,6 +629,38 @@ export class ChatClient extends BaseManager {
   }
 
   /**
+   * Logs in to the chat server with a token. An exception message is thrown if the login fails.
+   *
+   * **Note**
+   *
+   * If you use a token to log in to the server, you can get the token in either of the following ways:
+   * - Through the console.
+   *
+   * The token expiration reminder is returned by the two callback methods: {@link ChatConnectEventListener.onTokenWillExpire} and {@link ChatConnectEventListener.onTokenDidExpire}.
+   *
+   * @param userId  The user ID.
+   * @param token  The password or token.
+   *
+   * @throws A description of the exception. See {@link ChatError}.
+   */
+  public async loginWithToken(userId: string, token: string): Promise<void> {
+    chatlog.log(`${ChatClient.TAG}: loginWithToken: `, userId, '******', false);
+    let r: any = await Native._callMethod(MTlogin, {
+      [MTlogin]: {
+        username: userId,
+        pwdOrToken: token,
+        isPassword: false,
+      },
+    });
+    ChatClient.checkErrorFromResult(r);
+    const rr = r?.[MTlogin];
+    if (rr && rr.username) {
+      this._currentUsername = rr.username;
+      chatlog.log(`${ChatClient.TAG}: login: ${rr?.username}, ${rr?.token}`);
+    }
+  }
+
+  /**
    * @deprecated 2023-11-17 Use {@link login} instead.
    *
    * Logs in to the chat server with the user ID and an Agora token. An exception message is thrown if the login fails.
@@ -637,7 +671,7 @@ export class ChatClient extends BaseManager {
    *
    * This method supports automatic login.
    *
-   * @param userId The user ID. See {@link createAccount}.
+   * @param userId The user ID.
    * @param agoraToken The Agora token.
    *
    * @throws A description of the exception. See {@link ChatError}.

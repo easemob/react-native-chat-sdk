@@ -62,7 +62,7 @@ export class LoginAndLogoutScreen extends Component<
         onResult: (params: { data?: any; error?: any }) => {
           if (params.error === undefined) {
             ChatClient.getInstance()
-              .loginWithAgoraToken(this.state.useName, params.data.token)
+              .loginWithToken(this.state.useName, params.data.token)
               .then((value) => {
                 console.log(
                   `${LoginAndLogoutScreen.TAG}: login: success`,

@@ -72,7 +72,7 @@ ChatClient.getInstance()
 
 ```typescript
 ChatClient.getInstance()
-  .loginWithAgoraToken('<your account ID>', '<your token>')
+  .loginWithToken('<your account ID>', '<your token>')
   .then((value: any) => {
     console.log(`login success`, value);
   })

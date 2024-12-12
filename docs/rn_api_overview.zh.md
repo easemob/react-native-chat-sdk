@@ -27,6 +27,7 @@ Agora Chat 是一个高度可靠的全球交流平台，您的用户可以在其
 | {@link ChatClient.getAccessToken getAccessToken} | 获取登录 token。 |
 | {@link ChatClient.createAccount createAccount} | 注册新用户（开放注册）。 |
 | {@link ChatClient.login login} | 通过密码或环信 token 登录 Chat 服务器。 |
+| {@link ChatClient.loginWithToken loginWithToken} | 通过 token 登录 Chat 服务器。 |
 | {@link ChatClient.loginWithAgoraToken loginWithAgoraToken} | @deprecated 2023-11-17 使用 {@link login} 代替。 |
 | {@link ChatClient.renewAgoraToken renewAgoraToken} | 更新声网 token。 |
 | {@link ChatClient.logout logout} | 退出登录。 |

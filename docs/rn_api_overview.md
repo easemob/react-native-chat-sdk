@@ -27,6 +27,7 @@ Agora Chat is a highly reliable global communication platform where your users c
 | {@link ChatClient.getAccessToken getAccessToken} | Gets the token for login. |
 | {@link ChatClient.createAccount createAccount} | Creates a new user (open registration). |
 | {@link ChatClient.login login} | Logs in to the chat server with a password or an Easemob token. An exception message is thrown if the login fails. |
+| {@link ChatClient.loginWithToken loginWithToken} | Logs in to the chat server with a token. An exception message is thrown if the login fails. |
 | {@link ChatClient.loginWithAgoraToken loginWithAgoraToken} | @deprecated 2023-11-17 Use {@link login} instead. |
 | {@link ChatClient.renewAgoraToken renewAgoraToken} | Renews the Agora token. |
 | {@link ChatClient.logout logout} | Logs out of the chat app. An exception message is thrown if the logout fails. |
