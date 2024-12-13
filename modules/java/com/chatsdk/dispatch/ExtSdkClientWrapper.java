@@ -127,6 +127,16 @@ public class ExtSdkClientWrapper extends ExtSdkWrapper {
         }
     }
 
+    public void changeAppId(JSONObject param, String channelName, ExtSdkCallback result) throws JSONException {
+        String appId = param.getString("appId");
+        try {
+            EMClient.getInstance().changeAppId(appId);
+            onSuccess(result, channelName, true);
+        } catch (HyphenateException e) {
+            onError(result, e, null);
+        }
+    }
+
     public void getCurrentUser(JSONObject param, String channelName, ExtSdkCallback result) {
         onSuccess(result, channelName, EMClient.getInstance().getCurrentUser());
     }
@@ -428,17 +438,17 @@ public class ExtSdkClientWrapper extends ExtSdkWrapper {
                 onReceive(ExtSdkMethodType.onUserDidLoginFromOtherDeviceWithInfo, attributes);
             }
 
-          @Override
-          public void onOfflineMessageSyncStart() {
-            Map<String, String> attributes = new HashMap<>();
-            onReceive(ExtSdkMethodType.onOfflineMessageSyncStart, attributes);
-          }
+            @Override
+            public void onOfflineMessageSyncStart() {
+                Map<String, String> attributes = new HashMap<>();
+                onReceive(ExtSdkMethodType.onOfflineMessageSyncStart, attributes);
+            }
 
-          @Override
-          public void onOfflineMessageSyncFinish() {
-            Map<String, String> attributes = new HashMap<>();
-            onReceive(ExtSdkMethodType.onOfflineMessageSyncFinish, attributes);
-          }
+            @Override
+            public void onOfflineMessageSyncFinish() {
+                Map<String, String> attributes = new HashMap<>();
+                onReceive(ExtSdkMethodType.onOfflineMessageSyncFinish, attributes);
+            }
         };
 
         // setup connection listener

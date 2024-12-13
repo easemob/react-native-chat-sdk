@@ -2,6 +2,7 @@ import { type EmitterSubscription, NativeEventEmitter } from 'react-native';
 
 import { BaseManager } from './__internal__/Base';
 import {
+  MTchangeAppId,
   MTchangeAppKey,
   MTcompressLogs,
   MTcreateAccount,
@@ -460,10 +461,11 @@ export class ChatClient extends BaseManager {
    */
   public async init(options: ChatOptions): Promise<void> {
     chatlog.log(`${ChatClient.TAG}: init: `, options);
-    if (options.appKey === undefined || options.appKey.length === 0) {
-      throw new Error('appKey is empty.');
+    if (options.appKey) {
+      this._options = ChatOptions.withAppKey(options); // deep copy
+    } else if (options.appId) {
+      this._options = ChatOptions.withAppId(options); // deep copy
     }
-    this._options = new ChatOptions(options); // deep copy
     chatlog.enableLog = options.debugModel ?? false;
     chatlog.enableTimestamp = options.logTimestamp ?? true;
     chatlog.tag = options.logTag ?? '[chat]';
@@ -600,8 +602,8 @@ export class ChatClient extends BaseManager {
    * @param userId    The user ID. See {@link createAccount}.
    * @param pwdOrToken  The password or token. See {@link createAccount} or {@link getAccessToken}
    * @param isPassword  Whether to log in with a password or a token.
-   *                    - `true`: A token is used.
-   *                    - (Default) `false`: A password is used.
+   *                    - `true`: A password is used.
+   *                    - (Default) `false`: A token is used.
    *
    * @throws A description of the exception. See {@link ChatError}.
    *
@@ -761,6 +763,36 @@ export class ChatClient extends BaseManager {
     let r: any = await Native._callMethod(MTchangeAppKey, {
       [MTchangeAppKey]: {
         appKey: newAppKey,
+      },
+    });
+    ChatClient.checkErrorFromResult(r);
+  }
+
+  /**
+   * Updates the App id, which is the unique identifier used to access the chat service.
+   *
+   * **Note**
+   *
+   * - As this id controls access to the chat service for your app, you can only update the id when the current user is logged out.
+   *
+   * - Updating the App id means to switch to a new App id.
+   *
+   * - You can retrieve the new App id from the Console.
+   *
+   * - You can also set an App id by using the {@link ChatOptions.appId} method when logged out.
+   *
+   * @param newAppId The new App id. Ensure that you set this parameter.
+   *
+   * @throws A description of the exception. See {@link ChatError}.
+   */
+  public async changeAppId(newAppId: string): Promise<void> {
+    chatlog.log(`${ChatClient.TAG}: changeAppId: `, newAppId);
+    if (newAppId === undefined || newAppId.length === 0) {
+      throw new Error('appId is empty.');
+    }
+    let r: any = await Native._callMethod(MTchangeAppId, {
+      [MTchangeAppId]: {
+        appId: newAppId,
       },
     });
     ChatClient.checkErrorFromResult(r);

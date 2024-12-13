@@ -1082,6 +1082,7 @@
     data[@"regardImportMessagesAsRead"] = @(self.regardImportMessagesAsRead);
     data[@"loginExtraInfo"] = self.loginExtensionInfo;
     data[@"workPathCopiable"] = @(self.workPathCopiable);
+    data[@"appId"] = self.appId;
 
     return data;
 }
@@ -1113,7 +1114,17 @@
     return ret;
 }
 + (EMOptions *)fromJsonObject:(NSDictionary *)aJson {
-    EMOptions *options = [EMOptions optionsWithAppkey:aJson[@"appKey"]];
+    NSString *appKey = aJson[@"appKey"];
+    NSString *appId = aJson[@"appId"];
+    EMOptions *options;
+    if (appKey != nil) {
+        options = [EMOptions optionsWithAppkey:appKey];
+    } else if (appId != nil) {
+        options = [EMOptions optionsWithAppId:appId];
+    } else {
+        NSLog(@"EMOptions: fromJsonObject: appKey and appId is empty");
+    }
+
     options.isAutoLogin = [aJson[@"autoLogin"] boolValue];
     options.enableConsoleLog = [aJson[@"debugModel"] boolValue];
     options.enableRequireReadAck = [aJson[@"requireAck"] boolValue];

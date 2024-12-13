@@ -21,6 +21,7 @@
           ExtSdkMethodKeyLogin : @(ExtSdkMethodKeyLoginValue),
           ExtSdkMethodKeyLogout : @(ExtSdkMethodKeyLogoutValue),
           ExtSdkMethodKeyChangeAppKey : @(ExtSdkMethodKeyChangeAppKeyValue),
+          ExtSdkMethodKeyChangeAppId : @(ExtSdkMethodKeyChangeAppIdValue),
           ExtSdkMethodKeyIsLoggedInBefore : @(ExtSdkMethodKeyIsLoggedInBeforeValue),
           ExtSdkMethodKeyUploadLog : @(ExtSdkMethodKeyUploadLogValue),
           ExtSdkMethodKeyCompressLogs : @(ExtSdkMethodKeyCompressLogsValue),

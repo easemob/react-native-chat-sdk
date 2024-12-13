@@ -1,5 +1,5 @@
 import React, { Component, type ReactNode } from 'react';
-import { ScrollView, Text, TextInput, View } from 'react-native';
+import { ScrollView, Switch, Text, TextInput, View } from 'react-native';
 import { ChatClient, ChatOptions, ChatPushConfig } from 'react-native-chat-sdk';
 
 import { datasheet } from '../__default__/Datasheet';
@@ -10,6 +10,8 @@ import { Button } from '../__internal__/Button';
 interface State {
   result: string;
   appKey: string;
+  appId: string;
+  useAppId: boolean;
   enablePush: string;
   enableTLS: string;
   messagesReceiveCallbackIncludeSend: string;
@@ -18,6 +20,7 @@ interface State {
 }
 
 let gAppkey = datasheet.AppKey[1] ?? '';
+let gAppId = datasheet.AppId[1] ?? '';
 
 export class AppKeyScreen extends Component<{ navigation: any }, State, any> {
   public static route = 'AppKeyScreen';
@@ -30,6 +33,8 @@ export class AppKeyScreen extends Component<{ navigation: any }, State, any> {
     this.state = {
       result: '',
       appKey: gAppkey,
+      appId: gAppId,
+      useAppId: false,
       enablePush: '0',
       useReplacedMessageContents: '0',
       enableTLS: '0',
@@ -107,6 +112,8 @@ export class AppKeyScreen extends Component<{ navigation: any }, State, any> {
 
     const {
       appKey,
+      appId,
+      useAppId,
       enableTLS,
       useReplacedMessageContents,
       messagesReceiveCallbackIncludeSend,
@@ -115,24 +122,43 @@ export class AppKeyScreen extends Component<{ navigation: any }, State, any> {
 
     ChatClient.getInstance()
       .init(
-        new ChatOptions({
-          appKey: appKey,
-          autoLogin: false,
-          debugModel: true,
-          enableEmptyConversation: false,
-          requireAck: false,
-          requireDeliveryAck: false,
-          autoAcceptGroupInvitation: true,
-          enableTLS: enableTLS === '0' ? false : true,
-          useReplacedMessageContents:
-            useReplacedMessageContents === '0' ? false : true,
-          messagesReceiveCallbackIncludeSend:
-            messagesReceiveCallbackIncludeSend === '0' ? false : true,
-          regardImportMessagesAsRead:
-            regardImportMessagesAsRead === '0' ? false : true,
-          pushConfig: pushConfig,
-          loginExtraInfo: 'rn-test',
-        })
+        useAppId !== true
+          ? ChatOptions.withAppKey({
+              appKey: appKey,
+              autoLogin: false,
+              debugModel: true,
+              enableEmptyConversation: false,
+              requireAck: false,
+              requireDeliveryAck: false,
+              autoAcceptGroupInvitation: true,
+              enableTLS: enableTLS === '0' ? false : true,
+              useReplacedMessageContents:
+                useReplacedMessageContents === '0' ? false : true,
+              messagesReceiveCallbackIncludeSend:
+                messagesReceiveCallbackIncludeSend === '0' ? false : true,
+              regardImportMessagesAsRead:
+                regardImportMessagesAsRead === '0' ? false : true,
+              pushConfig: pushConfig,
+              loginExtraInfo: 'rn-test',
+            })
+          : ChatOptions.withAppId({
+              appId: appId,
+              autoLogin: false,
+              debugModel: true,
+              enableEmptyConversation: false,
+              requireAck: false,
+              requireDeliveryAck: false,
+              autoAcceptGroupInvitation: true,
+              enableTLS: enableTLS === '0' ? false : true,
+              useReplacedMessageContents:
+                useReplacedMessageContents === '0' ? false : true,
+              messagesReceiveCallbackIncludeSend:
+                messagesReceiveCallbackIncludeSend === '0' ? false : true,
+              regardImportMessagesAsRead:
+                regardImportMessagesAsRead === '0' ? false : true,
+              pushConfig: pushConfig,
+              loginExtraInfo: 'rn-test',
+            })
       )
       .then(() => {
         this.setState({ result: 'success' });
@@ -141,6 +167,11 @@ export class AppKeyScreen extends Component<{ navigation: any }, State, any> {
         console.error(reason);
         this.setState({ result: reason.toString() });
       });
+  }
+
+  onChangeAppId(useAppId: boolean): void {
+    console.log('dev: onChangeAppId: ', useAppId);
+    this.setState({ useAppId: useAppId });
   }
 
   componentDidMount?(): void {
@@ -155,6 +186,7 @@ export class AppKeyScreen extends Component<{ navigation: any }, State, any> {
     const {
       result,
       appKey,
+      useAppId,
       enablePush,
       enableTLS,
       useReplacedMessageContents,
@@ -244,9 +276,19 @@ export class AppKeyScreen extends Component<{ navigation: any }, State, any> {
             </TextInput>
           </View>
 
+          <View
+            style={{ flexDirection: 'row', height: 80, alignItems: 'center' }}
+          >
+            <Text>{'use app id'}</Text>
+            <Switch
+              value={useAppId}
+              onValueChange={this.onChangeAppId.bind(this)}
+            />
+          </View>
+
           <View style={styleValues.containerRow}>
             <Button
-              title="appKey"
+              title="init sdk"
               onPress={() => {
                 this.initSDK();
               }}

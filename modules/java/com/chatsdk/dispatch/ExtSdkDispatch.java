@@ -76,6 +76,9 @@ public class ExtSdkDispatch implements ExtSdkApi {
             case ExtSdkMethodType.changeAppKey:
                 ExtSdkClientWrapper.getInstance().changeAppKey(jsonParams, methodType, callback);
                 break;
+            case ExtSdkMethodType.changeAppId:
+                ExtSdkClientWrapper.getInstance().changeAppId(jsonParams, methodType, callback);
+                break;
             case ExtSdkMethodType.isLoggedInBefore:
                 ExtSdkClientWrapper.getInstance().isLoggedInBefore(jsonParams, methodType, callback);
                 break;
@@ -929,7 +932,7 @@ public class ExtSdkDispatch implements ExtSdkApi {
             case ExtSdkMethodType.getMessageCountWithTimestamp:
                 ExtSdkConversationWrapper.getInstance().getMessageCountWithTimestamp(jsonParams, methodType, callback);
                 break;
-              case ExtSdkMethodType.getMessageCount:
+            case ExtSdkMethodType.getMessageCount:
                 ExtSdkChatManagerWrapper.getInstance().getMessageCount(jsonParams, methodType, callback);
                 break;
 

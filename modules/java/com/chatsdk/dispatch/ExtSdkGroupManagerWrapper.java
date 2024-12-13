@@ -49,8 +49,7 @@ public class ExtSdkGroupManagerWrapper extends ExtSdkWrapper {
 
     public void getGroupsWithoutPushNotification(JSONObject param, String channelName, ExtSdkCallback result)
         throws JSONException {
-        List<String> groups = EMClient.getInstance().pushManager().getNoPushGroups();
-        onSuccess(result, channelName, groups);
+        onSuccess(result, channelName, null);
     }
 
     public void getJoinedGroupsFromServer(JSONObject param, String channelName, ExtSdkCallback result)

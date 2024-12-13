@@ -37,6 +37,10 @@ NS_ASSUME_NONNULL_BEGIN
       withMethodType:(NSString *)aChannelName
               result:(nonnull id<ExtSdkCallbackObjc>)result;
 
+- (void)changeAppId:(NSDictionary *)param
+     withMethodType:(NSString *)aChannelName
+             result:(nonnull id<ExtSdkCallbackObjc>)result;
+
 - (void)getCurrentUser:(NSDictionary *)param
         withMethodType:(NSString *)aChannelName
                 result:(nonnull id<ExtSdkCallbackObjc>)result;

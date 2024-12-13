@@ -56,7 +56,7 @@ npm i --save react-native-chat-sdk
 ```typescript
 ChatClient.getInstance()
   .init(
-    new ChatOptions({
+    ChatOptions.withAppKey({
       appKey: '<your app key>',
     })
   )

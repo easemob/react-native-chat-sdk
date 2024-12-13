@@ -2,10 +2,14 @@ _English | [Chinese](./CHANGELOG.zh.md)_
 
 # Update Log
 
+## 1.8.0
+
+- Update `ChatOptions`, deprecate the constructor, and add static constructors `withAppId` and `withAppKey`.
+- Added `ChatClient` api `changeAppId`.
+
 ## 1.7.0
 
 - Upgraded the dependent native SDK to version (iOS 4.11.0 and Android 4.11.0).
-
 - Updated the server connection status listener `ChatConnectEventListener`, added `onOfflineMessageSyncStart` and `onOfflineMessageSyncFinish`.
 - Updated the chat room listener `ChatRoomEventListener`, deprecated `onMuteListAdded`, replaced with `onMuteListAddedV2`.
 - Updated the message listener `ChatMessageEventListener`, removed the deprecated interface `onMessagesRecalled`.

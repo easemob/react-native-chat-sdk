@@ -1,5 +1,6 @@
 export const datasheet = {
   AppKey: [],
+  AppId: [],
   PushInfo: {
     sendId: '',
     KeyId: '',
@@ -35,6 +36,7 @@ let env;
 try {
   env = require('../../env');
   datasheet.AppKey = env.appKey;
+  datasheet.AppId = env.appId;
   datasheet.PushInfo = env.PushInfo;
   datasheet.accounts = env.accounts;
   datasheet.groups = env.groups;

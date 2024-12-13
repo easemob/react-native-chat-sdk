@@ -5,7 +5,7 @@
 ```tsx
 ChatClient.getInstance()
   .init(
-    new ChatOptions({
+    ChatOptions.withAppKey({
       appKey: appKey,
       pushConfig: new ChatPushConfig({
         deviceId: '<your device id>', // The data comes from the push configuration of the console.

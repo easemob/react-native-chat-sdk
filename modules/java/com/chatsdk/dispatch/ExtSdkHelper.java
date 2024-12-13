@@ -62,7 +62,12 @@ class ExtSdkOptionsHelper {
 
     static EMOptions fromJson(JSONObject json, Context context) throws JSONException {
         EMOptions options = new EMOptions();
-        options.setAppKey(json.getString("appKey"));
+        if (json.has("appKey")) {
+            options.setAppKey(json.getString("appKey"));
+        }
+        if (json.has("appId")) {
+            options.setAppId(json.getString("appId"));
+        }
         options.setAutoLogin(json.getBoolean("autoLogin"));
         options.setRequireAck(json.getBoolean("requireAck"));
         options.setRequireDeliveryAck(json.getBoolean("requireDeliveryAck"));
@@ -175,10 +180,6 @@ class ExtSdkGroupHelper {
         data.put("adminList", group.getAdminList());
         data.put("blockList", group.getBlackList());
         data.put("muteList", group.getMuteList());
-        if (group.getGroupId() != null && EMClient.getInstance().pushManager().getNoPushGroups() != null) {
-            data.put("noticeEnable",
-                     !EMClient.getInstance().pushManager().getNoPushGroups().contains(group.getGroupId()));
-        }
         data.put("messageBlocked", group.isMsgBlocked());
         data.put("isAllMemberMuted", group.isAllMemberMuted());
         data.put("permissionType", intTypeFromGroupPermissionType(group.getGroupPermissionType()));

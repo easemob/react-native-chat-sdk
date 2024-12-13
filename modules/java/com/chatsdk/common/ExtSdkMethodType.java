@@ -7,6 +7,7 @@ public class ExtSdkMethodType {
     public static final String login = "login";
     public static final String logout = "logout";
     public static final String changeAppKey = "changeAppKey";
+    public static final String changeAppId = "changeAppId";
     public static final String isLoggedInBefore = "isLoggedInBefore";
     public static final String updateCurrentUserNick = "updateCurrentUserNick";
     public static final String uploadLog = "uploadLog";

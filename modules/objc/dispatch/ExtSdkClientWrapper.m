@@ -165,6 +165,17 @@
             withParams:@(!aError)];
 }
 
+- (void)changeAppId:(NSDictionary *)param
+     withMethodType:(NSString *)aChannelName
+             result:(nonnull id<ExtSdkCallbackObjc>)result {
+    NSString *appId = param[@"appId"];
+    EMError *aError = [EMClient.sharedClient changeAppId:appId];
+    [self onResult:result
+        withMethodType:aChannelName
+             withError:aError
+            withParams:@(!aError)];
+}
+
 - (void)getCurrentUser:(NSDictionary *)param
         withMethodType:(NSString *)aChannelName
                 result:(nonnull id<ExtSdkCallbackObjc>)result {
@@ -379,8 +390,8 @@
     NSDictionary *dict = param[@"config"];
     NSString *deviceId = dict[@"deviceId"];
     NSString *deviceToken = dict[@"deviceToken"];
-//    NSData *deviceTokenData =
-//        [deviceToken dataUsingEncoding:NSUTF8StringEncoding];
+    //    NSData *deviceTokenData =
+    //        [deviceToken dataUsingEncoding:NSUTF8StringEncoding];
 
     __weak typeof(self) weakSelf = self;
     [EMClient.sharedClient

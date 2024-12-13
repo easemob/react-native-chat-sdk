@@ -8,6 +8,7 @@ export const MTcreateAccount = 'createAccount';
 export const MTlogin = 'login';
 export const MTlogout = 'logout';
 export const MTchangeAppKey = 'changeAppKey';
+export const MTchangeAppId = 'changeAppId';
 export const MTisLoggedInBefore = 'isLoggedInBefore';
 export const MTupdateCurrentUserNick = 'updateCurrentUserNick';
 export const MTuploadLog = 'uploadLog';
