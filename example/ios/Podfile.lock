@@ -378,7 +378,7 @@ PODS:
   - React-jsinspector (0.72.17)
   - React-logger (0.72.17):
     - glog
-  - react-native-chat-sdk (1.7.0):
+  - react-native-chat-sdk (1.8.0-alpha.0):
     - HyphenateChat (~> 4.11.0)
     - RCT-Folly (= 2021.07.22.00)
     - React-Core
@@ -734,7 +734,7 @@ SPEC CHECKSUMS:
   React-jsiexecutor: 8dc585381e476c3ff2e9468f444c90c4d1d5b874
   React-jsinspector: 853b8631b908636bb09ef77cb217376c38a0c8ff
   React-logger: 9ca44bb5703bf2355f3c2d2e5e67bfe98ca2dc34
-  react-native-chat-sdk: 498dcbc23fc33c741fb109aec2d671a30dae4fc8
+  react-native-chat-sdk: 0538389ae99edfcbf4d61d635a62a4fe6f6b27a6
   react-native-document-picker: 516b1ec6a1fdf178af8fc478eb3abb4c20ae54e6
   react-native-image-picker: 1889c342e6a4ba089ff11ae0c3bf5cc30a3134d0
   react-native-safe-area-context: 2cd91d532de12acdb0a9cbc8d43ac72a8e4c897c

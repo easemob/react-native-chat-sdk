@@ -1,133 +1,106 @@
 _Chinese | [English](./README.md)_
 
-更新时间：2022-08-11
+_Update time: 2024-12-19_
 
-# react-native-chat-sdk
+- [ChatSDK 介绍](#chatsdk-介绍)
+  - [开发环境要求](#开发环境要求)
+  - [集成 ChatSDK](#集成-chatsdk)
+  - [快速开始](#快速开始)
+  - [贡献](#贡献)
+  - [许可证](#许可证)
 
-即时通讯 SDK 通过实时的消息的双向传递完成信息交换。
+# ChatSDK 介绍
 
-## 目录说明
+即时通讯 SDK（软件开发工具包）是一组工具、库和 API，旨在将实时消息传递功能集成到应用程序中。它允许开发人员轻松地将文本、语音和视频通信功能添加到移动应用、网站或其他平台，而无需从头构建通信基础设施。
 
-    ├── CHANGELOG.md // 发版说明文档
-    ├── CONTRIBUTING.md // 贡献者说明文档
-    ├── LICENSE // 许可证文件
-    ├── README.md // 项目介绍文档
-    ├── README.zh.md // 项目介绍文档（中文版本）
-    ├── android // react native SDK android 平台文件夹
-    ├── docs // 文档文件夹
-    ├── example // 项目内置 demo
-    ├── ios // react native SDK ios 平台文件夹
-    ├── lib // react native SDK 生成产品文件夹
-    ├── modules // react native SDK native 源码文件夹
-    ├── node_modules // react native depends 文件夹，通过`yarn`或者`npm`命令生成
-    ├── package.json // react native project 管理文件
-    ├── scripts // react native 脚本文件夹
-    ├── src // react native 源码文件夹
-    ├── tsconfig.build.json // typescript 语言构建配置文件
-    ├── tsconfig.json // typescript 语言配置文件
-    └── yarn.lock // yarn 项目依赖版本配置文件
+## 开发环境要求
 
-## 项目开发环境要求
+- MacOS 12 或更高版本
+- React-Native 0.66 或更高版本
+- NodeJs 16.18 或更高版本
 
-要求如下：
+对于 iOS 应用：
 
-- React Native 0.66.5 or above
-- NodeJs 16 or above (Recommended 18 or above)
-- Xcode 12.4 or above for iOS application
-- Android Studio 4.2 or above for Android application
+- Xcode 13 或更高版本及其相关的依赖工具。
 
-## 添加 SDK 到现有项目
+对于 Android 应用：
 
-打开终端，进入现有项目文件夹添加 SDK 依赖：
+- Android Studio 2021 或更高版本及其相关的依赖工具。
+
+## 集成 ChatSDK
 
 ```sh
+npm install react-native-chat-sdk
+# 或
 yarn add react-native-chat-sdk
 ```
 
-or
-
-```sh
-npm i --save react-native-chat-sdk
-```
-
-## 习惯用法
-
-### 初始化 SDK
-
-```typescript
-ChatClient.getInstance()
-  .init(
-    ChatOptions.withAppKey({
-      appKey: '<your app key>',
-    })
-  )
-  .then(() => {
-    console.log('init success');
-  })
-  .catch((reason) => {
-    console.log('init fail:', reason);
-  });
-```
-
-### 登录
-
-```typescript
-ChatClient.getInstance()
-  .loginWithAgoraToken('<your account ID>', '<your token>')
-  .then((value: any) => {
-    console.log(`login success`, value);
-  })
-  .catch((reason: any) => {
-    console.log(`login fail:`, reason);
-  });
-```
-
-### 其它
-
-请参考相应的示例或方法说明。
-
 ## 快速开始
 
-详见快速开始文档。 [传送门](./docs/quick-start.zh.md)
+1. 初始化 SDK
 
-## demo 体验
+   ```typescript
+   // 请使用appkey或appId进行初始化。
+   const appKey = '<您的app key>';
+   const appId = '<您的app ID>';
+   ChatClient.getInstance()
+     .init(
+       appKey !== undefined
+         ? ChatOptions.withAppKey({
+             appKey: appKey,
+             autoLogin: false,
+           })
+         : ChatOptions.withAppId({
+             appId: appId,
+             autoLogin: false,
+           })
+     )
+     .then(() => {
+       console.log('初始化成功');
+     })
+     .catch((reason) => {
+       console.error(reason);
+     });
+   ```
 
-详见运行体验 api 的 demo。 [传送门](./example/package.json)。
-详见运行体验登录、退出、发送、接收消息的 demo。[传送门](./examples/simple_demo/package.json)。
+2. 连接到服务器
 
-## 贡献者
+   ```typescript
+   // 连接到服务器
+   const userId = '<您的用户ID>';
+   const userToken = '<您的用户令牌>';
+   ChatClient.getInstance()
+     .loginWithToken(userId, userToken)
+     .then((value) => {
+       console.log(`登录成功`, value);
+     })
+     .catch((reason) => {
+       console.error(reason);
+     });
+   ```
 
-详见贡献者向导。[传送门](./CONTRIBUTING.md)。
+3. 发送消息
 
-## 发版说明
+   ```typescript
+   // 发送消息
+   ChatClient.getInstance()
+     .chatManager.sendMessage(message, {
+       onError: (localMsgId: string, error: ChatError) => {
+         console.error(error);
+       },
+       onSuccess: (message: ChatMessage) => {
+         console.log(`发送成功`, message);
+       },
+     })
+     .catch((reason) => {
+       console.error(reason);
+     });
+   ```
 
-详见更新日志。 [传送门](./CHANGELOG.md)。
+## 贡献
 
-## 发版类型说明
-
-详见版本类型说明。 [传送门](./docs/version-types.zh.md)。
-
-## 开发者说明
-
-详见开发者说明。 [传送门](./docs/developer.zh.md)。
-
-## 使用者说明
-
-详见使用者说明 [传送门](./docs/user.md)。
+请参阅[贡献指南](CONTRIBUTING.md)，了解如何为该仓库和开发流程做出贡献。
 
 ## 许可证
 
 MIT
-
-## 常见问题和解决方法
-
-如果遇到问题可以参考这里。[传送门](./docs/qa.md)。
-
-## 引用
-
-[Github 仓库地址](https://github.com/easemob/react-native-chat-sdk)
-[官网网站地址](https://docs-im.easemob.com/ccim/rn/quickstart)
-
-## 版本兼容性
-
-[详见](./docs/rn.md)

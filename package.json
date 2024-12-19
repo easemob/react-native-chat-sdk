@@ -19,7 +19,6 @@
     "modules/cpp/CMakeLists.txt",
     "scripts/generate-cmake.js",
     "scripts/generate-version.js",
-    "CHANGELOG.md",
     "*.podspec",
     "!ios/build",
     "!android/build",
@@ -27,6 +26,8 @@
     "!android/gradlew",
     "!android/gradlew.bat",
     "!android/local.properties",
+    "!CHANGELOG.md",
+    "!CHANGELOG.zh.md",
     "!**/__tests__",
     "!**/__fixtures__",
     "!**/__mocks__",
@@ -53,7 +54,8 @@
     "doc:en": "mkdir -p ./docs/build/en && yarn exec typedoc --out ./docs/build/en --json ./docs/build/typedoc.json --tsconfig ./tsconfig.json --readme ./docs/rn_api_overview.md ./src/index.ts",
     "doc:cn": "mkdir -p ./docs/build/cn && yarn exec typedoc --out ./docs/build/cn --json ./docs/build/typedoc.json --tsconfig ./tsconfig.json --readme ./docs/rn_api_overview.zh.md ./src/index.ts",
     "doc:cn:update": "node ./scripts/update_api_docs.js 1.7.0 undefined easemob cn",
-    "doc:en:update": "node ./scripts/update_api_docs.js 1.4.0 undefined agora en",
+    "doc:agora:update": "node ./scripts/update_api_docs.js 1.4.0 undefined agora en",
+    "doc:shengwang:update": "node ./scripts/update_api_docs.js 1.4.0 undefined shengwang en",
     "release": "release-it"
   },
   "keywords": [
@@ -62,7 +64,7 @@
     "android"
   ],
   "repository": "https://github.com/easemob/react-native-chat-sdk",
-  "author": "asteriskzuo <zuoyuhsywn@hotmail.com> (https://github.com/easemob)",
+  "author": "asteriskzuo <zuoyuhsywn@hotmail.com> (https://github.com/asteriskzuo)",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/easemob/react-native-chat-sdk/issues"

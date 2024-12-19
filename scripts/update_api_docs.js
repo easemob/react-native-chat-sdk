@@ -1,4 +1,4 @@
-// node scripts/typedoc.js ${version} ${dir} ${agora | easemob} ${cn|en}
+// node scripts/typedoc.js ${version} ${dir} ${agora | easemob | shengwang} ${cn|en}
 
 const fs = require('fs');
 const path = require('path');
@@ -49,7 +49,12 @@ function replaceContent(dir, aaa, bbb) {
 // Call the function, passing in the specified directory path
 const version = process.argv.at(2) ?? 'v1.1.2';
 const language = process.argv.at(5) === 'cn' ? 'cn' : 'en';
-const type = process.argv.at(4) === 'agora' ? 'agora' : 'easemob';
+const type =
+  process.argv.at(4) === 'agora'
+    ? 'agora'
+    : process.argv.at(4) === 'shengwang'
+    ? 'shengwang'
+    : 'easemob';
 const dirPath =
   process.argv.at(3) === 'undefined'
     ? path.join(__dirname, '../docs/build/', language)
@@ -76,6 +81,12 @@ replaceContent(dirPath, `class="title">react-native-chat-sdk</a>`, title);
 
 if (type === 'agora') {
   replaceContent(dirPath, /react-native-chat-sdk/g, `react-native-agora-chat`);
+} else if (type === 'shengwang') {
+  replaceContent(
+    dirPath,
+    /react-native-chat-sdk/g,
+    `react-native-shengwang-chat`
+  );
 }
 
 console.log('test:end:');
