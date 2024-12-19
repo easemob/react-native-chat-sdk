@@ -20,7 +20,7 @@ function log() {
   local FOREGROUND=32
   local FONT=5
   now CURRENT_DATETIME
-  echo "[$CURRENT_DATETIME] \\033[${FOREGROUND};${FONT}m${@}\\033[0m"
+  echo "[$CURRENT_DATETIME] \\033[${FOREGROUND};${FONT}m${*}\\033[0m"
 }
 
 current_dir=$(
