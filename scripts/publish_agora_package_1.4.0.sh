@@ -77,6 +77,8 @@ jq '.repository = "https://github.com/AgoraIO/Agora-Chat-API-Examples"' package.
 jq '.bugs.url = "https://github.com/AgoraIO/Agora-Chat-API-Examples"' package.json >tmp.json && mv tmp.json package.json
 # 修改 homepage
 jq '.homepage = "https://github.com/AgoraIO/Agora-Chat-API-Examples"' package.json >tmp.json && mv tmp.json package.json
+# 删除 scripts.prepare
+jq 'del(.scripts.prepare)' package.json >tmp.json && mv tmp.json package.json
 # 删除 README.zh.md
 rm -f README.zh.md
 

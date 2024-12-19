@@ -91,6 +91,8 @@ jq '.repository = "https://www.npmjs.com/package/react-native-'${target_type}'-c
 jq '.bugs.url = "https://www.npmjs.com/package/react-native-'${target_type}'-chat"' package.json >tmp.json && mv tmp.json package.json
 ### 修改 homepage 字段为 `https://www.npmjs.com/package/react-native-${target_type}-chat
 jq '.homepage = "https://www.npmjs.com/package/react-native-'${target_type}'-chat"' package.json >tmp.json && mv tmp.json package.json
+### 删除 scripts.prepare 字段
+jq 'del(.scripts.prepare)' package.json >tmp.json && mv tmp.json package.json
 
 ## 修改 README.zh.md 文件
 ### 将 `react-native-chat-sdk` 替换为 `react-native-${target_type}-chat`
