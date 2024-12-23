@@ -63,6 +63,7 @@ import { ChatOptions } from './common/ChatOptions';
 import { ChatPushConfig } from './common/ChatPushConfig';
 import { eventEmitter } from './__specs__';
 import { Native } from './__internal__/Native';
+import { ChatError } from './common/ChatError';
 
 chatlog.log('dev:eventEmitter: ', eventEmitter);
 
@@ -461,15 +462,20 @@ export class ChatClient extends BaseManager {
    */
   public async init(options: ChatOptions): Promise<void> {
     chatlog.log(`${ChatClient.TAG}: init: `, options);
-    if (options.appKey) {
+    if (options.appKey && options.appKey.length > 0) {
       this._options = ChatOptions.withAppKey(options); // deep copy
-    } else if (options.appId) {
+    } else if (options.appId && options.appId.length > 0) {
       this._options = ChatOptions.withAppId(options); // deep copy
+    } else {
+      throw new ChatError({
+        code: 1,
+        description: 'appKey or appId is empty.',
+      });
     }
-    chatlog.enableLog = options.debugModel ?? false;
-    chatlog.enableTimestamp = options.logTimestamp ?? true;
-    chatlog.tag = options.logTag ?? '[chat]';
-    const r = await Native._callMethod(MTinit, { options });
+    chatlog.enableLog = this._options!.debugModel ?? false;
+    chatlog.enableTimestamp = this._options!.logTimestamp ?? true;
+    chatlog.tag = this._options!.logTag ?? '[chat]';
+    const r = await Native._callMethod(MTinit, { options: this._options });
     ChatClient.checkErrorFromResult(r);
   }
 

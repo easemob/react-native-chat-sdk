@@ -371,7 +371,7 @@ export class ChatLog {
     return this._enableTimestamp;
   }
 
-  private _tag = '[test]';
+  private _tag = '[chat]';
 
   set tag(tag: string) {
     this._tag = tag;
