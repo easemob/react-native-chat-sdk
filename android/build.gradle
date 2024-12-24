@@ -102,18 +102,18 @@ android {
           "${project.buildDir}/generated/source/codegen/java"
         ]
         java.excludes = ["com/chatsdk/flutter"]
-        // jniLibs {
-        //   srcDirs = ["../lib/android"]
-        // }
+        jniLibs {
+          srcDirs = ["../lib/android"]
+        }
       } else {
         java.srcDirs += [
           "../modules/java",
           "src/oldarch"
         ]
         java.exclude "com/chatsdk/flutter/*.java"
-        // jniLibs {
-        //   srcDirs = ["../lib/android"]
-        // }
+        jniLibs {
+          srcDirs = ["../lib/android"]
+        }
       }
     }
   }
@@ -130,8 +130,8 @@ dependencies {
   // For > 0.71, this will be replaced by `com.facebook.react:react-android:$version` by react gradle plugin
   //noinspection GradleDynamicVersion
   implementation "com.facebook.react:react-native:+"
- implementation 'io.hyphenate:hyphenate-chat:4.11.0'
-  //  implementation files('../lib/android/hyphenatechat_4.11.0.jar')
+//  implementation 'io.hyphenate:hyphenate-chat:4.11.0'
+   implementation files('../lib/android/agorachat_1.4.0.jar')
 }
 
 if (isNewArchitectureEnabled()) {

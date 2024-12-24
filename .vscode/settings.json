@@ -14,6 +14,7 @@
     "objc",
     "podspec",
     "Pressable",
+    "PYTHONPATH",
     "shengwang",
     "typecheck"
   ],
