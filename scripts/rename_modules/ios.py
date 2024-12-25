@@ -1,14 +1,22 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 #
-# 这是一个模块代码重命名的脚本
-# 使用名字映射列表，将模块代码中的关键字进行替换
-# 参考文档: https://github.com/easemob/emclient-ios/blob/chatsdk/agorabuild/update_to_agora.py
-# 使用示例: python rename_modules.py ios shengwang
-# 使用示例: python rename_modules.py android shengwang
+# update time: 2024-12-25
+# version: 1.0.0
+# author: Asterisk Zuo
+#
+# This is a module code renaming script
+# Using a name mapping list to replace keywords in module code
+#
+# Reference: https://github.com/easemob/emclient-ios/blob/chatsdk/agorabuild/update_to_agora.py
+#
+# usage: python -m rename_modules.ios [target_type] [folder_path]
+#
+# Example: python -m rename_modules.ios shengwang
+# Example: python -m rename_modules.ios agora
 
 
-# 创建一个方法，读取文件夹以及子文件夹下的所有文件的内容
+# Create a method to read the contents of all files in a folder and its subfolders
 import os
 from ._ios_data import mapping, sorted_keys
 from ._replace import read_folder_files
@@ -17,7 +25,7 @@ from ._replace import read_folder_files
 if __name__ == "__main__":
     import sys
 
-    # 获取参数个数
+    # Get number of arguments
     args = sys.argv
     print(args)
     if len(args) < 2:
@@ -27,11 +35,11 @@ if __name__ == "__main__":
     if target_type == "agora":
         sys.exit(0)
     if target_type == "shengwang":
-        # 获取当前文件夹路径
+        # Get current directory path
         current_dir = os.path.dirname(os.path.abspath(__file__))
-        # 指定文件夹路径
+        # Specify folder path
         folder_path = os.path.join(current_dir, "../../modules/objc")
         if (len(args) >= 3):
             folder_path = args[2]
-        # 读取文件夹以及子文件夹下的所有文件
+        # Read all files in folder and subfolders
         read_folder_files(folder_path, mapping, sorted_keys)

@@ -101,5 +101,6 @@ mapping = {
     "EMMessage": "ChatMessage",
     "EMChatThread": "ChatThread",
 }
-# 按照长度降序排序, 避免替换时出现问题
+
+# Sort keys by length in descending order to avoid replacement issues
 sorted_keys = sorted(mapping.keys(), key=len, reverse=True)

@@ -1,4 +1,5 @@
 mapping = {
+    # Core SDK components
     "HyphenateChat": "AgoraChat",
     "EMClient": "AgoraChatClient",
     "EMOptions": "AgoraChatOptions",
@@ -8,6 +9,7 @@ mapping = {
     "EMClientDelegate": "AgoraChatClientDelegate",
     "EMMulti": "AgoraChatMulti",
     "EMServer": "AgoraChatServer",
+    # Utility classes
     "EMStringUtil": "AgoraChatStringUtil",
     "EMDownloadStatus": "AgoraChatDownloadStatus",
     "EMCommonDefs": "AgoraChatCommonDefs",
@@ -16,12 +18,14 @@ mapping = {
     "EMDataUtil": "AgoraChatDataUtil",
     "EMDictionaryUtil": "AgoraChatDictionaryUtil",
     "EMError": "AgoraChatError",
+    # Message related classes
     "EMChatMessage": "AgoraChatMessage",
     "EMMessageStatus": "AgoraChatMessageStatus",
     "EMMessageDirection": "AgoraChatMessageDirection",
     "EMMessageBody": "AgoraChatMessageBody",
     "EMMessageUtil": "AgoraChatMessageUtil",
     "EMMessageBodyType": "AgoraChatMessageBodyType",
+    # Message body types
     "EMCmdMessageBody": "AgoraChatCmdMessageBody",
     "EMCustomMessageBody": "AgoraChatCustomMessageBody",
     "EMFileMessageBody": "AgoraChatFileMessageBody",
@@ -31,6 +35,7 @@ mapping = {
     "EMVideoMessageBody": "AgoraChatVideoMessageBody",
     "EMVoiceMessageBody": "AgoraChatVoiceMessageBody",
     "EMCombineMessageBody": "AgoraChatCombineMessageBody",
+    # Chat features
     "EMConversation": "AgoraChatConversation",
     "EMGroupMessageAck": "AgoraChatGroupMessageAck",
     "EMManager": "AgoraChatBaseManager",
@@ -40,9 +45,11 @@ mapping = {
     "EMContact": "AgoraChatContact",
     "EMChatroom": "AgoraChatroom",
     "EMGroup": "AgoraChatGroup",
+    # Thread related
     "EMSDKThread": "AgoraChatThread",
     "IEMThread": "IAgoraChatThread",
     "EMThread": "AgoraChatThread",
+    # Additional features
     "EMPush": "AgoraChatPush",
     "EMUserInfo": "AgoraChatUserInfo",
     "EMCursorResult": "AgoraChatCursorResult",
@@ -51,28 +58,29 @@ mapping = {
     "EMHTTP": "AgoraChatHTTP",
     "EMSilentMode": "AgoraChatSilentMode",
     "EMFetchServerMessagesOption": "AgoraChatFetchServerMessagesOption",
-    # add
+    # Connection and notification
     "EMConnectionState": "AgoraChatConnectionState",
     "EMLocalNotification": "AgoraChatLocalNotification",
-    # Translate
+    # Translation features
     "EMTranslate": "AgoraChatTranslate",
     "EMTranslation": "AgoraChatTranslation",
-    # Presence
+    # Presence and reactions
     "EMPresence": "AgoraChatPresence",
     "EMReaction": "AgoraChatReaction",
-    # swift bridge
+    # Swift bridge
     "EMBridgeHeader": "AgoraChatBridgeHeader",
     "EMMessage": "AgoraChatMessage",
     "EMRecallMessageInfo": "AgoraChatRecallMessageInfo",
     "EMNotificationState": "AgoraChatNotificationState",
     "EMWillPresentNotification": "AgoraChatWillPresentNotification",
     "EMDidReceiveNotificationResponse": "AgoraChatDidReceiveNotificationResponse",
-    # messageStatistics
+    # Message statistics
     "EMChatMessageStatistics": "AgoraChatMessageStatistics",
     "EMStatisticsManager": "AgoraChatStatisticsManager",
     "EMContact": "AgoraChatContact",
     "EMConversationFilter": "AgoraChatConversationFilter",
     "EMMarkType": "AgoraChatMarkType",
 }
-# 按照长度降序排序, 避免替换时出现问题
+
+# Sort keys by length in descending order to avoid replacement issues
 sorted_keys = sorted(mapping.keys(), key=len, reverse=True)
