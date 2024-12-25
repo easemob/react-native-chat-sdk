@@ -378,6 +378,14 @@ PODS:
   - react-native-chat-sdk (1.8.0-alpha.0):
     - RCT-Folly (= 2021.07.22.00)
     - React-Core
+  - react-native-document-picker (9.3.1):
+    - RCT-Folly (= 2021.07.22.00)
+    - React-Core
+  - react-native-image-picker (7.1.2):
+    - RCT-Folly (= 2021.07.22.00)
+    - React-Core
+  - react-native-safe-area-context (4.7.4):
+    - React-Core
   - React-NativeModulesApple (0.72.17):
     - hermes-engine
     - React-callinvoker
@@ -488,6 +496,14 @@ PODS:
     - React-jsi (= 0.72.17)
     - React-logger (= 0.72.17)
     - React-perflogger (= 0.72.17)
+  - RNFS (2.20.0):
+    - React-Core
+  - RNGestureHandler (2.13.4):
+    - RCT-Folly (= 2021.07.22.00)
+    - React-Core
+  - RNScreens (3.25.0):
+    - React-Core
+    - React-RCTImage
   - SocketRocket (0.6.1)
   - Yoga (1.14.0)
   - YogaKit (1.18.1):
@@ -540,6 +556,9 @@ DEPENDENCIES:
   - React-jsinspector (from `../node_modules/react-native/ReactCommon/jsinspector`)
   - React-logger (from `../node_modules/react-native/ReactCommon/logger`)
   - react-native-chat-sdk (from `../..`)
+  - react-native-document-picker (from `../node_modules/react-native-document-picker`)
+  - react-native-image-picker (from `../node_modules/react-native-image-picker`)
+  - react-native-safe-area-context (from `../node_modules/react-native-safe-area-context`)
   - React-NativeModulesApple (from `../node_modules/react-native/ReactCommon/react/nativemodule/core/platform/ios`)
   - React-perflogger (from `../node_modules/react-native/ReactCommon/reactperflogger`)
   - React-RCTActionSheet (from `../node_modules/react-native/Libraries/ActionSheetIOS`)
@@ -557,6 +576,9 @@ DEPENDENCIES:
   - React-runtimescheduler (from `../node_modules/react-native/ReactCommon/react/renderer/runtimescheduler`)
   - React-utils (from `../node_modules/react-native/ReactCommon/react/utils`)
   - ReactCommon/turbomodule/core (from `../node_modules/react-native/ReactCommon`)
+  - RNFS (from `../node_modules/react-native-fs`)
+  - RNGestureHandler (from `../node_modules/react-native-gesture-handler`)
+  - RNScreens (from `../node_modules/react-native-screens`)
   - Yoga (from `../node_modules/react-native/ReactCommon/yoga`)
 
 SPEC REPOS:
@@ -621,6 +643,12 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native/ReactCommon/logger"
   react-native-chat-sdk:
     :path: "../.."
+  react-native-document-picker:
+    :path: "../node_modules/react-native-document-picker"
+  react-native-image-picker:
+    :path: "../node_modules/react-native-image-picker"
+  react-native-safe-area-context:
+    :path: "../node_modules/react-native-safe-area-context"
   React-NativeModulesApple:
     :path: "../node_modules/react-native/ReactCommon/react/nativemodule/core/platform/ios"
   React-perflogger:
@@ -655,6 +683,12 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native/ReactCommon/react/utils"
   ReactCommon:
     :path: "../node_modules/react-native/ReactCommon"
+  RNFS:
+    :path: "../node_modules/react-native-fs"
+  RNGestureHandler:
+    :path: "../node_modules/react-native-gesture-handler"
+  RNScreens:
+    :path: "../node_modules/react-native-screens"
   Yoga:
     :path: "../node_modules/react-native/ReactCommon/yoga"
 
@@ -692,7 +726,10 @@ SPEC CHECKSUMS:
   React-jsiexecutor: 8dc585381e476c3ff2e9468f444c90c4d1d5b874
   React-jsinspector: 853b8631b908636bb09ef77cb217376c38a0c8ff
   React-logger: 9ca44bb5703bf2355f3c2d2e5e67bfe98ca2dc34
-  react-native-chat-sdk: d090a9bbf8ba980f2e53b098fc391f8235f908e7
+  react-native-chat-sdk: 0d4116e4141f044d71d9e1ac93a476a37f6ae42a
+  react-native-document-picker: 516b1ec6a1fdf178af8fc478eb3abb4c20ae54e6
+  react-native-image-picker: 1889c342e6a4ba089ff11ae0c3bf5cc30a3134d0
+  react-native-safe-area-context: 2cd91d532de12acdb0a9cbc8d43ac72a8e4c897c
   React-NativeModulesApple: 2edfcbb25329e3eb5f76eb79d89010de7c1c6f1f
   React-perflogger: 785b0063af5178298a61b54bb46aae9a19c7bbb5
   React-RCTActionSheet: 84f37b34bd77249263ace75471d6664393c29972
@@ -710,10 +747,13 @@ SPEC CHECKSUMS:
   React-runtimescheduler: ff30efdf24f8ce62eb517a391ded3d99c4263bb0
   React-utils: 7959d4553163b61e01bbe83dbd80e58ca420aecb
   ReactCommon: 841449721eb2e004de2c3366844b0a03f329f2cb
+  RNFS: 4ac0f0ea233904cb798630b3c077808c06931688
+  RNGestureHandler: 5102af8c91262d5a9b757a56e734b1a02071d83b
+  RNScreens: 85d3880b52d34db7b8eeebe2f1a0e807c05e69fa
   SocketRocket: f32cd54efbe0f095c4d7594881e52619cfe80b17
   Yoga: ef534101bb891fb09bae657417f34d399c1efe38
   YogaKit: f782866e155069a2cca2517aafea43200b01fd5a
 
-PODFILE CHECKSUM: aaa9bfbc960df2213822a8a289b295a0b34b49d6
+PODFILE CHECKSUM: 1fc21a1922d8f93a4c089beeb34d15fe067c8cf5
 
 COCOAPODS: 1.16.2

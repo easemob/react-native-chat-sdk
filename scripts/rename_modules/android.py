@@ -27,8 +27,11 @@ if __name__ == "__main__":
     if target_type == "agora":
         sys.exit(0)
     if target_type == "shengwang":
-        folder_path = args[2]
+        # 获取当前文件夹路径
+        current_dir = os.path.dirname(os.path.abspath(__file__))
         # 指定文件夹路径
-        folder_path = folder_path or "/Users/asterisk/Codes/rn/react-native-chat-sdk-rn72/modules/java"
+        folder_path = os.path.join(current_dir, "../../modules/java")
+        if (len(args) >= 3):
+            folder_path = args[2]
         # 读取文件夹以及子文件夹下的所有文件
         read_folder_files(folder_path, mapping, sorted_keys)
