@@ -27,11 +27,12 @@ Agora Chat 是一个高度可靠的全球交流平台，您的用户可以在其
 | {@link ChatClient.getAccessToken getAccessToken} | 获取登录 token。 |
 | {@link ChatClient.createAccount createAccount} | 注册新用户（开放注册）。 |
 | {@link ChatClient.login login} | 通过密码或环信 token 登录 Chat 服务器。 |
-| {@link ChatClient.loginWithToken loginWithToken} | 通过 token 登录 Chat 服务器。 |
-| {@link ChatClient.loginWithAgoraToken loginWithAgoraToken} | @deprecated 2023-11-17 使用 {@link login} 代替。 |
+| {@link ChatClient.loginWithToken loginWithToken} | 通过用户ID和token登录。 |
+| {@link ChatClient.loginWithAgoraToken loginWithAgoraToken} | 通过用户ID和token登录。 |
 | {@link ChatClient.renewAgoraToken renewAgoraToken} | 更新声网 token。 |
 | {@link ChatClient.logout logout} | 退出登录。 |
 | {@link ChatClient.changeAppKey changeAppKey} | 修改 App Key。 |
+| {@link ChatClient.changeAppId changeAppId} | 更新 app iD。 |
 | {@link ChatClient.compressLogs compressLogs} | 压缩日志文件。 |
 | {@link ChatClient.getLoggedInDevicesFromServer getLoggedInDevicesFromServer} | 获取指定账号下登录的在线设备列表。 |
 | {@link ChatClient.kickDevice kickDevice} | 将特定账号登录的指定设备下线。 |
@@ -46,10 +47,10 @@ Agora Chat 是一个高度可靠的全球交流平台，您的用户可以在其
 | {@link ChatClient.addCustomListener addCustomListener} | 添加自定义监听器，接收 Android 或者 iOS 设备发到 React Native 层的数据。 |
 | {@link ChatClient.removeCustomListener removeCustomListener} | 移除自定义监听，不再接收 Android 或者 iOS 设备发到 React Native 层的数据。 |
 | {@link ChatClient.removeAllCustomListener removeAllCustomListener} | 移除所有自定义监听器。 |
-| {@link ChatClient.addExceptListener addExceptListener} | Add error listener. |
-| {@link ChatClient.removeExceptListener removeExceptListener} | Remove error listener. |
-| {@link ChatClient.removeAllExceptListener removeAllExceptListener} | Remove all error listener. |
-| {@link ChatClient.chatManager chatManager} | Gets the chat manager class. |
+| {@link ChatClient.addExceptListener addExceptListener} | 增加错误监听器。 |
+| {@link ChatClient.removeExceptListener removeExceptListener} | 移除错误监听器。 |
+| {@link ChatClient.removeAllExceptListener removeAllExceptListener} | 移除所有错误监听器。 |
+| {@link ChatClient.chatManager chatManager} | 获取聊天管理器对象 |
 | {@link ChatClient.groupManager groupManager} | 获取群组管理器类。 |
 | {@link ChatClient.contactManager contactManager} | 获取联系人管理器类。 |
 | {@link ChatClient.pushManager pushManager} | 获取推送管理器类。 |
