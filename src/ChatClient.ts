@@ -607,9 +607,9 @@ export class ChatClient extends BaseManager {
    *
    * @param userId    The user ID. See {@link createAccount}.
    * @param pwdOrToken  The password or token. See {@link createAccount} or {@link getAccessToken}
-   * @param isPassword  Whether to log in with a password or a token.
-   *                    - `true`: A password is used.
-   *                    - (Default) `false`: A token is used.
+   * @param isPassword  Whether to log in with a password or token.
+   *                    - (Default) `true`: A password is used.
+   *                    - `false`: A token is used.
    *
    * @throws A description of the exception. See {@link ChatError}.
    *
