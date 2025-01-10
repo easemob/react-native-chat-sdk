@@ -4,7 +4,8 @@
 ###############################################################################
 # readme
 # usage: sh publish_agora_package_3.0.0.sh <target_version> <target_type> <output_dir>
-# example: sh publish_agora_package_3.0.0.sh 2.0.0 agora
+# example: sh scripts/publish_agora_package_3.0.0.sh 2.0.0 agora
+# example: sh scripts/publish_agora_package_3.0.0.sh 2.0.0 shengwang
 ###############################################################################
 ###############################################################################
 ###############################################################################
@@ -133,6 +134,32 @@ sed -i '' "s/${original_version}/${target_version}/g" lib/commonjs/version.js
 echo "${current_dir}"
 PYTHONPATH="${current_dir}" python -m rename_modules.ios "${target_type}" "${output_dir}/${target_dir}/modules/objc"
 PYTHONPATH="${current_dir}" python -m rename_modules.android "${target_type}" "${output_dir}/${target_dir}/modules/java"
+
+###############################################################################
+###############################################################################
+###############################################################################
+
+## native android 修改
+### 修改 android/build.gradle 文件内容 `io.hyphenate:hyphenate-chat:4.11.0` 替换为 `xxx:yyy`
+if [ "${target_type}" == "shengwang" ]; then
+  src_native_package_name="io.hyphenate:hyphenate-chat"
+  src_native_package_version="4.11.0"
+  dist_native_package_name="cn.shengwang:chat-sdk"
+  dist_native_package_version="1.3.2"
+  sed -i '' "s/${src_native_package_name}/${dist_native_package_name}/g" "${output_dir}/${target_dir}/android/build.gradle"
+  sed -i '' "s/${src_native_package_version}/${dist_native_package_version}/g" "${output_dir}/${target_dir}/android/build.gradle"
+fi
+
+## native ios 修改
+### 修改 react-native-chat-sdk.podspec 文件内容 `HyphenateChat` 替换为 `xxxx` 和 `4.11.0` 替换为 `yyy`
+if [ "${target_type}" == "shengwang" ]; then
+  src_native_package_name="HyphenateChat"
+  src_native_package_version="4.11.0"
+  dist_native_package_name="ShengwangChat_iOS"
+  dist_native_package_version="1.3.2"
+  sed -i '' "s/${src_native_package_name}/${dist_native_package_name}/g" "${output_dir}/${target_dir}/react-native-chat-sdk.podspec"
+  sed -i '' "s/${src_native_package_version}/${dist_native_package_version}/g" "${output_dir}/${target_dir}/react-native-chat-sdk.podspec"
+fi
 
 ###############################################################################
 ###############################################################################
