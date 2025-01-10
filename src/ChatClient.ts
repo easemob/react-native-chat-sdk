@@ -932,13 +932,16 @@ export class ChatClient extends BaseManager {
       `${ChatClient.TAG}: updatePushConfig: ${JSON.stringify(config)}`
     );
     if (this._options) {
-      this._options.pushConfig = new ChatPushConfig(this._options.pushConfig); // deep copy
+      const newPushConfig = new ChatPushConfig(this._options.pushConfig); // deep copy
       if (config.deviceId) {
-        this._options.pushConfig.deviceId = config.deviceId;
+        newPushConfig.deviceId = config.deviceId;
       }
       if (config.deviceToken) {
-        this._options.pushConfig.deviceToken = config.deviceToken;
+        newPushConfig.deviceToken = config.deviceToken;
       }
+      const newOptions = { ...this._options };
+      newOptions.pushConfig = { ...newPushConfig };
+      this._options = newOptions;
     }
     let r: any = await Native._callMethod(MTupdatePushConfig, {
       [MTupdatePushConfig]: {

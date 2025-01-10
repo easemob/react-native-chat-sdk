@@ -307,3 +307,5 @@ fabric.properties
 version.ts
 env.ts
 *.tgz
+
+.codegpt
