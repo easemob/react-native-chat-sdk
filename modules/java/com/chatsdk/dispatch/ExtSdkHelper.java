@@ -317,6 +317,9 @@ class ExtSdkChatRoomHelper {
         data.put("isAllMemberMuted", chatRoom.isAllMemberMuted());
         data.put("announcement", chatRoom.getAnnouncement());
         data.put("permissionType", intTypeFromPermissionType(chatRoom.getChatRoomPermissionType()));
+        data.put("isInWhitelist", chatRoom.isInWhitelist());
+        data.put("createTimestamp", chatRoom.getCreateTimestamp());
+        data.put("muteExpireTimestamp", chatRoom.getMuteExpireTimestamp());
 
         return data;
     }

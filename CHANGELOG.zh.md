@@ -4,8 +4,10 @@ _Chinese | [English](./CHANGELOG.md)_
 
 ## 1.8.0
 
+- 依赖的原生 SDK 升级到版本（`iOS` 4.12.0 和`Android` 4.12.0）。
 - 更新 `ChatOptions` ，作废构造方法，新增静态构造方法 `withAppId` 和 `withAppKey`。
 - 新增接口 `ChatClient` 的接口 `changeAppId`。
+- 更新聊天室 对象 ChatRoom 属性，新增 isInWhitelist、createTimestamp、muteExpireTimestamp。
 
 ## 1.7.0
 

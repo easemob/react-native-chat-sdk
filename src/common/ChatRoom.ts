@@ -120,6 +120,33 @@ export class ChatRoom {
    * - `false`: No.
    */
   isAllMemberMuted?: boolean;
+
+  /**
+   * Current user is in allow list or not.
+   * This property is available once join the chat room.
+   * This property will be updated when current user is added or removed from the white list.
+   * - `true`: In white list.
+   * - `false`: Not in white list.
+   */
+  isInWhitelist?: boolean;
+
+  /**
+   * Gets the timestamp(ms) when the chat room was created.
+   * This property is available once join the chat room.
+   */
+  createTimestamp?: number;
+
+  /**
+   * Gets the timestamp(ms) when Current user will be unmuted.
+   *
+   * This property is available once join the chat room.
+   * This property will be updated when current use is muted or unmuted.
+   *
+   * - Current use is not muted if it is zero.
+   * - Means cannot get MuteUntilTimeStamp correctly if it is be set with -1;
+   */
+  muteExpireTimestamp?: number;
+
   /**
    * The role of the current user in the chat room. For role types, see {@link ChatRoomPermissionType}.
    */
@@ -139,6 +166,9 @@ export class ChatRoom {
     muteKVList?: Record<string, number>;
     isAllMemberMuted?: boolean;
     permissionType: number;
+    isInWhitelist?: boolean;
+    createTimestamp?: number;
+    muteExpireTimestamp?: number;
   }) {
     this.roomId = params.roomId;
     this.roomName = params.roomName;
@@ -156,5 +186,8 @@ export class ChatRoom {
     this.permissionType = ChatRoomPermissionTypeFromNumber(
       params.permissionType
     );
+    this.isInWhitelist = params.isInWhitelist;
+    this.createTimestamp = params.createTimestamp;
+    this.muteExpireTimestamp = params.muteExpireTimestamp;
   }
 }
