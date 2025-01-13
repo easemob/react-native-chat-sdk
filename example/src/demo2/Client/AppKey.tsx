@@ -21,6 +21,7 @@ interface State {
 
 let gAppkey = datasheet.AppKey[1] ?? '';
 let gAppId = datasheet.AppId[1] ?? '';
+let gUseAppId = false;
 
 export class AppKeyScreen extends Component<{ navigation: any }, State, any> {
   public static route = 'AppKeyScreen';
@@ -34,7 +35,7 @@ export class AppKeyScreen extends Component<{ navigation: any }, State, any> {
       result: '',
       appKey: gAppkey,
       appId: gAppId,
-      useAppId: false,
+      useAppId: gUseAppId,
       enablePush: '0',
       useReplacedMessageContents: '0',
       enableTLS: '0',
@@ -161,7 +162,16 @@ export class AppKeyScreen extends Component<{ navigation: any }, State, any> {
             })
       )
       .then(() => {
+        console.log(
+          `dev: initSDK: success: useAppId=${useAppId}, appId=${appId}, appKey=${appKey}`
+        );
         this.setState({ result: 'success' });
+        gUseAppId = useAppId;
+        if (useAppId) {
+          gAppId = appId;
+        } else {
+          gAppkey = appKey;
+        }
       })
       .catch((reason) => {
         console.error(reason);
@@ -170,8 +180,12 @@ export class AppKeyScreen extends Component<{ navigation: any }, State, any> {
   }
 
   onChangeAppId(useAppId: boolean): void {
-    console.log('dev: onChangeAppId: ', useAppId);
-    this.setState({ useAppId: useAppId });
+    console.log('dev: onChangeAppId: ', useAppId, gAppId, gAppkey);
+    if (useAppId) {
+      this.setState({ useAppId: useAppId, appId: gAppId, appKey: '' });
+    } else {
+      this.setState({ useAppId: useAppId, appId: '', appKey: gAppkey });
+    }
   }
 
   componentDidMount?(): void {
@@ -186,6 +200,7 @@ export class AppKeyScreen extends Component<{ navigation: any }, State, any> {
     const {
       result,
       appKey,
+      appId,
       useAppId,
       enablePush,
       enableTLS,
@@ -197,15 +212,20 @@ export class AppKeyScreen extends Component<{ navigation: any }, State, any> {
       <ScrollView>
         <View style={styleValues.containerColumn}>
           <View style={styleValues.containerRow}>
-            <Text style={styleValues.textStyle}>agoraToken: </Text>
+            <Text style={styleValues.textStyle}>
+              {useAppId ? 'current is appId' : 'current is appkey'}
+            </Text>
             <TextInput
               style={styleValues.textInputStyle}
               onChangeText={(text: string) => {
-                this.setState({ appKey: text });
-                gAppkey = appKey;
+                if (useAppId) {
+                  this.setState({ appId: text });
+                } else {
+                  this.setState({ appKey: text });
+                }
               }}
             >
-              {appKey}
+              {useAppId ? appId : appKey}
             </TextInput>
           </View>
           <View style={styleValues.containerRow}>

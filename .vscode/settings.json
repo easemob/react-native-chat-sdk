@@ -18,6 +18,6 @@
     "shengwang",
     "typecheck"
   ],
-  "cmake.sourceDirectory": "/Users/asterisk/Codes/rn/react-native-chat-sdk/modules/cpp",
+  "cmake.sourceDirectory": "/Users/asterisk/Codes/rn/react-native-chat-sdk-rn72/build/agora/react-native-shengwang-chat-1.3.2/modules/cpp",
   "CodeGPT.apiKey": "CodeGPT Plus Beta"
 }
