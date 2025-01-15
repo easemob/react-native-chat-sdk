@@ -97,11 +97,11 @@ public class ExtSdkApiRN extends ChatSdkSpec implements ExtSdkApi {
         // Keep: Required for RN built in Event Emitter Calls.
     }
 
-    @ReactMethod
-    public Object[] listeners(String methodType) throws Exception {
-        // Keep: Required for RN built in Event Emitter Calls.
-        throw new Exception("Required for RN built in Event Emitter Calls.");
-    }
+//    @ReactMethod
+//    public Object[] listeners(String methodType) throws Exception {
+//        // Keep: Required for RN built in Event Emitter Calls.
+//        throw new Exception("Required for RN built in Event Emitter Calls.");
+//    }
 
     @Override
     public void init(@NonNull Object config) {
