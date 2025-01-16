@@ -6,6 +6,8 @@ _English | [Chinese](./CHANGELOG.zh.md)_
 
 - Update `ChatOptions`, deprecate the constructor, and add static constructors `withAppId` and `withAppKey`.
 - Added `ChatClient` api `changeAppId`.
+- Added `changeAppId` interface to `ChatClient`.
+- Updated ChatRoom object properties, added isInWhitelist, createTimestamp, muteExpireTimestamp.
 
 ## 1.7.0
 
