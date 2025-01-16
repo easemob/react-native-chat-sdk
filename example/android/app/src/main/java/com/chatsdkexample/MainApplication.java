@@ -9,6 +9,9 @@ import com.facebook.react.defaults.DefaultNewArchitectureEntryPoint;
 import com.facebook.react.defaults.DefaultReactNativeHost;
 import com.facebook.soloader.SoLoader;
 import java.util.List;
+import android.content.Context;
+import java.lang.reflect.Method;
+import com.facebook.react.ReactInstanceManager;
 
 public class MainApplication extends Application implements ReactApplication {
 
@@ -57,6 +60,15 @@ public class MainApplication extends Application implements ReactApplication {
       // If you opted-in for the New Architecture, we load the native entry point for this app.
       DefaultNewArchitectureEntryPoint.load();
     }
-    ReactNativeFlipper.initializeFlipper(this, getReactNativeHost().getReactInstanceManager());
+    if (BuildConfig.DEBUG) {
+      try {
+        Class<?> flipperClass = Class.forName("com.chatsdkexample.ReactNativeFlipper");
+        Method initMethod = flipperClass.getMethod("initializeFlipper", Context.class, ReactInstanceManager.class);
+        initMethod.invoke(null, this, getReactNativeHost().getReactInstanceManager());
+      } catch (Exception e) {
+        e.printStackTrace();
+      }
+    }
+
   }
 }
