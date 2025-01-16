@@ -20,6 +20,7 @@
     "scripts/generate-cmake.js",
     "scripts/generate-version.js",
     "*.podspec",
+    "!build",
     "!ios/build",
     "!android/build",
     "!android/gradle",
