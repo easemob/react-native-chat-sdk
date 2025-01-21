@@ -132,25 +132,20 @@ public class ExtSdkWrapper {
     }
 
     protected void mergeMessage(EMMessage msg, EMMessage dbMsg) throws JSONException {
-        dbMsg.setStatus(msg.status());
-        //      dbMsg.setMsgTime(msg.getMsgTime());
+        dbMsg.setMsgTime(msg.getMsgTime());
         dbMsg.setLocalTime(msg.localTime());
-        dbMsg.setIsNeedGroupAck(msg.isNeedGroupAck());
-        //      dbMsg.setGroupAckCount(msg.groupAckCount());
+        dbMsg.setStatus(msg.status());
+        dbMsg.setAcked(msg.isAcked());
         dbMsg.setIsChatThreadMessage(msg.isChatThreadMessage());
-        //      dbMsg.setFrom(msg.getFrom());
-        //      dbMsg.setTo(msg.getTo());
-        //      dbMsg.setMsgId(msg.getMsgId());
-        //      dbMsg.setChatType(msg.getChatType());
-        //      dbMsg.setAcked(msg.isAcked());
-        //      dbMsg.setDelivered(msg.isDelivered());
+        dbMsg.setIsNeedGroupAck(msg.isNeedGroupAck());
+        dbMsg.setDeliverAcked(msg.isDelivered());
         dbMsg.setUnread(msg.isUnread());
         dbMsg.setListened(msg.isListened());
-        //      dbMsg.setDirection(msg.direct());
         dbMsg.setReceiverList(msg.receiverList());
-        //      dbMsg.setPriority();
+        // dbMsg.setPriority(msg.setPriority());
+        dbMsg.deliverOnlineOnly(msg.isDeliverOnlineOnly());
         Map<String, Object> list = msg.getAttributes();
-        if (list.size() > 0) {
+        if (!list.isEmpty()) {
             JSONObject jsonParams = new JSONObject(list);
             for (Map.Entry<String, Object> entry : list.entrySet()) {
                 String key = entry.getKey();
@@ -173,8 +168,7 @@ public class ExtSdkWrapper {
                 }
             }
         }
-
-        this.mergeMessageBody(msg.getBody(), dbMsg);
+        dbMsg.setBody(msg.getBody());
     }
 
     protected EMConversation getConversation(JSONObject params) throws JSONException {

@@ -156,26 +156,31 @@ static NSString *const TAG = @"ExtSdkWrapper";
 }
 
 - (void)mergeMessage:(EMChatMessage *)msg withDBMessage:(EMChatMessage *)dbMsg {
+
     //    dbMsg.messageId = msg.messageId;
     //    dbMsg.conversationId = msg.conversationId;
-    //    dbMsg.direction = msg.direction;
+    //    dbMsg.chatType = msg.chatType;
+    //
     //    dbMsg.from = msg.from;
     //    dbMsg.to = msg.to;
-    //    dbMsg.timestamp = msg.timestamp;
+    //    dbMsg.direction = msg.direction;
+
+    dbMsg.timestamp = msg.timestamp;
     dbMsg.localTime = msg.localTime;
-    //    dbMsg.chatType = msg.chatType;
     dbMsg.status = msg.status;
-    //    dbMsg.isReadAcked = msg.isReadAcked;
+    dbMsg.isReadAcked = msg.isReadAcked;
     dbMsg.isChatThreadMessage = msg.isChatThreadMessage;
     dbMsg.isNeedGroupAck = msg.isNeedGroupAck;
-    //    dbMsg.isDeliverAcked = msg.isDeliverAcked;
+    dbMsg.isDeliverAcked = msg.isDeliverAcked;
     dbMsg.isRead = msg.isRead;
     dbMsg.isListened = msg.isListened;
-    dbMsg.ext = msg.ext;
-    //    dbMsg.priority = msg.priority;
-    dbMsg.deliverOnlineOnly = msg.deliverOnlineOnly;
     dbMsg.receiverList = msg.receiverList;
-    [self mergeMessageBody:msg.body withDBMessageBody:dbMsg.body];
+    dbMsg.priority = msg.priority;
+    dbMsg.deliverOnlineOnly = msg.deliverOnlineOnly;
+    dbMsg.ext = msg.ext;
+    //    EMMessageBody *newBody = [self mergeMessageBody:msg.body
+    //    withDBMessageBody:dbMsg.body];
+    dbMsg.body = msg.body;
 }
 
 - (EMConversation *)getConversation:(NSDictionary *)param {
