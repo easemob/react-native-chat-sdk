@@ -3,9 +3,9 @@
 ###############################################################################
 ###############################################################################
 # readme
-# usage: sh publish_agora_package_3.0.0.sh <target_version> <target_type> <output_dir>
+# usage: sh publish_agora_package_3.0.0.sh <target_version> <target_type> <output_dir> <ios_current_version> <ios_new_version> <android_version> <android_new_version>
 # example: sh scripts/publish_agora_package_3.0.0.sh 2.0.0 agora
-# example: sh scripts/publish_agora_package_3.0.0.sh 2.0.0 shengwang
+# example: sh scripts/publish_agora_package_3.0.0.sh 1.3.2 shengwang "" 4.12.0 4.12.0 1.3.2 1.3.2
 ###############################################################################
 ###############################################################################
 ###############################################################################
@@ -55,6 +55,15 @@ output_dir=${output_dir:-${current_dir}/../build/agora}
 if [ ! -d "${output_dir}" ]; then
   mkdir -p "${output_dir}"
 fi
+
+## 第四个参数：ios 当前版本号
+ios_current_version=$4
+## 第五个参数：ios 新版本号
+ios_new_version=$5
+## 第六个参数：android 当前版本号
+android_current_version=$6
+## 第七个参数：android 新版本号
+android_new_version=$7
 
 ### 输出参数信息
 log "package target version: ${target_version}"
@@ -143,9 +152,9 @@ PYTHONPATH="${current_dir}" python -m rename_modules.android "${target_type}" "$
 ### 修改 android/build.gradle 文件内容 `io.hyphenate:hyphenate-chat:4.11.0` 替换为 `xxx:yyy`
 if [ "${target_type}" == "shengwang" ]; then
   src_native_package_name="io.hyphenate:hyphenate-chat"
-  src_native_package_version="4.11.0"
+  src_native_package_version=${android_current_version}
   dist_native_package_name="cn.shengwang:chat-sdk"
-  dist_native_package_version="1.3.2"
+  dist_native_package_version=${android_new_version}
   sed -i '' "s/${src_native_package_name}/${dist_native_package_name}/g" "${output_dir}/${target_dir}/android/build.gradle"
   sed -i '' "s/${src_native_package_version}/${dist_native_package_version}/g" "${output_dir}/${target_dir}/android/build.gradle"
 fi
@@ -154,9 +163,9 @@ fi
 ### 修改 react-native-chat-sdk.podspec 文件内容 `HyphenateChat` 替换为 `xxxx` 和 `4.11.0` 替换为 `yyy`
 if [ "${target_type}" == "shengwang" ]; then
   src_native_package_name="HyphenateChat"
-  src_native_package_version="4.11.0"
+  src_native_package_version=${ios_current_version}
   dist_native_package_name="ShengwangChat_iOS"
-  dist_native_package_version="1.3.2"
+  dist_native_package_version=${ios_new_version}
   sed -i '' "s/${src_native_package_name}/${dist_native_package_name}/g" "${output_dir}/${target_dir}/react-native-chat-sdk.podspec"
   sed -i '' "s/${src_native_package_version}/${dist_native_package_version}/g" "${output_dir}/${target_dir}/react-native-chat-sdk.podspec"
 fi
