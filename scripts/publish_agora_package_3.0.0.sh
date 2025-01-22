@@ -5,7 +5,7 @@
 # readme
 # usage: sh publish_agora_package_3.0.0.sh <target_version> <target_type> <output_dir> <ios_current_version> <ios_new_version> <android_version> <android_new_version>
 # example: sh scripts/publish_agora_package_3.0.0.sh 2.0.0 agora
-# example: sh scripts/publish_agora_package_3.0.0.sh 1.3.2 shengwang "" 4.12.0 4.12.0 1.3.2 1.3.2
+# example: sh scripts/publish_agora_package_3.0.0.sh 1.3.2 shengwang "" 4.12.0 1.3.2 4.12.0 1.3.2
 ###############################################################################
 ###############################################################################
 ###############################################################################
@@ -70,6 +70,10 @@ log "package target version: ${target_version}"
 log "package original version: ${original_version}"
 log "package target type: ${target_type}"
 log "package output directory: ${output_dir}"
+log "ios current version: ${ios_current_version}"
+log "ios new version: ${ios_new_version}"
+log "android current version: ${android_current_version}"
+log "android new version: ${android_new_version}"
 
 # 打包npm包
 log "npm pack..."
