@@ -1,4 +1,4 @@
-Agora Chat is a highly reliable global communication platform where your users can chat one-to-one, in groups or in chat rooms. Users communicate with text messages, share images, audios, videos, files, emojis, and locations. Agora Chat supplies typing indicators out-of-the-box.
+ChatSDK is a highly reliable global communication platform where your users can chat one-to-one, in groups or in chat rooms. Users communicate with text messages, share images, audios, videos, files, emojis, and locations. ChatSDK supplies typing indicators out-of-the-box.
 
 - The ChatClient class is the entry of the chat SDK. It provides methods to allow you to log in to and log out of the chat app and manage the connection between the SDK and the chat server.
 - The ChatManager class provides methods to allow you to send and receive messages, manage conversations , and download attachments.
