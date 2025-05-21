@@ -1358,7 +1358,10 @@
     (NSArray<EMRecallMessageInfo *> *)aRecallMessagesInfo {
     NSMutableArray *list = [NSMutableArray array];
     for (EMRecallMessageInfo *info in aRecallMessagesInfo) {
-        [list addObject:[info toJsonObject]];
+        NSDictionary *jsonObject = [info toJsonObject];
+        if (jsonObject != nil) {
+            [list addObject:jsonObject];
+        }
     }
 
     [self onReceive:ExtSdkMethodKeyOnMessagesRecalledInfo withParams:list];

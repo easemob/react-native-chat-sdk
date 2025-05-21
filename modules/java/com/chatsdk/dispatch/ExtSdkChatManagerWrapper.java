@@ -1241,7 +1241,12 @@ public class ExtSdkChatManagerWrapper extends ExtSdkWrapper {
             public void onMessageRecalledWithExt(List<EMRecallMessageInfo> recallMessageInfo) {
                 ArrayList<Map<String, Object>> msgList = new ArrayList<>();
                 for (EMRecallMessageInfo info : recallMessageInfo) {
-                    msgList.add(ExtSdkRecalledMessageInfoHelper.toJson(info));
+                    if (info != null) {
+                        Map<String, Object> jsonMap = ExtSdkRecalledMessageInfoHelper.toJson(info);
+                        if (jsonMap != null) {
+                            msgList.add(jsonMap);
+                        }
+                    }
                 }
                 ExtSdkWrapper.onReceive(ExtSdkMethodType.onMessagesRecalledInfo, msgList);
             }
