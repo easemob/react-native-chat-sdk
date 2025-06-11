@@ -171,7 +171,6 @@ public class ExtSdkGroupManagerWrapper extends ExtSdkWrapper {
             EMGroup group = null;
             if (hasFetchMembers) {
                 group = EMClient.getInstance().groupManager().getGroupFromServer(groupId, isFetchMembers);
-                ExtSdkWrapper.onSuccess(result, channelName, ExtSdkGroupHelper.toJson(group));
             } else {
                 group = EMClient.getInstance().groupManager().getGroupFromServer(groupId);
             }
