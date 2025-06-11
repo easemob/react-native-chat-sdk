@@ -2,6 +2,10 @@ _Chinese | [English](./CHANGELOG.md)_
 
 # Update Log
 
+## 1.8.1
+
+- 使用 接口 `fetchGroupInfoWithoutMembersFromServer` 替换 `fetchGroupInfoFromServer`。
+
 ## 1.8.0
 
 - 依赖的原生 SDK 升级到版本（`iOS` 4.12.0 和`Android` 4.12.0）。

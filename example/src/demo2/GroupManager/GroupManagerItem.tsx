@@ -62,6 +62,9 @@ export interface StateGroupMessage extends StateBase {
     groupId: string;
     isFetchMembers: boolean;
   };
+  fetchGroupInfoWithoutMembersFromServer: {
+    groupId: string;
+  };
   fetchMemberListFromServer: {
     groupId: string;
     pageSize: number;
@@ -251,6 +254,7 @@ export class GroupManagerLeafScreen extends LeafScreenBase<StateGroupMessage> {
       'unblockGroup',
       'getGroupWithId',
       'fetchGroupInfoFromServer',
+      'fetchGroupInfoWithoutMembersFromServer',
       'changeGroupName',
       'changeGroupDescription',
       'fetchBlockListFromServer',
@@ -495,6 +499,17 @@ export class GroupManagerLeafScreen extends LeafScreenBase<StateGroupMessage> {
           ChatClient.getInstance().groupManager.fetchGroupInfoFromServer(
             groupId,
             isFetchMembers
+          ),
+          GroupManagerLeafScreen.TAG,
+          name
+        );
+        break;
+      }
+      case MN.fetchGroupInfoWithoutMembersFromServer: {
+        const { groupId } = this.state.fetchGroupInfoWithoutMembersFromServer;
+        this.tryCatch(
+          ChatClient.getInstance().groupManager.fetchGroupInfoWithoutMembersFromServer(
+            groupId
           ),
           GroupManagerLeafScreen.TAG,
           name

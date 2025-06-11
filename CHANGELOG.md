@@ -2,6 +2,10 @@ _English | [Chinese](./CHANGELOG.zh.md)_
 
 # Update Log
 
+## 1.8.1
+
+- Use `fetchGroupInfoWithoutMembersFromServer` to replace `fetchGroupInfoFromServer`.
+
 ## 1.8.0
 
 - Update `ChatOptions`, deprecate the constructor, and add static constructors `withAppId` and `withAppKey`.

@@ -160,7 +160,7 @@ export class ChatGroupMessageAck {
 /**
  * The group information class, which contains the information of the chat group.
  *
- * You can call the {@link ChatGroupManager.fetchGroupInfoFromServer} method to obtain group information.
+ * You can call the {@link ChatGroupManager.fetchGroupInfoWithoutMembersFromServer} method to obtain group information.
  */
 export class ChatGroup {
   /**

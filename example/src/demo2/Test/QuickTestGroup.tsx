@@ -215,6 +215,27 @@ export class QuickTestScreenGroup extends QuickTestScreenBase<
           );
         }
         break;
+      case MN.fetchGroupInfoWithoutMembersFromServer:
+        {
+          const methodName = this.metaData.get(
+            MN.fetchGroupInfoWithoutMembersFromServer
+          )?.methodName!;
+          console.log(
+            `${MN.fetchGroupInfoWithoutMembersFromServer} === ${methodName}`
+          );
+          const groupId = this.metaData.get(
+            MN.fetchGroupInfoWithoutMembersFromServer
+          )?.params[0]!.paramDefaultValue;
+
+          this.tryCatch(
+            ChatClient.getInstance().groupManager.fetchGroupInfoWithoutMembersFromServer(
+              groupId
+            ),
+            QuickTestScreenGroup.TAG,
+            methodName
+          );
+        }
+        break;
       case MN.fetchMemberListFromServer:
         {
           const methodName = this.metaData.get(MN.fetchMemberListFromServer)

@@ -480,16 +480,50 @@ export class ChatGroupManager extends BaseManager {
    * @returns The group instance. The SDK returns `undefined` if the group does not exist.
    *
    * @throws A description of the exception. See {@link ChatError}.
+   *
+   * @deprecated Use {@link fetchGroupInfoWithoutMembersFromServer} instead.
    */
   public async fetchGroupInfoFromServer(
     groupId: string,
     isFetchMembers: boolean = false
   ): Promise<ChatGroup | undefined> {
-    chatlog.log(`${ChatGroupManager.TAG}: fetchGroupInfoFromServer: `, groupId);
+    chatlog.log(
+      `${ChatGroupManager.TAG}: fetchGroupInfoFromServer: `,
+      groupId,
+      isFetchMembers
+    );
     let r: any = await Native._callMethod(MTgetGroupSpecificationFromServer, {
       [MTgetGroupSpecificationFromServer]: {
         groupId: groupId,
         fetchMembers: isFetchMembers,
+      },
+    });
+    ChatGroupManager.checkErrorFromResult(r);
+    const g = r?.[MTgetGroupSpecificationFromServer];
+    if (g) {
+      return new ChatGroup(g);
+    }
+    return undefined;
+  }
+
+  /**
+   * Gets the group information from the server.
+   *
+   * @param groupId The group ID.
+   * @returns The group instance. The SDK returns `undefined` if the group does not exist.
+   *
+   * @throws A description of the exception. See {@link ChatError}.
+   */
+  public async fetchGroupInfoWithoutMembersFromServer(
+    groupId: string
+  ): Promise<ChatGroup | undefined> {
+    chatlog.log(
+      `${ChatGroupManager.TAG}: fetchGroupInfoWithoutMembersFromServer: `,
+      groupId
+    );
+    let r: any = await Native._callMethod(MTgetGroupSpecificationFromServer, {
+      [MTgetGroupSpecificationFromServer]: {
+        groupId: groupId,
       },
     });
     ChatGroupManager.checkErrorFromResult(r);

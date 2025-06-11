@@ -144,17 +144,36 @@
                                  result:(nonnull id<ExtSdkCallbackObjc>)result {
     __weak typeof(self) weakSelf = self;
     NSString *groupId = param[@"groupId"];
-    BOOL isFetchMembers = param[@"fetchMembers"] ?: NO;
-    [EMClient.sharedClient.groupManager
-        getGroupSpecificationFromServerWithId:groupId
-                                 fetchMembers:isFetchMembers
-                                   completion:^(EMGroup *aGroup,
-                                                EMError *aError) {
-                                     [weakSelf onResult:result
-                                         withMethodType:aChannelName
-                                              withError:aError
-                                             withParams:[aGroup toJsonObject]];
-                                   }];
+    BOOL hasFetchMembers = NO;
+    BOOL fetchMembers = NO;
+    if (param[@"fetchMembers"]) {
+        fetchMembers = [param[@"fetchMembers"] boolValue];
+        hasFetchMembers = YES;
+    }
+    if (hasFetchMembers) {
+        [EMClient.sharedClient.groupManager
+            getGroupSpecificationFromServerWithId:groupId
+                                     fetchMembers:fetchMembers
+                                       completion:^(EMGroup *aGroup,
+                                                    EMError *aError) {
+                                         [weakSelf onResult:result
+                                             withMethodType:aChannelName
+                                                  withError:aError
+                                                 withParams:[aGroup
+                                                                toJsonObject]];
+                                       }];
+    } else {
+        [EMClient.sharedClient.groupManager
+            getGroupSpecificationFromServerWithId:groupId
+                                       completion:^(EMGroup *aGroup,
+                                                    EMError *aError) {
+                                         [weakSelf onResult:result
+                                             withMethodType:aChannelName
+                                                  withError:aError
+                                                 withParams:[aGroup
+                                                                toJsonObject]];
+                                       }];
+    }
 }
 
 - (void)getGroupMemberListFromServer:(NSDictionary *)param

@@ -200,7 +200,7 @@ export class ChatConversation {
       }
     } else if (this.convType === ChatConversationType.GroupChat) {
       const ret =
-        await ChatClient.getInstance().groupManager.fetchGroupInfoFromServer(
+        await ChatClient.getInstance().groupManager.fetchGroupInfoWithoutMembersFromServer(
           this.convId
         );
       if (ret) {

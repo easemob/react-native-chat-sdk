@@ -10,6 +10,8 @@ export const MN = {
   fetchPublicGroupsFromServer: 'fetchPublicGroupsFromServer',
   createGroup: 'createGroup',
   fetchGroupInfoFromServer: 'fetchGroupInfoFromServer',
+  fetchGroupInfoWithoutMembersFromServer:
+    'fetchGroupInfoWithoutMembersFromServer',
   fetchMemberListFromServer: 'fetchMemberListFromServer',
   fetchBlockListFromServer: 'fetchBlockListFromServer',
   fetchMuteListFromServer: 'fetchMuteListFromServer',
@@ -168,6 +170,19 @@ export const metaDataList = new Map<string, ApiParams>([
           paramName: 'isFetchMembers',
           paramType: 'boolean',
           paramDefaultValue: true,
+        },
+      ],
+    },
+  ],
+  [
+    MN.fetchGroupInfoWithoutMembersFromServer,
+    {
+      methodName: MN.fetchGroupInfoWithoutMembersFromServer,
+      params: [
+        {
+          paramName: 'groupId',
+          paramType: 'string',
+          paramDefaultValue: '207993699368962',
         },
       ],
     },

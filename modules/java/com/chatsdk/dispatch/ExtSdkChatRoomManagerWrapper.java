@@ -78,15 +78,17 @@ public class ExtSdkChatRoomManagerWrapper extends ExtSdkWrapper {
     public void fetchChatRoomInfoFromServer(JSONObject param, String channelName, ExtSdkCallback result)
         throws JSONException {
         boolean fetchMembers = false;
+        boolean hasFetchMembers = false;
         String roomId = param.getString("roomId");
         if (param.has("fetchMembers")) {
             fetchMembers = param.getBoolean("fetchMembers");
+            hasFetchMembers = true;
         }
 
         try {
             EMChatRoom room = null;
-            if (fetchMembers) {
-                room = EMClient.getInstance().chatroomManager().fetchChatRoomFromServer(roomId, true);
+            if (hasFetchMembers) {
+                room = EMClient.getInstance().chatroomManager().fetchChatRoomFromServer(roomId, fetchMembers);
             } else {
                 room = EMClient.getInstance().chatroomManager().fetchChatRoomFromServer(roomId);
             }
