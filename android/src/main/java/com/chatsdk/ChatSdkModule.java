@@ -35,15 +35,9 @@ public class ChatSdkModule extends ChatSdkSpec {
     promise.resolve(a * b);
   }
 
-  // @ReactMethod
-  // public void callMethodA(ReadableMap params, Promise promise) {
-  //   Log.d(getName(), "callMethodA");
-  //   promise.resolve(null);
-  // }
-
   @ReactMethod
-  public void callMethodB(String method, @Nullable ReadableMap args, Promise promise) {
-    Log.d(getName(), "callMethodB");
+  public void callMethod(String method, @Nullable ReadableMap args, Promise promise) {
+    Log.d(getName(), "callMethod");
     promise.resolve(null);
   }
 

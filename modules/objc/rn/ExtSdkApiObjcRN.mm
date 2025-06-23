@@ -84,57 +84,19 @@ RCT_EXPORT_MODULE()
 RCT_EXPORT_MODULE(ChatSdk)
 #endif
 
-// #ifdef RCT_NEW_ARCH_ENABLED
-// RCT_EXPORT_METHOD(callMethodA : (JS::NativeChatSdk::SpecCallMethodAParams &)
-//                       params resolve : (RCTPromiseResolveBlock)
-//                           resolve reject : (RCTPromiseRejectBlock)reject) {
-// #else
-// RCT_EXPORT_METHOD(callMethod : (NSString *)methodName : (NSDictionary *)
-//                       params : (RCTPromiseResolveBlock)
-//                           resolve : (RCTPromiseRejectBlock)reject) {
-// #endif
-//     NSLog(@"%@: callMethodA:", TAG);
-//     id<ExtSdkCallbackObjc> callback =
-//         [[ExtSdkCallbackObjcRN alloc] initWithResolve:resolve
-//                                            withReject:reject];
-//     __weak decltype(self) weakself =
-//         self; // TODO: 后续解决 mm文件无法使用typeof关键字: 使用分类方式解决
-//     [ExtSdkThreadUtilObjc asyncExecute:^{
+RCT_EXPORT_METHOD(callMethod : (NSString *)method args : (NSDictionary *)args
+                      resolve : (RCTPromiseResolveBlock)resolve
+                      reject : (RCTPromiseRejectBlock)reject) {
+    NSLog(@"%@: callMethod:", TAG);
 
-// #ifdef RCT_NEW_ARCH_ENABLED
-//       NSString *methodName = params.method();
-//       NSDictionary *p = params.args();
-// #else
-//         NSDictionary* p = params;
-// #endif
-
-//       if (weakself) {
-//           [[weakself getApi] callSdkApi:methodName
-//                              withParams:p
-//                            withCallback:callback];
-//       }
-//     }];
-// }
-
-#ifdef RCT_NEW_ARCH_ENABLED
-RCT_EXPORT_METHOD(callMethodB : (NSString *)methodName args : (NSDictionary *)
-                      params resolve : (RCTPromiseResolveBlock)
-                          resolve reject : (RCTPromiseRejectBlock)reject) {
-#else
-RCT_EXPORT_METHOD(callMethod : (NSString *)methodName : (NSDictionary *)
-                      params : (RCTPromiseResolveBlock)
-                          resolve : (RCTPromiseRejectBlock)reject) {
-#endif
-
-    NSLog(@"%@: callMethodB:", TAG);
     id<ExtSdkCallbackObjc> callback =
         [[ExtSdkCallbackObjcRN alloc] initWithResolve:resolve
                                            withReject:reject];
     __weak decltype(self) weakself = self;
     [ExtSdkThreadUtilObjc asyncExecute:^{
       if (weakself) {
-          [[weakself getApi] callSdkApi:methodName
-                             withParams:params
+          [[weakself getApi] callSdkApi:method
+                             withParams:args
                            withCallback:callback];
       }
     }];

@@ -14,6 +14,10 @@ _Update Time: 2024-11-21_
 | 0.74    | success | success    | success | success        |                                                                    |
 | 0.75    | success | success    | success | success        |                                                                    |
 | 0.76    | success | success    | success | success        |                                                                    |
+| 0.77    | /       | success    | /       | success        |                                                                    |
+| 0.78    | /       | success    | /       | success        |                                                                    |
+| 0.79    | /       | success    | /       | success        |                                                                    |
+| 0.80    | /       | success    | /       | success        |                                                                    |
 
 _Data Update Time: 2024-11-18_
 

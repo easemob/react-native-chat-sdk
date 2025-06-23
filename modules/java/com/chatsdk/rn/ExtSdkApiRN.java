@@ -65,23 +65,6 @@ public class ExtSdkApiRN extends ChatSdkSpec implements ExtSdkApi {
         Log.d(TAG, "multiply: " + a + b);
     }
 
-    // @ReactMethod
-    // public void callMethodA(ReadableMap params, Promise promise) {
-    //     Log.d(TAG, "callMethodA: " + params);
-    //     if (params != null) {
-    //         String method = params.getString("method");
-    //         ReadableMap args = params.getMap("args");
-    //         this.callMethod(method, args, promise);
-    //     } else {
-    //         promise.reject(String.valueOf(1), "params is null");
-    //     }
-    // }
-
-    @ReactMethod
-    public void callMethodB(String method, @javax.annotation.Nullable ReadableMap args, Promise promise) {
-        this.callMethod(method, args, promise);
-    }
-
     @ReactMethod
     public void addListener(String eventName) {
         // Keep: Required for RN built in Event Emitter Calls.
@@ -171,18 +154,18 @@ public class ExtSdkApiRN extends ChatSdkSpec implements ExtSdkApi {
     }
 
     @ReactMethod
-    public void callMethod(String methodType, ReadableMap params, Promise promise) {
-        Log.d(TAG, "callSdkApiRN: " + methodType + ": " + (params != null ? params : ""));
+    public void callMethod(String method, @javax.annotation.Nullable ReadableMap args, Promise promise) {
+        Log.d(TAG, "callMethod: " + method + ": " + (args != null ? args : ""));
         ExtSdkThreadUtil.asyncExecute(() -> {
             Object subParams = null;
-            if (params != null) {
-              for (Map.Entry<String, Object> stringObjectEntry : params.toHashMap().entrySet()) {
+            if (args != null) {
+              for (Map.Entry<String, Object> stringObjectEntry : args.toHashMap().entrySet()) {
                 subParams = stringObjectEntry.getValue();
                 break;
               }
             }
 
-            this.callSdkApi(methodType, subParams, new ExtSdkCallback() {
+            this.callSdkApi(method, subParams, new ExtSdkCallback() {
                 @Override
                 public void success(@Nullable Object data) {
                     ExtSdkThreadUtil.mainThreadExecute(() -> {
