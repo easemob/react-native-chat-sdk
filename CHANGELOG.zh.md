@@ -2,6 +2,10 @@ _Chinese | [English](./CHANGELOG.md)_
 
 # Update Log
 
+## 1.8.2
+
+- 修复 使用 react-native 0.77,0.78,0.79,0.80 版本的应用 集成 chatsdk 无法编译通过的问题。
+
 ## 1.8.1
 
 - 使用 接口 `fetchGroupInfoWithoutMembersFromServer` 替换 `fetchGroupInfoFromServer`。

@@ -2,6 +2,10 @@ _English | [Chinese](./CHANGELOG.zh.md)_
 
 # Update Log
 
+## 1.8.2
+
+- Fixed an issue where applications using React Native versions 0.77, 0.78, 0.79, 0.80 failed to compile when integrating the chat SDK.
+
 ## 1.8.1
 
 - Use `fetchGroupInfoWithoutMembersFromServer` to replace `fetchGroupInfoFromServer`.
