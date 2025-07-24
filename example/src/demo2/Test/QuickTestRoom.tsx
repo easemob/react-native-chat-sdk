@@ -38,6 +38,8 @@ export class QuickTestScreenRoom extends QuickTestScreenBase<
       recvResult: '',
       exceptResult: '',
       cb_result: '',
+      searchKeyword: '',
+      searchKeywordForUI: '',
     };
     this.statelessData = {};
     registerStateDataList(metaDataList);

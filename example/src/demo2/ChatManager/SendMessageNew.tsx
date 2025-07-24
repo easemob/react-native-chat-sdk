@@ -214,6 +214,9 @@ export class SendMessageLeafScreen extends LeafScreenBase<StateSendMessage> {
       isChatThread: this.metaData.get(MN.sendMessage)?.params[4]!
         .paramDefaultValue,
       priority: 1,
+
+      searchKeyword: '',
+      searchKeywordForUI: '',
     };
     this.statelessData = {};
   }

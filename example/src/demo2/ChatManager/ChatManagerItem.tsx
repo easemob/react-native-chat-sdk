@@ -33,7 +33,6 @@ import { generateData } from '../__internal__/Utils';
 import { ChatManagerCache, metaDataList, MN } from './ChatManagerData';
 import { gMessageApiList } from './const';
 import { splitApiList } from './split';
-import { Button } from '../__internal__/Button';
 
 export interface StateChatMessage extends StateBase {
   list: string[];
@@ -415,6 +414,35 @@ export interface StateChatMessage extends StateBase {
     isChatThread: boolean;
   };
   getMessageCount: {};
+  getMessagesWithIds: {
+    convId: string;
+    convType: number;
+    msgIds: string[];
+  };
+  modifyMsgBody: {
+    msgId: string;
+    body: ChatTextMessageBody;
+    ext: { [key: string]: string };
+  };
+  getConvsMsgsWithKeyword: {
+    keywords: string;
+    timestamp: number;
+    from: string;
+    direction: number;
+    searchScope: number;
+  };
+  getConvMsgsWithKeyword: {
+    convId: string;
+    convType: number;
+    keywords: string;
+    direction: number;
+    timestamp: number;
+    count: number;
+    sender: string;
+    senders: string[];
+    searchScope: number;
+    isChatThread: boolean;
+  };
 }
 
 export interface StatelessChatMessage extends StatelessBase {
@@ -672,52 +700,20 @@ export class ChatManagerLeafScreen extends LeafScreenBase<StateChatMessage> {
     ];
   }
 
-  private onChangePage(key: string) {
-    if (key === 'thread') {
-      this.setState({ list: this.statelessData.apiListList[0]!, keyword: key });
-    } else if (key === 'message') {
-      this.setState({ list: this.statelessData.apiListList[1]!, keyword: key });
-    } else if (key === 'others') {
-      this.setState({ list: this.statelessData.apiListList[2]!, keyword: key });
-    }
-  }
-
-  private renderPageButton({ kw }: { kw: string }) {
-    const { keyword } = this.state;
-    return (
-      <Button
-        color={keyword === kw ? 'orange' : 'black'}
-        title={kw}
-        onPress={() => {
-          this.onChangePage(kw);
-        }}
-      />
-    );
-  }
-
   protected renderBody(): ReactNode {
     return (
-      <View style={styleValues.containerColumn}>
-        <View
-          style={{
-            flexDirection: 'row',
-            justifyContent: 'space-evenly',
-            width: '100%',
-          }}
-        >
-          {this.renderPageButton({ kw: 'thread' })}
-          {this.renderPageButton({ kw: 'message' })}
-          {this.renderPageButton({ kw: 'others' })}
-        </View>
-
-        {this.renderApiDom()}
-      </View>
+      <View style={styleValues.containerColumn}>{this.renderApiDom()}</View>
     );
   }
   protected renderApiDom(): ReactNode[] {
+    const { searchKeyword } = this.state;
+    const apiList = (Object.values(MN) as string[]).sort();
     let renderDomAry: ({} | null | undefined)[] = [];
     const data = this.metaData;
-    this.state.list.forEach((apiItem) => {
+    apiList.forEach((apiItem) => {
+      if (searchKeyword && !apiItem.includes(searchKeyword)) {
+        return; // only jump to current apiItem, continue to next apiItem
+      }
       this.setKeyPrefix(apiItem);
       renderDomAry.push(
         this.renderParamWithText(data.get(apiItem)!.methodName)
@@ -1646,6 +1642,71 @@ export class ChatManagerLeafScreen extends LeafScreenBase<StateChatMessage> {
     } else if (name === MN.getMessageCount) {
       this.tryCatch(
         ChatClient.getInstance().chatManager.getMessageCount(),
+        ChatManagerLeafScreen.TAG,
+        name
+      );
+    } else if (name === MN.getMessagesWithIds) {
+      const { convId, convType, msgIds } = this.state.getMessagesWithIds;
+      this.tryCatch(
+        ChatClient.getInstance().chatManager.getMessagesWithIds({
+          convId,
+          convType,
+          msgIds,
+        }),
+        ChatManagerLeafScreen.TAG,
+        name
+      );
+    } else if (name === MN.modifyMsgBody) {
+      const { msgId, body, ext } = this.state.modifyMsgBody;
+      this.tryCatch(
+        ChatClient.getInstance().chatManager.modifyMsgBody({
+          msgId,
+          body,
+          ext,
+        }),
+        ChatManagerLeafScreen.TAG,
+        name
+      );
+    } else if (name === MN.getConvsMsgsWithKeyword) {
+      const { keywords, timestamp, from, direction, searchScope } =
+        this.state.getConvsMsgsWithKeyword;
+      this.tryCatch(
+        ChatClient.getInstance().chatManager.getConvsMsgsWithKeyword({
+          keywords,
+          timestamp,
+          from,
+          direction,
+          searchScope,
+        }),
+        ChatManagerLeafScreen.TAG,
+        name
+      );
+    } else if (name === MN.getConvMsgsWithKeyword) {
+      const {
+        convId,
+        convType,
+        keywords,
+        direction,
+        timestamp,
+        count,
+        sender,
+        senders,
+        searchScope,
+        isChatThread,
+      } = this.state.getConvMsgsWithKeyword;
+      this.tryCatch(
+        ChatClient.getInstance().chatManager.getConvMsgsWithKeyword({
+          convId,
+          convType,
+          keywords,
+          direction,
+          timestamp,
+          count,
+          sender,
+          senders,
+          searchScope,
+          isChatThread,
+        }),
         ChatManagerLeafScreen.TAG,
         name
       );

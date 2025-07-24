@@ -97,27 +97,14 @@ export class ContactLeafScreen extends LeafScreenBase<StateChatContact> {
     );
   }
   protected renderApiDom(): ReactNode[] {
-    const apiList = [
-      'addContact',
-      'deleteContact',
-      'getAllContactsFromServer',
-      'getAllContactsFromDB',
-      'addUserToBlockList',
-      'removeUserFromBlockList',
-      'getBlockListFromServer',
-      'getBlockListFromDB',
-      'acceptInvitation',
-      'declineInvitation',
-      'getSelfIdsOnOtherPlatform',
-      'getAllContacts',
-      'setContactRemark',
-      'getContact',
-      'fetchAllContacts',
-      'fetchContacts',
-    ];
+    const { searchKeyword } = this.state;
+    const apiList = (Object.values(MN) as string[]).sort();
     let renderDomAry: ({} | null | undefined)[] = [];
     const data = this.metaData;
     apiList.forEach((apiItem) => {
+      if (searchKeyword && !apiItem.includes(searchKeyword)) {
+        return;
+      }
       this.setKeyPrefix(apiItem);
       renderDomAry.push(
         this.renderParamWithText(data.get(apiItem)!.methodName)

@@ -41,13 +41,10 @@
                  result:(nonnull id<ExtSdkCallbackObjc>)result {
 
     EMOptions *options = [EMOptions fromJsonObject:param];
+    options.platform = EMSDKPlatformReactNative;
     if (nil == options) {
-        EMError *e = [EMError errorWithDescription:@"params parse error."
-                                              code:1];
-        [self onResult:result
-            withMethodType:ExtSdkMethodKeyInit
-                 withError:e
-                withParams:nil];
+        EMError *e = [EMError errorWithDescription:@"params parse error." code:1];
+        [self onResult:result withMethodType:ExtSdkMethodKeyInit withError:e withParams:nil];
         return;
     }
     options.enableConsoleLog = options.enableConsoleLog;
@@ -65,10 +62,7 @@
     [ExtSdkChatThreadManagerWrapper.getInstance initSDK];
     [ExtSdkPushManagerWrapper.getInstance initSDK];
 
-    [self onResult:result
-        withMethodType:ExtSdkMethodKeyInit
-             withError:nil
-            withParams:nil];
+    [self onResult:result withMethodType:ExtSdkMethodKeyInit withError:nil withParams:nil];
 }
 
 - (void)getToken:(NSDictionary *)param
@@ -86,15 +80,14 @@
     __weak typeof(self) weakSelf = self;
     NSString *username = param[@"username"];
     NSString *password = param[@"password"];
-    [EMClient.sharedClient
-        registerWithUsername:username
-                    password:password
-                  completion:^(NSString *aUsername, EMError *aError) {
-                    [weakSelf onResult:result
-                        withMethodType:ExtSdkMethodKeyCreateAccount
-                             withError:aError
-                            withParams:aUsername];
-                  }];
+    [EMClient.sharedClient registerWithUsername:username
+                                       password:password
+                                     completion:^(NSString *aUsername, EMError *aError) {
+                                       [weakSelf onResult:result
+                                           withMethodType:ExtSdkMethodKeyCreateAccount
+                                                withError:aError
+                                               withParams:aUsername];
+                                     }];
 }
 
 - (void)login:(NSDictionary *)param
@@ -113,11 +106,7 @@
                      [weakSelf onResult:result
                          withMethodType:ExtSdkMethodKeyLogin
                               withError:aError
-                             withParams:@{
-                                 @"username" : aUsername,
-                                 @"token" :
-                                     EMClient.sharedClient.accessUserToken
-                             }];
+                             withParams:@{@"username" : aUsername, @"token" : EMClient.sharedClient.accessUserToken}];
                    }];
     } else {
         [EMClient.sharedClient
@@ -127,11 +116,7 @@
                      [weakSelf onResult:result
                          withMethodType:ExtSdkMethodKeyLogin
                               withError:aError
-                             withParams:@{
-                                 @"username" : aUsername,
-                                 @"token" :
-                                     EMClient.sharedClient.accessUserToken
-                             }];
+                             withParams:@{@"username" : aUsername, @"token" : EMClient.sharedClient.accessUserToken}];
                    }];
     }
 }
@@ -141,8 +126,7 @@
             result:(nonnull id<ExtSdkCallbackObjc>)result {
     __weak typeof(self) weakSelf = self;
     BOOL unbindToken = [param[@"unbindToken"] boolValue];
-    if (YES == unbindToken &&
-        nil == EMClient.sharedClient.options.apnsCertName) {
+    if (YES == unbindToken && nil == EMClient.sharedClient.options.apnsCertName) {
         unbindToken = NO;
     }
     [EMClient.sharedClient logout:unbindToken
@@ -159,10 +143,7 @@
               result:(nonnull id<ExtSdkCallbackObjc>)result {
     NSString *appKey = param[@"appKey"];
     EMError *aError = [EMClient.sharedClient changeAppkey:appKey];
-    [self onResult:result
-        withMethodType:ExtSdkMethodKeyChangeAppKey
-             withError:aError
-            withParams:@(!aError)];
+    [self onResult:result withMethodType:ExtSdkMethodKeyChangeAppKey withError:aError withParams:@(!aError)];
 }
 
 - (void)changeAppId:(NSDictionary *)param
@@ -170,46 +151,32 @@
              result:(nonnull id<ExtSdkCallbackObjc>)result {
     NSString *appId = param[@"appId"];
     EMError *aError = [EMClient.sharedClient changeAppId:appId];
-    [self onResult:result
-        withMethodType:aChannelName
-             withError:aError
-            withParams:@(!aError)];
+    [self onResult:result withMethodType:aChannelName withError:aError withParams:@(!aError)];
 }
 
 - (void)getCurrentUser:(NSDictionary *)param
         withMethodType:(NSString *)aChannelName
                 result:(nonnull id<ExtSdkCallbackObjc>)result {
     NSString *username = EMClient.sharedClient.currentUsername;
-    [self onResult:result
-        withMethodType:ExtSdkMethodKeyGetCurrentUser
-             withError:nil
-            withParams:username];
+    [self onResult:result withMethodType:ExtSdkMethodKeyGetCurrentUser withError:nil withParams:username];
 }
 
 - (void)uploadLog:(NSDictionary *)param
     withMethodType:(NSString *)aChannelName
             result:(nonnull id<ExtSdkCallbackObjc>)result {
     __weak typeof(self) weakSelf = self;
-    [EMClient.sharedClient
-        uploadDebugLogToServerWithCompletion:^(EMError *aError) {
-          [weakSelf onResult:result
-              withMethodType:ExtSdkMethodKeyUploadLog
-                   withError:aError
-                  withParams:nil];
-        }];
+    [EMClient.sharedClient uploadDebugLogToServerWithCompletion:^(EMError *aError) {
+      [weakSelf onResult:result withMethodType:ExtSdkMethodKeyUploadLog withError:aError withParams:nil];
+    }];
 }
 
 - (void)compressLogs:(NSDictionary *)param
       withMethodType:(NSString *)aChannelName
               result:(nonnull id<ExtSdkCallbackObjc>)result {
     __weak typeof(self) weakSelf = self;
-    [EMClient.sharedClient
-        getLogFilesPathWithCompletion:^(NSString *aPath, EMError *aError) {
-          [weakSelf onResult:result
-              withMethodType:ExtSdkMethodKeyCompressLogs
-                   withError:aError
-                  withParams:aPath];
-        }];
+    [EMClient.sharedClient getLogFilesPathWithCompletion:^(NSString *aPath, EMError *aError) {
+      [weakSelf onResult:result withMethodType:ExtSdkMethodKeyCompressLogs withError:aError withParams:aPath];
+    }];
 }
 
 - (void)kickDevice:(NSDictionary *)param
@@ -222,27 +189,25 @@
     Boolean isPassword = [param[@"isPassword"] boolValue];
 
     if (isPassword) {
-        [EMClient.sharedClient
-            kickDeviceWithUsername:username
-                          password:password
-                          resource:resource
-                        completion:^(EMError *aError) {
-                          [weakSelf onResult:result
-                              withMethodType:ExtSdkMethodKeyKickDevice
-                                   withError:aError
-                                  withParams:nil];
-                        }];
+        [EMClient.sharedClient kickDeviceWithUsername:username
+                                             password:password
+                                             resource:resource
+                                           completion:^(EMError *aError) {
+                                             [weakSelf onResult:result
+                                                 withMethodType:ExtSdkMethodKeyKickDevice
+                                                      withError:aError
+                                                     withParams:nil];
+                                           }];
     } else {
-        [EMClient.sharedClient
-            kickDeviceWithUserId:username
-                           token:password
-                        resource:resource
-                      completion:^(EMError *_Nullable aError) {
-                        [weakSelf onResult:result
-                            withMethodType:aChannelName
-                                 withError:aError
-                                withParams:nil];
-                      }];
+        [EMClient.sharedClient kickDeviceWithUserId:username
+                                              token:password
+                                           resource:resource
+                                         completion:^(EMError *_Nullable aError) {
+                                           [weakSelf onResult:result
+                                               withMethodType:aChannelName
+                                                    withError:aError
+                                                   withParams:nil];
+                                         }];
     }
 }
 
@@ -255,25 +220,23 @@
     Boolean isPassword = [param[@"isPassword"] boolValue];
 
     if (isPassword) {
-        [EMClient.sharedClient
-            kickAllDevicesWithUsername:username
-                              password:password
-                            completion:^(EMError *aError) {
-                              [weakSelf onResult:result
-                                  withMethodType:ExtSdkMethodKeyKickAllDevices
-                                       withError:aError
-                                      withParams:nil];
-                            }];
+        [EMClient.sharedClient kickAllDevicesWithUsername:username
+                                                 password:password
+                                               completion:^(EMError *aError) {
+                                                 [weakSelf onResult:result
+                                                     withMethodType:ExtSdkMethodKeyKickAllDevices
+                                                          withError:aError
+                                                         withParams:nil];
+                                               }];
     } else {
-        [EMClient.sharedClient
-            kickAllDevicesWithUserId:username
-                               token:password
-                          completion:^(EMError *_Nullable aError) {
-                            [weakSelf onResult:result
-                                withMethodType:aChannelName
-                                     withError:aError
-                                    withParams:nil];
-                          }];
+        [EMClient.sharedClient kickAllDevicesWithUserId:username
+                                                  token:password
+                                             completion:^(EMError *_Nullable aError) {
+                                               [weakSelf onResult:result
+                                                   withMethodType:aChannelName
+                                                        withError:aError
+                                                       withParams:nil];
+                                             }];
     }
 }
 
@@ -298,52 +261,38 @@
         [EMClient.sharedClient
             getLoggedInDevicesFromServerWithUsername:username
                                             password:password
-                                          completion:^(NSArray *aList,
-                                                       EMError *aError) {
-                                            NSMutableArray *list =
-                                                [NSMutableArray array];
-                                            for (EMDeviceConfig
-                                                     *deviceInfo in aList) {
-                                                [list addObject:
-                                                          [deviceInfo
-                                                              toJsonObject]];
+                                          completion:^(NSArray *aList, EMError *aError) {
+                                            NSMutableArray *list = [NSMutableArray array];
+                                            for (EMDeviceConfig *deviceInfo in aList) {
+                                                [list addObject:[deviceInfo toJsonObject]];
                                             }
 
                                             [weakSelf onResult:result
-                                                withMethodType:
-                                                    ExtSdkMethodKeyGetLoggedInDevicesFromServer
+                                                withMethodType:ExtSdkMethodKeyGetLoggedInDevicesFromServer
                                                      withError:aError
-                                                    withParams:aError ? nil
-                                                                      : list];
+                                                    withParams:aError ? nil : list];
                                           }];
     } else {
-        [EMClient.sharedClient
-            getLoggedInDevicesFromServerWithUserId:username
-                                             token:password
-                                        completion:^(
-                                            NSArray<EMDeviceConfig *>
-                                                *_Nullable aList,
-                                            EMError *_Nullable aError) {
-                                          NSMutableArray *list =
-                                              [NSMutableArray array];
-                                          for (EMDeviceConfig
-                                                   *deviceInfo in aList) {
-                                              [list
-                                                  addObject:[deviceInfo
-                                                                toJsonObject]];
-                                          }
-                                          [weakSelf onResult:result
-                                              withMethodType:aChannelName
-                                                   withError:aError
-                                                  withParams:aError ? nil
-                                                                    : list];
-                                        }];
+        [EMClient.sharedClient getLoggedInDevicesFromServerWithUserId:username
+                                                                token:password
+                                                           completion:^(NSArray<EMDeviceConfig *> *_Nullable aList,
+                                                                        EMError *_Nullable aError) {
+                                                             NSMutableArray *list = [NSMutableArray array];
+                                                             for (EMDeviceConfig *deviceInfo in aList) {
+                                                                 [list addObject:[deviceInfo toJsonObject]];
+                                                             }
+                                                             [weakSelf onResult:result
+                                                                 withMethodType:aChannelName
+                                                                      withError:aError
+                                                                     withParams:aError ? nil : list];
+                                                           }];
     }
 }
 
 - (void)loginWithAgoraToken:(NSDictionary *)param
              withMethodType:(NSString *)aChannelName
                      result:(nonnull id<ExtSdkCallbackObjc>)result {
+    // !!! It has been marked as invalid in the typescript language.
     __weak typeof(self) weakSelf = self;
     NSString *username = param[@"username"];
     NSString *agoraToken = param[@"agoratoken"];
@@ -354,10 +303,7 @@
                  [weakSelf onResult:result
                      withMethodType:ExtSdkMethodKeyLoginWithAgoraToken
                           withError:aError
-                         withParams:@{
-                             @"username" : aUsername,
-                             @"token" : EMClient.sharedClient.accessUserToken
-                         }];
+                         withParams:@{@"username" : aUsername, @"token" : EMClient.sharedClient.accessUserToken}];
                }];
 }
 
@@ -394,16 +340,14 @@
     //        [deviceToken dataUsingEncoding:NSUTF8StringEncoding];
 
     __weak typeof(self) weakSelf = self;
-    [EMClient.sharedClient
-        registerForRemoteNotificationsWithCertName:deviceId
-                                       deviceToken:deviceToken
-                                        completion:^(
-                                            EMError *_Nullable aError) {
-                                          [weakSelf onResult:result
-                                              withMethodType:aChannelName
-                                                   withError:aError
-                                                  withParams:nil];
-                                        }];
+    [EMClient.sharedClient registerForRemoteNotificationsWithCertName:deviceId
+                                                          deviceToken:deviceToken
+                                                           completion:^(EMError *_Nullable aError) {
+                                                             [weakSelf onResult:result
+                                                                 withMethodType:aChannelName
+                                                                      withError:aError
+                                                                     withParams:nil];
+                                                           }];
     //    EMError* error = [EMClient.sharedClient bindDeviceToken:[deviceToken
     //    dataUsingEncoding:NSUTF8StringEncoding]]; [self onResult:result
     //    withMethodType:aChannelName withError:error withParams:nil];
@@ -470,17 +414,13 @@
 }
 
 - (void)userAccountDidLoginFromOtherDevice:(NSString *_Nullable)aDeviceName {
-    [self onReceive:ExtSdkMethodKeyOnUserDidLoginFromOtherDevice
-         withParams:@{@"deviceName" : aDeviceName}];
+    // !!! It has been marked as invalid in the typescript language.
+    [self onReceive:ExtSdkMethodKeyOnUserDidLoginFromOtherDevice withParams:@{@"deviceName" : aDeviceName}];
 }
 
-- (void)userAccountDidLoginFromOtherDeviceWithInfo:
-    (EMLoginExtensionInfo *_Nullable)info {
+- (void)userAccountDidLoginFromOtherDeviceWithInfo:(EMLoginExtensionInfo *_Nullable)info {
     [self onReceive:ExtSdkMethodKeyOnUserDidLoginFromOtherDeviceWithInfo
-         withParams:@{
-             @"deviceName" : info.deviceName,
-             @"ext" : info.extensionInfo
-         }];
+         withParams:@{@"deviceName" : info.deviceName, @"ext" : info.extensionInfo}];
 }
 
 - (void)userAccountDidRemoveFromServer {
@@ -495,14 +435,11 @@
     if (aError.code == EMErrorUserKickedByChangePassword) {
         [self onReceive:ExtSdkMethodKeyOnUserDidChangePassword withParams:nil];
     } else if (aError.code == EMErrorUserLoginTooManyDevices) {
-        [self onReceive:ExtSdkMethodKeyOnUserDidLoginTooManyDevice
-             withParams:nil];
+        [self onReceive:ExtSdkMethodKeyOnUserDidLoginTooManyDevice withParams:nil];
     } else if (aError.code == EMErrorUserKickedByOtherDevice) {
-        [self onReceive:ExtSdkMethodKeyOnUserKickedByOtherDevice
-             withParams:nil];
+        [self onReceive:ExtSdkMethodKeyOnUserKickedByOtherDevice withParams:nil];
     } else if (aError.code == EMErrorUserAuthenticationFailed) {
-        [self onReceive:ExtSdkMethodKeyOnUserAuthenticationFailed
-             withParams:nil];
+        [self onReceive:ExtSdkMethodKeyOnUserAuthenticationFailed withParams:nil];
     }
 }
 
@@ -519,9 +456,7 @@
     [self onReceive:ExtSdkMethodKeyOnMultiDeviceEvent withParams:data];
 }
 
-- (void)multiDevicesGroupEventDidReceive:(EMMultiDevicesEvent)aEvent
-                                 groupId:(NSString *)aGroupId
-                                     ext:(id)aExt {
+- (void)multiDevicesGroupEventDidReceive:(EMMultiDevicesEvent)aEvent groupId:(NSString *)aGroupId ext:(id)aExt {
     NSMutableDictionary *data = [NSMutableDictionary dictionary];
     data[@"event"] = @(aEvent);
     data[@"target"] = aGroupId;
@@ -530,9 +465,7 @@
     [self onReceive:ExtSdkMethodKeyOnMultiDeviceEvent withParams:data];
 }
 
-- (void)multiDevicesThreadEventDidReceive:(EMMultiDevicesEvent)aEvent
-                                 threadId:(NSString *)aThreadId
-                                      ext:(id)aExt {
+- (void)multiDevicesThreadEventDidReceive:(EMMultiDevicesEvent)aEvent threadId:(NSString *)aThreadId ext:(id)aExt {
     NSMutableDictionary *data = [NSMutableDictionary dictionary];
     data[@"event"] = @(aEvent);
     data[@"target"] = aThreadId;
@@ -541,8 +474,7 @@
     [self onReceive:ExtSdkMethodKeyOnMultiDeviceEvent withParams:data];
 }
 
-- (void)multiDevicesMessageBeRemoved:(NSString *_Nonnull)conversationId
-                            deviceId:(NSString *_Nonnull)deviceId;
+- (void)multiDevicesMessageBeRemoved:(NSString *_Nonnull)conversationId deviceId:(NSString *_Nonnull)deviceId;
 {
     NSMutableDictionary *data = [NSMutableDictionary dictionary];
     data[@"convId"] = conversationId;
@@ -557,7 +489,7 @@
     NSMutableDictionary *data = [NSMutableDictionary dictionary];
     data[@"event"] = @(event);
     data[@"convId"] = conversationId;
-    data[@"convType"] = @(conversationType);
+    data[@"convType"] = @([ExtSdkConvertHelper conversationTypeToInt:conversationType]);
     data[@"type"] = ExtSdkMethodKeyOnMultiDeviceEventConversation;
     [self onReceive:ExtSdkMethodKeyOnMultiDeviceEvent withParams:data];
 }

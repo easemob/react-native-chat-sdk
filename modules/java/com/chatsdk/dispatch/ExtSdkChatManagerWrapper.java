@@ -8,28 +8,20 @@ import com.hyphenate.EMConversationListener;
 import com.hyphenate.EMMessageListener;
 import com.hyphenate.EMValueCallBack;
 import com.hyphenate.chat.EMClient;
-import com.hyphenate.chat.EMCmdMessageBody;
-import com.hyphenate.chat.EMCombineMessageBody;
 import com.hyphenate.chat.EMConversation;
 import com.hyphenate.chat.EMConversationFilter;
 import com.hyphenate.chat.EMCursorResult;
-import com.hyphenate.chat.EMCustomMessageBody;
 import com.hyphenate.chat.EMFetchMessageOption;
-import com.hyphenate.chat.EMFileMessageBody;
 import com.hyphenate.chat.EMGroupReadAck;
-import com.hyphenate.chat.EMImageMessageBody;
 import com.hyphenate.chat.EMLanguage;
-import com.hyphenate.chat.EMLocationMessageBody;
 import com.hyphenate.chat.EMMessage;
 import com.hyphenate.chat.EMMessageBody;
 import com.hyphenate.chat.EMMessagePinInfo;
 import com.hyphenate.chat.EMMessageReaction;
 import com.hyphenate.chat.EMMessageReactionChange;
-import com.hyphenate.chat.EMNormalFileMessageBody;
 import com.hyphenate.chat.EMRecallMessageInfo;
-import com.hyphenate.chat.EMTextMessageBody;
-import com.hyphenate.chat.EMVideoMessageBody;
-import com.hyphenate.chat.EMVoiceMessageBody;
+import com.hyphenate.chat.EMStatisticsManager;
+import com.hyphenate.chat.adapter.message.EMAMessage;
 import com.hyphenate.exceptions.HyphenateException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -55,6 +47,10 @@ public class ExtSdkChatManagerWrapper extends ExtSdkWrapper {
 
     public void sendMessage(JSONObject param, String channelName, ExtSdkCallback result) throws JSONException {
         final EMMessage msg = ExtSdkMessageHelper.fromJson(param);
+        if (msg == null) {
+            onError(result, 1, "Invalid message parameters.");
+            return;
+        }
         msg.setMessageStatusCallback(new EMCallBack() {
             @Override
             public void onSuccess() {
@@ -96,15 +92,18 @@ public class ExtSdkChatManagerWrapper extends ExtSdkWrapper {
 
     public void resendMessage(JSONObject param, String channelName, ExtSdkCallback result) throws JSONException {
         EMMessage tempMsg = ExtSdkMessageHelper.fromJson(param);
+        if (tempMsg == null) {
+            onError(result, 1, "Invalid message parameters.");
+            return;
+        }
         tempMsg.setStatus(EMMessage.Status.CREATE);
-        EMMessage finalMsg = tempMsg;
-        finalMsg.setMessageStatusCallback(new EMCallBack() {
+        tempMsg.setMessageStatusCallback(new EMCallBack() {
             @Override
             public void onSuccess() {
 
                 Map<String, Object> map = new HashMap<>();
-                map.put("message", ExtSdkMessageHelper.toJson(finalMsg));
-                map.put("localTime", finalMsg.localTime());
+                map.put("message", ExtSdkMessageHelper.toJson(tempMsg));
+                map.put("localTime", tempMsg.localTime());
                 map.put("callbackType", ExtSdkMethodType.onMessageSuccess);
                 ExtSdkWrapper.onReceive(channelName, map);
             }
@@ -114,7 +113,7 @@ public class ExtSdkChatManagerWrapper extends ExtSdkWrapper {
 
                 Map<String, Object> map = new HashMap<>();
                 map.put("progress", progress);
-                map.put("localTime", finalMsg.localTime());
+                map.put("localTime", tempMsg.localTime());
                 map.put("callbackType", ExtSdkMethodType.onMessageProgressUpdate);
                 ExtSdkWrapper.onReceive(channelName, map);
             }
@@ -126,15 +125,15 @@ public class ExtSdkChatManagerWrapper extends ExtSdkWrapper {
                 data.put("description", desc);
 
                 Map<String, Object> map = new HashMap<>();
-                map.put("message", ExtSdkMessageHelper.toJson(finalMsg));
-                map.put("localTime", finalMsg.localTime());
+                map.put("message", ExtSdkMessageHelper.toJson(tempMsg));
+                map.put("localTime", tempMsg.localTime());
                 map.put("error", data);
                 map.put("callbackType", ExtSdkMethodType.onMessageError);
                 ExtSdkWrapper.onReceive(channelName, map);
             }
         });
-        EMClient.getInstance().chatManager().sendMessage(finalMsg);
-        onSuccess(result, channelName, ExtSdkMessageHelper.toJson(finalMsg));
+        EMClient.getInstance().chatManager().sendMessage(tempMsg);
+        onSuccess(result, channelName, ExtSdkMessageHelper.toJson(tempMsg));
     }
 
     public void ackMessageRead(JSONObject param, String channelName, ExtSdkCallback result) throws JSONException {
@@ -232,7 +231,9 @@ public class ExtSdkChatManagerWrapper extends ExtSdkWrapper {
         if (ExtSdkWrapper.checkMessageParams(dbMsg, channelName, result)) {
             return;
         }
-        this.mergeMessage(msg, dbMsg);
+        if (msg != null) {
+            this.mergeMessage(msg, dbMsg);
+        }
 
         boolean ret = EMClient.getInstance().chatManager().updateMessage(dbMsg);
         if (ret) {
@@ -257,6 +258,10 @@ public class ExtSdkChatManagerWrapper extends ExtSdkWrapper {
     public void downloadAttachmentInCombine(JSONObject param, String channelName, ExtSdkCallback result)
         throws JSONException {
         final EMMessage finalMsg = ExtSdkMessageHelper.fromJson(param.getJSONObject("message"));
+        if (finalMsg == null) {
+            onError(result, 1, "Invalid message parameters.");
+            return;
+        }
         finalMsg.setMessageStatusCallback(new EMCallBack() {
             @Override
             public void onSuccess() {
@@ -303,6 +308,10 @@ public class ExtSdkChatManagerWrapper extends ExtSdkWrapper {
     public void downloadThumbnailInCombine(JSONObject param, String channelName, ExtSdkCallback result)
         throws JSONException {
         final EMMessage finalMsg = ExtSdkMessageHelper.fromJson(param.getJSONObject("message"));
+        if (finalMsg == null) {
+            onError(result, 1, "Invalid message parameters.");
+            return;
+        }
         finalMsg.setMessageStatusCallback(new EMCallBack() {
             @Override
             public void onSuccess() {
@@ -348,19 +357,22 @@ public class ExtSdkChatManagerWrapper extends ExtSdkWrapper {
 
     public void downloadAttachment(JSONObject param, String channelName, ExtSdkCallback result) throws JSONException {
         EMMessage tempMsg = ExtSdkMessageHelper.fromJson(param.getJSONObject("message"));
+        if (tempMsg == null) {
+            onError(result, 1, "Invalid message parameters.");
+            return;
+        }
         EMMessage msg = EMClient.getInstance().chatManager().getMessage(tempMsg.getMsgId());
         if (ExtSdkWrapper.checkMessageParams(msg, channelName, result)) {
             return;
         }
-        EMMessage finalMsg = msg;
         msg.setMessageStatusCallback(new EMCallBack() {
             @Override
             public void onSuccess() {
 
                 Map<String, Object> map = new HashMap<>();
-                map.put("message", ExtSdkMessageHelper.toJson(finalMsg));
-                map.put("localTime", finalMsg.localTime());
-                map.put("msgId", finalMsg.getMsgId());
+                map.put("message", ExtSdkMessageHelper.toJson(msg));
+                map.put("localTime", msg.localTime());
+                map.put("msgId", msg.getMsgId());
                 map.put("callbackType", ExtSdkMethodType.onMessageSuccess);
                 ExtSdkWrapper.onReceive(channelName, map);
             }
@@ -370,8 +382,8 @@ public class ExtSdkChatManagerWrapper extends ExtSdkWrapper {
 
                 Map<String, Object> map = new HashMap<>();
                 map.put("progress", progress);
-                map.put("localTime", finalMsg.localTime());
-                map.put("msgId", finalMsg.getMsgId());
+                map.put("localTime", msg.localTime());
+                map.put("msgId", msg.getMsgId());
                 map.put("callbackType", ExtSdkMethodType.onMessageProgressUpdate);
                 ExtSdkWrapper.onReceive(channelName, map);
             }
@@ -383,9 +395,9 @@ public class ExtSdkChatManagerWrapper extends ExtSdkWrapper {
                 data.put("description", desc);
 
                 Map<String, Object> map = new HashMap<>();
-                map.put("message", ExtSdkMessageHelper.toJson(finalMsg));
-                map.put("localTime", finalMsg.localTime());
-                map.put("msgId", finalMsg.getMsgId());
+                map.put("message", ExtSdkMessageHelper.toJson(msg));
+                map.put("localTime", msg.localTime());
+                map.put("msgId", msg.getMsgId());
                 map.put("error", data);
                 map.put("callbackType", ExtSdkMethodType.onMessageError);
                 ExtSdkWrapper.onReceive(channelName, map);
@@ -398,6 +410,10 @@ public class ExtSdkChatManagerWrapper extends ExtSdkWrapper {
 
     public void downloadThumbnail(JSONObject param, String channelName, ExtSdkCallback result) throws JSONException {
         EMMessage tempMsg = ExtSdkMessageHelper.fromJson(param.getJSONObject("message"));
+        if (tempMsg == null) {
+            onError(result, 1, "Invalid message parameters.");
+            return;
+        }
         EMMessage msg = EMClient.getInstance().chatManager().getMessage(tempMsg.getMsgId());
         if (ExtSdkWrapper.checkMessageParams(msg, channelName, result)) {
             return;
@@ -491,15 +507,15 @@ public class ExtSdkChatManagerWrapper extends ExtSdkWrapper {
 
     public void fetchHistoryMessages(JSONObject param, String channelName, ExtSdkCallback result) throws JSONException {
         String conId = param.getString("convId");
-        EMConversation.EMConversationType type = ExtSdkConversationHelper.typeFromInt(param.getInt("convType"));
+        EMConversation.EMConversationType type =
+            InternalConvertHelper.conversationTypeFromInt(param.getInt("convType"));
         int pageSize = param.getInt("pageSize");
         String startMsgId = param.getString("startMsgId");
-        int direction = param.getInt("direction");
-
+        EMConversation.EMSearchDirection direction =
+            ExtSdkEMSearchDirectionHelper.toDirection(param.getString("direction"));
         try {
-            EMCursorResult<EMMessage> cursorResult = EMClient.getInstance().chatManager().fetchHistoryMessages(
-                conId, type, pageSize, startMsgId,
-                direction == 0 ? EMConversation.EMSearchDirection.UP : EMConversation.EMSearchDirection.DOWN);
+            EMCursorResult<EMMessage> cursorResult =
+                EMClient.getInstance().chatManager().fetchHistoryMessages(conId, type, pageSize, startMsgId, direction);
             onSuccess(result, channelName, ExtSdkCursorResultHelper.toJson(cursorResult));
         } catch (HyphenateException e) {
             onError(result, e, null);
@@ -509,12 +525,11 @@ public class ExtSdkChatManagerWrapper extends ExtSdkWrapper {
     public void fetchHistoryMessagesByOptions(JSONObject param, String channelName, ExtSdkCallback result)
         throws JSONException {
         String convId = param.getString("convId");
-        EMConversation.EMConversationType type = ExtSdkConversationHelper.typeFromInt(param.getInt("convType"));
-        String cursor = "";
-        int pageSize = 20;
+        EMConversation.EMConversationType type =
+            InternalConvertHelper.conversationTypeFromInt(param.getInt("convType"));
+        String cursor = param.getString("cursor");
+        int pageSize = param.optInt("pageSize");
         EMFetchMessageOption option = new EMFetchMessageOption();
-        cursor = param.getString("cursor");
-        pageSize = param.getInt("pageSize");
         if (param.has("options")) {
             option = ExtSdkFetchMessageOptionHelper.fromJson(param.getJSONObject("options"));
         }
@@ -535,10 +550,11 @@ public class ExtSdkChatManagerWrapper extends ExtSdkWrapper {
 
     public void searchChatMsgFromDB(JSONObject param, String channelName, ExtSdkCallback result) throws JSONException {
         String keywords = param.getString("keywords");
-        long timeStamp = param.getLong("timeStamp");
+        long timestamp = param.getLong("timestamp");
         int count = param.getInt("maxCount");
         String from = param.getString("from");
-        EMConversation.EMSearchDirection direction = searchDirectionFromString(param.getString("direction"));
+        EMConversation.EMSearchDirection direction =
+            ExtSdkEMSearchDirectionHelper.toDirection(param.getString("direction"));
         EMConversation.EMMessageSearchScope scope;
         if (param.has("searchScope")) {
             scope = EMConversation.EMMessageSearchScope.values()[param.getInt("searchScope")];
@@ -547,7 +563,7 @@ public class ExtSdkChatManagerWrapper extends ExtSdkWrapper {
         }
 
         List<EMMessage> msgList =
-            EMClient.getInstance().chatManager().searchMsgFromDB(keywords, timeStamp, count, from, direction, scope);
+            EMClient.getInstance().chatManager().searchMsgFromDB(keywords, timestamp, count, from, direction, scope);
         List<Map> messages = new ArrayList<>();
         for (EMMessage msg : msgList) {
             messages.add(ExtSdkMessageHelper.toJson(msg));
@@ -636,7 +652,10 @@ public class ExtSdkChatManagerWrapper extends ExtSdkWrapper {
                 list.add(array.getString(i));
             }
         }
-
+        if (msg == null) {
+            ExtSdkWrapper.onError(result, 1, "Invalid message parameters.");
+            return;
+        }
         EMMessage dbMsg = EMClient.getInstance().chatManager().getMessage(msg.getMsgId());
         if (ExtSdkWrapper.checkMessageParams(dbMsg, channelName, result)) {
             return;
@@ -810,7 +829,7 @@ public class ExtSdkChatManagerWrapper extends ExtSdkWrapper {
                             Collections.sort(list, new Comparator<EMConversation>() {
                                 @Override
                                 public int compare(EMConversation o1, EMConversation o2) {
-                                    if (o1 == null && o2 == null) {
+                                    if (o1 == null || o2 == null) {
                                         return 0;
                                     }
                                     if (o1.getLastMessage() == null) {
@@ -944,7 +963,8 @@ public class ExtSdkChatManagerWrapper extends ExtSdkWrapper {
 
     public void modifyMessage(JSONObject param, String channelName, ExtSdkCallback result) throws JSONException {
         String msgId = param.optString("msgId");
-        EMMessageBody body = ExtSdkMessageBodyHelper.textBodyFromJson(param.optJSONObject("body"));
+        JSONObject bodyJson = param.optJSONObject("body");
+        EMMessageBody body = ExtSdkMessageBodyHelper.textBodyFromJson(bodyJson != null ? bodyJson : new JSONObject());
         EMClient.getInstance().chatManager().asyncModifyMessage(msgId, body, new EMValueCallBack<EMMessage>() {
             @Override
             public void onSuccess(EMMessage emMessage) {
@@ -961,6 +981,10 @@ public class ExtSdkChatManagerWrapper extends ExtSdkWrapper {
     public void downloadAndParseCombineMessage(JSONObject param, String channelName, ExtSdkCallback result)
         throws JSONException {
         EMMessage msg = ExtSdkMessageHelper.fromJson(param.optJSONObject("message"));
+        if (msg == null) {
+            ExtSdkWrapper.onError(result, 1, "Invalid message parameters.");
+            return;
+        }
         EMClient.getInstance().chatManager().downloadAndParseCombineMessage(
             msg, new EMValueCallBack<List<EMMessage>>() {
                 @Override
@@ -1192,6 +1216,83 @@ public class ExtSdkChatManagerWrapper extends ExtSdkWrapper {
         });
     }
 
+    public void getMessagesWithIds(JSONObject param, String channelName, ExtSdkCallback result) throws JSONException {
+        String convId = param.getString("convId");
+        JSONArray msgIdsJson = param.getJSONArray("msgIds");
+        List<String> msgIds = new ArrayList<>();
+        for (int i = 0; i < msgIdsJson.length(); i++) {
+            msgIds.add(msgIdsJson.getString(i));
+        }
+        EMClient.getInstance().chatManager().asyncLoadMessages(msgIds, convId, new EMValueCallBack<List<EMMessage>>() {
+            @Override
+            public void onSuccess(List<EMMessage> emMessages) {
+                List<Map> messages = new ArrayList<>();
+                for (EMMessage msg : emMessages) {
+                    messages.add(ExtSdkMessageHelper.toJson(msg));
+                }
+                ExtSdkWrapper.onSuccess(result, channelName, messages);
+            }
+
+            @Override
+            public void onError(int i, String s) {
+                ExtSdkWrapper.onError(result, i, s);
+            }
+        });
+    }
+
+    public void getConvsMsgsWithKeyword(JSONObject param, String channelName, ExtSdkCallback result)
+        throws JSONException {
+        String keyword = param.getString("keywords");
+        long timestamp = param.getLong("timestamp");
+        String from = param.has("from") ? param.getString("from") : null;
+        EMConversation.EMSearchDirection direction =
+            ExtSdkEMSearchDirectionHelper.toDirection(param.getString("direction"));
+        int scopejson = param.optInt("searchScope", EMConversation.EMMessageSearchScope.ALL.ordinal());
+        EMConversation.EMMessageSearchScope scope = InternalConvertHelper.searchScopeFromInt(scopejson);
+        EMClient.getInstance().chatManager().asyncLoadConversationMessagesWithKeyword(
+            keyword, timestamp, from, direction, scope, new EMValueCallBack<Map<String, List<String>>>() {
+                @Override
+                public void onSuccess(Map<String, List<String>> stringListMap) {
+                    List<Map<String, Object>> ret = new ArrayList<>();
+                    for (Map.Entry<String, List<String>> entry : stringListMap.entrySet()) {
+                        List<String> msgIds = new ArrayList<>(entry.getValue());
+                        Map<String, Object> convData = new HashMap<>();
+                        convData.put("convId", entry.getKey());
+                        convData.put("msgIds", msgIds);
+                        ret.add(convData);
+                    }
+                    ExtSdkWrapper.onSuccess(result, channelName, ret);
+                }
+
+                @Override
+                public void onError(int i, String s) {
+                    ExtSdkWrapper.onError(result, i, s);
+                }
+            });
+    }
+
+    public void modifyMsgBody(JSONObject param, String channelName, ExtSdkCallback result) throws JSONException {
+        String msgId = param.getString("msgId");
+        JSONObject msgBodyJson = param.optJSONObject("body");
+        JSONObject attributesJson = param.optJSONObject("ext");
+        EMMessageBody body = msgBodyJson != null ? ExtSdkMessageHelper.bodyFromJson(msgBodyJson) : null;
+        Map<String, Object> attributes =
+            attributesJson != null ? ExtSdkMessageHelper.attributesFromJson(attributesJson) : null;
+
+        EMClient.getInstance().chatManager().asyncModifyMessage(
+            msgId, body, attributes, new EMValueCallBack<EMMessage>() {
+                @Override
+                public void onSuccess(EMMessage emMessage) {
+                    ExtSdkWrapper.onSuccess(result, channelName, ExtSdkMessageHelper.toJson(emMessage));
+                }
+
+                @Override
+                public void onError(int i, String s) {
+                    ExtSdkWrapper.onError(result, i, s);
+                }
+            });
+    }
+
     private void registerEaseListener() {
         if (this.messageListener != null) {
             EMClient.getInstance().chatManager().removeMessageListener(this.messageListener);
@@ -1316,10 +1417,6 @@ public class ExtSdkChatManagerWrapper extends ExtSdkWrapper {
             }
         };
         EMClient.getInstance().chatManager().addConversationListener(this.conversationListener);
-    }
-
-    private EMConversation.EMSearchDirection searchDirectionFromString(String direction) {
-        return direction.equals("up") ? EMConversation.EMSearchDirection.UP : EMConversation.EMSearchDirection.DOWN;
     }
 
     private EMMessageListener messageListener = null;

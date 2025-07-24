@@ -36,6 +36,7 @@ import {
   MTfetchReactionDetail,
   MTfetchReactionList,
   MTfetchSupportLanguages,
+  MTgetConvsMsgsWithKeyword,
   MTgetConversation,
   MTgetConversationsFromServer,
   MTgetConversationsFromServerWithCursor,
@@ -67,6 +68,7 @@ import {
   MTmarkMessageAsRead,
   MTmessageReactionDidChange,
   MTmodifyMessage,
+  MTmodifyMsgBody,
   MTonChatThreadCreated,
   MTonChatThreadDestroyed,
   MTonChatThreadUpdated,
@@ -104,6 +106,7 @@ import {
   MTupdateChatMessage,
   MTupdateChatThreadSubject,
   MTupdateConversationMessage,
+  MTgetMessagesWithIds,
 } from './__internal__/Consts';
 import { Native } from './__internal__/Native';
 import { ChatClient } from './ChatClient';
@@ -710,7 +713,9 @@ export class ChatManager extends BaseManager {
   }
 
   /**
-   * Recalls the sent message.
+   * For a one-to-one chat conversation, only the message sender can recall the message that is sent successfully. If the message expires, the recall fails.
+   *
+   * For a group/chat room conversation, except the message sender, the group/chat room owner and administrators can recall messages sent in the group/chat room. If the message expires, only the group/chat room owner and administrators can recall it.
    *
    * @param msgId The message ID.
    * @param option The extension information.
@@ -752,6 +757,37 @@ export class ChatManager extends BaseManager {
       return new ChatMessage(rr);
     }
     return undefined;
+  }
+
+  /**
+   * Gets messages with the specified IDs from the local database.
+   *
+   * @params -
+   *  @param convId The conversation ID.
+   *  @param convType The conversation type. See {@link ChatConversationType}.
+   *  @param msgIds The message IDs.
+   * @returns The list of retrieved messages. If no message is obtained, an empty list is returned.
+   *
+   * @throws A description of the exception. See {@link ChatError}.
+   */
+  public async getMessagesWithIds(params: {
+    convId: string;
+    convType: ChatConversationType;
+    msgIds: Array<string>;
+  }): Promise<Array<ChatMessage>> {
+    chatlog.log(
+      `${ChatManager.TAG}: getMessagesWithIds: ${params.convId}, ${params.convType}, ${params.msgIds}`
+    );
+    let r: any = await Native._callMethod(MTgetMessagesWithIds, {
+      [MTgetMessagesWithIds]: {
+        convId: params.convId,
+        convType: params.convType,
+        msgIds: params.msgIds,
+      },
+    });
+    Native.checkErrorFromResult(r);
+    const rr = r?.[MTgetMessagesWithIds];
+    return rr.map((msg: any) => new ChatMessage(msg));
   }
 
   /**
@@ -972,7 +1008,7 @@ export class ChatManager extends BaseManager {
    * **note** If the conversation object does not exist, this method will create it.
    *
    * @param convId The conversation ID.
-   * @param chatType The conversation type. See {@link ChatConversationType}.
+   * @param convType The conversation type. See {@link ChatConversationType}.
    * @params params
    * - pageSize: The number of messages that you expect to get on each page. The value range is [1,50].
    * - startMsgId: The starting message ID for query. After this parameter is set, the SDK retrieves messages, starting from the specified one, in the reverse chronological order of when the server receives them. If this parameter is set an empty string, the SDK retrieves messages, starting from the latest one, in the reverse chronological order of when the server receives them.
@@ -987,7 +1023,7 @@ export class ChatManager extends BaseManager {
    */
   public async fetchHistoryMessages(
     convId: string,
-    chatType: ChatConversationType,
+    convType: ChatConversationType,
     params: {
       pageSize?: number;
       startMsgId?: string;
@@ -995,15 +1031,16 @@ export class ChatManager extends BaseManager {
     }
   ): Promise<ChatCursorResult<ChatMessage>> {
     chatlog.log(
-      `${ChatManager.TAG}: fetchHistoryMessages: ${convId}, ${chatType}, ${params}`
+      `${ChatManager.TAG}: fetchHistoryMessages: ${convId}, ${convType}, ${params}`
     );
     let r: any = await Native._callMethod(MTfetchHistoryMessages, {
       [MTfetchHistoryMessages]: {
         convId: convId,
-        convType: chatType as number,
+        convType: convType as number,
         pageSize: params.pageSize ?? 20,
         startMsgId: params.startMsgId ?? '',
-        direction: params.direction ?? ChatSearchDirection.UP,
+        direction:
+          params.direction === ChatSearchDirection.DOWN ? 'down' : 'up',
       },
     });
     Native.checkErrorFromResult(r);
@@ -1025,7 +1062,7 @@ export class ChatManager extends BaseManager {
    * **note** If the conversation object does not exist, this method will create it.
    *
    * @param convId The conversation ID.
-   * @param chatType The conversation type. See {@link ChatConversationType}.
+   * @param convType The conversation type. See {@link ChatConversationType}.
    * @param params -
    * - options: The parameter configuration class for pulling historical messages from the server. See {@link ChatFetchMessageOptions}.
    * - cursor: The cursor position from which to start querying data.
@@ -1037,7 +1074,7 @@ export class ChatManager extends BaseManager {
    */
   public async fetchHistoryMessagesByOptions(
     convId: string,
-    chatType: ChatConversationType,
+    convType: ChatConversationType,
     params?: {
       options?: ChatFetchMessageOptions;
       cursor?: string;
@@ -1045,12 +1082,12 @@ export class ChatManager extends BaseManager {
     }
   ): Promise<ChatCursorResult<ChatMessage>> {
     chatlog.log(
-      `${ChatManager.TAG}: fetchHistoryMessagesByOptions: ${convId}, ${chatType}, ${params}`
+      `${ChatManager.TAG}: fetchHistoryMessagesByOptions: ${convId}, ${convType}, ${params}`
     );
     let r: any = await Native._callMethod(MTfetchHistoryMessagesByOptions, {
       [MTfetchHistoryMessagesByOptions]: {
         convId: convId,
-        convType: chatType as number,
+        convType: convType as number,
         pageSize: params?.pageSize ?? 20,
         cursor: params?.cursor ?? '',
         options: params?.options,
@@ -1099,7 +1136,7 @@ export class ChatManager extends BaseManager {
     let r: any = await Native._callMethod(MTsearchChatMsgFromDB, {
       [MTsearchChatMsgFromDB]: {
         keywords: keywords,
-        timeStamp: timestamp,
+        timestamp: timestamp,
         maxCount: maxCount,
         from: from,
         direction: direction === ChatSearchDirection.UP ? 'up' : 'down',
@@ -1153,7 +1190,7 @@ export class ChatManager extends BaseManager {
     let r: any = await Native._callMethod(MTsearchChatMsgFromDB, {
       [MTsearchChatMsgFromDB]: {
         keywords: keywords,
-        timeStamp: timestamp,
+        timestamp: timestamp,
         maxCount: maxCount,
         from: from,
         direction: direction === ChatSearchDirection.UP ? 'up' : 'down',
@@ -1166,6 +1203,53 @@ export class ChatManager extends BaseManager {
     if (rr) {
       rr.forEach((element) => {
         ret.push(new ChatMessage(element));
+      });
+    }
+    return ret;
+  }
+
+  /**
+   *  Loads messages with the specified keyword from the local database, returning a dictionary containing conversation IDs and message ID arrays.
+   *  The SDK returns messages in chronological order.
+   *
+   * @params -
+   *  @param keywords        The keyword for message search. If you set this parameter as `undefined`, the SDK ignores this parameter when retrieving messages.
+   *  @param timestamp       The Unix timestamp threshold for message search. The unit is millisecond. If you set this parameter as `undefined`, the SDK loads messages from the latest one.
+   *  @param from          The sender of the message. If you set this parameter as `undefined`, the SDK ignores this parameter when retrieving messages.
+   *  @param direction       The message search direction. See {@link ChatSearchDirection}.
+   *                        - `UP`: The SDK retrieves messages in the descending order of the timestamp included in them.
+   *                        - `DOWN`：The SDK retrieves messages in the ascending order of the timestamp included in them.
+   *  @param searchScope           The message search scope. See {@link ChatMessageSearchScope}.
+   *
+   * @returns A dictionary containing conversation IDs and message ID arrays. If no message is obtained, an empty dictionary is returned.
+   *
+   * @throws A description of the exception. See {@link ChatError}.
+   */
+  public async getConvsMsgsWithKeyword(params: {
+    keywords: string;
+    timestamp?: number;
+    from?: string;
+    direction?: ChatSearchDirection;
+    searchScope?: ChatMessageSearchScope;
+  }): Promise<Map<string, Array<string>>> {
+    chatlog.log(
+      `${ChatManager.TAG}: getConvsMsgsWithKeyword: ${params.keywords}, ${params.timestamp}, ${params.from}, ${params.direction}, ${params.searchScope}`
+    );
+    let r: any = await Native._callMethod(MTgetConvsMsgsWithKeyword, {
+      [MTgetConvsMsgsWithKeyword]: {
+        keywords: params.keywords,
+        timestamp: params.timestamp ?? -1,
+        from: params.from,
+        direction: params.direction === ChatSearchDirection.UP ? 'up' : 'down',
+        searchScope: params.searchScope ?? ChatMessageSearchScope.All,
+      },
+    });
+    Native.checkErrorFromResult(r);
+    let ret = new Map<string, Array<string>>();
+    const rr: Array<any> = r?.[MTgetConvsMsgsWithKeyword];
+    if (rr) {
+      rr.forEach((element) => {
+        ret.set(element.convId, element.msgIds);
       });
     }
     return ret;
@@ -2128,7 +2212,8 @@ export class ChatManager extends BaseManager {
    * - searchScope The message search scope. See {@link ChatMessageSearchScope}.
    *                  If you set this parameter as a negative value, the SDK retrieves messages, starting from the current time, in the descending order of the timestamp included in them.
    * - count The maximum number of messages to retrieve each time. The value range is [1,400].
-   * - sender The user ID of the message sender. If you do not set this parameter, the SDK ignores this parameter when retrieving messages.
+   * - sender The user ID of the message sender. If you do not set this parameter, the SDK ignores this parameter when retrieving messages. use `senders` instead. 2025-07-22
+   * - senders The user IDs of the message senders. If you do not set this parameter, the SDK ignores this parameter when retrieving messages.
    * - isChatThread Whether the conversation is a thread conversation.
    *
    * @returns The list of retrieved messages (excluding the one with the starting timestamp). If no message is obtained, an empty list is returned.
@@ -2143,6 +2228,7 @@ export class ChatManager extends BaseManager {
     timestamp?: number;
     count?: number;
     sender?: string;
+    senders?: Array<string>;
     searchScope?: ChatMessageSearchScope;
     isChatThread?: boolean;
   }): Promise<Array<ChatMessage>> {
@@ -2154,6 +2240,7 @@ export class ChatManager extends BaseManager {
       timestamp = -1,
       count = 20,
       sender,
+      senders,
       searchScope = ChatMessageSearchScope.All,
       isChatThread = false,
     } = params;
@@ -2167,6 +2254,7 @@ export class ChatManager extends BaseManager {
       count,
       searchScope,
       sender,
+      senders,
       isChatThread
     );
     let r: any = await Native._callMethod(MTloadMsgWithKeywords, {
@@ -2178,6 +2266,7 @@ export class ChatManager extends BaseManager {
         timestamp: timestamp,
         count: count,
         sender: sender,
+        senders: senders,
         searchScope: searchScope,
         isChatThread: isChatThread,
       },
@@ -3349,6 +3438,8 @@ export class ChatManager extends BaseManager {
    * @returns The modified message. See {@link ChatMessageBody}.
    *
    * @throws A description of the exception. See {@link ChatError}.
+   *
+   * @deprecated 2025-07-21. Use {@link modifyMsgBody} instead.
    */
   public async modifyMessageBody(
     msgId: string,
@@ -3372,6 +3463,45 @@ export class ChatManager extends BaseManager {
     });
     Native.checkErrorFromResult(r);
     const rr = r?.[MTmodifyMessage];
+    return new ChatMessage(rr);
+  }
+
+  /**
+   *   Modifies a message both in the local storage and server.
+   *
+   *  - Text and custom message: Both the message body `body` and extension information `ext` can be modified.
+   *  - Image/voice/video/file/combined message: Only the message extension field `ext` can be modified.
+   *  - Command message: This type of message cannot be modified.
+   *
+   *  Note that the message ID cannot be changed.
+   *
+   * @params -
+   *  @param messageId       The ID of the message for modification.
+   *  @param body            The modified message body. You can only modify the body of a text message and a custom message. The value `undefined` indicates that the message body remains unchanged.
+   *  @param ext             The modified message extension information. The new extension information will overwrite the previous. The value `undefined` indicates that the message extension information remains unchanged.
+   *
+   * @returns The modified message. See {@link ChatMessage}.
+   *
+   * @throws A description of the exception. See {@link ChatError}.
+   *
+   */
+  public async modifyMsgBody(params: {
+    msgId: string;
+    body?: ChatMessageBody;
+    ext?: Record<string, any>;
+  }): Promise<ChatMessage> {
+    chatlog.log(
+      `${ChatManager.TAG}: modifyMsgBody: ${params.msgId}, ${params.body?.type}, ${params.ext}`
+    );
+    let r: any = await Native._callMethod(MTmodifyMsgBody, {
+      [MTmodifyMsgBody]: {
+        msgId: params.msgId,
+        body: params.body,
+        ext: params.ext,
+      },
+    });
+    Native.checkErrorFromResult(r);
+    const rr = r?.[MTmodifyMsgBody];
     return new ChatMessage(rr);
   }
 

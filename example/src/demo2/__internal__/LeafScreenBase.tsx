@@ -26,6 +26,8 @@ export interface StateBase {
   sendResult: string;
   recvResult: string;
   exceptResult: string;
+  searchKeyword: string;
+  searchKeywordForUI: string;
 }
 
 export interface StatelessBase {}
@@ -37,6 +39,7 @@ export abstract class LeafScreenBase<
   protected static TAG = 'LeafScreenBase';
   protected navigation: any;
   protected keyPrefix: string;
+  private searchDebounceTimer: NodeJS.Timeout | null = null;
 
   constructor(props: { navigation: any; route?: string }) {
     super(props);
@@ -135,6 +138,10 @@ export abstract class LeafScreenBase<
 
   componentWillUnmount(): void {
     console.log(`${LeafScreenBase.TAG}: componentWillUnmount: `);
+    if (this.searchDebounceTimer) {
+      clearTimeout(this.searchDebounceTimer);
+      this.searchDebounceTimer = null;
+    }
     this.removeListener?.();
   }
 
@@ -275,6 +282,7 @@ export abstract class LeafScreenBase<
     //"string" | "number" | "bigint" | "boolean" | "symbol" | "undefined" | "object" | "function" | "json"
     const parse = (t: string, v: string) => {
       if (t === 'string') {
+        console.log(`${LeafScreenBase.TAG}: parse string: `, v);
         return v;
       } else if (t === 'number') {
         if (v.includes('.')) {
@@ -287,10 +295,30 @@ export abstract class LeafScreenBase<
       } else if (t === 'boolean') {
         return v === '0' ? false : true;
       } else if (t === 'json') {
-        return JSON.parse(v);
-      } else {
-        return v;
+        try {
+          const unescapeString = (str: string): string => {
+            return str;
+            // return str
+            //   .replace(/\\"/g, '"') // 处理转义的双引号
+            //   .replace(/\\\\/g, '\\') // 处理转义的反斜杠
+            //   .replace(/\\n/g, '\n') // 处理换行符
+            //   .replace(/\\t/g, '\t') // 处理制表符
+            //   .replace(/\\r/g, '\r'); // 处理回车符
+          };
+
+          const processedValue = unescapeString(v);
+          return JSON.parse(processedValue);
+        } catch (e) {
+          console.warn(
+            `${LeafScreenBase.TAG}: JSON parse error for value:`,
+            v,
+            'error:',
+            e
+          );
+          return v;
+        }
       }
+      return v;
     };
     return (
       <View
@@ -614,6 +642,34 @@ export abstract class LeafScreenBase<
     );
   }
 
+  protected renderSearchKeyword(): ReactNode {
+    const { searchKeywordForUI } = this.state;
+    return (
+      <View
+        key={this.generateKey('renderSearchKeyword', 'searchKeyword')}
+        style={styleValues.searchKeyword}
+      >
+        <TextInput
+          style={styleValues.textInputStyle}
+          value={searchKeywordForUI}
+          onChangeText={(text: string) => {
+            this.setState({ searchKeywordForUI: text });
+            if (this.searchDebounceTimer) {
+              clearTimeout(this.searchDebounceTimer);
+            }
+            this.searchDebounceTimer = setTimeout(() => {
+              console.log(`${LeafScreenBase.TAG}: searchKeyword: `, text);
+              this.setState({ searchKeyword: text });
+            }, 500);
+          }}
+          placeholder="search api name keyword"
+          autoCapitalize="none"
+          autoFocus={true}
+        />
+      </View>
+    );
+  }
+
   protected renderResult(): ReactNode {
     throw new Error('Please sub class implement.');
   }
@@ -637,6 +693,7 @@ export abstract class LeafScreenBase<
   public render(): ReactNode {
     return (
       <View style={styleValues.bottomSpace}>
+        {this.renderSearchKeyword()}
         <ScrollView style={styleValues.resultDom}>
           {this.renderResult()}
         </ScrollView>

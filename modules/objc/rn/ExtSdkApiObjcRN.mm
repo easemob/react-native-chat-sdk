@@ -31,15 +31,13 @@ static NSString *const TAG = @"ChatSdk";
     if (self) {
         self->impl = [[ExtSdkApiRNImpl alloc] init];
         self->delegate = [[ExtSdkDelegateObjcRN alloc] initWithApi:self];
-        [self->impl
-            addListener:[[ExtSdkDelegateObjcRN alloc] initWithApi:self]];
+        [self->impl addListener:[[ExtSdkDelegateObjcRN alloc] initWithApi:self]];
         [self registerSystemNotify];
     }
     return self;
 }
 
-- (void)onReceive:(nonnull NSString *)methodType
-       withParams:(nullable id<NSObject>)data {
+- (void)onReceive:(nonnull NSString *)methodType withParams:(nullable id<NSObject>)data {
     NSLog(@"%@: onReceive:", TAG);
     [ExtSdkThreadUtilObjc mainThreadExecute:^{
       [self sendEventWithName:methodType body:data];
@@ -53,27 +51,23 @@ static NSString *const TAG = @"ChatSdk";
 #pragma mark - Others
 
 - (void)registerSystemNotify {
-    [[NSNotificationCenter defaultCenter]
-        addObserver:self
-           selector:@selector(applicationWillEnterForeground:)
-               name:UIApplicationWillEnterForegroundNotification
-             object:nil];
-    [[NSNotificationCenter defaultCenter]
-        addObserver:self
-           selector:@selector(applicationDidEnterBackground:)
-               name:UIApplicationDidEnterBackgroundNotification
-             object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(applicationWillEnterForeground:)
+                                                 name:UIApplicationWillEnterForegroundNotification
+                                               object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(applicationDidEnterBackground:)
+                                                 name:UIApplicationDidEnterBackgroundNotification
+                                               object:nil];
 }
 
 - (void)applicationWillEnterForeground:(NSNotification *)notification {
     NSLog(@"%@: applicationWillEnterForeground:", TAG);
-    [[EMClient sharedClient]
-        applicationWillEnterForeground:[UIApplication sharedApplication]];
+    [[EMClient sharedClient] applicationWillEnterForeground:[UIApplication sharedApplication]];
 }
 - (void)applicationDidEnterBackground:(NSNotification *)notification {
     NSLog(@"%@: applicationDidEnterBackground:", TAG);
-    [[EMClient sharedClient]
-        applicationDidEnterBackground:[UIApplication sharedApplication]];
+    [[EMClient sharedClient] applicationDidEnterBackground:[UIApplication sharedApplication]];
 }
 
 #pragma mark - RCTBridgeModule
@@ -84,28 +78,23 @@ RCT_EXPORT_MODULE()
 RCT_EXPORT_MODULE(ChatSdk)
 #endif
 
-RCT_EXPORT_METHOD(callMethod : (NSString *)method args : (NSDictionary *)args
-                      resolve : (RCTPromiseResolveBlock)resolve
-                      reject : (RCTPromiseRejectBlock)reject) {
+RCT_EXPORT_METHOD(callMethod : (NSString *)method args : (NSDictionary *)args resolve : (RCTPromiseResolveBlock)
+                      resolve reject : (RCTPromiseRejectBlock)reject) {
     NSLog(@"%@: callMethod:", TAG);
 
-    id<ExtSdkCallbackObjc> callback =
-        [[ExtSdkCallbackObjcRN alloc] initWithResolve:resolve
-                                           withReject:reject];
+    id<ExtSdkCallbackObjc> callback = [[ExtSdkCallbackObjcRN alloc] initWithResolve:resolve withReject:reject];
     __weak decltype(self) weakself = self;
     [ExtSdkThreadUtilObjc asyncExecute:^{
       if (weakself) {
-          [[weakself getApi] callSdkApi:method
-                             withParams:args
-                           withCallback:callback];
+          [[weakself getApi] callSdkApi:method withParams:args withCallback:callback];
       }
     }];
 }
 
 // Example method
 // See // https://reactnative.dev/docs/native-modules-ios
-RCT_EXPORT_METHOD(multiply : (double)a b : (double)b resolve : (
-    RCTPromiseResolveBlock)resolve reject : (RCTPromiseRejectBlock)reject) {
+RCT_EXPORT_METHOD(multiply : (double)a b : (double)b resolve : (RCTPromiseResolveBlock)
+                      resolve reject : (RCTPromiseRejectBlock)reject) {
     NSLog(@"%@: multiply:@d, @d", TAG, a, b);
     NSNumber *result = @(a * b);
 
@@ -128,19 +117,30 @@ RCT_EXPORT_METHOD(multiply : (double)a b : (double)b resolve : (
     //    NSLog(@"%@: supportedEvents:", TAG);
     NSArray<NSString *> *ret = @[
         /// EMClientWrapper
-        ExtSdkMethodKeyInit, ExtSdkMethodKeyCreateAccount, ExtSdkMethodKeyLogin,
-        ExtSdkMethodKeyLogout, ExtSdkMethodKeyChangeAppKey,
-        ExtSdkMethodKeyIsLoggedInBefore, ExtSdkMethodKeyUploadLog,
-        ExtSdkMethodKeyCompressLogs, ExtSdkMethodKeyKickDevice,
-        ExtSdkMethodKeyKickAllDevices, ExtSdkMethodKeyCurrentUser,
-        ExtSdkMethodKeyGetLoggedInDevicesFromServer, ExtSdkMethodKeyGetToken,
-        ExtSdkMethodKeyLoginWithAgoraToken, ExtSdkMethodKeyGetCurrentUser,
+        ExtSdkMethodKeyInit,
+        ExtSdkMethodKeyCreateAccount,
+        ExtSdkMethodKeyLogin,
+        ExtSdkMethodKeyLogout,
+        ExtSdkMethodKeyChangeAppKey,
+        ExtSdkMethodKeyIsLoggedInBefore,
+        ExtSdkMethodKeyUploadLog,
+        ExtSdkMethodKeyCompressLogs,
+        ExtSdkMethodKeyKickDevice,
+        ExtSdkMethodKeyKickAllDevices,
+        ExtSdkMethodKeyCurrentUser,
+        ExtSdkMethodKeyGetLoggedInDevicesFromServer,
+        ExtSdkMethodKeyGetToken,
+        ExtSdkMethodKeyLoginWithAgoraToken,
+        ExtSdkMethodKeyGetCurrentUser,
         ExtSdkMethodKeyIsConnected,
 
         /// EMClientDelegate
-        ExtSdkMethodKeyOnConnected, ExtSdkMethodKeyOnDisconnected,
-        ExtSdkMethodKeyOnMultiDeviceEvent, ExtSdkMethodKeySendDataToFlutter,
-        ExtSdkMethodKeyOnTokenWillExpire, ExtSdkMethodKeyOnTokenDidExpire,
+        ExtSdkMethodKeyOnConnected,
+        ExtSdkMethodKeyOnDisconnected,
+        ExtSdkMethodKeyOnMultiDeviceEvent,
+        ExtSdkMethodKeySendDataToFlutter,
+        ExtSdkMethodKeyOnTokenWillExpire,
+        ExtSdkMethodKeyOnTokenDidExpire,
         ExtSdkMethodKeyOnOfflineMessageSyncStart,
         ExtSdkMethodKeyOnOfflineMessageSyncFinish,
 
@@ -153,12 +153,15 @@ RCT_EXPORT_METHOD(multiply : (double)a b : (double)b resolve : (
         ExtSdkMethodKeyOnUserAuthenticationFailed,
 
         /// EMContactManagerWrapper
-        ExtSdkMethodKeyAddContact, ExtSdkMethodKeyDeleteContact,
+        ExtSdkMethodKeyAddContact,
+        ExtSdkMethodKeyDeleteContact,
         ExtSdkMethodKeyGetAllContactsFromServer,
-        ExtSdkMethodKeyGetAllContactsFromDB, ExtSdkMethodKeyAddUserToBlockList,
+        ExtSdkMethodKeyGetAllContactsFromDB,
+        ExtSdkMethodKeyAddUserToBlockList,
         ExtSdkMethodKeyRemoveUserFromBlockList,
         ExtSdkMethodKeyGetBlockListFromServer,
-        ExtSdkMethodKeyGetBlockListFromDB, ExtSdkMethodKeyAcceptInvitation,
+        ExtSdkMethodKeyGetBlockListFromDB,
+        ExtSdkMethodKeyAcceptInvitation,
         ExtSdkMethodKeyDeclineInvitation,
         ExtSdkMethodKeyGetSelfIdsOnOtherPlatform,
 
@@ -166,27 +169,38 @@ RCT_EXPORT_METHOD(multiply : (double)a b : (double)b resolve : (
         ExtSdkMethodKeyOnContactChanged,
 
         /// EMChatManagerWrapper
-        ExtSdkMethodKeySendMessage, ExtSdkMethodKeyResendMessage,
-        ExtSdkMethodKeyAckMessageRead, ExtSdkMethodKeyAckGroupMessageRead,
-        ExtSdkMethodKeyAckConversationRead, ExtSdkMethodKeyRecallMessage,
-        ExtSdkMethodKeyGetConversation, ExtSdkMethodKeyMarkAllChatMsgAsRead,
-        ExtSdkMethodKeyGetUnreadMessageCount, ExtSdkMethodKeyUpdateChatMessage,
-        ExtSdkMethodKeyDownloadAttachment, ExtSdkMethodKeyDownloadThumbnail,
-        ExtSdkMethodKeyImportMessages, ExtSdkMethodKeyLoadAllConversations,
+        ExtSdkMethodKeySendMessage,
+        ExtSdkMethodKeyResendMessage,
+        ExtSdkMethodKeyAckMessageRead,
+        ExtSdkMethodKeyAckGroupMessageRead,
+        ExtSdkMethodKeyAckConversationRead,
+        ExtSdkMethodKeyRecallMessage,
+        ExtSdkMethodKeyGetConversation,
+        ExtSdkMethodKeyMarkAllChatMsgAsRead,
+        ExtSdkMethodKeyGetUnreadMessageCount,
+        ExtSdkMethodKeyUpdateChatMessage,
+        ExtSdkMethodKeyDownloadAttachment,
+        ExtSdkMethodKeyDownloadThumbnail,
+        ExtSdkMethodKeyImportMessages,
+        ExtSdkMethodKeyLoadAllConversations,
         ExtSdkMethodKeyGetConversationsFromServer,
 
         ExtSdkMethodKeyDeleteConversation,
         // ExtSdkMethodKeySetVoiceMessageListened,
         // ExtSdkMethodKeyUpdateParticipant,
         ExtSdkMethodKeyUpdateConversationsName,
-        ExtSdkMethodKeyFetchHistoryMessages, ExtSdkMethodKeySearchChatMsgFromDB,
-        ExtSdkMethodKeyGetMessage, ExtSdkMethodKeyAsyncFetchGroupAcks,
+        ExtSdkMethodKeyFetchHistoryMessages,
+        ExtSdkMethodKeySearchChatMsgFromDB,
+        ExtSdkMethodKeyGetMessage,
+        ExtSdkMethodKeyAsyncFetchGroupAcks,
         ExtSdkMethodKeydeleteRemoteConversation,
         ExtSdkMethodKeyDeleteMessagesBeforeTimestamp,
 
-        ExtSdkMethodKeyTranslateMessage, ExtSdkMethodKeyFetchSupportedLanguages,
+        ExtSdkMethodKeyTranslateMessage,
+        ExtSdkMethodKeyFetchSupportedLanguages,
 
-        ExtSdkMethodKeyChatAddReaction, ExtSdkMethodKeyChatRemoveReaction,
+        ExtSdkMethodKeyChatAddReaction,
+        ExtSdkMethodKeyChatRemoveReaction,
         ExtSdkMethodKeyChatFetchReactionList,
         ExtSdkMethodKeyChatFetchReactionDetail,
         ExtSdkMethodKeyChatReportMessage,
@@ -196,9 +210,12 @@ RCT_EXPORT_METHOD(multiply : (double)a b : (double)b resolve : (
         ExtSdkMethodKeyRemoveMessagesFromServerWithTs,
 
         /// EMChatManagerDelegate
-        ExtSdkMethodKeyOnMessagesReceived, ExtSdkMethodKeyOnCmdMessagesReceived,
-        ExtSdkMethodKeyOnMessagesRead, ExtSdkMethodKeyOnGroupMessageRead,
-        ExtSdkMethodKeyOnMessagesDelivered, ExtSdkMethodKeyOnMessagesRecalled,
+        ExtSdkMethodKeyOnMessagesReceived,
+        ExtSdkMethodKeyOnCmdMessagesReceived,
+        ExtSdkMethodKeyOnMessagesRead,
+        ExtSdkMethodKeyOnGroupMessageRead,
+        ExtSdkMethodKeyOnMessagesDelivered,
+        ExtSdkMethodKeyOnMessagesRecalled,
 
         ExtSdkMethodKeyOnConversationUpdate,
         ExtSdkMethodKeyOnConversationHasRead,
@@ -207,8 +224,10 @@ RCT_EXPORT_METHOD(multiply : (double)a b : (double)b resolve : (
         ExtSdkMethodKeyChatOnMessageReactionDidChange,
 
         /// EMMessageListener
-        ExtSdkMethodKeyOnMessageProgressUpdate, ExtSdkMethodKeyOnMessageSuccess,
-        ExtSdkMethodKeyOnMessageError, ExtSdkMethodKeyOnMessageReadAck,
+        ExtSdkMethodKeyOnMessageProgressUpdate,
+        ExtSdkMethodKeyOnMessageSuccess,
+        ExtSdkMethodKeyOnMessageError,
+        ExtSdkMethodKeyOnMessageReadAck,
         ExtSdkMethodKeyOnMessageDeliveryAck,
         ExtSdkMethodKeyOnMessageStatusChanged,
 
@@ -217,31 +236,45 @@ RCT_EXPORT_METHOD(multiply : (double)a b : (double)b resolve : (
 
         /// EMConversationWrapper
 
-        ExtSdkMethodKeyGetUnreadMsgCount, ExtSdkMethodKeyMarkAllMsgsAsRead,
-        ExtSdkMethodKeyMarkMsgAsRead, ExtSdkMethodKeySyncConversationExt,
-        ExtSdkMethodKeySyncConversationName, ExtSdkMethodKeyRemoveMsg,
-        ExtSdkMethodKeyGetLatestMsg, ExtSdkMethodKeyGetLatestMsgFromOthers,
-        ExtSdkMethodKeyClearAllMsg, ExtSdkMethodKeyInsertMsg,
-        ExtSdkMethodKeyAppendMsg, ExtSdkMethodKeyUpdateConversationMsg,
+        ExtSdkMethodKeyGetUnreadMsgCount,
+        ExtSdkMethodKeyMarkAllMsgsAsRead,
+        ExtSdkMethodKeyMarkMsgAsRead,
+        ExtSdkMethodKeySyncConversationExt,
+        ExtSdkMethodKeySyncConversationName,
+        ExtSdkMethodKeyRemoveMsg,
+        ExtSdkMethodKeyGetLatestMsg,
+        ExtSdkMethodKeyGetLatestMsgFromOthers,
+        ExtSdkMethodKeyClearAllMsg,
+        ExtSdkMethodKeyInsertMsg,
+        ExtSdkMethodKeyAppendMsg,
+        ExtSdkMethodKeyUpdateConversationMsg,
 
-        ExtSdkMethodKeyLoadMsgWithId, ExtSdkMethodKeyLoadMsgWithStartId,
-        ExtSdkMethodKeyLoadMsgWithKeywords, ExtSdkMethodKeyLoadMsgWithMsgType,
+        ExtSdkMethodKeyLoadMsgWithId,
+        ExtSdkMethodKeyLoadMsgWithStartId,
+        ExtSdkMethodKeyLoadMsgWithKeywords,
+        ExtSdkMethodKeyLoadMsgWithMsgType,
         ExtSdkMethodKeyLoadMsgWithTime,
 
-        ExtSdkMethodKeyChatGetReactionList, ExtSdkMethodKeyChatGroupAckCount,
+        ExtSdkMethodKeyChatGetReactionList,
+        ExtSdkMethodKeyChatGroupAckCount,
 
         /// EMChatroomManagerWrapper
 
-        ExtSdkMethodKeyJoinChatRoom, ExtSdkMethodKeyLeaveChatRoom,
+        ExtSdkMethodKeyJoinChatRoom,
+        ExtSdkMethodKeyLeaveChatRoom,
         ExtSdkMethodKeyGetChatroomsFromServer,
-        ExtSdkMethodKeyFetchChatRoomFromServer, ExtSdkMethodKeyGetChatRoom,
-        ExtSdkMethodKeyGetAllChatRooms, ExtSdkMethodKeyCreateChatRoom,
-        ExtSdkMethodKeyDestroyChatRoom, ExtSdkMethodKeyChatRoomUpdateSubject,
+        ExtSdkMethodKeyFetchChatRoomFromServer,
+        ExtSdkMethodKeyGetChatRoom,
+        ExtSdkMethodKeyGetAllChatRooms,
+        ExtSdkMethodKeyCreateChatRoom,
+        ExtSdkMethodKeyDestroyChatRoom,
+        ExtSdkMethodKeyChatRoomUpdateSubject,
         ExtSdkMethodKeyChatRoomUpdateDescription,
         ExtSdkMethodKeyGetChatroomMemberListFromServer,
         ExtSdkMethodKeyChatRoomMuteMembers,
         ExtSdkMethodKeyChatRoomUnmuteMembers,
-        ExtSdkMethodKeyChangeChatRoomOwner, ExtSdkMethodKeyChatRoomAddAdmin,
+        ExtSdkMethodKeyChangeChatRoomOwner,
+        ExtSdkMethodKeyChatRoomAddAdmin,
         ExtSdkMethodKeyChatRoomRemoveAdmin,
         ExtSdkMethodKeyGetChatroomMuteListFromServer,
         ExtSdkMethodKeyChatRoomRemoveMembers,
@@ -259,17 +292,21 @@ RCT_EXPORT_METHOD(multiply : (double)a b : (double)b resolve : (
         ExtSdkMethodKeyMuteAllChatRoomMembers,
         ExtSdkMethodKeyUnMuteAllChatRoomMembers,
 
-        MKfetchChatRoomAttributes, MKfetchChatRoomAllAttributes,
-        MKsetChatRoomAttributes, MKremoveChatRoomAttributes,
+        MKfetchChatRoomAttributes,
+        MKfetchChatRoomAllAttributes,
+        MKsetChatRoomAttributes,
+        MKremoveChatRoomAttributes,
 
         ExtSdkMethodKeyChatroomChanged,
 
         /// EMGroupManagerWrapper
 
-        ExtSdkMethodKeyGetGroupWithId, ExtSdkMethodKeyGetJoinedGroups,
+        ExtSdkMethodKeyGetGroupWithId,
+        ExtSdkMethodKeyGetJoinedGroups,
         ExtSdkMethodKeyGetGroupsWithoutPushNotification,
         ExtSdkMethodKeyGetJoinedGroupsFromServer,
-        ExtSdkMethodKeyGetPublicGroupsFromServer, ExtSdkMethodKeyCreateGroup,
+        ExtSdkMethodKeyGetPublicGroupsFromServer,
+        ExtSdkMethodKeyCreateGroup,
         ExtSdkMethodKeyGetGroupSpecificationFromServer,
         ExtSdkMethodKeyGetGroupMemberListFromServer,
         ExtSdkMethodKeyGetGroupBlockListFromServer,
@@ -278,21 +315,33 @@ RCT_EXPORT_METHOD(multiply : (double)a b : (double)b resolve : (
         ExtSdkMethodKeyIsMemberInWhiteListFromServer,
         ExtSdkMethodKeyGetGroupFileListFromServer,
         ExtSdkMethodKeyGetGroupAnnouncementFromServer,
-        ExtSdkMethodKeyAddMembers, ExtSdkMethodKeyInviterUser,
-        ExtSdkMethodKeyRemoveMembers, ExtSdkMethodKeyBlockMembers,
-        ExtSdkMethodKeyUnblockMembers, ExtSdkMethodKeyUpdateGroupSubject,
-        ExtSdkMethodKeyUpdateDescription, ExtSdkMethodKeyLeaveGroup,
-        ExtSdkMethodKeyDestroyGroup, ExtSdkMethodKeyBlockGroup,
-        ExtSdkMethodKeyUnblockGroup, ExtSdkMethodKeyUpdateGroupOwner,
-        ExtSdkMethodKeyAddAdmin, ExtSdkMethodKeyRemoveAdmin,
-        ExtSdkMethodKeyMuteMembers, ExtSdkMethodKeyUnMuteMembers,
-        ExtSdkMethodKeyMuteAllMembers, ExtSdkMethodKeyUnMuteAllMembers,
-        ExtSdkMethodKeyAddWhiteList, ExtSdkMethodKeyRemoveWhiteList,
+        ExtSdkMethodKeyAddMembers,
+        ExtSdkMethodKeyInviterUser,
+        ExtSdkMethodKeyRemoveMembers,
+        ExtSdkMethodKeyBlockMembers,
+        ExtSdkMethodKeyUnblockMembers,
+        ExtSdkMethodKeyUpdateGroupSubject,
+        ExtSdkMethodKeyUpdateDescription,
+        ExtSdkMethodKeyLeaveGroup,
+        ExtSdkMethodKeyDestroyGroup,
+        ExtSdkMethodKeyBlockGroup,
+        ExtSdkMethodKeyUnblockGroup,
+        ExtSdkMethodKeyUpdateGroupOwner,
+        ExtSdkMethodKeyAddAdmin,
+        ExtSdkMethodKeyRemoveAdmin,
+        ExtSdkMethodKeyMuteMembers,
+        ExtSdkMethodKeyUnMuteMembers,
+        ExtSdkMethodKeyMuteAllMembers,
+        ExtSdkMethodKeyUnMuteAllMembers,
+        ExtSdkMethodKeyAddWhiteList,
+        ExtSdkMethodKeyRemoveWhiteList,
         ExtSdkMethodKeyUploadGroupSharedFile,
         ExtSdkMethodKeyDownloadGroupSharedFile,
         ExtSdkMethodKeyRemoveGroupSharedFile,
-        ExtSdkMethodKeyUpdateGroupAnnouncement, ExtSdkMethodKeyUpdateGroupExt,
-        ExtSdkMethodKeyJoinPublicGroup, ExtSdkMethodKeyRequestToJoinPublicGroup,
+        ExtSdkMethodKeyUpdateGroupAnnouncement,
+        ExtSdkMethodKeyUpdateGroupExt,
+        ExtSdkMethodKeyJoinPublicGroup,
+        ExtSdkMethodKeyRequestToJoinPublicGroup,
         ExtSdkMethodKeyAcceptJoinApplication,
         ExtSdkMethodKeyDeclineJoinApplication,
         ExtSdkMethodKeyAcceptInvitationFromGroup,
@@ -306,18 +355,26 @@ RCT_EXPORT_METHOD(multiply : (double)a b : (double)b resolve : (
         ExtSdkMethodKeyGetImPushConfigFromServer,
         ExtSdkMethodKeyUpdatePushNickname,
 
-        ExtSdkMethodKeyImPushNoDisturb, ExtSdkMethodKeyUpdateImPushStyle,
+        ExtSdkMethodKeyImPushNoDisturb,
+        ExtSdkMethodKeyUpdateImPushStyle,
         ExtSdkMethodKeyUpdateGroupPushService,
-        ExtSdkMethodKeyGetNoDisturbGroups, ExtSdkMethodKeyBindDeviceToken,
-        ExtSdkMethodKeyEnablePush, ExtSdkMethodKeyDisablePush,
-        ExtSdkMethodKeyGetNoPushGroups, ExtSdkMethodKeySetNoDisturbUsers,
+        ExtSdkMethodKeyGetNoDisturbGroups,
+        ExtSdkMethodKeyBindDeviceToken,
+        ExtSdkMethodKeyEnablePush,
+        ExtSdkMethodKeyDisablePush,
+        ExtSdkMethodKeyGetNoPushGroups,
+        ExtSdkMethodKeySetNoDisturbUsers,
         ExtSdkMethodKeyGetNoDisturbUsersFromServer,
-        ExtSdkMethodKeyUpdateUserPushService, ExtSdkMethodKeyGetNoPushUsers,
+        ExtSdkMethodKeyUpdateUserPushService,
+        ExtSdkMethodKeyGetNoPushUsers,
         ExtSdkMethodKeyUpdatePushConfig,
 
-        ExtSdkReportPushAction, ExtSdkSetConversationSilentMode,
-        ExtSdkRemoveConversationSilentMode, ExtSdkFetchConversationSilentMode,
-        ExtSdkSetSilentModeForAll, ExtSdkFetchSilentModeForAll,
+        ExtSdkReportPushAction,
+        ExtSdkSetConversationSilentMode,
+        ExtSdkRemoveConversationSilentMode,
+        ExtSdkFetchConversationSilentMode,
+        ExtSdkSetSilentModeForAll,
+        ExtSdkFetchSilentModeForAll,
         ExtSdkFetchSilentModeForConversations,
         ExtSdkSetPreferredNotificationLanguage,
         ExtSdkFetchPreferredNotificationLanguage,
@@ -330,7 +387,8 @@ RCT_EXPORT_METHOD(multiply : (double)a b : (double)b resolve : (
 
         /// EMPresenceManagerWrapper
         ExtSdkMethodKeyPublishPresenceWithDescription,
-        ExtSdkMethodKeyPresenceSubscribe, ExtSdkMethodKeyPresenceUnsubscribe,
+        ExtSdkMethodKeyPresenceSubscribe,
+        ExtSdkMethodKeyPresenceUnsubscribe,
         ExtSdkMethodKeyFetchSubscribedMembersWithPageNum,
         ExtSdkMethodKeyFetchPresenceStatus,
 
@@ -344,7 +402,8 @@ RCT_EXPORT_METHOD(multiply : (double)a b : (double)b resolve : (
         ExtSdkMethodKeyChatFetchLastMessageWithChatThreads,
         ExtSdkMethodKeyChatRemoveMemberFromChatThread,
         ExtSdkMethodKeyChatUpdateChatThreadSubject,
-        ExtSdkMethodKeyChatCreateChatThread, ExtSdkMethodKeyChatJoinChatThread,
+        ExtSdkMethodKeyChatCreateChatThread,
+        ExtSdkMethodKeyChatJoinChatThread,
         ExtSdkMethodKeyChatLeaveChatThread,
         ExtSdkMethodKeyChatDestroyChatThread,
         ExtSdkMethodKeyChatGetMessageThread,
@@ -365,10 +424,13 @@ RCT_EXPORT_METHOD(multiply : (double)a b : (double)b resolve : (
 
         ExtSdkMethodKeyGetConversationsFromServerWithCursor,
         ExtSdkMethodKeyGetPinnedConversationsFromServerWithCursor,
-        ExtSdkMethodKeyPinConversation, ExtSdkMethodKeyModifyMessage,
+        ExtSdkMethodKeyPinConversation,
+        ExtSdkMethodKeyModifyMessage,
         ExtSdkMethodKeyDownloadAndParseCombineMessage,
-        ExtSdkMethodKeyOnMessageContentChanged, ExtSdkSetPushTemplate,
-        ExtSdkGetPushTemplate, ExtSdkMethodKeyOnMultiDeviceEventContact,
+        ExtSdkMethodKeyOnMessageContentChanged,
+        ExtSdkSetPushTemplate,
+        ExtSdkGetPushTemplate,
+        ExtSdkMethodKeyOnMultiDeviceEventContact,
         ExtSdkMethodKeyOnMultiDeviceEventGroup,
         ExtSdkMethodKeyOnMultiDeviceEventThread,
         ExtSdkMethodKeyOnMultiDeviceEventRemoveMessage,
@@ -376,27 +438,39 @@ RCT_EXPORT_METHOD(multiply : (double)a b : (double)b resolve : (
 
         ExtSdkMethodKeyGetMsgCount,
 
-        ExtSdkMethodKeygetAllContacts, ExtSdkMethodKeysetContactRemark,
-        ExtSdkMethodKeygetContact, ExtSdkMethodKeyfetchAllContacts,
-        ExtSdkMethodKeyfetchContacts, ExtSdkMethodKeyfetchJoinedGroupCount,
+        ExtSdkMethodKeygetAllContacts,
+        ExtSdkMethodKeysetContactRemark,
+        ExtSdkMethodKeygetContact,
+        ExtSdkMethodKeyfetchAllContacts,
+        ExtSdkMethodKeyfetchContacts,
+        ExtSdkMethodKeyfetchJoinedGroupCount,
         ExtSdkMethodKeyDownloadAttachmentInCombine,
         ExtSdkMethodKeyDownloadThumbnailInCombine,
 
-        ExtSdkMethodKeygetPinInfo, ExtSdkMethodKeypinnedMessages,
+        ExtSdkMethodKeygetPinInfo,
+        ExtSdkMethodKeypinnedMessages,
         ExtSdkMethodKeyonMessagePinChanged,
         ExtSdkMethodKeyaddRemoteAndLocalConversationsMark,
         ExtSdkMethodKeydeleteRemoteAndLocalConversationsMark,
         ExtSdkMethodKeyfetchConversationsByOptions,
         ExtSdkMethodKeydeleteAllMessageAndConversation,
-        ExtSdkMethodKeypinMessage, ExtSdkMethodKeyunpinMessage,
+        ExtSdkMethodKeypinMessage,
+        ExtSdkMethodKeyunpinMessage,
         ExtSdkMethodKeyfetchPinnedMessages,
 
-        ExtSdkMethodKeyOnMessagesRecalledInfo, ExtSdkMethodKeysearchMessages,
+        ExtSdkMethodKeyOnMessagesRecalledInfo,
+        ExtSdkMethodKeysearchMessages,
         ExtSdkMethodKeysearchMessagesInConversation,
         ExtSdkMethodKeyremoveMessagesWithTimestamp,
         ExtSdkMethodKeygetMessageCountWithTimestamp,
         ExtSdkMethodKeyOnUserDidLoginFromOtherDeviceWithInfo,
-        ExtSdkMethodKeygetMessageCount
+        ExtSdkMethodKeygetMessageCount,
+
+        ExtSdkMethodKeyfetchMemberInfoListFromServer,
+        ExtSdkMethodKeyupdateGroupAvatar,
+        ExtSdkMethodKeygetMessagesWithIds,
+        ExtSdkMethodKeygetConvsMsgsWithKeyword,
+        ExtSdkMethodKeymodifyMsgBody,
     ];
     //    NSLog(@"%@: supportedEvents: %@", TAG, ret);
     return ret;

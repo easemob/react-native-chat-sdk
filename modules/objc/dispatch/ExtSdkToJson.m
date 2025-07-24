@@ -3,31 +3,45 @@
 #import <HyphenateChat/EMClient.h>
 #import <HyphenateChat/EMOptions+PrivateDeploy.h>
 
-@implementation EMChatroom (Json)
-- (NSDictionary *)toJsonObject {
-    NSMutableDictionary *ret = [NSMutableDictionary dictionary];
-    ret[@"roomId"] = self.chatroomId;
-    ret[@"roomName"] = self.subject;
-    ret[@"description"] = self.description;
-    ret[@"owner"] = self.owner;
-    ret[@"maxUsers"] = @(self.maxOccupantsCount);
-    ret[@"memberCount"] = @(self.occupantsCount);
-    ret[@"adminList"] = self.adminList;
-    ret[@"memberList"] = self.memberList;
-    ret[@"blockList"] = self.blacklist;
-    ret[@"muteList"] = self.muteList;
-    ret[@"muteKVList"] = self.muteMembers;
-    ret[@"isAllMemberMuted"] = @(self.isMuteAllMembers);
-    ret[@"announcement"] = self.announcement;
-    ret[@"permissionType"] = @([self premissionTypeToInt:self.permissionType]);
-    ret[@"isInWhitelist"] = @(self.isInWhitelist);
-    ret[@"createTimestamp"] = @(self.createTimestamp);
-    ret[@"muteExpireTimestamp"] = @(self.muteExpireTimestamp);
+@implementation ExtSdkConvertHelper
 
++ (int)conversationTypeToInt:(EMConversationType)aType {
+    int ret = 0;
+    switch (aType) {
+    case EMConversationTypeChat:
+        ret = 0;
+        break;
+    case EMConversationTypeGroupChat:
+        ret = 1;
+        break;
+    case EMConversationTypeChatRoom:
+        ret = 2;
+        break;
+    default:
+        break;
+    }
     return ret;
 }
 
-- (int)premissionTypeToInt:(EMChatroomPermissionType)type {
++ (EMConversationType)conversationTypeFromInt:(int)aType {
+    EMConversationType ret = EMConversationTypeChat;
+    switch (aType) {
+    case 0:
+        ret = EMConversationTypeChat;
+        break;
+    case 1:
+        ret = EMConversationTypeGroupChat;
+        break;
+    case 2:
+        ret = EMConversationTypeChatRoom;
+        break;
+    default:
+        break;
+    }
+    return ret;
+}
+
++ (int)roomPremissionTypeToInt:(EMChatroomPermissionType)type {
     int ret = -1;
     switch (type) {
     case EMChatroomPermissionTypeNone: {
@@ -47,149 +61,8 @@
     }
     return ret;
 }
-@end
 
-@implementation EMConversation (Json)
-- (NSDictionary *)toJsonObject {
-    NSMutableDictionary *ret = [NSMutableDictionary dictionary];
-    ret[@"convId"] = self.conversationId;
-    ret[@"convType"] = @([self.class typeToInt:self.type]);
-    ret[@"isChatThread"] = @(self.isChatThread);
-    ret[@"isPinned"] = @(self.isPinned);
-    ret[@"pinnedTime"] = @(self.pinnedTime);
-    ret[@"ext"] = self.ext;
-    ret[@"marks"] = self.marks;
-    ret[@"remindType"] = @(self.disturbType);
-    return ret;
-}
-
-+ (int)typeToInt:(EMConversationType)aType {
-    int ret = 0;
-    switch (aType) {
-    case EMConversationTypeChat:
-        ret = 0;
-        break;
-    case EMConversationTypeGroupChat:
-        ret = 1;
-        break;
-    case EMConversationTypeChatRoom:
-        ret = 2;
-        break;
-    default:
-        break;
-    }
-    return ret;
-}
-
-+ (EMConversationType)typeFromInt:(int)aType {
-    EMConversationType ret = EMConversationTypeChat;
-    switch (aType) {
-    case 0:
-        ret = EMConversationTypeChat;
-        break;
-    case 1:
-        ret = EMConversationTypeGroupChat;
-        break;
-    case 2:
-        ret = EMConversationTypeChatRoom;
-        break;
-    default:
-        break;
-    }
-    return ret;
-}
-
-@end
-
-@implementation EMCursorResult (Json)
-- (NSDictionary *)toJsonObject {
-    NSMutableDictionary *data = [NSMutableDictionary dictionary];
-    NSMutableArray *dataList = [NSMutableArray array];
-
-    for (id obj in self.list) {
-        if ([obj respondsToSelector:@selector(toJsonObject)]) {
-            [dataList addObject:[obj toJsonObject]];
-        } else if ([obj isKindOfClass:[NSString class]]) {
-            [dataList addObject:obj];
-        }
-    }
-
-    data[@"list"] = dataList;
-    data[@"cursor"] = self.cursor;
-
-    return data;
-}
-@end
-
-@implementation EMDeviceConfig (Json)
-- (NSDictionary *)toJsonObject {
-    return @{
-        @"resource" : self.resource,
-        @"deviceUUID" : self.deviceUUID,
-        @"deviceName" : self.deviceName,
-    };
-}
-@end
-
-@implementation EMError (Json)
-- (NSDictionary *)toJsonObject {
-    return @{
-        @"code" : @(self.code),
-        @"description" : self.errorDescription,
-    };
-}
-@end
-
-@implementation EMGroup (Json)
-
-- (NSDictionary *)toJsonObject {
-    NSMutableDictionary *ret = [NSMutableDictionary dictionary];
-    ret[@"groupId"] = self.groupId;
-    ret[@"groupName"] = self.groupName;
-    ret[@"description"] = self.description;
-    ret[@"owner"] = self.owner;
-    ret[@"announcement"] = self.announcement;
-    ret[@"memberCount"] = @(self.occupantsCount);
-    ret[@"memberList"] = self.memberList;
-    ret[@"adminList"] = self.adminList;
-    ret[@"blockList"] = self.blacklist;
-    ret[@"muteList"] = self.muteList;
-    ret[@"noticeEnable"] = @(self.isPushNotificationEnabled);
-    ret[@"messageBlocked"] = @(self.isBlocked);
-    ret[@"isAllMemberMuted"] = @(self.isMuteAllMembers);
-    ret[@"permissionType"] =
-        @([EMGroup premissionTypeToInt:self.permissionType]);
-
-    if (self.settings != nil) {
-        NSMutableDictionary *opt = [NSMutableDictionary dictionary];
-        opt[@"maxCount"] = @(self.settings.maxUsers);
-        opt[@"style"] = @(self.settings.style);
-        opt[@"inviteNeedConfirm"] = @([self isMemberAllowToInvite]);
-        opt[@"ext"] = self.settings.ext;
-        opt[@"isDisabled"] = @(self.isDisabled);
-        opt[@"isMemberOnly"] = @([self isMemberOnly]);
-        ret[@"options"] = opt;
-    }
-
-    return ret;
-}
-
-- (BOOL)isMemberOnly {
-
-    if (self.settings.style == EMGroupStylePrivateOnlyOwnerInvite ||
-        self.settings.style == EMGroupStylePrivateMemberCanInvite ||
-        self.settings.style == EMGroupStylePublicJoinNeedApproval) {
-        return YES;
-    }
-
-    return NO;
-}
-
-- (BOOL)isMemberAllowToInvite {
-    return self.settings.style == EMGroupStylePrivateMemberCanInvite;
-}
-
-+ (int)premissionTypeToInt:(EMGroupPermissionType)type {
++ (int)groupPremissionTypeToInt:(EMGroupPermissionType)type {
     int ret = -1;
     switch (type) {
     case EMGroupPermissionTypeNone: {
@@ -210,7 +83,7 @@
     return ret;
 }
 
-+ (EMGroupPermissionType)premissionTypeFromInt:(int)type {
++ (EMGroupPermissionType)groupPremissionTypeFromInt:(int)type {
     EMGroupPermissionType ret = EMGroupPermissionTypeMember;
     switch (type) {
     case -1: {
@@ -231,28 +104,7 @@
     return ret;
 }
 
-@end
-
-@implementation EMGroupOptions (Json)
-- (NSDictionary *)toJsonObject {
-    NSMutableDictionary *ret = [NSMutableDictionary dictionary];
-    ret[@"maxCount"] = @(self.maxUsers);
-    ret[@"ext"] = self.ext;
-    ret[@"style"] = @([EMGroupOptions styleToInt:self.style]);
-    ret[@"inviteNeedConfirm"] = @(self.IsInviteNeedConfirm);
-    return ret;
-}
-
-+ (EMGroupOptions *)fromJsonObject:(NSDictionary *)dict {
-    EMGroupOptions *options = [[EMGroupOptions alloc] init];
-    options.maxUsers = [dict[@"maxCount"] intValue];
-    options.ext = dict[@"ext"];
-    options.IsInviteNeedConfirm = [dict[@"inviteNeedConfirm"] boolValue];
-    options.style = [EMGroupOptions styleFromInt:[dict[@"style"] intValue]];
-    return options;
-}
-
-+ (EMGroupStyle)styleFromInt:(int)style {
++ (EMGroupStyle)groupStyleFromInt:(int)style {
     EMGroupStyle ret = EMGroupStylePrivateOnlyOwnerInvite;
     switch (style) {
     case 0: {
@@ -274,7 +126,7 @@
     return ret;
 }
 
-+ (int)styleToInt:(EMGroupStyle)style {
++ (int)groupStyleToInt:(EMGroupStyle)style {
     int ret = 0;
     switch (style) {
     case EMGroupStylePrivateOnlyOwnerInvite: {
@@ -294,188 +146,6 @@
     }
 
     return ret;
-}
-
-@end
-
-@implementation EMGroupSharedFile (Json)
-- (NSDictionary *)toJsonObject {
-    NSMutableDictionary *data = [NSMutableDictionary dictionary];
-    data[@"fileId"] = self.fileId;
-    data[@"name"] = self.fileName;
-    data[@"owner"] = self.fileOwner;
-    data[@"createTime"] = @(self.createdAt);
-    data[@"fileSize"] = @(self.fileSize);
-    return data;
-}
-
-@end
-
-@implementation EMGroupMessageAck (Json)
-- (NSDictionary *)toJsonObject {
-    NSMutableDictionary *data = [NSMutableDictionary dictionary];
-    data[@"msg_id"] = self.messageId;
-    data[@"ack_id"] = self.readAckId;
-    data[@"from"] = self.from;
-    data[@"content"] = self.content;
-    data[@"count"] = @(self.readCount);
-    data[@"timestamp"] = @(self.timestamp);
-    return data;
-}
-@end
-
-@interface LocalFileHandler : NSObject
-
-+ (NSString *)reset:(NSString *)localPath;
-
-@end
-
-@implementation LocalFileHandler
-
-+ (NSString *)reset:(NSString *)localPath {
-#if !TARGET_OS_SIMULATOR
-    NSRange range = [localPath rangeOfString:@"/Library/"
-                                     options:NSBackwardsSearch];
-    NSRange range2 = [localPath rangeOfString:@"file://"
-                                      options:NSAnchoredSearch];
-    if (range.location == NSNotFound && range2.location != NSNotFound) {
-        return [localPath
-            stringByReplacingCharactersInRange:NSMakeRange(0, range2.length)
-                                    withString:@""];
-
-    } else {
-        return localPath;
-    }
-#else
-    return localPath;
-#endif
-}
-
-@end
-
-@implementation EMChatMessage (Json)
-
-+ (EMChatMessage *)fromJsonObject:(NSDictionary *)aJson {
-    EMMessageBody *body = [EMMessageBody fromJsonObject:aJson[@"body"]];
-    if (!body) {
-        return nil;
-    }
-
-    NSString *from = aJson[@"from"];
-    if (from.length == 0) {
-        from = EMClient.sharedClient.currentUsername;
-    }
-
-    NSString *to = aJson[@"to"];
-    NSString *conversationId = aJson[@"conversationId"];
-
-    EMChatMessage *msg =
-        [[EMChatMessage alloc] initWithConversationID:conversationId
-                                                 from:from
-                                                   to:to
-                                                 body:body
-                                                  ext:nil];
-    if (aJson[@"msgId"]) {
-        msg.messageId = aJson[@"msgId"];
-    }
-
-    msg.direction = ({
-        [aJson[@"direction"] isEqualToString:@"send"]
-            ? EMMessageDirectionSend
-            : EMMessageDirectionReceive;
-    });
-
-    msg.chatType =
-        [EMChatMessage chatTypeFromInt:[aJson[@"chatType"] intValue]];
-    msg.status = [msg statusFromInt:[aJson[@"status"] intValue]];
-    msg.localTime = [aJson[@"localTime"] longLongValue];
-    msg.timestamp = [aJson[@"serverTime"] longLongValue];
-    msg.isReadAcked = [aJson[@"hasReadAck"] boolValue];
-    msg.isDeliverAcked = [aJson[@"hasDeliverAck"] boolValue];
-    msg.isRead = [aJson[@"hasRead"] boolValue];
-    msg.isNeedGroupAck = [aJson[@"needGroupAck"] boolValue];
-    // read only
-    // msg.groupAckCount = [aJson[@"groupAckCount"] intValue]
-    // msg.isContentReplaced = [aJson[@"isContentReplaced"] boolValue];
-    msg.isChatThreadMessage = [aJson[@"isChatThread"] boolValue];
-    msg.ext = aJson[@"attributes"];
-    msg.priority =
-        [EMChatMessage priorityFromInt:[aJson[@"priority"] intValue]];
-    msg.deliverOnlineOnly = [aJson[@"deliverOnlineOnly"] boolValue];
-    if (aJson[@"receiverList"]) {
-        msg.receiverList = aJson[@"receiverList"];
-    }
-    return msg;
-}
-
-- (NSDictionary *)toJsonObject {
-    NSMutableDictionary *ret = [NSMutableDictionary dictionary];
-    ret[@"from"] = self.from;
-    ret[@"msgId"] = self.messageId;
-    ret[@"to"] = self.to;
-    ret[@"conversationId"] = self.conversationId;
-    ret[@"hasRead"] = @(self.isRead);
-    ret[@"hasDeliverAck"] = @(self.isDeliverAcked);
-    ret[@"hasReadAck"] = @(self.isReadAcked);
-    ret[@"needGroupAck"] = @(self.isNeedGroupAck);
-    ret[@"serverTime"] = @(self.timestamp);
-    ret[@"groupAckCount"] = @(self.groupAckCount);
-    ret[@"attributes"] = self.ext ?: @{};
-    ret[@"localTime"] = @(self.localTime);
-    ret[@"status"] = @([self statusToInt:self.status]);
-    ret[@"chatType"] = @([EMChatMessage chatTypeToInt:self.chatType]);
-    ret[@"direction"] =
-        self.direction == EMMessageDirectionSend ? @"send" : @"rec";
-    ret[@"body"] = [self.body toJsonObject];
-    ret[@"isChatThread"] = @(self.isChatThreadMessage);
-    ret[@"isOnline"] = @(self.onlineState);
-    ret[@"priority"] = @([EMChatMessage priorityToInt:self.priority]);
-    ret[@"deliverOnlineOnly"] = @(self.deliverOnlineOnly);
-    ret[@"receiverList"] = self.receiverList;
-    ret[@"isBroadcast"] = @(self.broadcast);
-    ret[@"isContentReplaced"] = @(self.isContentReplaced);
-
-    return ret;
-}
-
-- (EMMessageStatus)statusFromInt:(int)aStatus {
-    EMMessageStatus status = EMMessageStatusPending;
-    switch (aStatus) {
-    case 0: {
-        status = EMMessageStatusPending;
-    } break;
-    case 1: {
-        status = EMMessageStatusDelivering;
-    } break;
-    case 2: {
-        status = EMMessageStatusSucceed;
-    } break;
-    case 3: {
-        status = EMMessageStatusFailed;
-    } break;
-    }
-
-    return status;
-}
-
-- (int)statusToInt:(EMMessageStatus)aStatus {
-    int status = 0;
-    switch (aStatus) {
-    case EMMessageStatusPending: {
-        status = 0;
-    } break;
-    case EMMessageStatusDelivering: {
-        status = 1;
-    } break;
-    case EMMessageStatusSucceed: {
-        status = 2;
-    } break;
-    case EMMessageStatusFailed: {
-        status = 3;
-    } break;
-    }
-
-    return status;
 }
 
 + (EMChatType)chatTypeFromInt:(int)aType {
@@ -543,49 +213,7 @@
     return ret;
 }
 
-@end
-
-@implementation EMMessageBody (Json)
-
-+ (EMMessageBody *)fromJsonObject:(NSDictionary *)bodyJson {
-    EMMessageBody *ret = nil;
-    NSString *type = bodyJson[@"type"];
-    if ([type isEqualToString:@"txt"]) {
-        ret = [EMTextMessageBody fromJsonObject:bodyJson];
-    } else if ([type isEqualToString:@"img"]) {
-        ret = [EMImageMessageBody fromJsonObject:bodyJson];
-    } else if ([type isEqualToString:@"loc"]) {
-        ret = [EMLocationMessageBody fromJsonObject:bodyJson];
-    } else if ([type isEqualToString:@"video"]) {
-        ret = [EMVideoMessageBody fromJsonObject:bodyJson];
-    } else if ([type isEqualToString:@"voice"]) {
-        ret = [EMVoiceMessageBody fromJsonObject:bodyJson];
-    } else if ([type isEqualToString:@"file"]) {
-        ret = [EMFileMessageBody fromJsonObject:bodyJson];
-    } else if ([type isEqualToString:@"cmd"]) {
-        ret = [EMCmdMessageBody fromJsonObject:bodyJson];
-    } else if ([type isEqualToString:@"custom"]) {
-        ret = [EMCustomMessageBody fromJsonObject:bodyJson];
-    } else if ([type isEqualToString:@"combine"]) {
-        ret = [EMCombineMessageBody fromJsonObject:bodyJson];
-    }
-    return ret;
-}
-
-- (NSDictionary *)toJsonObject {
-    NSMutableDictionary *ret = [NSMutableDictionary dictionary];
-    NSString *type = [EMMessageBody toString:self.type];
-    ret[@"type"] = type;
-    if (self.operatorId && self.operatorId.length > 0) {
-        ret[@"lastModifyOperatorId"] = self.operatorId;
-        ret[@"lastModifyTime"] = @(self.operationTime);
-        ret[@"modifyCount"] = @(self.operatorCount);
-    }
-
-    return ret;
-}
-
-+ (EMMessageBodyType)fromString:(NSString *)aStrType {
++ (EMMessageBodyType)messageBodyFromString:(NSString *)aStrType {
 
     EMMessageBodyType ret = EMMessageBodyTypeText;
 
@@ -611,7 +239,7 @@
     return ret;
 }
 
-+ (NSString *)toString:(EMMessageBodyType)type {
++ (NSString *)messageBodyToString:(EMMessageBodyType)type {
     NSString *ret = @"txt";
     switch (type) {
     case EMMessageBodyTypeText:
@@ -648,6 +276,568 @@
     return ret;
 }
 
++ (AreaCode)AreaCodeFromInt:(int)code {
+    AreaCode ret = AreaCodeGLOB;
+    switch (code) {
+    case 1 << 0:
+        ret = AreaCodeCN;
+        break;
+    case 1 << 1:
+        ret = AreaCodeNA;
+        break;
+    case 1 << 2:
+        ret = AreaCodeEU;
+        break;
+    case 1 << 3:
+        ret = AreaCodeAS;
+        break;
+    case 1 << 4:
+        ret = AreaCodeJP;
+        break;
+    case 1 << 5:
+        ret = AreaCodeIN;
+        break;
+    default:
+        ret = AreaCodeGLOB;
+        break;
+    }
+    return ret;
+}
+
++ (EMSilentModeParamType)slientModeParamTypeFromInt:(int)iParamType {
+    EMSilentModeParamType ret = EMSilentModeParamTypeRemindType;
+    if (iParamType == 0) {
+        ret = EMSilentModeParamTypeRemindType;
+    } else if (iParamType == 1) {
+        ret = EMSilentModeParamTypeDuration;
+    } else if (iParamType == 2) {
+        ret = EMSilentModeParamTypeInterval;
+    }
+    return ret;
+}
++ (EMPushRemindType)remindTypeFromInt:(int)iRemindTime {
+    EMPushRemindType ret = EMPushRemindTypeAll;
+    if (iRemindTime == 0) {
+        ret = EMPushRemindTypeAll;
+    } else if (iRemindTime == 1) {
+        ret = EMPushRemindTypeMentionOnly;
+    } else if (iRemindTime == 2) {
+        ret = EMPushRemindTypeNone;
+    }
+    return ret;
+}
++ (int)remindTypeToInt:(EMPushRemindType)type {
+    int ret = 0;
+    switch (type) {
+    case EMPushRemindTypeAll:
+        ret = 0;
+        break;
+    case EMPushRemindTypeMentionOnly:
+        ret = 1;
+        break;
+    case EMPushRemindTypeNone:
+        ret = 2;
+        break;
+    }
+    return ret;
+}
+
++ (EMMessageStatus)messageStatusFromInt:(int)aStatus {
+    EMMessageStatus status = EMMessageStatusPending;
+    switch (aStatus) {
+    case 0: {
+        status = EMMessageStatusPending;
+    } break;
+    case 1: {
+        status = EMMessageStatusDelivering;
+    } break;
+    case 2: {
+        status = EMMessageStatusSucceed;
+    } break;
+    case 3: {
+        status = EMMessageStatusFailed;
+    } break;
+    }
+
+    return status;
+}
+
++ (int)messageStatusToInt:(EMMessageStatus)aStatus {
+    int status = 0;
+    switch (aStatus) {
+    case EMMessageStatusPending: {
+        status = 0;
+    } break;
+    case EMMessageStatusDelivering: {
+        status = 1;
+    } break;
+    case EMMessageStatusSucceed: {
+        status = 2;
+    } break;
+    case EMMessageStatusFailed: {
+        status = 3;
+    } break;
+    }
+
+    return status;
+}
+
++ (EMDownloadStatus)downloadStatusFromInt:(int)aStatus {
+    EMDownloadStatus ret = EMDownloadStatusPending;
+    switch (aStatus) {
+    case 0:
+        ret = EMDownloadStatusDownloading;
+        break;
+    case 1:
+        ret = EMDownloadStatusSucceed;
+        break;
+    case 2:
+        ret = EMDownloadStatusFailed;
+        break;
+    case 3:
+        ret = EMDownloadStatusPending;
+        break;
+    default:
+        break;
+    }
+
+    return ret;
+}
+
++ (int)downloadStatusToInt:(EMDownloadStatus)aStatus {
+    int ret = 0;
+    switch (aStatus) {
+    case EMDownloadStatusDownloading:
+        ret = 0;
+        break;
+    case EMDownloadStatusSucceed:
+        ret = 1;
+        break;
+    case EMDownloadStatusFailed:
+        ret = 2;
+        break;
+    case EMDownloadStatusPending:
+        ret = 3;
+        break;
+    default:
+        break;
+    }
+    return ret;
+}
+
++ (int)threadOperationToInt:(EMThreadOperation)aType {
+    int ret = 0;
+    switch (aType) {
+    case EMThreadOperationUnknown:
+        ret = 0;
+        break;
+    case EMThreadOperationCreate:
+        ret = 1;
+        break;
+    case EMThreadOperationUpdate:
+        ret = 2;
+        break;
+    case EMThreadOperationDelete:
+        ret = 3;
+        break;
+    case EMThreadOperationUpdate_msg:
+        ret = 4;
+        break;
+    }
+
+    return ret;
+}
+
++ (EMMessageSearchDirection)searchDirectionFromString:(NSString *)aType {
+    EMMessageSearchDirection ret = EMMessageSearchDirectionUp;
+    if ([aType isEqualToString:@"up"]) {
+        ret = EMMessageSearchDirectionUp;
+    } else if ([aType isEqualToString:@"down"]) {
+        ret = EMMessageSearchDirectionDown;
+    }
+    return ret;
+}
++ (NSString *)searchDirectionToString:(EMMessageSearchDirection)direction {
+    NSString *ret = @"up";
+    switch (direction) {
+    case EMMessageSearchDirectionUp:
+        ret = @"up";
+        break;
+    case EMMessageSearchDirectionDown:
+        ret = @"down";
+        break;
+
+    default:
+        break;
+    }
+    return ret;
+}
++ (EMMessageSearchScope)searchScopeFromInt:(int)aType {
+    EMMessageSearchScope ret = EMMessageSearchScopeAll;
+    switch (aType) {
+    case 0:
+        ret = EMMessageSearchScopeContent;
+        break;
+    case 1:
+        ret = EMMessageSearchScopeExt;
+        break;
+    case 2:
+        ret = EMMessageSearchScopeAll;
+        break;
+
+    default:
+        break;
+    }
+    return ret;
+}
++ (int)searchScopeToInt:(EMMessageSearchScope)scope {
+    int ret = 0;
+    switch (scope) {
+    case EMMessageSearchScopeContent:
+        ret = 0;
+        break;
+    case EMMessageSearchScopeExt:
+        ret = 1;
+        break;
+    case EMMessageSearchScopeAll:
+        ret = 2;
+        break;
+
+    default:
+        break;
+    }
+    return ret;
+}
+@end
+
+@implementation EMChatroom (Json)
+- (NSDictionary *)toJsonObject {
+    NSMutableDictionary *ret = [NSMutableDictionary dictionary];
+    ret[@"roomId"] = self.chatroomId;
+    ret[@"roomName"] = self.subject;
+    ret[@"description"] = self.description;
+    ret[@"owner"] = self.owner;
+    ret[@"maxUsers"] = @(self.maxOccupantsCount);
+    ret[@"memberCount"] = @(self.occupantsCount);
+    ret[@"adminList"] = self.adminList;
+    ret[@"memberList"] = self.memberList;
+    ret[@"blockList"] = self.blacklist;
+    // !!! It has been marked as invalid in the typescript language.
+    ret[@"muteList"] = self.muteList;
+    ret[@"muteKVList"] = self.muteMembers;
+    ret[@"isAllMemberMuted"] = @(self.isMuteAllMembers);
+    ret[@"announcement"] = self.announcement;
+    ret[@"permissionType"] = @([ExtSdkConvertHelper roomPremissionTypeToInt:self.permissionType]);
+    ret[@"isInWhitelist"] = @(self.isInWhitelist);
+    ret[@"createTimestamp"] = @(self.createTimestamp);
+    ret[@"muteExpireTimestamp"] = @(self.muteExpireTimestamp);
+
+    return ret;
+}
+
+@end
+
+@implementation EMConversation (Json)
+- (NSDictionary *)toJsonObject {
+    NSMutableDictionary *ret = [NSMutableDictionary dictionary];
+    ret[@"convId"] = self.conversationId;
+    ret[@"convType"] = @([self.class conversationTypeToInt:self.type]);
+    ret[@"isChatThread"] = @(self.isChatThread);
+    ret[@"isPinned"] = @(self.isPinned);
+    ret[@"pinnedTime"] = @(self.pinnedTime);
+    ret[@"ext"] = self.ext;
+    ret[@"marks"] = self.marks;
+    ret[@"remindType"] = @(self.disturbType);
+    return ret;
+}
+
+@end
+
+@implementation EMCursorResult (Json)
+- (NSDictionary *)toJsonObject {
+    NSMutableDictionary *data = [NSMutableDictionary dictionary];
+    NSMutableArray *dataList = [NSMutableArray array];
+
+    for (id obj in self.list) {
+        if ([obj respondsToSelector:@selector(toJsonObject)]) {
+            [dataList addObject:[obj toJsonObject]];
+        } else if ([obj isKindOfClass:[NSString class]]) {
+            [dataList addObject:obj];
+        }
+    }
+
+    data[@"list"] = dataList;
+    data[@"cursor"] = self.cursor;
+
+    return data;
+}
+@end
+
+@implementation EMDeviceConfig (Json)
+- (NSDictionary *)toJsonObject {
+    return @{
+        @"resource" : self.resource,
+        @"deviceUUID" : self.deviceUUID,
+        @"deviceName" : self.deviceName,
+    };
+}
+@end
+
+@implementation EMError (Json)
+- (NSDictionary *)toJsonObject {
+    return @{
+        @"code" : @(self.code),
+        @"description" : self.errorDescription,
+    };
+}
+@end
+
+@implementation EMGroup (Json)
+
+- (NSDictionary *)toJsonObject {
+    NSMutableDictionary *ret = [NSMutableDictionary dictionary];
+    ret[@"groupId"] = self.groupId;
+    ret[@"groupName"] = self.groupName;
+    ret[@"groupAvatar"] = self.groupAvatar;
+    ret[@"description"] = self.description;
+    ret[@"owner"] = self.owner;
+    ret[@"announcement"] = self.announcement;
+    ret[@"memberCount"] = @(self.occupantsCount);
+    ret[@"memberList"] = self.memberList;
+    ret[@"adminList"] = self.adminList;
+    ret[@"blockList"] = self.blacklist;
+    ret[@"muteList"] = self.muteList;
+    ret[@"noticeEnable"] = @(self.isPushNotificationEnabled);
+    ret[@"messageBlocked"] = @(self.isBlocked);
+    ret[@"isAllMemberMuted"] = @(self.isMuteAllMembers);
+    ret[@"permissionType"] = @([ExtSdkConvertHelper groupPremissionTypeToInt:self.permissionType]);
+
+    if (self.settings != nil) {
+        NSMutableDictionary *opt = [NSMutableDictionary dictionary];
+        opt[@"maxCount"] = @(self.settings.maxUsers);
+        opt[@"style"] = @(self.settings.style);
+        opt[@"inviteNeedConfirm"] = @([self isMemberAllowToInvite]);
+        opt[@"ext"] = self.settings.ext;
+        opt[@"isDisabled"] = @(self.isDisabled);
+        opt[@"isMemberOnly"] = @([self isMemberOnly]);
+        ret[@"options"] = opt;
+    }
+
+    return ret;
+}
+
+- (BOOL)isMemberOnly {
+
+    if (self.settings.style == EMGroupStylePrivateOnlyOwnerInvite ||
+        self.settings.style == EMGroupStylePrivateMemberCanInvite ||
+        self.settings.style == EMGroupStylePublicJoinNeedApproval) {
+        return YES;
+    }
+
+    return NO;
+}
+
+- (BOOL)isMemberAllowToInvite {
+    return self.settings.style == EMGroupStylePrivateMemberCanInvite;
+}
+
+@end
+
+@implementation EMGroupOptions (Json)
+- (NSDictionary *)toJsonObject {
+    NSMutableDictionary *ret = [NSMutableDictionary dictionary];
+    ret[@"maxCount"] = @(self.maxUsers);
+    ret[@"ext"] = self.ext;
+    ret[@"style"] = @([ExtSdkConvertHelper groupStyleToInt:self.style]);
+    ret[@"inviteNeedConfirm"] = @(self.IsInviteNeedConfirm);
+    return ret;
+}
+
++ (EMGroupOptions *)fromJsonObject:(NSDictionary *)dict {
+    EMGroupOptions *options = [[EMGroupOptions alloc] init];
+    options.maxUsers = [dict[@"maxCount"] intValue];
+    options.ext = dict[@"ext"];
+    options.IsInviteNeedConfirm = [dict[@"inviteNeedConfirm"] boolValue];
+    options.style = [ExtSdkConvertHelper groupStyleFromInt:[dict[@"style"] intValue]];
+    return options;
+}
+
+@end
+
+@implementation EMGroupSharedFile (Json)
+- (NSDictionary *)toJsonObject {
+    NSMutableDictionary *data = [NSMutableDictionary dictionary];
+    data[@"fileId"] = self.fileId;
+    data[@"name"] = self.fileName;
+    data[@"owner"] = self.fileOwner;
+    data[@"createTime"] = @(self.createdAt);
+    data[@"fileSize"] = @(self.fileSize);
+    return data;
+}
+
+@end
+
+@implementation EMGroupMessageAck (Json)
+- (NSDictionary *)toJsonObject {
+    NSMutableDictionary *data = [NSMutableDictionary dictionary];
+    data[@"msg_id"] = self.messageId;
+    data[@"ack_id"] = self.readAckId;
+    data[@"from"] = self.from;
+    data[@"content"] = self.content;
+    data[@"count"] = @(self.readCount);
+    data[@"timestamp"] = @(self.timestamp);
+    return data;
+}
+@end
+
+@interface LocalFileHandler : NSObject
+
++ (NSString *)reset:(NSString *)localPath;
+
+@end
+
+@implementation LocalFileHandler
+
++ (NSString *)reset:(NSString *)localPath {
+#if !TARGET_OS_SIMULATOR
+    NSRange range = [localPath rangeOfString:@"/Library/" options:NSBackwardsSearch];
+    NSRange range2 = [localPath rangeOfString:@"file://" options:NSAnchoredSearch];
+    if (range.location == NSNotFound && range2.location != NSNotFound) {
+        return [localPath stringByReplacingCharactersInRange:NSMakeRange(0, range2.length) withString:@""];
+
+    } else {
+        return localPath;
+    }
+#else
+    return localPath;
+#endif
+}
+
+@end
+
+@implementation EMChatMessage (Json)
+
++ (EMChatMessage *)fromJsonObject:(NSDictionary *)aJson {
+    EMMessageBody *body = [EMMessageBody fromJsonObject:aJson[@"body"]];
+    if (!body) {
+        return nil;
+    }
+
+    NSString *from = aJson[@"from"];
+    if (from.length == 0) {
+        from = EMClient.sharedClient.currentUsername;
+    }
+
+    NSString *to = aJson[@"to"];
+    NSString *conversationId = aJson[@"conversationId"];
+
+    EMChatMessage *msg = [[EMChatMessage alloc] initWithConversationID:conversationId
+                                                                  from:from
+                                                                    to:to
+                                                                  body:body
+                                                                   ext:nil];
+    if (aJson[@"msgId"]) {
+        msg.messageId = aJson[@"msgId"];
+    }
+
+    msg.direction =
+        ({ [aJson[@"direction"] isEqualToString:@"send"] ? EMMessageDirectionSend : EMMessageDirectionReceive; });
+
+    msg.chatType = [ExtSdkConvertHelper chatTypeFromInt:[aJson[@"chatType"] intValue]];
+    msg.status = [ExtSdkConvertHelper messageStatusFromInt:[aJson[@"status"] intValue]];
+    msg.localTime = [aJson[@"localTime"] longLongValue];
+    msg.timestamp = [aJson[@"serverTime"] longLongValue];
+    msg.isReadAcked = [aJson[@"hasReadAck"] boolValue];
+    msg.isDeliverAcked = [aJson[@"hasDeliverAck"] boolValue];
+    msg.isRead = [aJson[@"hasRead"] boolValue];
+    msg.isNeedGroupAck = [aJson[@"needGroupAck"] boolValue];
+    // read only
+    // msg.groupAckCount = [aJson[@"groupAckCount"] intValue]
+    // msg.isContentReplaced = [aJson[@"isContentReplaced"] boolValue];
+    msg.isChatThreadMessage = [aJson[@"isChatThread"] boolValue];
+    msg.ext = aJson[@"attributes"];
+    msg.priority = [ExtSdkConvertHelper priorityFromInt:[aJson[@"priority"] intValue]];
+    msg.deliverOnlineOnly = [aJson[@"deliverOnlineOnly"] boolValue];
+    if (aJson[@"receiverList"]) {
+        msg.receiverList = aJson[@"receiverList"];
+    }
+    return msg;
+}
+
+- (NSDictionary *)toJsonObject {
+    NSMutableDictionary *ret = [NSMutableDictionary dictionary];
+    ret[@"from"] = self.from;
+    ret[@"msgId"] = self.messageId;
+    ret[@"to"] = self.to;
+    ret[@"conversationId"] = self.conversationId;
+    ret[@"hasRead"] = @(self.isRead);
+    ret[@"hasDeliverAck"] = @(self.isDeliverAcked);
+    ret[@"hasReadAck"] = @(self.isReadAcked);
+    ret[@"needGroupAck"] = @(self.isNeedGroupAck);
+    ret[@"serverTime"] = @(self.timestamp);
+    ret[@"groupAckCount"] = @(self.groupAckCount);
+    ret[@"attributes"] = self.ext ?: @{};
+    ret[@"localTime"] = @(self.localTime);
+    ret[@"status"] = @([ExtSdkConvertHelper messageStatusToInt:self.status]);
+    ret[@"chatType"] = @([ExtSdkConvertHelper chatTypeToInt:self.chatType]);
+    ret[@"direction"] = self.direction == EMMessageDirectionSend ? @"send" : @"rec";
+    ret[@"body"] = [self.body toJsonObject];
+    ret[@"isChatThread"] = @(self.isChatThreadMessage);
+    ret[@"isOnline"] = @(self.onlineState);
+    ret[@"priority"] = @([ExtSdkConvertHelper priorityToInt:self.priority]);
+    ret[@"deliverOnlineOnly"] = @(self.deliverOnlineOnly);
+    ret[@"receiverList"] = self.receiverList;
+    ret[@"isBroadcast"] = @(self.broadcast);
+    ret[@"isContentReplaced"] = @(self.isContentReplaced);
+
+    return ret;
+}
+
+@end
+
+@implementation EMMessageBody (Json)
+
++ (EMMessageBody *)fromJsonObject:(NSDictionary *)bodyJson {
+    EMMessageBody *ret = nil;
+    if (bodyJson == nil) {
+        return ret;
+    }
+    NSString *type = bodyJson[@"type"];
+    if ([type isEqualToString:@"txt"]) {
+        ret = [EMTextMessageBody fromJsonObject:bodyJson];
+    } else if ([type isEqualToString:@"img"]) {
+        ret = [EMImageMessageBody fromJsonObject:bodyJson];
+    } else if ([type isEqualToString:@"loc"]) {
+        ret = [EMLocationMessageBody fromJsonObject:bodyJson];
+    } else if ([type isEqualToString:@"video"]) {
+        ret = [EMVideoMessageBody fromJsonObject:bodyJson];
+    } else if ([type isEqualToString:@"voice"]) {
+        ret = [EMVoiceMessageBody fromJsonObject:bodyJson];
+    } else if ([type isEqualToString:@"file"]) {
+        ret = [EMFileMessageBody fromJsonObject:bodyJson];
+    } else if ([type isEqualToString:@"cmd"]) {
+        ret = [EMCmdMessageBody fromJsonObject:bodyJson];
+    } else if ([type isEqualToString:@"custom"]) {
+        ret = [EMCustomMessageBody fromJsonObject:bodyJson];
+    } else if ([type isEqualToString:@"combine"]) {
+        ret = [EMCombineMessageBody fromJsonObject:bodyJson];
+    }
+    return ret;
+}
+
+- (NSDictionary *)toJsonObject {
+    NSMutableDictionary *ret = [NSMutableDictionary dictionary];
+    NSString *type = [ExtSdkConvertHelper messageBodyToString:self.type];
+    ret[@"type"] = type;
+    if (self.operatorId && self.operatorId.length > 0) {
+        ret[@"lastModifyOperatorId"] = self.operatorId;
+        ret[@"lastModifyTime"] = @(self.operationTime);
+        ret[@"modifyCount"] = @(self.operatorCount);
+    }
+
+    return ret;
+}
+
 @end
 
 #pragma mark - txt
@@ -660,8 +850,7 @@
 @implementation EMTextMessageBody (Json)
 
 + (EMMessageBody *)fromJsonObject:(NSDictionary *)aJson {
-    EMTextMessageBody *body =
-        [[EMTextMessageBody alloc] initWithText:aJson[@"content"]];
+    EMTextMessageBody *body = [[EMTextMessageBody alloc] initWithText:aJson[@"content"]];
     body.targetLanguages = aJson[@"targetLanguageCodes"];
     // 给底层的时候不需要设置
     return body;
@@ -697,11 +886,10 @@
     double longitude = [aJson[@"longitude"] doubleValue];
     NSString *address = aJson[@"address"];
     NSString *buildingName = aJson[@"buildingName"];
-    EMLocationMessageBody *ret =
-        [[EMLocationMessageBody alloc] initWithLatitude:latitude
-                                              longitude:longitude
-                                                address:address
-                                           buildingName:buildingName];
+    EMLocationMessageBody *ret = [[EMLocationMessageBody alloc] initWithLatitude:latitude
+                                                                       longitude:longitude
+                                                                         address:address
+                                                                    buildingName:buildingName];
     return ret;
 }
 
@@ -726,8 +914,7 @@
 @implementation EMCmdMessageBody (Json)
 
 + (EMCmdMessageBody *)fromJsonObject:(NSDictionary *)aJson {
-    EMCmdMessageBody *ret =
-        [[EMCmdMessageBody alloc] initWithAction:aJson[@"action"]];
+    EMCmdMessageBody *ret = [[EMCmdMessageBody alloc] initWithAction:aJson[@"action"]];
     //    ret.isDeliverOnlineOnly = [aJson[@"deliverOnlineOnly"] boolValue];
     ret.action = aJson[@"action"];
     return ret;
@@ -757,12 +944,8 @@
         dic = nil;
     } else if ([dic isKindOfClass:[NSString class]]) {
         NSError *err = nil;
-        NSData *jsonData =
-            [(NSString *)dic dataUsingEncoding:NSUTF8StringEncoding];
-        id obj = [NSJSONSerialization
-            JSONObjectWithData:jsonData
-                       options:NSJSONReadingMutableContainers
-                         error:&err];
+        NSData *jsonData = [(NSString *)dic dataUsingEncoding:NSUTF8StringEncoding];
+        id obj = [NSJSONSerialization JSONObjectWithData:jsonData options:NSJSONReadingMutableContainers error:&err];
         if (err == nil && obj != nil) {
             dic = (NSDictionary *)obj;
         } else {
@@ -770,9 +953,7 @@
         }
     }
 
-    EMCustomMessageBody *ret =
-        [[EMCustomMessageBody alloc] initWithEvent:aJson[@"event"]
-                                         customExt:dic];
+    EMCustomMessageBody *ret = [[EMCustomMessageBody alloc] initWithEvent:aJson[@"event"] customExt:dic];
     return ret;
 }
 
@@ -806,11 +987,10 @@
     NSString *remotePath = aJson[@"remotePath"];
     NSString *secret = aJson[@"secret"];
 
-    EMCombineMessageBody *ret =
-        [[EMCombineMessageBody alloc] initWithTitle:title
-                                            summary:summary
-                                     compatibleText:compatibleText
-                                      messageIdList:messageIdList];
+    EMCombineMessageBody *ret = [[EMCombineMessageBody alloc] initWithTitle:title
+                                                                    summary:summary
+                                                             compatibleText:compatibleText
+                                                              messageIdList:messageIdList];
 
     ret.remotePath = remotePath;
     ret.secretKey = secret;
@@ -843,14 +1023,12 @@
 + (EMMessageBody *)fromJsonObject:(NSDictionary *)aJson {
     NSString *path = aJson[@"localPath"];
     NSString *displayName = aJson[@"displayName"];
-    EMFileMessageBody *ret = [[EMFileMessageBody alloc]
-        initWithLocalPath:[LocalFileHandler reset:path]
-              displayName:displayName];
+    EMFileMessageBody *ret = [[EMFileMessageBody alloc] initWithLocalPath:[LocalFileHandler reset:path]
+                                                              displayName:displayName];
     ret.secretKey = aJson[@"secret"];
     ret.remotePath = aJson[@"remotePath"];
     ret.fileLength = [aJson[@"fileSize"] longLongValue];
-    ret.downloadStatus =
-        [ret downloadStatusFromInt:[aJson[@"fileStatus"] intValue]];
+    ret.downloadStatus = [ExtSdkConvertHelper downloadStatusFromInt:[aJson[@"fileStatus"] intValue]];
     return ret;
 }
 
@@ -861,50 +1039,7 @@
     ret[@"secret"] = self.secretKey;
     ret[@"remotePath"] = self.remotePath;
     ret[@"fileSize"] = @(self.fileLength);
-    ret[@"fileStatus"] = @([self downloadStatusToInt:self.downloadStatus]);
-    return ret;
-}
-
-- (EMDownloadStatus)downloadStatusFromInt:(int)aStatus {
-    EMDownloadStatus ret = EMDownloadStatusPending;
-    switch (aStatus) {
-    case 0:
-        ret = EMDownloadStatusDownloading;
-        break;
-    case 1:
-        ret = EMDownloadStatusSucceed;
-        break;
-    case 2:
-        ret = EMDownloadStatusFailed;
-        break;
-    case 3:
-        ret = EMDownloadStatusPending;
-        break;
-    default:
-        break;
-    }
-
-    return ret;
-}
-
-- (int)downloadStatusToInt:(EMDownloadStatus)aStatus {
-    int ret = 0;
-    switch (aStatus) {
-    case EMDownloadStatusDownloading:
-        ret = 0;
-        break;
-    case EMDownloadStatusSucceed:
-        ret = 1;
-        break;
-    case EMDownloadStatusFailed:
-        ret = 2;
-        break;
-    case EMDownloadStatusPending:
-        ret = 3;
-        break;
-    default:
-        break;
-    }
+    ret[@"fileStatus"] = @([ExtSdkConvertHelper downloadStatusToInt:self.downloadStatus]);
     return ret;
 }
 
@@ -926,22 +1061,18 @@
     //    EMImageMessageBody *ret =
     //        [[EMImageMessageBody alloc] initWithData:imageData
     //                                     displayName:displayName];
-    EMImageMessageBody *ret = [[EMImageMessageBody alloc]
-        initWithLocalPath:[LocalFileHandler reset:path]
-              displayName:displayName];
+    EMImageMessageBody *ret = [[EMImageMessageBody alloc] initWithLocalPath:[LocalFileHandler reset:path]
+                                                                displayName:displayName];
 
     ret.secretKey = aJson[@"secret"];
     ret.remotePath = aJson[@"remotePath"];
     ret.fileLength = [aJson[@"fileSize"] longLongValue];
-    ret.downloadStatus =
-        [ret downloadStatusFromInt:[aJson[@"fileStatus"] intValue]];
+    ret.downloadStatus = [ExtSdkConvertHelper downloadStatusFromInt:[aJson[@"fileStatus"] intValue]];
     ret.thumbnailLocalPath = aJson[@"thumbnailLocalPath"];
     ret.thumbnailRemotePath = aJson[@"thumbnailRemotePath"];
     ret.thumbnailSecretKey = aJson[@"thumbnailSecret"];
-    ret.size =
-        CGSizeMake([aJson[@"width"] floatValue], [aJson[@"height"] floatValue]);
-    ret.thumbnailDownloadStatus =
-        [ret downloadStatusFromInt:[aJson[@"thumbnailStatus"] intValue]];
+    ret.size = CGSizeMake([aJson[@"width"] floatValue], [aJson[@"height"] floatValue]);
+    ret.thumbnailDownloadStatus = [ExtSdkConvertHelper downloadStatusFromInt:[aJson[@"thumbnailStatus"] intValue]];
     ret.compressionRatio = [aJson[@"sendOriginalImage"] boolValue] ? 1.0 : 0.6;
     return ret;
 }
@@ -951,9 +1082,8 @@
     ret[@"thumbnailLocalPath"] = self.thumbnailLocalPath;
     ret[@"thumbnailRemotePath"] = self.thumbnailRemotePath;
     ret[@"thumbnailSecret"] = self.thumbnailSecretKey;
-    ret[@"thumbnailStatus"] =
-        @([self downloadStatusToInt:self.thumbnailDownloadStatus]);
-    ret[@"fileStatus"] = @([self downloadStatusToInt:self.downloadStatus]);
+    ret[@"thumbnailStatus"] = @([ExtSdkConvertHelper downloadStatusToInt:self.thumbnailDownloadStatus]);
+    ret[@"fileStatus"] = @([ExtSdkConvertHelper downloadStatusToInt:self.downloadStatus]);
     ret[@"width"] = @(self.size.width);
     ret[@"height"] = @(self.size.height);
     ret[@"fileSize"] = @(self.fileLength);
@@ -977,9 +1107,8 @@
 + (EMVideoMessageBody *)fromJsonObject:(NSDictionary *)aJson {
     NSString *path = aJson[@"localPath"];
     NSString *displayName = aJson[@"displayName"];
-    EMVideoMessageBody *ret = [[EMVideoMessageBody alloc]
-        initWithLocalPath:[LocalFileHandler reset:path]
-              displayName:displayName];
+    EMVideoMessageBody *ret = [[EMVideoMessageBody alloc] initWithLocalPath:[LocalFileHandler reset:path]
+                                                                displayName:displayName];
     ret.duration = [aJson[@"duration"] intValue];
     ret.secretKey = aJson[@"secret"];
     ret.remotePath = aJson[@"remotePath"];
@@ -987,10 +1116,8 @@
     ret.thumbnailLocalPath = aJson[@"thumbnailLocalPath"];
     ret.thumbnailRemotePath = aJson[@"thumbnailRemotePath"];
     ret.thumbnailSecretKey = aJson[@"thumbnailSecret"];
-    ret.thumbnailDownloadStatus =
-        [ret downloadStatusFromInt:[aJson[@"thumbnailStatus"] intValue]];
-    ret.thumbnailSize =
-        CGSizeMake([aJson[@"width"] floatValue], [aJson[@"height"] floatValue]);
+    ret.thumbnailDownloadStatus = [ExtSdkConvertHelper downloadStatusFromInt:[aJson[@"thumbnailStatus"] intValue]];
+    ret.thumbnailSize = CGSizeMake([aJson[@"width"] floatValue], [aJson[@"height"] floatValue]);
     return ret;
 }
 
@@ -1002,8 +1129,7 @@
     ret[@"remotePath"] = self.remotePath;
     ret[@"thumbnailRemotePath"] = self.thumbnailRemotePath;
     ret[@"thumbnailSecretKey"] = self.thumbnailSecretKey;
-    ret[@"thumbnailStatus"] =
-        @([self downloadStatusToInt:self.thumbnailDownloadStatus]);
+    ret[@"thumbnailStatus"] = @([ExtSdkConvertHelper downloadStatusToInt:self.thumbnailDownloadStatus]);
     ret[@"width"] = @(self.thumbnailSize.width);
     ret[@"height"] = @(self.thumbnailSize.height);
     ret[@"fileSize"] = @(self.fileLength);
@@ -1024,14 +1150,12 @@
 + (EMVoiceMessageBody *)fromJsonObject:(NSDictionary *)aJson {
     NSString *path = aJson[@"localPath"];
     NSString *displayName = aJson[@"displayName"];
-    EMVoiceMessageBody *ret = [[EMVoiceMessageBody alloc]
-        initWithLocalPath:[LocalFileHandler reset:path]
-              displayName:displayName];
+    EMVoiceMessageBody *ret = [[EMVoiceMessageBody alloc] initWithLocalPath:[LocalFileHandler reset:path]
+                                                                displayName:displayName];
     ret.secretKey = aJson[@"secret"];
     ret.remotePath = aJson[@"remotePath"];
     ret.duration = [aJson[@"duration"] intValue];
-    ret.downloadStatus =
-        [ret downloadStatusFromInt:[aJson[@"fileStatus"] intValue]];
+    ret.downloadStatus = [ExtSdkConvertHelper downloadStatusFromInt:[aJson[@"fileStatus"] intValue]];
     return ret;
 }
 
@@ -1043,7 +1167,7 @@
     ret[@"fileSize"] = @(self.fileLength);
     ret[@"secret"] = self.secretKey;
     ret[@"remotePath"] = self.remotePath;
-    ret[@"fileStatus"] = @([self downloadStatusToInt:self.downloadStatus]);
+    ret[@"fileStatus"] = @([ExtSdkConvertHelper downloadStatusToInt:self.downloadStatus]);
     ;
     return ret;
 }
@@ -1062,8 +1186,7 @@
     data[@"acceptInvitationAlways"] = @(self.autoAcceptFriendInvitation);
     data[@"autoAcceptGroupInvitation"] = @(self.autoAcceptGroupInvitation);
     data[@"deleteMessagesAsExitGroup"] = @(self.deleteMessagesOnLeaveGroup);
-    data[@"deleteMessagesAsExitChatRoom"] =
-        @(self.deleteMessagesOnLeaveChatroom);
+    data[@"deleteMessagesAsExitChatRoom"] = @(self.deleteMessagesOnLeaveChatroom);
     data[@"isAutoDownload"] = @(self.autoDownloadThumbnail);
     data[@"isChatRoomOwnerLeaveAllowed"] = @(self.canChatroomOwnerLeave);
     data[@"serverTransfer"] = @(self.isAutoTransferMessageAttachments);
@@ -1080,41 +1203,13 @@
     data[@"customOSType"] = @(self.customOSType);
     data[@"useReplacedMessageContents"] = @(self.useReplacedMessageContents);
     data[@"enableTLS"] = @(self.enableTLSConnection);
-    data[@"messagesReceiveCallbackIncludeSend"] =
-        @(self.includeSendMessageInMessageListener);
+    data[@"messagesReceiveCallbackIncludeSend"] = @(self.includeSendMessageInMessageListener);
     data[@"regardImportMessagesAsRead"] = @(self.regardImportMessagesAsRead);
     data[@"loginExtraInfo"] = self.loginExtensionInfo;
     data[@"workPathCopiable"] = @(self.workPathCopiable);
     data[@"appId"] = self.appId;
 
     return data;
-}
-+ (AreaCode)AreaCodeFromInt:(int)code {
-    AreaCode ret = AreaCodeGLOB;
-    switch (code) {
-    case 1 << 0:
-        ret = AreaCodeCN;
-        break;
-    case 1 << 1:
-        ret = AreaCodeNA;
-        break;
-    case 1 << 2:
-        ret = AreaCodeEU;
-        break;
-    case 1 << 3:
-        ret = AreaCodeAS;
-        break;
-    case 1 << 4:
-        ret = AreaCodeJP;
-        break;
-    case 1 << 5:
-        ret = AreaCodeIN;
-        break;
-    default:
-        ret = AreaCodeGLOB;
-        break;
-    }
-    return ret;
 }
 + (EMOptions *)fromJsonObject:(NSDictionary *)aJson {
     NSString *appKey = aJson[@"appKey"];
@@ -1132,21 +1227,14 @@
     options.enableConsoleLog = [aJson[@"debugModel"] boolValue];
     options.enableRequireReadAck = [aJson[@"requireAck"] boolValue];
     options.enableDeliveryAck = [aJson[@"requireDeliveryAck"] boolValue];
-    options.sortMessageByServerTime =
-        [aJson[@"sortMessageByServerTime"] boolValue];
-    options.autoAcceptFriendInvitation =
-        [aJson[@"acceptInvitationAlways"] boolValue];
-    options.autoAcceptGroupInvitation =
-        [aJson[@"autoAcceptGroupInvitation"] boolValue];
-    options.deleteMessagesOnLeaveGroup =
-        [aJson[@"deleteMessagesAsExitGroup"] boolValue];
-    options.deleteMessagesOnLeaveChatroom =
-        [aJson[@"deleteMessagesAsExitChatRoom"] boolValue];
+    options.sortMessageByServerTime = [aJson[@"sortMessageByServerTime"] boolValue];
+    options.autoAcceptFriendInvitation = [aJson[@"acceptInvitationAlways"] boolValue];
+    options.autoAcceptGroupInvitation = [aJson[@"autoAcceptGroupInvitation"] boolValue];
+    options.deleteMessagesOnLeaveGroup = [aJson[@"deleteMessagesAsExitGroup"] boolValue];
+    options.deleteMessagesOnLeaveChatroom = [aJson[@"deleteMessagesAsExitChatRoom"] boolValue];
     options.autoDownloadThumbnail = [aJson[@"isAutoDownload"] boolValue];
-    options.canChatroomOwnerLeave =
-        [aJson[@"isChatRoomOwnerLeaveAllowed"] boolValue];
-    options.isAutoTransferMessageAttachments =
-        [aJson[@"serverTransfer"] boolValue];
+    options.canChatroomOwnerLeave = [aJson[@"isChatRoomOwnerLeaveAllowed"] boolValue];
+    options.isAutoTransferMessageAttachments = [aJson[@"serverTransfer"] boolValue];
     options.usingHttpsOnly = [aJson[@"usingHttpsOnly"] boolValue];
     options.apnsCertName = aJson[@"pushConfig"][@"apnsCertName"];
     options.enableDnsConfig = [aJson[@"enableDNSConfig"] boolValue];
@@ -1154,9 +1242,8 @@
     options.chatServer = aJson[@"imServer"];
     options.restServer = aJson[@"restServer"];
     options.dnsURL = aJson[@"dnsURL"];
-    options.area = [EMOptions AreaCodeFromInt:[aJson[@"areaCode"] intValue]];
-    options.loadEmptyConversations =
-        [aJson[@"enableEmptyConversation"] boolValue];
+    options.area = [ExtSdkConvertHelper AreaCodeFromInt:[aJson[@"areaCode"] intValue]];
+    options.loadEmptyConversations = [aJson[@"enableEmptyConversation"] boolValue];
     options.customDeviceName = aJson[@"customDeviceName"];
     if (aJson[@"customOSType"]) {
         options.customOSType = [aJson[@"customOSType"] intValue];
@@ -1168,12 +1255,9 @@
     }
 
     options.enableTLSConnection = [aJson[@"enableTLS"] boolValue];
-    options.useReplacedMessageContents =
-        [aJson[@"useReplacedMessageContents"] boolValue];
-    options.includeSendMessageInMessageListener =
-        [aJson[@"messagesReceiveCallbackIncludeSend"] boolValue];
-    options.regardImportMessagesAsRead =
-        [aJson[@"regardImportMessagesAsRead"] boolValue];
+    options.useReplacedMessageContents = [aJson[@"useReplacedMessageContents"] boolValue];
+    options.includeSendMessageInMessageListener = [aJson[@"messagesReceiveCallbackIncludeSend"] boolValue];
+    options.regardImportMessagesAsRead = [aJson[@"regardImportMessagesAsRead"] boolValue];
 
     options.loginExtensionInfo = aJson[@"loginExtraInfo"];
     options.workPathCopiable = aJson[@"workPathCopiable"];
@@ -1355,31 +1439,8 @@
 - (NSDictionary *)toJsonObject {
     NSMutableDictionary *ret = [NSMutableDictionary dictionary];
     ret[@"from"] = self.from;
-    ret[@"type"] = @([self getIntOperation]);
+    ret[@"type"] = @([ExtSdkConvertHelper threadOperationToInt:self.type]);
     ret[@"thread"] = [self.chatThread toJsonObject];
-    return ret;
-}
-
-- (int)getIntOperation {
-    int ret = 0;
-    switch (self.type) {
-    case EMThreadOperationUnknown:
-        ret = 0;
-        break;
-    case EMThreadOperationCreate:
-        ret = 1;
-        break;
-    case EMThreadOperationUpdate:
-        ret = 2;
-        break;
-    case EMThreadOperationDelete:
-        ret = 3;
-        break;
-    case EMThreadOperationUpdate_msg:
-        ret = 4;
-        break;
-    }
-
     return ret;
 }
 
@@ -1388,59 +1449,19 @@
 @implementation EMSilentModeParam (Json)
 
 + (EMSilentModeParam *)fromJsonObject:(NSDictionary *)dict {
-    EMSilentModeParamType paramType =
-        [self paramTypeFromInt:[dict[@"paramType"] intValue]];
-    EMSilentModeParam *param =
-        [[EMSilentModeParam alloc] initWithParamType:paramType];
+    EMSilentModeParamType paramType = [ExtSdkConvertHelper slientModeParamTypeFromInt:[dict[@"paramType"] intValue]];
+    EMSilentModeParam *param = [[EMSilentModeParam alloc] initWithParamType:paramType];
     NSDictionary *dictStartTime = dict[@"startTime"];
     NSDictionary *dictEndTime = dict[@"endTime"];
     int duration = [dict[@"duration"] intValue];
 
-    EMPushRemindType remindType =
-        [self remindTypeFromInt:[dict[@"remindType"] intValue]];
+    EMPushRemindType remindType = [ExtSdkConvertHelper remindTypeFromInt:[dict[@"remindType"] intValue]];
 
     param.remindType = remindType;
     param.silentModeStartTime = [EMSilentModeTime fromJsonObject:dictStartTime];
     param.silentModeEndTime = [EMSilentModeTime fromJsonObject:dictEndTime];
     param.silentModeDuration = duration;
     return param;
-}
-+ (EMSilentModeParamType)paramTypeFromInt:(int)iParamType {
-    EMSilentModeParamType ret = EMSilentModeParamTypeRemindType;
-    if (iParamType == 0) {
-        ret = EMSilentModeParamTypeRemindType;
-    } else if (iParamType == 1) {
-        ret = EMSilentModeParamTypeDuration;
-    } else if (iParamType == 2) {
-        ret = EMSilentModeParamTypeInterval;
-    }
-    return ret;
-}
-+ (EMPushRemindType)remindTypeFromInt:(int)iRemindTime {
-    EMPushRemindType ret = EMPushRemindTypeAll;
-    if (iRemindTime == 0) {
-        ret = EMPushRemindTypeAll;
-    } else if (iRemindTime == 1) {
-        ret = EMPushRemindTypeMentionOnly;
-    } else if (iRemindTime == 2) {
-        ret = EMPushRemindTypeNone;
-    }
-    return ret;
-}
-+ (int)remindTypeToInt:(EMPushRemindType)type {
-    int ret = 0;
-    switch (type) {
-    case EMPushRemindTypeAll:
-        ret = 0;
-        break;
-    case EMPushRemindTypeMentionOnly:
-        ret = 1;
-        break;
-    case EMPushRemindTypeNone:
-        ret = 2;
-        break;
-    }
-    return ret;
 }
 
 @end
@@ -1452,10 +1473,9 @@
     ret[@"expireTimestamp"] = @(self.expireTimestamp);
     ret[@"startTime"] = [self.silentModeStartTime toJsonObject];
     ret[@"endTime"] = [self.silentModeEndTime toJsonObject];
-    ret[@"remindType"] = @([EMSilentModeParam remindTypeToInt:self.remindType]);
+    ret[@"remindType"] = @([ExtSdkConvertHelper remindTypeToInt:self.remindType]);
     ret[@"conversationId"] = self.conversationID;
-    ret[@"conversationType"] =
-        @([EMConversation typeToInt:self.conversationType]);
+    ret[@"conversationType"] = @([ExtSdkConvertHelper conversationTypeToInt:self.conversationType]);
     return ret;
 }
 
@@ -1479,14 +1499,13 @@
     if (dict == nil) {
         return nil;
     }
-    EMFetchServerMessagesOption *options =
-        [[EMFetchServerMessagesOption alloc] init];
-    options.direction = [dict[@"direction"] isEqual:@(0)]
-                            ? EMMessageSearchDirectionUp
-                            : EMMessageSearchDirectionDown;
+    EMFetchServerMessagesOption *options = [[EMFetchServerMessagesOption alloc] init];
+    options.direction = [dict[@"direction"] isEqual:@(0)] ? EMMessageSearchDirectionUp : EMMessageSearchDirectionDown;
     options.startTime = [dict[@"startTs"] longLongValue];
     options.endTime = [dict[@"endTs"] longLongValue];
+    // !!! It has been marked as invalid in the typescript language.
     options.from = dict[@"from"];
+    options.fromIds = dict[@"senders"];
     options.isSave = [dict[@"needSave"] boolValue];
     NSArray *types = dict[@"msgTypes"];
     NSMutableArray<NSNumber *> *list = [NSMutableArray new];
@@ -1536,8 +1555,7 @@
 }
 
 + (nonnull EMContact *)fromJsonObject:(nonnull NSDictionary *)dict {
-    EMContact *contact = [[EMContact alloc] initWithUserId:dict[@"userId"]
-                                                    remark:dict[@"remark"]];
+    EMContact *contact = [[EMContact alloc] initWithUserId:dict[@"userId"] remark:dict[@"remark"]];
     return contact;
 }
 
@@ -1598,4 +1616,16 @@
     ret[@"recalledConvId"] = self.conversationId;
     return ret;
 }
+@end
+
+@implementation EMGroupMemberInfo (Json)
+
+- (NSDictionary *)toJsonObject {
+    NSMutableDictionary *ret = [NSMutableDictionary dictionary];
+    ret[@"memberId"] = self.userId;
+    ret[@"joinedTimestamp"] = @(self.joinedTimestamp);
+    ret[@"role"] = @([ExtSdkConvertHelper groupPremissionTypeToInt:self.role]);
+    return ret;
+}
+
 @end

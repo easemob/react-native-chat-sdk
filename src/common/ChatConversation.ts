@@ -478,6 +478,7 @@ export class ChatConversation {
    *                  If you set this parameter as a negative value, the SDK retrieves messages, starting from the current time, in the descending order of the timestamp included in them.
    * @param count The maximum number of messages to retrieve each time. The value range is [1,400].
    * @param sender The user ID or group ID for retrieval. Usually, it is the conversation ID.
+   * @param senders The user IDs of the message senders in the group conversation.
    *
    * @returns The list of retrieved messages (excluding the one with the starting timestamp). If no message is obtained, an empty list is returned.
    *
@@ -489,6 +490,7 @@ export class ChatConversation {
     timestamp?: number;
     count?: number;
     sender?: string;
+    senders?: Array<string>;
   }): Promise<Array<ChatMessage>> {
     return ChatClient.getInstance().chatManager.getMsgsWithMsgType({
       ...params,
@@ -567,6 +569,25 @@ export class ChatConversation {
   }
 
   /**
+   * Gets messages with the specified IDs from the local database.
+   *
+   * @params -
+   *  @param msgIds The message IDs.
+   * @returns The list of retrieved messages. If no message is obtained, an empty list is returned.
+   *
+   * @throws A description of the exception. See {@link ChatError}.
+   */
+  public async getMessagesWithIds(params: {
+    msgIds: Array<string>;
+  }): Promise<Array<ChatMessage>> {
+    return ChatClient.getInstance().chatManager.getMessagesWithIds({
+      ...params,
+      convId: this.convId,
+      convType: this.convType,
+    });
+  }
+
+  /**
    * Gets messages with keywords in a conversation in the local database.
    *
    * @param keywords The keywords for query.
@@ -618,7 +639,8 @@ export class ChatConversation {
    * - searchScope The message search scope. See {@link ChatMessageSearchScope}.
    *                  If you set this parameter as a negative value, the SDK retrieves messages, starting from the current time, in the descending order of the timestamp included in them.
    * - count The maximum number of messages to retrieve each time. The value range is [1,400].
-   * - sender The user ID or group ID for retrieval. Usually, it is the conversation ID.
+   * - sender The user ID or group ID for retrieval. Usually, it is the conversation ID. use `senders` instead. 2025-07-22
+   * - senders The user IDs of the message senders. If you do not set this parameter, the SDK ignores this parameter when retrieving messages.
    *
    * @returns The list of retrieved messages (excluding the one with the starting timestamp). If no message is obtained, an empty list is returned.
    *
@@ -630,6 +652,7 @@ export class ChatConversation {
     timestamp?: number;
     count?: number;
     sender?: string;
+    senders?: Array<string>;
     searchScope?: ChatMessageSearchScope;
   }): Promise<Array<ChatMessage>> {
     return ChatClient.getInstance().chatManager.getConvMsgsWithKeyword({

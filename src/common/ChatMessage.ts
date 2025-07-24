@@ -1371,6 +1371,10 @@ export class ChatImageMessageBody extends _ChatFileMessageBody {
    * The image height in pixels.
    */
   height: number;
+  /**
+   * Whether the image is a GIF.
+   */
+  isGif?: boolean;
   constructor(params: {
     localPath: string;
     secret?: string;
@@ -1385,6 +1389,7 @@ export class ChatImageMessageBody extends _ChatFileMessageBody {
     thumbnailStatus?: number;
     width?: number;
     height?: number;
+    isGif?: boolean;
     lastModifyOperatorId?: string;
     lastModifyTime?: number;
     modifyCount?: number;
@@ -1410,6 +1415,7 @@ export class ChatImageMessageBody extends _ChatFileMessageBody {
     );
     this.width = params.width ?? 0;
     this.height = params.height ?? 0;
+    this.isGif = params.isGif ?? false;
   }
 }
 
@@ -1656,8 +1662,14 @@ export class ChatMessagePinInfo {
 export class ChatFetchMessageOptions {
   /**
    * The user ID of the message sender in the group conversation.
+   *
+   * @deprecated 2025-07-21. Use `senders` instead.
    */
   from?: string;
+  /**
+   * The array of user IDs of the message senders in the group conversation.
+   */
+  senders?: Array<string>;
   /**
    * The array of message types for query. The default value is `undefined`, indicating that all types of messages are retrieved.
    */
@@ -1682,6 +1694,7 @@ export class ChatFetchMessageOptions {
   needSave: boolean;
   constructor(params: {
     from?: string;
+    senders?: Array<string>;
     msgTypes?: ChatMessageType[];
     startTs: number;
     endTs: number;
@@ -1689,6 +1702,7 @@ export class ChatFetchMessageOptions {
     needSave: boolean;
   }) {
     this.from = params.from;
+    this.senders = params.senders;
     this.startTs = params.startTs;
     this.endTs = params.endTs;
     this.direction = params.direction;

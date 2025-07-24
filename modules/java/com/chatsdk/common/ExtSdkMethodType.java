@@ -349,5 +349,11 @@ public class ExtSdkMethodType {
 
     public static final String getMessageCount = "getMessageCount";
 
+    public static final String fetchMemberInfoListFromServer = "fetchMemberInfoListFromServer";
+    public static final String updateGroupAvatar = "updateGroupAvatar";
+    public static final String getMessagesWithIds = "getMessagesWithIds";
+    public static final String getConvsMsgsWithKeyword = "getConvsMsgsWithKeyword";
+    public static final String modifyMsgBody = "modifyMsgBody";
+
     // TODO: EMChatThreadManagerListener
 }

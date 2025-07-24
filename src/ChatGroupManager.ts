@@ -21,6 +21,7 @@ import {
   MTgetGroupAnnouncementFromServer,
   MTgetGroupBlockListFromServer,
   MTgetGroupFileListFromServer,
+  MTfetchMemberInfoListFromServer,
   MTgetGroupMemberListFromServer,
   MTgetGroupMuteListFromServer,
   MTgetGroupSpecificationFromServer,
@@ -47,6 +48,7 @@ import {
   MTunMuteMembers,
   MTupdateDescription,
   MTupdateGroupAnnouncement,
+  MTupdateGroupAvatar,
   MTupdateGroupExt,
   MTupdateGroupOwner,
   MTupdateGroupSubject,
@@ -62,6 +64,7 @@ import {
   ChatGroup,
   type ChatGroupFileStatusCallback,
   ChatGroupInfo,
+  ChatGroupMember,
   ChatGroupOptions,
   ChatGroupSharedFile,
 } from './common/ChatGroup';
@@ -203,10 +206,22 @@ export class ChatGroupManager extends BaseManager {
             member: params.member,
           });
           break;
+        case 'onMembersJoined':
+          listener.onMembersJoined?.({
+            groupId: params.groupId,
+            members: params.members,
+          });
+          break;
         case 'onMemberExited':
           listener.onMemberExited?.({
             groupId: params.groupId,
             member: params.member,
+          });
+          break;
+        case 'onMembersExited':
+          listener.onMembersExited?.({
+            groupId: params.groupId,
+            members: params.members,
           });
           break;
         case 'onAnnouncementChanged':
@@ -428,19 +443,22 @@ export class ChatGroupManager extends BaseManager {
    *
    * You can set {@link ChatGroupEventListener} to listen for the event.
    *
-   * @param options The options for creating a group. They are optional and cannot be `null`. See {@link ChatGroupOptions}.
+   * @param options The options for creating a group. See {@link ChatGroupOptions}.
    * The options are as follows:
    * - The maximum number of members allowed in the group. The default value is 200.
    * - The group style. See {@link ChatGroupStyle}. The default value is {@link ChatGroupStyle.PrivateOnlyOwnerInvite}.
    * - Whether to ask for permission when inviting a user to join the group. The default value is `false`, indicating that invitees are automatically added to the group without their permission.
    * - The extension of group details.
-   * @param groupName The group name. It is optional. Pass `null` if you do not want to set this parameter.
-   * @param desc The group description. It is optional. Pass `null` if you do not want to set this parameter.
-   * @param inviteMembers The group member array. The group owner ID is optional. This parameter cannot be `null`.
-   * @param inviteReason The group joining invitation. It is optional. Pass `null` if you do not want to set this parameter.
+   * @param groupName The group name.
+   * @param groupAvatar The group avatar.
+   * @param desc The group description.
+   * @param inviteMembers The group member array.
+   * @param inviteReason The group joining invitation.
    * @returns The created group instance.
    *
    * @throws A description of the exception. See {@link ChatError}.
+   *
+   * @deprecated 2025-07-23 Use {@link createGroupEx} instead.
    */
   public async createGroup(
     options: ChatGroupOptions,
@@ -449,10 +467,58 @@ export class ChatGroupManager extends BaseManager {
     inviteMembers?: Array<string>,
     inviteReason?: string
   ): Promise<ChatGroup> {
-    chatlog.log(
-      `${ChatGroupManager.TAG}: createGroup: `,
+    return this.createGroupEx({
       options,
       groupName,
+      desc,
+      inviteMembers,
+      inviteReason,
+    });
+  }
+
+  /**
+   * Creates a group instance.
+   *
+   * After the group is created, the data in the memory and database will be updated and multiple devices will receive the notification event and update the group to the memory and database.
+   *
+   * You can set {@link ChatGroupEventListener} to listen for the event.
+   *
+   * @param options The options for creating a group. See {@link ChatGroupOptions}.
+   * The options are as follows:
+   * - The maximum number of members allowed in the group. The default value is 200.
+   * - The group style. See {@link ChatGroupStyle}. The default value is {@link ChatGroupStyle.PrivateOnlyOwnerInvite}.
+   * - Whether to ask for permission when inviting a user to join the group. The default value is `false`, indicating that invitees are automatically added to the group without their permission.
+   * - The extension of group details.
+   * @param groupName The group name.
+   * @param groupAvatar The group avatar.
+   * @param desc The group description.
+   * @param inviteMembers The group member array.
+   * @param inviteReason The group joining invitation.
+   * @returns The created group instance.
+   *
+   * @throws A description of the exception. See {@link ChatError}.
+   */
+  public async createGroupEx(params: {
+    options: ChatGroupOptions;
+    groupName: string;
+    groupAvatar?: string;
+    desc?: string;
+    inviteMembers?: Array<string>;
+    inviteReason?: string;
+  }): Promise<ChatGroup> {
+    const {
+      options,
+      groupName,
+      groupAvatar,
+      desc,
+      inviteMembers,
+      inviteReason,
+    } = params;
+    chatlog.log(
+      `${ChatGroupManager.TAG}: createGroupEx: `,
+      options,
+      groupName,
+      groupAvatar,
       desc,
       inviteMembers,
       inviteReason
@@ -460,6 +526,7 @@ export class ChatGroupManager extends BaseManager {
     let r: any = await Native._callMethod(MTcreateGroup, {
       [MTcreateGroup]: {
         groupName,
+        groupAvatar,
         desc,
         inviteMembers,
         inviteReason,
@@ -569,6 +636,46 @@ export class ChatGroupManager extends BaseManager {
       opt: {
         map: (param: any) => {
           return param as string;
+        },
+      },
+    });
+    return ret;
+  }
+
+  /**
+   * Uses the pagination to get the member information list of the group from the server.
+   *
+   * @param groupId The group ID.
+   * @param cursor The cursor position from which to start to get data. At the first method call, if you set `cursor` as `null`, the SDK gets the data in the reverse chronological order of when users join the group.
+   * @param limit The number of group members that you expect to get on each page. The default value is 200.
+   * @returns The group member information list and the cursor for the next query. See {@link ChatCursorResult}.
+   *
+   * @throws A description of the exception. See {@link ChatError}.
+   */
+  public async fetchMemberInfoListFromServer(
+    groupId: string,
+    cursor: string,
+    limit?: number
+  ): Promise<ChatCursorResult<ChatGroupMember>> {
+    chatlog.log(
+      `${ChatGroupManager.TAG}: fetchMemberInfoListFromServer: `,
+      groupId,
+      cursor,
+      limit
+    );
+    let r: any = await Native._callMethod(MTfetchMemberInfoListFromServer, {
+      [MTfetchMemberInfoListFromServer]: {
+        groupId,
+        cursor,
+        limit: limit ?? 200,
+      },
+    });
+    let ret = new ChatCursorResult<ChatGroupMember>({
+      cursor: r?.[MTfetchMemberInfoListFromServer].cursor,
+      list: r?.[MTfetchMemberInfoListFromServer].list,
+      opt: {
+        map: (param: any) => {
+          return new ChatGroupMember(param);
         },
       },
     });
@@ -1358,6 +1465,24 @@ export class ChatGroupManager extends BaseManager {
       [MTupdateGroupAnnouncement]: {
         groupId,
         announcement,
+      },
+    });
+    ChatGroupManager.checkErrorFromResult(r);
+  }
+
+  public async updateGroupAvatar(
+    groupId: string,
+    avatar: string
+  ): Promise<void> {
+    chatlog.log(
+      `${ChatGroupManager.TAG}: updateGroupAvatar: `,
+      groupId,
+      avatar
+    );
+    let r: any = await Native._callMethod(MTupdateGroupAvatar, {
+      [MTupdateGroupAvatar]: {
+        groupId,
+        avatar,
       },
     });
     ChatGroupManager.checkErrorFromResult(r);

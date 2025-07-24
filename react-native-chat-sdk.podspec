@@ -41,7 +41,7 @@ Pod::Spec.new do |s|
     ]
   }
 
-  s.dependency 'HyphenateChat','~> 4.12.0'
+  s.dependency 'HyphenateChat','~> 4.15.1'
 
   # 添加本地依赖 AgoraChat.xcframework
   # s.vendored_frameworks = ['lib/ios/AgoraChat.xcframework','lib/ios/HyphenateChat.xcframework', 'lib/ios/aosl.xcframework']

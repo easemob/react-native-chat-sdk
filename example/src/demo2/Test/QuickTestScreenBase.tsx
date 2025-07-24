@@ -729,6 +729,16 @@ export abstract class QuickTestScreenBase<
           group_listener: `onMemberJoined: ` + params.groupId + params.member,
         });
       }
+      onMembersJoined(params: { groupId: string; members: string[] }): void {
+        console.log(
+          `${QuickTestScreenBase.TAG}: onMembersJoined:`,
+          params.groupId,
+          params.members
+        );
+        this.that.setState({
+          group_listener: `onMembersJoined: ` + params.groupId + params.members,
+        });
+      }
       onMemberExited(params: { groupId: string; member: string }): void {
         console.log(
           `${QuickTestScreenBase.TAG}: onMemberExited:`,
@@ -737,6 +747,16 @@ export abstract class QuickTestScreenBase<
         );
         this.that.setState({
           group_listener: `onMemberExited: ` + params.groupId + params.member,
+        });
+      }
+      onMembersExited(params: { groupId: string; members: string[] }): void {
+        console.log(
+          `${QuickTestScreenBase.TAG}: onMembersExited:`,
+          params.groupId,
+          params.members
+        );
+        this.that.setState({
+          group_listener: `onMembersExited: ` + params.groupId + params.members,
         });
       }
       onAnnouncementChanged(params: {

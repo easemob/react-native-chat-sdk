@@ -139,14 +139,6 @@ export enum ChatMultiDeviceEvent {
    */
   GROUP_REMOVE_ALL_BAN,
   /**
-   * The current user are group disable on another device.
-   */
-  GROUP_DISABLED,
-  /**
-   * The current user are group able on another device.
-   */
-  GROUP_ABLE,
-  /**
    * If user A creates a message thread on Device A1, this event is triggered on Device A2.
    */
   THREAD_CREATE = 40,
@@ -267,10 +259,6 @@ export function ChatMultiDeviceEventFromNumber(
       return ChatMultiDeviceEvent.GROUP_ALL_BAN;
     case 33:
       return ChatMultiDeviceEvent.GROUP_REMOVE_ALL_BAN;
-    case 34:
-      return ChatMultiDeviceEvent.GROUP_DISABLED;
-    case 35:
-      return ChatMultiDeviceEvent.GROUP_ABLE;
 
     case 40:
       return ChatMultiDeviceEvent.THREAD_CREATE;
@@ -362,12 +350,14 @@ export interface ChatConnectEventListener {
   onDisconnected?(): void;
 
   /**
-   * Occurs when the Agora token is about to expire.
+   * Occurs when the token is about to expire.
+   *
+   * This event occurs from when 20% of the validity period is left.
    */
   onTokenWillExpire?(): void;
 
   /**
-   * Occurs when the Agora token has expired.
+   * Occurs when the token has expired.
    */
   onTokenDidExpire?(): void;
 
@@ -914,16 +904,36 @@ export interface ChatGroupEventListener {
    * @params The parameter set.
    * - Param [groupId] The group ID.
    * - Param [member] The user ID of the new member.
+   *
+   * @deprecated Use {@link onMembersJoined} instead.
    */
   onMemberJoined?(params: { groupId: string; member: string }): void;
+  /**
+   * Occurs when multiple users join a group.
+   *
+   * @params The parameter set.
+   * - Param [groupId] The group ID.
+   * - Param [members] The user IDs of the new members.
+   */
+  onMembersJoined?(params: { groupId: string; members: Array<string> }): void;
   /**
    * Occurs when a member voluntarily leaves the group.
    *
    * @params The parameter set.
    * - Param [groupId] The group ID.
    * - Param [member] The user ID of the member leaving the group.
+   *
+   * @deprecated Use {@link onMembersExited} instead.
    */
   onMemberExited?(params: { groupId: string; member: string }): void;
+  /**
+   * Occurs when multiple users leave a group.
+   *
+   * @params The parameter set.
+   * - Param [groupId] The group ID.
+   * - Param [members] The user IDs of the members leaving the group.
+   */
+  onMembersExited?(params: { groupId: string; members: Array<string> }): void;
   /**
    * Occurs when the group announcement is updated.
    *

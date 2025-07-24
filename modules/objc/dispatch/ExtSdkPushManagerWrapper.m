@@ -192,7 +192,7 @@
     __weak typeof(self) weakSelf = self;
     NSString *conversaionId = param[@"conversationId"];
     EMConversationType type =
-        [EMConversation typeFromInt:[param[@"conversationType"] intValue]];
+        [ExtSdkConvertHelper conversationTypeFromInt:[param[@"conversationType"] intValue]];
     EMSilentModeParam *silmentParam =
         [EMSilentModeParam fromJsonObject:param[@"param"]];
     [EMClient.sharedClient.pushManager
@@ -214,7 +214,7 @@
     __weak typeof(self) weakSelf = self;
     NSString *conversaionId = param[@"conversationId"];
     EMConversationType type =
-        [EMConversation typeFromInt:[param[@"conversationType"] intValue]];
+        [ExtSdkConvertHelper conversationTypeFromInt:[param[@"conversationType"] intValue]];
     [EMClient.sharedClient.pushManager
         clearRemindTypeForConversation:conversaionId
                       conversationType:type
@@ -233,7 +233,7 @@
     __weak typeof(self) weakSelf = self;
     NSString *conversaionId = param[@"conversationId"];
     EMConversationType type =
-        [EMConversation typeFromInt:[param[@"conversationType"] intValue]];
+        [ExtSdkConvertHelper conversationTypeFromInt:[param[@"conversationType"] intValue]];
     [EMClient.sharedClient.pushManager
         getSilentModeForConversation:conversaionId
                     conversationType:type

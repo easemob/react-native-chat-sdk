@@ -37,6 +37,8 @@ export class QuickTestScreenPush extends QuickTestScreenBase<
       recvResult: '',
       exceptResult: '',
       cb_result: '',
+      searchKeyword: '',
+      searchKeywordForUI: '',
     };
     this.statelessData = {};
     registerStateDataList(metaDataList);

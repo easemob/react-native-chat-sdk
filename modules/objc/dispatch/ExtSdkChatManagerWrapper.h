@@ -137,13 +137,11 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (void)fetchConversationsFromServerWithPage:(NSDictionary *)param
                               withMethodType:(NSString *)aChannelName
-                                      result:(nonnull id<ExtSdkCallbackObjc>)
-                                                 result;
+                                      result:(nonnull id<ExtSdkCallbackObjc>)result;
 
 - (void)removeMessagesFromServerWithMsgIds:(NSDictionary *)param
                             withMethodType:(NSString *)aChannelName
-                                    result:
-                                        (nonnull id<ExtSdkCallbackObjc>)result;
+                                    result:(nonnull id<ExtSdkCallbackObjc>)result;
 
 - (void)removeMessagesFromServerWithTs:(NSDictionary *)param
                         withMethodType:(NSString *)aChannelName
@@ -155,14 +153,11 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (void)getConversationsFromServerWithCursor:(NSDictionary *)param
                               withMethodType:(NSString *)aChannelName
-                                      result:(nonnull id<ExtSdkCallbackObjc>)
-                                                 result;
+                                      result:(nonnull id<ExtSdkCallbackObjc>)result;
 
 - (void)getPinnedConversationsFromServerWithCursor:(NSDictionary *)param
                                     withMethodType:(NSString *)aChannelName
-                                            result:
-                                                (nonnull id<ExtSdkCallbackObjc>)
-                                                    result;
+                                            result:(nonnull id<ExtSdkCallbackObjc>)result;
 
 - (void)pinConversation:(NSDictionary *)param
          withMethodType:(NSString *)aChannelName
@@ -178,13 +173,11 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (void)addRemoteAndLocalConversationsMark:(NSDictionary *)param
                             withMethodType:(NSString *)aChannelName
-                                    result:
-                                        (nonnull id<ExtSdkCallbackObjc>)result;
+                                    result:(nonnull id<ExtSdkCallbackObjc>)result;
 
 - (void)deleteRemoteAndLocalConversationsMark:(NSDictionary *)param
                                withMethodType:(NSString *)aChannelName
-                                       result:(nonnull id<ExtSdkCallbackObjc>)
-                                                  result;
+                                       result:(nonnull id<ExtSdkCallbackObjc>)result;
 
 - (void)fetchConversationsByOptions:(NSDictionary *)param
                      withMethodType:(NSString *)aChannelName
@@ -215,8 +208,20 @@ NS_ASSUME_NONNULL_BEGIN
                              result:(nonnull id<ExtSdkCallbackObjc>)result;
 
 - (void)getMessageCount:(NSDictionary *)param
-                       withMethodType:(NSString *)aChannelName
-                               result:(nonnull id<ExtSdkCallbackObjc>)result;
+         withMethodType:(NSString *)aChannelName
+                 result:(nonnull id<ExtSdkCallbackObjc>)result;
+
+- (void)getMessagesWithIds:(NSDictionary *)param
+            withMethodType:(NSString *)aChannelName
+                    result:(nonnull id<ExtSdkCallbackObjc>)result;
+
+- (void)getConvsMsgsWithKeyword:(NSDictionary *)param
+                 withMethodType:(NSString *)aChannelName
+                         result:(nonnull id<ExtSdkCallbackObjc>)result;
+
+- (void)modifyMsgBody:(NSDictionary *)param
+       withMethodType:(NSString *)aChannelName
+               result:(nonnull id<ExtSdkCallbackObjc>)result;
 
 @end
 

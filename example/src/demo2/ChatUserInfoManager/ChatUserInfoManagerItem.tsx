@@ -44,10 +44,14 @@ export class ChatUserInfoManagerLeafScreen extends LeafScreenBase<StateChatUserI
     );
   }
   protected renderApiDom(): ReactNode[] {
-    const apiList = ['updateOwnUserInfo', 'fetchUserInfoById', 'fetchOwnInfo'];
+    const { searchKeyword } = this.state;
+    const apiList = (Object.values(MN) as string[]).sort();
     let renderDomAry: ({} | null | undefined)[] = [];
     const data = this.metaDataList;
     apiList.forEach((apiItem) => {
+      if (searchKeyword && !apiItem.includes(searchKeyword)) {
+        return;
+      }
       this.setKeyPrefix(apiItem);
       renderDomAry.push(
         this.renderParamWithText(data.get(apiItem)!.methodName)

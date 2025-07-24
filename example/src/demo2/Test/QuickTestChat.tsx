@@ -58,6 +58,8 @@ export class QuickTestScreenChat extends QuickTestScreenBase<
       recvResult: '',
       exceptResult: '',
       cb_result: '',
+      searchKeyword: '',
+      searchKeywordForUI: '',
     };
     this.statelessData = {
       sendMessage: {},
@@ -2098,6 +2100,123 @@ export class QuickTestScreenChat extends QuickTestScreenBase<
           console.log(`${MN.getMessageCount} === ${methodName}`);
           this.tryCatch(
             ChatClient.getInstance().chatManager.getMessageCount(),
+            QuickTestScreenChat.TAG,
+            name
+          );
+        }
+        break;
+      case MN.getMessagesWithIds:
+        {
+          const methodName = this.metaData.get(
+            MN.getMessagesWithIds
+          )!.methodName;
+          console.log(`${MN.getMessagesWithIds} === ${methodName}`);
+          const convId = this.metaData.get(MN.getMessagesWithIds)?.params[0]!
+            .paramDefaultValue;
+          const convType = this.metaData.get(MN.getMessagesWithIds)?.params[1]!
+            .paramDefaultValue;
+          const msgIds = this.metaData.get(MN.getMessagesWithIds)?.params[2]!
+            .paramDefaultValue;
+          this.tryCatch(
+            ChatClient.getInstance().chatManager.getMessagesWithIds({
+              convId,
+              convType,
+              msgIds,
+            }),
+            QuickTestScreenChat.TAG,
+            name
+          );
+        }
+        break;
+      case MN.modifyMsgBody:
+        {
+          const methodName = this.metaData.get(MN.modifyMsgBody)!.methodName;
+          console.log(`${MN.modifyMsgBody} === ${methodName}`);
+          const msgId = this.metaData.get(MN.modifyMsgBody)?.params[0]!
+            .paramDefaultValue;
+          const body = this.metaData.get(MN.modifyMsgBody)?.params[1]!
+            .paramDefaultValue;
+          const ext = this.metaData.get(MN.modifyMsgBody)?.params[2]!
+            .paramDefaultValue;
+          this.tryCatch(
+            ChatClient.getInstance().chatManager.modifyMsgBody({
+              msgId,
+              body,
+              ext,
+            }),
+            QuickTestScreenChat.TAG,
+            name
+          );
+        }
+        break;
+      case MN.getConvsMsgsWithKeyword:
+        {
+          const methodName = this.metaData.get(
+            MN.getConvsMsgsWithKeyword
+          )!.methodName;
+          console.log(`${MN.getConvsMsgsWithKeyword} === ${methodName}`);
+          const keywords = this.metaData.get(MN.getConvsMsgsWithKeyword)
+            ?.params[0]!.paramDefaultValue;
+          const timestamp = this.metaData.get(MN.getConvsMsgsWithKeyword)
+            ?.params[1]!.paramDefaultValue;
+          const from = this.metaData.get(MN.getConvsMsgsWithKeyword)?.params[2]!
+            .paramDefaultValue;
+          const direction = this.metaData.get(MN.getConvsMsgsWithKeyword)
+            ?.params[3]!.paramDefaultValue;
+          const searchScope = this.metaData.get(MN.getConvsMsgsWithKeyword)
+            ?.params[4]!.paramDefaultValue;
+          this.tryCatch(
+            ChatClient.getInstance().chatManager.getConvsMsgsWithKeyword({
+              keywords,
+              timestamp,
+              from,
+              direction,
+              searchScope,
+            }),
+            QuickTestScreenChat.TAG,
+            name
+          );
+        }
+        break;
+      case MN.getConvMsgsWithKeyword:
+        {
+          const methodName = this.metaData.get(
+            MN.getConvMsgsWithKeyword
+          )!.methodName;
+          console.log(`${MN.getConvMsgsWithKeyword} === ${methodName}`);
+          const convId = this.metaData.get(MN.getConvMsgsWithKeyword)
+            ?.params[0]!.paramDefaultValue;
+          const convType = this.metaData.get(MN.getConvMsgsWithKeyword)
+            ?.params[1]!.paramDefaultValue;
+          const keywords = this.metaData.get(MN.getConvMsgsWithKeyword)
+            ?.params[2]!.paramDefaultValue;
+          const direction = this.metaData.get(MN.getConvMsgsWithKeyword)
+            ?.params[3]!.paramDefaultValue;
+          const timestamp = this.metaData.get(MN.getConvMsgsWithKeyword)
+            ?.params[4]!.paramDefaultValue;
+          const count = this.metaData.get(MN.getConvMsgsWithKeyword)?.params[5]!
+            .paramDefaultValue;
+          const sender = this.metaData.get(MN.getConvMsgsWithKeyword)
+            ?.params[6]!.paramDefaultValue;
+          const senders = this.metaData.get(MN.getConvMsgsWithKeyword)
+            ?.params[7]!.paramDefaultValue;
+          const searchScope = this.metaData.get(MN.getConvMsgsWithKeyword)
+            ?.params[8]!.paramDefaultValue;
+          const isChatThread = this.metaData.get(MN.getConvMsgsWithKeyword)
+            ?.params[9]!.paramDefaultValue;
+          this.tryCatch(
+            ChatClient.getInstance().chatManager.getConvMsgsWithKeyword({
+              convId,
+              convType,
+              keywords,
+              direction,
+              timestamp,
+              count,
+              sender,
+              senders,
+              searchScope,
+              isChatThread,
+            }),
             QuickTestScreenChat.TAG,
             name
           );

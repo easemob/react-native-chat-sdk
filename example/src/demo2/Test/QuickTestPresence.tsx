@@ -42,6 +42,8 @@ export class QuickTestScreenPresence extends QuickTestScreenBase<
       recvResult: '',
       exceptResult: '',
       cb_result: '',
+      searchKeyword: '',
+      searchKeywordForUI: '',
     };
     this.statelessData = {
       sendMessage: {},

@@ -43,7 +43,8 @@
           ExtSdkMethodKeyOnTokenWillExpire : @(ExtSdkMethodKeyOnTokenWillExpireValue),
           ExtSdkMethodKeyOnTokenDidExpire : @(ExtSdkMethodKeyOnTokenDidExpireValue),
           ExtSdkMethodKeyOnUserDidLoginFromOtherDevice : @(ExtSdkMethodKeyOnUserDidLoginFromOtherDeviceValue),
-          ExtSdkMethodKeyOnUserDidLoginFromOtherDeviceWithInfo : @(ExtSdkMethodKeyOnUserDidLoginFromOtherDeviceWithInfoValue),
+          ExtSdkMethodKeyOnUserDidLoginFromOtherDeviceWithInfo :
+              @(ExtSdkMethodKeyOnUserDidLoginFromOtherDeviceWithInfoValue),
           ExtSdkMethodKeyOnUserDidRemoveFromServer : @(ExtSdkMethodKeyOnUserDidRemoveFromServerValue),
           ExtSdkMethodKeyOnUserDidForbidByServer : @(ExtSdkMethodKeyOnUserDidForbidByServerValue),
           ExtSdkMethodKeyOnUserDidChangePassword : @(ExtSdkMethodKeyOnUserDidChangePasswordValue),
@@ -105,8 +106,9 @@
           ExtSdkMethodKeyChatFetchReactionList : @(ExtSdkMethodKeyChatFetchReactionListValue),
           ExtSdkMethodKeyChatFetchReactionDetail : @(ExtSdkMethodKeyChatFetchReactionDetailValue),
           ExtSdkMethodKeyChatReportMessage : @(ExtSdkMethodKeyChatReportMessageValue),
-          
-          ExtSdkMethodKeyFetchConversationsFromServerWithPage : @(ExtSdkMethodKeyFetchConversationsFromServerWithPageValue),
+
+          ExtSdkMethodKeyFetchConversationsFromServerWithPage :
+              @(ExtSdkMethodKeyFetchConversationsFromServerWithPageValue),
           ExtSdkMethodKeyRemoveMessagesFromServerWithMsgIds : @(ExtSdkMethodKeyRemoveMessagesFromServerWithMsgIdsValue),
           ExtSdkMethodKeyRemoveMessagesFromServerWithTs : @(ExtSdkMethodKeyRemoveMessagesFromServerWithTsValue),
 
@@ -121,7 +123,8 @@
           ExtSdkMethodKeyOnConversationUpdate : @(ExtSdkMethodKeyOnConversationUpdateValue),
           ExtSdkMethodKeyOnConversationHasRead : @(ExtSdkMethodKeyOnConversationHasReadValue),
 
-          ExtSdkMethodKeyChatOnReadAckForGroupMessageUpdated : @(ExtSdkMethodKeyChatOnReadAckForGroupMessageUpdatedValue),
+          ExtSdkMethodKeyChatOnReadAckForGroupMessageUpdated :
+              @(ExtSdkMethodKeyChatOnReadAckForGroupMessageUpdatedValue),
           ExtSdkMethodKeyChatOnMessageReactionDidChange : @(ExtSdkMethodKeyChatOnMessageReactionDidChangeValue),
 
           /// EMMessageListener
@@ -185,11 +188,12 @@
           ExtSdkMethodKeyAddMembersToChatRoomWhiteList : @(ExtSdkMethodKeyAddMembersToChatRoomWhiteListValue),
           ExtSdkMethodKeyRemoveMembersFromChatRoomWhiteList : @(ExtSdkMethodKeyRemoveMembersFromChatRoomWhiteListValue),
           ExtSdkMethodKeyFetchChatRoomWhiteListFromServer : @(ExtSdkMethodKeyFetchChatRoomWhiteListFromServerValue),
-          ExtSdkMethodKeyIsMemberInChatRoomWhiteListFromServer : @(ExtSdkMethodKeyIsMemberInChatRoomWhiteListFromServerValue),
+          ExtSdkMethodKeyIsMemberInChatRoomWhiteListFromServer :
+              @(ExtSdkMethodKeyIsMemberInChatRoomWhiteListFromServerValue),
 
           ExtSdkMethodKeyMuteAllChatRoomMembers : @(ExtSdkMethodKeyMuteAllChatRoomMembersValue),
           ExtSdkMethodKeyUnMuteAllChatRoomMembers : @(ExtSdkMethodKeyUnMuteAllChatRoomMembersValue),
-          
+
           MKfetchChatRoomAttributes : @(MKfetchChatRoomAttributesValue),
           MKfetchChatRoomAllAttributes : @(MKfetchChatRoomAllAttributesValue),
           MKsetChatRoomAttributes : @(MKsetChatRoomAttributesValue),
@@ -295,9 +299,11 @@
           ExtSdkMethodKeyChatFetchChatThreadDetail : @(ExtSdkMethodKeyChatFetchChatThreadDetailValue),
           ExtSdkMethodKeyChatFetchJoinedChatThreads : @(ExtSdkMethodKeyChatFetchJoinedChatThreadsValue),
           ExtSdkMethodKeyChatFetchChatThreadsWithParentId : @(ExtSdkMethodKeyChatFetchChatThreadsWithParentIdValue),
-          ExtSdkMethodKeyChatFetchJoinedChatThreadsWithParentId : @(ExtSdkMethodKeyChatFetchJoinedChatThreadsWithParentIdValue),
+          ExtSdkMethodKeyChatFetchJoinedChatThreadsWithParentId :
+              @(ExtSdkMethodKeyChatFetchJoinedChatThreadsWithParentIdValue),
           ExtSdkMethodKeyChatFetchChatThreadMember : @(ExtSdkMethodKeyChatFetchChatThreadMemberValue),
-          ExtSdkMethodKeyChatFetchLastMessageWithChatThreads : @(ExtSdkMethodKeyChatFetchLastMessageWithChatThreadsValue),
+          ExtSdkMethodKeyChatFetchLastMessageWithChatThreads :
+              @(ExtSdkMethodKeyChatFetchLastMessageWithChatThreadsValue),
           ExtSdkMethodKeyChatRemoveMemberFromChatThread : @(ExtSdkMethodKeyChatRemoveMemberFromChatThreadValue),
           ExtSdkMethodKeyChatUpdateChatThreadSubject : @(ExtSdkMethodKeyChatUpdateChatThreadSubjectValue),
           ExtSdkMethodKeyChatCreateChatThread : @(ExtSdkMethodKeyChatCreateChatThreadValue),
@@ -312,23 +318,25 @@
           ExtSdkMethodKeyChatOnChatThreadUpdated : @(ExtSdkMethodKeyChatOnChatThreadUpdatedValue),
           ExtSdkMethodKeyChatOnChatThreadDestroyed : @(ExtSdkMethodKeyChatOnChatThreadDestroyedValue),
           ExtSdkMethodKeyChatOnChatThreadUserRemoved : @(ExtSdkMethodKeyChatOnChatThreadUserRemovedValue),
-          
+
           ExtSdkMethodKeyfetchHistoryMessagesByOptions : @(ExtSdkMethodKeyfetchHistoryMessagesByOptionsValue),
           ExtSdkMethodKeydeleteMessagesWithTs : @(ExtSdkMethodKeydeleteMessagesWithTsValue),
           ExtSdkMethodKeysetMemberAttributesFromGroup : @(ExtSdkMethodKeysetMemberAttributesFromGroupValue),
           ExtSdkMethodKeyfetchMemberAttributesFromGroup : @(ExtSdkMethodKeyfetchMemberAttributesFromGroupValue),
           ExtSdkMethodKeyfetchMembersAttributesFromGroup : @(ExtSdkMethodKeyfetchMembersAttributesFromGroupValue),
           ExtSdkMethodKeyOnAppActiveNumberReachLimit : @(ExtSdkMethodKeyOnAppActiveNumberReachLimitValue),
-          
-          ExtSdkMethodKeyGetConversationsFromServerWithCursor : @(ExtSdkMethodKeyGetConversationsFromServerWithCursorValue),
-          ExtSdkMethodKeyGetPinnedConversationsFromServerWithCursor : @(ExtSdkMethodKeyGetPinnedConversationsFromServerWithCursorValue),
+
+          ExtSdkMethodKeyGetConversationsFromServerWithCursor :
+              @(ExtSdkMethodKeyGetConversationsFromServerWithCursorValue),
+          ExtSdkMethodKeyGetPinnedConversationsFromServerWithCursor :
+              @(ExtSdkMethodKeyGetPinnedConversationsFromServerWithCursorValue),
           ExtSdkMethodKeyPinConversation : @(ExtSdkMethodKeyPinConversationValue),
           ExtSdkMethodKeyModifyMessage : @(ExtSdkMethodKeyModifyMessageValue),
           ExtSdkMethodKeyDownloadAndParseCombineMessage : @(ExtSdkMethodKeyDownloadAndParseCombineMessageValue),
           ExtSdkMethodKeyOnMessageContentChanged : @(ExtSdkMethodKeyOnMessageContentChangedValue),
           ExtSdkSetPushTemplate : @(ExtSdkSetPushTemplateValue),
           ExtSdkGetPushTemplate : @(ExtSdkGetPushTemplateValue),
-          
+
           ExtSdkMethodKeyOnMultiDeviceEventContact : @(ExtSdkMethodKeyOnMultiDeviceEventContactValue),
           ExtSdkMethodKeyOnMultiDeviceEventGroup : @(ExtSdkMethodKeyOnMultiDeviceEventGroupValue),
           ExtSdkMethodKeyOnMultiDeviceEventThread : @(ExtSdkMethodKeyOnMultiDeviceEventThreadValue),
@@ -336,35 +344,42 @@
           ExtSdkMethodKeyOnMultiDeviceEventConversation : @(ExtSdkMethodKeyOnMultiDeviceEventConversationValue),
           ExtSdkMethodKeyOnOfflineMessageSyncStart : @(ExtSdkMethodKeyOnOfflineMessageSyncStartValue),
           ExtSdkMethodKeyOnOfflineMessageSyncFinish : @(ExtSdkMethodKeyOnOfflineMessageSyncFinishValue),
-          
+
           ExtSdkMethodKeyGetMsgCount : @(ExtSdkMethodKeyGetMsgCountValue),
-          
+
           ExtSdkMethodKeygetAllContacts : @(ExtSdkMethodKeygetAllContactsValue),
           ExtSdkMethodKeysetContactRemark : @(ExtSdkMethodKeysetContactRemarkValue),
           ExtSdkMethodKeygetContact : @(ExtSdkMethodKeygetContactValue),
           ExtSdkMethodKeyfetchAllContacts : @(ExtSdkMethodKeyfetchAllContactsValue),
           ExtSdkMethodKeyfetchContacts : @(ExtSdkMethodKeyfetchContactsValue),
           ExtSdkMethodKeyfetchJoinedGroupCount : @(ExtSdkMethodKeyfetchJoinedGroupCountValue),
-          
+
           ExtSdkMethodKeygetPinInfo : @(ExtSdkMethodKeygetPinInfoValue),
           ExtSdkMethodKeypinnedMessages : @(ExtSdkMethodKeypinnedMessagesValue),
           ExtSdkMethodKeyonMessagePinChanged : @(ExtSdkMethodKeyonMessagePinChangedValue),
           ExtSdkMethodKeyaddRemoteAndLocalConversationsMark : @(ExtSdkMethodKeyaddRemoteAndLocalConversationsMarkValue),
-          ExtSdkMethodKeydeleteRemoteAndLocalConversationsMark : @(ExtSdkMethodKeydeleteRemoteAndLocalConversationsMarkValue),
+          ExtSdkMethodKeydeleteRemoteAndLocalConversationsMark :
+              @(ExtSdkMethodKeydeleteRemoteAndLocalConversationsMarkValue),
           ExtSdkMethodKeyfetchConversationsByOptions : @(ExtSdkMethodKeyfetchConversationsByOptionsValue),
           ExtSdkMethodKeydeleteAllMessageAndConversation : @(ExtSdkMethodKeydeleteAllMessageAndConversationValue),
           ExtSdkMethodKeyfetchPinnedMessages : @(ExtSdkMethodKeyfetchPinnedMessagesValue),
           ExtSdkMethodKeypinMessage : @(ExtSdkMethodKeypinMessageValue),
           ExtSdkMethodKeyunpinMessage : @(ExtSdkMethodKeyunpinMessageValue),
-          
+
           ExtSdkMethodKeyOnMessagesRecalledInfo : @(ExtSdkMethodKeyOnMessagesRecalledInfoValue),
-          
+
           ExtSdkMethodKeysearchMessages : @(ExtSdkMethodKeysearchMessagesValue),
           ExtSdkMethodKeysearchMessagesInConversation : @(ExtSdkMethodKeysearchMessagesInConversationValue),
           ExtSdkMethodKeyremoveMessagesWithTimestamp : @(ExtSdkMethodKeyremoveMessagesWithTimestampValue),
           ExtSdkMethodKeygetMessageCountWithTimestamp : @(ExtSdkMethodKeygetMessageCountWithTimestampValue),
-          
+
           ExtSdkMethodKeygetMessageCount : @(ExtSdkMethodKeygetMessageCountValue),
+
+          ExtSdkMethodKeyfetchMemberInfoListFromServer : @(ExtSdkMethodKeyfetchMemberInfoListFromServerValue),
+          ExtSdkMethodKeyupdateGroupAvatar : @(ExtSdkMethodKeyupdateGroupAvatarValue),
+          ExtSdkMethodKeygetMessagesWithIds : @(ExtSdkMethodKeygetMessagesWithIdsValue),
+          ExtSdkMethodKeygetConvsMsgsWithKeyword : @(ExtSdkMethodKeygetConvsMsgsWithKeywordValue),
+          ExtSdkMethodKeymodifyMsgBody : @(ExtSdkMethodKeymodifyMsgBodyValue),
       };
     });
     if (nil != key) {
@@ -373,7 +388,9 @@
             return [value intValue];
         }
     }
-    @throw [NSException exceptionWithName:NSInvalidArgumentException reason:[NSString stringWithFormat:@"invoke method type is not exist: %@", key] userInfo:nil];
+    @throw [NSException exceptionWithName:NSInvalidArgumentException
+                                   reason:[NSString stringWithFormat:@"invoke method type is not exist: %@", key]
+                                 userInfo:nil];
 }
 //
 //- (int)getValue {

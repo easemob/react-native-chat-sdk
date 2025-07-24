@@ -42,6 +42,8 @@ export class QuickTestScreenGroup extends QuickTestScreenBase<
       recvResult: '',
       exceptResult: '',
       cb_result: '',
+      searchKeyword: '',
+      searchKeywordForUI: '',
     };
     this.statelessData = {};
     registerStateDataList(metaDataList);
@@ -190,6 +192,37 @@ export class QuickTestScreenGroup extends QuickTestScreenBase<
               allMembers,
               reason
             ),
+            QuickTestScreenGroup.TAG,
+            methodName
+          );
+        }
+        break;
+      case MN.createGroupEx:
+        {
+          const methodName = this.metaData.get(MN.createGroup)?.methodName!;
+          console.log(`${MN.createGroup} === ${methodName}`);
+          const groupName = this.metaData.get(MN.createGroup)?.params[0]!
+            .paramDefaultValue;
+          const groupAvatar = this.metaData.get(MN.createGroup)?.params[1]!
+            .paramDefaultValue;
+          const desc = this.metaData.get(MN.createGroup)?.params[2]!
+            .paramDefaultValue;
+          const allMembers: Array<string> = this.metaData.get(MN.createGroup)
+            ?.params[3]!.paramDefaultValue;
+          const reason = this.metaData.get(MN.createGroup)?.params[4]!
+            .paramDefaultValue;
+          const option: ChatGroupOptions = this.metaData.get(MN.createGroup)
+            ?.params[5]!.paramDefaultValue;
+
+          this.tryCatch(
+            ChatClient.getInstance().groupManager.createGroupEx({
+              options: option,
+              groupName,
+              groupAvatar,
+              desc,
+              inviteMembers: allMembers,
+              inviteReason: reason,
+            }),
             QuickTestScreenGroup.TAG,
             methodName
           );
@@ -1034,6 +1067,49 @@ export class QuickTestScreenGroup extends QuickTestScreenBase<
           console.log(`${MN.fetchJoinedGroupCount} === ${methodName}`);
           this.tryCatch(
             ChatClient.getInstance().groupManager.fetchJoinedGroupCount(),
+            QuickTestScreenGroup.TAG,
+            methodName
+          );
+        }
+        break;
+      case MN.fetchMemberInfoListFromServer:
+        {
+          const methodName = this.metaData.get(MN.fetchMemberInfoListFromServer)
+            ?.methodName!;
+          console.log(`${MN.fetchMemberInfoListFromServer} === ${methodName}`);
+          const groupId = this.metaData.get(MN.fetchMemberInfoListFromServer)
+            ?.params[0]!.paramDefaultValue;
+          const cursor = this.metaData.get(MN.fetchMemberInfoListFromServer)
+            ?.params[1]!.paramDefaultValue;
+          const limit = this.metaData.get(MN.fetchMemberInfoListFromServer)
+            ?.params[2]!.paramDefaultValue;
+
+          this.tryCatch(
+            ChatClient.getInstance().groupManager.fetchMemberInfoListFromServer(
+              groupId,
+              cursor,
+              limit
+            ),
+            QuickTestScreenGroup.TAG,
+            methodName
+          );
+        }
+        break;
+      case MN.updateGroupAvatar:
+        {
+          const methodName = this.metaData.get(MN.updateGroupAvatar)
+            ?.methodName!;
+          console.log(`${MN.updateGroupAvatar} === ${methodName}`);
+          const groupId = this.metaData.get(MN.updateGroupAvatar)?.params[0]!
+            .paramDefaultValue;
+          const avatar = this.metaData.get(MN.updateGroupAvatar)?.params[1]!
+            .paramDefaultValue;
+
+          this.tryCatch(
+            ChatClient.getInstance().groupManager.updateGroupAvatar(
+              groupId,
+              avatar
+            ),
             QuickTestScreenGroup.TAG,
             methodName
           );

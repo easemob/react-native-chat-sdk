@@ -23,6 +23,14 @@ export interface StateGroupMessage extends StateBase {
     inviteReason: string;
     options: ChatGroupOptions;
   };
+  createGroupEx: {
+    groupName: string;
+    groupAvatar: string;
+    desc: string;
+    inviteMembers: string[];
+    inviteReason: string;
+    options: ChatGroupOptions;
+  };
   addMembers: {
     groupId: string;
     members: Array<string>;
@@ -209,6 +217,12 @@ export interface StateGroupMessage extends StateBase {
     attributeKeys: string[];
   };
   fetchJoinedGroupCount: {};
+  updateGroupAvatar: { groupId: string; avatar: string };
+  fetchMemberInfoListFromServer: {
+    groupId: string;
+    cursor: string;
+    limit: number;
+  };
 }
 export class GroupManagerLeafScreen extends LeafScreenBase<StateGroupMessage> {
   protected static TAG = 'GroupManagerLeafScreen';
@@ -232,60 +246,14 @@ export class GroupManagerLeafScreen extends LeafScreenBase<StateGroupMessage> {
     );
   }
   protected renderApiDom(): ReactNode[] {
-    const apiList = [
-      'createGroup',
-      'uploadGroupSharedFile',
-      'fetchGroupFileListFromServer',
-      'downloadGroupSharedFile',
-      'removeGroupSharedFile',
-      'requestToJoinPublicGroup',
-      'joinPublicGroup',
-      'leaveGroup',
-      'inviteUser',
-      'fetchJoinedGroupsFromServer',
-      'fetchPublicGroupsFromServer',
-      'getJoinedGroups',
-      'acceptJoinApplication',
-      'declineJoinApplication',
-      'updateGroupExtension',
-      'acceptInvitation',
-      'declineInvitation',
-      'blockGroup',
-      'unblockGroup',
-      'getGroupWithId',
-      'fetchGroupInfoFromServer',
-      'fetchGroupInfoWithoutMembersFromServer',
-      'changeGroupName',
-      'changeGroupDescription',
-      'fetchBlockListFromServer',
-      'blockMembers',
-      'unblockMembers',
-      'fetchMemberListFromServer',
-      'addMembers',
-      'removeMembers',
-      'isMemberInAllowListFromServer',
-      'updateGroupAnnouncement',
-      'fetchAnnouncementFromServer',
-      'changeOwner',
-      'addAdmin',
-      'removeAdmin',
-      'muteAllMembers',
-      'unMuteAllMembers',
-      'fetchMuteListFromServer',
-      'muteMembers',
-      'unMuteMembers',
-      'addAllowList',
-      'removeAllowList',
-      'fetchAllowListFromServer',
-      'destroyGroup',
-      'setMemberAttribute',
-      'fetchMemberAttributes',
-      'fetchMembersAttributes',
-      'fetchJoinedGroupCount',
-    ];
+    const { searchKeyword } = this.state;
+    const apiList = (Object.values(MN) as string[]).sort();
     let renderDomAry: ({} | null | undefined)[] = [];
     const data = this.metaDataList;
     apiList.forEach((apiItem) => {
+      if (searchKeyword && !apiItem.includes(searchKeyword)) {
+        return;
+      }
       this.setKeyPrefix(apiItem);
       renderDomAry.push(
         this.renderParamWithText(data.get(apiItem)!.methodName)
@@ -388,6 +356,29 @@ export class GroupManagerLeafScreen extends LeafScreenBase<StateGroupMessage> {
             inviteMembers,
             inviteReason
           ),
+          GroupManagerLeafScreen.TAG,
+          name
+        );
+        break;
+      }
+      case MN.createGroupEx: {
+        const {
+          groupName,
+          groupAvatar,
+          desc,
+          inviteMembers,
+          inviteReason,
+          options,
+        } = this.state.createGroupEx;
+        this.tryCatch(
+          ChatClient.getInstance().groupManager.createGroupEx({
+            options,
+            groupName,
+            groupAvatar,
+            desc,
+            inviteMembers,
+            inviteReason,
+          }),
           GroupManagerLeafScreen.TAG,
           name
         );
@@ -931,6 +922,32 @@ export class GroupManagerLeafScreen extends LeafScreenBase<StateGroupMessage> {
         );
         break;
       }
+      case MN.updateGroupAvatar: {
+        const { groupId, avatar } = this.state.updateGroupAvatar;
+        this.tryCatch(
+          ChatClient.getInstance().groupManager.updateGroupAvatar(
+            groupId,
+            avatar
+          ),
+          GroupManagerLeafScreen.TAG,
+          name
+        );
+        break;
+      }
+      case MN.fetchMemberInfoListFromServer: {
+        const { groupId, cursor, limit } =
+          this.state.fetchMemberInfoListFromServer;
+        this.tryCatch(
+          ChatClient.getInstance().groupManager.fetchMemberInfoListFromServer(
+            groupId,
+            cursor,
+            limit
+          ),
+          GroupManagerLeafScreen.TAG,
+          name
+        );
+        break;
+      }
       default:
         console.log('error name');
         break;
@@ -1218,6 +1235,16 @@ export class GroupManagerLeafScreen extends LeafScreenBase<StateGroupMessage> {
           recvResult: `onMemberJoined: ` + params.groupId + params.member,
         });
       }
+      onMembersJoined(params: { groupId: string; members: string[] }): void {
+        console.log(
+          `${GroupManagerLeafScreen.TAG}: onMembersJoined:`,
+          params.groupId,
+          params.members
+        );
+        this.that.setState({
+          recvResult: `onMembersJoined: ` + params.groupId + params.members,
+        });
+      }
       onMemberExited(params: { groupId: string; member: string }): void {
         console.log(
           `${GroupManagerLeafScreen.TAG}: onMemberExited:`,
@@ -1226,6 +1253,16 @@ export class GroupManagerLeafScreen extends LeafScreenBase<StateGroupMessage> {
         );
         this.that.setState({
           recvResult: `onMemberExited: ` + params.groupId + params.member,
+        });
+      }
+      onMembersExited(params: { groupId: string; members: string[] }): void {
+        console.log(
+          `${GroupManagerLeafScreen.TAG}: onMembersExited:`,
+          params.groupId,
+          params.members
+        );
+        this.that.setState({
+          recvResult: `onMembersExited: ` + params.groupId + params.members,
         });
       }
       onAnnouncementChanged(params: {

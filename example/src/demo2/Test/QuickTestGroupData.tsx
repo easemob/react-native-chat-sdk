@@ -54,6 +54,9 @@ export const MN = {
   fetchMemberAttributes: 'fetchMemberAttributes',
   fetchMembersAttributes: 'fetchMembersAttributes',
   fetchJoinedGroupCount: 'fetchJoinedGroupCount',
+  fetchMemberInfoListFromServer: 'fetchMemberInfoListFromServer',
+  updateGroupAvatar: 'updateGroupAvatar',
+  createGroupEx: 'createGroupEx',
 };
 
 export const metaDataList = new Map<string, ApiParams>([
@@ -122,6 +125,54 @@ export const metaDataList = new Map<string, ApiParams>([
           paramName: 'groupName',
           paramType: 'string',
           paramDefaultValue: '2024031101',
+        },
+        {
+          paramName: 'desc',
+          paramType: 'string',
+          paramDefaultValue: 'This is a test group',
+        },
+        {
+          paramName: 'inviteMembers',
+          paramType: 'json',
+          paramDefaultValue: [
+            datasheet.accounts[0]!.id,
+            datasheet.accounts[1]!.id,
+            datasheet.accounts[2]!.id,
+            datasheet.accounts[3]!.id,
+          ],
+        },
+        {
+          paramName: 'inviteReason',
+          paramType: 'string',
+          paramDefaultValue: 'hello',
+        },
+        {
+          paramName: 'options',
+          paramType: 'json',
+          paramDefaultValue: {
+            style: 3,
+            maxCount: 200,
+            inviteNeedConfirm: false,
+            ext: 'sdf',
+          },
+        },
+      ],
+    },
+  ],
+  [
+    MN.createGroupEx,
+    {
+      methodName: MN.createGroupEx,
+      params: [
+        {
+          paramName: 'groupName',
+          paramType: 'string',
+          paramDefaultValue: '2024031101',
+        },
+        {
+          paramName: 'groupAvatar',
+          paramType: 'string',
+          paramDefaultValue: 'https://www.baidu.com/55720d6cf.png',
         },
         {
           paramName: 'desc',
@@ -952,6 +1003,47 @@ export const metaDataList = new Map<string, ApiParams>([
     {
       methodName: MN.fetchJoinedGroupCount,
       params: [],
+    },
+  ],
+  [
+    MN.fetchMemberInfoListFromServer,
+    {
+      methodName: MN.fetchMemberInfoListFromServer,
+      params: [
+        {
+          paramName: 'groupId',
+          paramType: 'string',
+          paramDefaultValue: '180804431970306',
+        },
+        {
+          paramName: 'cursor',
+          paramType: 'string',
+          paramDefaultValue: '',
+        },
+        {
+          paramName: 'limit',
+          paramType: 'number',
+          paramDefaultValue: 2,
+        },
+      ],
+    },
+  ],
+  [
+    MN.updateGroupAvatar,
+    {
+      methodName: MN.updateGroupAvatar,
+      params: [
+        {
+          paramName: 'groupId',
+          paramType: 'string',
+          paramDefaultValue: '180804431970306',
+        },
+        {
+          paramName: 'avatar',
+          paramType: 'string',
+          paramDefaultValue: 'https://www.baidu.com/xxxx.png',
+        },
+      ],
     },
   ],
 ]);

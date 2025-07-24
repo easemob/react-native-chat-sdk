@@ -78,16 +78,14 @@ export class PresenceLeafScreen extends LeafScreenBase<StateChatPresence> {
     );
   }
   protected renderApiDom(): ReactNode[] {
-    const apiList = [
-      'publishPresence',
-      'presenceSubscribe',
-      'presenceUnsubscribe',
-      'fetchSubscribedMembersWithPageNum',
-      'fetchPresenceStatus',
-    ];
+    const { searchKeyword } = this.state;
+    const apiList = (Object.values(MN) as string[]).sort();
     let renderDomAry: ({} | null | undefined)[] = [];
     const data = this.metaData;
     apiList.forEach((apiItem) => {
+      if (searchKeyword && !apiItem.includes(searchKeyword)) {
+        return;
+      }
       this.setKeyPrefix(apiItem);
       renderDomAry.push(
         this.renderParamWithText(data.get(apiItem)!.methodName)

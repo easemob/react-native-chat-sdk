@@ -173,7 +173,8 @@ public class ExtSdkWrapper {
 
     protected EMConversation getConversation(JSONObject params) throws JSONException {
         String convId = params.getString("convId");
-        EMConversation.EMConversationType convType = ExtSdkConversationHelper.typeFromInt(params.getInt("convType"));
+        EMConversation.EMConversationType convType =
+            InternalConvertHelper.conversationTypeFromInt(params.getInt("convType"));
         boolean isChatThread = params.optBoolean("isChatThread", false);
         boolean createIfNotExists = params.optBoolean("createIfNeed", true);
         return EMClient.getInstance().chatManager().getConversation(convId, convType, createIfNotExists, isChatThread);

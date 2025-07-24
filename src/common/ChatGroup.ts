@@ -172,6 +172,10 @@ export class ChatGroup {
    */
   groupName: string;
   /**
+   * The group avatar.
+   */
+  groupAvatar: string;
+  /**
    * The group description.
    */
   description: string;
@@ -233,6 +237,7 @@ export class ChatGroup {
   constructor(params: {
     groupId: string;
     groupName?: string;
+    groupAvatar?: string;
     description?: string;
     owner: string;
     announcement?: string;
@@ -248,6 +253,7 @@ export class ChatGroup {
   }) {
     this.groupId = params.groupId;
     this.groupName = params.groupName ?? '';
+    this.groupAvatar = params.groupAvatar ?? '';
     this.description = params.description ?? '';
     this.owner = params.owner ?? '';
     this.announcement = params.announcement ?? '';
@@ -411,4 +417,31 @@ export interface ChatGroupFileStatusCallback {
    * @param filePath The path of the shared file.
    */
   onSuccess(groupId: string, filePath: string): void;
+}
+
+/**
+ * The class that defines the member information of a chat group.
+ */
+export class ChatGroupMember {
+  /**
+   * The user ID of the group member.
+   */
+  memberId: string;
+  /**
+   * The Unix timestamp for the member joining the group, in milliseconds.
+   */
+  joinedTimestamp: number;
+  /**
+   * The role of the group member.
+   */
+  role: ChatGroupPermissionType;
+  constructor(params: {
+    memberId: string;
+    joinedTimestamp: number;
+    role: ChatGroupPermissionType;
+  }) {
+    this.memberId = params.memberId;
+    this.joinedTimestamp = params.joinedTimestamp;
+    this.role = params.role;
+  }
 }

@@ -18,7 +18,9 @@
 #import <HyphenateChat/EMDeviceConfig.h>
 #import <HyphenateChat/EMError.h>
 #import <HyphenateChat/EMFetchServerMessagesOption.h>
+#import <HyphenateChat/EMFileMessageBody.h>
 #import <HyphenateChat/EMGroup.h>
+#import <HyphenateChat/EMGroupMemberInfo.h>
 #import <HyphenateChat/EMGroupMessageAck.h>
 #import <HyphenateChat/EMGroupOptions.h>
 #import <HyphenateChat/EMGroupSharedFile.h>
@@ -39,6 +41,35 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+@interface ExtSdkConvertHelper : NSObject
++ (int)conversationTypeToInt:(EMConversationType)aType;
++ (EMConversationType)conversationTypeFromInt:(int)aType;
++ (int)roomPremissionTypeToInt:(EMChatroomPermissionType)type;
++ (EMGroupPermissionType)groupPremissionTypeFromInt:(int)type;
++ (int)groupPremissionTypeToInt:(EMGroupPermissionType)type;
++ (EMGroupStyle)groupStyleFromInt:(int)style;
++ (int)groupStyleToInt:(EMGroupStyle)style;
++ (EMChatType)chatTypeFromInt:(int)aType;
++ (int)chatTypeToInt:(EMChatType)aType;
++ (EMChatRoomMessagePriority)priorityFromInt:(int)priority;
++ (int)priorityToInt:(EMChatRoomMessagePriority)priority;
++ (EMMessageBodyType)messageBodyFromString:(NSString *)aStrType;
++ (NSString *)messageBodyToString:(EMMessageBodyType)type;
++ (AreaCode)AreaCodeFromInt:(int)code;
++ (EMSilentModeParamType)slientModeParamTypeFromInt:(int)iParamType;
++ (EMPushRemindType)remindTypeFromInt:(int)iRemindTime;
++ (int)remindTypeToInt:(EMPushRemindType)type;
++ (EMMessageStatus)messageStatusFromInt:(int)aStatus;
++ (int)messageStatusToInt:(EMMessageStatus)aStatus;
++ (EMDownloadStatus)downloadStatusFromInt:(int)aStatus;
++ (int)downloadStatusToInt:(EMDownloadStatus)aStatus;
++ (int)threadOperationToInt:(EMThreadOperation)aType;
++ (EMMessageSearchDirection)searchDirectionFromString:(NSString *)aType;
++ (NSString *)searchDirectionToString:(EMMessageSearchDirection)direction;
++ (EMMessageSearchScope)searchScopeFromInt:(int)aType;
++ (int)searchScopeToInt:(EMMessageSearchScope)scope;
+@end
+
 @protocol ExtSdkToJson <NSObject>
 - (NSDictionary *)toJsonObject;
 @end
@@ -49,8 +80,6 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface EMConversation (Json) <ExtSdkToJson>
 - (NSDictionary *)toJsonObject;
-+ (int)typeToInt:(EMConversationType)aType;
-+ (EMConversationType)typeFromInt:(int)aType;
 @end
 
 @interface EMCursorResult (Json) <ExtSdkToJson>
@@ -67,15 +96,11 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface EMGroup (Json) <ExtSdkToJson>
 - (NSDictionary *)toJsonObject;
-+ (EMGroupPermissionType)premissionTypeFromInt:(int)type;
-+ (int)premissionTypeToInt:(EMGroupPermissionType)type;
 @end
 
 @interface EMGroupOptions (Json) <ExtSdkToJson>
 + (EMGroupOptions *)fromJsonObject:(NSDictionary *)dict;
 - (NSDictionary *)toJsonObject;
-+ (EMGroupStyle)styleFromInt:(int)style;
-+ (int)styleToInt:(EMGroupStyle)style;
 @end
 
 @interface EMGroupSharedFile (Json) <ExtSdkToJson>
@@ -89,23 +114,16 @@ NS_ASSUME_NONNULL_BEGIN
 @interface EMChatMessage (Json) <ExtSdkToJson>
 + (EMChatMessage *)fromJsonObject:(NSDictionary *)aJson;
 - (NSDictionary *)toJsonObject;
-+ (EMChatType)chatTypeFromInt:(int)aType;
-+ (int)chatTypeToInt:(EMChatType)aType;
-+ (EMChatRoomMessagePriority)priorityFromInt:(int)priority;
-+ (int)priorityToInt:(EMChatRoomMessagePriority)priority;
 @end
 
 @interface EMMessageBody (Json) <ExtSdkToJson>
 + (EMMessageBody *)fromJsonObject:(NSDictionary *)aJson;
 - (NSDictionary *)toJsonObject;
-+ (EMMessageBodyType)fromString:(NSString *)aStrType;
-+ (NSString *)toString:(EMMessageBodyType)type;
 @end
 
 @interface EMOptions (Json) <ExtSdkToJson>
 - (NSDictionary *)toJsonObject;
 + (EMOptions *)fromJsonObject:(NSDictionary *)aJson;
-+ (AreaCode)AreaCodeFromInt:(int)code;
 @end
 
 @interface EMPageResult (Json) <ExtSdkToJson>
@@ -155,7 +173,6 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface EMSilentModeParam (Json)
 + (EMSilentModeParam *)fromJsonObject:(NSDictionary *)dict;
-+ (int)remindTypeToInt:(EMPushRemindType)type;
 @end
 
 @interface EMSilentModeResult (Json) <ExtSdkToJson>
@@ -192,6 +209,10 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface EMRecallMessageInfo (Json) <ExtSdkToJson>
 + (EMRecallMessageInfo *)fromJsonObject:(NSDictionary *)dict;
+- (NSDictionary *)toJsonObject;
+@end
+
+@interface EMGroupMemberInfo (Json) <ExtSdkToJson>
 - (NSDictionary *)toJsonObject;
 @end
 

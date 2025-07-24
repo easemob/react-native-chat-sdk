@@ -2,6 +2,24 @@ _English | [Chinese](./CHANGELOG.zh.md)_
 
 # Update Log
 
+## 1.11.0
+
+- Dependent native SDKs are upgraded to versions (iOS 4.15.1 and Android 4.15.2).
+- Updated message modification: `modifyMessageBody` is deprecated, and `modifyMsgBody` is added. For text and custom messages, both the message body and extension information can be modified. For file, video, audio, image, location, and merged forward messages, only extension information can be modified.
+- Image messages now support GIF format. For details, see the `ChatImageMessageBody` type.
+- Update on the group creation interface: The `createGroup` interface is deprecated, and a new `createGroupEx` interface is added as a replacement. The new interface supports custom group avatars.
+- Attachment-type messages support authentication, which is disabled by default. If enabled, you need to call relevant download interfaces to download attachments. For details, see `_ChatFileMessageBody.secret`.
+- Supports pulling only messages sent by specified group members when fetching roaming messages. For details, see the `ChatFetchMessageOptions` parameter of the `fetchHistoryMessagesByOptions` interface.
+- Supports loading only messages sent by specified group members when loading local conversation messages. For details, see the `getMsgsWithMsgType` interface.
+- Added a group interface, `fetchMemberInfoListFromServer`, which retrieves the group member list including member roles and join times.
+- Added a group interface, `updateGroupAvatar`, to update the group avatar.
+- Updated the login token expiration reminder mechanism, which is changed from reminding when 50% of the validity period has passed to 80%.
+- Modified message revocation to allow group administrators, creators, and chat room creators to revoke messages sent by other users.
+- Modified group member notification events, changing from notifying for each member's entry or exit to one-time notification. For details, see the `onMembersJoined` and `onMembersExited` methods in the `ChatGroupEventListener` type; the original `onMemberJoined` and `onMemberExited` are deprecated.
+- Added a message search interface `getConvsMsgsWithKeyword` to search for message ID lists of specified conversation lists locally by keyword.
+- Added a message search interface `getMessagesWithIds` to search for messages locally by message ID list.
+- Updated the message search interface `getConvMsgsWithKeyword`, deprecating the `sender` parameter and adding the `senders` parameter.
+
 ## 1.8.2
 
 - Fixed an issue where applications using React Native versions 0.77, 0.78, 0.79, 0.80 failed to compile when integrating the chat SDK.

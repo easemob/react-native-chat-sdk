@@ -345,7 +345,7 @@ export class ChatLog {
    * This method does not display anything unless used in the inspector.
    *  Adds an event with the label `label` to the Timeline panel of the inspector.
    */
-  timeStamp(label?: string): void {
+  timestamp(label?: string): void {
     if (this._enableLog) {
       console.timeStamp(label);
     }

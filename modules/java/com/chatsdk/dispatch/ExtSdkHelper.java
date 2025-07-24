@@ -5,7 +5,6 @@ import android.net.Uri;
 import com.hyphenate.chat.EMChatRoom;
 import com.hyphenate.chat.EMChatThread;
 import com.hyphenate.chat.EMChatThreadEvent;
-import com.hyphenate.chat.EMClient;
 import com.hyphenate.chat.EMCmdMessageBody;
 import com.hyphenate.chat.EMCombineMessageBody;
 import com.hyphenate.chat.EMContact;
@@ -19,6 +18,7 @@ import com.hyphenate.chat.EMFileMessageBody;
 import com.hyphenate.chat.EMGroup;
 import com.hyphenate.chat.EMGroupInfo;
 import com.hyphenate.chat.EMGroupManager;
+import com.hyphenate.chat.EMGroupMemberInfo;
 import com.hyphenate.chat.EMGroupOptions;
 import com.hyphenate.chat.EMGroupReadAck;
 import com.hyphenate.chat.EMImageMessageBody;
@@ -48,7 +48,6 @@ import com.hyphenate.chat.EMVideoMessageBody;
 import com.hyphenate.chat.EMVoiceMessageBody;
 import com.hyphenate.exceptions.HyphenateException;
 import com.hyphenate.push.EMPushConfig;
-import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -57,6 +56,207 @@ import java.util.Map;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+class InternalConvertHelper {
+    static int intTypeFromGroupPermissionType(EMGroup.EMGroupPermissionType type) {
+        int ret = -1;
+        switch (type) {
+        case none: {
+            ret = -1;
+        } break;
+        case member: {
+            ret = 0;
+        } break;
+        case admin: {
+            ret = 1;
+        } break;
+        case owner: {
+            ret = 2;
+        } break;
+        }
+        return ret;
+    }
+    static int intTypeFromRoomPermissionType(EMChatRoom.EMChatRoomPermissionType type) {
+        int ret = -1;
+        switch (type) {
+        case none: {
+            ret = -1;
+        } break;
+        case member: {
+            ret = 0;
+        } break;
+        case admin: {
+            ret = 1;
+        } break;
+        case owner: {
+            ret = 2;
+        } break;
+        default:
+            break;
+        }
+        return ret;
+    }
+
+    static EMMessage.ChatType chatTypeFromInt(int type) {
+        switch (type) {
+        case 0:
+            return EMMessage.ChatType.Chat;
+        case 1:
+            return EMMessage.ChatType.GroupChat;
+        case 2:
+            return EMMessage.ChatType.ChatRoom;
+        }
+        return EMMessage.ChatType.Chat;
+    }
+
+    static int chatTypeToInt(EMMessage.ChatType type) {
+        switch (type) {
+        case Chat:
+            return 0;
+        case GroupChat:
+            return 1;
+        case ChatRoom:
+            return 2;
+        }
+        return 0;
+    }
+
+    static EMMessage.EMChatRoomMessagePriority messagePriorityFromInt(int priority) {
+        switch (priority) {
+        case 0:
+            return EMMessage.EMChatRoomMessagePriority.PriorityHigh;
+        case 1:
+            return EMMessage.EMChatRoomMessagePriority.PriorityNormal;
+        case 2:
+            return EMMessage.EMChatRoomMessagePriority.PriorityLow;
+        }
+        return EMMessage.EMChatRoomMessagePriority.PriorityNormal;
+    }
+
+    static EMMessage.Status messageStatusFromInt(int status) {
+        switch (status) {
+        case 0:
+            return EMMessage.Status.CREATE;
+        case 1:
+            return EMMessage.Status.INPROGRESS;
+        case 2:
+            return EMMessage.Status.SUCCESS;
+        case 3:
+            return EMMessage.Status.FAIL;
+        }
+        return EMMessage.Status.CREATE;
+    }
+
+    static int messageStatusToInt(EMMessage.Status status) {
+        switch (status) {
+        case CREATE:
+            return 0;
+        case INPROGRESS:
+            return 1;
+        case SUCCESS:
+            return 2;
+        case FAIL:
+            return 3;
+        }
+        return 0;
+    }
+
+    static EMGroupManager.EMGroupStyle groupStyleFromInt(int style) {
+        switch (style) {
+        case 0:
+            return EMGroupManager.EMGroupStyle.EMGroupStylePrivateOnlyOwnerInvite;
+        case 1:
+            return EMGroupManager.EMGroupStyle.EMGroupStylePrivateMemberCanInvite;
+        case 2:
+            return EMGroupManager.EMGroupStyle.EMGroupStylePublicJoinNeedApproval;
+        case 3:
+            return EMGroupManager.EMGroupStyle.EMGroupStylePublicOpenJoin;
+        }
+
+        return EMGroupManager.EMGroupStyle.EMGroupStylePrivateOnlyOwnerInvite;
+    }
+
+    static int groupStyleToInt(EMGroupManager.EMGroupStyle style) {
+        switch (style) {
+        case EMGroupStylePrivateOnlyOwnerInvite:
+            return 0;
+        case EMGroupStylePrivateMemberCanInvite:
+            return 1;
+        case EMGroupStylePublicJoinNeedApproval:
+            return 2;
+        case EMGroupStylePublicOpenJoin:
+            return 3;
+        }
+
+        return 0;
+    }
+
+    static EMFileMessageBody.EMDownloadStatus downloadStatusFromInt(int downloadStatus) {
+        switch (downloadStatus) {
+        case 0:
+            return EMFileMessageBody.EMDownloadStatus.DOWNLOADING;
+        case 1:
+            return EMFileMessageBody.EMDownloadStatus.SUCCESSED;
+        case 2:
+            return EMFileMessageBody.EMDownloadStatus.FAILED;
+        case 3:
+            return EMFileMessageBody.EMDownloadStatus.PENDING;
+        }
+        return EMFileMessageBody.EMDownloadStatus.DOWNLOADING;
+    }
+
+    static int downloadStatusToInt(EMFileMessageBody.EMDownloadStatus downloadStatus) {
+        switch (downloadStatus) {
+        case DOWNLOADING:
+            return 0;
+        case SUCCESSED:
+            return 1;
+        case FAILED:
+            return 2;
+        case PENDING:
+            return 3;
+        }
+        return 0;
+    }
+
+    static EMConversation.EMConversationType conversationTypeFromInt(int type) {
+        switch (type) {
+        case 0:
+            return EMConversation.EMConversationType.Chat;
+        case 1:
+            return EMConversation.EMConversationType.GroupChat;
+        case 2:
+            return EMConversation.EMConversationType.ChatRoom;
+        }
+
+        return EMConversation.EMConversationType.Chat;
+    }
+
+    static int conversationTypeToInt(EMConversation.EMConversationType type) {
+        switch (type) {
+        case Chat:
+            return 0;
+        case GroupChat:
+            return 1;
+        case ChatRoom:
+            return 2;
+        }
+
+        return 0;
+    }
+
+    static EMConversation.EMMessageSearchScope searchScopeFromInt(int scope) {
+        switch (scope) {
+        case 0:
+            return EMConversation.EMMessageSearchScope.CONTENT;
+        case 1:
+            return EMConversation.EMMessageSearchScope.EXT;
+        case 2:
+            return EMConversation.EMMessageSearchScope.ALL;
+        }
+        return EMConversation.EMMessageSearchScope.ALL;
+    }
+}
 
 class ExtSdkOptionsHelper {
 
@@ -129,39 +329,12 @@ class ExtSdkOptionsHelper {
             options.setLoginCustomExt(json.optString("loginExtraInfo"));
         }
 
+        if (json.has("uikitVersion")) {
+            options.setUIKitVersion(json.getString("uikitVersion"));
+        }
+
         return options;
     }
-
-    // static Map<String, Object> toJson(EMOptions options) {
-    //     Map<String, Object> data = new HashMap<>();
-    //     data.put("appKey", options.getAppKey());
-    //     data.put("autoLogin", options.getAutoLogin());
-    //     data.put("requireAck", options.getRequireAck());
-    //     data.put("requireDeliveryAck", options.getRequireDeliveryAck());
-    //     data.put("sortMessageByServerTime", options.isSortMessageByServerTime());
-    //     data.put("acceptInvitationAlways", options.getAcceptInvitationAlways());
-    //     data.put("autoAcceptGroupInvitation", options.autoAcceptGroupInvitations());
-    //     data.put("deleteMessagesAsExitGroup", options.deleteMessagesOnLeaveGroup());
-    //     data.put("deleteMessagesAsExitChatRoom", options.deleteMessagesOnLeaveChatroom());
-    //     data.put("isAutoDownload", options.getAutodownloadThumbnail());
-    //     data.put("isChatRoomOwnerLeaveAllowed", options.canChatroomOwnerLeave());
-    //     // data.put("serverTransfer", "");
-    //     // data.put("debugModel", options.);
-    //     // data.put("serverTransfer", options.);
-    //     data.put("usingHttpsOnly", options.getUsingHttpsOnly());
-    //     // data.put("EMPushConfig", "");
-    //     // data.put("enableDNSConfig", "");
-    //     data.put("imPort", options.getImPort());
-    //     data.put("imServer", options.getImServer());
-    //     data.put("restServer", options.getRestServer());
-    //     data.put("dnsUrl", options.getDnsUrl());
-    //     data.put("areaCode", options.getAreaCode());
-    //     data.put("customOSType", options.getCustomOSPlatform());
-    //     data.put("customDeviceName", options.getCustomDeviceName());
-    //     data.put("enableEmptyConversation", options.isLoadEmptyConversations());
-
-    //     return data;
-    // }
 }
 
 class ExtSdkGroupHelper {
@@ -172,6 +345,7 @@ class ExtSdkGroupHelper {
         Map<String, Object> data = new HashMap<>();
         data.put("groupId", group.getGroupId());
         data.put("groupName", group.getGroupName());
+        data.put("groupAvatar", group.getGroupAvatar());
         data.put("description", group.getDescription());
         data.put("owner", group.getOwner());
         data.put("announcement", group.getAnnouncement());
@@ -182,7 +356,8 @@ class ExtSdkGroupHelper {
         data.put("muteList", group.getMuteList());
         data.put("messageBlocked", group.isMsgBlocked());
         data.put("isAllMemberMuted", group.isAllMemberMuted());
-        data.put("permissionType", intTypeFromGroupPermissionType(group.getGroupPermissionType()));
+        data.put("permissionType",
+                 InternalConvertHelper.intTypeFromGroupPermissionType(group.getGroupPermissionType()));
 
         Map<String, Object> option = new HashMap<>();
         option.put("maxCount", group.getMaxUserCount());
@@ -194,24 +369,19 @@ class ExtSdkGroupHelper {
 
         return data;
     }
+}
 
-    static int intTypeFromGroupPermissionType(EMGroup.EMGroupPermissionType type) {
-        int ret = -1;
-        switch (type) {
-        case none: {
-            ret = -1;
-        } break;
-        case member: {
-            ret = 0;
-        } break;
-        case admin: {
-            ret = 1;
-        } break;
-        case owner: {
-            ret = 2;
-        } break;
+class ExtSdkGroupMemberInfoHelper {
+    static Map<String, Object> toJson(EMGroupMemberInfo memberInfo) {
+        if (memberInfo == null) {
+            return null;
         }
-        return ret;
+
+        Map<String, Object> data = new HashMap<>();
+        data.put("memberId", memberInfo.getMemberId());
+        data.put("joinedTimestamp", memberInfo.getJoinTime());
+        data.put("role", InternalConvertHelper.intTypeFromGroupPermissionType(memberInfo.getRole()));
+        return data;
     }
 }
 
@@ -246,7 +416,7 @@ class ExtSdkGroupOptionsHelper {
         if (json.has("ext")) {
             options.extField = json.getString("ext");
         }
-        options.style = styleFromInt(json.getInt("style"));
+        options.style = InternalConvertHelper.groupStyleFromInt(json.getInt("style"));
         return options;
     }
 
@@ -255,38 +425,8 @@ class ExtSdkGroupOptionsHelper {
         data.put("maxCount", options.maxUsers);
         data.put("inviteNeedConfirm", options.inviteNeedConfirm);
         data.put("ext", options.extField);
-        data.put("style", styleToInt(options.style));
+        data.put("style", InternalConvertHelper.groupStyleToInt(options.style));
         return data;
-    }
-
-    private static EMGroupManager.EMGroupStyle styleFromInt(int style) {
-        switch (style) {
-        case 0:
-            return EMGroupManager.EMGroupStyle.EMGroupStylePrivateOnlyOwnerInvite;
-        case 1:
-            return EMGroupManager.EMGroupStyle.EMGroupStylePrivateMemberCanInvite;
-        case 2:
-            return EMGroupManager.EMGroupStyle.EMGroupStylePublicJoinNeedApproval;
-        case 3:
-            return EMGroupManager.EMGroupStyle.EMGroupStylePublicOpenJoin;
-        }
-
-        return EMGroupManager.EMGroupStyle.EMGroupStylePrivateOnlyOwnerInvite;
-    }
-
-    private static int styleToInt(EMGroupManager.EMGroupStyle style) {
-        switch (style) {
-        case EMGroupStylePrivateOnlyOwnerInvite:
-            return 0;
-        case EMGroupStylePrivateMemberCanInvite:
-            return 1;
-        case EMGroupStylePublicJoinNeedApproval:
-            return 2;
-        case EMGroupStylePublicOpenJoin:
-            return 3;
-        }
-
-        return 0;
     }
 }
 
@@ -307,7 +447,7 @@ class ExtSdkChatRoomHelper {
         data.put("memberList", chatRoom.getMemberList());
         data.put("blockList", chatRoom.getBlacklist());
         List<String> muteList = new ArrayList<String>();
-        HashMap muteKVList = new HashMap<String, Long>();
+        HashMap<String, Long> muteKVList = new HashMap<String, Long>();
         for (Map.Entry<String, Long> item : chatRoom.getMuteList().entrySet()) {
             muteList.add(item.getKey());
             muteKVList.put(item.getKey(), item.getValue());
@@ -316,126 +456,152 @@ class ExtSdkChatRoomHelper {
         data.put("muteKVList", muteKVList);
         data.put("isAllMemberMuted", chatRoom.isAllMemberMuted());
         data.put("announcement", chatRoom.getAnnouncement());
-        data.put("permissionType", intTypeFromPermissionType(chatRoom.getChatRoomPermissionType()));
+        data.put("permissionType",
+                 InternalConvertHelper.intTypeFromRoomPermissionType(chatRoom.getChatRoomPermissionType()));
         data.put("isInWhitelist", chatRoom.isInWhitelist());
         data.put("createTimestamp", chatRoom.getCreateTimestamp());
         data.put("muteExpireTimestamp", chatRoom.getMuteExpireTimestamp());
 
         return data;
     }
-
-    static int intTypeFromPermissionType(EMChatRoom.EMChatRoomPermissionType type) {
-        int ret = -1;
-        switch (type) {
-        case none: {
-            ret = -1;
-        } break;
-        case member: {
-            ret = 0;
-        } break;
-        case admin: {
-            ret = 1;
-        } break;
-        case owner: {
-            ret = 2;
-        } break;
-        default:
-            break;
-        }
-        return ret;
-    }
 }
 
 class ExtSdkMessageHelper {
 
+    static EMMessageBody bodyFromJson(JSONObject bodyJson) throws JSONException {
+        EMMessageBody messageBody = null;
+        String type = bodyJson.getString("type");
+        switch (type) {
+        case "txt": {
+            messageBody = ExtSdkMessageBodyHelper.textBodyFromJson(bodyJson);
+        } break;
+        case "img": {
+            messageBody = ExtSdkMessageBodyHelper.imageBodyFromJson(bodyJson);
+        } break;
+        case "loc": {
+            messageBody = ExtSdkMessageBodyHelper.localBodyFromJson(bodyJson);
+        } break;
+        case "video": {
+            messageBody = ExtSdkMessageBodyHelper.videoBodyFromJson(bodyJson);
+        } break;
+        case "voice": {
+            messageBody = ExtSdkMessageBodyHelper.voiceBodyFromJson(bodyJson);
+        } break;
+        case "file": {
+            messageBody = ExtSdkMessageBodyHelper.fileBodyFromJson(bodyJson);
+        } break;
+        case "cmd": {
+            messageBody = ExtSdkMessageBodyHelper.cmdBodyFromJson(bodyJson);
+        } break;
+        case "custom": {
+            messageBody = ExtSdkMessageBodyHelper.customBodyFromJson(bodyJson);
+        } break;
+        case "combine": {
+            messageBody = ExtSdkMessageBodyHelper.combineBodyFromJson(bodyJson);
+        } break;
+        }
+        return messageBody;
+    }
+
+    static void parseAttributesFromJson(JSONObject attributes, EMMessage message) throws JSONException {
+        Iterator iterator = attributes.keys();
+        while (iterator.hasNext()) {
+            String key = iterator.next().toString();
+            Object result = attributes.get(key);
+            if (result.getClass().getSimpleName().equals("Integer")) {
+                message.setAttribute(key, (Integer)result);
+            } else if (result.getClass().getSimpleName().equals("Boolean")) {
+                message.setAttribute(key, (Boolean)result);
+            } else if (result.getClass().getSimpleName().equals("Long")) {
+                message.setAttribute(key, (Long)result);
+            } else if (result.getClass().getSimpleName().equals("Double") ||
+                       result.getClass().getSimpleName().equals("Float")) {
+                message.setAttribute(key, (Double)result);
+            } else if (result.getClass().getSimpleName().equals("JSONObject")) {
+                message.setAttribute(key, (JSONObject)result);
+            } else if (result.getClass().getSimpleName().equals("JSONArray")) {
+                message.setAttribute(key, (JSONArray)result);
+            } else {
+                message.setAttribute(key, attributes.getString(key));
+            }
+        }
+    }
+
+    static Map<String, Object> attributesFromJson(JSONObject attributes) throws JSONException {
+        Map<String, Object> ret = new HashMap<>();
+        Iterator iterator = attributes.keys();
+        while (iterator.hasNext()) {
+            String key = iterator.next().toString();
+            Object result = attributes.get(key);
+            if (result.getClass().getSimpleName().equals("Integer")) {
+                ret.put(key, (Integer)result);
+            } else if (result.getClass().getSimpleName().equals("Boolean")) {
+                ret.put(key, (Boolean)result);
+            } else if (result.getClass().getSimpleName().equals("Long")) {
+                ret.put(key, (Long)result);
+            } else if (result.getClass().getSimpleName().equals("Double") ||
+                       result.getClass().getSimpleName().equals("Float")) {
+                ret.put(key, (Double)result);
+            } else if (result.getClass().getSimpleName().equals("JSONObject")) {
+                ret.put(key, (JSONObject)result);
+            } else if (result.getClass().getSimpleName().equals("JSONArray")) {
+                ret.put(key, (JSONArray)result);
+            } else {
+                ret.put(key, attributes.getString(key));
+            }
+        }
+        return ret;
+    }
+
     static EMMessage fromJson(JSONObject json) throws JSONException {
+        if (json == null) {
+          return null;
+        }
         EMMessage message = null;
         JSONObject bodyJson = json.getJSONObject("body");
         String type = bodyJson.getString("type");
+        EMMessageBody body = bodyFromJson(bodyJson);
+
+        switch (type) {
+        case "txt": {
+            message = EMMessage.createSendMessage(Type.TXT);
+        } break;
+        case "img": {
+            message = EMMessage.createSendMessage(Type.IMAGE);
+        } break;
+        case "loc": {
+            message = EMMessage.createSendMessage(Type.LOCATION);
+        } break;
+        case "video": {
+            message = EMMessage.createSendMessage(Type.VIDEO);
+        } break;
+        case "voice": {
+            message = EMMessage.createSendMessage(Type.VOICE);
+        } break;
+        case "file": {
+            message = EMMessage.createSendMessage(Type.FILE);
+        } break;
+        case "cmd": {
+            message = EMMessage.createSendMessage(Type.CMD);
+        } break;
+        case "custom": {
+            message = EMMessage.createSendMessage(Type.CUSTOM);
+        } break;
+        case "combine": {
+            message = EMMessage.createSendMessage(Type.COMBINE);
+        } break;
+        }
+        if (message == null) {
+            return null;
+        }
+
+        if (body != null) {
+            message.addBody(body);
+        }
         if (json.getString("direction").equals("send")) {
-            switch (type) {
-            case "txt": {
-                message = EMMessage.createSendMessage(Type.TXT);
-                message.addBody(ExtSdkMessageBodyHelper.textBodyFromJson(bodyJson));
-            } break;
-            case "img": {
-                message = EMMessage.createSendMessage(Type.IMAGE);
-                message.addBody(ExtSdkMessageBodyHelper.imageBodyFromJson(bodyJson));
-            } break;
-            case "loc": {
-                message = EMMessage.createSendMessage(Type.LOCATION);
-                message.addBody(ExtSdkMessageBodyHelper.localBodyFromJson(bodyJson));
-            } break;
-            case "video": {
-                message = EMMessage.createSendMessage(Type.VIDEO);
-                message.addBody(ExtSdkMessageBodyHelper.videoBodyFromJson(bodyJson));
-            } break;
-            case "voice": {
-                message = EMMessage.createSendMessage(Type.VOICE);
-                message.addBody(ExtSdkMessageBodyHelper.voiceBodyFromJson(bodyJson));
-            } break;
-            case "file": {
-                message = EMMessage.createSendMessage(Type.FILE);
-                message.addBody(ExtSdkMessageBodyHelper.fileBodyFromJson(bodyJson));
-            } break;
-            case "cmd": {
-                message = EMMessage.createSendMessage(Type.CMD);
-                message.addBody(ExtSdkMessageBodyHelper.cmdBodyFromJson(bodyJson));
-            } break;
-            case "custom": {
-                message = EMMessage.createSendMessage(Type.CUSTOM);
-                message.addBody(ExtSdkMessageBodyHelper.customBodyFromJson(bodyJson));
-            } break;
-            case "combine": {
-                message = EMMessage.createSendMessage(Type.COMBINE);
-                message.addBody(ExtSdkMessageBodyHelper.combineBodyFromJson(bodyJson));
-            } break;
-            }
-            if (message != null) {
-                message.setDirection(EMMessage.Direct.SEND);
-            }
+            message.setDirection(EMMessage.Direct.SEND);
         } else {
-            switch (type) {
-            case "txt": {
-                message = EMMessage.createReceiveMessage(Type.TXT);
-                message.addBody(ExtSdkMessageBodyHelper.textBodyFromJson(bodyJson));
-            } break;
-            case "img": {
-                message = EMMessage.createReceiveMessage(Type.IMAGE);
-                message.addBody(ExtSdkMessageBodyHelper.imageBodyFromJson(bodyJson));
-            } break;
-            case "loc": {
-                message = EMMessage.createReceiveMessage(Type.LOCATION);
-                message.addBody(ExtSdkMessageBodyHelper.localBodyFromJson(bodyJson));
-            } break;
-            case "video": {
-                message = EMMessage.createReceiveMessage(Type.VIDEO);
-                message.addBody(ExtSdkMessageBodyHelper.videoBodyFromJson(bodyJson));
-            } break;
-            case "voice": {
-                message = EMMessage.createReceiveMessage(Type.VOICE);
-                message.addBody(ExtSdkMessageBodyHelper.voiceBodyFromJson(bodyJson));
-            } break;
-            case "file": {
-                message = EMMessage.createReceiveMessage(Type.FILE);
-                message.addBody(ExtSdkMessageBodyHelper.fileBodyFromJson(bodyJson));
-            } break;
-            case "cmd": {
-                message = EMMessage.createReceiveMessage(Type.CMD);
-                message.addBody(ExtSdkMessageBodyHelper.cmdBodyFromJson(bodyJson));
-            } break;
-            case "custom": {
-                message = EMMessage.createReceiveMessage(Type.CUSTOM);
-                message.addBody(ExtSdkMessageBodyHelper.customBodyFromJson(bodyJson));
-            } break;
-            case "combine": {
-                message = EMMessage.createReceiveMessage(Type.COMBINE);
-                message.addBody(ExtSdkMessageBodyHelper.combineBodyFromJson(bodyJson));
-            } break;
-            }
-            if (message != null) {
-                message.setDirection(EMMessage.Direct.RECEIVE);
-            }
+            message.setDirection(EMMessage.Direct.RECEIVE);
         }
 
         if (json.has("to")) {
@@ -447,7 +613,7 @@ class ExtSdkMessageHelper {
         }
 
         message.setAcked(json.getBoolean("hasReadAck"));
-        if (statusFromInt(json.getInt("status")) == EMMessage.Status.SUCCESS) {
+        if (InternalConvertHelper.messageStatusFromInt(json.getInt("status")) == EMMessage.Status.SUCCESS) {
             message.setUnread(!json.getBoolean("hasRead"));
         }
         // sdk auto invoke
@@ -461,8 +627,8 @@ class ExtSdkMessageHelper {
         if (json.has("serverTime")) {
             message.setMsgTime(json.getLong("serverTime"));
         }
-        message.setStatus(statusFromInt(json.getInt("status")));
-        message.setChatType(chatTypeFromInt(json.getInt("chatType")));
+        message.setStatus(InternalConvertHelper.messageStatusFromInt(json.getInt("status")));
+        message.setChatType(InternalConvertHelper.chatTypeFromInt(json.getInt("chatType")));
         if (json.has("msgId")) {
             message.setMsgId(json.getString("msgId"));
         }
@@ -475,30 +641,10 @@ class ExtSdkMessageHelper {
 
         if (json.has("attributes")) {
             JSONObject data = json.getJSONObject("attributes");
-            Iterator iterator = data.keys();
-            while (iterator.hasNext()) {
-                String key = iterator.next().toString();
-                Object result = data.get(key);
-                if (result.getClass().getSimpleName().equals("Integer")) {
-                    message.setAttribute(key, (Integer)result);
-                } else if (result.getClass().getSimpleName().equals("Boolean")) {
-                    message.setAttribute(key, (Boolean)result);
-                } else if (result.getClass().getSimpleName().equals("Long")) {
-                    message.setAttribute(key, (Long)result);
-                } else if (result.getClass().getSimpleName().equals("Double") ||
-                           result.getClass().getSimpleName().equals("Float")) {
-                    message.setAttribute(key, (Double)result);
-                } else if (result.getClass().getSimpleName().equals("JSONObject")) {
-                    message.setAttribute(key, (JSONObject)result);
-                } else if (result.getClass().getSimpleName().equals("JSONArray")) {
-                    message.setAttribute(key, (JSONArray)result);
-                } else {
-                    message.setAttribute(key, data.getString(key));
-                }
-            }
+            parseAttributesFromJson(data, message);
         }
         if (json.has("priority")) {
-            message.setPriority(priorityFromInt(json.getInt("priority")));
+            message.setPriority(InternalConvertHelper.messagePriorityFromInt(json.getInt("priority")));
         }
         if (json.has("receiverList")) {
             ArrayList<String> receiverList = new ArrayList<>();
@@ -555,8 +701,8 @@ class ExtSdkMessageHelper {
         data.put("hasDeliverAck", message.isDelivered());
         data.put("localTime", message.localTime());
         data.put("serverTime", message.getMsgTime());
-        data.put("status", statusToInt(message.status()));
-        data.put("chatType", chatTypeToInt(message.getChatType()));
+        data.put("status", InternalConvertHelper.messageStatusToInt(message.status()));
+        data.put("chatType", InternalConvertHelper.chatTypeToInt(message.getChatType()));
         data.put("direction", message.direct() == EMMessage.Direct.SEND ? "send" : "rec");
         data.put("conversationId", message.conversationId());
         data.put("msgId", message.getMsgId());
@@ -574,82 +720,6 @@ class ExtSdkMessageHelper {
         }
 
         return data;
-    }
-
-    private static EMMessage.ChatType chatTypeFromInt(int type) {
-        switch (type) {
-        case 0:
-            return EMMessage.ChatType.Chat;
-        case 1:
-            return EMMessage.ChatType.GroupChat;
-        case 2:
-            return EMMessage.ChatType.ChatRoom;
-        }
-        return EMMessage.ChatType.Chat;
-    }
-
-    private static int chatTypeToInt(EMMessage.ChatType type) {
-        switch (type) {
-        case Chat:
-            return 0;
-        case GroupChat:
-            return 1;
-        case ChatRoom:
-            return 2;
-        }
-        return 0;
-    }
-
-    private static EMMessage.EMChatRoomMessagePriority priorityFromInt(int priority) {
-        switch (priority) {
-        case 0:
-            return EMMessage.EMChatRoomMessagePriority.PriorityHigh;
-        case 1:
-            return EMMessage.EMChatRoomMessagePriority.PriorityNormal;
-        case 2:
-            return EMMessage.EMChatRoomMessagePriority.PriorityLow;
-        }
-        return EMMessage.EMChatRoomMessagePriority.PriorityNormal;
-    }
-
-    private static int priorityToInt(EMMessage.EMChatRoomMessagePriority priority) {
-        switch (priority) {
-        case PriorityHigh:
-            return 0;
-        case PriorityNormal:
-            return 1;
-        case PriorityLow:
-            return 2;
-        }
-        return 1;
-    }
-
-    private static EMMessage.Status statusFromInt(int status) {
-        switch (status) {
-        case 0:
-            return EMMessage.Status.CREATE;
-        case 1:
-            return EMMessage.Status.INPROGRESS;
-        case 2:
-            return EMMessage.Status.SUCCESS;
-        case 3:
-            return EMMessage.Status.FAIL;
-        }
-        return EMMessage.Status.CREATE;
-    }
-
-    private static int statusToInt(EMMessage.Status status) {
-        switch (status) {
-        case CREATE:
-            return 0;
-        case INPROGRESS:
-            return 1;
-        case SUCCESS:
-            return 2;
-        case FAIL:
-            return 3;
-        }
-        return 0;
     }
 }
 
@@ -745,12 +815,7 @@ class ExtSdkMessageBodyHelper {
 
     static EMCmdMessageBody cmdBodyFromJson(JSONObject json) throws JSONException {
         String action = json.getString("action");
-        EMCmdMessageBody body = new EMCmdMessageBody(action);
-        // if (json.has("deliverOnlineOnly")) {
-        //     boolean deliverOnlineOnly = json.getBoolean("deliverOnlineOnly");
-        //     body.deliverOnlineOnly(deliverOnlineOnly);
-        // }
-        return body;
+        return new EMCmdMessageBody(action);
     }
 
     static Map<String, Object> cmdBodyToJson(EMCmdMessageBody body) {
@@ -802,7 +867,7 @@ class ExtSdkMessageBodyHelper {
         if (json.has("secret")) {
             body.setSecret(json.getString("secret"));
         }
-        body.setDownloadStatus(downloadStatusFromInt(json.getInt("fileStatus")));
+        body.setDownloadStatus(InternalConvertHelper.downloadStatusFromInt(json.getInt("fileStatus")));
         if (json.has("fileSize")) {
             body.setFileLength(json.getInt("fileSize"));
         }
@@ -818,7 +883,7 @@ class ExtSdkMessageBodyHelper {
         data.put("displayName", body.getFileName());
         data.put("remotePath", body.getRemoteUrl());
         data.put("secret", body.getSecret());
-        data.put("fileStatus", downloadStatusToInt(body.downloadStatus()));
+        data.put("fileStatus", InternalConvertHelper.downloadStatusToInt(body.downloadStatus()));
         data.put("type", "file");
         return data;
     }
@@ -911,7 +976,13 @@ class ExtSdkMessageBodyHelper {
         }
 
         if (json.has("fileStatus")) {
-            body.setDownloadStatus(downloadStatusFromInt(json.getInt("fileStatus")));
+            body.setDownloadStatus(InternalConvertHelper.downloadStatusFromInt(json.getInt("fileStatus")));
+        }
+
+        if (json.has("isGif")) {
+            body.setGif(json.getBoolean("isGif"));
+        } else {
+            body.setGif(false);
         }
 
         return body;
@@ -924,7 +995,7 @@ class ExtSdkMessageBodyHelper {
         data.put("displayName", body.getFileName());
         data.put("remotePath", body.getRemoteUrl());
         data.put("secret", body.getSecret());
-        data.put("fileStatus", downloadStatusToInt(body.downloadStatus()));
+        data.put("fileStatus", InternalConvertHelper.downloadStatusToInt(body.downloadStatus()));
         data.put("thumbnailLocalPath", body.thumbnailLocalPath());
         data.put("thumbnailRemotePath", body.getThumbnailUrl());
         data.put("thumbnailSecret", body.getThumbnailSecret());
@@ -969,7 +1040,7 @@ class ExtSdkMessageBodyHelper {
         }
 
         if (json.has("fileStatus")) {
-            body.setDownloadStatus(downloadStatusFromInt(json.getInt("fileStatus")));
+            body.setDownloadStatus(InternalConvertHelper.downloadStatusFromInt(json.getInt("fileStatus")));
         }
 
         if (json.has("width") && json.has("height")) {
@@ -994,7 +1065,7 @@ class ExtSdkMessageBodyHelper {
         data.put("height", body.getThumbnailHeight());
         data.put("width", body.getThumbnailWidth());
         data.put("remotePath", body.getRemoteUrl());
-        data.put("fileStatus", downloadStatusToInt(body.downloadStatus()));
+        data.put("fileStatus", InternalConvertHelper.downloadStatusToInt(body.downloadStatus()));
         data.put("secret", body.getSecret());
         data.put("type", "video");
 
@@ -1005,7 +1076,7 @@ class ExtSdkMessageBodyHelper {
         String localPath = json.getString("localPath");
         int duration = json.getInt("duration");
         EMVoiceMessageBody body = new EMVoiceMessageBody(Uri.parse(localPath), duration);
-        body.setDownloadStatus(downloadStatusFromInt(json.getInt("fileStatus")));
+        body.setDownloadStatus(InternalConvertHelper.downloadStatusFromInt(json.getInt("fileStatus")));
         if (json.has("displayName")) {
             body.setFileName(json.getString("displayName"));
         }
@@ -1029,39 +1100,11 @@ class ExtSdkMessageBodyHelper {
         data.put("duration", body.getLength());
         data.put("displayName", body.getFileName());
         data.put("remotePath", body.getRemoteUrl());
-        data.put("fileStatus", downloadStatusToInt(body.downloadStatus()));
+        data.put("fileStatus", InternalConvertHelper.downloadStatusToInt(body.downloadStatus()));
         data.put("secret", body.getSecret());
         data.put("type", "voice");
         data.put("fileSize", body.getFileSize());
         return data;
-    }
-
-    private static EMFileMessageBody.EMDownloadStatus downloadStatusFromInt(int downloadStatus) {
-        switch (downloadStatus) {
-        case 0:
-            return EMFileMessageBody.EMDownloadStatus.DOWNLOADING;
-        case 1:
-            return EMFileMessageBody.EMDownloadStatus.SUCCESSED;
-        case 2:
-            return EMFileMessageBody.EMDownloadStatus.FAILED;
-        case 3:
-            return EMFileMessageBody.EMDownloadStatus.PENDING;
-        }
-        return EMFileMessageBody.EMDownloadStatus.DOWNLOADING;
-    }
-
-    private static int downloadStatusToInt(EMFileMessageBody.EMDownloadStatus downloadStatus) {
-        switch (downloadStatus) {
-        case DOWNLOADING:
-            return 0;
-        case SUCCESSED:
-            return 1;
-        case FAILED:
-            return 2;
-        case PENDING:
-            return 3;
-        }
-        return 0;
     }
 }
 
@@ -1073,7 +1116,7 @@ class ExtSdkConversationHelper {
         }
         Map<String, Object> data = new HashMap<>();
         data.put("convId", conversation.conversationId());
-        data.put("convType", typeToInt(conversation.getType()));
+        data.put("convType", InternalConvertHelper.conversationTypeToInt(conversation.getType()));
         data.put("isChatThread", conversation.isChatThread());
         data.put("isPinned", conversation.isPinned());
         data.put("pinnedTime", conversation.getPinnedTime());
@@ -1091,32 +1134,6 @@ class ExtSdkConversationHelper {
             return data;
         }
         return data;
-    }
-
-    static EMConversation.EMConversationType typeFromInt(int type) {
-        switch (type) {
-        case 0:
-            return EMConversation.EMConversationType.Chat;
-        case 1:
-            return EMConversation.EMConversationType.GroupChat;
-        case 2:
-            return EMConversation.EMConversationType.ChatRoom;
-        }
-
-        return EMConversation.EMConversationType.Chat;
-    }
-
-    protected static int typeToInt(EMConversation.EMConversationType type) {
-        switch (type) {
-        case Chat:
-            return 0;
-        case GroupChat:
-            return 1;
-        case ChatRoom:
-            return 2;
-        }
-
-        return 0;
     }
 
     private static Map<String, Object> jsonStringToMap(String content) throws JSONException {
@@ -1225,6 +1242,10 @@ class ExtSdkCursorResultHelper {
 
                 if (obj instanceof EMContact) {
                     jsonList.add(ExtSdkContactHelper.toJson((EMContact)obj));
+                }
+
+                if (obj instanceof EMGroupMemberInfo) {
+                    jsonList.add(ExtSdkGroupMemberInfoHelper.toJson((EMGroupMemberInfo)obj));
                 }
             }
         }
@@ -1364,8 +1385,7 @@ class ExtSdkPresenceHelper {
         data.put("statusDescription", presence.getExt());
         data.put("lastTime", presence.getLatestTime());
         data.put("expiryTime", presence.getExpiryTime());
-        Map<String, Integer> statusList = new HashMap<String, Integer>();
-        statusList.putAll(presence.getStatusList());
+        Map<String, Integer> statusList = new HashMap<String, Integer>(presence.getStatusList());
         data.put("statusDetails", statusList);
         return data;
     }
@@ -1566,7 +1586,7 @@ class ExtSdkSilentModeResultHelper {
             data.put("conversationId", modeResult.getConversationId());
         }
         if (modeResult.getConversationType() != null) {
-            data.put("conversationType", ExtSdkConversationHelper.typeToInt(modeResult.getConversationType()));
+            data.put("conversationType", InternalConvertHelper.conversationTypeToInt(modeResult.getConversationType()));
         }
         if (modeResult.getSilentModeStartTime() != null) {
             data.put("startTime", ExtSdkSilentModeTimeHelper.toJson(modeResult.getSilentModeStartTime()));
@@ -1585,16 +1605,22 @@ class ExtSdkSilentModeResultHelper {
 class ExtSdkFetchMessageOptionHelper {
     static EMFetchMessageOption fromJson(JSONObject json) throws JSONException {
         EMFetchMessageOption options = new EMFetchMessageOption();
-        if (json.getInt("direction") == 0) {
-            options.setDirection(EMConversation.EMSearchDirection.UP);
-        } else {
-            options.setDirection(EMConversation.EMSearchDirection.DOWN);
-        }
+        EMConversation.EMSearchDirection direction =
+            ExtSdkEMSearchDirectionHelper.toDirection(json.getString("direction"));
+        options.setDirection(direction);
         options.setIsSave(json.getBoolean("needSave"));
         options.setStartTime(json.getLong("startTs"));
         options.setEndTime(json.getLong("endTs"));
         if (json.has("from")) {
             options.setFrom(json.getString("from"));
+        }
+        if (json.has("senders")) {
+            List<String> fromIds = new ArrayList<>();
+            JSONArray senders = json.getJSONArray("senders");
+            for (int i = 0; i < senders.length(); i++) {
+                fromIds.add(senders.getString(i));
+            }
+            options.setFromIds(fromIds);
         }
         if (json.has("msgTypes")) {
             List<EMMessage.Type> list = new ArrayList<>();
@@ -1613,15 +1639,6 @@ class ExtSdkFetchMessageOptionHelper {
 }
 
 class ExtSdkContactHelper {
-    static EMContact fromJson(JSONObject json) throws JSONException {
-        String userId = json.optString("userId");
-        String remark = json.optString("remark");
-        EMContact contact = new EMContact(userId);
-        if (remark.length() != 0) {
-            contact.setRemark(remark);
-        }
-        return contact;
-    }
 
     static Map<String, Object> toJson(EMContact contact) {
         Map<String, Object> data = new HashMap<>();

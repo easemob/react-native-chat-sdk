@@ -186,7 +186,7 @@ static NSString *const TAG = @"ExtSdkWrapper";
 - (EMConversation *)getConversation:(NSDictionary *)param {
     NSString *convId = param[@"convId"];
     EMConversationType convType =
-        [EMConversation typeFromInt:[param[@"convType"] intValue]];
+        [ExtSdkConvertHelper conversationTypeFromInt:[param[@"convType"] intValue]];
     BOOL isChatThread =
         param[@"isChatThread"] ? [param[@"isChatThread"] boolValue] : NO;
     BOOL createIfNotExist =

@@ -161,43 +161,14 @@ export class ChatRoomManagerLeafScreen extends LeafScreenBase<StateChatRoomMessa
     );
   }
   protected renderApiDom(): ReactNode[] {
-    const apiList = [
-      'joinChatRoom',
-      'joinChatRoomEx',
-      'leaveChatRoom',
-      'fetchPublicChatRoomsFromServer',
-      'fetchChatRoomInfoFromServer',
-      'getChatRoomWithId',
-      'createChatRoom',
-      'destroyChatRoom',
-      'changeChatRoomSubject',
-      'changeChatRoomDescription',
-      'fetchChatRoomMembers',
-      'muteChatRoomMembers',
-      'unMuteChatRoomMembers',
-      'changeOwner',
-      'addChatRoomAdmin',
-      'removeChatRoomAdmin',
-      'fetchChatRoomMuteList',
-      'removeChatRoomMembers',
-      'blockChatRoomMembers',
-      'unBlockChatRoomMembers',
-      'fetchChatRoomBlockList',
-      'updateChatRoomAnnouncement',
-      'fetchChatRoomAnnouncement',
-      'fetchChatRoomAllowListFromServer',
-      'isMemberInChatRoomAllowList',
-      'addMembersToChatRoomAllowList',
-      'removeMembersFromChatRoomAllowList',
-      'muteAllChatRoomMembers',
-      'unMuteAllChatRoomMembers',
-      'fetchChatRoomAttributes',
-      'addAttributes',
-      'removeAttributes',
-    ];
+    const { searchKeyword } = this.state;
+    const apiList = (Object.values(MN) as string[]).sort();
     let renderDomAry: ({} | null | undefined)[] = [];
     const data = this.metaDataList;
     apiList.forEach((apiItem) => {
+      if (searchKeyword && !apiItem.includes(searchKeyword)) {
+        return;
+      }
       this.setKeyPrefix(apiItem);
       renderDomAry.push(
         this.renderParamWithText(data.get(apiItem)!.methodName)

@@ -4,6 +4,7 @@ import static com.hyphenate.EMError.GENERAL_ERROR;
 
 import android.text.TextUtils;
 import com.chatsdk.common.ExtSdkCallback;
+import com.hyphenate.EMValueCallBack;
 import com.hyphenate.chat.EMClient;
 import com.hyphenate.chat.EMConversation;
 import com.hyphenate.chat.EMMessage;
@@ -149,7 +150,8 @@ public class ExtSdkConversationWrapper extends ExtSdkWrapper {
         EMConversation conversation = this.getConversation(params);
         String startId = params.getString("startId");
         int pageSize = params.getInt("count");
-        EMConversation.EMSearchDirection direction = searchDirectionFromString(params.getString("direction"));
+        EMConversation.EMSearchDirection direction =
+            ExtSdkEMSearchDirectionHelper.toDirection(params.getString("direction"));
         List<EMMessage> msgList = conversation.loadMoreMsgFromDB(startId, pageSize, direction);
         List<Map> messages = new ArrayList<>();
         for (EMMessage msg : msgList) {
@@ -161,26 +163,45 @@ public class ExtSdkConversationWrapper extends ExtSdkWrapper {
     public void loadMsgWithKeywords(JSONObject params, String channelName, ExtSdkCallback result) throws JSONException {
         EMConversation conversation = this.getConversation(params);
         String keywords = params.getString("keywords");
-        String sender = null;
-        if (params.has("sender")) {
-            sender = params.getString("sender");
-        }
-        final String name = sender;
         int count = params.getInt("count");
         long timestamp = params.getLong("timestamp");
-        EMConversation.EMSearchDirection direction = searchDirectionFromString(params.getString("direction"));
-        EMConversation.EMMessageSearchScope scope;
-        if (params.has("searchScope")) {
-            scope = EMConversation.EMMessageSearchScope.values()[params.getInt("searchScope")];
+        EMConversation.EMSearchDirection direction =
+            ExtSdkEMSearchDirectionHelper.toDirection(params.getString("direction"));
+        int scopeJson = params.optInt("searchScope", EMConversation.EMMessageSearchScope.ALL.ordinal());
+        EMConversation.EMMessageSearchScope scope = InternalConvertHelper.searchScopeFromInt(scopeJson);
+        JSONArray sendersJson = params.optJSONArray("senders");
+        String sender;
+        if (sendersJson == null) {
+            sender = params.optString("sender");
+            List<EMMessage> msgList =
+                conversation.searchMsgFromDB(keywords, timestamp, count, sender, direction, scope);
+            List<Map> messages = new ArrayList<>();
+            for (EMMessage msg : msgList) {
+                messages.add(ExtSdkMessageHelper.toJson(msg));
+            }
+            onSuccess(result, channelName, messages);
         } else {
-            scope = EMConversation.EMMessageSearchScope.ALL;
+            List<String> senders = new ArrayList<>();
+            for (int i = 0; i < sendersJson.length(); i++) {
+                senders.add(sendersJson.getString(i));
+            }
+            conversation.asyncSearchMsgFromDB(keywords, timestamp, count, senders, direction, scope,
+                                              new EMValueCallBack<List<EMMessage>>() {
+                                                  @Override
+                                                  public void onSuccess(List<EMMessage> emMessages) {
+                                                      List<Map> messages = new ArrayList<>();
+                                                      for (EMMessage msg : emMessages) {
+                                                          messages.add(ExtSdkMessageHelper.toJson(msg));
+                                                      }
+                                                      ExtSdkWrapper.onSuccess(result, channelName, messages);
+                                                  }
+
+                                                  @Override
+                                                  public void onError(int i, String s) {
+                                                      ExtSdkWrapper.onError(result, i, s);
+                                                  }
+                                              });
         }
-        List<EMMessage> msgList = conversation.searchMsgFromDB(keywords, timestamp, count, name, direction, scope);
-        List<Map> messages = new ArrayList<>();
-        for (EMMessage msg : msgList) {
-            messages.add(ExtSdkMessageHelper.toJson(msg));
-        }
-        onSuccess(result, channelName, messages);
     }
 
     public void loadMsgWithMsgType(JSONObject params, String channelName, ExtSdkCallback result) throws JSONException {
@@ -188,7 +209,8 @@ public class ExtSdkConversationWrapper extends ExtSdkWrapper {
         long timestamp = params.getLong("timestamp");
         String sender = params.getString("sender");
         int count = params.getInt("count");
-        EMConversation.EMSearchDirection direction = searchDirectionFromString(params.getString("direction"));
+        EMConversation.EMSearchDirection direction =
+            ExtSdkEMSearchDirectionHelper.toDirection(params.getString("direction"));
         String typeStr = params.getString("msg_type");
         EMMessage.Type type = ExtSdkEMMessageTypeHelper.toType(typeStr);
         EMMessage.Type finalType = type;
@@ -250,10 +272,5 @@ public class ExtSdkConversationWrapper extends ExtSdkWrapper {
         long end = param.getLong("end");
         int ret = conversation.getAllMsgCount(start, end);
         onSuccess(result, channelName, ret);
-    }
-
-    private EMConversation.EMSearchDirection searchDirectionFromString(String direction) {
-        return TextUtils.equals(direction, "up") ? EMConversation.EMSearchDirection.UP
-                                                 : EMConversation.EMSearchDirection.DOWN;
     }
 }

@@ -5,9 +5,8 @@ import static com.chatsdk.common.ExtSdkMethodType.onMultiDeviceEventConversation
 import static com.chatsdk.common.ExtSdkMethodType.onMultiDeviceEventGroup;
 import static com.chatsdk.common.ExtSdkMethodType.onMultiDeviceEventRemoveMessage;
 import static com.chatsdk.common.ExtSdkMethodType.onMultiDeviceEventThread;
-import static com.chatsdk.dispatch.ExtSdkConversationHelper.typeToInt;
+import static com.chatsdk.dispatch.InternalConvertHelper.conversationTypeToInt;
 
-import android.util.Log;
 import com.chatsdk.common.ExtSdkCallback;
 import com.chatsdk.common.ExtSdkContext;
 import com.chatsdk.common.ExtSdkMethodType;
@@ -234,14 +233,12 @@ public class ExtSdkClientWrapper extends ExtSdkWrapper {
 
     public void init(JSONObject param, String channelName, ExtSdkCallback result) throws JSONException {
         EMOptions options = ExtSdkOptionsHelper.fromJson(param, ExtSdkContext.context);
+        options.setSDKPlatform(EMOptions.EMSDKPlatform.EMSDKPlatformReactNative);
         boolean debugModel = param.getBoolean("debugModel");
 
-        EMOptions finalOptions = options;
-        boolean finalDebugModel = debugModel;
-
         ExtSdkThreadUtil.mainThreadExecute(() -> {
-            EMClient.getInstance().init(ExtSdkContext.context, finalOptions);
-            EMClient.getInstance().setDebugMode(finalDebugModel);
+            EMClient.getInstance().init(ExtSdkContext.context, options);
+            EMClient.getInstance().setDebugMode(debugModel);
 
             addEMListener();
 
@@ -367,7 +364,7 @@ public class ExtSdkClientWrapper extends ExtSdkWrapper {
                 Map<String, Object> data = new HashMap<>();
                 data.put("event", Integer.valueOf(event));
                 data.put("convId", conversationId);
-                data.put("convType", typeToInt(type));
+                data.put("convType", conversationTypeToInt(type));
                 data.put("type", onMultiDeviceEventConversation);
                 onReceive(ExtSdkMethodType.onMultiDeviceEvent, data);
             }

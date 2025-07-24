@@ -1,4 +1,4 @@
-import { StyleSheet } from 'react-native';
+import { Platform, StyleSheet } from 'react-native';
 
 export const styleValues = StyleSheet.create({
   scrollView: {
@@ -92,5 +92,10 @@ export const styleValues = StyleSheet.create({
     flexDirection: 'row',
     marginVertical: 10,
     backgroundColor: '#736287',
+  },
+  searchKeyword: {
+    height: Platform.OS === 'ios' ? 40 : 50,
+    width: '100%',
+    backgroundColor: '#86dcfc',
   },
 });

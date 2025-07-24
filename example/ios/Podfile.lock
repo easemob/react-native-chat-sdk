@@ -74,7 +74,7 @@ PODS:
   - hermes-engine (0.72.17):
     - hermes-engine/Pre-built (= 0.72.17)
   - hermes-engine/Pre-built (0.72.17)
-  - HyphenateChat (4.12.0):
+  - HyphenateChat (4.15.1):
     - AgoraInfra_iOS (= 1.2.13)
   - libevent (2.1.12)
   - OpenSSL-Universal (1.1.1100)
@@ -379,7 +379,7 @@ PODS:
   - React-logger (0.72.17):
     - glog
   - react-native-chat-sdk (1.8.2):
-    - HyphenateChat (~> 4.12.0)
+    - HyphenateChat (~> 4.15.1)
     - RCT-Folly (= 2021.07.22.00)
     - React-Core
   - react-native-document-picker (9.3.1):
@@ -716,7 +716,7 @@ SPEC CHECKSUMS:
   fmt: ff9d55029c625d3757ed641535fd4a75fedc7ce9
   glog: 04b94705f318337d7ead9e6d17c019bd9b1f6b1b
   hermes-engine: 982096772bd947125ee3b4f72ace6cb9a33f1d02
-  HyphenateChat: e3869321ba4e1b7e61f320a037935f3f4751e74a
+  HyphenateChat: ec813941100d602d24e06b04b867474d634cb39d
   libevent: 4049cae6c81cdb3654a443be001fb9bdceff7913
   OpenSSL-Universal: ebc357f1e6bc71fa463ccb2fe676756aff50e88c
   RCT-Folly: 8dc08ca5a393b48b1c523ab6220dfdcc0fe000ad
@@ -734,7 +734,7 @@ SPEC CHECKSUMS:
   React-jsiexecutor: 8d95d2ed8969c2ce7eb8b4bfaccb0bb9c0423761
   React-jsinspector: 853b8631b908636bb09ef77cb217376c38a0c8ff
   React-logger: afa402da502a35728c9073804b1802861783a996
-  react-native-chat-sdk: f574c0181827136bdbb0186e7b7798dc4c08efcc
+  react-native-chat-sdk: 745adb092ae43db904919d9a3530071e2e3e60a3
   react-native-document-picker: 9f13a38d0d5938086406fdaf99803b7593b417fd
   react-native-image-picker: c134c655d4592fd450bf00250c84d7e4246638eb
   react-native-safe-area-context: 8dba469126c1d5fb9502bfb49996026593292cf4

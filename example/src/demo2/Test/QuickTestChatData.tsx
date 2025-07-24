@@ -101,6 +101,10 @@ export const MN = {
   removeMessagesWithTimestamp: 'removeMessagesWithTimestamp',
   getMessageCountWithTimestamp: 'getMessageCountWithTimestamp',
   getMessageCount: 'getMessageCount',
+  getMessagesWithIds: 'getMessagesWithIds',
+  modifyMsgBody: 'modifyMsgBody',
+  getConvsMsgsWithKeyword: 'getConvsMsgsWithKeyword',
+  getConvMsgsWithKeyword: 'getConvMsgsWithKeyword',
 };
 
 export const metaDataList = new Map<string, ApiParams>([
@@ -1962,6 +1966,143 @@ export const metaDataList = new Map<string, ApiParams>([
     {
       methodName: MN.getMessageCount,
       params: [],
+    },
+  ],
+  [
+    MN.getMessagesWithIds,
+    {
+      methodName: MN.getMessagesWithIds,
+      params: [
+        {
+          paramName: 'convId',
+          paramType: 'string',
+          paramDefaultValue: datasheet.accounts[2]!.id,
+        },
+        {
+          paramName: 'convType',
+          paramType: 'number',
+          paramDefaultValue: 0,
+        },
+        {
+          paramName: 'msgIds',
+          paramType: 'json',
+          paramDefaultValue: ['1274466998939555292'],
+        },
+      ],
+    },
+  ],
+  [
+    MN.modifyMsgBody,
+    {
+      methodName: MN.modifyMsgBody,
+      params: [
+        {
+          paramName: 'msgId',
+          paramType: 'string',
+          paramDefaultValue: '1274466998939555292',
+        },
+        {
+          paramName: 'body',
+          paramType: 'json',
+          paramDefaultValue: {},
+        },
+        {
+          paramName: 'ext',
+          paramType: 'json',
+          paramDefaultValue: { key: 'value', key2: 10, key3: true },
+        },
+      ],
+    },
+  ],
+  [
+    MN.getConvsMsgsWithKeyword,
+    {
+      methodName: MN.getConvsMsgsWithKeyword,
+      params: [
+        {
+          paramName: 'keywords',
+          paramType: 'string',
+          paramDefaultValue: 'test',
+        },
+        {
+          paramName: 'timestamp',
+          paramType: 'number',
+          paramDefaultValue: -1,
+        },
+        {
+          paramName: 'from',
+          paramType: 'string',
+          paramDefaultValue: datasheet.accounts[2]!.id,
+        },
+        {
+          paramName: 'direction',
+          paramType: 'number',
+          paramDefaultValue: 0,
+        },
+        {
+          paramName: 'searchScope',
+          paramType: 'number',
+          paramDefaultValue: 0,
+        },
+      ],
+    },
+  ],
+  [
+    MN.getConvMsgsWithKeyword,
+    {
+      methodName: MN.getConvMsgsWithKeyword,
+      params: [
+        {
+          paramName: 'convId',
+          paramType: 'string',
+          paramDefaultValue: datasheet.accounts[2]!.id,
+        },
+        {
+          paramName: 'convType',
+          paramType: 'number',
+          paramDefaultValue: 0,
+        },
+        {
+          paramName: 'keywords',
+          paramType: 'string',
+          paramDefaultValue: 'test',
+        },
+        {
+          paramName: 'direction',
+          paramType: 'number',
+          paramDefaultValue: 0,
+        },
+        {
+          paramName: 'timestamp',
+          paramType: 'number',
+          paramDefaultValue: -1,
+        },
+        {
+          paramName: 'count',
+          paramType: 'number',
+          paramDefaultValue: 2,
+        },
+        {
+          paramName: 'sender',
+          paramType: 'string',
+          paramDefaultValue: datasheet.accounts[2]!.id,
+        },
+        {
+          paramName: 'senders',
+          paramType: 'json',
+          paramDefaultValue: [datasheet.accounts[2]!.id],
+        },
+        {
+          paramName: 'searchScope',
+          paramType: 'number',
+          paramDefaultValue: 0,
+        },
+        {
+          paramName: 'isChatThread',
+          paramType: 'boolean',
+          paramDefaultValue: false,
+        },
+      ],
     },
   ],
 ]);

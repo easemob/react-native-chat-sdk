@@ -37,7 +37,8 @@ static NSString *_Nonnull const ExtSdkMethodKeyOnMultiDeviceEventRemoveMessage =
 static NSString *_Nonnull const ExtSdkMethodKeyOnMultiDeviceEventConversation = @"onMultiDeviceEventConversation";
 
 static NSString *_Nonnull const ExtSdkMethodKeyOnUserDidLoginFromOtherDevice = @"onUserDidLoginFromOtherDevice";
-static NSString *_Nonnull const ExtSdkMethodKeyOnUserDidLoginFromOtherDeviceWithInfo = @"onUserDidLoginFromOtherDeviceWithInfo";
+static NSString *_Nonnull const ExtSdkMethodKeyOnUserDidLoginFromOtherDeviceWithInfo =
+    @"onUserDidLoginFromOtherDeviceWithInfo";
 static NSString *_Nonnull const ExtSdkMethodKeyOnUserDidRemoveFromServer = @"onUserDidRemoveFromServer";
 static NSString *_Nonnull const ExtSdkMethodKeyOnUserDidForbidByServer = @"onUserDidForbidByServer";
 static NSString *_Nonnull const ExtSdkMethodKeyOnUserDidChangePassword = @"onUserDidChangePassword";
@@ -102,12 +103,16 @@ static NSString *_Nonnull const ExtSdkMethodKeyChatFetchReactionList = @"fetchRe
 static NSString *_Nonnull const ExtSdkMethodKeyChatFetchReactionDetail = @"fetchReactionDetail";
 static NSString *_Nonnull const ExtSdkMethodKeyChatReportMessage = @"reportMessage";
 
-static NSString *_Nonnull const ExtSdkMethodKeyFetchConversationsFromServerWithPage = @"fetchConversationsFromServerWithPage";
-static NSString *_Nonnull const ExtSdkMethodKeyRemoveMessagesFromServerWithMsgIds = @"removeMessagesFromServerWithMsgIds";
+static NSString *_Nonnull const ExtSdkMethodKeyFetchConversationsFromServerWithPage =
+    @"fetchConversationsFromServerWithPage";
+static NSString *_Nonnull const ExtSdkMethodKeyRemoveMessagesFromServerWithMsgIds =
+    @"removeMessagesFromServerWithMsgIds";
 static NSString *_Nonnull const ExtSdkMethodKeyRemoveMessagesFromServerWithTs = @"removeMessagesFromServerWithTs";
 
-static NSString *_Nonnull const ExtSdkMethodKeyGetConversationsFromServerWithCursor = @"getConversationsFromServerWithCursor";
-static NSString *_Nonnull const ExtSdkMethodKeyGetPinnedConversationsFromServerWithCursor = @"getPinnedConversationsFromServerWithCursor";
+static NSString *_Nonnull const ExtSdkMethodKeyGetConversationsFromServerWithCursor =
+    @"getConversationsFromServerWithCursor";
+static NSString *_Nonnull const ExtSdkMethodKeyGetPinnedConversationsFromServerWithCursor =
+    @"getPinnedConversationsFromServerWithCursor";
 static NSString *_Nonnull const ExtSdkMethodKeyPinConversation = @"pinConversation";
 static NSString *_Nonnull const ExtSdkMethodKeyModifyMessage = @"modifyMessage";
 static NSString *_Nonnull const ExtSdkMethodKeyDownloadAndParseCombineMessage = @"downloadAndParseCombineMessage";
@@ -134,7 +139,8 @@ static NSString *_Nonnull const ExtSdkMethodKeyOnMessageSuccess = @"onMessageSuc
 static NSString *_Nonnull const ExtSdkMethodKeyOnMessageError = @"onMessageError";
 static NSString *_Nonnull const ExtSdkMethodKeyOnMessageReadAck = @"onMessageReadAck";
 static NSString *_Nonnull const ExtSdkMethodKeyOnMessageDeliveryAck = @"onMessageDeliveryAck";
-static NSString *_Nonnull const ExtSdkMethodKeyOnMessageStatusChanged = @"onMessageStatusChanged"; // deprecated 2022.05.04
+static NSString *_Nonnull const ExtSdkMethodKeyOnMessageStatusChanged =
+    @"onMessageStatusChanged"; // deprecated 2022.05.04
 
 #pragma mark - EMConversationWrapper
 
@@ -190,9 +196,11 @@ static NSString *_Nonnull const ExtSdkMethodKeyUpdateChatRoomAnnouncement = @"up
 static NSString *_Nonnull const ExtSdkMethodKeyFetchChatroomAnnouncement = @"fetchChatRoomAnnouncement";
 
 static NSString *_Nonnull const ExtSdkMethodKeyAddMembersToChatRoomWhiteList = @"addMembersToChatRoomAllowList";
-static NSString *_Nonnull const ExtSdkMethodKeyRemoveMembersFromChatRoomWhiteList = @"removeMembersFromChatRoomAllowList";
+static NSString *_Nonnull const ExtSdkMethodKeyRemoveMembersFromChatRoomWhiteList =
+    @"removeMembersFromChatRoomAllowList";
 static NSString *_Nonnull const ExtSdkMethodKeyFetchChatRoomWhiteListFromServer = @"fetchChatRoomAllowListFromServer";
-static NSString *_Nonnull const ExtSdkMethodKeyIsMemberInChatRoomWhiteListFromServer = @"isMemberInChatRoomAllowListFromServer";
+static NSString *_Nonnull const ExtSdkMethodKeyIsMemberInChatRoomWhiteListFromServer =
+    @"isMemberInChatRoomAllowListFromServer";
 
 static NSString *_Nonnull const ExtSdkMethodKeyMuteAllChatRoomMembers = @"muteAllChatRoomMembers";
 static NSString *_Nonnull const ExtSdkMethodKeyUnMuteAllChatRoomMembers = @"unMuteAllChatRoomMembers";
@@ -271,8 +279,9 @@ static NSString *_Nonnull const ExtSdkMethodKeyBindDeviceToken = @"updateAPNsPus
 static NSString *_Nonnull const ExtSdkMethodKeyEnablePush = @"enableOfflinePush";
 static NSString *_Nonnull const ExtSdkMethodKeyDisablePush = @"disableOfflinePush";
 static NSString *_Nonnull const ExtSdkMethodKeyGetNoPushGroups = @"getNoPushGroups";
-static NSString *_Nonnull const ExtSdkMethodKeySetNoDisturbUsers = @"setNoDisturbUsers";                     // deprecated 2022.05.04
-static NSString *_Nonnull const ExtSdkMethodKeyGetNoDisturbUsersFromServer = @"getNoDisturbUsersFromServer"; // deprecated 2022.05.04
+static NSString *_Nonnull const ExtSdkMethodKeySetNoDisturbUsers = @"setNoDisturbUsers"; // deprecated 2022.05.04
+static NSString *_Nonnull const ExtSdkMethodKeyGetNoDisturbUsersFromServer =
+    @"getNoDisturbUsersFromServer"; // deprecated 2022.05.04
 static NSString *_Nonnull const ExtSdkMethodKeyUpdateUserPushService = @"updateUserPushService";
 static NSString *_Nonnull const ExtSdkMethodKeyGetNoPushUsers = @"getNoPushUsers";
 
@@ -311,7 +320,8 @@ static NSString *_Nonnull const ExtSdkMethodKeyChatFetchChatThread = @"fetchChat
 static NSString *_Nonnull const ExtSdkMethodKeyChatFetchChatThreadDetail = @"fetchChatThreadDetail";
 static NSString *_Nonnull const ExtSdkMethodKeyChatFetchJoinedChatThreads = @"fetchJoinedChatThreads";
 static NSString *_Nonnull const ExtSdkMethodKeyChatFetchChatThreadsWithParentId = @"fetchChatThreadsWithParentId";
-static NSString *_Nonnull const ExtSdkMethodKeyChatFetchJoinedChatThreadsWithParentId = @"fetchJoinedChatThreadsWithParentId";
+static NSString *_Nonnull const ExtSdkMethodKeyChatFetchJoinedChatThreadsWithParentId =
+    @"fetchJoinedChatThreadsWithParentId";
 static NSString *_Nonnull const ExtSdkMethodKeyChatFetchChatThreadMember = @"fetchChatThreadMember";
 static NSString *_Nonnull const ExtSdkMethodKeyChatFetchLastMessageWithChatThreads = @"fetchLastMessageWithChatThreads";
 static NSString *_Nonnull const ExtSdkMethodKeyChatRemoveMemberFromChatThread = @"removeMemberFromChatThread";
@@ -342,8 +352,10 @@ static NSString *_Nonnull const ExtSdkMethodKeyfetchJoinedGroupCount = @"fetchJo
 static NSString *_Nonnull const ExtSdkMethodKeygetPinInfo = @"getPinInfo";
 static NSString *_Nonnull const ExtSdkMethodKeypinnedMessages = @"pinnedMessages";
 static NSString *_Nonnull const ExtSdkMethodKeyonMessagePinChanged = @"onMessagePinChanged";
-static NSString *_Nonnull const ExtSdkMethodKeyaddRemoteAndLocalConversationsMark = @"addRemoteAndLocalConversationsMark";
-static NSString *_Nonnull const ExtSdkMethodKeydeleteRemoteAndLocalConversationsMark = @"deleteRemoteAndLocalConversationsMark";
+static NSString *_Nonnull const ExtSdkMethodKeyaddRemoteAndLocalConversationsMark =
+    @"addRemoteAndLocalConversationsMark";
+static NSString *_Nonnull const ExtSdkMethodKeydeleteRemoteAndLocalConversationsMark =
+    @"deleteRemoteAndLocalConversationsMark";
 static NSString *_Nonnull const ExtSdkMethodKeyfetchConversationsByOptions = @"fetchConversationsByOptions";
 static NSString *_Nonnull const ExtSdkMethodKeydeleteAllMessageAndConversation = @"deleteAllMessageAndConversation";
 static NSString *_Nonnull const ExtSdkMethodKeypinMessage = @"pinMessage";
@@ -358,6 +370,13 @@ static NSString *_Nonnull const ExtSdkMethodKeygetMessageCountWithTimestamp = @"
 
 // 2024-11-28
 static NSString *_Nonnull const ExtSdkMethodKeygetMessageCount = @"getMessageCount";
+
+// 2025-07-23
+static NSString *_Nonnull const ExtSdkMethodKeyfetchMemberInfoListFromServer = @"fetchMemberInfoListFromServer";
+static NSString *_Nonnull const ExtSdkMethodKeyupdateGroupAvatar = @"updateGroupAvatar";
+static NSString *_Nonnull const ExtSdkMethodKeygetMessagesWithIds = @"getMessagesWithIds";
+static NSString *_Nonnull const ExtSdkMethodKeygetConvsMsgsWithKeyword = @"getConvsMsgsWithKeyword";
+static NSString *_Nonnull const ExtSdkMethodKeymodifyMsgBody = @"modifyMsgBody";
 
 // ############################################################################
 // value start
@@ -717,8 +736,15 @@ static const int ExtSdkMethodKeysearchMessagesInConversationValue = 2017;
 static const int ExtSdkMethodKeyremoveMessagesWithTimestampValue = 2018;
 static const int ExtSdkMethodKeygetMessageCountWithTimestampValue = 2019;
 
-//2024-11-28
+// 2024-11-28
 static const int ExtSdkMethodKeygetMessageCountValue = 2020;
+
+// 2025-07-23
+static const int ExtSdkMethodKeyfetchMemberInfoListFromServerValue = 2021;
+static const int ExtSdkMethodKeyupdateGroupAvatarValue = 2022;
+static const int ExtSdkMethodKeygetMessagesWithIdsValue = 2023;
+static const int ExtSdkMethodKeygetConvsMsgsWithKeywordValue = 2024;
+static const int ExtSdkMethodKeymodifyMsgBodyValue = 2025;
 
 @interface ExtSdkMethodTypeObjc : NSObject
 

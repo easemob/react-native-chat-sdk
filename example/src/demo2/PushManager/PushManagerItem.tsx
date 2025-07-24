@@ -70,24 +70,14 @@ export class PushManagerLeafScreen extends LeafScreenBase<StatePushMessage> {
     );
   }
   protected renderApiDom(): ReactNode[] {
-    const apiList = [
-      'setSilentModeForConversation',
-      'removeSilentModeForConversation',
-      'fetchSilentModeForConversation',
-      'setSilentModeForAll',
-      'fetchSilentModeForAll',
-      'fetchSilentModeForConversations',
-      'setPreferredNotificationLanguage',
-      'fetchPreferredNotificationLanguage',
-      'updatePushNickname',
-      'updatePushDisplayStyle',
-      'fetchPushOptionFromServer',
-      'selectPushTemplate',
-      'fetchSelectedPushTemplate',
-    ];
+    const { searchKeyword } = this.state;
+    const apiList = (Object.values(MN) as string[]).sort();
     let renderDomAry: ({} | null | undefined)[] = [];
     const data = this.metaDataList;
     apiList.forEach((apiItem) => {
+      if (searchKeyword && !apiItem.includes(searchKeyword)) {
+        return;
+      }
       this.setKeyPrefix(apiItem);
       renderDomAry.push(
         this.renderParamWithText(data.get(apiItem)!.methodName)

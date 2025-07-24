@@ -114,7 +114,7 @@ public class ExtSdkPushManagerWrapper extends ExtSdkWrapper {
         throws JSONException {
         String conversationId = params.getString("conversationId");
         EMConversation.EMConversationType type =
-            ExtSdkConversationHelper.typeFromInt(params.getInt("conversationType"));
+            InternalConvertHelper.conversationTypeFromInt(params.getInt("conversationType"));
         EMSilentModeParam param = ExtSdkSilentModeParamHelper.fromJson(params.getJSONObject("param"));
         EMClient.getInstance().pushManager().setSilentModeForConversation(
             conversationId, type, param, new EMValueCallBack<EMSilentModeResult>() {
@@ -134,7 +134,7 @@ public class ExtSdkPushManagerWrapper extends ExtSdkWrapper {
         throws JSONException {
         String conversationId = params.getString("conversationId");
         EMConversation.EMConversationType type =
-            ExtSdkConversationHelper.typeFromInt(params.getInt("conversationType"));
+            InternalConvertHelper.conversationTypeFromInt(params.getInt("conversationType"));
         EMClient.getInstance().pushManager().clearRemindTypeForConversation(conversationId, type, new EMCallBack() {
             @Override
             public void onSuccess() {
@@ -152,7 +152,7 @@ public class ExtSdkPushManagerWrapper extends ExtSdkWrapper {
         throws JSONException {
         String conversationId = params.getString("conversationId");
         EMConversation.EMConversationType type =
-            ExtSdkConversationHelper.typeFromInt(params.getInt("conversationType"));
+            InternalConvertHelper.conversationTypeFromInt(params.getInt("conversationType"));
         EMClient.getInstance().pushManager().getSilentModeForConversation(
             conversationId, type, new EMValueCallBack<EMSilentModeResult>() {
                 @Override
