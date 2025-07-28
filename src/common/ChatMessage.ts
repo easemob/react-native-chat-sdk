@@ -763,6 +763,7 @@ export class ChatMessage {
    * - deliverOnlineOnly: Whether the message is delivered only when the recipient(s) is/are online.
    * - fileSize: The file size.
    * - receiverList: The recipient list of a targeted message.
+   * - isGif: Whether the image is a GIF image.
    * @returns The message instance.
    */
   public static createImageMessage(
@@ -780,6 +781,7 @@ export class ChatMessage {
       isOnline?: boolean;
       deliverOnlineOnly?: boolean;
       receiverList?: string[];
+      isGif?: boolean;
     }
   ): ChatMessage {
     return ChatMessage.createSendMessage({
@@ -791,6 +793,7 @@ export class ChatMessage {
         width: opt?.width,
         height: opt?.height,
         fileSize: opt?.fileSize,
+        isGif: opt?.isGif,
       }),
       targetId: targetId,
       chatType: chatType,
