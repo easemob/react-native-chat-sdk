@@ -1470,6 +1470,14 @@ export class ChatGroupManager extends BaseManager {
     ChatGroupManager.checkErrorFromResult(r);
   }
 
+  /**
+   * Updates the group avatar.
+   *
+   * @param groupId The group ID.
+   * @param avatar The new group avatar.
+   *
+   * @throws A description of the exception. See {@link ChatError}.
+   */
   public async updateGroupAvatar(
     groupId: string,
     avatar: string
