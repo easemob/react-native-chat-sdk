@@ -14,7 +14,7 @@ import { chatlog } from './common/ChatConst';
 import { ChatPresence } from './common/ChatPresence';
 
 /**
- * The presence manager class.
+ * 在线状态管理器类。
  */
 export class ChatPresenceManager extends Native {
   private static TAG = 'ChatPresenceManager';
@@ -53,36 +53,36 @@ export class ChatPresenceManager extends Native {
   }
 
   /**
-   * Adds a presence listener.
+   * 添加在线状态监听器。
    *
-   * @param listener The presence listener to add.
+   * @param listener 要添加的在线状态监听器。
    */
   public addPresenceListener(listener: ChatPresenceEventListener): void {
     this._presenceListeners.add(listener);
   }
 
   /**
-   * Removes a presence listener.
+   * 移除在线状态监听器。
    *
-   * @param listener The presence listener to remove.
+   * @param listener 要移除的在线状态监听器。
    */
   public removePresenceListener(listener: ChatPresenceEventListener): void {
     this._presenceListeners.delete(listener);
   }
 
   /**
-   * Clears all presence listeners.
+   * 清除所有在线状态监听器。
    */
   public removeAllPresenceListener(): void {
     this._presenceListeners.clear();
   }
 
   /**
-   * Publishes a custom presence state.
+   * 发布自定义在线状态。
    *
-   * @param description The extension information of the presence state. It can be set as nil.
+   * @param description 在线状态的扩展信息。
    *
-   * @throws A description of the exception. See {@link ChatError}.
+   * @throws 如果有方法调用的异常会在这里抛出，可以看到具体错误原因。参见 {@link ChatError}。
    */
   public async publishPresence(description?: string): Promise<void> {
     chatlog.log(`${ChatPresenceManager.TAG}: publishPresence: `, description);
@@ -95,15 +95,15 @@ export class ChatPresenceManager extends Native {
   }
 
   /**
-   * Subscribes to the presence state of a user.
+   * 订阅指定用户的在线状态。
    *
-   * If the subscription succeeds, the subscriber will receive the callback when the presence state of the user changes.
+   * 订阅成功后，在线状态变更时订阅者会收到回调通知。
    *
-   * @param members The array of user IDs users whose presence state you want to subscribe to.
-   * @param expiry The subscription duration in seconds. The duration cannot exceed 2,592,000 (30×24×3600) seconds, i.e., 30 days.
-   * @returns The current presence state of users to whom you have subscribed.
+   * @param members 要订阅在线状态的用户 ID 数组。
+   * @param expiry 订阅时长，单位为秒。最长不超过 2,592,000 (30×24×3600) 秒，即 30 天。
+   * @returns 返回被订阅用户的当前状态。
    *
-   * @throws A description of the exception. See {@link ChatError}.
+   * @throws 如果有方法调用的异常会在这里抛出，可以看到具体错误原因。参见 {@link ChatError}。
    */
   public async subscribe(
     members: Array<string>,
@@ -125,11 +125,11 @@ export class ChatPresenceManager extends Native {
   }
 
   /**
-   * Unsubscribes from the presence state of the unspecified users.
+   * 取消订阅指定用户的在线状态。
    *
-   * @param members The array of user IDs whose presence state you want to unsubscribe from.
+   * @param members 要取消订阅在线状态的用户 ID 数组。
    *
-   * @throws A description of the exception. See {@link ChatError}.
+   * @throws 如果有异常会在这里抛出，包含错误码和错误描述，详见 {@link ChatError}。
    */
   public async unsubscribe(members: Array<string>): Promise<void> {
     chatlog.log(`${ChatPresenceManager.TAG}: unsubscribe: `, members);
@@ -142,13 +142,13 @@ export class ChatPresenceManager extends Native {
   }
 
   /**
-   * Uses the pagination to get a list of users whose presence states you have subscribed to.
+   * 分页查询当前用户订阅了哪些用户的在线状态。
    *
-   * @param pageNum The current page number, starting from 1.
-   * @param pageSize The number of subscribed users that you expect to get on each page.
-   * @returns The user IDs of your subscriptions. The SDK returns `null` if you does not subscribe to the presence state of any users.
+   * @param pageNum 当前页码，从 1 开始。
+   * @param pageSize 每页显示的被订阅用户数量。
+   * @returns 返回订阅的在线状态所属的用户名。若当前未订阅任何用户的在线状态，返回空列表。
    *
-   * @throws A description of the exception. See {@link ChatError}.
+   * @throws 如果有方法调用的异常会在这里抛出，可以看到具体错误原因。参见 {@link ChatError}。
    */
   public async fetchSubscribedMembers(
     pageNum: number = 1,
@@ -170,12 +170,12 @@ export class ChatPresenceManager extends Native {
   }
 
   /**
-   * Gets the current presence state of specified users.
+   * 查询指定用户的当前在线状态。
    *
-   * @param members The array of user IDs whose current presence state you want to check.
-   * @returns The current presence states of the specified users.
+   * @param members 用户 ID 数组，指定要查询哪些用户的在线状态。
+   * @returns 被订阅用户的当前状态。
    *
-   * @throws A description of the exception. See {@link ChatError}.
+   * @throws 如果有方法调用的异常会在这里抛出，可以看到具体错误原因。参见 {@link ChatError}。
    */
   public async fetchPresenceStatus(
     members: Array<string>

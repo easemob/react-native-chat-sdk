@@ -44,7 +44,7 @@ import { ChatPageResult } from './common/ChatPageResult';
 import { ChatRoom } from './common/ChatRoom';
 
 /**
- * The chat room manager class, which manages user operations, like joining and leaving the chat room and retrieving the chat room list, and manages member privileges.
+ * 聊天室管理类，负责聊天室加入和退出、聊天室列表获取以及成员权限管理等。
  */
 export class ChatRoomManager extends Native {
   private static TAG = 'ChatRoomManager';
@@ -204,9 +204,9 @@ export class ChatRoomManager extends Native {
   }
 
   /**
-   * Adds a chat room listener.
+   * 注册聊天室监听器。
    *
-   * @param listener The listener to add.
+   * @param listener 要注册的监听器。
    */
   public addRoomListener(listener: ChatRoomEventListener): void {
     chatlog.log(`${ChatRoomManager.TAG}: addRoomListener: `);
@@ -214,9 +214,9 @@ export class ChatRoomManager extends Native {
   }
 
   /**
-   * Removes the chat room listener.
+   * 移除聊天室监听器。
    *
-   * @param listener The listener to remove.
+   * @param listener 要移除的监听器。
    */
   public removeRoomListener(listener: ChatRoomEventListener): void {
     chatlog.log(`${ChatRoomManager.TAG}: removeRoomListener: `);
@@ -224,7 +224,7 @@ export class ChatRoomManager extends Native {
   }
 
   /**
-   * Removes all the chat room listeners.
+   * 移除所有聊天室监听器。
    */
   public removeAllRoomListener(): void {
     chatlog.log(`${ChatRoomManager.TAG}: removeAllRoomListener: `);
@@ -232,15 +232,13 @@ export class ChatRoomManager extends Native {
   }
 
   /**
-   * Joins the chat room.
+   * 加入聊天室。
    *
-   * To leave the chat room, you can call {@link leaveChatRoom}.
+   * 退出聊天室见： {@link leaveChatRoom}。
    *
-   * @param roomId The ID of the chat room to join.
+   * @param roomId 要加入的聊天室的 ID。
    *
-   * @throws A description of the exception. See {@link ChatError}.
-   *
-   * @deprecated 2024-08-15 replaced by {@link joinChatRoomEx}
+   * @throws 如果有异常会在这里抛出，包含错误码和错误描述，详见 {@link ChatError}。
    */
   public async joinChatRoom(roomId: string): Promise<void> {
     chatlog.log(`${ChatRoomManager.TAG}: joinChatRoom: ${roomId}`);
@@ -253,16 +251,16 @@ export class ChatRoomManager extends Native {
   }
 
   /**
-   * Joins the chat room.
+   * 加入聊天室。
    *
-   * To leave the chat room, you can call {@link leaveChatRoom}.
+   * 退出聊天室见： {@link leaveChatRoom}。
    *
-   * @params -
-   * @param roomId The ID of the chat room to join.
-   * @param exitOtherRoom Whether to exit the others chat room before joining the new chat room.
-   * @param ext The extended information.
+   * @params - 参数集合
+   * @param roomId 要加入的聊天室的 ID。
+   * @param exitOtherRoom 是否退出其他聊天室。
+   * @param ext 扩展信息。
    *
-   * @throws A description of the exception. See {@link ChatError}.
+   * @throws 如果有异常会在这里抛出，包含错误码和错误描述，详见 {@link ChatError}。
    */
   public async joinChatRoomEx(params: {
     roomId: string;
@@ -279,11 +277,11 @@ export class ChatRoomManager extends Native {
   }
 
   /**
-   * Leaves the chat room.
+   * 退出聊天室。
    *
-   * @param roomId The ID of the chat room to leave.
+   * @param roomId 要退出的聊天室 ID。
    *
-   * @throws A description of the exception. See {@link ChatError}.
+   * @throws 如果有异常会在这里抛出，包含错误码和错误描述，详见 {@link ChatError}。
    */
   public async leaveChatRoom(roomId: string): Promise<void> {
     chatlog.log(`${ChatRoomManager.TAG}: leaveChatRoom: ${roomId}`);
@@ -296,13 +294,13 @@ export class ChatRoomManager extends Native {
   }
 
   /**
-   * Gets chat room data from the server with pagination.
+   * 从服务器分页获取公开聊天室。
    *
-   * @param pageNum The page number, starting from 1.
-   * @param pageSize The number of chat rooms that you expect to get on each page.
-   * @returns The list of obtained chat rooms. See {@link ChatPageResult}.
+   * @param pageNum 当前页码，从 1 开始。
+   * @param pageSize 每页期望返回的聊天室数量。
+   * @returns 获取的聊天室列表。详见 {@link ChatPageResult}。
    *
-   * @throws A description of the exception. See {@link ChatError}.
+   * @throws 如果有异常会在这里抛出，包含错误码和错误描述，详见 {@link ChatError}。
    */
   public async fetchPublicChatRoomsFromServer(
     pageNum: number = 1,
@@ -333,14 +331,14 @@ export class ChatRoomManager extends Native {
   }
 
   /**
-   * Gets the details of the chat room from the server.
+   * 从服务器获取聊天室详情。
    *
-   * By default, the details do not include the chat room member list.
+   * 默认不包含聊天室成员列表。
    *
-   * @param roomId The chat room ID.
-   * @returns The chat room instance. The SDK returns `undefined` if the chat room does not exist.
+   * @param roomId 聊天室 ID。
+   * @returns 聊天室详情。如果聊天室不存在，返回 `undefined`。
    *
-   * @throws A description of the exception. See {@link ChatError}.
+   * @throws 如果有异常会在这里抛出，包含错误码和错误描述，详见 {@link ChatError}。
    */
   public async fetchChatRoomInfoFromServer(
     roomId: string
@@ -362,12 +360,12 @@ export class ChatRoomManager extends Native {
   }
 
   /**
-   * Gets the chat room by ID from the local database.
+   * 根据聊天室 ID 从本地数据库获取聊天室。
    *
-   * @param roomId The chat room ID.
-   * @returns The chat room instance. The SDK returns `undefined` if the chat room does not exist.
+   * @param roomId 聊天室 ID。
+   * @returns 聊天室实例。如果聊天室不存在，返回 `undefined`。
    *
-   * @throws A description of the exception. See {@link ChatError}.
+   * @throws 如果有异常会在这里抛出，包含错误码和错误描述，详见 {@link ChatError}。
    */
   public async getChatRoomWithId(
     roomId: string
@@ -387,16 +385,16 @@ export class ChatRoomManager extends Native {
   }
 
   /**
-   * Creates a chat room.
+   * 创建聊天室。
    *
-   * @param subject The chat room name.
-   * @param description The chat room description.
-   * @param welcome A welcome message for new chat room members.
-   * @param members The list of members invited to join the chat room.
-   * @param maxCount The maximum number of members allowed to join the chat room.
-   * @returns The chat room instance.
+   * @param subject 聊天室名称。
+   * @param description 聊天室描述。
+   * @param welcome 新成员加入时的欢迎消息。
+   * @param members 被邀请加入的成员用户 ID 列表。
+   * @param maxCount 聊天室最大人数。
+   * @returns 聊天室实例。
    *
-   * @throws A description of the exception. See {@link ChatError}.
+   * @throws 如果有异常会在这里抛出，包含错误码和错误描述，详见 {@link ChatError}。
    */
   public async createChatRoom(
     subject: string,
@@ -428,13 +426,13 @@ export class ChatRoomManager extends Native {
   }
 
   /**
-   * Destroys a chat room.
+   * 解散聊天室。
    *
-   * Only the chat room owner can call this method.
+   * 仅聊天室所有者有权限调用该方法。
    *
-   * @param roomId The chat room ID.
+   * @param roomId 聊天室 ID。
    *
-   * @throws A description of the exception. See {@link ChatError}.
+   * @throws 如果有异常会在这里抛出，包含错误码和错误描述，详见 {@link ChatError}。
    */
   public async destroyChatRoom(roomId: string): Promise<void> {
     chatlog.log(`${ChatRoomManager.TAG}: destroyChatRoom: `, roomId);
@@ -447,14 +445,14 @@ export class ChatRoomManager extends Native {
   }
 
   /**
-   * Changes the chat room name.
+   * 修改聊天室名称。
    *
-   * Only the chat room owner can call this method.
+   * 仅聊天室所有者有权限调用该方法。
    *
-   * @param roomId The chat room ID.
-   * @param subject The new name of the chat room.
+   * @param roomId 聊天室 ID。
+   * @param subject 聊天室新名称
    *
-   * @throws A description of the exception. See {@link ChatError}.
+   * @throws 如果有异常会在这里抛出，包含错误码和错误描述，详见 {@link ChatError}。
    */
   public async changeChatRoomSubject(
     roomId: string,
@@ -473,14 +471,14 @@ export class ChatRoomManager extends Native {
   }
 
   /**
-   * Modifies the chat room description.
+   * 修改聊天室描述信息。
    *
-   * Only the chat room owner can call this method.
+   * 仅聊天室所有者有权限调用该方法。
    *
-   * @param roomId The chat room ID.
-   * @param description The new description of the chat room.
+   * @param roomId 聊天室 ID。
+   * @param description 修改后的聊天室描述信息。
    *
-   * @throws A description of the exception. See {@link ChatError}.
+   * @throws 如果有异常会在这里抛出，包含错误码和错误描述，详见 {@link ChatError}。
    */
   public async changeChatRoomDescription(
     roomId: string,
@@ -501,15 +499,14 @@ export class ChatRoomManager extends Native {
   }
 
   /**
-   * Gets the chat room member list.
+   * 获取聊天室成员用户 ID 列表。
    *
-   * @param roomId The chat room ID.
-   * @param cursor The cursor position from which to start to get data.
-   *               At the first method call, if you set `cursor` as `null` or an empty string, the SDK gets the data in the reverse chronological order of when users join the chat room.
-   * @param pageSize The number of members that you expect to get on each page.
-   * @returns The list of chat room members and the cursor for the next query. See {@link ChatCursorResult}.
+   * @param roomId 聊天室 ID。
+   * @param cursor 开始取数据的游标位置。首次调用 `cursor` 传空字符串或 "null"，SDK 按照用户加入聊天室时间的倒序获取数据。
+   * @param pageSize 每页期望返回的成员数。
+   * @returns 聊天室成员的用户 ID 列表和 cursor。详见 {@link ChatCursorResult}。
    *
-   * @throws A description of the exception. See {@link ChatError}.
+   * @throws 如果有异常会在这里抛出，包含错误码和错误描述，详见 {@link ChatError}。
    */
   public async fetchChatRoomMembers(
     roomId: string,
@@ -543,15 +540,15 @@ export class ChatRoomManager extends Native {
   }
 
   /**
-   * Mutes the specified members in a chat room.
+   * 将聊天室中指定成员禁言。
    *
-   * Only the chat room owner or admin can call this method.
+   * 仅聊天室所有者或者管理员有权限调用该方法。
    *
-   * @param roomId The chat room ID.
-   * @param muteMembers The user IDs of members to be muted.
-   * @param duration The mute duration in milliseconds.
+   * @param roomId 聊天室 ID。
+   * @param muteMembers 要禁言的成员的用户 ID。
+   * @param duration 禁言时长，单位为毫秒。
    *
-   * @throws A description of the exception. See {@link ChatError}.
+   * @throws 如果有异常会在这里抛出，包含错误码和错误描述，详见 {@link ChatError}。
    */
   public async muteChatRoomMembers(
     roomId: string,
@@ -575,14 +572,14 @@ export class ChatRoomManager extends Native {
   }
 
   /**
-   * Unmutes the specified members in a chat room.
+   * 取消对指定聊天室成员的禁言。
    *
-   * Only the chat room owner or admin can call this method.
+   * 仅聊天室所有者或者管理员有权限调用该方法。
    *
-   * @param roomId The chat room ID.
-   * @param unMuteMembers The user IDs of members to be unmuted.
+   * @param roomId 聊天室 ID。
+   * @param unMuteMembers 要取消禁言的成员的用户 ID。
    *
-   * @throws A description of the exception. See {@link ChatError}.
+   * @throws 如果有异常会在这里抛出，包含错误码和错误描述，详见 {@link ChatError}。
    */
   public async unMuteChatRoomMembers(
     roomId: string,
@@ -603,14 +600,14 @@ export class ChatRoomManager extends Native {
   }
 
   /**
-   * Transfers the chat room ownership.
+   * 转让聊天室所有者权限。
    *
-   * Only the chat room owner can call this method.
+   * 仅聊天室所有者有权限调用该方法。
    *
-   * @param roomId The chat room ID.
-   * @param newOwner The user ID of the new chat room owner.
+   * @param roomId 聊天室 ID。
+   * @param newOwner 新聊天室所有者的用户 ID。
    *
-   * @throws A description of the exception. See {@link ChatError}.
+   * @throws 如果有异常会在这里抛出，包含错误码和错误描述，详见 {@link ChatError}。
    */
   public async changeOwner(roomId: string, newOwner: string): Promise<void> {
     chatlog.log(`${ChatRoomManager.TAG}: changeOwner: `, roomId, newOwner);
@@ -624,14 +621,14 @@ export class ChatRoomManager extends Native {
   }
 
   /**
-   * Adds a chat room admin.
+   * 添加聊天室管理员。
    *
-   * Only the chat room owner can call this method.
+   * 仅聊天室所有者有权限调用该方法。
    *
-   * @param roomId The chat room ID.
-   * @param admin The user ID of the chat room admin to be added.
+   * @param roomId 聊天室 ID。
+   * @param admin  聊天室管理员的用户 ID。
    *
-   * @throws A description of the exception. See {@link ChatError}.
+   * @throws 如果有异常会在这里抛出，包含错误码和错误描述，详见 {@link ChatError}。
    */
   public async addChatRoomAdmin(roomId: string, admin: string): Promise<void> {
     chatlog.log(`${ChatRoomManager.TAG}: addChatRoomAdmin: `, roomId, admin);
@@ -645,12 +642,12 @@ export class ChatRoomManager extends Native {
   }
 
   /**
-   * Removes administrative privileges of a chat room admin.
+   * 移除聊天室管理员权限。
    *
-   * @param roomId The chat room ID.
-   * @param admin The user ID of the chat room admin whose administrative privileges are to be removed.
+   * @param roomId 聊天室 ID。
+   * @param admin 要被移除管理员权限的成员用户 ID。
    *
-   * @throws A description of the exception. See {@link ChatError}.
+   * @throws 如果有异常会在这里抛出，包含错误码和错误描述，详见 {@link ChatError}。
    */
   public async removeChatRoomAdmin(
     roomId: string,
@@ -667,18 +664,16 @@ export class ChatRoomManager extends Native {
   }
 
   /**
-   * Uses the pagination to get the list of members who are muted in the chat room.
+   * 分页从服务器获取聊天室禁言名单。
    *
-   * This method gets data from the server.
+   * 仅聊天室所有者或者管理员有权限调用该方法。
    *
-   * Only the chat room owner or admin can call this method.
+   * @param roomId 聊天室 ID。
+   * @param pageNum 当前页码，从 1 开始。
+   * @param pageSize 期望每页获取的名单数量。
+   * @returns 禁言成员的用户 ID 列表。
    *
-   * @param roomId The chat room ID.
-   * @param pageNum The page number, starting from 1.
-   * @param pageSize The number of muted members that you expect to get on each page.
-   * @returns The user IDs of muted members.
-   *
-   * @throws A description of the exception. See {@link ChatError}.
+   * @throws 如果有异常会在这里抛出，包含错误码和错误描述，详见 {@link ChatError}。
    */
   public async fetchChatRoomMuteList(
     roomId: string,
@@ -704,14 +699,14 @@ export class ChatRoomManager extends Native {
   }
 
   /**
-   * Removes the specified members from a chat room.
+   * 将成员移出聊天室。
    *
-   * Only the chat room owner or admin can call this method.
+   * 仅聊天室所有者或者管理员有权限调用该方法。
    *
-   * @param roomId The chat room ID.
-   * @param members The user IDs of the members to be removed.
+   * @param roomId 聊天室 ID。
+   * @param members 要被移出聊天室的成员用户 ID。
    *
-   * @throws A description of the exception. See {@link ChatError}.
+   * @throws 如果有异常会在这里抛出，包含错误码和错误描述，详见 {@link ChatError}。
    */
   public async removeChatRoomMembers(
     roomId: string,
@@ -732,14 +727,14 @@ export class ChatRoomManager extends Native {
   }
 
   /**
-   * Adds the specified members to the block list of the chat room.
+   * 将指定成员加入聊天室黑名单。
    *
-   * Only the chat room owner or admin can call this method.
+   * 仅聊天室所有者或者管理员有权限调用该方法。
    *
-   * @param roomId The chat room ID.
-   * @param members The user IDs of members to be added to block list of the chat room.
+   * @param roomId 聊天室 ID。
+   * @param members 要被加入聊天室黑名单的成员用户 ID。
    *
-   * @throws A description of the exception. See {@link ChatError}.
+   * @throws 如果有异常会在这里抛出，包含错误码和错误描述，详见 {@link ChatError}。
    */
   public async blockChatRoomMembers(
     roomId: string,
@@ -760,14 +755,14 @@ export class ChatRoomManager extends Native {
   }
 
   /**
-   * Removes the specified members from the block list of the chat room.
+   * 将指定用户从聊天室黑名单中移除。
    *
-   * Only the chat room owner or admin can call this method.
+   * 仅聊天室所有者或者管理员有权限调用该方法。
    *
-   * @param roomId The chat room ID.
-   * @param members The user IDs of members to be removed from the block list of the chat room.
+   * @param roomId 聊天室 ID。
+   * @param members 要被移除聊天室黑名单的用户 ID 列表。
    *
-   * @throws A description of the exception. See {@link ChatError}.
+   * @throws 如果有异常会在这里抛出，包含错误码和错误描述，详见 {@link ChatError}。
    */
   public async unBlockChatRoomMembers(
     roomId: string,
@@ -788,16 +783,16 @@ export class ChatRoomManager extends Native {
   }
 
   /**
-   * Gets the chat room block list with pagination.
+   * 从服务器获取黑名单列表。
    *
-   * Only the chat room owner or admin can call this method.
+   * 仅聊天室所有者或者管理员有权限调用该方法。
    *
-   * @param roomId The chat room ID.
-   * @param pageNum The page number, starting from 1.
-   * @param pageSize The number of users on the block list that you expect to get on each page.
-   * @returns The user IDs of the chat room members on the block list.
+   * @param roomId 聊天室 ID。
+   * @param pageNum 当前页码，从 1 开始。
+   * @param pageSize 期望每页获取的名单数量。
+   * @returns 聊天室黑名单用户 ID 列表。
    *
-   * @throws A description of the exception. See {@link ChatError}.
+   * @throws 如果有异常会在这里抛出，包含错误码和错误描述，详见 {@link ChatError}。
    */
   public async fetchChatRoomBlockList(
     roomId: string,
@@ -823,14 +818,14 @@ export class ChatRoomManager extends Native {
   }
 
   /**
-   * Updates the chat room announcement.
+   * 更新聊天室公告。
    *
-   * Only the chat room owner or admin can call this method.
+   * 仅聊天室所有者或者管理员有权限调用该方法。
    *
-   * @param roomId The chat room ID.
-   * @param announcement The new chat room announcement.
+   * @param roomId 聊天室 ID。
+   * @param announcement 修改后的聊天室公告内容。
    *
-   * @throws A description of the exception. See {@link ChatError}.
+   * @throws 如果有异常会在这里抛出，包含错误码和错误描述，详见 {@link ChatError}。
    */
   public async updateChatRoomAnnouncement(
     roomId: string,
@@ -851,12 +846,12 @@ export class ChatRoomManager extends Native {
   }
 
   /**
-   * Gets the chat room announcement from the server.
+   * 从服务器获取聊天室公告内容。
    *
-   * @param roomId The chat room ID.
-   * @returns The chat room announcement.
+   * @param roomId 聊天室 ID。
+   * @returns 聊天室公告内容。
    *
-   * @throws A description of the exception. See {@link ChatError}.
+   * @throws 如果有异常会在这里抛出，包含错误码和错误描述，详见 {@link ChatError}。
    */
   public async fetchChatRoomAnnouncement(
     roomId: string
@@ -872,14 +867,14 @@ export class ChatRoomManager extends Native {
   }
 
   /**
-   * Gets the allow list from the server.
+   * 从服务器获取白名单列表。
    *
-   * Only the chat room owner or admin can call this method.
+   * 仅聊天室所有者或者管理员有权限调用该方法。
    *
-   * @param roomId The chat room ID.
-   * @returns The allow list of the chat room.
+   * @param roomId 聊天室 ID。
+   * @returns 白名单列表。
    *
-   * @throws A description of the exception. See {@link ChatError}.
+   * @throws 如果有异常会在这里抛出，包含错误码和错误描述，详见 {@link ChatError}。
    */
   public async fetchChatRoomAllowListFromServer(
     roomId: string
@@ -899,14 +894,14 @@ export class ChatRoomManager extends Native {
   }
 
   /**
-   * Checks whether the member is on the allow list of the chat room.
+   * 查询指定成员是否在聊天室白名单中。
    *
-   * @param roomId The chat room ID.
-   * @returns Whether the member is on the allow list of the chat room.
-   *          - `true`: Yes.
-   *          - `false`: No.
+   * @param roomId 聊天室 ID。
+   * @returns 指定成员是否在聊天室白名单中。
+   * - `true`：是；
+   * - `false`：否。
    *
-   * @throws A description of the exception. See {@link ChatError}.
+   * @throws 如果有异常会在这里抛出，包含错误码和错误描述，详见 {@link ChatError}。
    */
   public async isMemberInChatRoomAllowList(roomId: string): Promise<boolean> {
     chatlog.log(
@@ -927,14 +922,14 @@ export class ChatRoomManager extends Native {
   }
 
   /**
-   * Adds members to the allow list of the chat room.
+   * 将成员加入聊天室白名单。
    *
-   * Only the chat room owner or admin can call this method.
+   * 仅聊天室所有者或者管理员有权限调用该方法。
    *
-   * @param roomId The chat room ID.
-   * @param members The user IDs of members to be added to the allow list of the chat room.
+   * @param roomId 聊天室 ID。
+   * @param members 要加入聊天室白名单的成员用户 ID 列表。
    *
-   * @throws A description of the exception. See {@link ChatError}.
+   * @throws 如果有异常会在这里抛出，包含错误码和错误描述，详见 {@link ChatError}。
    */
   public async addMembersToChatRoomAllowList(
     roomId: string,
@@ -955,14 +950,14 @@ export class ChatRoomManager extends Native {
   }
 
   /**
-   * Removes members from the allow list of the chat room.
+   * 将聊天室成员从白名单中移除。
    *
-   * Only the chat room owner or admin can call this method.
+   * 仅聊天室所有者或者管理员有权限调用该方法。
    *
-   * @param roomId The chat room ID.
-   * @param members The user IDs of members to be removed from the allow list of the chat room.
+   * @param roomId 聊天室 ID。
+   * @param members 要移除聊天室白名单的成员用户 ID 列表。
    *
-   * @throws A description of the exception. See {@link ChatError}.
+   * @throws 如果有异常会在这里抛出，包含错误码和错误描述，详见 {@link ChatError}。
    */
   public async removeMembersFromChatRoomAllowList(
     roomId: string,
@@ -986,15 +981,15 @@ export class ChatRoomManager extends Native {
   }
 
   /**
-   * Mutes all members.
+   * 禁言聊天室所有成员。
    *
-   * Only the chat room owner or admin can call this method.
+   * 仅聊天室所有者或者管理员有权限调用该方法。
    *
-   * The chat room owner, admins, and members added to the allow list cannot be muted.
+   * 该方法对聊天室所有者、管理员和在白名单中的成员无效。
    *
-   * @param roomId The chat room ID.
+   * @param roomId 聊天室 ID。
    *
-   * @throws A description of the exception. See {@link ChatError}.
+   * @throws 如果有异常会在这里抛出，包含错误码和错误描述，详见 {@link ChatError}。
    */
   public async muteAllChatRoomMembers(roomId: string): Promise<void> {
     chatlog.log(`${ChatRoomManager.TAG}: muteAllChatRoomMembers: `, roomId);
@@ -1007,13 +1002,13 @@ export class ChatRoomManager extends Native {
   }
 
   /**
-   * Unmutes all members of the chat room.
+   * 解除聊天室全员禁言。
    *
-   * Only the chat room owner or admins can call this method.
+   * 仅聊天室所有者或者管理员有权限调用该方法。
    *
-   * @param roomId The chat room ID.
+   * @param roomId 聊天室 ID。
    *
-   * @throws A description of the exception. See {@link ChatError}.
+   * @throws 如果有异常会在这里抛出，包含错误码和错误描述，详见 {@link ChatError}。
    */
   public async unMuteAllChatRoomMembers(roomId: string): Promise<void> {
     chatlog.log(`${ChatRoomManager.TAG}: unMuteAllChatRoomMembers: `, roomId);
@@ -1026,14 +1021,14 @@ export class ChatRoomManager extends Native {
   }
 
   /**
-   * Gets custom chat room attributes from the server.
+   * 从服务器获取聊天室数据。
    *
-   * @param roomId The chat room ID.
-   * @param keys The key list of custom attributes to get. If you set it as `null` or leave it empty, this method retrieves all custom attributes.
+   * @param roomId 聊天室 ID。
+   * @param keys 要获取的聊天室自定义属性的属性 key 列表。若将该参数设置为 `null` 或留空，调用该方法会获取聊天室所有自定义属性。
    *
-   * @returns Custom chat room attributes in key-value format.
+   * @returns 聊天室自定义属性，键值对格式。
    *
-   * @throws A description of the exception. See {@link ChatError}.
+   * @throws 如果有异常会在这里抛出，包含错误码和错误描述，详见 {@link ChatError}。
    */
   public async fetchChatRoomAttributes(
     roomId: string,
@@ -1057,27 +1052,27 @@ export class ChatRoomManager extends Native {
   }
 
   /**
-   * Sets custom chat room attributes.
+   * 设置聊天室自定义属性。
    *
-   * @params params
-   * - roomId The chat room ID.
-   * - attributes The chat room attributes to add. The attributes are in key-value format.
-   * In a key-value pair, the key is the attribute name that can contain 128 characters at most; the value is the attribute value that cannot exceed 4096 characters.
-   * A chat room can have a maximum of 100 custom attributes and the total length of custom chat room attributes cannot exceed 10 GB for each app. Attribute keys support the following character sets:
-   *   - 26 lowercase English letters (a-z)
-   *   - 26 uppercase English letters (A-Z)
-   *   - 10 numbers (0-9)
-   *   - "_", "-", "."
-   * - deleteWhenLeft: Whether to delete the chat room attributes set by the member when he or she exits the chat room.
-   *   - (Default)`true`: Yes.
-   *   - `false`: No.
-   * - overwrite: Whether to overwrite the attributes with same key set by others.
-   *   - `true`: Yes.
-   *   - (Default)`false`: No.
+   * @param params -
+   * - roomId 聊天室 ID。
+   * - attributes 要设置的聊天室自定义属性，为键值对（key-value）结构。
+   * 在键值对中，key 为属性名，不超过 128 字符；value 为属性值，不超过 4096 字符。
+   * 每个聊天室最多有 100 个属性，每个应用的聊天室属性总大小不超过 10 GB。Key 支持以下字符集：
+   *   - 26 个小写英文字母 a-z；
+   * - 26 个大写英文字母 A-Z；
+   * - 10 个数字 0-9；
+   * - “_”, “-”, “.”。
+   * - deleteWhenLeft: 当前成员退出聊天室是否自动删除该自定义属性。
+   *   - (Default)`true`：是
+   *   - `false`：否
+   * - overwrite: 是否覆盖其他成员设置的属性 key 相同的属性。
+   *   - `true`：是
+   *   - (Default)`false`：否
    *
-   * @returns If certain attributes fail to be set, the SDK returns a map of the attributes in key-value format, where the key is the attribute key and the value is the reason for the failure.
+   * @returns 若某些属性设置失败，SDK 返回键值对（key-value）结构的属性集合，在每个键值对中 key 为属性 key，value 为失败原因。
    *
-   * @throws A description of the exception. See {@link ChatError}.
+   * @throws 如果有异常会在这里抛出，包含错误码和错误描述，详见 {@link ChatError}。
    */
   public async addAttributes(params: {
     roomId: string;
@@ -1107,18 +1102,18 @@ export class ChatRoomManager extends Native {
   }
 
   /**
-   * Removes custom chat room attributes.
+   * 删除聊天室自定义属性。
    *
-   * @params params
-   * - roomId: The chat room ID.
-   * - keys: The keys of the chat room attributes to remove.
-   * - forced: Whether to remove the attributes with same key set by others.
-   *   - `true`: Yes.
-   *   - (Default)`false`: No.
+   * @param params -
+   * - roomId: 聊天室 ID。
+   * - keys: 要删除的聊天室自定义属性的 key 列表。
+   * - forced: 是否删除其他成员设置的属性 key 相同的自定义属性。
+   *   - `true`：是
+   *   - （默认）`false`：否
    *
-   * @returns If certain attributes fail to be removed, the SDK returns a map of the attributes in key-value format, where the key is the attribute key and the value is the reason for the failure.
+   * @returns 若某些属性设置失败，SDK 返回键值对（key-value）结构的属性集合，在每个键值对中 key 为属性 key，value 为失败原因。
    *
-   * @throws A description of the exception. See {@link ChatError}.
+   * @throws 如果有异常会在这里抛出，包含错误码和错误描述，详见 {@link ChatError}。
    */
   public async removeAttributes(params: {
     roomId: string;

@@ -28,7 +28,7 @@ import {
 } from './common/ChatSilentMode';
 
 /**
- * The class for message push configuration options.
+ * 消息推送设置管理类。
  */
 export class ChatPushManager extends Native {
   private static TAG = 'ChatPushManager';
@@ -41,14 +41,14 @@ export class ChatPushManager extends Native {
   }
 
   /**
-   * Sets the offline push for the conversation.
+   * 设置指定会话的消息推送模式。
    *
-   * @params params
-   * - convId: The conversation ID.
-   * - convType: The conversation type.
-   * - option: The configuration options for the offline push.
+   * @param params -
+   * - convId: 会话 ID。
+   * - convType: 会话类型。
+   * - option: 离线推送配置选项。
    *
-   * @throws A description of the exception. See {@link ChatError}.
+   * @throws 如果有异常会在此抛出，包括错误码和错误信息，详见 {@link ChatError}。
    */
   public async setSilentModeForConversation(params: {
     convId: string;
@@ -72,15 +72,15 @@ export class ChatPushManager extends Native {
   }
 
   /**
-   * Clears the offline push settings of the conversation.
+   * 清除指定会话的消息推送设置。
    *
-   * After clearing, the conversation uses the offline push settings of the app. See {@link EMPushManager.setSilentModeForAll}.
+   * 清除消息推送设置后，该会话采用 app 的消息推送模式，详见 {@link EMPushManager.setSilentModeForAll(ChatSilentModeParam)}。
    *
-   * @params params
-   * - convId: The conversation ID.
-   * - convType: The conversation type.
+   * @params 参数组。
+   * - convId: 会话 ID。
+   * - convType: 会话类型。
    *
-   * @throws A description of the exception. See {@link ChatError}.
+   * @throws 如果有异常会在此抛出，包括错误码和错误信息，详见 {@link ChatError}。
    */
   public async removeSilentModeForConversation(params: {
     convId: string;
@@ -101,15 +101,15 @@ export class ChatPushManager extends Native {
   }
 
   /**
-   * Gets the offline push settings of the conversation.
+   * 获取指定会话的离线推送设置。
    *
-   * @params params
-   * - convId: The conversation ID.
-   * - convType: The conversation type.
+   * @params 参数组。
+   * - convId: 会话 ID。
+   * - convType: 会话类型。
    *
-   * @returns The offline push settings of the conversation.
+   * @returns 会话的离线推送设置。
    *
-   * @throws A description of the exception. See {@link ChatError}.
+   * @throws 如果有异常会在此抛出，包括错误码和错误信息，详见 {@link ChatError}。
    */
   public async fetchSilentModeForConversation(params: {
     convId: string;
@@ -132,11 +132,11 @@ export class ChatPushManager extends Native {
   }
 
   /**
-   * Sets the offline push of the app.
+   * 设置 app 的离线推送模式。
    *
-   * @param option The offline push parameters.
+   * @param option 离线推送配置选项。
    *
-   * @throws A description of the exception. See {@link ChatError}.
+   * @throws 如果有异常会在此抛出，包括错误码和错误信息，详见 {@link ChatError}。
    */
   public async setSilentModeForAll(option: ChatSilentModeParam): Promise<void> {
     chatlog.log(
@@ -152,11 +152,11 @@ export class ChatPushManager extends Native {
   }
 
   /**
-   * Gets the do-not-disturb settings of the app.
+   * 获取 app 的离线推送设置。
    *
-   * @returns The do-not-disturb settings of the app.
+   * @returns app 的离线推送设置。
    *
-   * @throws A description of the exception. See {@link ChatError}.
+   * @throws 如果有异常会在此抛出，包括错误码和错误信息，详见 {@link ChatError}。
    */
   public async fetchSilentModeForAll(): Promise<ChatSilentModeResult> {
     chatlog.log(`${ChatPushManager.TAG}: fetchSilentModeForAll: `);
@@ -167,12 +167,12 @@ export class ChatPushManager extends Native {
   }
 
   /**
-   * Gets the do-not-disturb settings of the specified conversations.
+   * 获取指定的多个会话的离线推送设置。
    *
-   * @param conversations The conversation list.
-   * @returns  The do-not-disturb settings of the specified conversations, which are key-value pairs where the key is the conversation ID and the value is the do-not-disturb settings.
+   * @param conversations 会话 ID 列表。
+   * @returns 会话的离线推送设置，以键值对格式返回，其中 key 为会话 ID，value 为会话的离线推送设置。
    *
-   * @throws A description of the exception. See {@link ChatError}.
+   * @throws 如果有异常会在此抛出，包括错误码和错误信息，详见 {@link ChatError}。
    */
   public async fetchSilentModeForConversations(
     conversations: ChatConversation[]
@@ -196,11 +196,11 @@ export class ChatPushManager extends Native {
   }
 
   /**
-   * Sets the target translation language of offline push notifications.
+   * 设置推送通知的首选语言。
    *
-   * @param languageCode The language code. See {@link ChatTextMessageBody}.
+   * @param languageCode 语言代码，详见 {@link ChatTextMessageBody}。
    *
-   * @throws A description of the exception. See {@link ChatError}.
+   * @throws 如果有异常会在此抛出，包括错误码和错误信息，详见 {@link ChatError}。
    */
   public async setPreferredNotificationLanguage(
     languageCode: string
@@ -218,11 +218,11 @@ export class ChatPushManager extends Native {
   }
 
   /**
-   * Gets the configured push translation language.
+   * 获取推送通知的首选语言。
    *
-   * @returns The language code.
+   * @returns 推送通知的首选语言。
    *
-   * @throws A description of the exception. See {@link ChatError}.
+   * @throws 如果有异常会在此抛出，包括错误码和错误信息，详见 {@link ChatError}。
    */
   public async fetchPreferredNotificationLanguage(): Promise<
     string | undefined
@@ -235,15 +235,15 @@ export class ChatPushManager extends Native {
   }
 
   /**
-   * Updates nickname of the sender displayed in push notifications.
+   * 修改推送通知中显示的消息发送方的昵称。
    *
-   * This nickname can be different from the nickname in the user profile; however, we recommend that you use the same nickname for both. Therefore, if either nickname is updated, the other should be changed at the same time.
+   * 该昵称可与用户属性中的用户昵称设置不同，但我们建议这两个昵称的设置相同。若其中一个昵称发生变化，应及时修改另一个昵称。
    *
-   * To update the nickname in the user profile, you can call {@link ChatUserInfoManager.updateOwnUserInfo}.
+   * 你可以调用 {@link ChatUserInfoManager.updateOwnUserInfo} 修改用户属性中的用户昵称。
    *
-   * @param nickname  The nickname of the sender displayed in push notifications.
+   * @param nickname  推送通知中显示的消息发送方的昵称。
    *
-   * @throws A description of the exception. See {@link ChatError}.
+   * @throws 如果有异常会在此抛出，包括错误码和错误信息，详见 {@link ChatError}。
    */
   public async updatePushNickname(nickname: string): Promise<void> {
     chatlog.log(`${ChatPushManager.TAG}: ${this.updatePushNickname.name}`);
@@ -256,13 +256,13 @@ export class ChatPushManager extends Native {
   }
 
   /**
-   * Updates the display style of push notifications.
+   * 修改推送通知的展示方式。
    *
-   * The default value is {@link ChatPushDisplayStyle.Simple}.
+   * 默认值为 {@link ChatPushDisplayStyle.Simple}。
    *
-   * @param displayStyle The display style of push notifications.
+   * @param displayStyle 推送通知的展示方式。
    *
-   * @throws A description of the exception. See {@link ChatError}.
+   * @throws 如果有异常会在此抛出，包括错误码和错误信息，详见 {@link ChatError}。
    */
   public async updatePushDisplayStyle(
     displayStyle: ChatPushDisplayStyle = ChatPushDisplayStyle.Simple
@@ -277,11 +277,11 @@ export class ChatPushManager extends Native {
   }
 
   /**
-   * Gets the push configurations from the server.
+   * 从服务器获取推送配置。
    *
-   * @returns The push options.
+   * @returns 推送选项。
    *
-   * @throws A description of the exception. See {@link ChatError}.
+   * @throws 如果有异常会在此抛出，包括错误码和错误信息，详见 {@link ChatError}。
    */
   public async fetchPushOptionFromServer(): Promise<ChatPushOption> {
     chatlog.log(
@@ -293,13 +293,13 @@ export class ChatPushManager extends Native {
   }
 
   /**
-   * Selects the push template for offline push.
+   * 选择离线推送模板，通知服务器。
    *
-   * The push template can be set with a RESTful API or on the console.
+   * 推送模板可以使用 RESTful API 或控制台添加。
    *
-   * @param templateName The push template name. If the template name does not exist, this template does not take effect, although no error is returned.
+   * @param templateName 推送模板名称。 如果选择的推送模板不存在，虽然该方法不会返回错误，但是不会生效。
    *
-   * @throws A description of the exception. See {@link ChatError}.
+   * @throws 如果有异常会在此抛出，包括错误码和错误信息，详见 {@link ChatError}。
    */
   public async selectPushTemplate(templateName: string): Promise<void> {
     chatlog.log(`${ChatPushManager.TAG}: ${this.selectPushTemplate.name}`);
@@ -310,11 +310,11 @@ export class ChatPushManager extends Native {
   }
 
   /**
-   * Gets the selected push template for offline push.
+   * 获取当前推送模板的名称。
    *
-   * @returns The name of the selected push template.
+   * @returns 推送模板的名称。
    *
-   * @throws A description of the exception. See {@link ChatError}.
+   * @throws 如果有异常会在此抛出，包括错误码和错误信息，详见 {@link ChatError}。
    */
   public async fetchSelectedPushTemplate(): Promise<string | undefined> {
     chatlog.log(
