@@ -101,6 +101,7 @@ ChatSDK 是一个高度可靠的全球交流平台，您的用户可以在其中
 | {@link ChatManager.sendConversationReadAck sendConversationReadAck} | 发送会话的已读回执。 |
 | {@link ChatManager.recallMessage recallMessage} | 撤回发送成功的消息。 |
 | {@link ChatManager.getMessage getMessage} | 从本地数据库获取指定 ID 的消息对象。 |
+| {@link ChatManager.getMessagesWithIds getMessagesWithIds} | 通过消息 ID 列表获取本地数据库中的消息。 |
 | {@link ChatManager.markAllConversationsAsRead markAllConversationsAsRead} | 将所有的会话都设成已读。 |
 | {@link ChatManager.getUnreadCount getUnreadCount} | 获取未读消息数。 |
 | {@link ChatManager.insertMessage insertMessage} | 在本地会话中插入一条消息。 |
@@ -114,6 +115,7 @@ ChatSDK 是一个高度可靠的全球交流平台，您的用户可以在其中
 | {@link ChatManager.fetchHistoryMessagesByOptions fetchHistoryMessagesByOptions} | 根据消息拉取参数配置从服务器分页获取指定会话的历史消息。 |
 | {@link ChatManager.searchMsgFromDB searchMsgFromDB} | 从本地数据库获取指定会话中包含特定关键字的消息。 |
 | {@link ChatManager.getMsgsWithKeyword getMsgsWithKeyword} | 获取所有会话在一定时间内的会话中发送的消息。 |
+| {@link ChatManager.getConvsMsgsWithKeyword getConvsMsgsWithKeyword} | 通过关键字搜索本地消息。 |
 | {@link ChatManager.fetchGroupAcks fetchGroupAcks} | Uses the pagination to get read receipts for group messages from the server. |
 | {@link ChatManager.removeConversationFromServer removeConversationFromServer} | 删除服务端的指定会话及其历史消息。 |
 | {@link ChatManager.getConversation getConversation} | 根据会话ID和会话类型获取会话。 |
@@ -170,6 +172,7 @@ ChatSDK 是一个高度可靠的全球交流平台，您的用户可以在其中
 | {@link ChatManager.fetchPinnedConversationsFromServerWithCursor fetchPinnedConversationsFromServerWithCursor} | 分页从服务器获取置顶会话。 |
 | {@link ChatManager.pinConversation pinConversation} | 设置会话是否置顶。 |
 | {@link ChatManager.modifyMessageBody modifyMessageBody} | 修改文本消息。 |
+| {@link ChatManager.modifyMsgBody modifyMsgBody} | 更新消息内容。本地和服务器都更新。 |
 | {@link ChatManager.fetchCombineMessageDetail fetchCombineMessageDetail} | 获取合并类型消息中的原始消息列表。 |
 | {@link ChatManager.addRemoteAndLocalConversationsMark addRemoteAndLocalConversationsMark} | 标记会话。 |
 | {@link ChatManager.deleteRemoteAndLocalConversationsMark deleteRemoteAndLocalConversationsMark} | 取消标记会话。 |
@@ -243,8 +246,11 @@ ChatSDK 是一个高度可靠的全球交流平台，您的用户可以在其中
 | {@link ChatGroupManager.fetchJoinedGroupsFromServer fetchJoinedGroupsFromServer} | 以分页方式从服务器获取当前用户已加入的群组。 |
 | {@link ChatGroupManager.fetchPublicGroupsFromServer fetchPublicGroupsFromServer} | 分页从服务器获取公开群组。 |
 | {@link ChatGroupManager.createGroup createGroup} | 创建群组。 |
+| {@link ChatGroupManager.createGroupEx createGroupEx} | 创建群组对象。支持设置头像。 |
 | {@link ChatGroupManager.fetchGroupInfoFromServer fetchGroupInfoFromServer} | 从服务器获取群组详情。 |
+| {@link ChatGroupManager.fetchGroupInfoWithoutMembersFromServer fetchGroupInfoWithoutMembersFromServer} | 获取群组信息，但不包含群组成员信息。 |
 | {@link ChatGroupManager.fetchMemberListFromServer fetchMemberListFromServer} | 从服务器分页获取群组成员。 |
+| {@link ChatGroupManager.fetchMemberInfoListFromServer fetchMemberInfoListFromServer} | 从服务器分页获取群组成员信息列表。 |
 | {@link ChatGroupManager.fetchBlockListFromServer fetchBlockListFromServer} | 从服务器分页获取群组黑名单列表。 |
 | {@link ChatGroupManager.fetchMuteListFromServer fetchMuteListFromServer} | 从服务器分页获取群组禁言列表。 |
 | {@link ChatGroupManager.fetchAllowListFromServer fetchAllowListFromServer} | 从服务器分页获取群组白名单列表。 |
@@ -275,6 +281,7 @@ ChatSDK 是一个高度可靠的全球交流平台，您的用户可以在其中
 | {@link ChatGroupManager.downloadGroupSharedFile downloadGroupSharedFile} | 下载群共享文件。 |
 | {@link ChatGroupManager.removeGroupSharedFile removeGroupSharedFile} | 删除指定群共享文件。 |
 | {@link ChatGroupManager.updateGroupAnnouncement updateGroupAnnouncement} | 更新群公告。 |
+| {@link ChatGroupManager.updateGroupAvatar updateGroupAvatar} | 更新群组头像。 |
 | {@link ChatGroupManager.updateGroupExtension updateGroupExtension} | 更新群组扩展字段信息。 |
 | {@link ChatGroupManager.joinPublicGroup joinPublicGroup} | 加入公开群组。 |
 | {@link ChatGroupManager.requestToJoinPublicGroup requestToJoinPublicGroup} | 申请加入群组。 |
@@ -307,7 +314,9 @@ ChatSDK 是一个高度可靠的全球交流平台，您的用户可以在其中
 | {@link ChatGroupEventListener.onAdminRemoved onAdminRemoved} | 取消成员的管理员权限的回调。 |
 | {@link ChatGroupEventListener.onOwnerChanged onOwnerChanged} | 转移群主权限的回调。 |
 | {@link ChatGroupEventListener.onMemberJoined onMemberJoined} | 新成员加入群组的回调。 |
+| {@link ChatGroupEventListener.onMembersJoined onMembersJoined} | 多个群成员加入群组的回调。 |
 | {@link ChatGroupEventListener.onMemberExited onMemberExited} | 群组成员主动退出回调。 |
+| {@link ChatGroupEventListener.onMembersExited onMembersExited} | 多个群组成员主动退出回调。 |
 | {@link ChatGroupEventListener.onAnnouncementChanged onAnnouncementChanged} | 群公告更新回调。 |
 | {@link ChatGroupEventListener.onSharedFileAdded onSharedFileAdded} | 群组添加共享文件回调。 |
 | {@link ChatGroupEventListener.onSharedFileDeleted onSharedFileDeleted} | 群组删除共享文件回调。 |
@@ -455,6 +464,7 @@ ChatSDK 是一个高度可靠的全球交流平台，您的用户可以在其中
 | {@link ChatConversation.getMsgsWithMsgType getMsgsWithMsgType} | 从本地数据库中检索会话中某种类型的消息。 |
 | {@link ChatConversation.getMessages getMessages} | 从本地数据库中检索会话中一定数量的消息。 |
 | {@link ChatConversation.getMsgs getMsgs} | 从本地数据库中检索会话中指定数量的消息。 |
+| {@link ChatConversation.getMessagesWithIds getMessagesWithIds} | 从本地获取会话中指定 ID 的消息。 |
 | {@link ChatConversation.getMessagesWithKeyword getMessagesWithKeyword} | 检索本地数据库中会话中带有关键字的消息。 |
 | {@link ChatConversation.getMsgsWithKeyword getMsgsWithKeyword} | 获取指定用户在一定时间段内在会话中发送的消息。 |
 | {@link ChatConversation.getMessageWithTimestamp getMessageWithTimestamp} | 获取本地数据库中某个会话在一定时间内发送和接收的消息。 |
