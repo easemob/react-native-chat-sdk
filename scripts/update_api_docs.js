@@ -73,10 +73,13 @@ const del1 =
   /<svg xmlns="http:\/\/www\.w3\.org\/2000\/svg" class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"><\/path><path d="M10 14a3\.5 3\.5 0 0 0 5 0l4 -4a3\.5 3\.5 0 0 0 -5 -5l-.5 .5"><\/path><path d="M14 10a3\.5 3\.5 0 0 0 -5 0l-4 4a3\.5 3\.5 0 0 0 5 5l\.5 -\.5"><\/path><\/svg>/g;
 const del2 =
   /<li>Defined in <a href="https:\/\/github\.com\/easemob\/react-native-chat-sdk(_|\/|\s|[0-9]|[a-z]|[A-Z]|#|\.|"|>|:)+<\/a><\/li>/g;
+const del3 =
+  /<ul><li>Defined in (_|\/|\s|[0-9]|[a-z]|[A-Z]|#|\.|"|>|:)+<\/li><\/ul>/g;
 const title = `class="title">Chat SDK for React Native ${version}</a>`;
 
 deleteContent(dirPath, del1);
 deleteContent(dirPath, del2);
+deleteContent(dirPath, del3);
 replaceContent(dirPath, `class="title">react-native-chat-sdk</a>`, title);
 
 if (type === 'agora') {
