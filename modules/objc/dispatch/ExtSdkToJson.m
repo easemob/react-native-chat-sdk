@@ -541,7 +541,7 @@
 - (NSDictionary *)toJsonObject {
     NSMutableDictionary *ret = [NSMutableDictionary dictionary];
     ret[@"convId"] = self.conversationId;
-    ret[@"convType"] = @([self.class conversationTypeToInt:self.type]);
+    ret[@"convType"] = @([ExtSdkConvertHelper conversationTypeToInt:self.type]);
     ret[@"isChatThread"] = @(self.isChatThread);
     ret[@"isPinned"] = @(self.isPinned);
     ret[@"pinnedTime"] = @(self.pinnedTime);

@@ -18,5 +18,6 @@
     "shengwang",
     "typecheck"
   ],
-  "java.configuration.updateBuildConfiguration": "interactive"
+  "java.configuration.updateBuildConfiguration": "interactive",
+  "cmake.sourceDirectory": "/Users/asterisk/Codes/rn/react-native-chat-sdk-rn72/example/node_modules/react-native/ReactCommon/jsc"
 }
