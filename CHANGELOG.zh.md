@@ -2,6 +2,10 @@ _Chinese | [English](./CHANGELOG.md)_
 
 # Update Log
 
+## 1.11.1
+
+- 修复 ios 平台 会话类型的数据 转换问题。
+
 ## 1.11.0
 
 - 依赖的原生 SDK 升级到版本（`iOS` 4.15.1 和`Android` 4.15.2）。

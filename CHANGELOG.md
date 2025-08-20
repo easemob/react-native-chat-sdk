@@ -2,6 +2,10 @@ _English | [Chinese](./CHANGELOG.zh.md)_
 
 # Update Log
 
+## 1.11.1
+
+- Fix the data conversion issue of session types on the ios platform.
+
 ## 1.11.0
 
 - Dependent native SDKs are upgraded to versions (iOS 4.15.1 and Android 4.15.2).
