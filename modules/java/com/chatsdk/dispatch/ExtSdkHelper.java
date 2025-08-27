@@ -1606,7 +1606,7 @@ class ExtSdkFetchMessageOptionHelper {
     static EMFetchMessageOption fromJson(JSONObject json) throws JSONException {
         EMFetchMessageOption options = new EMFetchMessageOption();
         EMConversation.EMSearchDirection direction =
-            ExtSdkEMSearchDirectionHelper.toDirection(json.getString("direction"));
+            json.getInt("direction") == 0 ? EMConversation.EMSearchDirection.UP : EMConversation.EMSearchDirection.DOWN;
         options.setDirection(direction);
         options.setIsSave(json.getBoolean("needSave"));
         options.setStartTime(json.getLong("startTs"));
