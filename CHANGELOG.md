@@ -2,6 +2,10 @@ _English | [Chinese](./CHANGELOG.zh.md)_
 
 # Update Log
 
+## 1.11.2
+
+- Fix the data conversion issue of EMFetchMessageOption on the android platform.
+
 ## 1.11.1
 
 - Fix the data conversion issue of session types on the ios platform.

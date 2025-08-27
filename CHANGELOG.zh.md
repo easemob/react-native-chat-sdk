@@ -2,6 +2,10 @@ _Chinese | [English](./CHANGELOG.md)_
 
 # Update Log
 
+## 1.11.2
+
+- 修复 android 平台 搜索历史消息的数据 转换问题。
+
 ## 1.11.1
 
 - 修复 ios 平台 会话类型的数据 转换问题。
