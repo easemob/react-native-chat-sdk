@@ -2,6 +2,10 @@ _Chinese | [English](./CHANGELOG.md)_
 
 # Update Log
 
+## 1.11.3
+
+- 修复缺失的功能：是否在聊天的禁言列表。
+
 ## 1.11.2
 
 - 修复 android 平台 搜索历史消息的数据 转换问题。

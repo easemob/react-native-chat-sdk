@@ -1106,6 +1106,10 @@ static NSString *const TAG = @"ExtSdkDispatch";
     case ExtSdkMethodKeymodifyMsgBodyValue:
         [[ExtSdkChatManagerWrapper getInstance] modifyMsgBody:ps withMethodType:methodType result:callback];
         break;
+        
+    case ExtSdkMethodKeyIsMemberInChatRoomMuteListFromServerValue:
+        [[ExtSdkChatroomManagerWrapper getInstance] isMemberInChatRoomMuteListFromServer:ps withMethodType:methodType result:callback];
+        break;
 
     default:
         [callback onFail:1 withExtension:[NSString stringWithFormat:@"not implement: %@", methodType]];

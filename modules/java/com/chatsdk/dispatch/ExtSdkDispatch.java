@@ -952,6 +952,10 @@ public class ExtSdkDispatch implements ExtSdkApi {
                 ExtSdkChatManagerWrapper.getInstance().modifyMsgBody(jsonParams, methodType, callback);
                 break;
 
+              case ExtSdkMethodType.isMemberInChatRoomMuteListFromServer:
+                ExtSdkChatRoomManagerWrapper.getInstance().isMemberInChatRoomMuteListFromServer(jsonParams, methodType, callback);
+                break;
+
             default:
                 callback.fail(1, "no implement: " + methodType);
                 break;

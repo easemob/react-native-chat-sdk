@@ -139,6 +139,9 @@ export interface StateChatRoomMessage extends StateBase {
     keys: string[];
     forced: boolean;
   };
+  isMemberInChatRoomMuteList: {
+    roomId: string;
+  };
 }
 export class ChatRoomManagerLeafScreen extends LeafScreenBase<StateChatRoomMessage> {
   protected static TAG = 'ChatRoomManagerLeafScreen';
@@ -585,6 +588,17 @@ export class ChatRoomManagerLeafScreen extends LeafScreenBase<StateChatRoomMessa
           ChatClient.getInstance().roomManager.joinChatRoomEx({
             ...this.state.joinChatRoomEx,
           }),
+          ChatRoomManagerLeafScreen.TAG,
+          name
+        );
+        break;
+      }
+      case MN.isMemberInChatRoomMuteList: {
+        const { roomId } = this.state.isMemberInChatRoomMuteList;
+        this.tryCatch(
+          ChatClient.getInstance().roomManager.isMemberInChatRoomMuteList(
+            roomId
+          ),
           ChatRoomManagerLeafScreen.TAG,
           name
         );

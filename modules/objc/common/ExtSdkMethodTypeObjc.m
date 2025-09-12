@@ -380,6 +380,8 @@
           ExtSdkMethodKeygetMessagesWithIds : @(ExtSdkMethodKeygetMessagesWithIdsValue),
           ExtSdkMethodKeygetConvsMsgsWithKeyword : @(ExtSdkMethodKeygetConvsMsgsWithKeywordValue),
           ExtSdkMethodKeymodifyMsgBody : @(ExtSdkMethodKeymodifyMsgBodyValue),
+          
+          ExtSdkMethodKeyIsMemberInChatRoomMuteListFromServer : @(ExtSdkMethodKeyIsMemberInChatRoomMuteListFromServerValue),
       };
     });
     if (nil != key) {

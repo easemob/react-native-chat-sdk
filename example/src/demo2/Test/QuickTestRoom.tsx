@@ -697,6 +697,22 @@ export class QuickTestScreenRoom extends QuickTestScreenBase<
           );
         }
         break;
+      case MN.isMemberInChatRoomMuteList: {
+        const methodName = this.metaData.get(
+          MN.isMemberInChatRoomMuteList
+        )!.methodName;
+        console.log(`${MN.isMemberInChatRoomMuteList} === ${methodName}`);
+        const roomId = this.metaData.get(MN.isMemberInChatRoomMuteList)!
+          .params[0]!.paramDefaultValue;
+        this.tryCatch(
+          ChatClient.getInstance().roomManager.isMemberInChatRoomMuteList(
+            roomId
+          ),
+          QuickTestScreenRoom.TAG,
+          name
+        );
+        break;
+      }
       default:
         break;
     }

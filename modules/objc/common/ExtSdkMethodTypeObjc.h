@@ -201,6 +201,8 @@ static NSString *_Nonnull const ExtSdkMethodKeyRemoveMembersFromChatRoomWhiteLis
 static NSString *_Nonnull const ExtSdkMethodKeyFetchChatRoomWhiteListFromServer = @"fetchChatRoomAllowListFromServer";
 static NSString *_Nonnull const ExtSdkMethodKeyIsMemberInChatRoomWhiteListFromServer =
     @"isMemberInChatRoomAllowListFromServer";
+static NSString *_Nonnull const ExtSdkMethodKeyIsMemberInChatRoomMuteListFromServer =
+    @"isMemberInChatRoomMuteListFromServer";
 
 static NSString *_Nonnull const ExtSdkMethodKeyMuteAllChatRoomMembers = @"muteAllChatRoomMembers";
 static NSString *_Nonnull const ExtSdkMethodKeyUnMuteAllChatRoomMembers = @"unMuteAllChatRoomMembers";
@@ -745,6 +747,9 @@ static const int ExtSdkMethodKeyupdateGroupAvatarValue = 2022;
 static const int ExtSdkMethodKeygetMessagesWithIdsValue = 2023;
 static const int ExtSdkMethodKeygetConvsMsgsWithKeywordValue = 2024;
 static const int ExtSdkMethodKeymodifyMsgBodyValue = 2025;
+
+// 2025-09-12
+static const int ExtSdkMethodKeyIsMemberInChatRoomMuteListFromServerValue = 2026;
 
 @interface ExtSdkMethodTypeObjc : NSObject
 

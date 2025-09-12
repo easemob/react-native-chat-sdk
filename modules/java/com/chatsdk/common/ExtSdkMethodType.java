@@ -355,5 +355,7 @@ public class ExtSdkMethodType {
     public static final String getConvsMsgsWithKeyword = "getConvsMsgsWithKeyword";
     public static final String modifyMsgBody = "modifyMsgBody";
 
+    public static final String isMemberInChatRoomMuteListFromServer = "isMemberInChatRoomMuteListFromServer";
+
     // TODO: EMChatThreadManagerListener
 }
