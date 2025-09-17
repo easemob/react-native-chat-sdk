@@ -109,7 +109,6 @@ import {
   MTgetMessagesWithIds,
 } from './__internal__/Consts';
 import { Native } from './__internal__/Native';
-import { ChatClient } from './ChatClient';
 import type { ChatMessageEventListener } from './ChatEvents';
 import { chatlog } from './common/ChatConst';
 import {
@@ -123,10 +122,10 @@ import { ChatCursorResult } from './common/ChatCursorResult';
 import { ChatError } from './common/ChatError';
 import { ChatGroupMessageAck } from './common/ChatGroup';
 import {
-  ChatFetchMessageOptions,
+  type ChatFetchMessageOptions,
   ChatMessage,
-  ChatMessageBody,
-  ChatMessageChatType,
+  type ChatMessageBody,
+  type ChatMessageChatType,
   ChatMessagePinInfo,
   ChatMessageSearchScope,
   ChatMessageStatus,
@@ -144,6 +143,7 @@ import {
   ChatMessageThreadEvent,
 } from './common/ChatMessageThread';
 import { ChatTranslateLanguage } from './common/ChatTranslateLanguage';
+import { Factory } from './__internal__/Factory';
 
 /**
  * The chat manager class, responsible for sending and receiving messages, managing conversations (including loading and deleting conversations), and downloading attachments.
@@ -186,7 +186,6 @@ import { ChatTranslateLanguage } from './common/ChatTranslateLanguage';
  */
 export class ChatManager extends BaseManager {
   static TAG = 'ChatManager';
-
   private _messageListeners: Set<ChatMessageEventListener>;
 
   constructor() {
@@ -3244,7 +3243,7 @@ export class ChatManager extends BaseManager {
       );
       throw new ChatError({ code: 1, description: 'msgIds count is 0' });
     }
-    if ((await ChatClient.getInstance().isLoginBefore()) === false) {
+    if ((await Factory.getChatClient().isLoginBefore()) === false) {
       // todo: temp fix native
       console.log(
         `${ChatManager.TAG}: removeMessagesFromServerWithMsgIds: not logged in yet.`
@@ -3298,7 +3297,7 @@ export class ChatManager extends BaseManager {
       );
       throw new ChatError({ code: 1, description: 'timestamp <= 0' });
     }
-    if ((await ChatClient.getInstance().isLoginBefore()) === false) {
+    if ((await Factory.getChatClient().isLoginBefore()) === false) {
       // todo: temp fix native
       console.log(
         `${ChatManager.TAG}: removeMessagesFromServerWithTimestamp: not logged in yet.`

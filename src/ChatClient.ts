@@ -1,4 +1,5 @@
 import { type EmitterSubscription, NativeEventEmitter } from 'react-native';
+import { Factory } from './__internal__/Factory';
 
 import { BaseManager } from './__internal__/Base';
 import {
@@ -117,6 +118,7 @@ export class ChatClient extends BaseManager {
 
   private constructor() {
     super();
+    Factory.setChatClient(this);
 
     this._chatManager = new ChatManager();
     this._groupManager = new ChatGroupManager();

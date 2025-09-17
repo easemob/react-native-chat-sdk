@@ -2,6 +2,10 @@ _Chinese | [English](./CHANGELOG.md)_
 
 # Update Log
 
+## 1.11.4
+
+- 修复文件之间循环引用问题。
+
 ## 1.11.3
 
 - 修复缺失的功能：是否在聊天的禁言列表。

@@ -1,10 +1,10 @@
 import { ExceptionHandler } from '../__internal__/ErrorHandler';
 import { generateMessageId, getNowTimestamp } from '../__internal__/Utils';
-import { ChatClient } from '../ChatClient';
 import type { ChatSearchDirection } from './ChatConversation';
 import { ChatError, ChatException } from './ChatError';
 import type { ChatMessageReaction } from './ChatMessageReaction';
 import type { ChatMessageThread } from './ChatMessageThread';
+import { Factory } from '../__internal__/Factory';
 
 /**
  * The conversation types.
@@ -631,7 +631,7 @@ export class ChatMessage {
     receiverList?: string[];
   }): ChatMessage {
     let r = new ChatMessage({
-      from: ChatClient.getInstance().currentUserName ?? '',
+      from: Factory.getChatClient().currentUserName ?? '',
       body: params.body,
       direction: 'send',
       to: params.targetId,
@@ -1117,28 +1117,28 @@ export class ChatMessage {
    * Gets the list of Reactions.
    */
   public get reactionList(): Promise<Array<ChatMessageReaction>> {
-    return ChatClient.getInstance().chatManager.getReactionList(this.msgId);
+    return Factory.getChatClient().chatManager.getReactionList(this.msgId);
   }
 
   /**
    * Gets the count of read receipts of a group message.
    */
   public get groupReadCount(): Promise<number | undefined> {
-    return ChatClient.getInstance().chatManager.groupAckCount(this.msgId);
+    return Factory.getChatClient().chatManager.groupAckCount(this.msgId);
   }
 
   /**
    * Gets details of a message thread.
    */
   public get threadInfo(): Promise<ChatMessageThread | undefined> {
-    return ChatClient.getInstance().chatManager.getMessageThread(this.msgId);
+    return Factory.getChatClient().chatManager.getMessageThread(this.msgId);
   }
 
   /**
    * Get the list of pinned messages in the conversation.
    */
   public get getPinInfo(): Promise<ChatMessagePinInfo | undefined> {
-    return ChatClient.getInstance().chatManager.getMessagePinInfo(this.msgId);
+    return Factory.getChatClient().chatManager.getMessagePinInfo(this.msgId);
   }
 
   /**

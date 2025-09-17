@@ -1,6 +1,6 @@
 {
   "name": "react-native-chat-sdk",
-  "version": "1.11.3",
+  "version": "1.11.4",
   "description": "An instant messaging SDK product is a software development kit that provides interfaces and functionalities for building and integrating real-time messaging features, enabling developers to implement instant messaging services within their applications.",
   "main": "lib/commonjs/index",
   "module": "lib/module/index",
@@ -45,7 +45,7 @@
     "clean:generated": "del-cli android/build example/android/build example/android/app/build example/ios/build lib",
     "clean:node_modules": "rm -rf example/node_modules && rm -rf node_modules/",
     "clean:docs": "del-cli docs/build",
-    "prepare": "yarn run gen:version_file && yarn run gen:cmake_file && yarn run gen:env_file && yarn run build:exports",
+    "prepare": "yarn run gen:version_file && yarn run gen:cmake_file && yarn run gen:env_file && yarn run build:exports && yarn run check:circular:dpdm",
     "gen:env_file": "cd scripts && node generate-env.js",
     "gen:version_file": "cd scripts && node generate-version.js",
     "gen:cmake_file": "cd scripts && node generate-cmake.js",
@@ -57,6 +57,8 @@
     "doc:cn:update": "node ./scripts/update_api_docs.js 1.11.0 undefined easemob cn",
     "doc:agora:update": "node ./scripts/update_api_docs.js 1.4.0 undefined agora en",
     "doc:shengwang:update": "node ./scripts/update_api_docs.js 1.4.0 undefined shengwang en",
+    "check:circular:dpdm": "dpdm --circular --transform --include ts src/",
+    "check:circular:madge": "madge --circular --extensions ts src/",
     "release": "release-it"
   },
   "keywords": [
@@ -84,10 +86,12 @@
     "@types/react-native": "0.70.0",
     "commitlint": "^17.0.2",
     "del-cli": "^5.0.0",
+    "dpdm": "^3.14.0",
     "eslint": "^8.4.1",
     "eslint-config-prettier": "^8.5.0",
     "eslint-plugin-prettier": "^4.0.0",
     "jest": "^28.1.1",
+    "madge": "^8.0.0",
     "pod-install": "^0.1.0",
     "prettier": "^2.0.5",
     "react": "18.2.0",

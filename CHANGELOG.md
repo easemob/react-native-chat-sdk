@@ -2,6 +2,10 @@ _English | [Chinese](./CHANGELOG.zh.md)_
 
 # Update Log
 
+## 1.11.4
+
+- Fix circular dependencies between files.
+
 ## 1.11.3
 
 - Fix the missing feature: Whether it is in the muted list of the chat.
