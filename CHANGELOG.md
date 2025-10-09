@@ -2,6 +2,10 @@ _English | [Chinese](./CHANGELOG.zh.md)_
 
 # Update Log
 
+## 1.11.5
+
+- Add 16KB page alignment support for Android 15+ compatibility.
+
 ## 1.11.4
 
 - Fix circular dependencies between files.
