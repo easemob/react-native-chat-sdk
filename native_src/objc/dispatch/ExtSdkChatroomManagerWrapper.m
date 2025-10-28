@@ -697,6 +697,16 @@
     }
 }
 
+- (void)isMemberInChatRoomMuteListFromServer:(NSDictionary *)param
+                  withMethodType:(NSString *)aChannelName
+                                      result:(nonnull id<ExtSdkCallbackObjc>)result {
+  NSString *roomId = param[@"roomId"];
+  __weak typeof(self) weakSelf = self;
+  [EMClient.sharedClient.roomManager isMemberInMuteListFromServerWithChatroomId:roomId completion:^(BOOL inMuteList, EMError * _Nullable aError) {
+    [weakSelf onResult:result withMethodType:aChannelName withError:aError withParams:@(inMuteList)];
+  }];
+}
+
 #pragma mark - EMChatroomManagerDelegate
 
 - (void)userDidJoinChatroom:(EMChatroom *)aChatroom user:(NSString *)aUsername {

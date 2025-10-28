@@ -337,5 +337,7 @@ public class ExtSdkMethodType {
     public static final String unpinMessage = "unpinMessage";
     public static final String fetchPinnedMessages = "fetchPinnedMessages";
 
+    public static final String isMemberInChatRoomMuteListFromServer = "isMemberInChatRoomMuteListFromServer";
+
     // TODO: EMChatThreadManagerListener
 }

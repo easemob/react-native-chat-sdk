@@ -464,6 +464,8 @@ RCT_EXPORT_METHOD(callMethod
         ExtSdkMethodKeypinMessage,
         ExtSdkMethodKeyunpinMessage,
         ExtSdkMethodKeyfetchPinnedMessages,
+
+        ExtSdkMethodKeyIsMemberInChatRoomMuteListFromServer,
     ];
     //    NSLog(@"%@: supportedEvents: %@", TAG, ret);
     return ret;

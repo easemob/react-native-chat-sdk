@@ -352,6 +352,8 @@
           ExtSdkMethodKeyfetchPinnedMessages : @(ExtSdkMethodKeyfetchPinnedMessagesValue),
           ExtSdkMethodKeypinMessage : @(ExtSdkMethodKeypinMessageValue),
           ExtSdkMethodKeyunpinMessage : @(ExtSdkMethodKeyunpinMessageValue),
+
+          ExtSdkMethodKeyIsMemberInChatRoomMuteListFromServer : @(ExtSdkMethodKeyIsMemberInChatRoomMuteListFromServerValue),
       };
     });
     if (nil != key) {

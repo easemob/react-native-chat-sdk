@@ -201,6 +201,8 @@ export const MTfetchChatRoomAllowListFromServer =
   'fetchChatRoomAllowListFromServer';
 export const MTisMemberInChatRoomAllowListFromServer =
   'isMemberInChatRoomAllowListFromServer';
+export const MTisMemberInChatRoomMuteListFromServer =
+  'isMemberInChatRoomMuteListFromServer';
 
 export const MTmuteAllChatRoomMembers = 'muteAllChatRoomMembers';
 export const MTunMuteAllChatRoomMembers = 'unMuteAllChatRoomMembers';

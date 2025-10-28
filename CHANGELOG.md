@@ -2,6 +2,11 @@ _English | [Chinese](./CHANGELOG.zh.md)_
 
 # Update Log
 
+## 1.3.5
+
+- Fix the missing feature: Whether it is in the muted list of the chat.
+- Add 16KB page alignment support for Android 15+ compatibility.
+
 ## 1.3.4
 
 - Fixed the crash case with receive recall notification for ios platform.

@@ -20,6 +20,7 @@ import {
   MTfetchPublicChatRoomsFromServer,
   MTgetChatRoom,
   MTisMemberInChatRoomAllowListFromServer,
+  MTisMemberInChatRoomMuteListFromServer,
   MTjoinChatRoom,
   MTleaveChatRoom,
   MTmuteAllChatRoomMembers,
@@ -884,6 +885,31 @@ export class ChatRoomManager extends Native {
     );
     ChatRoomManager.checkErrorFromResult(r);
     let ret: boolean = r?.[MTisMemberInChatRoomAllowListFromServer];
+    return ret;
+  }
+
+  /**
+   * Checks whether the member is in the mute list of the chat room.
+   *
+   * @param roomId The chat room ID.
+   * @returns Whether the member is in the mute list of the chat room.
+   *          - `true`: Yes.
+   *          - `false`: No.
+   *
+   * @throws A description of the exception. See {@link ChatError}.
+   */
+  public async isMemberInChatRoomMuteList(roomId: string): Promise<boolean> {
+    chatlog.log(`${ChatRoomManager.TAG}: isMemberInChatRoomMuteList: `, roomId);
+    let r: any = await Native._callMethod(
+      MTisMemberInChatRoomMuteListFromServer,
+      {
+        [MTisMemberInChatRoomMuteListFromServer]: {
+          roomId,
+        },
+      }
+    );
+    ChatRoomManager.checkErrorFromResult(r);
+    let ret: boolean = r?.[MTisMemberInChatRoomMuteListFromServer];
     return ret;
   }
 

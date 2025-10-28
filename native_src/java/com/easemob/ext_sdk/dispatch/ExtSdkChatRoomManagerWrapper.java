@@ -564,6 +564,23 @@ public class ExtSdkChatRoomManagerWrapper extends ExtSdkWrapper {
         }
     }
 
+
+  public void isMemberInChatRoomMuteListFromServer(JSONObject param, String channelName, ExtSdkCallback result)
+    throws JSONException {
+    String roomId = param.getString("roomId");
+    EMClient.getInstance().chatroomManager().asyncCheckIfInMuteList(roomId, new EMValueCallBack<Boolean>() {
+      @Override
+      public void onSuccess(Boolean aBoolean) {
+        ExtSdkWrapper.onSuccess(result, channelName, aBoolean);
+      }
+
+      @Override
+      public void onError(int i, String s) {
+        ExtSdkWrapper.onError(result, i, s);
+      }
+    });
+  }
+
     private void registerEaseListener() {
         if (this.roomChangeListener != null) {
             EMClient.getInstance().chatroomManager().removeChatRoomListener(this.roomChangeListener);
