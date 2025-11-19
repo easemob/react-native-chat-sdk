@@ -357,5 +357,10 @@ public class ExtSdkMethodType {
 
     public static final String isMemberInChatRoomMuteListFromServer = "isMemberInChatRoomMuteListFromServer";
 
+    // 2025-11-19
+    public static final String getRTCTokenInfoWithChannelName = "getRTCTokenInfoWithChannelName";
+    public static final String getUserIdsWithRTCUids = "getUserIdsWithRTCUids";
+
+
     // TODO: EMChatThreadManagerListener
 }

@@ -380,6 +380,12 @@ static NSString *_Nonnull const ExtSdkMethodKeygetMessagesWithIds = @"getMessage
 static NSString *_Nonnull const ExtSdkMethodKeygetConvsMsgsWithKeyword = @"getConvsMsgsWithKeyword";
 static NSString *_Nonnull const ExtSdkMethodKeymodifyMsgBody = @"modifyMsgBody";
 
+// 2025-11-19
+
+static NSString *_Nonnull const ExtSdkMethodKeygetRTCTokenInfoWithChannelName = @"getRTCTokenInfoWithChannelName";
+static NSString *_Nonnull const ExtSdkMethodKeygetUserIdsWithRTCUids = @"getUserIdsWithRTCUids";
+
+
 // ############################################################################
 // value start
 // ############################################################################
@@ -750,6 +756,10 @@ static const int ExtSdkMethodKeymodifyMsgBodyValue = 2025;
 
 // 2025-09-12
 static const int ExtSdkMethodKeyIsMemberInChatRoomMuteListFromServerValue = 2026;
+
+// 2025-11-19
+static const int ExtSdkMethodKeygetRTCTokenInfoWithChannelNameValue = 2027;
+static const int ExtSdkMethodKeygetUserIdsWithRTCUidsValue = 2028;
 
 @interface ExtSdkMethodTypeObjc : NSObject
 

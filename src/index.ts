@@ -27,4 +27,5 @@ export * from './common/ChatRoom';
 export * from './common/ChatSilentMode';
 export * from './common/ChatTranslateLanguage';
 export * from './common/ChatUserInfo';
+export * from './common/ChatRTCTokenInfo';
 export { default as CHAT_VERSION } from './version';

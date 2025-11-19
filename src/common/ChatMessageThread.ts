@@ -92,6 +92,11 @@ export enum ChatMessageThreadOperation {
    * One or more messages are updated in the message thread.
    */
   Update_Msg,
+
+  /**
+   * A user is removed from the message thread.
+   */
+  User_Removed,
 }
 
 /**

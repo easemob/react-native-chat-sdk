@@ -382,6 +382,9 @@
           ExtSdkMethodKeymodifyMsgBody : @(ExtSdkMethodKeymodifyMsgBodyValue),
           
           ExtSdkMethodKeyIsMemberInChatRoomMuteListFromServer : @(ExtSdkMethodKeyIsMemberInChatRoomMuteListFromServerValue),
+          
+          ExtSdkMethodKeygetRTCTokenInfoWithChannelName : @(ExtSdkMethodKeygetRTCTokenInfoWithChannelNameValue),
+          ExtSdkMethodKeygetUserIdsWithRTCUids : @(ExtSdkMethodKeygetUserIdsWithRTCUidsValue),
       };
     });
     if (nil != key) {

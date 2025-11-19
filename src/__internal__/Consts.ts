@@ -388,3 +388,8 @@ export const MTgetMessageCountWithTimestamp = 'getMessageCountWithTimestamp';
 export const MTgetMessageCount = 'getMessageCount';
 export const MTonOfflineMessageSyncStart = 'onOfflineMessageSyncStart';
 export const MTonOfflineMessageSyncFinish = 'onOfflineMessageSyncFinish';
+
+// 2025-11-19 added
+export const MTgetRTCTokenInfoWithChannelName =
+  'getRTCTokenInfoWithChannelName';
+export const MTgetUserIdsWithRTCUids = 'getUserIdsWithRTCUids';

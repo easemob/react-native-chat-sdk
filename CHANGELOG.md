@@ -2,6 +2,10 @@ _English | [Chinese](./CHANGELOG.zh.md)_
 
 # Update Log
 
+## 1.12.0
+
+- Dependent native SDKs are upgraded to versions (iOS 4.16.2 and Android 4.16.1).
+
 ## 1.11.5
 
 - Add 16KB page alignment support for Android 15+ compatibility.

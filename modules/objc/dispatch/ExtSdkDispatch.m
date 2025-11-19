@@ -1106,9 +1106,19 @@ static NSString *const TAG = @"ExtSdkDispatch";
     case ExtSdkMethodKeymodifyMsgBodyValue:
         [[ExtSdkChatManagerWrapper getInstance] modifyMsgBody:ps withMethodType:methodType result:callback];
         break;
-        
+
     case ExtSdkMethodKeyIsMemberInChatRoomMuteListFromServerValue:
-        [[ExtSdkChatroomManagerWrapper getInstance] isMemberInChatRoomMuteListFromServer:ps withMethodType:methodType result:callback];
+        [[ExtSdkChatroomManagerWrapper getInstance] isMemberInChatRoomMuteListFromServer:ps
+                                                                          withMethodType:methodType
+                                                                                  result:callback];
+        break;
+
+    case ExtSdkMethodKeygetRTCTokenInfoWithChannelNameValue:
+        [[ExtSdkClientWrapper getInstance] getRTCTokenInfoWithChannelName:ps withMethodType:methodType result:callback];
+        break;
+
+    case ExtSdkMethodKeygetUserIdsWithRTCUidsValue:
+        [[ExtSdkClientWrapper getInstance] getUserIdsWithRTCUids:ps withMethodType:methodType result:callback];
         break;
 
     default:

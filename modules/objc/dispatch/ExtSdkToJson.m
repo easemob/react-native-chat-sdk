@@ -443,6 +443,9 @@
     case EMThreadOperationUpdate_msg:
         ret = 4;
         break;
+    case EMThreadOperationUserRemoved:
+        ret = 5;
+        break;
     }
 
     return ret;

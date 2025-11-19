@@ -9,7 +9,9 @@ import {
   MTcreateAccount,
   MTgetCurrentUser,
   MTgetLoggedInDevicesFromServer,
+  MTgetRTCTokenInfoWithChannelName,
   MTgetToken,
+  MTgetUserIdsWithRTCUids,
   MTinit,
   MTisConnected,
   MTisLoggedInBefore,
@@ -65,6 +67,7 @@ import { ChatPushConfig } from './common/ChatPushConfig';
 import { eventEmitter } from './__specs__';
 import { Native } from './__internal__/Native';
 import { ChatError } from './common/ChatError';
+import { ChatRTCTokenInfo } from './common/ChatRTCTokenInfo';
 
 chatlog.log('dev:eventEmitter: ', eventEmitter);
 
@@ -951,6 +954,62 @@ export class ChatClient extends BaseManager {
       },
     });
     ChatPushManager.checkErrorFromResult(r);
+  }
+
+  /**
+   * Gets the Agora RTC token, token expiration time, and RTC UID matching the Agora Chat user ID according to the channel name (channelName).
+   *
+   * You must enable the Agora RTC feature before calling this API.
+   *
+   * If the channel name is set to null, an RTC token valid for all channels will be generated.
+   *
+   * This is an asynchronous method.
+   *
+   * @param channelName The Agora RTC channel name.
+   * @returns The RTC token information. See {@link ChatRTCTokenInfo}.
+   *
+   * @throws A description of the exception. See {@link ChatError}.
+   */
+  public async getRTCTokenInfoWithChannelName(
+    channelName: string
+  ): Promise<ChatRTCTokenInfo> {
+    chatlog.log(
+      `${ChatClient.TAG}: getRTCTokenInfoWithChannelName: `,
+      channelName
+    );
+    let r: any = await Native._callMethod(MTgetRTCTokenInfoWithChannelName, {
+      [MTgetRTCTokenInfoWithChannelName]: {
+        channelName: channelName,
+      },
+    });
+    ChatClient.checkErrorFromResult(r);
+    const params = r?.[MTgetRTCTokenInfoWithChannelName];
+    return new ChatRTCTokenInfo({ ...params });
+  }
+
+  /**
+   * Gets the Agora Chat user IDs matching the Agora RTC UIDs.
+   *
+   * @param ids The Agora RTC UID list.
+   * @returns The map of Agora RTC UIDs and Agora Chat user IDs.
+   *
+   * @throws A description of the exception. See {@link ChatError}.
+   */
+  public async getUserIdsWithRTCUids(
+    ids: Array<number>
+  ): Promise<Map<number, string>> {
+    chatlog.log(`${ChatClient.TAG}: getUserIdsWithRTCUids: `, ids);
+    let r: any = await Native._callMethod(MTgetUserIdsWithRTCUids, {
+      [MTgetUserIdsWithRTCUids]: {
+        rtcUids: ids,
+      },
+    });
+    ChatClient.checkErrorFromResult(r);
+    const ret: Map<number, string> = new Map();
+    Object.entries(r?.[MTgetUserIdsWithRTCUids]).forEach((v: [string, any]) => {
+      ret.set(Number(v[0]), v[1]);
+    });
+    return ret;
   }
 
   /**

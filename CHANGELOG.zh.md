@@ -2,9 +2,13 @@ _Chinese | [English](./CHANGELOG.md)_
 
 # Update Log
 
+## 1.12.0
+
+- 依赖的原生 SDK 升级到版本（`iOS` 4.16.2 和`Android` 4.16.1）。
+
 ## 1.11.5
 
-- Add 16KB page alignment support for Android 15+ compatibility
+- 新增对 Android 15+ 兼容性的 16KB 页面对齐支持。
 
 ## 1.11.4
 

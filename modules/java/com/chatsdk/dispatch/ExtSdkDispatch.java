@@ -952,8 +952,16 @@ public class ExtSdkDispatch implements ExtSdkApi {
                 ExtSdkChatManagerWrapper.getInstance().modifyMsgBody(jsonParams, methodType, callback);
                 break;
 
-              case ExtSdkMethodType.isMemberInChatRoomMuteListFromServer:
+            case ExtSdkMethodType.isMemberInChatRoomMuteListFromServer:
                 ExtSdkChatRoomManagerWrapper.getInstance().isMemberInChatRoomMuteListFromServer(jsonParams, methodType, callback);
+                break;
+
+            case ExtSdkMethodType.getRTCTokenInfoWithChannelName:
+                ExtSdkClientWrapper.getInstance().getRTCTokenInfoWithChannelName(jsonParams, methodType, callback);
+                break;
+
+            case ExtSdkMethodType.getUserIdsWithRTCUids:
+                ExtSdkClientWrapper.getInstance().getUserIdsWithRTCUids(jsonParams, methodType, callback);
                 break;
 
             default:

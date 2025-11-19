@@ -374,6 +374,45 @@
     //                                           }];
 }
 
+- (void)getRTCTokenInfoWithChannelName:(NSDictionary *)param
+                        withMethodType:(NSString *)aChannelName
+                                result:(nonnull id<ExtSdkCallbackObjc>)result {
+    NSString *channelName = param[@"channelName"];
+    __weak typeof(self) weakSelf = self;
+    [EMClient.sharedClient getRTCTokenWithChannel:channelName
+                                       completion:^(NSUInteger rtcUId, NSString *_Nullable aToken, NSInteger expiredTs,
+                                                    EMError *_Nullable aError) {
+      if (aToken != nil) {
+        [weakSelf onResult:result
+            withMethodType:aChannelName
+                 withError:aError
+                withParams:@{
+                    @"rtcToken" : aToken,
+                    @"expireTimeStamp" : @(expiredTs),
+                    @"uid" : @(rtcUId)
+                }];
+      } else {
+        [weakSelf onResult:result
+            withMethodType:aChannelName
+                 withError:aError
+                withParams:nil];
+      }
+                                         
+                                       }];
+}
+
+- (void)getUserIdsWithRTCUids:(NSDictionary *)param
+               withMethodType:(NSString *)aChannelName
+                       result:(nonnull id<ExtSdkCallbackObjc>)result {
+    NSArray<NSNumber *> *ids = param[@"rtcUids"];
+    __weak typeof(self) weakSelf = self;
+    [EMClient.sharedClient
+        getUserIdByRTCUIds:ids
+                completion:^(NSDictionary<NSNumber *, NSString *> *_Nullable accountInfos, EMError *_Nullable aError) {
+                  [weakSelf onResult:result withMethodType:aChannelName withError:aError withParams:accountInfos];
+                }];
+}
+
 - (void)activeNumbersReachLimitation {
     [self onReceive:ExtSdkMethodKeyOnAppActiveNumberReachLimit withParams:nil];
 }

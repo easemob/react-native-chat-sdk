@@ -471,8 +471,11 @@ RCT_EXPORT_METHOD(multiply : (double)a b : (double)b resolve : (RCTPromiseResolv
         ExtSdkMethodKeygetMessagesWithIds,
         ExtSdkMethodKeygetConvsMsgsWithKeyword,
         ExtSdkMethodKeymodifyMsgBody,
-        
+
         ExtSdkMethodKeyIsMemberInChatRoomMuteListFromServer,
+
+        ExtSdkMethodKeygetRTCTokenInfoWithChannelName,
+        ExtSdkMethodKeygetUserIdsWithRTCUids,
     ];
     //    NSLog(@"%@: supportedEvents: %@", TAG, ret);
     return ret;
