@@ -54,7 +54,7 @@
     "yarn_pack": "mkdir build && yarn run prepare && yarn pack --out build/react-native-chat-sdk.tgz",
     "doc:en": "mkdir -p ./docs/build/en && yarn exec typedoc --out ./docs/build/en --json ./docs/build/typedoc.json --tsconfig ./tsconfig.json --readme ./docs/rn_api_overview.md ./src/index.ts",
     "doc:cn": "mkdir -p ./docs/build/cn && yarn exec typedoc --out ./docs/build/cn --json ./docs/build/typedoc.json --tsconfig ./tsconfig.json --readme ./docs/rn_api_overview.zh.md ./src/index.ts",
-    "doc:cn:update": "node ./scripts/update_api_docs.js 1.11.0 undefined easemob cn",
+    "doc:cn:update": "node ./scripts/update_api_docs.js 1.12.0 undefined easemob cn",
     "doc:agora:update": "node ./scripts/update_api_docs.js 1.4.0 undefined agora en",
     "doc:shengwang:update": "node ./scripts/update_api_docs.js 1.4.0 undefined shengwang en",
     "check:circular:dpdm": "dpdm --circular --transform --include ts src/",
