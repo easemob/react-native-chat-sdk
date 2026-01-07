@@ -2,6 +2,13 @@ _English | [Chinese](./CHANGELOG.zh.md)_
 
 # Update Log
 
+## 1.13.0
+
+- Dependent native SDKs are upgraded to versions (iOS 4.17.1 and Android 4.17.1).
+- Add webSocketServer property in ChatOptions.
+- Add webSocketPort property in ChatOptions.
+- Fix bugs on native platform.
+
 ## 1.12.0
 
 - Dependent native SDKs are upgraded to versions (iOS 4.16.2 and Android 4.16.1).

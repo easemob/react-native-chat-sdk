@@ -5,6 +5,7 @@ import { ChatClient, ChatOptions, ChatPushConfig } from 'react-native-chat-sdk';
 import { datasheet } from '../__default__/Datasheet';
 import { styleValues } from '../__internal__/Css';
 import { Button } from '../__internal__/Button';
+import { restServer, webSocketServer } from '../../env';
 // import messaging from '@react-native-firebase/messaging';
 
 interface State {
@@ -132,7 +133,7 @@ export class AppKeyScreen extends Component<{ navigation: any }, State, any> {
               requireAck: false,
               requireDeliveryAck: false,
               autoAcceptGroupInvitation: true,
-              enableTLS: enableTLS === '0' ? false : true,
+              // enableTLS: enableTLS === '0' ? false : true,
               useReplacedMessageContents:
                 useReplacedMessageContents === '0' ? false : true,
               messagesReceiveCallbackIncludeSend:
@@ -141,6 +142,11 @@ export class AppKeyScreen extends Component<{ navigation: any }, State, any> {
                 regardImportMessagesAsRead === '0' ? false : true,
               pushConfig: pushConfig,
               loginExtraInfo: 'rn-test',
+              webSocketServer: webSocketServer[1],
+              webSocketPort: 80,
+              enableDNSConfig: false,
+              enableTLS: false,
+              restServer: restServer[1],
             })
           : ChatOptions.withAppId({
               appId: appId,

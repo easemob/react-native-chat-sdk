@@ -237,6 +237,20 @@ export class ChatOptions {
   uikitVersion?: string;
 
   /**
+   * The WebSocket server.
+   *
+   * This property is effective only when `enableDnsConfig` is `false`.
+   */
+  webSocketServer?: string;
+
+  /**
+   * The WebSocket server port.
+   *
+   * This property is effective only when `enableDnsConfig` is `false`.
+   */
+  webSocketPort?: number;
+
+  /**
    * @deprecated Use {@link withAppId} and {@link withAppKey} instead.
    */
   constructor(params: {
@@ -274,6 +288,8 @@ export class ChatOptions {
     loginExtraInfo?: string;
     workPathCopiable?: boolean;
     uikitVersion?: string;
+    webSocketServer?: string;
+    webSocketPort?: number;
   }) {
     if (!params.appKey && !params.appId) {
       throw new ChatError({
@@ -321,6 +337,8 @@ export class ChatOptions {
     this.loginExtraInfo = params.loginExtraInfo;
     this.workPathCopiable = params.workPathCopiable ?? false;
     this.uikitVersion = params.uikitVersion;
+    this.webSocketServer = params.webSocketServer;
+    this.webSocketPort = params.webSocketPort ?? 0;
   }
 
   static withAppId(params: {
@@ -357,6 +375,8 @@ export class ChatOptions {
     loginExtraInfo?: string;
     workPathCopiable?: boolean;
     uikitVersion?: string;
+    webSocketServer?: string;
+    webSocketPort?: number;
   }) {
     return new ChatOptions({
       ...params,
@@ -398,6 +418,8 @@ export class ChatOptions {
     loginExtraInfo?: string;
     workPathCopiable?: boolean;
     uikitVersion?: string;
+    webSocketServer?: string;
+    webSocketPort?: number;
   }) {
     return new ChatOptions({
       ...params,

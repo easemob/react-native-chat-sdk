@@ -333,7 +333,52 @@ class ExtSdkOptionsHelper {
             options.setUIKitVersion(json.getString("uikitVersion"));
         }
 
+        // 2026-01-07
+        options.setWebSocketServer(json.optString("webSocketServer"));
+        options.setWebSocketPort(json.optInt("webSocketPort"));
+
         return options;
+    }
+
+    static Map<String, Object> toJson(EMOptions options) {
+        if (options == null) {
+            return null;
+        }
+        Map<String, Object> data = new HashMap<>();
+        data.put("appKey", options.getAppKey());
+        data.put("autoLogin", options.getAutoLogin());
+//        data.put("debugModel", options.)
+        data.put("requireAck", options.getRequireAck());
+        data.put("requireDeliveryAck", options.getRequireDeliveryAck());
+        data.put("sortMessageByServerTime", options.isSortMessageByServerTime());
+        data.put("acceptInvitationAlways", options.getAcceptInvitationAlways());
+        data.put("autoAcceptGroupInvitation", options.autoAcceptGroupInvitations());
+        data.put("deleteMessagesAsExitGroup", options.deleteMessagesOnLeaveGroup());
+        data.put("deleteMessagesAsExitChatRoom", options.deleteMessagesOnLeaveChatroom());
+        data.put("isAutoDownload", options.getAutodownloadThumbnail());
+        data.put("isChatRoomOwnerLeaveAllowed", options.canChatroomOwnerLeave());
+        data.put("serverTransfer", options.getAutoTransferMessageAttachments());
+        data.put("usingHttpsOnly", options.getUsingHttpsOnly());
+//        data.put("pushConfig")
+        data.put("enableDNSConfig", options.getEnableDNSConfig());
+        data.put("imPort", options.getImPort());
+        data.put("imServer", options.getImServer());
+        data.put("restServer", options.getRestServer());
+        data.put("dnsUrl", options.getDnsUrl());
+        data.put("areaCode", options.getAreaCode());
+        data.put("enableEmptyConversation", options.isLoadEmptyConversations());
+        data.put("customDeviceName", options.getCustomDeviceName());
+        data.put("customOSType", options.getCustomOSPlatform());
+        data.put("useReplacedMessageContents", options.isUseReplacedMessageContents());
+        data.put("enableTLS", options.isEnableTLSConnection());
+        data.put("messagesReceiveCallbackIncludeSend", options.isIncludeSendMessageInMessageListener());
+        data.put("regardImportMessagesAsRead", options.regardImportedMsgAsRead());
+        data.put("loginExtraInfo", options.getLoginCustomExt());
+//        data.put("workPathCopiable", options.)
+        data.put("appId", options.getAppId());
+        data.put("webSocketServer", options.getWebSocketServer());
+        data.put("webSocketPort", options.getWebSocketPort());
+        return data;
     }
 }
 

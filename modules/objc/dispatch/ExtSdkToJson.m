@@ -1211,6 +1211,8 @@
     data[@"loginExtraInfo"] = self.loginExtensionInfo;
     data[@"workPathCopiable"] = @(self.workPathCopiable);
     data[@"appId"] = self.appId;
+    data[@"webSocketServer"] = self.webSocketServer;
+    data[@"webSocketPort"] = @(self.webSocketPort);
 
     return data;
 }
@@ -1264,6 +1266,9 @@
 
     options.loginExtensionInfo = aJson[@"loginExtraInfo"];
     options.workPathCopiable = aJson[@"workPathCopiable"];
+  
+    options.webSocketServer = aJson[@"webSocketServer"];
+    options.webSocketPort = [aJson[@"webSocketPort"] intValue];
 
     return options;
 }
