@@ -1,6 +1,6 @@
 {
   "name": "react-native-chat-sdk",
-  "version": "1.12.0",
+  "version": "1.13.0",
   "description": "An instant messaging SDK product is a software development kit that provides interfaces and functionalities for building and integrating real-time messaging features, enabling developers to implement instant messaging services within their applications.",
   "main": "lib/commonjs/index",
   "module": "lib/module/index",
