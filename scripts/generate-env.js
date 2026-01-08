@@ -13,8 +13,8 @@ export const appId = [''];
 export const PushInfo = { sendId: undefined, KeyId: undefined };
 export const accounts = [{ id: undefined, mm: undefined }];
 export const groups = [{ id: undefined, owner: undefined, name: undefined }];
-export const webSocketServer = [];
-export const restServer = [];
+export const webSocketServers = [];
+export const restServers = [];
 `;
 if (fs.existsSync(file) === false) {
   fs.writeFileSync(file, content, 'utf-8');
