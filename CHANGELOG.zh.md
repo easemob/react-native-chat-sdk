@@ -2,6 +2,13 @@ _Chinese | [English](./CHANGELOG.md)_
 
 # Update Log
 
+## 1.13.0
+
+- 依赖的原生 SDK 升级到版本（`iOS` 4.17.1 和`Android` 4.17.1）。
+- 在 ChatOptions 中新增 webSocketServer 属性。
+- 在 ChatOptions 中新增 webSocketPort 属性。
+- 修复原生平台上的 bug。
+
 ## 1.12.0
 
 - 依赖的原生 SDK 升级到版本（`iOS` 4.16.2 和`Android` 4.16.1）。
