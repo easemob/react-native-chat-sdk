@@ -127,6 +127,8 @@ export class ChatOptions {
   /**
    * Whether to disable DNS.
    *
+   * When enabled, the restServer, imServer, and webSocketServer parameters will be ignored.
+   *
    * - (Default) `true`: Yes.
    * - `false`: No. DNS needs to be disabled for private deployment.
    */
@@ -251,6 +253,15 @@ export class ChatOptions {
   webSocketPort?: number;
 
   /**
+   * The DoH vendor.
+   *
+   * 0: disable 1.china 2.global
+   *
+   * This property is used to specify the DoH vendor when `enableDNSConfig` is `true`.
+   */
+  dohVendor?: number;
+
+  /**
    * @deprecated Use {@link withAppId} and {@link withAppKey} instead.
    */
   constructor(params: {
@@ -290,6 +301,7 @@ export class ChatOptions {
     uikitVersion?: string;
     webSocketServer?: string;
     webSocketPort?: number;
+    dohVendor?: number;
   }) {
     if (!params.appKey && !params.appId) {
       throw new ChatError({
@@ -339,6 +351,7 @@ export class ChatOptions {
     this.uikitVersion = params.uikitVersion;
     this.webSocketServer = params.webSocketServer;
     this.webSocketPort = params.webSocketPort ?? 0;
+    this.dohVendor = params.dohVendor ?? 1; // agora is 2.
   }
 
   static withAppId(params: {
@@ -377,6 +390,7 @@ export class ChatOptions {
     uikitVersion?: string;
     webSocketServer?: string;
     webSocketPort?: number;
+    dohVendor?: number;
   }) {
     return new ChatOptions({
       ...params,
@@ -420,6 +434,7 @@ export class ChatOptions {
     uikitVersion?: string;
     webSocketServer?: string;
     webSocketPort?: number;
+    dohVendor?: number;
   }) {
     return new ChatOptions({
       ...params,

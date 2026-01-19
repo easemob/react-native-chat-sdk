@@ -1213,6 +1213,7 @@
     data[@"appId"] = self.appId;
     data[@"webSocketServer"] = self.webSocketServer;
     data[@"webSocketPort"] = @(self.webSocketPort);
+    data[@"dohVendor"] = @(self.dohVendor);
 
     return data;
 }
@@ -1269,6 +1270,8 @@
   
     options.webSocketServer = aJson[@"webSocketServer"];
     options.webSocketPort = [aJson[@"webSocketPort"] intValue];
+  
+    options.dohVendor = [aJson[@"dohVendor"] intValue];
 
     return options;
 }

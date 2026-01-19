@@ -2,6 +2,12 @@ _English | [Chinese](./CHANGELOG.zh.md)_
 
 # Update Log
 
+## 1.14.0
+
+- Dependent native SDKs are upgraded to versions (iOS 4.18.1 and Android 4.18.1).
+- Supports secure DNS resolution DoH at the underlying layer, improving connectivity.
+- Supports setting IPv6 format REST addresses for private deployment.
+
 ## 1.13.0
 
 - Dependent native SDKs are upgraded to versions (iOS 4.17.1 and Android 4.17.1).

@@ -70,6 +70,7 @@ export class CreateAccountScreen extends Component<
             <Text style={styleValues.textStyle}>UseName: </Text>
             <TextInput
               style={styleValues.textInputStyle}
+              autoCapitalize={'none'}
               onChangeText={(text: string) => {
                 // console.log(`${CreateAccountScreen.TAG}: `, text);
                 this.setState({ useName: text });

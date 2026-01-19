@@ -2,6 +2,12 @@ _Chinese | [English](./CHANGELOG.md)_
 
 # Update Log
 
+## 1.14.0
+
+- 依赖的原生 SDK 升级到版本（`iOS` 4.18.1 和`Android` 4.18.1）。
+- 底层支持安全 DNS 解析 DoH，提高连通性。
+- 支持私有部署时设置 IPv6 格式的 REST 地址。
+
 ## 1.13.0
 
 - 依赖的原生 SDK 升级到版本（`iOS` 4.17.1 和`Android` 4.17.1）。

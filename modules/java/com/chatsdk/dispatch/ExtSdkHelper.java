@@ -337,6 +337,9 @@ class ExtSdkOptionsHelper {
         options.setWebSocketServer(json.optString("webSocketServer"));
         options.setWebSocketPort(json.optInt("webSocketPort"));
 
+        // 2026-01-16
+        options.setDohVendor(json.optInt("dohVendor"));
+
         return options;
     }
 
@@ -378,6 +381,7 @@ class ExtSdkOptionsHelper {
         data.put("appId", options.getAppId());
         data.put("webSocketServer", options.getWebSocketServer());
         data.put("webSocketPort", options.getWebSocketPort());
+        data.put("dohVendor", options.getDohVendor());
         return data;
     }
 }

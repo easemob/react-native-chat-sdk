@@ -22,20 +22,28 @@ interface State {
   enableDNSConfig?: boolean;
   restServer?: string;
   enableTLS?: boolean;
+  dohVendor?: number;
+  imServer?: string;
+  imPort?: number;
+  dnsUrl?: string;
 }
 
-let gAppkey = datasheet.AppKey[1] ?? '';
+let gAppkey = datasheet.AppKey[6] ?? '';
 let gAppId = datasheet.AppId[1] ?? '';
 let gUseAppId = false;
-let gWebSocketServer = webSocketServers[1] ?? undefined;
+let gWebSocketServer = webSocketServers[0] ?? undefined;
 let gWebSocketPort = 80;
 let gEnableDNSConfig = false;
-let gRestServer = restServers[1] ?? undefined;
+let gRestServer = restServers[0] ?? undefined;
 let gEnableTLS = false;
 let gEnablePush = false;
 let gUseReplacedMessageContents = false;
 let gMessagesReceiveCallbackIncludeSend = false;
 let gRegardImportMessagesAsRead = false;
+let gDohVendor = 1;
+let gImServer: string = '';
+let gImPort: number = 0;
+let gDnsUrl: string = '';
 
 export class AppKeyScreen extends Component<{ navigation: any }, State, any> {
   public static route = 'AppKeyScreen';
@@ -59,6 +67,10 @@ export class AppKeyScreen extends Component<{ navigation: any }, State, any> {
       webSocketPort: gWebSocketPort,
       enableDNSConfig: gEnableDNSConfig,
       restServer: gRestServer,
+      dohVendor: gDohVendor,
+      imServer: gImServer,
+      imPort: gImPort,
+      dnsUrl: gDnsUrl,
     };
   }
 
@@ -91,6 +103,10 @@ export class AppKeyScreen extends Component<{ navigation: any }, State, any> {
       webSocketServer,
       restServer,
       enableDNSConfig,
+      dohVendor,
+      imServer,
+      imPort,
+      dnsUrl,
     } = this.state;
 
     ChatClient.getInstance()
@@ -114,6 +130,10 @@ export class AppKeyScreen extends Component<{ navigation: any }, State, any> {
               enableDNSConfig,
               enableTLS,
               restServer,
+              dohVendor,
+              imServer,
+              imPort,
+              dnsUrl,
             })
           : ChatOptions.withAppId({
               appId: appId,
@@ -129,6 +149,10 @@ export class AppKeyScreen extends Component<{ navigation: any }, State, any> {
               regardImportMessagesAsRead,
               pushConfig: pushConfig,
               loginExtraInfo: 'rn-test',
+              dohVendor,
+              imServer,
+              imPort,
+              dnsUrl,
             })
       )
       .then(() => {
@@ -159,6 +183,10 @@ export class AppKeyScreen extends Component<{ navigation: any }, State, any> {
             ?.messagesReceiveCallbackIncludeSend ?? false;
         gRegardImportMessagesAsRead =
           ChatClient.getInstance().options?.regardImportMessagesAsRead ?? false;
+        gDohVendor = ChatClient.getInstance().options?.dohVendor ?? 0;
+        gImServer = ChatClient.getInstance().options?.imServer ?? '';
+        gImPort = ChatClient.getInstance().options?.imPort ?? 0;
+        gDnsUrl = ChatClient.getInstance().options?.dnsUrl ?? '';
       })
       .catch((reason) => {
         console.error(reason);
@@ -198,6 +226,10 @@ export class AppKeyScreen extends Component<{ navigation: any }, State, any> {
       webSocketServer,
       webSocketPort,
       enableDNSConfig,
+      dohVendor,
+      imServer,
+      imPort,
+      dnsUrl,
     } = this.state;
     return (
       <ScrollView>
@@ -354,6 +386,66 @@ export class AppKeyScreen extends Component<{ navigation: any }, State, any> {
               }}
             >
               {enableDNSConfig ? '1' : '0'}
+            </TextInput>
+          </View>
+
+          <View style={styleValues.containerRow}>
+            <Text style={styleValues.textStyle}>dohVendor: </Text>
+            <TextInput
+              style={styleValues.textInputStyle}
+              autoCapitalize={'none'}
+              onChangeText={(text: string) => {
+                this.setState({
+                  dohVendor: text === '' ? 0 : Number(text),
+                });
+              }}
+            >
+              {String(dohVendor)}
+            </TextInput>
+          </View>
+
+          <View style={styleValues.containerRow}>
+            <Text style={styleValues.textStyle}>imServer: </Text>
+            <TextInput
+              style={styleValues.textInputStyle}
+              autoCapitalize={'none'}
+              onChangeText={(text: string) => {
+                this.setState({
+                  imServer: text,
+                });
+              }}
+            >
+              {imServer}
+            </TextInput>
+          </View>
+
+          <View style={styleValues.containerRow}>
+            <Text style={styleValues.textStyle}>imPort: </Text>
+            <TextInput
+              style={styleValues.textInputStyle}
+              autoCapitalize={'none'}
+              onChangeText={(text: string) => {
+                this.setState({
+                  imPort: text === '' ? 0 : Number(text),
+                });
+              }}
+            >
+              {String(imPort)}
+            </TextInput>
+          </View>
+
+          <View style={styleValues.containerRow}>
+            <Text style={styleValues.textStyle}>dnsUrl: </Text>
+            <TextInput
+              style={styleValues.textInputStyle}
+              autoCapitalize={'none'}
+              onChangeText={(text: string) => {
+                this.setState({
+                  dnsUrl: text,
+                });
+              }}
+            >
+              {dnsUrl}
             </TextInput>
           </View>
 
