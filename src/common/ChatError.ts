@@ -1,7 +1,7 @@
 /**
  * The chat error class, which contains the error code and error description.
  */
-export class ChatError {
+export class ChatError extends Error {
   /**
    * The error code.
    *
@@ -16,6 +16,11 @@ export class ChatError {
   description: string;
 
   constructor(params: { code: number; description: string }) {
+    super(params.description);
+    if (Object.setPrototypeOf) {
+      Object.setPrototypeOf(this, new.target.prototype);
+    }
+    this.name = 'ChatError';
     this.code = params.code;
     this.description = params.description;
   }
@@ -24,4 +29,9 @@ export class ChatError {
 /**
  * The chat exception class, which contains the code and description.
  */
-export class ChatException extends ChatError {}
+export class ChatException extends ChatError {
+  constructor(params: { code: number; description: string }) {
+    super(params);
+    this.name = 'ChatException';
+  }
+}
