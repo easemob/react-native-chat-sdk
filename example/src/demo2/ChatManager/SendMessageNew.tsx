@@ -273,6 +273,12 @@ export class SendMessageLeafScreen extends LeafScreenBase<StateSendMessage> {
           JSON.stringify(list)
         );
       }
+      onStreamMessagesReceived(messages: Array<ChatMessage>): void {
+        console.log(
+          `${SendMessageLeafScreen.TAG}: onStreamMessagesReceived: `,
+          messages
+        );
+      }
       onChatMessageThreadCreated(msgThread: ChatMessageThreadEvent): void {
         console.log(
           `${SendMessageLeafScreen.TAG}: onChatMessageThreadCreated: `,

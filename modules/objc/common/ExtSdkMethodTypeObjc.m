@@ -385,6 +385,8 @@
           
           ExtSdkMethodKeygetRTCTokenInfoWithChannelName : @(ExtSdkMethodKeygetRTCTokenInfoWithChannelNameValue),
           ExtSdkMethodKeygetUserIdsWithRTCUids : @(ExtSdkMethodKeygetUserIdsWithRTCUidsValue),
+          
+          ExtSdkMethodKeyOnStreamMessagesReceived : @(ExtSdkMethodKeyOnStreamMessagesReceivedValue),
       };
     });
     if (nil != key) {

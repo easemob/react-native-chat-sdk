@@ -107,6 +107,7 @@ import {
   MTupdateChatThreadSubject,
   MTupdateConversationMessage,
   MTgetMessagesWithIds,
+  MTonStreamMessagesReceived,
 } from './__internal__/Consts';
 import { Native } from './__internal__/Native';
 import type { ChatMessageEventListener } from './ChatEvents';
@@ -267,6 +268,11 @@ export class ChatManager extends BaseManager {
     event.addListener(
       MTonMessagePinChanged,
       this.onMessagePinChanged.bind(this)
+    );
+    event.removeAllListeners(MTonStreamMessagesReceived);
+    event.addListener(
+      MTonStreamMessagesReceived,
+      this.onStreamMessagesReceived.bind(this)
     );
   }
 
@@ -474,6 +480,17 @@ export class ChatManager extends BaseManager {
         pinOperation: params.pinOperation,
         pinInfo: new ChatMessagePinInfo(params.pinInfo),
       });
+    });
+  }
+
+  private onStreamMessagesReceived(messages: any): void {
+    chatlog.log(`${ChatManager.TAG}: onStreamMessagesReceived: `, messages);
+    if (this._messageListeners.size === 0) {
+      return;
+    }
+    let list: Array<ChatMessage> = this.createReceiveMessage(messages);
+    this._messageListeners.forEach((listener: ChatMessageEventListener) => {
+      listener.onStreamMessagesReceived?.(list);
     });
   }
 

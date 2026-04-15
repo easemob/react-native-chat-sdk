@@ -5,6 +5,7 @@ import { ChatError, ChatException } from './ChatError';
 import type { ChatMessageReaction } from './ChatMessageReaction';
 import type { ChatMessageThread } from './ChatMessageThread';
 import { Factory } from '../__internal__/Factory';
+import type { ChatStreamChunk } from './ChatMessageStreamChunk';
 
 /**
  * The conversation types.
@@ -500,6 +501,11 @@ export class ChatMessage {
   isContentReplaced: boolean;
 
   /**
+   *  Stream chunk information of the message.
+   */
+  streamChunk?: ChatStreamChunk;
+
+  /**
    * Constructs a message.
    */
   public constructor(params: {
@@ -526,6 +532,7 @@ export class ChatMessage {
     receiverList?: string[];
     isBroadcast?: boolean;
     isContentReplaced?: boolean;
+    streamChunk?: ChatStreamChunk;
   }) {
     this.msgId = params.msgId ?? generateMessageId();
     this.conversationId = params.conversationId ?? '';
@@ -551,6 +558,7 @@ export class ChatMessage {
     this.receiverList = params.receiverList;
     this.isBroadcast = params.isBroadcast ?? false;
     this.isContentReplaced = params.isContentReplaced ?? false;
+    this.streamChunk = params.streamChunk;
   }
 
   private fromAttributes(attributes: any) {

@@ -361,6 +361,8 @@ public class ExtSdkMethodType {
     public static final String getRTCTokenInfoWithChannelName = "getRTCTokenInfoWithChannelName";
     public static final String getUserIdsWithRTCUids = "getUserIdsWithRTCUids";
 
+  public static final String onStreamMessagesReceived = "onStreamMessagesReceived";
+
 
     // TODO: EMChatThreadManagerListener
 }

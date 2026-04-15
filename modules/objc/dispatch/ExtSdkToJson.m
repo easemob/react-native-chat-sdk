@@ -511,6 +511,30 @@
     }
     return ret;
 }
++ (int)streamChunkStatus:(EMStreamChunkStatus)status {
+  int ret = 4;
+  switch (status) {
+    case EMStreamChunkStatusStart:
+      ret = 0;
+      break;
+    case EMStreamChunkStatusStartAndComplete:
+      ret = 1;
+      break;
+    case EMStreamChunkStatusProgress:
+      ret = 2;
+      break;
+    case EMStreamChunkStatusComplete:
+      ret = 3;
+      break;
+    case EMStreamChunkStatusError:
+      ret = 4;
+      break;
+      
+    default:
+      break;
+  }
+  return ret;
+}
 @end
 
 @implementation EMChatroom (Json)
@@ -792,6 +816,9 @@
     ret[@"receiverList"] = self.receiverList;
     ret[@"isBroadcast"] = @(self.broadcast);
     ret[@"isContentReplaced"] = @(self.isContentReplaced);
+  if (self.streamChunk) {
+    ret[@"streamChunk"] = [self.streamChunk toJsonObject];
+  }
 
     return ret;
 }
@@ -1639,4 +1666,16 @@
     return ret;
 }
 
+@end
+
+@implementation EMStreamChunk (Json)
+- (NSDictionary *)toJsonObject {
+  NSMutableDictionary *ret = [NSMutableDictionary dictionary];
+  ret[@"status"] = @([ExtSdkConvertHelper streamChunkStatus:self.status]);
+  ret[@"errorCode"] = @(self.errorCode);
+  ret[@"finishReason"] = @(self.finishReason);
+  ret[@"text"] = self.text;
+  ret[@"customType"] = self.customType;
+  return ret;
+}
 @end

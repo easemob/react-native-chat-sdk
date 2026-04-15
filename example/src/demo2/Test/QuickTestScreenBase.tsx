@@ -272,6 +272,12 @@ export abstract class QuickTestScreenBase<
       constructor(parent: any) {
         this.that = parent as QuickTestScreenBase<S, SL>;
       }
+      onStreamMessagesReceived(messages: Array<ChatMessage>): void {
+        console.log(
+          `${QuickTestScreenBase.TAG}: onStreamMessagesReceived: `,
+          messages
+        );
+      }
       onMessageReactionDidChange(list: Array<ChatMessageReactionEvent>): void {
         console.log(
           `${QuickTestScreenBase.TAG}: onMessageReactionDidChange: `,

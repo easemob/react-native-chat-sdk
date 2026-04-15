@@ -119,6 +119,7 @@ static NSString *_Nonnull const ExtSdkMethodKeyDownloadAndParseCombineMessage = 
 
 #pragma mark - EMChatManagerDelegate
 static NSString *_Nonnull const ExtSdkMethodKeyOnMessagesReceived = @"onMessagesReceived";
+static NSString *_Nonnull const ExtSdkMethodKeyOnStreamMessagesReceived = @"onStreamMessagesReceived";
 static NSString *_Nonnull const ExtSdkMethodKeyOnCmdMessagesReceived = @"onCmdMessagesReceived";
 static NSString *_Nonnull const ExtSdkMethodKeyOnMessagesRead = @"onMessagesRead";
 static NSString *_Nonnull const ExtSdkMethodKeyOnGroupMessageRead = @"onGroupMessageRead";
@@ -760,6 +761,9 @@ static const int ExtSdkMethodKeyIsMemberInChatRoomMuteListFromServerValue = 2026
 // 2025-11-19
 static const int ExtSdkMethodKeygetRTCTokenInfoWithChannelNameValue = 2027;
 static const int ExtSdkMethodKeygetUserIdsWithRTCUidsValue = 2028;
+
+// 2026-04-10
+static const int ExtSdkMethodKeyOnStreamMessagesReceivedValue = 611;
 
 @interface ExtSdkMethodTypeObjc : NSObject
 

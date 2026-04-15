@@ -510,6 +510,12 @@ export class ChatManagerLeafScreen extends LeafScreenBase<StateChatMessage> {
         );
         this.that.setState({ recvResult: JSON.stringify(list) });
       }
+      onStreamMessagesReceived(messages: Array<ChatMessage>): void {
+        console.log(
+          `${ChatManagerLeafScreen.TAG}: onStreamMessagesReceived: `,
+          messages
+        );
+      }
       onChatMessageThreadCreated(msgThread: ChatMessageThreadEvent): void {
         console.log(
           `${ChatManagerLeafScreen.TAG}: onChatMessageThreadCreated: `,

@@ -42,6 +42,7 @@ import com.hyphenate.chat.EMRecallMessageInfo;
 import com.hyphenate.chat.EMSilentModeParam;
 import com.hyphenate.chat.EMSilentModeResult;
 import com.hyphenate.chat.EMSilentModeTime;
+import com.hyphenate.chat.EMStreamChunk;
 import com.hyphenate.chat.EMTextMessageBody;
 import com.hyphenate.chat.EMUserInfo;
 import com.hyphenate.chat.EMVideoMessageBody;
@@ -255,6 +256,28 @@ class InternalConvertHelper {
             return EMConversation.EMMessageSearchScope.ALL;
         }
         return EMConversation.EMMessageSearchScope.ALL;
+    }
+
+    static int streamChunkToInt(EMMessage.EMStreamStatus status) {
+      int ret = 4;
+      switch (status) {
+        case START:
+          ret = 0;
+          break;
+        case START_AND_COMPLETE:
+          ret = 1;
+          break;
+        case PROGRESS:
+          ret = 2;
+          break;
+        case COMPLETE:
+          ret = 3;
+          break;
+        case ERROR:
+          ret = 4;
+          break;
+      }
+      return ret;
     }
 }
 
@@ -766,6 +789,10 @@ class ExtSdkMessageHelper {
         //        data.put("priority", ExtSdkMessageHelper.priorityToInt(;));
         if (message.receiverList().size() > 0) {
             data.put("receiverList", message.receiverList());
+        }
+
+        if (message.getStreamChunk() != null && message.getStreamChunk().getStatus() != null) {
+          data.put("streamChunk", ExtSdkStreamChunkHelper.toJson(message.getStreamChunk()));
         }
 
         return data;
@@ -1761,6 +1788,18 @@ class ExtSdkRecalledMessageInfoHelper {
         }
         return data;
     }
+}
+
+class ExtSdkStreamChunkHelper {
+  static Map<String, Object> toJson(EMStreamChunk info) {
+    Map<String, Object> data = new HashMap<>();
+    data.put("status", InternalConvertHelper.streamChunkToInt(info.getStatus()));
+    data.put("errorCode", info.getErrorCode());
+    data.put("finishReason", info.getFinishReason());
+    data.put("text", info.getText());
+    data.put("customType", info.getCustomType());
+    return data;
+  }
 }
 
 class ExtSdkEMMessageTypeHelper {

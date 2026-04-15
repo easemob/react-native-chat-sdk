@@ -1307,7 +1307,16 @@ public class ExtSdkChatManagerWrapper extends ExtSdkWrapper {
                 ExtSdkWrapper.onReceive(ExtSdkMethodType.onMessagesReceived, msgList);
             }
 
-            @Override
+          @Override
+          public void onStreamMessageReceived(List<EMMessage> messages) {
+            ArrayList<Map<String, Object>> msgList = new ArrayList<>();
+            for (EMMessage message : messages) {
+              msgList.add(ExtSdkMessageHelper.toJson(message));
+            }
+            ExtSdkWrapper.onReceive(ExtSdkMethodType.onStreamMessagesReceived, msgList);
+          }
+
+          @Override
             public void onCmdMessageReceived(List<EMMessage> messages) {
 
                 ArrayList<Map<String, Object>> msgList = new ArrayList<>();

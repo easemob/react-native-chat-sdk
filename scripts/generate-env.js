@@ -15,6 +15,7 @@ export const accounts = [{ id: undefined, mm: undefined }];
 export const groups = [{ id: undefined, owner: undefined, name: undefined }];
 export const webSocketServers = [];
 export const restServers = [];
+export const msyncServers = [];
 `;
 if (fs.existsSync(file) === false) {
   fs.writeFileSync(file, content, 'utf-8');

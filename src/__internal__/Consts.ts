@@ -393,3 +393,6 @@ export const MTonOfflineMessageSyncFinish = 'onOfflineMessageSyncFinish';
 export const MTgetRTCTokenInfoWithChannelName =
   'getRTCTokenInfoWithChannelName';
 export const MTgetUserIdsWithRTCUids = 'getUserIdsWithRTCUids';
+
+// 2026-04-10 added
+export const MTonStreamMessagesReceived = 'onStreamMessagesReceived';

@@ -581,6 +581,13 @@ export interface ChatMessageEventListener {
   onMessagesReceived?(messages: Array<ChatMessage>): void;
 
   /**
+   * Occurs when the SDK receives new messages.
+   *
+   * @param messages The received stream messages.
+   */
+  onStreamMessagesReceived?(messages: Array<ChatMessage>): void;
+
+  /**
    * Occurs when a command message is received.
    *
    * Unlike {@link onMessagesReceived}, this callback only contains a command message body that is usually invisible to users.
