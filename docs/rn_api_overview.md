@@ -194,6 +194,7 @@ ChatSDK is a highly reliable global communication platform where your users can 
 | Event | Description |
 | :----- | :---------- |
 | {@link ChatMessageEventListener.onMessagesReceived onMessagesReceived} | Occurs when a message is received. |
+| {@link ChatMessageEventListener.onStreamMessagesReceived onStreamMessagesReceived} | Occurs when the SDK receives new messages. |
 | {@link ChatMessageEventListener.onCmdMessagesReceived onCmdMessagesReceived} | Occurs when a command message is received. |
 | {@link ChatMessageEventListener.onMessagesRead onMessagesRead} | Occurs when a read receipt is received for a message. |
 | {@link ChatMessageEventListener.onGroupMessageRead onGroupMessageRead} | Occurs when a read receipt is received for a group message. |

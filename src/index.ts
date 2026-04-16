@@ -18,6 +18,7 @@ export * from './common/ChatGroup';
 export * from './common/ChatLog';
 export * from './common/ChatMessage';
 export * from './common/ChatMessageReaction';
+export * from './common/ChatMessageStreamChunk';
 export * from './common/ChatMessageThread';
 export * from './common/ChatOptions';
 export * from './common/ChatPageResult';

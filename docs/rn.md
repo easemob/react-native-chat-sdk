@@ -1,4 +1,4 @@
-_Update Time: 2024-11-21_
+_Update Time: 2026-04-16_
 
 `react-native` has been upgraded from `0.71.11` to `0.72.17`.
 
@@ -18,6 +18,9 @@ _Update Time: 2024-11-21_
 | 0.78    | /       | success    | /       | success        |                                                                    |
 | 0.79    | /       | success    | /       | success        |                                                                    |
 | 0.80    | /       | success    | /       | success        |                                                                    |
+| 0.81    | /       | success    | /       | success        |                                                                    |
+| 0.82    | /       | success    | /       | success        |                                                                    |
+| 0.83    | /       | success    | /       | success        |                                                                    |
 
 _Data Update Time: 2024-11-18_
 

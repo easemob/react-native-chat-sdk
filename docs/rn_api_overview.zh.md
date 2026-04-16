@@ -194,6 +194,7 @@ ChatSDK 是一个高度可靠的全球交流平台，您的用户可以在其中
 | Event | Description |
 | :----- | :---------- |
 | {@link ChatMessageEventListener.onMessagesReceived onMessagesReceived} | 收到消息回调。 |
+| {@link ChatMessageEventListener.onStreamMessagesReceived onStreamMessagesReceived} | 收到流式消息回调。 |
 | {@link ChatMessageEventListener.onCmdMessagesReceived onCmdMessagesReceived} | 收到命令消息回调。 |
 | {@link ChatMessageEventListener.onMessagesRead onMessagesRead} | 收到单聊消息已读回执的回调。 |
 | {@link ChatMessageEventListener.onGroupMessageRead onGroupMessageRead} | 收到群组消息的已读回执的回调。 |
