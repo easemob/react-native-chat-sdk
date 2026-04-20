@@ -19,7 +19,7 @@ Pod::Spec.new do |s|
   s.exclude_files = ['native_src/cpp/java/**/*', 'native_src/cpp/android/**/*', 'native_src/objc/flutter/**/*']
 
   s.dependency "React-Core"
-  s.dependency 'HyphenateChat','4.10.2'
+  s.dependency 'HyphenateChat','4.16.2'
 
   s.xcconfig = {
     "OTHER_LDFLAGS": "-ObjC",

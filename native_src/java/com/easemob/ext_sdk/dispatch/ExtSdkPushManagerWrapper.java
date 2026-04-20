@@ -100,38 +100,12 @@ public class ExtSdkPushManagerWrapper extends ExtSdkWrapper {
 
     public void updateGroupPushService(JSONObject params, String channelName, ExtSdkCallback result)
         throws JSONException {
-        JSONArray groupIds = params.getJSONArray("group_ids");
-        boolean noPush = params.getBoolean("noPush");
-
-        List<String> groupList = new ArrayList<>();
-        for (int i = 0; i < groupIds.length(); i++) {
-            String groupId = groupIds.getString(i);
-            groupList.add(groupId);
-        }
-        try {
-            EMClient.getInstance().pushManager().updatePushServiceForGroup(groupList, noPush);
-            onSuccess(result, channelName, null);
-        } catch (HyphenateException e) {
-            ExtSdkWrapper.onError(result, e, null);
-        }
+        onSuccess(result, channelName, null);
     }
 
     public void updateUserPushService(JSONObject params, String channelName, ExtSdkCallback result)
         throws JSONException {
-        JSONArray groupIds = params.getJSONArray("user_ids");
-        boolean noPush = params.getBoolean("noPush");
-
-        List<String> userList = new ArrayList<>();
-        for (int i = 0; i < groupIds.length(); i++) {
-            String userId = groupIds.getString(i);
-            userList.add(userId);
-        }
-        try {
-            EMClient.getInstance().pushManager().updatePushServiceForUsers(userList, noPush);
-            onSuccess(result, channelName, null);
-        } catch (HyphenateException e) {
-            ExtSdkWrapper.onError(result, e, null);
-        }
+        onSuccess(result, channelName, null);
     }
 
     public void updateHMSPushToken(JSONObject params, String channelName, ExtSdkCallback result) throws JSONException {

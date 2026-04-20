@@ -1262,9 +1262,6 @@ class ExtSdkErrorHelper {
 class ExtSdkPushConfigsHelper {
     static Map<String, Object> toJson(EMPushConfigs pushConfigs) {
         Map<String, Object> data = new HashMap<>();
-        data.put("noDisturb", pushConfigs.silentModeEnabled());
-        data.put("noDisturbEndHour", pushConfigs.getSilentModeEnd());
-        data.put("noDisturbStartHour", pushConfigs.getSilentModeStart());
         data.put("displayStyle", pushConfigs.getDisplayStyle().ordinal());
         data.put("displayName", pushConfigs.getDisplayNickname());
         return data;

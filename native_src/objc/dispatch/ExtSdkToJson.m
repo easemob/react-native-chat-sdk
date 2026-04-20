@@ -1173,10 +1173,7 @@
 @implementation EMPushOptions (Json)
 - (NSDictionary *)toJsonObject {
     NSMutableDictionary *data = [NSMutableDictionary dictionary];
-    data[@"noDisturb"] = @(self.silentModeEnabled);
     data[@"pushStyle"] = @(self.displayStyle != EMPushDisplayStyleSimpleBanner);
-    data[@"noDisturbStartHour"] = @(self.silentModeStart);
-    data[@"noDisturbEndHour"] = @(self.silentModeEnd);
     data[@"displayStyle"] = @(self.displayStyle);
     data[@"displayName"] = self.displayName;
     return data;
