@@ -2,6 +2,12 @@ _Chinese | [English](./CHANGELOG.md)_
 
 # Update Log
 
+## 1.15.0
+
+- 依赖的原生 SDK 升级到版本（`iOS` 4.19.1 和`Android` 4.19.2）。
+- 支持 接收服务端发送的流式消息。
+- 支持 LZ4 协议压缩。
+
 ## 1.14.0
 
 - 依赖的原生 SDK 升级到版本（`iOS` 4.18.1 和`Android` 4.18.1）。

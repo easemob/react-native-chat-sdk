@@ -2,6 +2,12 @@ _English | [Chinese](./CHANGELOG.zh.md)_
 
 # Update Log
 
+## 1.15.0
+
+- Dependent native SDKs are upgraded to versions (iOS 4.19.1 and Android 4.19.2).
+- Supports receiving streaming messages sent by the server.
+- Supports LZ4 protocol compression.
+
 ## 1.14.0
 
 - Dependent native SDKs are upgraded to versions (iOS 4.18.1 and Android 4.18.1).
