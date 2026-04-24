@@ -53,33 +53,19 @@ public class ExtSdkPushManagerWrapper extends ExtSdkWrapper {
     }
 
     public void enableOfflinePush(JSONObject params, String channelName, ExtSdkCallback result) throws JSONException {
-        try {
-            EMClient.getInstance().pushManager().enableOfflinePush();
-            onSuccess(result, channelName, null);
-        } catch (HyphenateException e) {
-            ExtSdkWrapper.onError(result, e, null);
-        }
+        onSuccess(result, channelName, null);
     }
 
     public void disableOfflinePush(JSONObject params, String channelName, ExtSdkCallback result) throws JSONException {
-        int startTime = params.getInt("start");
-        int endTime = params.getInt("end");
-        try {
-            EMClient.getInstance().pushManager().disableOfflinePush(startTime, endTime);
-            onSuccess(result, channelName, null);
-        } catch (HyphenateException e) {
-            ExtSdkWrapper.onError(result, e, null);
-        }
+        onSuccess(result, channelName, null);
     }
 
     public void getNoPushGroups(JSONObject params, String channelName, ExtSdkCallback result) throws JSONException {
-        List<String> groups = EMClient.getInstance().pushManager().getNoPushGroups();
-        onSuccess(result, channelName, groups);
+        onSuccess(result, channelName, null);
     }
 
     public void getNoPushUsers(JSONObject params, String channelName, ExtSdkCallback result) throws JSONException {
-        List<String> list = EMClient.getInstance().pushManager().getNoPushUsers();
-        onSuccess(result, channelName, list);
+        onSuccess(result, channelName, null);
     }
 
     public void updateImPushStyle(JSONObject params, String channelName, ExtSdkCallback result) throws JSONException {

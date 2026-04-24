@@ -169,10 +169,6 @@ class ExtSdkGroupHelper {
         data.put("adminList", group.getAdminList());
         data.put("blockList", group.getBlackList());
         data.put("muteList", group.getMuteList());
-        if (group.getGroupId() != null && EMClient.getInstance().pushManager().getNoPushGroups() != null) {
-            data.put("noticeEnable",
-                     !EMClient.getInstance().pushManager().getNoPushGroups().contains(group.getGroupId()));
-        }
         data.put("messageBlocked", group.isMsgBlocked());
         data.put("isAllMemberMuted", group.isAllMemberMuted());
         data.put("permissionType", intTypeFromGroupPermissionType(group.getGroupPermissionType()));
