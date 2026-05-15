@@ -2,6 +2,10 @@ _English | [Chinese](./CHANGELOG.zh.md)_
 
 # Update Log
 
+## 1.15.1
+
+- Fix iOS build error where Xcode attempts to compile markdown files in the objc module.
+
 ## 1.15.0
 
 - Dependent native SDKs are upgraded to versions (iOS 4.19.1 and Android 4.19.2).

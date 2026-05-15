@@ -14,7 +14,7 @@ Pod::Spec.new do |s|
   s.platforms    = { :ios => "11.0" }
   s.source       = { :git => "https://github.com/easemob/react-native-chat-sdk.git", :tag => "#{s.version}" }
 
-  s.source_files = ['ios/**/*.{h,m,mm}', 'modules/cpp/**/*.{h,cpp,mm}', 'modules/objc/**/*']
+  s.source_files = ['ios/**/*.{h,m,mm}', 'modules/cpp/**/*.{h,cpp,mm}', 'modules/objc/**/*.{h,m,mm}']
   s.private_header_files = ['modules/cpp/**/*.h']
   s.exclude_files = ['modules/cpp/java/**/*', 'modules/cpp/android/**/*', 'modules/objc/flutter/**/*']
 

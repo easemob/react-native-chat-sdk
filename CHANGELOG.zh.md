@@ -2,6 +2,10 @@ _Chinese | [English](./CHANGELOG.md)_
 
 # Update Log
 
+## 1.15.1
+
+- 修复 iOS 编译时 Xcode 尝试编译 objc 模块中的 markdown 文件导致的错误。
+
 ## 1.15.0
 
 - 依赖的原生 SDK 升级到版本（`iOS` 4.19.1 和`Android` 4.19.2）。
