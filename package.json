@@ -94,6 +94,7 @@
     "eslint": "^8.4.1",
     "eslint-config-prettier": "^8.5.0",
     "eslint-plugin-prettier": "^4.0.0",
+    "fast-check": "^4.8.0",
     "jest": "^28.1.1",
     "madge": "^8.0.0",
     "pod-install": "^0.1.0",

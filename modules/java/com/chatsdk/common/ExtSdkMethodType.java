@@ -9,7 +9,7 @@ public class ExtSdkMethodType {
     public static final String changeAppKey = "changeAppKey";
     public static final String changeAppId = "changeAppId";
     public static final String isLoggedInBefore = "isLoggedInBefore";
-    public static final String updateCurrentUserNick = "updateCurrentUserNick";
+    public static final String updateCurrentUserNick = "updateCurrentUserNick"; // deprecated 2026-05-21
     public static final String uploadLog = "uploadLog";
     public static final String compressLogs = "compressLogs";
     public static final String kickDevice = "kickDevice";
@@ -191,10 +191,10 @@ public class ExtSdkMethodType {
     public static final String muteAllChatRoomMembers = "muteAllChatRoomMembers";
     public static final String unMuteAllChatRoomMembers = "unMuteAllChatRoomMembers";
 
-    public static final String MJfetchChatRoomAttributes = "fetchChatRoomAttributes";
-    public static final String MJfetchChatRoomAllAttributes = "fetchChatRoomAllAttributes";
-    public static final String MJsetChatRoomAttributes = "setChatRoomAttributes";
-    public static final String MJremoveChatRoomAttributes = "removeChatRoomAttributes";
+    public static final String fetchChatRoomAttributes = "fetchChatRoomAttributes";
+    public static final String fetchChatRoomAllAttributes = "fetchChatRoomAllAttributes";
+    public static final String setChatRoomAttributes = "setChatRoomAttributes";
+    public static final String removeChatRoomAttributes = "removeChatRoomAttributes";
 
     // EMChatRoomManagerListener
     public static final String chatRoomChange = "onChatRoomChanged";
@@ -257,8 +257,8 @@ public class ExtSdkMethodType {
     public static final String getImPushConfig = "getImPushConfig";
     public static final String getImPushConfigFromServer = "getImPushConfigFromServer";
     public static final String updatePushNickname = "updatePushNickname";
-    public static final String updateHMSPushToken = "updateHMSPushToken";
-    public static final String updateFCMPushToken = "updateFCMPushToken";
+    public static final String updateHMSPushToken = "updateHMSPushToken"; // deprecated 2026-05-21
+    public static final String updateFCMPushToken = "updateFCMPushToken"; // deprecated 2026-05-21
     public static final String enableOfflinePush = "enableOfflinePush";
     public static final String disableOfflinePush = "disableOfflinePush";
     public static final String getNoPushGroups = "getNoPushGroups";

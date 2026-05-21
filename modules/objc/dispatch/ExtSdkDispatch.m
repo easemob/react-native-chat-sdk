@@ -896,39 +896,39 @@ static NSString *const TAG = @"ExtSdkDispatch";
         [[ExtSdkChatThreadManagerWrapper getInstance] getChatThread:ps withMethodType:methodType result:callback];
         break;
 
-    case ExtSdkReportPushActionValue:
+    case ExtSdkMethodKeyReportPushActionValue:
         [[ExtSdkPushManagerWrapper getInstance] reportPushAction:ps withMethodType:methodType result:callback];
         break;
-    case ExtSdkSetConversationSilentModeValue:
+    case ExtSdkMethodKeySetConversationSilentModeValue:
         [[ExtSdkPushManagerWrapper getInstance] setConversationSilentMode:ps withMethodType:methodType result:callback];
         break;
-    case ExtSdkRemoveConversationSilentModeValue:
+    case ExtSdkMethodKeyRemoveConversationSilentModeValue:
         [[ExtSdkPushManagerWrapper getInstance] removeConversationSilentMode:ps
                                                               withMethodType:methodType
                                                                       result:callback];
         break;
-    case ExtSdkFetchConversationSilentModeValue:
+    case ExtSdkMethodKeyFetchConversationSilentModeValue:
         [[ExtSdkPushManagerWrapper getInstance] fetchConversationSilentMode:ps
                                                              withMethodType:methodType
                                                                      result:callback];
         break;
-    case ExtSdkSetSilentModeForAllValue:
+    case ExtSdkMethodKeySetSilentModeForAllValue:
         [[ExtSdkPushManagerWrapper getInstance] setSilentModeForAll:ps withMethodType:methodType result:callback];
         break;
-    case ExtSdkFetchSilentModeForAllValue:
+    case ExtSdkMethodKeyFetchSilentModeForAllValue:
         [[ExtSdkPushManagerWrapper getInstance] fetchSilentModeForAll:ps withMethodType:methodType result:callback];
         break;
-    case ExtSdkFetchSilentModeForConversationsValue:
+    case ExtSdkMethodKeyFetchSilentModeForConversationsValue:
         [[ExtSdkPushManagerWrapper getInstance] fetchSilentModeForConversations:ps
                                                                  withMethodType:methodType
                                                                          result:callback];
         break;
-    case ExtSdkSetPreferredNotificationLanguageValue:
+    case ExtSdkMethodKeySetPreferredNotificationLanguageValue:
         [[ExtSdkPushManagerWrapper getInstance] setPreferredNotificationLanguage:ps
                                                                   withMethodType:methodType
                                                                           result:callback];
         break;
-    case ExtSdkFetchPreferredNotificationLanguageValue:
+    case ExtSdkMethodKeyFetchPreferredNotificationLanguageValue:
         [[ExtSdkPushManagerWrapper getInstance] fetchPreferredNotificationLanguage:ps
                                                                     withMethodType:methodType
                                                                             result:callback];
@@ -950,20 +950,20 @@ static NSString *const TAG = @"ExtSdkDispatch";
                                                                      result:callback];
         break;
 
-    case MKfetchChatRoomAttributesValue:
+    case ExtSdkMethodKeyfetchChatRoomAttributesValue:
         [[ExtSdkChatroomManagerWrapper getInstance] fetchChatRoomAttributes:ps
                                                              withMethodType:methodType
                                                                      result:callback];
         break;
-    case MKfetchChatRoomAllAttributesValue:
+    case ExtSdkMethodKeyfetchChatRoomAllAttributesValue:
         [[ExtSdkChatroomManagerWrapper getInstance] fetchChatRoomAllAttributes:ps
                                                                 withMethodType:methodType
                                                                         result:callback];
         break;
-    case MKsetChatRoomAttributesValue:
+    case ExtSdkMethodKeysetChatRoomAttributesValue:
         [[ExtSdkChatroomManagerWrapper getInstance] setChatRoomAttributes:ps withMethodType:methodType result:callback];
         break;
-    case MKremoveChatRoomAttributesValue:
+    case ExtSdkMethodKeyremoveChatRoomAttributesValue:
         [[ExtSdkChatroomManagerWrapper getInstance] removeChatRoomAttributes:ps
                                                               withMethodType:methodType
                                                                       result:callback];
@@ -1009,10 +1009,10 @@ static NSString *const TAG = @"ExtSdkDispatch";
                                                                 withMethodType:methodType
                                                                         result:callback];
         break;
-    case ExtSdkSetPushTemplateValue:
+    case ExtSdkMethodKeySetPushTemplateValue:
         [[ExtSdkPushManagerWrapper getInstance] setPushTemplate:ps withMethodType:methodType result:callback];
         break;
-    case ExtSdkGetPushTemplateValue:
+    case ExtSdkMethodKeyGetPushTemplateValue:
         [[ExtSdkPushManagerWrapper getInstance] getPushTemplate:ps withMethodType:methodType result:callback];
         break;
 

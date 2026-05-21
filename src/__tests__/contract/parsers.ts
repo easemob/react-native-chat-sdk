@@ -40,8 +40,15 @@ function readFile(p: string): string {
   return fs.readFileSync(p, 'utf8');
 }
 
+function stripDeprecated(src: string): string {
+  return src
+    .split('\n')
+    .filter((line) => !line.includes('// deprecated'))
+    .join('\n');
+}
+
 export function parseTsConsts(): SymbolValue[] {
-  const src = readFile(TS_CONSTS_PATH);
+  const src = stripDeprecated(readFile(TS_CONSTS_PATH));
   const re = /^\s*export\s+const\s+MT(\w+)\s*=\s*\n?\s*['"]([^'"]+)['"]/gm;
   const out: SymbolValue[] = [];
   let m: RegExpExecArray | null;
@@ -52,7 +59,7 @@ export function parseTsConsts(): SymbolValue[] {
 }
 
 export function parseJavaConsts(): SymbolValue[] {
-  const src = readFile(JAVA_CONSTS_PATH);
+  const src = stripDeprecated(readFile(JAVA_CONSTS_PATH));
   const re = /public\s+static\s+final\s+String\s+(\w+)\s*=\s*"([^"]+)"/g;
   const out: SymbolValue[] = [];
   let m: RegExpExecArray | null;
@@ -63,7 +70,7 @@ export function parseJavaConsts(): SymbolValue[] {
 }
 
 export function parseObjcHeaderKeys(): SymbolValue[] {
-  const src = readFile(OBJC_HEADER_PATH);
+  const src = stripDeprecated(readFile(OBJC_HEADER_PATH));
   const re =
     /static\s+NSString\s*\*\s*_Nonnull\s+const\s+(ExtSdkMethodKey\w+?)\s*=\s*@"([^"]+)"/g;
   const out: SymbolValue[] = [];
@@ -79,7 +86,7 @@ export function parseObjcHeaderKeys(): SymbolValue[] {
 }
 
 export function parseObjcHeaderValues(): SymbolIntValue[] {
-  const src = readFile(OBJC_HEADER_PATH);
+  const src = stripDeprecated(readFile(OBJC_HEADER_PATH));
   const re = /static\s+const\s+int\s+(ExtSdkMethodKey\w+Value)\s*=\s*(\d+)/g;
   const out: SymbolIntValue[] = [];
   let m: RegExpExecArray | null;
@@ -90,7 +97,7 @@ export function parseObjcHeaderValues(): SymbolIntValue[] {
 }
 
 export function parseObjcMethodMap(): MethodMapEntry[] {
-  const src = readFile(OBJC_M_PATH);
+  const src = stripDeprecated(readFile(OBJC_M_PATH));
   const re =
     /(ExtSdkMethodKey\w+?)\s*:\s*@\(\s*(ExtSdkMethodKey\w+Value)\s*\)/g;
   const out: MethodMapEntry[] = [];
