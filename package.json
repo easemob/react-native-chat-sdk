@@ -37,6 +37,9 @@
   "scripts": {
     "example": "yarn workspace rn-cs-example",
     "test": "jest",
+    "test:unit": "jest src/__tests__/unit",
+    "test:contract": "jest src/__tests__/contract",
+    "test:coverage": "jest --coverage",
     "typecheck": "tsc --noEmit",
     "lint": "yarn run lint:sdk && yarn run lint:example",
     "lint:sdk": "eslint \"src/**/*.{js,ts,tsx}\"",
@@ -122,7 +125,23 @@
     "preset": "react-native",
     "modulePathIgnorePatterns": [
       "<rootDir>/example/node_modules",
-      "<rootDir>/lib/"
+      "<rootDir>/lib/",
+      "<rootDir>/.worktree/"
+    ],
+    "setupFilesAfterEnv": [
+      "<rootDir>/src/__tests__/setup.ts"
+    ],
+    "testPathIgnorePatterns": [
+      "<rootDir>/src/__tests__/helpers/",
+      "<rootDir>/src/__tests__/setup.ts",
+      "<rootDir>/src/__tests__/contract/parsers.ts"
+    ],
+    "collectCoverageFrom": [
+      "src/**/*.ts",
+      "!src/__specs__/**",
+      "!src/__tests__/**",
+      "!src/version.ts",
+      "!src/index.ts"
     ]
   },
   "commitlint": {
