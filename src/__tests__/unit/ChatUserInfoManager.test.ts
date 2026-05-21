@@ -13,6 +13,7 @@
  */
 
 import { ChatUserInfoManager } from '../../ChatUserInfoManager';
+import { ChatError } from '../../common/ChatError';
 import { ChatUserInfo } from '../../common/ChatUserInfo';
 import { MTfetchUserInfoById } from '../../__internal__/Consts';
 import { getLastCall, mockCallMethodOnce } from '../helpers/nativeMock';
@@ -41,5 +42,19 @@ describe('ChatUserInfoManager call-method contract', () => {
     expect(ret.get('u1')).toBeInstanceOf(ChatUserInfo);
     expect(ret.get('u1')?.nickName).toBe('Alice');
     expect(ret.get('u2')?.userId).toBe('u2');
+  });
+
+  test('fetchUserInfoById rejects with ChatError when native returns { error }', async () => {
+    mockCallMethodOnce({
+      error: { code: 404, description: 'user not found' },
+    });
+
+    const p = manager.fetchUserInfoById(['u1']);
+
+    await expect(p).rejects.toBeInstanceOf(ChatError);
+    await expect(p).rejects.toMatchObject({
+      code: 404,
+      description: 'user not found',
+    });
   });
 });

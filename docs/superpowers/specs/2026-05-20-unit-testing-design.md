@@ -67,7 +67,9 @@
   - `modules/objc/rn/ExtSdkApiObjcRN.mm` 中 `supportedEvents` 暴露的 RN 事件方法名
   - 两边必须完全一致，否则会出现方法调用对不上的运行时错误
 - **实现方式**：脚本读取两端文件，提取常量值，做差集比对。
-- **不测试**：行为逻辑（这是 Layer 1/2 的职责）。
+- **不测试**：
+  - 行为逻辑（这是 Layer 1/2 的职责）。
+  - `modules/cpp/common/ExtSdkMethodType.*` 中的 C++ 常量。当前 RN 单元测试与契约测试只覆盖 TS、Java、ObjC 和 RN 事件暴露；C++ 共享层不纳入当前 pre-commit 契约范围。
 
 ### 关键判断标准
 
@@ -256,6 +258,8 @@ contract/methodNames.test.ts:
 ```
 
 实现方式：Node `fs` 读文件 + 正则提取，不依赖 babel-parser。
+
+当前阶段明确不读取或比对 `modules/cpp/common/ExtSdkMethodType.*`。如果未来 C++ 共享层重新成为 RN bridge 的直接契约来源，再单独扩展 Layer 3 的范围。
 
 ### 5.5 package.json 新增 scripts
 

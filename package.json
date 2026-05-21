@@ -133,6 +133,7 @@
       "<rootDir>/src/__tests__/setup.ts"
     ],
     "testPathIgnorePatterns": [
+      "<rootDir>/.kiro/",
       "<rootDir>/src/__tests__/helpers/",
       "<rootDir>/src/__tests__/setup.ts",
       "<rootDir>/src/__tests__/contract/parsers.ts"

@@ -6,6 +6,7 @@
  */
 
 import { ChatPresenceManager } from '../../ChatPresenceManager';
+import { ChatError } from '../../common/ChatError';
 import { MTpublishPresenceWithDescription } from '../../__internal__/Consts';
 import { getLastCall, mockCallMethodOnce } from '../helpers/nativeMock';
 
@@ -25,5 +26,19 @@ describe('ChatPresenceManager call-method contract', () => {
       },
     });
     expect(result).toBeUndefined();
+  });
+
+  test('publishPresence rejects with ChatError when native returns { error }', async () => {
+    mockCallMethodOnce({
+      error: { code: 503, description: 'presence unavailable' },
+    });
+
+    const p = manager.publishPresence('away');
+
+    await expect(p).rejects.toBeInstanceOf(ChatError);
+    await expect(p).rejects.toMatchObject({
+      code: 503,
+      description: 'presence unavailable',
+    });
   });
 });

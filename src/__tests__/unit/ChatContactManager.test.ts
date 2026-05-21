@@ -5,6 +5,7 @@
  */
 
 import { ChatContactManager } from '../../ChatContactManager';
+import { ChatError } from '../../common/ChatError';
 import { MTaddContact } from '../../__internal__/Consts';
 import { getLastCall, mockCallMethodOnce } from '../helpers/nativeMock';
 
@@ -25,5 +26,19 @@ describe('ChatContactManager call-method contract', () => {
       },
     });
     expect(result).toBeUndefined();
+  });
+
+  test('addContact rejects with ChatError when native returns { error }', async () => {
+    mockCallMethodOnce({
+      error: { code: 403, description: 'contact denied' },
+    });
+
+    const p = manager.addContact('alice', 'hello');
+
+    await expect(p).rejects.toBeInstanceOf(ChatError);
+    await expect(p).rejects.toMatchObject({
+      code: 403,
+      description: 'contact denied',
+    });
   });
 });

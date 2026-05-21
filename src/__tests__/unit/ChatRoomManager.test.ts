@@ -5,6 +5,7 @@
  */
 
 import { ChatRoomManager } from '../../ChatRoomManager';
+import { ChatError } from '../../common/ChatError';
 import { MTjoinChatRoom } from '../../__internal__/Consts';
 import { getLastCall, mockCallMethodOnce } from '../helpers/nativeMock';
 
@@ -24,5 +25,19 @@ describe('ChatRoomManager call-method contract', () => {
       },
     });
     expect(result).toBeUndefined();
+  });
+
+  test('joinChatRoom rejects with ChatError when native returns { error }', async () => {
+    mockCallMethodOnce({
+      error: { code: 404, description: 'room not found' },
+    });
+
+    const p = manager.joinChatRoom('room-42');
+
+    await expect(p).rejects.toBeInstanceOf(ChatError);
+    await expect(p).rejects.toMatchObject({
+      code: 404,
+      description: 'room not found',
+    });
   });
 });

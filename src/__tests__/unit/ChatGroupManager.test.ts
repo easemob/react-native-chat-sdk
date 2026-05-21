@@ -5,6 +5,7 @@
  */
 
 import { ChatGroupManager } from '../../ChatGroupManager';
+import { ChatError } from '../../common/ChatError';
 import { ChatGroup } from '../../common/ChatGroup';
 import { MTgetGroupSpecificationFromServer } from '../../__internal__/Consts';
 import { getLastCall, mockCallMethodOnce } from '../helpers/nativeMock';
@@ -36,5 +37,19 @@ describe('ChatGroupManager call-method contract', () => {
     expect(group?.groupId).toBe('g1');
     expect(group?.groupName).toBe('group-one');
     expect(group?.owner).toBe('alice');
+  });
+
+  test('fetchGroupInfoFromServer rejects with ChatError when native returns { error }', async () => {
+    mockCallMethodOnce({
+      error: { code: 404, description: 'group not found' },
+    });
+
+    const p = manager.fetchGroupInfoFromServer('g1', true);
+
+    await expect(p).rejects.toBeInstanceOf(ChatError);
+    await expect(p).rejects.toMatchObject({
+      code: 404,
+      description: 'group not found',
+    });
   });
 });
