@@ -17,6 +17,12 @@ To get started with the project, run `yarn` in the root directory to install the
 yarn
 ```
 
+If hook installation needs to be refreshed on macOS, run:
+
+```sh
+yarn hooks:repair
+```
+
 Initialize the projects for SDK and example.
 
 ```sh
@@ -140,6 +146,8 @@ yarn release
 The `package.json` file contains various scripts for common tasks:
 
 - `yarn`: setup project by installing dependencies and pods - run with `POD_INSTALL=0` to skip installing pods.
+- `yarn hooks:install`: reinstall Lefthook hooks.
+- `yarn hooks:repair`: clear macOS provenance from `.git/hooks` and reinstall Lefthook hooks.
 - `yarn typecheck`: type-check files with TypeScript.
 - `yarn lint`: lint files with ESLint.
 - `yarn test`: run unit tests with Jest.

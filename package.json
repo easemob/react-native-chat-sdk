@@ -49,6 +49,8 @@
     "clean:node_modules": "rm -rf example/node_modules && rm -rf node_modules/",
     "clean:docs": "del-cli docs/build",
     "prepare": "yarn run gen:version_file && yarn run gen:cmake_file && yarn run gen:env_file && yarn run build:exports && yarn run check:circular:dpdm",
+    "hooks:install": "lefthook install -f",
+    "hooks:repair": "node ./scripts/repair-lefthook-hooks.js",
     "gen:env_file": "cd scripts && node generate-env.js",
     "gen:version_file": "cd scripts && node generate-version.js",
     "gen:cmake_file": "cd scripts && node generate-cmake.js",
