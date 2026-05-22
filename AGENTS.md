@@ -56,6 +56,9 @@ yarn example android    # run on Android
 yarn example ios        # run on iOS
 ```
 
+- `yarn test`, `yarn typecheck`, `yarn lint:sdk`, and similar local validation commands should be run directly without asking for extra permission when they operate inside the workspace and do not need network access or other elevated privileges.
+- In this Codex workspace, run `yarn test --no-watchman` by default when executing tests. Jest may try to use `watchman`, and the sandbox can block its socket access.
+
 ## Architecture
 
 ### Native Bridge Pattern
