@@ -13,15 +13,17 @@
 - 数据跨 TypeScript、React Native bridge、Java/Objective-C、Native SDK 再回到 TypeScript 的流转过程。
 - HyphenateChat Native SDK 升级后，接口、废弃 API、字段语义或返回结构变化带来的质量风险。
 
-因此，测试与质量工具分为五类：
+因此，测试与质量工具分为七类：
 
 1. 纯 TypeScript 测试
 2. 纯 Native Wrapper 测试
 3. 三端关键字对齐测试
-4. 数据全链路测试
-5. Native Deprecated API 扫描脚本
+4. 三端数据类型对齐测试
+5. 三端数据转换测试
+6. 数据全链路测试
+7. Native Deprecated API 扫描脚本
 
-这五类手段各自解决不同问题，不要求互相替代，也不追求每类都覆盖全部 API。当前阶段的重点是通过代表性样本验证策略是否有效。
+这七类手段各自解决不同问题，不要求互相替代，也不追求每类都覆盖全部 API。当前阶段的重点是通过代表性样本验证策略是否有效。
 
 ## 2. 纯 TypeScript 测试
 
@@ -68,7 +70,46 @@
 
 这类测试成本低、反馈快，适合放在 pre-commit。它的价值是防止三端方法名、事件名漂移导致运行时无法调用或事件无法分发。
 
-## 5. 数据全链路测试
+## 5. 三端数据类型对齐测试
+
+三端数据类型对齐测试验证 TypeScript 对外模型与 Android/iOS Native SDK 模型的字段契约是否一致。
+
+这类测试偏静态，参考三端关键字对齐测试：先用脚本解析三端源码，生成字段契约，再执行测试断言。
+
+它重点检查：
+
+- 字段是否存在。
+- 字段基础类型是否一致。
+- 字段可选性是否一致。
+- TypeScript 是否把 native 可选字段误声明为必填字段。
+
+Native SDK 源码参考路径：
+
+- iOS：`/Users/asterisk/Codes/easemob/emclient-ios`
+- Android：`/Users/asterisk/Codes/easemob/emclient-android`
+
+例如，native `EMImageMessageBody` 中缩略图相关字段如果是可选字段，TypeScript `ChatImageMessageBody` 中对应字段也应是可选属性。
+
+这类测试不验证方法名、不验证业务调用链路、不验证运行时取值转换。它的目标是防止三端数据模型声明漂移。
+
+如果测试不通过，脚本必须打印明确的不一致内容。不得为了通过测试而修改合理测试用例，也不得用 allowlist 掩盖真实问题；正式代码如何调整由维护者手动决策。
+
+## 6. 三端数据转换测试
+
+三端数据转换测试验证 TypeScript 数据转换到 Android/iOS native 对象后，字段值语义保持一致。
+
+它重点检查：
+
+- `undefined` 表示未赋值，传到 native 后不应被误写成空字符串。
+- 空字符串表示明确赋值为空字符串，传到 native 后不应被误当成未赋值。
+- `null`、`0`、`false`、空数组、空对象等边界值不应被错误丢弃或改写。
+- native 对象转换回 TypeScript 时，字段缺失和字段空值应保持可区分。
+
+例如，`ChatImageMessageBody.thumbnailRemotePath` 为 `undefined` 时，Android/iOS 不应赋值；为 `''` 时，Android/iOS 应保留空字符串。
+
+这类测试不要求启动完整 example app，也不要求覆盖真实网络或数据库行为。它的目标是验证三端序列化、反序列化和 helper 转换规则。
+
+## 7. 数据全链路测试
 
 数据全链路测试是可信度最高、成本最高的 integration 测试，只做代表性样本。
 
@@ -106,7 +147,7 @@ ChatGroupManager.fetchGroupInfoFromServer('g1', true)
 
 它同时覆盖 TypeScript 入参、native 参数解析、fake SDK 返回、native map 返回、TypeScript `ChatGroup` decode，能较好验证跨 bridge 数据链路的核心风险。
 
-## 6. Native Deprecated API 扫描脚本
+## 8. Native Deprecated API 扫描脚本
 
 Native Deprecated API 扫描脚本是质量工具，不是单元测试。
 
@@ -120,7 +161,7 @@ Native Deprecated API 扫描脚本是质量工具，不是单元测试。
 - 不进 pre-commit，适合手动、CI 或 release 前执行。
 - 这类工具和测试体系并列，都是软件质量保障手段。
 
-## 7. 阶段策略
+## 9. 阶段策略
 
 当前阶段是**测试策略验证期**，不是覆盖率建设期。
 
@@ -132,6 +173,16 @@ Native Deprecated API 扫描脚本是质量工具，不是单元测试。
 - 根据样本结果决定是否扩大覆盖。
 - 避免一开始铺满所有 API，减少试错成本。
 
+当前状态：
+
+- 三端关键字对齐测试已完成。
+- 纯 TypeScript 测试已有代表性样本。
+- 纯 Native Wrapper 测试尚未开发。
+- 三端数据类型对齐测试尚未开发。
+- 三端数据转换测试尚未开发。
+- 数据全链路测试已有独立设计文档，尚需按阶段落地。
+- Native Deprecated API 扫描脚本尚未开发。
+
 样本选择原则：
 
 - 优先选择当前有效 API，排除 deprecated/作废 API。
@@ -141,7 +192,7 @@ Native Deprecated API 扫描脚本是质量工具，不是单元测试。
 - 优先选择 success/failure 分支明显的 API。
 - 优先选择历史上容易出错或 SDK 升级容易影响的 API。
 
-## 8. 后续补充事项
+## 10. 后续补充事项
 
 - CI 设计：本文档暂不展开 CI 流水线设计。后续需要单独明确各类测试和质量工具在 PR、nightly、release 前的触发策略。
 - 测试用例完善：当前阶段只实现代表性样本。待测试框架、耗时和维护成本稳定后，再逐步补充更多 manager/API 的测试用例。

@@ -13,11 +13,11 @@ export class ChatPresence {
   /**
    * The Unix timestamp when the presence state is last updated. The unit is second.
    */
-  lastTime: string;
+  lastTime: number;
   /**
    * The Unix timestamp when the presence subscription expires. The unit is second.
    */
-  expiryTime: string;
+  expiryTime: number;
   /**
    * The details of the current presence state.
    */
@@ -26,8 +26,8 @@ export class ChatPresence {
   constructor(params: {
     publisher: string;
     statusDescription: string;
-    lastTime: string;
-    expiryTime: string;
+    lastTime: number;
+    expiryTime: number;
     statusDetails: any;
   }) {
     this.publisher = params.publisher;

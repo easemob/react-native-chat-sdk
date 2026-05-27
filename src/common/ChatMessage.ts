@@ -1269,8 +1269,14 @@ export class ChatLocationMessageBody extends ChatMessageBody {
       modifyCount: params.modifyCount,
     });
     this.address = params.address;
-    this.latitude = params.latitude;
-    this.longitude = params.longitude;
+    this.latitude =
+      typeof params.latitude === 'number'
+        ? String(params.latitude)
+        : params.latitude;
+    this.longitude =
+      typeof params.longitude === 'number'
+        ? String(params.longitude)
+        : params.longitude;
   }
 }
 
