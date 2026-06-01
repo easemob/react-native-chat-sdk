@@ -285,83 +285,66 @@ class ExtSdkOptionsHelper {
 
     static EMOptions fromJson(JSONObject json, Context context) throws JSONException {
         EMOptions options = new EMOptions();
-        if (json.has("appKey")) {
-            options.setAppKey(json.getString("appKey"));
+        if (!json.optString("appKey").isEmpty()) { options.setAppKey(json.getString("appKey")); }
+        if (!json.optString("appId").isEmpty()) { options.setAppId(json.getString("appId")); }
+        if (json.has("autoLogin")) { options.setAutoLogin(json.getBoolean("autoLogin")); }
+        if (json.has("requireAck")) { options.setRequireAck(json.getBoolean("requireAck")); }
+        if (json.has("requireDeliveryAck")) { options.setRequireDeliveryAck(json.getBoolean("requireDeliveryAck")); }
+        if (json.has("sortMessageByServerTime")) { options.setSortMessageByServerTime(json.getBoolean("sortMessageByServerTime")); }
+        if (json.has("acceptInvitationAlways")) { options.setAcceptInvitationAlways(json.getBoolean("acceptInvitationAlways")); }
+        if (json.has("autoAcceptGroupInvitation")) { options.setAutoAcceptGroupInvitation(json.getBoolean("autoAcceptGroupInvitation")); }
+        if (json.has("deleteMessagesAsExitGroup")) { options.setDeleteMessagesAsExitGroup(json.getBoolean("deleteMessagesAsExitGroup")); }
+        if (json.has("deleteMessagesAsExitChatRoom")) { options.setDeleteMessagesAsExitChatRoom(json.getBoolean("deleteMessagesAsExitChatRoom")); }
+        if (json.has("isAutoDownload")) { options.setAutoDownloadThumbnail(json.getBoolean("isAutoDownload")); }
+        if (json.has("isChatRoomOwnerLeaveAllowed")) { options.allowChatroomOwnerLeave(json.getBoolean("isChatRoomOwnerLeaveAllowed")); }
+        if (json.has("serverTransfer")) { options.setAutoTransferMessageAttachments(json.getBoolean("serverTransfer")); }
+        if (json.has("usingHttpsOnly")) { options.setUsingHttpsOnly(json.getBoolean("usingHttpsOnly")); }
+        if (json.has("enableDNSConfig")) { options.enableDNSConfig(json.getBoolean("enableDNSConfig")); }
+        if (json.has("enableDNSConfig") && !json.getBoolean("enableDNSConfig")) {
+            if (json.has("imPort")) { options.setImPort(json.getInt("imPort")); }
+            if (!json.optString("imServer").isEmpty()) { options.setIMServer(json.getString("imServer")); }
+            if (!json.optString("restServer").isEmpty()) { options.setRestServer(json.getString("restServer")); }
+            if (!json.optString("dnsUrl").isEmpty()) { options.setDnsUrl(json.getString("dnsUrl")); }
         }
-        if (json.has("appId")) {
-            options.setAppId(json.getString("appId"));
-        }
-        options.setAutoLogin(json.getBoolean("autoLogin"));
-        options.setRequireAck(json.getBoolean("requireAck"));
-        options.setRequireDeliveryAck(json.getBoolean("requireDeliveryAck"));
-        options.setSortMessageByServerTime(json.getBoolean("sortMessageByServerTime"));
-        options.setAcceptInvitationAlways(json.getBoolean("acceptInvitationAlways"));
-        options.setAutoAcceptGroupInvitation(json.getBoolean("autoAcceptGroupInvitation"));
-        options.setDeleteMessagesAsExitGroup(json.getBoolean("deleteMessagesAsExitGroup"));
-        options.setDeleteMessagesAsExitChatRoom(json.getBoolean("deleteMessagesAsExitChatRoom"));
-        options.setAutoDownloadThumbnail(json.getBoolean("isAutoDownload"));
-        options.allowChatroomOwnerLeave(json.getBoolean("isChatRoomOwnerLeaveAllowed"));
-        options.setAutoTransferMessageAttachments(json.getBoolean("serverTransfer"));
-        options.setUsingHttpsOnly(json.getBoolean("usingHttpsOnly"));
-        options.enableDNSConfig(json.getBoolean("enableDNSConfig"));
-        if (!json.getBoolean("enableDNSConfig")) {
-            options.setImPort(json.getInt("imPort"));
-            options.setIMServer(json.getString("imServer"));
-            options.setRestServer(json.getString("restServer"));
-            options.setDnsUrl(json.getString("dnsUrl"));
-        }
-        options.setAreaCode(json.getInt("areaCode"));
-        options.setLoadEmptyConversations(json.optBoolean("enableEmptyConversation", false));
-        if (json.has("customDeviceName")) {
-            options.setCustomDeviceName(json.optString("customDeviceName"));
-        }
-        if (json.has("customOSType")) {
-            options.setCustomOSPlatform(json.optInt("customOSType"));
-        }
+        if (json.has("areaCode")) { options.setAreaCode(json.getInt("areaCode")); }
+        if (json.has("enableEmptyConversation")) { options.setLoadEmptyConversations(json.getBoolean("enableEmptyConversation")); }
+        if (!json.optString("customDeviceName").isEmpty()) { options.setCustomDeviceName(json.getString("customDeviceName")); }
+        if (json.has("customOSType")) { options.setCustomOSPlatform(json.getInt("customOSType")); }
 
         if (json.has("pushConfig")) {
-            EMPushConfig.Builder builder = new EMPushConfig.Builder(context);
             JSONObject pushConfig = json.getJSONObject("pushConfig");
-            String manufacturer = pushConfig.getString("manufacturer");
-            if (manufacturer.equalsIgnoreCase("google")) {
-                builder.enableFCM(pushConfig.getString("deviceId"));
-            } else if (manufacturer.equalsIgnoreCase("huawei")) {
-                builder.enableHWPush();
-            } else if (manufacturer.equalsIgnoreCase("meizu")) {
-                builder.enableFCM(pushConfig.getString("deviceId"));
-            } else if (manufacturer.equalsIgnoreCase("xiaomi")) {
-                builder.enableFCM(pushConfig.getString("deviceId"));
-            } else if (manufacturer.equalsIgnoreCase("oppo")) {
-                builder.enableOppoPush(pushConfig.getString("deviceId"), "");
-            } else if (manufacturer.equalsIgnoreCase("vivo")) {
-                builder.enableFCM(pushConfig.getString("deviceId"));
-            } else {
-                builder.enableFCM(pushConfig.getString("deviceId"));
+            if (!pushConfig.optString("manufacturer").isEmpty() && !pushConfig.optString("deviceId").isEmpty()) {
+                EMPushConfig.Builder builder = new EMPushConfig.Builder(context);
+                String manufacturer = pushConfig.getString("manufacturer");
+                String deviceId = pushConfig.getString("deviceId");
+                if (manufacturer.equalsIgnoreCase("google")) { builder.enableFCM(deviceId); }
+                else if (manufacturer.equalsIgnoreCase("huawei")) { builder.enableHWPush(); }
+                else if (manufacturer.equalsIgnoreCase("meizu")) { builder.enableFCM(deviceId); }
+                else if (manufacturer.equalsIgnoreCase("xiaomi")) { builder.enableFCM(deviceId); }
+                else if (manufacturer.equalsIgnoreCase("oppo")) { builder.enableOppoPush(deviceId, ""); }
+                else if (manufacturer.equalsIgnoreCase("vivo")) { builder.enableFCM(deviceId); }
+                else { builder.enableFCM(deviceId); }
+                options.setPushConfig(builder.build());
             }
-            options.setPushConfig(builder.build());
         }
 
         // 2024-04-16 4.5.0
-        options.setEnableTLSConnection(json.optBoolean("enableTLS", false));
-        options.setUseReplacedMessageContents(json.optBoolean("useReplacedMessageContents", false));
-        options.setIncludeSendMessageInMessageListener(json.optBoolean("messagesReceiveCallbackIncludeSend", false));
-        options.setRegardImportedMsgAsRead(json.optBoolean("regardImportMessagesAsRead", false));
+        if (json.has("enableTLS")) { options.setEnableTLSConnection(json.getBoolean("enableTLS")); }
+        if (json.has("useReplacedMessageContents")) { options.setUseReplacedMessageContents(json.getBoolean("useReplacedMessageContents")); }
+        if (json.has("messagesReceiveCallbackIncludeSend")) { options.setIncludeSendMessageInMessageListener(json.getBoolean("messagesReceiveCallbackIncludeSend")); }
+        if (json.has("regardImportMessagesAsRead")) { options.setRegardImportedMsgAsRead(json.getBoolean("regardImportMessagesAsRead")); }
 
         // 2024-08-15
-        if (json.has("loginExtraInfo")) {
-            options.setLoginCustomExt(json.optString("loginExtraInfo"));
-        }
+        if (!json.optString("loginExtraInfo").isEmpty()) { options.setLoginCustomExt(json.getString("loginExtraInfo")); }
 
-        if (json.has("uikitVersion")) {
-            options.setUIKitVersion(json.getString("uikitVersion"));
-        }
+        if (!json.optString("uikitVersion").isEmpty()) { options.setUIKitVersion(json.getString("uikitVersion")); }
 
         // 2026-01-07
-        options.setWebSocketServer(json.optString("webSocketServer"));
-        options.setWebSocketPort(json.optInt("webSocketPort"));
+        if (!json.optString("webSocketServer").isEmpty()) { options.setWebSocketServer(json.getString("webSocketServer")); }
+        if (json.has("webSocketPort")) { options.setWebSocketPort(json.getInt("webSocketPort")); }
 
         // 2026-01-16
-        options.setDohVendor(json.optInt("dohVendor"));
+        if (json.has("dohVendor")) { options.setDohVendor(json.getInt("dohVendor")); }
 
         return options;
     }
@@ -483,12 +466,10 @@ class ExtSdkGroupOptionsHelper {
 
     static EMGroupOptions fromJson(JSONObject json) throws JSONException {
         EMGroupOptions options = new EMGroupOptions();
-        options.maxUsers = json.getInt("maxCount");
-        options.inviteNeedConfirm = json.getBoolean("inviteNeedConfirm");
-        if (json.has("ext")) {
-            options.extField = json.getString("ext");
-        }
-        options.style = InternalConvertHelper.groupStyleFromInt(json.getInt("style"));
+        if (json.has("maxCount")) { options.maxUsers = json.getInt("maxCount"); }
+        if (json.has("inviteNeedConfirm")) { options.inviteNeedConfirm = json.getBoolean("inviteNeedConfirm"); }
+        if (!json.optString("ext").isEmpty()) { options.extField = json.getString("ext"); }
+        if (json.has("style")) { options.style = InternalConvertHelper.groupStyleFromInt(json.getInt("style")); }
         return options;
     }
 
@@ -676,49 +657,29 @@ class ExtSdkMessageHelper {
             message.setDirection(EMMessage.Direct.RECEIVE);
         }
 
-        if (json.has("to")) {
-            message.setTo(json.getString("to"));
-        }
-
-        if (json.has("from")) {
-            message.setFrom(json.getString("from"));
-        }
-
-        message.setAcked(json.getBoolean("hasReadAck"));
-        if (InternalConvertHelper.messageStatusFromInt(json.getInt("status")) == EMMessage.Status.SUCCESS) {
-            message.setUnread(!json.getBoolean("hasRead"));
+        if (!json.optString("to").isEmpty()) { message.setTo(json.getString("to")); }
+        if (!json.optString("from").isEmpty()) { message.setFrom(json.getString("from")); }
+        if (json.has("hasReadAck")) { message.setAcked(json.getBoolean("hasReadAck")); }
+        if (json.has("status") && InternalConvertHelper.messageStatusFromInt(json.getInt("status")) == EMMessage.Status.SUCCESS) {
+            if (json.has("hasRead")) { message.setUnread(!json.getBoolean("hasRead")); }
         }
         // sdk auto invoke
         //        message.setDelivered(json.getBoolean("hasDeliverAck"));
-        message.setIsNeedGroupAck(json.getBoolean("needGroupAck"));
-        if (json.has("groupAckCount")) {
-            message.setGroupAckCount(json.getInt("groupAckCount"));
-        }
-
-        message.setLocalTime(json.getLong("localTime"));
-        if (json.has("serverTime")) {
-            message.setMsgTime(json.getLong("serverTime"));
-        }
-        message.setStatus(InternalConvertHelper.messageStatusFromInt(json.getInt("status")));
-        message.setChatType(InternalConvertHelper.chatTypeFromInt(json.getInt("chatType")));
-        if (json.has("msgId")) {
-            message.setMsgId(json.getString("msgId"));
-        }
-        if (json.has("isChatThread")) {
-            message.setIsChatThreadMessage(json.getBoolean("isChatThread"));
-        }
-        if (json.has("deliverOnlineOnly")) {
-            message.deliverOnlineOnly(json.getBoolean("deliverOnlineOnly"));
-        }
-
+        if (json.has("needGroupAck")) { message.setIsNeedGroupAck(json.getBoolean("needGroupAck")); }
+        if (json.has("groupAckCount")) { message.setGroupAckCount(json.getInt("groupAckCount")); }
+        if (json.has("localTime")) { message.setLocalTime(json.getLong("localTime")); }
+        if (json.has("serverTime")) { message.setMsgTime(json.getLong("serverTime")); }
+        if (json.has("status")) { message.setStatus(InternalConvertHelper.messageStatusFromInt(json.getInt("status"))); }
+        if (json.has("chatType")) { message.setChatType(InternalConvertHelper.chatTypeFromInt(json.getInt("chatType"))); }
+        if (!json.optString("msgId").isEmpty()) { message.setMsgId(json.getString("msgId")); }
+        if (json.has("isChatThread")) { message.setIsChatThreadMessage(json.getBoolean("isChatThread")); }
+        if (json.has("deliverOnlineOnly")) { message.deliverOnlineOnly(json.getBoolean("deliverOnlineOnly")); }
         if (json.has("attributes")) {
             JSONObject data = json.getJSONObject("attributes");
             parseAttributesFromJson(data, message);
         }
-        if (json.has("priority")) {
-            message.setPriority(InternalConvertHelper.messagePriorityFromInt(json.getInt("priority")));
-        }
-        if (json.has("receiverList")) {
+        if (json.has("priority")) { message.setPriority(InternalConvertHelper.messagePriorityFromInt(json.getInt("priority"))); }
+        if (json.has("receiverList") && json.getJSONArray("receiverList").length() > 0) {
             ArrayList<String> receiverList = new ArrayList<>();
             JSONArray ja = json.getJSONArray("receiverList");
             for (int i = 0; i < ja.length(); i++) {
@@ -826,16 +787,15 @@ class ExtSdkMessageBodyHelper {
 
     static EMTextMessageBody textBodyFromJson(JSONObject json) throws JSONException {
         String content = json.getString("content");
-        List<String> list = new ArrayList<>();
-        if (json.has("targetLanguageCodes")) {
+        EMTextMessageBody body = new EMTextMessageBody(content);
+        if (json.has("targetLanguageCodes") && json.getJSONArray("targetLanguageCodes").length() > 0) {
+            List<String> list = new ArrayList<>();
             JSONArray ja = json.getJSONArray("targetLanguageCodes");
             for (int i = 0; i < ja.length(); i++) {
                 list.add(ja.getString(i));
             }
+            body.setTargetLanguages(list);
         }
-        EMTextMessageBody body = new EMTextMessageBody(content);
-        body.setTargetLanguages(list);
-        // 给底层的时候不需要设置
         return body;
     }
 
@@ -863,18 +823,9 @@ class ExtSdkMessageBodyHelper {
     static EMLocationMessageBody localBodyFromJson(JSONObject json) throws JSONException {
         double latitude = json.getDouble("latitude");
         double longitude = json.getDouble("longitude");
-        String address = null;
-        String buildingName = null;
-        if (json.has("address")) {
-            address = json.getString("address");
-        }
-
-        if (json.has("buildingName")) {
-            buildingName = json.getString("buildingName");
-        }
-
+        String address = json.optString("address").isEmpty() ? null : json.getString("address");
+        String buildingName = json.optString("buildingName").isEmpty() ? null : json.getString("buildingName");
         EMLocationMessageBody body = new EMLocationMessageBody(address, latitude, longitude, buildingName);
-
         return body;
     }
 
@@ -931,23 +882,12 @@ class ExtSdkMessageBodyHelper {
 
     static EMFileMessageBody fileBodyFromJson(JSONObject json) throws JSONException {
         String localPath = json.getString("localPath");
-
         EMNormalFileMessageBody body = new EMNormalFileMessageBody(Uri.parse(localPath));
-
-        if (json.has("displayName")) {
-            body.setFileName(json.getString("displayName"));
-        }
-        if (json.has("remotePath")) {
-            body.setRemoteUrl(json.getString("remotePath"));
-        }
-        if (json.has("secret")) {
-            body.setSecret(json.getString("secret"));
-        }
-        body.setDownloadStatus(InternalConvertHelper.downloadStatusFromInt(json.getInt("fileStatus")));
-        if (json.has("fileSize")) {
-            body.setFileLength(json.getInt("fileSize"));
-        }
-
+        if (!json.optString("displayName").isEmpty()) { body.setFileName(json.getString("displayName")); }
+        if (!json.optString("remotePath").isEmpty()) { body.setRemoteUrl(json.getString("remotePath")); }
+        if (!json.optString("secret").isEmpty()) { body.setSecret(json.getString("secret")); }
+        if (json.has("fileStatus")) { body.setDownloadStatus(InternalConvertHelper.downloadStatusFromInt(json.getInt("fileStatus"))); }
+        if (json.has("fileSize")) { body.setFileLength(json.getInt("fileSize")); }
         return body;
     }
 
@@ -991,76 +931,44 @@ class ExtSdkMessageBodyHelper {
     }
 
     static EMCombineMessageBody combineBodyFromJson(JSONObject json) throws JSONException {
-        String title = json.optString("title");
-        String summary = json.optString("summary");
-        String compatibleText = json.optString("compatibleText");
-        String localPath = json.optString("localPath");
-        String remotePath = json.optString("remotePath");
-        String secret = json.optString("secret");
-        List<String> msgIds = new ArrayList<>();
-        if (json.has("messageIdList")) {
+        String title = json.optString("title").isEmpty() ? null : json.getString("title");
+        String summary = json.optString("summary").isEmpty() ? null : json.getString("summary");
+        String compatibleText = json.optString("compatibleText").isEmpty() ? null : json.getString("compatibleText");
+        String localPath = json.optString("localPath").isEmpty() ? null : json.getString("localPath");
+        String remotePath = json.optString("remotePath").isEmpty() ? null : json.getString("remotePath");
+        String secret = json.optString("secret").isEmpty() ? null : json.getString("secret");
+        EMCombineMessageBody ret = new EMCombineMessageBody();
+        if (title != null) { ret.setTitle(title); }
+        if (summary != null) { ret.setSummary(summary); }
+        if (compatibleText != null) { ret.setCompatibleText(compatibleText); }
+        if (localPath != null) { ret.setLocalUrl(localPath); }
+        if (remotePath != null) { ret.setRemoteUrl(remotePath); }
+        if (secret != null) { ret.setSecret(secret); }
+        if (json.has("messageIdList") && json.getJSONArray("messageIdList").length() > 0) {
+            List<String> msgIds = new ArrayList<>();
             JSONArray array = json.getJSONArray("messageIdList");
             for (int i = 0; i < array.length(); i++) {
                 msgIds.add(array.getString(i));
             }
+            ret.setMessageList(msgIds);
         }
-
-        EMCombineMessageBody ret = new EMCombineMessageBody();
-        ret.setTitle(title);
-        ret.setSummary(summary);
-        ret.setCompatibleText(compatibleText);
-        ret.setLocalUrl(localPath);
-        ret.setRemoteUrl(remotePath);
-        ret.setSecret(secret);
-        ret.setMessageList(msgIds);
-
         return ret;
     }
 
     static EMImageMessageBody imageBodyFromJson(JSONObject json) throws JSONException {
         String localPath = json.getString("localPath");
-
         EMImageMessageBody body = new EMImageMessageBody(Uri.parse(localPath));
-        if (json.has("displayName")) {
-            body.setFileName(json.getString("displayName"));
-        }
-        if (json.has("remotePath")) {
-            body.setRemoteUrl(json.getString("remotePath"));
-        }
-        if (json.has("secret")) {
-            body.setSecret(json.getString("secret"));
-        }
-        if (json.has("thumbnailLocalPath")) {
-            body.setThumbnailLocalPath(json.getString("thumbnailLocalPath"));
-        }
-        if (json.has("thumbnailRemotePath")) {
-            body.setThumbnailUrl(json.getString("thumbnailRemotePath"));
-        }
-        if (json.has("thumbnailSecret")) {
-            body.setThumbnailSecret(json.getString("thumbnailSecret"));
-        }
-        if (json.has("fileSize")) {
-            body.setFileLength(json.getInt("fileSize"));
-        }
-        if (json.has("width") && json.has("height")) {
-            int width = json.getInt("width");
-            int height = json.getInt("height");
-            body.setThumbnailSize(width, height);
-        }
-        if (json.has("sendOriginalImage")) {
-            body.setSendOriginalImage(json.getBoolean("sendOriginalImage"));
-        }
-
-        if (json.has("fileStatus")) {
-            body.setDownloadStatus(InternalConvertHelper.downloadStatusFromInt(json.getInt("fileStatus")));
-        }
-
-        if (json.has("isGif")) {
-            body.setGif(json.getBoolean("isGif"));
-        } else {
-            body.setGif(false);
-        }
-
+        if (!json.optString("displayName").isEmpty()) { body.setFileName(json.getString("displayName")); }
+        if (!json.optString("remotePath").isEmpty()) { body.setRemoteUrl(json.getString("remotePath")); }
+        if (!json.optString("secret").isEmpty()) { body.setSecret(json.getString("secret")); }
+        if (!json.optString("thumbnailLocalPath").isEmpty()) { body.setThumbnailLocalPath(json.getString("thumbnailLocalPath")); }
+        if (!json.optString("thumbnailRemotePath").isEmpty()) { body.setThumbnailUrl(json.getString("thumbnailRemotePath")); }
+        if (!json.optString("thumbnailSecret").isEmpty()) { body.setThumbnailSecret(json.getString("thumbnailSecret")); }
+        if (json.has("fileSize")) { body.setFileLength(json.getInt("fileSize")); }
+        if (json.has("width") && json.has("height")) { body.setThumbnailSize(json.getInt("width"), json.getInt("height")); }
+        if (json.has("sendOriginalImage")) { body.setSendOriginalImage(json.getBoolean("sendOriginalImage")); }
+        if (json.has("fileStatus")) { body.setDownloadStatus(InternalConvertHelper.downloadStatusFromInt(json.getInt("fileStatus"))); }
+        if (json.has("isGif")) { body.setGif(json.getBoolean("isGif")); }
         return body;
     }
 
@@ -1086,45 +994,17 @@ class ExtSdkMessageBodyHelper {
     static EMVideoMessageBody videoBodyFromJson(JSONObject json) throws JSONException {
         String localPath = json.getString("localPath");
         int duration = 0;
-        if (json.has("duration")) {
-            duration = json.getInt("duration");
-        }
-        String thumbnailLocalPath = "";
-        if (json.has("thumbnailLocalPath")) {
-            thumbnailLocalPath = json.getString("thumbnailLocalPath");
-        }
-        EMVideoMessageBody body =
-            new EMVideoMessageBody(Uri.parse(localPath), Uri.parse(thumbnailLocalPath), duration, 0);
-
-        if (json.has("thumbnailRemotePath")) {
-            body.setThumbnailUrl(json.getString("thumbnailRemotePath"));
-        }
-        if (json.has("thumbnailSecret")) {
-            body.setThumbnailSecret(json.getString("thumbnailSecret"));
-        }
-        if (json.has("displayName")) {
-            body.setFileName(json.getString("displayName"));
-        }
-        if (json.has("remotePath")) {
-            body.setRemoteUrl(json.getString("remotePath"));
-        }
-        if (json.has("secret")) {
-            body.setSecret(json.getString("secret"));
-        }
-        if (json.has("fileSize")) {
-            body.setVideoFileLength(json.getInt("fileSize"));
-        }
-
-        if (json.has("fileStatus")) {
-            body.setDownloadStatus(InternalConvertHelper.downloadStatusFromInt(json.getInt("fileStatus")));
-        }
-
-        if (json.has("width") && json.has("height")) {
-            int width = json.getInt("width");
-            int height = json.getInt("height");
-            body.setThumbnailSize(width, height);
-        }
-
+        if (json.has("duration")) { duration = json.getInt("duration"); }
+        EMVideoMessageBody body = new EMVideoMessageBody(localPath, null, duration, 0);
+        if (!json.optString("thumbnailRemotePath").isEmpty()) { body.setThumbnailUrl(json.getString("thumbnailRemotePath")); }
+        if (!json.optString("thumbnailLocalPath").isEmpty()) { body.setLocalThumb(json.getString("thumbnailLocalPath")); }
+        if (!json.optString("thumbnailSecret").isEmpty()) { body.setThumbnailSecret(json.getString("thumbnailSecret")); }
+        if (json.has("fileSize")) { body.setFileLength(json.getInt("fileSize")); }
+        if (!json.optString("displayName").isEmpty()) { body.setFileName(json.getString("displayName")); }
+        if (!json.optString("remotePath").isEmpty()) { body.setRemoteUrl(json.getString("remotePath")); }
+        if (!json.optString("secret").isEmpty()) { body.setSecret(json.getString("secret")); }
+        if (json.has("fileStatus")) { body.setDownloadStatus(InternalConvertHelper.downloadStatusFromInt(json.getInt("fileStatus"))); }
+        if (json.has("width") && json.has("height")) { body.setThumbnailSize(json.getInt("width"), json.getInt("height")); }
         return body;
     }
 
@@ -1152,20 +1032,11 @@ class ExtSdkMessageBodyHelper {
         String localPath = json.getString("localPath");
         int duration = json.getInt("duration");
         EMVoiceMessageBody body = new EMVoiceMessageBody(Uri.parse(localPath), duration);
-        body.setDownloadStatus(InternalConvertHelper.downloadStatusFromInt(json.getInt("fileStatus")));
-        if (json.has("displayName")) {
-            body.setFileName(json.getString("displayName"));
-        }
-        if (json.has("secret")) {
-            body.setSecret(json.getString("secret"));
-        }
-        if (json.has("remotePath")) {
-            body.setRemoteUrl(json.getString("remotePath"));
-        }
-        if (json.has("fileSize")) {
-            body.setFileLength(json.getLong("fileSize"));
-        }
-
+        if (json.has("fileStatus")) { body.setDownloadStatus(InternalConvertHelper.downloadStatusFromInt(json.getInt("fileStatus"))); }
+        if (!json.optString("displayName").isEmpty()) { body.setFileName(json.getString("displayName")); }
+        if (!json.optString("secret").isEmpty()) { body.setSecret(json.getString("secret")); }
+        if (!json.optString("remotePath").isEmpty()) { body.setRemoteUrl(json.getString("remotePath")); }
+        if (json.has("fileSize")) { body.setFileLength(json.getLong("fileSize")); }
         return body;
     }
 
@@ -1403,34 +1274,15 @@ class ExtSdkJSONExceptionHelper {
 class ExtSdkUserInfoHelper {
     static EMUserInfo fromJson(JSONObject obj) throws JSONException {
         EMUserInfo userInfo = new EMUserInfo();
-
-        userInfo.setUserId(obj.getString("userId"));
-        if (obj.has("nickName")) {
-            userInfo.setNickname(obj.getString("nickName"));
-        }
-
-        if (obj.has("gender")) {
-            userInfo.setGender(obj.getInt("gender"));
-        }
-        if (obj.has("mail")) {
-            userInfo.setEmail(obj.optString("mail"));
-        }
-        if (obj.has("phone")) {
-            userInfo.setPhoneNumber(obj.optString("phone"));
-        }
-        if (obj.has("sign")) {
-            userInfo.setSignature(obj.optString("sign"));
-        }
-        if (obj.has("avatarUrl")) {
-            userInfo.setAvatarUrl(obj.optString("avatarUrl"));
-        }
-        if (obj.has("ext")) {
-            userInfo.setExt(obj.getString("ext"));
-        }
-        if (obj.has("birth")) {
-            userInfo.setBirth(obj.getString("birth"));
-        }
-
+        if (!obj.optString("userId").isEmpty()) { userInfo.setUserId(obj.getString("userId")); }
+        if (!obj.optString("nickName").isEmpty()) { userInfo.setNickname(obj.getString("nickName")); }
+        if (obj.has("gender")) { userInfo.setGender(obj.getInt("gender")); }
+        if (!obj.optString("mail").isEmpty()) { userInfo.setEmail(obj.getString("mail")); }
+        if (!obj.optString("phone").isEmpty()) { userInfo.setPhoneNumber(obj.getString("phone")); }
+        if (!obj.optString("sign").isEmpty()) { userInfo.setSignature(obj.getString("sign")); }
+        if (!obj.optString("avatarUrl").isEmpty()) { userInfo.setAvatarUrl(obj.getString("avatarUrl")); }
+        if (!obj.optString("ext").isEmpty()) { userInfo.setExt(obj.getString("ext")); }
+        if (!obj.optString("birth").isEmpty()) { userInfo.setBirth(obj.getString("birth")); }
         return userInfo;
     }
 
@@ -1581,21 +1433,13 @@ class ExtSdkSilentModeParamHelper {
     static EMSilentModeParam fromJson(JSONObject obj) throws JSONException {
         EMSilentModeParam.EMSilentModeParamType type = paramTypeFromInt(obj.getInt("paramType"));
         EMSilentModeParam param = new EMSilentModeParam(type);
-        ;
         if (obj.has("startTime") && obj.has("endTime")) {
             EMSilentModeTime startTime = ExtSdkSilentModeTimeHelper.fromJson(obj.getJSONObject("startTime"));
             EMSilentModeTime endTime = ExtSdkSilentModeTimeHelper.fromJson(obj.getJSONObject("endTime"));
             param.setSilentModeInterval(startTime, endTime);
         }
-
-        if (obj.has("remindType")) {
-            param.setRemindType(pushRemindFromInt(obj.getInt("remindType")));
-        }
-
-        if (obj.has("duration")) {
-            int duration = obj.getInt("duration");
-            param.setSilentModeDuration(duration);
-        }
+        if (obj.has("remindType")) { param.setRemindType(pushRemindFromInt(obj.getInt("remindType"))); }
+        if (obj.has("duration")) { param.setSilentModeDuration(obj.getInt("duration")); }
         return param;
     }
 
@@ -1681,16 +1525,13 @@ class ExtSdkSilentModeResultHelper {
 class ExtSdkFetchMessageOptionHelper {
     static EMFetchMessageOption fromJson(JSONObject json) throws JSONException {
         EMFetchMessageOption options = new EMFetchMessageOption();
-        EMConversation.EMSearchDirection direction =
-            json.getInt("direction") == 0 ? EMConversation.EMSearchDirection.UP : EMConversation.EMSearchDirection.DOWN;
+        EMConversation.EMSearchDirection direction = json.getInt("direction") == 0 ? EMConversation.EMSearchDirection.UP : EMConversation.EMSearchDirection.DOWN;
         options.setDirection(direction);
-        options.setIsSave(json.getBoolean("needSave"));
-        options.setStartTime(json.getLong("startTs"));
-        options.setEndTime(json.getLong("endTs"));
-        if (json.has("from")) {
-            options.setFrom(json.getString("from"));
-        }
-        if (json.has("senders")) {
+        if (json.has("needSave")) { options.setIsSave(json.getBoolean("needSave")); }
+        if (json.has("startTs")) { options.setStartTime(json.getLong("startTs")); }
+        if (json.has("endTs")) { options.setEndTime(json.getLong("endTs")); }
+        if (!json.optString("from").isEmpty()) { options.setFrom(json.getString("from")); }
+        if (json.has("senders") && json.getJSONArray("senders").length() > 0) {
             List<String> fromIds = new ArrayList<>();
             JSONArray senders = json.getJSONArray("senders");
             for (int i = 0; i < senders.length(); i++) {
@@ -1698,18 +1539,14 @@ class ExtSdkFetchMessageOptionHelper {
             }
             options.setFromIds(fromIds);
         }
-        if (json.has("msgTypes")) {
+        if (json.has("msgTypes") && json.getJSONArray("msgTypes").length() > 0) {
             List<EMMessage.Type> list = new ArrayList<>();
             JSONArray array = json.getJSONArray("msgTypes");
             for (int i = 0; i < array.length(); i++) {
-                String type = array.getString(i);
-                list.add(ExtSdkEMMessageTypeHelper.toType(type));
+                list.add(ExtSdkEMMessageTypeHelper.toType(array.getString(i)));
             }
-            if (list.size() > 0) {
-                options.setMsgTypes(list);
-            }
+            options.setMsgTypes(list);
         }
-
         return options;
     }
 }
@@ -1740,7 +1577,7 @@ class ExtSdkMessagePinInfoHelper {
 class ExtSdkConversationFilterHelper {
     static EMConversationFilter fromJson(JSONObject json) throws JSONException {
         EMConversation.EMMarkType markType = EMConversation.EMMarkType.values()[json.getInt("mark")];
-        int pageSize = json.getInt("pageSize");
+        int pageSize = json.has("pageSize") ? json.getInt("pageSize") : 20;
         EMConversationFilter filter = new EMConversationFilter(markType, pageSize);
         return filter;
     }
