@@ -20,8 +20,7 @@ echo "Android deprecated API scan starting..."
 TEMP_OUTPUT=$(mktemp)
 
 # Run gradle build with deprecation warnings
-cd "$ANDROID_DIR"
-./gradlew assemble 2>&1 | tee "$TEMP_OUTPUT" || true
+(cd "$ANDROID_DIR" && ./gradlew assemble 2>&1 | tee "$TEMP_OUTPUT") || true
 
 # Parse warnings and filter for project code
 echo "["
