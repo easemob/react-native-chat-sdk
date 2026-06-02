@@ -28,12 +28,12 @@ interface State {
   dnsUrl?: string;
 }
 
-let gAppkey = datasheet.AppKey[6] ?? '';
+let gAppkey = datasheet.AppKey[1] ?? '';
 let gAppId = datasheet.AppId[1] ?? '';
 let gUseAppId = false;
 let gWebSocketServer = webSocketServers[0] ?? undefined;
 let gWebSocketPort = 80;
-let gEnableDNSConfig = false;
+let gEnableDNSConfig = true;
 let gRestServer = restServers[0] ?? undefined;
 let gEnableTLS = false;
 let gEnablePush = false;
