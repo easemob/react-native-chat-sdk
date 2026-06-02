@@ -724,7 +724,7 @@ export class ChatMessage {
     filePath: string,
     chatType: ChatMessageChatType = ChatMessageChatType.PeerChat,
     opt?: {
-      displayName: string;
+      displayName?: string;
       isChatThread?: boolean;
       fileSize?: number;
       isOnline?: boolean;
@@ -735,7 +735,7 @@ export class ChatMessage {
     return ChatMessage.createSendMessage({
       body: new ChatFileMessageBody({
         localPath: filePath,
-        displayName: opt?.displayName ?? '',
+        displayName: opt?.displayName,
         fileSize: opt?.fileSize,
       }),
       targetId: targetId,
@@ -779,11 +779,11 @@ export class ChatMessage {
     filePath: string,
     chatType: ChatMessageChatType = ChatMessageChatType.PeerChat,
     opt?: {
-      displayName: string;
+      displayName?: string;
       thumbnailLocalPath?: string;
       sendOriginalImage?: boolean;
-      width: number;
-      height: number;
+      width?: number;
+      height?: number;
       isChatThread?: boolean;
       fileSize?: number;
       isOnline?: boolean;
@@ -795,9 +795,9 @@ export class ChatMessage {
     return ChatMessage.createSendMessage({
       body: new ChatImageMessageBody({
         localPath: filePath,
-        displayName: opt?.displayName ?? filePath,
+        displayName: opt?.displayName,
         thumbnailLocalPath: opt?.thumbnailLocalPath,
-        sendOriginalImage: opt?.sendOriginalImage ?? false,
+        sendOriginalImage: opt?.sendOriginalImage,
         width: opt?.width,
         height: opt?.height,
         fileSize: opt?.fileSize,
@@ -841,11 +841,11 @@ export class ChatMessage {
     filePath: string,
     chatType: ChatMessageChatType = ChatMessageChatType.PeerChat,
     opt?: {
-      displayName: string;
-      thumbnailLocalPath: string;
-      duration: number;
-      width: number;
-      height: number;
+      displayName?: string;
+      thumbnailLocalPath?: string;
+      duration?: number;
+      width?: number;
+      height?: number;
       isChatThread?: boolean;
       fileSize?: number;
       isOnline?: boolean;
@@ -856,7 +856,7 @@ export class ChatMessage {
     return ChatMessage.createSendMessage({
       body: new ChatVideoMessageBody({
         localPath: filePath,
-        displayName: opt?.displayName ?? '',
+        displayName: opt?.displayName,
         thumbnailLocalPath: opt?.thumbnailLocalPath,
         duration: opt?.duration,
         width: opt?.width,
@@ -899,7 +899,7 @@ export class ChatMessage {
     chatType: ChatMessageChatType = ChatMessageChatType.PeerChat,
     opt?: {
       displayName?: string;
-      duration: number;
+      duration?: number;
       isChatThread?: boolean;
       fileSize?: number;
       isOnline?: boolean;
@@ -910,7 +910,7 @@ export class ChatMessage {
     return ChatMessage.createSendMessage({
       body: new ChatVoiceMessageBody({
         localPath: filePath,
-        displayName: opt?.displayName ?? '',
+        displayName: opt?.displayName,
         duration: opt?.duration,
         fileSize: opt?.fileSize,
       }),
@@ -1003,7 +1003,7 @@ export class ChatMessage {
     longitude: string,
     chatType: ChatMessageChatType = ChatMessageChatType.PeerChat,
     opt?: {
-      address: string;
+      address?: string;
       isChatThread?: boolean;
       isOnline?: boolean;
       deliverOnlineOnly?: boolean;
@@ -1014,7 +1014,7 @@ export class ChatMessage {
       body: new ChatLocationMessageBody({
         latitude: latitude,
         longitude: longitude,
-        address: opt?.address ?? '',
+        address: opt?.address,
       }),
       targetId: targetId,
       chatType: chatType,
@@ -1256,7 +1256,7 @@ export class ChatLocationMessageBody extends ChatMessageBody {
    */
   longitude: string;
   constructor(params: {
-    address: string;
+    address?: string;
     latitude: string;
     longitude: string;
     lastModifyOperatorId?: string;
@@ -1268,7 +1268,7 @@ export class ChatLocationMessageBody extends ChatMessageBody {
       lastModifyTime: params.lastModifyTime,
       modifyCount: params.modifyCount,
     });
-    this.address = params.address;
+    this.address = params.address ?? '';
     this.latitude =
       typeof params.latitude === 'number'
         ? String(params.latitude)
@@ -1398,7 +1398,7 @@ export class ChatImageMessageBody extends _ChatFileMessageBody {
     remotePath?: string;
     fileStatus?: number;
     fileSize?: number;
-    displayName: string;
+    displayName?: string;
     sendOriginalImage?: boolean;
     thumbnailLocalPath?: string;
     thumbnailRemotePath?: string;
@@ -1474,7 +1474,7 @@ export class ChatVideoMessageBody extends _ChatFileMessageBody {
     remotePath?: string;
     fileStatus?: number;
     fileSize?: number;
-    displayName: string;
+    displayName?: string;
     duration?: number;
     thumbnailLocalPath?: string;
     thumbnailRemotePath?: string;
@@ -1524,7 +1524,7 @@ export class ChatVoiceMessageBody extends _ChatFileMessageBody {
     remotePath?: string;
     fileStatus?: number;
     fileSize?: number;
-    displayName: string;
+    displayName?: string;
     duration?: number;
     lastModifyOperatorId?: string;
     lastModifyTime?: number;
