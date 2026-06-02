@@ -16,6 +16,11 @@ if ! command -v java &> /dev/null; then
     exit 1
 fi
 
+if ! command -v jq &> /dev/null; then
+    echo "Error: jq command not found (required for JSON generation)"
+    exit 1
+fi
+
 echo "Android deprecated API scan starting..."
 TEMP_OUTPUT=$(mktemp)
 trap 'rm -f "$TEMP_OUTPUT"' EXIT
@@ -25,21 +30,22 @@ trap 'rm -f "$TEMP_OUTPUT"' EXIT
 (cd "$ANDROID_DIR" && ./gradlew assemble 2>&1 | tee "$TEMP_OUTPUT") || true
 
 # Parse warnings and filter for project code
-echo "["
-first=true
+# Build JSON array using jq for proper escaping
+jq_args=()
 while IFS= read -r line; do
     if [[ $line =~ ^(modules/java/|android/).*\.java:[0-9]+:\ warning:\ \[deprecation\]\ (.+)\ in\ (.+)\ has\ been\ deprecated ]]; then
-        if [ "$first" = true ]; then
-            first=false
-        else
-            echo ","
-        fi
         file="${BASH_REMATCH[0]%%:*}"
         line_num="${BASH_REMATCH[0]#*:}"
         line_num="${line_num%%:*}"
         api="${BASH_REMATCH[2]}"
         class="${BASH_REMATCH[3]}"
-        echo -n "{\"file\":\"$file\",\"line\":$line_num,\"api\":\"$api\",\"message\":\"deprecated in $class\"}"
+        jq_args+=(--arg "file" "$file" --argjson "line" "$line_num" --arg "api" "$api" --arg "message" "deprecated in $class")
+        jq_args+='{"file": $file, "line": $line, "api": $api, "message": $message}')
     fi
 done < "$TEMP_OUTPUT"
-echo "]"
+
+if [ ${#jq_args[@]} -eq 0 ]; then
+    echo "[]"
+else
+    jq -n "${jq_args[@]}" | jq -s '.'
+fi
