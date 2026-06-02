@@ -17,3 +17,30 @@ if ! command -v java &> /dev/null; then
 fi
 
 echo "Android deprecated API scan starting..."
+TEMP_OUTPUT=$(mktemp)
+
+# Run gradle build with deprecation warnings
+cd "$ANDROID_DIR"
+./gradlew assemble 2>&1 | tee "$TEMP_OUTPUT" || true
+
+# Parse warnings and filter for project code
+echo "["
+first=true
+while IFS= read -r line; do
+    if [[ $line =~ ^(modules/java/|android/).*\.java:[0-9]+:\ warning:\ \[deprecation\]\ (.+)\ in\ (.+)\ has\ been\ deprecated ]]; then
+        if [ "$first" = true ]; then
+            first=false
+        else
+            echo ","
+        fi
+        file="${BASH_REMATCH[0]%%:*}"
+        line_num="${BASH_REMATCH[0]#*:}"
+        line_num="${line_num%%:*}"
+        api="${BASH_REMATCH[2]}"
+        class="${BASH_REMATCH[3]}"
+        echo -n "{\"file\":\"$file\",\"line\":$line_num,\"api\":\"$api\",\"message\":\"deprecated in $class\"}"
+    fi
+done < "$TEMP_OUTPUT"
+echo "]"
+
+rm -f "$TEMP_OUTPUT"
