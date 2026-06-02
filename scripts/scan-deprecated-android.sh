@@ -23,7 +23,8 @@ fi
 
 echo "Android deprecated API scan starting..."
 TEMP_OUTPUT=$(mktemp)
-trap 'rm -f "$TEMP_OUTPUT"' EXIT
+TEMP_JSON=$(mktemp)
+trap 'rm -f "$TEMP_OUTPUT" "$TEMP_JSON"' EXIT
 
 # Run gradle build with deprecation warnings
 # Note: || true is intentional - we want to parse the output even if the build fails
@@ -31,7 +32,6 @@ trap 'rm -f "$TEMP_OUTPUT"' EXIT
 
 # Parse warnings and filter for project code
 # Build JSON array using jq for proper escaping
-jq_args=()
 while IFS= read -r line; do
     if [[ $line =~ ^(modules/java/|android/).*\.java:[0-9]+:\ warning:\ \[deprecation\]\ (.+)\ in\ (.+)\ has\ been\ deprecated ]]; then
         file="${BASH_REMATCH[0]%%:*}"
@@ -39,13 +39,12 @@ while IFS= read -r line; do
         line_num="${line_num%%:*}"
         api="${BASH_REMATCH[2]}"
         class="${BASH_REMATCH[3]}"
-        jq_args+=(--arg "file" "$file" --argjson "line" "$line_num" --arg "api" "$api" --arg "message" "deprecated in $class")
-        jq_args+='{"file": $file, "line": $line, "api": $api, "message": $message}')
+        jq -n --arg "file" "$file" --argjson "line" "$line_num" --arg "api" "$api" --arg "message" "deprecated in $class" '{"file": $file, "line": $line, "api": $api, "message": $message}' >> "$TEMP_JSON"
     fi
 done < "$TEMP_OUTPUT"
 
-if [ ${#jq_args[@]} -eq 0 ]; then
+if [ ! -s "$TEMP_JSON" ]; then
     echo "[]"
 else
-    jq -n "${jq_args[@]}" | jq -s '.'
+    jq -s '.' "$TEMP_JSON"
 fi
