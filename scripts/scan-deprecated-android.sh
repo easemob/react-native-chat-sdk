@@ -28,7 +28,7 @@ trap 'rm -f "$TEMP_OUTPUT" "$TEMP_JSON"' EXIT
 
 # Run gradle build with deprecation warnings
 # Note: || true is intentional - we want to parse the output even if the build fails
-(cd "$ANDROID_DIR" && ./gradlew assemble 2>&1 | tee "$TEMP_OUTPUT") || true
+(cd "$ANDROID_DIR" && ./gradlew assemble -Xlint:deprecation 2>&1 | tee "$TEMP_OUTPUT") || true
 
 # Parse warnings and filter for project code
 # Build JSON array using jq for proper escaping
