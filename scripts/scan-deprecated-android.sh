@@ -21,7 +21,7 @@ if ! command -v jq &> /dev/null; then
     exit 1
 fi
 
-echo "Android deprecated API scan starting..."
+echo "Android deprecated API scan starting..." >&2
 TEMP_OUTPUT=$(mktemp)
 TEMP_JSON=$(mktemp)
 trap 'rm -f "$TEMP_OUTPUT" "$TEMP_JSON"' EXIT
@@ -30,7 +30,8 @@ trap 'rm -f "$TEMP_OUTPUT" "$TEMP_JSON"' EXIT
 # Note: || true is intentional - we want to parse the output even if the build fails
 # Note: -Xlint:deprecation is a javac flag, not a gradle CLI flag. The Android Gradle
 # Plugin's compileJava tasks emit deprecation warnings by default.
-(cd "$ANDROID_DIR" && ./gradlew clean assemble 2>&1 | tee "$TEMP_OUTPUT") || true
+# Build output goes to stderr so stdout only contains the final JSON.
+(cd "$ANDROID_DIR" && ./gradlew clean assemble 2>&1 | tee "$TEMP_OUTPUT" >&2) || true
 
 # Parse warnings and filter for project code
 # Build JSON array using jq for proper escaping

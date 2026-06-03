@@ -21,7 +21,7 @@ if ! command -v jq &> /dev/null; then
     exit 1
 fi
 
-echo "iOS deprecated API scan starting..."
+echo "iOS deprecated API scan starting..." >&2
 TEMP_OUTPUT=$(mktemp)
 TEMP_JSON=$(mktemp)
 trap 'rm -f "$TEMP_OUTPUT" "$TEMP_JSON"' EXIT
@@ -30,7 +30,8 @@ trap 'rm -f "$TEMP_OUTPUT" "$TEMP_JSON"' EXIT
 # Note: || true is intentional - we want to parse the output even if the build fails
 # Note: -Wdeprecated-declarations is a clang flag, not an xcodebuild option. It must be
 # passed via OTHER_CFLAGS build setting. Clang emits deprecation warnings by default.
-(cd "$IOS_EXAMPLE_DIR" && xcodebuild -workspace ChatSdkExample.xcworkspace -scheme ChatSdkExample -sdk iphonesimulator -configuration Debug clean build OTHER_CFLAGS='$(inherited) -Wdeprecated-declarations' 2>&1 | tee "$TEMP_OUTPUT") || true
+# Build output goes to stderr so stdout only contains the final JSON.
+(cd "$IOS_EXAMPLE_DIR" && xcodebuild -workspace ChatSdkExample.xcworkspace -scheme ChatSdkExample -sdk iphonesimulator -configuration Debug clean build OTHER_CFLAGS='$(inherited) -Wdeprecated-declarations' 2>&1 | tee "$TEMP_OUTPUT" >&2) || true
 
 # Parse warnings and filter for project code
 # Build JSON array using jq for proper escaping
