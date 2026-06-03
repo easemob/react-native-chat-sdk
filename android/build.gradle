@@ -84,6 +84,10 @@ android {
     targetCompatibility JavaVersion.VERSION_1_8
   }
 
+  tasks.withType(JavaCompile).configureEach {
+    options.compilerArgs += ['-Xlint:deprecation']
+  }
+
   externalNativeBuild {
     cmake {
 //       path file('src/main/cpp/CMakeLists.txt')

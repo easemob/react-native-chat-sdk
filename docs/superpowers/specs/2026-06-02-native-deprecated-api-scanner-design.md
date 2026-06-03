@@ -222,4 +222,4 @@ Generated: 2026-06-02 HH:MM:SS
   - `ExtSdkConversationWrapper.m:410` - `loadMessagesWithKeyword:...:fromUser:...`
   - `ExtSdkToJson.m:553` - `muteList`
   - `ExtSdkToJson.m:1535` - `from`
-- Android 扫描结果为空，因为 example/android/build.gradle 没有启用 `-Xlint:deprecation`。脚本启动时会提示这一点。
+- Android 扫描启用 `-Xlint:deprecation` 后发现 16 个 deprecated API 调用，集中在 `modules/java/com/chatsdk/dispatch/` 的多个 wrapper 中（ExtSdkChatManagerWrapper、ExtSdkClientWrapper、ExtSdkGroupManagerWrapper 等）。已在 `android/build.gradle` 的 `tasks.withType(JavaCompile)` 中持久化该配置，使后续扫描无需手动启用。

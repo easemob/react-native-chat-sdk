@@ -22,12 +22,6 @@ if ! command -v jq &> /dev/null; then
 fi
 
 echo "Android deprecated API scan starting..." >&2
-echo "" >&2
-echo "NOTE: For Java deprecation warnings to appear, the build.gradle file" >&2
-echo "must have compilerArgs += ['-Xlint:deprecation'] in compileOptions." >&2
-echo "Without it, gradle suppresses individual deprecation warnings." >&2
-echo "See https://docs.gradle.org/current/userguide/java_plugin.html" >&2
-echo "" >&2
 TEMP_OUTPUT=$(mktemp)
 TEMP_JSON=$(mktemp)
 trap 'rm -f "$TEMP_OUTPUT" "$TEMP_JSON"' EXIT
