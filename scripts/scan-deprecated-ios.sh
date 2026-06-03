@@ -26,9 +26,11 @@ TEMP_OUTPUT=$(mktemp)
 TEMP_JSON=$(mktemp)
 trap 'rm -f "$TEMP_OUTPUT" "$TEMP_JSON"' EXIT
 
-# Run xcodebuild with deprecation warnings
+# Run xcodebuild
 # Note: || true is intentional - we want to parse the output even if the build fails
-(cd "$IOS_EXAMPLE_DIR" && xcodebuild -workspace ChatSdkExample.xcworkspace -scheme ChatSdkExample -sdk iphonesimulator -configuration Debug build -Wdeprecated-declarations 2>&1 | tee "$TEMP_OUTPUT") || true
+# Note: -Wdeprecated-declarations is a clang flag, not an xcodebuild option. It must be
+# passed via OTHER_CFLAGS build setting. Clang emits deprecation warnings by default.
+(cd "$IOS_EXAMPLE_DIR" && xcodebuild -workspace ChatSdkExample.xcworkspace -scheme ChatSdkExample -sdk iphonesimulator -configuration Debug build OTHER_CFLAGS='$(inherited) -Wdeprecated-declarations' 2>&1 | tee "$TEMP_OUTPUT") || true
 
 # Parse warnings and filter for project code
 # Build JSON array using jq for proper escaping
