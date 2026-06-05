@@ -784,9 +784,8 @@
     if (aJson[@"attributes"]) { msg.ext = aJson[@"attributes"]; }
     if (aJson[@"priority"]) { msg.priority = [ExtSdkConvertHelper priorityFromInt:[aJson[@"priority"] intValue]]; }
     if (aJson[@"deliverOnlineOnly"]) { msg.deliverOnlineOnly = [aJson[@"deliverOnlineOnly"] boolValue]; }
-    if (aJson[@"receiverList"]) {
-        msg.receiverList = aJson[@"receiverList"];
-    }
+    (aJson[@"receiverList"] && [aJson[@"receiverList"] count] > 0) ? (msg.receiverList = aJson[@"receiverList"]) : nil;
+  
     return msg;
 }
 
