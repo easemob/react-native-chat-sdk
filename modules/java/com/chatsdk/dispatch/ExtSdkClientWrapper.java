@@ -237,6 +237,7 @@ public class ExtSdkClientWrapper extends ExtSdkWrapper {
     public void init(JSONObject param, String channelName, ExtSdkCallback result) throws JSONException {
         EMOptions options = ExtSdkOptionsHelper.fromJson(param, ExtSdkContext.context);
         options.setSDKPlatform(EMOptions.EMSDKPlatform.EMSDKPlatformReactNative);
+        options.setUseAgoraChatDomain(true);
         boolean debugModel = param.getBoolean("debugModel");
 
         ExtSdkThreadUtil.mainThreadExecute(() -> {

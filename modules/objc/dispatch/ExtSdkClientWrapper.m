@@ -48,6 +48,7 @@
         return;
     }
     options.enableConsoleLog = options.enableConsoleLog;
+    options.useAgoraChatDomain = true;
     [EMClient.sharedClient initializeSDKWithOptions:options];
     [EMClient.sharedClient removeDelegate:self];
     [EMClient.sharedClient addDelegate:self delegateQueue:nil];
