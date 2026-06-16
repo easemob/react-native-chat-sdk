@@ -875,6 +875,10 @@ export class ChatGroupManager extends BaseManager {
    * @param members The array of new members to add.
    * @param welcome (optional) The welcome message.
    *
+   * @platform android The Android SDK async API does not accept the `welcome`
+   * message, so this parameter is not passed through on Android. iOS is not
+   * affected.
+   *
    * @throws A description of the exception. See {@link ChatError}.
    */
   public async addMembers(

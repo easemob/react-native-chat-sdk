@@ -32,33 +32,49 @@ public class ExtSdkContactManagerWrapper extends ExtSdkWrapper {
         String username = param.getString("username");
         String reason = param.getString("reason");
 
-        try {
-            EMClient.getInstance().contactManager().addContact(username, reason);
-            onSuccess(result, channelName, username);
-        } catch (HyphenateException e) {
-            onError(result, e, null);
-        }
+        EMClient.getInstance().contactManager().asyncAddContact(username, reason, new EMCallBack() {
+            @Override
+            public void onSuccess() {
+                ExtSdkWrapper.onSuccess(result, channelName, username);
+            }
+
+            @Override
+            public void onError(int code, String error) {
+                ExtSdkWrapper.onError(result, code, error);
+            }
+        });
     }
 
     public void deleteContact(JSONObject param, String channelName, ExtSdkCallback result) throws JSONException {
         String username = param.getString("username");
-        boolean keepConversation = param.getBoolean("keepConversation");
-        try {
-            EMClient.getInstance().contactManager().deleteContact(username, keepConversation);
-            onSuccess(result, channelName, username);
-        } catch (HyphenateException e) {
-            onError(result, e, null);
-        }
+        param.getBoolean("keepConversation");
+
+        EMClient.getInstance().contactManager().asyncDeleteContact(username, new EMCallBack() {
+            @Override
+            public void onSuccess() {
+                ExtSdkWrapper.onSuccess(result, channelName, username);
+            }
+
+            @Override
+            public void onError(int code, String error) {
+                ExtSdkWrapper.onError(result, code, error);
+            }
+        });
     }
 
     public void getAllContactsFromServer(JSONObject params, String channelName, ExtSdkCallback result)
         throws JSONException {
-        try {
-            List contacts = EMClient.getInstance().contactManager().getAllContactsFromServer();
-            onSuccess(result, channelName, contacts);
-        } catch (HyphenateException e) {
-            onError(result, e, null);
-        }
+        EMClient.getInstance().contactManager().asyncGetAllContactsFromServer(new EMValueCallBack<List<String>>() {
+            @Override
+            public void onSuccess(List<String> value) {
+                ExtSdkWrapper.onSuccess(result, channelName, value);
+            }
+
+            @Override
+            public void onError(int error, String errorMsg) {
+                ExtSdkWrapper.onError(result, error, errorMsg);
+            }
+        });
     }
 
     public void getAllContactsFromDB(JSONObject params, String channelName, ExtSdkCallback result)
@@ -73,33 +89,48 @@ public class ExtSdkContactManagerWrapper extends ExtSdkWrapper {
 
     public void addUserToBlockList(JSONObject params, String channelName, ExtSdkCallback result) throws JSONException {
         String username = params.getString("username");
-        try {
-            EMClient.getInstance().contactManager().addUserToBlackList(username, false);
-            onSuccess(result, channelName, username);
-        } catch (HyphenateException e) {
-            onError(result, e, null);
-        }
+        EMClient.getInstance().contactManager().asyncAddUserToBlackList(username, false, new EMCallBack() {
+            @Override
+            public void onSuccess() {
+                ExtSdkWrapper.onSuccess(result, channelName, username);
+            }
+
+            @Override
+            public void onError(int code, String error) {
+                ExtSdkWrapper.onError(result, code, error);
+            }
+        });
     }
 
     public void removeUserFromBlockList(JSONObject params, String channelName, ExtSdkCallback result)
         throws JSONException {
         String username = params.getString("username");
-        try {
-            EMClient.getInstance().contactManager().removeUserFromBlackList(username);
-            onSuccess(result, channelName, username);
-        } catch (HyphenateException e) {
-            onError(result, e, null);
-        }
+        EMClient.getInstance().contactManager().asyncRemoveUserFromBlackList(username, new EMCallBack() {
+            @Override
+            public void onSuccess() {
+                ExtSdkWrapper.onSuccess(result, channelName, username);
+            }
+
+            @Override
+            public void onError(int code, String error) {
+                ExtSdkWrapper.onError(result, code, error);
+            }
+        });
     }
 
     public void getBlockListFromServer(JSONObject params, String channelName, ExtSdkCallback result)
         throws JSONException {
-        try {
-            List contacts = EMClient.getInstance().contactManager().getBlackListFromServer();
-            onSuccess(result, channelName, contacts);
-        } catch (HyphenateException e) {
-            onError(result, e, null);
-        }
+        EMClient.getInstance().contactManager().asyncGetBlackListFromServer(new EMValueCallBack<List<String>>() {
+            @Override
+            public void onSuccess(List<String> value) {
+                ExtSdkWrapper.onSuccess(result, channelName, value);
+            }
+
+            @Override
+            public void onError(int error, String errorMsg) {
+                ExtSdkWrapper.onError(result, error, errorMsg);
+            }
+        });
     }
 
     public void getBlockListFromDB(JSONObject params, String channelName, ExtSdkCallback result) throws JSONException {
@@ -109,32 +140,47 @@ public class ExtSdkContactManagerWrapper extends ExtSdkWrapper {
 
     public void acceptInvitation(JSONObject params, String channelName, ExtSdkCallback result) throws JSONException {
         String username = params.getString("username");
-        try {
-            EMClient.getInstance().contactManager().acceptInvitation(username);
-            onSuccess(result, channelName, username);
-        } catch (HyphenateException e) {
-            onError(result, e, null);
-        }
+        EMClient.getInstance().contactManager().asyncAcceptInvitation(username, new EMCallBack() {
+            @Override
+            public void onSuccess() {
+                ExtSdkWrapper.onSuccess(result, channelName, username);
+            }
+
+            @Override
+            public void onError(int code, String error) {
+                ExtSdkWrapper.onError(result, code, error);
+            }
+        });
     }
 
     public void declineInvitation(JSONObject params, String channelName, ExtSdkCallback result) throws JSONException {
         String username = params.getString("username");
-        try {
-            EMClient.getInstance().contactManager().declineInvitation(username);
-            onSuccess(result, channelName, username);
-        } catch (HyphenateException e) {
-            onError(result, e, null);
-        }
+        EMClient.getInstance().contactManager().asyncDeclineInvitation(username, new EMCallBack() {
+            @Override
+            public void onSuccess() {
+                ExtSdkWrapper.onSuccess(result, channelName, username);
+            }
+
+            @Override
+            public void onError(int code, String error) {
+                ExtSdkWrapper.onError(result, code, error);
+            }
+        });
     }
 
     public void getSelfIdsOnOtherPlatform(JSONObject params, String channelName, ExtSdkCallback result)
         throws JSONException {
-        try {
-            List platforms = EMClient.getInstance().contactManager().getSelfIdsOnOtherPlatform();
-            onSuccess(result, channelName, platforms);
-        } catch (HyphenateException e) {
-            onError(result, e, null);
-        }
+        EMClient.getInstance().contactManager().asyncGetSelfIdsOnOtherPlatform(new EMValueCallBack<List<String>>() {
+            @Override
+            public void onSuccess(List<String> value) {
+                ExtSdkWrapper.onSuccess(result, channelName, value);
+            }
+
+            @Override
+            public void onError(int error, String errorMsg) {
+                ExtSdkWrapper.onError(result, error, errorMsg);
+            }
+        });
     }
 
     public void getAllContacts(JSONObject params, String channelName, ExtSdkCallback result) throws JSONException {
