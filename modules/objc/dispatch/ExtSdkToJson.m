@@ -785,7 +785,7 @@
     if (aJson[@"priority"]) { msg.priority = [ExtSdkConvertHelper priorityFromInt:[aJson[@"priority"] intValue]]; }
     if (aJson[@"deliverOnlineOnly"]) { msg.deliverOnlineOnly = [aJson[@"deliverOnlineOnly"] boolValue]; }
     (aJson[@"receiverList"] && [aJson[@"receiverList"] count] > 0) ? (msg.receiverList = aJson[@"receiverList"]) : nil;
-  
+
     return msg;
 }
 
@@ -1157,7 +1157,7 @@
     ret[@"secret"] = self.secretKey;
     ret[@"remotePath"] = self.remotePath;
     ret[@"thumbnailRemotePath"] = self.thumbnailRemotePath;
-    ret[@"thumbnailSecretKey"] = self.thumbnailSecretKey;
+    ret[@"thumbnailSecret"] = self.thumbnailSecretKey;
     ret[@"thumbnailStatus"] = @([ExtSdkConvertHelper downloadStatusToInt:self.thumbnailDownloadStatus]);
     ret[@"width"] = @(self.thumbnailSize.width);
     ret[@"height"] = @(self.thumbnailSize.height);
@@ -1221,7 +1221,7 @@
     data[@"isChatRoomOwnerLeaveAllowed"] = @(self.canChatroomOwnerLeave);
     data[@"serverTransfer"] = @(self.isAutoTransferMessageAttachments);
     data[@"usingHttpsOnly"] = @(self.usingHttpsOnly);
-    data[@"pushConfig"] = @{@"pushConfig" : @{@"deviceId" : self.apnsCertName}};
+    data[@"pushConfig"] = @{@"deviceId" : self.apnsCertName};
     data[@"enableDNSConfig"] = @(self.enableDnsConfig);
     data[@"imPort"] = @(self.chatPort);
     data[@"imServer"] = self.chatServer;
@@ -1362,15 +1362,15 @@
 
 + (EMUserInfo *)fromJsonObject:(NSDictionary *)aJson {
     EMUserInfo *userInfo = EMUserInfo.new;
-    (aJson[@"userId"] && [aJson[@"userId"] length] > 0) ? (userInfo.userId = aJson[@"userId"]) : nil;
-    (aJson[@"nickName"] && [aJson[@"nickName"] length] > 0) ? (userInfo.nickname = aJson[@"nickName"]) : nil;
-    (aJson[@"avatarUrl"] && [aJson[@"avatarUrl"] length] > 0) ? (userInfo.avatarUrl = aJson[@"avatarUrl"]) : nil;
-    (aJson[@"mail"] && [aJson[@"mail"] length] > 0) ? (userInfo.mail = aJson[@"mail"]) : nil;
-    (aJson[@"phone"] && [aJson[@"phone"] length] > 0) ? (userInfo.phone = aJson[@"phone"]) : nil;
+    if (aJson[@"userId"]) { userInfo.userId = aJson[@"userId"]; }
+    if (aJson[@"nickName"]) { userInfo.nickname = aJson[@"nickName"]; }
+    if (aJson[@"avatarUrl"]) { userInfo.avatarUrl = aJson[@"avatarUrl"]; }
+    if (aJson[@"mail"]) { userInfo.mail = aJson[@"mail"]; }
+    if (aJson[@"phone"]) { userInfo.phone = aJson[@"phone"]; }
     if (aJson[@"gender"]) { userInfo.gender = [aJson[@"gender"] integerValue]; }
-    (aJson[@"sign"] && [aJson[@"sign"] length] > 0) ? (userInfo.sign = aJson[@"sign"]) : nil;
-    (aJson[@"birth"] && [aJson[@"birth"] length] > 0) ? (userInfo.birth = aJson[@"birth"]) : nil;
-    (aJson[@"ext"] && [aJson[@"ext"] length] > 0) ? (userInfo.ext = aJson[@"ext"]) : nil;
+    if (aJson[@"sign"]) { userInfo.sign = aJson[@"sign"]; }
+    if (aJson[@"birth"]) { userInfo.birth = aJson[@"birth"]; }
+    if (aJson[@"ext"]) { userInfo.ext = aJson[@"ext"]; }
     return [userInfo copy];
 }
 
