@@ -37,6 +37,9 @@
   "scripts": {
     "example": "yarn workspace rn-cs-example",
     "test": "jest",
+    "test:unit": "jest src/__tests__/unit",
+    "test:contract": "jest src/__tests__/contract",
+    "test:coverage": "jest --coverage",
     "typecheck": "tsc --noEmit",
     "lint": "yarn run lint:sdk && yarn run lint:example",
     "lint:sdk": "eslint \"src/**/*.{js,ts,tsx}\"",
@@ -45,7 +48,12 @@
     "clean:generated": "del-cli android/build example/android/build example/android/app/build example/ios/build lib",
     "clean:node_modules": "rm -rf example/node_modules && rm -rf node_modules/",
     "clean:docs": "del-cli docs/build",
+    "scan:deprecated": "bash scripts/scan-deprecated.sh",
+    "scan:deprecated:android": "bash scripts/scan-deprecated-android.sh",
+    "scan:deprecated:ios": "bash scripts/scan-deprecated-ios.sh",
     "prepare": "yarn run gen:version_file && yarn run gen:cmake_file && yarn run gen:env_file && yarn run build:exports && yarn run check:circular:dpdm",
+    "hooks:install": "lefthook install -f",
+    "hooks:repair": "node ./scripts/repair-lefthook-hooks.js",
     "gen:env_file": "cd scripts && node generate-env.js",
     "gen:version_file": "cd scripts && node generate-version.js",
     "gen:cmake_file": "cd scripts && node generate-cmake.js",
@@ -91,6 +99,7 @@
     "eslint": "^8.4.1",
     "eslint-config-prettier": "^8.5.0",
     "eslint-plugin-prettier": "^4.0.0",
+    "fast-check": "^4.8.0",
     "jest": "^28.1.1",
     "madge": "^8.0.0",
     "pod-install": "^0.1.0",
@@ -122,7 +131,24 @@
     "preset": "react-native",
     "modulePathIgnorePatterns": [
       "<rootDir>/example/node_modules",
-      "<rootDir>/lib/"
+      "<rootDir>/lib/",
+      "<rootDir>/.worktree/"
+    ],
+    "setupFilesAfterEnv": [
+      "<rootDir>/src/__tests__/setup.ts"
+    ],
+    "testPathIgnorePatterns": [
+      "<rootDir>/.kiro/",
+      "<rootDir>/src/__tests__/helpers/",
+      "<rootDir>/src/__tests__/setup.ts",
+      "<rootDir>/src/__tests__/contract/parsers.ts"
+    ],
+    "collectCoverageFrom": [
+      "src/**/*.ts",
+      "!src/__specs__/**",
+      "!src/__tests__/**",
+      "!src/version.ts",
+      "!src/index.ts"
     ]
   },
   "commitlint": {

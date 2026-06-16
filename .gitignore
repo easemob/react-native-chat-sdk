@@ -309,3 +309,7 @@ env.ts
 *.tgz
 
 .codegpt
+.worktree
+worktree
+.claude/settings.local.json
+coverage

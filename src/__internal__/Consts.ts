@@ -10,7 +10,7 @@ export const MTlogout = 'logout';
 export const MTchangeAppKey = 'changeAppKey';
 export const MTchangeAppId = 'changeAppId';
 export const MTisLoggedInBefore = 'isLoggedInBefore';
-export const MTupdateCurrentUserNick = 'updateCurrentUserNick';
+export const MTupdateCurrentUserNick = 'updateCurrentUserNick'; // deprecated 2026-05-21
 export const MTuploadLog = 'uploadLog';
 export const MTcompressLogs = 'compressLogs';
 export const MTkickDevice = 'kickDevice';
@@ -289,17 +289,17 @@ export const MTupdatePushNickname = 'updatePushNickname';
 export const MTenableOfflinePush = 'enableOfflinePush';
 export const MTdisableOfflinePush = 'disableOfflinePush';
 export const MTgetNoPushGroups = 'getNoPushGroups';
-export const MTsetNoDisturbUsers = 'setNoDisturbUsers';
-export const MTgetNoDisturbUsersFromServer = 'getNoDisturbUsersFromServer';
+export const MTsetNoDisturbUsers = 'setNoDisturbUsers'; // deprecated 2022.05.04
+export const MTgetNoDisturbUsersFromServer = 'getNoDisturbUsersFromServer'; // deprecated 2022.05.04
 
-export const MTupdateHMSPushToken = 'updateHMSPushToken';
-export const MTupdateFCMPushToken = 'updateFCMPushToken';
-export const MTupdateAPNsPushToken = 'updateAPNsPushToken';
+export const MTupdateHMSPushToken = 'updateHMSPushToken'; // deprecated 2026-05-21
+export const MTupdateFCMPushToken = 'updateFCMPushToken'; // deprecated 2026-05-21
+export const MTupdateAPNsPushToken = 'updateAPNsPushToken'; // deprecated 2026-05-21
 
-export const MTimPushNoDisturb = 'imPushNoDisturb';
+export const MTimPushNoDisturb = 'imPushNoDisturb'; // deprecated 2022.05.04
 export const MTupdateImPushStyle = 'updateImPushStyle';
 export const MTupdateGroupPushService = 'updateGroupPushService';
-export const MTgetNoDisturbGroups = 'getNoDisturbGroups';
+export const MTgetNoDisturbGroups = 'getNoDisturbGroups'; // deprecated 2022.05.04
 export const MTupdateUserPushService = 'updateUserPushService';
 export const MTgetNoPushUsers = 'getNoPushUsers';
 

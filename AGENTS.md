@@ -56,6 +56,9 @@ yarn example android    # run on Android
 yarn example ios        # run on iOS
 ```
 
+- `yarn test`, `yarn typecheck`, `yarn lint:sdk`, and similar local validation commands should be run directly without asking for extra permission when they operate inside the workspace and do not need network access or other elevated privileges.
+- In this Codex workspace, run `yarn test --no-watchman` by default when executing tests. Jest may try to use `watchman`, and the sandbox can block its socket access.
+
 ## Architecture
 
 ### Native Bridge Pattern
@@ -115,3 +118,8 @@ The `modules/` directory contains native code shared between React Native and Fl
 - Keep the example app (`example/`) functional when making SDK changes. Test screens in `example/src/demo2/Test/` cover specific manager operations. The example app uses bare React Native (no Expo).
 - Prefer running `yarn typecheck` and `yarn lint:sdk` to validate changes before committing.
 - This project uses Yarn 3 (Berry) with PnP disabled (node-modules linker). Do not use `npm`.
+
+## Testing Discipline
+
+- TS-side unit tests and the TS↔Native method-name contract test run on every commit via Lefthook pre-commit.
+- Native wrapper code in `modules/java/` and `modules/objc/` is **not** covered by automated tests. After modifying any wrapper there, manually exercise the affected feature in `example/` before pushing.

@@ -84,11 +84,11 @@ export class ChatRoom {
   /**
    * The number of members in the chat room.
    */
-  memberCount?: string;
+  memberCount?: number;
   /**
    * The maximum number of users allowed to join a chat room. This field is specified during the creation of a chat room.
    */
-  maxUsers?: string;
+  maxUsers?: number;
   /**
    * The admin list of the chat room.
    */
@@ -157,8 +157,8 @@ export class ChatRoom {
     description?: string;
     owner: string;
     announcement?: string;
-    memberCount?: string;
-    maxUsers?: string;
+    memberCount?: number;
+    maxUsers?: number;
     adminList?: Array<string>;
     memberList?: Array<string>;
     blockList?: Array<string>;

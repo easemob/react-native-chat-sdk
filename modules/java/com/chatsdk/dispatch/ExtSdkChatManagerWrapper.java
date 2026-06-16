@@ -184,16 +184,21 @@ public class ExtSdkChatManagerWrapper extends ExtSdkWrapper {
         } else {
             ext = null;
         }
-        try {
-            EMMessage msg = EMClient.getInstance().chatManager().getMessage(msgId);
-            if (ExtSdkWrapper.checkMessageParams(msg, channelName, result)) {
-                return;
-            }
-            EMClient.getInstance().chatManager().recallMessage(msg, ext);
-            onSuccess(result, channelName, null);
-        } catch (HyphenateException e) {
-            onError(result, e, null);
+        EMMessage msg = EMClient.getInstance().chatManager().getMessage(msgId);
+        if (ExtSdkWrapper.checkMessageParams(msg, channelName, result)) {
+            return;
         }
+        EMClient.getInstance().chatManager().asyncRecallMessage(msg, ext, new EMCallBack() {
+            @Override
+            public void onSuccess() {
+                ExtSdkWrapper.onSuccess(result, channelName, null);
+            }
+
+            @Override
+            public void onError(int code, String error) {
+                ExtSdkWrapper.onError(result, code, error);
+            }
+        });
     }
 
     public void getMessage(JSONObject param, String channelName, ExtSdkCallback result) throws JSONException {
