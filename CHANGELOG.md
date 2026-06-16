@@ -2,6 +2,20 @@ _English | [Chinese](./CHANGELOG.zh.md)_
 
 # Update Log
 
+## 1.15.3
+
+- Fix Android and iOS native input conversion so optional fields are only applied when provided, preserving explicit user input instead of overwriting it with bridge defaults.
+- Align TypeScript message factory and message body constructor optionality with native SDK semantics for file, image, video, voice, and location messages.
+- Correct `ChatPresence.lastTime`, `ChatPresence.expiryTime`, `ChatRoom.memberCount`, and `ChatRoom.maxUsers` types from string to number.
+- Update Android native wrappers to use async SDK APIs, and document Android-specific parameter limitations for `deleteContact.keepConversation` and `addMembers.welcome`.
+- Add native deprecated API scan scripts and Yarn commands for Android and iOS compatibility checks.
+- Add SDK upgrade workflow documentation and compatibility audit notes.
+- Update the project Yarn release from 3.6.1 to 4.14.1.
+
+## 1.15.2
+
+- Dependent native SDKs are upgraded to versions (Android 4.19.3).
+
 ## 1.15.1
 
 - Fix iOS build error where Xcode attempts to compile markdown files in the objc module.
