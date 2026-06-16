@@ -143,6 +143,10 @@ export class ChatContactManager extends BaseManager {
    * - `true`: Yes.
    * - (Default) `false`: No.
    *
+   * On Android, this method uses the Android SDK async delete-contact API, which does not accept
+   * `keepConversation`; therefore, this parameter is not passed through on Android. iOS is not
+   * affected by this Android SDK async API limitation.
+   *
    * @throws A description of the exception. See {@link ChatError}.
    */
   public async deleteContact(

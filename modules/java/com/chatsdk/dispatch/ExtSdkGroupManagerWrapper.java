@@ -164,23 +164,17 @@ public class ExtSdkGroupManagerWrapper extends ExtSdkWrapper {
     public void getGroupSpecificationFromServer(JSONObject param, String channelName, ExtSdkCallback result)
         throws JSONException {
         String groupId = param.getString("groupId");
-        boolean isFetchMembers = false;
-        boolean hasFetchMembers = false;
-        if (param.has("fetchMembers")) {
-            isFetchMembers = param.getBoolean("fetchMembers");
-            hasFetchMembers = true;
-        }
-        try {
-            EMGroup group = null;
-            if (hasFetchMembers) {
-                group = EMClient.getInstance().groupManager().getGroupFromServer(groupId, isFetchMembers);
-            } else {
-                group = EMClient.getInstance().groupManager().getGroupFromServer(groupId);
+        EMClient.getInstance().groupManager().asyncGetGroupFromServer(groupId, new EMValueCallBack<EMGroup>() {
+            @Override
+            public void onSuccess(EMGroup value) {
+                ExtSdkWrapper.onSuccess(result, channelName, ExtSdkGroupHelper.toJson(value));
             }
-            ExtSdkWrapper.onSuccess(result, channelName, ExtSdkGroupHelper.toJson(group));
-        } catch (HyphenateException e) {
-            ExtSdkWrapper.onError(result, e, null);
-        }
+
+            @Override
+            public void onError(int error, String errorMsg) {
+                ExtSdkWrapper.onError(result, error, errorMsg);
+            }
+        });
     }
 
     public void getGroupMemberListFromServer(JSONObject param, String channelName, ExtSdkCallback result)
@@ -374,17 +368,17 @@ public class ExtSdkGroupManagerWrapper extends ExtSdkWrapper {
             members = new String[0];
         }
 
-        String welcome = null;
-        if (param.has("welcome")) {
-            welcome = param.getString("welcome");
-        }
+        EMClient.getInstance().groupManager().asyncAddUsersToGroup(groupId, members, new EMCallBack() {
+            @Override
+            public void onSuccess() {
+                ExtSdkWrapper.onSuccess(result, channelName, null);
+            }
 
-        try {
-            EMClient.getInstance().groupManager().addUsersToGroup(groupId, members, welcome);
-            ExtSdkWrapper.onSuccess(result, channelName, null);
-        } catch (HyphenateException e) {
-            ExtSdkWrapper.onError(result, e, null);
-        }
+            @Override
+            public void onError(int code, String error) {
+                ExtSdkWrapper.onError(result, code, error);
+            }
+        });
     }
 
     public void removeMembers(JSONObject param, String channelName, ExtSdkCallback result) throws JSONException {
