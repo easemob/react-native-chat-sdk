@@ -377,14 +377,14 @@ PODS:
   - React-jsinspector (0.72.17)
   - React-logger (0.72.17):
     - glog
-  - react-native-chat-sdk (1.15.1-beta.0):
+  - react-native-chat-sdk (1.15.3-beta.0):
     - HyphenateChat (~> 4.19.1)
     - RCT-Folly (= 2021.07.22.00)
     - React-Core
   - react-native-document-picker (9.3.1):
     - RCT-Folly (= 2021.07.22.00)
     - React-Core
-  - react-native-image-picker (7.1.2):
+  - react-native-image-picker (7.2.3):
     - RCT-Folly (= 2021.07.22.00)
     - React-Core
   - react-native-safe-area-context (4.7.4):
@@ -733,9 +733,9 @@ SPEC CHECKSUMS:
   React-jsiexecutor: 8d95d2ed8969c2ce7eb8b4bfaccb0bb9c0423761
   React-jsinspector: 853b8631b908636bb09ef77cb217376c38a0c8ff
   React-logger: afa402da502a35728c9073804b1802861783a996
-  react-native-chat-sdk: e4347129be899065b64c61e27246eae2978baeda
+  react-native-chat-sdk: fa65ff3473d62d2f48e2a50a38086407a175ad5e
   react-native-document-picker: 9f13a38d0d5938086406fdaf99803b7593b417fd
-  react-native-image-picker: c134c655d4592fd450bf00250c84d7e4246638eb
+  react-native-image-picker: 08d4403e9c3094ee71050f0bf8f7cbf1a1570a80
   react-native-safe-area-context: 8dba469126c1d5fb9502bfb49996026593292cf4
   React-NativeModulesApple: a3b3019ffee56cf78bbf09c48e056072f3bb4ea4
   React-perflogger: 785b0063af5178298a61b54bb46aae9a19c7bbb5
