@@ -8,7 +8,7 @@
 
 Replace Android synchronous Hyphenate SDK calls for server/network operations with asynchronous SDK calls, so React Native promises resolve or reject from the native async callback result.
 
-The change must preserve the current JS-facing API contract for TypeScript APIs that are still active.
+The change must preserve the current JS-facing success value and error shape for TypeScript APIs that are still active, except for the approved Android SDK async parameter limitations documented in this spec.
 
 ## Inputs
 
@@ -34,6 +34,8 @@ Do not change:
 - generated `lib/` output
 - Flutter wrapper directories
 
+TypeScript source may be changed only to add documentation comments for approved Android-only parameter limitations. Do not change TypeScript method signatures, method constants, runtime behavior, or generated output.
+
 Preserve the current JS-facing success value and error behavior unless a specific parameter difference has already been approved.
 
 If implementation reveals an uncertain SDK API mapping, uncertain return conversion, uncertain TypeScript deprecation relationship, or a major case not covered by this design, stop and ask the project owner before changing behavior.
@@ -47,7 +49,9 @@ Do not convert these Android sync calls in this task:
 - `updateGroupExt`: no matching Android async API found in the checked SDK source.
 - `getPushConfigsFromServer`: no matching Android async API found in the checked SDK source.
 
-Deprecated TypeScript methods do not drive parameter compatibility requirements for this task. For example, `ChatGroupManager.fetchGroupInfoFromServer(groupId, isFetchMembers)` is deprecated, so its `fetchMembers` behavior is not preserved as a requirement. The same native wrapper method is still used by active `fetchGroupInfoWithoutMembersFromServer(groupId)`, so the Android wrapper can use the async SDK API that only accepts `groupId`.
+Deprecated TypeScript methods do not drive parameter compatibility requirements for this task. For example, `ChatGroupManager.fetchGroupInfoFromServer(groupId, isFetchMembers)` is deprecated, so its `fetchMembers` behavior is not preserved as a requirement. The same native wrapper method is still used by active `fetchGroupInfoWithoutMembersFromServer(groupId)`, whose TypeScript contract does not expose `isFetchMembers`, so no TypeScript platform note is required for this parameter difference.
+
+Only add TypeScript platform notes when a current non-deprecated TypeScript API exposes a parameter that the Android async SDK API cannot pass through.
 
 ## Android Wrapper Scope
 
@@ -72,6 +76,7 @@ Use `EMValueCallBack<List<String>>` methods for list-returning server queries an
 Approved parameter difference:
 
 - `deleteContact` should use `asyncDeleteContact(username, EMCallBack)` and ignore `keepConversation`.
+- Add a TypeScript documentation note to `ChatContactManager.deleteContact` explaining that Android uses the async SDK API that does not accept `keepConversation`; iOS is not affected.
 
 ### Chat Room
 
@@ -107,6 +112,7 @@ Preserve existing success conversions:
 Approved parameter difference:
 
 - `fetchChatRoomInfoFromServer` should use `asyncFetchChatRoomFromServer(roomId, EMValueCallBack<EMChatRoom>)` and ignore legacy `fetchMembers`.
+- Do not add a TypeScript platform note for this difference because `ChatRoomManager.fetchChatRoomInfoFromServer` does not expose `fetchMembers`.
 
 Implementation note:
 
@@ -128,6 +134,8 @@ Approved parameter differences:
 
 - `getGroupSpecificationFromServer` should use `asyncGetGroupFromServer(groupId, EMValueCallBack<EMGroup>)` and ignore legacy `fetchMembers`.
 - `addMembers` should use `asyncAddUsersToGroup(groupId, members, EMCallBack)` and ignore `welcome`.
+- Do not add a TypeScript platform note for `getGroupSpecificationFromServer`/`fetchMembers` because the active replacement API, `ChatGroupManager.fetchGroupInfoWithoutMembersFromServer(groupId)`, does not expose `isFetchMembers`.
+- Add a TypeScript documentation note to `ChatGroupManager.addMembers` explaining that Android uses the async SDK API that does not accept `welcome`; iOS is not affected.
 
 ### Chat
 
