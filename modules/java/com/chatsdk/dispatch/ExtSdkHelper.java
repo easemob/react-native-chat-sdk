@@ -313,18 +313,24 @@ class ExtSdkOptionsHelper {
 
         if (json.has("pushConfig")) {
             JSONObject pushConfig = json.getJSONObject("pushConfig");
-            if (!pushConfig.optString("manufacturer").isEmpty() && !pushConfig.optString("deviceId").isEmpty()) {
+            if (!pushConfig.optString("manufacturer").isEmpty()) {
                 EMPushConfig.Builder builder = new EMPushConfig.Builder(context);
                 String manufacturer = pushConfig.getString("manufacturer");
-                String deviceId = pushConfig.getString("deviceId");
-                if (manufacturer.equalsIgnoreCase("google")) { builder.enableFCM(deviceId); }
-                else if (manufacturer.equalsIgnoreCase("huawei")) { builder.enableHWPush(); }
-                else if (manufacturer.equalsIgnoreCase("meizu")) { builder.enableFCM(deviceId); }
-                else if (manufacturer.equalsIgnoreCase("xiaomi")) { builder.enableFCM(deviceId); }
-                else if (manufacturer.equalsIgnoreCase("oppo")) { builder.enableOppoPush(deviceId, ""); }
-                else if (manufacturer.equalsIgnoreCase("vivo")) { builder.enableFCM(deviceId); }
-                else { builder.enableFCM(deviceId); }
-                options.setPushConfig(builder.build());
+                if (manufacturer.equalsIgnoreCase("huawei")) {
+                  builder.enableHWPush();
+                  options.setPushConfig(builder.build());
+                } else {
+                  String deviceId = pushConfig.optString("deviceId");
+                  if (!deviceId.isEmpty()) {
+                    if (manufacturer.equalsIgnoreCase("google")) { builder.enableFCM(deviceId); }
+                    else if (manufacturer.equalsIgnoreCase("meizu")) { builder.enableFCM(deviceId); }
+                    else if (manufacturer.equalsIgnoreCase("xiaomi")) { builder.enableFCM(deviceId); }
+                    else if (manufacturer.equalsIgnoreCase("oppo")) { builder.enableOppoPush(deviceId, ""); }
+                    else if (manufacturer.equalsIgnoreCase("vivo")) { builder.enableFCM(deviceId); }
+                    else { builder.enableFCM(deviceId); }
+                    options.setPushConfig(builder.build());
+                  }
+                }
             }
         }
 
@@ -1274,15 +1280,15 @@ class ExtSdkJSONExceptionHelper {
 class ExtSdkUserInfoHelper {
     static EMUserInfo fromJson(JSONObject obj) throws JSONException {
         EMUserInfo userInfo = new EMUserInfo();
-        if (!obj.optString("userId").isEmpty()) { userInfo.setUserId(obj.getString("userId")); }
-        if (!obj.optString("nickName").isEmpty()) { userInfo.setNickname(obj.getString("nickName")); }
+        if (obj.has("userId")) { userInfo.setUserId(obj.getString("userId")); }
+        if (obj.has("nickName")) { userInfo.setNickname(obj.getString("nickName")); }
         if (obj.has("gender")) { userInfo.setGender(obj.getInt("gender")); }
-        if (!obj.optString("mail").isEmpty()) { userInfo.setEmail(obj.getString("mail")); }
-        if (!obj.optString("phone").isEmpty()) { userInfo.setPhoneNumber(obj.getString("phone")); }
-        if (!obj.optString("sign").isEmpty()) { userInfo.setSignature(obj.getString("sign")); }
-        if (!obj.optString("avatarUrl").isEmpty()) { userInfo.setAvatarUrl(obj.getString("avatarUrl")); }
-        if (!obj.optString("ext").isEmpty()) { userInfo.setExt(obj.getString("ext")); }
-        if (!obj.optString("birth").isEmpty()) { userInfo.setBirth(obj.getString("birth")); }
+        if (obj.has("mail")) { userInfo.setEmail(obj.getString("mail")); }
+        if (obj.has("phone")) { userInfo.setPhoneNumber(obj.getString("phone")); }
+        if (obj.has("sign")) { userInfo.setSignature(obj.getString("sign")); }
+        if (obj.has("avatarUrl")) { userInfo.setAvatarUrl(obj.getString("avatarUrl")); }
+        if (obj.has("ext")) { userInfo.setExt(obj.getString("ext")); }
+        if (obj.has("birth")) { userInfo.setBirth(obj.getString("birth")); }
         return userInfo;
     }
 
