@@ -1,6 +1,6 @@
 {
-  "name": "react-native-chat-sdk",
-  "version": "1.12.0",
+  "name": "react-native-agora-chat",
+  "version": "1.4.0",
   "description": "An instant messaging SDK product is a software development kit that provides interfaces and functionalities for building and integrating real-time messaging features, enabling developers to implement instant messaging services within their applications.",
   "main": "lib/commonjs/index",
   "module": "lib/module/index",
@@ -51,7 +51,7 @@
     "gen:cmake_file": "cd scripts && node generate-cmake.js",
     "gen:xcode:env": "echo export NODE_BINARY=$(command -v node) > example/ios/.xcode.env.local",
     "build:exports": "bob build",
-    "yarn_pack": "mkdir build && yarn run prepare && yarn pack --out build/react-native-chat-sdk.tgz",
+    "yarn_pack": "mkdir build && yarn run prepare && yarn pack --out build/react-native-agora-chat.tgz",
     "doc:en": "mkdir -p ./docs/build/en && yarn exec typedoc --out ./docs/build/en --json ./docs/build/typedoc.json --tsconfig ./tsconfig.json --readme ./docs/rn_api_overview.md ./src/index.ts",
     "doc:cn": "mkdir -p ./docs/build/cn && yarn exec typedoc --out ./docs/build/cn --json ./docs/build/typedoc.json --tsconfig ./tsconfig.json --readme ./docs/rn_api_overview.zh.md ./src/index.ts",
     "doc:cn:update": "node ./scripts/update_api_docs.js 1.12.0 undefined easemob cn",
@@ -66,13 +66,13 @@
     "ios",
     "android"
   ],
-  "repository": "https://github.com/easemob/react-native-chat-sdk",
+  "repository": "https://www.npmjs.com/package/react-native-agora-chat",
   "author": "asteriskzuo <zuoyuhsywn@hotmail.com> (https://github.com/asteriskzuo)",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/easemob/react-native-chat-sdk/issues"
+    "url": "https://www.npmjs.com/package/react-native-agora-chat"
   },
-  "homepage": "https://github.com/easemob/react-native-chat-sdk#readme",
+  "homepage": "https://www.npmjs.com/package/react-native-agora-chat",
   "publishConfig": {
     "registry": "https://registry.npmjs.org/"
   },

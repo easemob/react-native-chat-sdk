@@ -30,9 +30,9 @@ _Update time: 2024-12-19_
 ## 集成 ChatSDK
 
 ```sh
-npm install react-native-chat-sdk
+npm install react-native-agora-chat
 # 或
-yarn add react-native-chat-sdk
+yarn add react-native-agora-chat
 ```
 
 ## 快速开始

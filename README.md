@@ -30,9 +30,9 @@ For the Android app:
 ## Integrate ChatSDK
 
 ```sh
-npm install react-native-chat-sdk
+npm install react-native-agora-chat
 # or
-yarn add react-native-chat-sdk
+yarn add react-native-agora-chat
 ```
 
 ## Quick start
