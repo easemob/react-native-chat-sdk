@@ -3,7 +3,7 @@ import { Text, View } from 'react-native';
 import {
   ChatClient,
   type ChatConnectEventListener,
-} from 'react-native-chat-sdk';
+} from 'react-native-agora-chat';
 import ModalDropdown from 'react-native-modal-dropdown';
 
 import { datasheet } from '../__default__/Datasheet';

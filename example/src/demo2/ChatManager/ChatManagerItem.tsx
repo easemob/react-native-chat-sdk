@@ -8,7 +8,7 @@ import {
   ChatMessageType,
   ChatRecalledMessageInfo,
   ChatTextMessageBody,
-} from 'react-native-chat-sdk';
+} from 'react-native-agora-chat';
 import {
   ChatClient,
   ChatConversationTypeFromNumber,
@@ -20,7 +20,7 @@ import {
   ChatMessageReactionEvent,
   ChatMessageThreadEvent,
   ChatMessageTypeFromString,
-} from 'react-native-chat-sdk';
+} from 'react-native-agora-chat';
 
 import { styleValues } from '../__internal__/Css';
 import type { ApiParams } from '../__internal__/DataTypes';

@@ -3,7 +3,7 @@ import {
   ChatMessage,
   ChatMessageChatType,
   type ChatMessageStatusCallback,
-} from 'react-native-chat-sdk';
+} from 'react-native-agora-chat';
 
 import { datasheet } from '../__default__/Datasheet';
 import { metaDataList, MN } from './QuickTestChatData';

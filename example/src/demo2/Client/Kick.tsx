@@ -8,7 +8,7 @@ import {
   type TextInputChangeEventData,
   View,
 } from 'react-native';
-import { ChatClient, ChatDeviceInfo } from 'react-native-chat-sdk';
+import { ChatClient, ChatDeviceInfo } from 'react-native-agora-chat';
 
 import { styleValues } from '../__internal__/Css';
 import { Button } from '../__internal__/Button';

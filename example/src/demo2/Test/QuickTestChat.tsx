@@ -13,7 +13,7 @@ import {
   ChatMessageThreadEvent,
   ChatMessageType,
   ChatRecalledMessageInfo,
-} from 'react-native-chat-sdk';
+} from 'react-native-agora-chat';
 
 import { ChatManagerCache } from './ChatManagerCache';
 import { metaDataList, MN } from './QuickTestChatData';

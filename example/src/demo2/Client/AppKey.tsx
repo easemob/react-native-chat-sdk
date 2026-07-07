@@ -1,6 +1,10 @@
 import React, { Component, type ReactNode } from 'react';
 import { ScrollView, Switch, Text, TextInput, View } from 'react-native';
-import { ChatClient, ChatOptions, ChatPushConfig } from 'react-native-chat-sdk';
+import {
+  ChatClient,
+  ChatOptions,
+  ChatPushConfig,
+} from 'react-native-agora-chat';
 
 import { datasheet } from '../__default__/Datasheet';
 import { styleValues } from '../__internal__/Css';

@@ -5,7 +5,7 @@ import {
   ChatMessageChatType,
   ChatMessageType,
   ChatSearchDirection,
-} from 'react-native-chat-sdk';
+} from 'react-native-agora-chat';
 
 import { datasheet } from '../__default__/Datasheet';
 import type { ApiParams } from '../__internal__/DataTypes';

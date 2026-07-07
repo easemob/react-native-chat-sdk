@@ -1,6 +1,6 @@
 import React, { Component, type ReactNode } from 'react';
 import { ScrollView, Text, View } from 'react-native';
-import { ChatClient } from 'react-native-chat-sdk';
+import { ChatClient } from 'react-native-agora-chat';
 
 import { styleValues } from '../__internal__/Css';
 import { Button } from '../__internal__/Button';

@@ -1558,7 +1558,7 @@
 }
 
 + (nonnull EMContact *)fromJsonObject:(nonnull NSDictionary *)dict {
-    EMContact *contact = [[EMContact alloc] initWithUserId:dict[@"userId"] remark:dict[@"remark"]];
+    EMContact *contact = [[EMContact alloc] initWithUserId:dict[@"userId"] remark:dict[@"remark"] createAt:0];
     return contact;
 }
 

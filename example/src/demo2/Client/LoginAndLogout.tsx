@@ -12,7 +12,7 @@ import {
   type ChatConnectEventListener,
   ChatMultiDeviceEvent,
   type ChatMultiDeviceEventListener,
-} from 'react-native-chat-sdk';
+} from 'react-native-agora-chat';
 
 import { datasheet } from '../__default__/Datasheet';
 import { styleValues } from '../__internal__/Css';

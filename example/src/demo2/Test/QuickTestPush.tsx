@@ -1,4 +1,4 @@
-import { ChatClient } from 'react-native-chat-sdk';
+import { ChatClient } from 'react-native-agora-chat';
 
 import { metaDataList, MN } from './QuickTestPushData';
 import {

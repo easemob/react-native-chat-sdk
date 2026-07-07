@@ -7,7 +7,7 @@ import {
   type ChatGroupEventListener,
   type ChatGroupFileStatusCallback,
   ChatGroupOptions,
-} from 'react-native-chat-sdk';
+} from 'react-native-agora-chat';
 
 import { styleValues } from '../__internal__/Css';
 import type { ApiParams } from '../__internal__/DataTypes';
