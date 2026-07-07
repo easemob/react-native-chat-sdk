@@ -166,6 +166,9 @@ log "modify README files"
 replace_literal_if_exists "${target_project_dir}/README.md" "react-native-chat-sdk" "${TARGET_PACKAGE_NAME}"
 replace_literal_if_exists "${target_project_dir}/README.zh.md" "react-native-chat-sdk" "${TARGET_PACKAGE_NAME}"
 
+log "modify tsconfig.json paths"
+replace_literal_if_exists "${target_project_dir}/tsconfig.json" "react-native-chat-sdk" "${TARGET_PACKAGE_NAME}"
+
 log "modify example/src imports"
 replace_example_src_imports_if_exists "${target_project_dir}"
 
