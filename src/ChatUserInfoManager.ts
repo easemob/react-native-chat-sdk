@@ -3,9 +3,9 @@ import {
   MTupdateOwnUserInfo,
 } from './__internal__/Consts';
 import { Native } from './__internal__/Native';
-import { ChatClient } from './ChatClient';
 import { chatlog } from './common/ChatConst';
 import { ChatUserInfo } from './common/ChatUserInfo';
+import { Factory } from './__internal__/Factory';
 
 /**
  * 用户信息管理类，负责更新及获取用户属性。
@@ -46,7 +46,7 @@ export class ChatUserInfoManager extends Native {
     ext?: string;
   }): Promise<void> {
     chatlog.log(`${ChatUserInfoManager.TAG}: updateOwnUserInfo: `, params);
-    const userId = await ChatClient.getInstance().getCurrentUsername();
+    const userId = await Factory.getChatClient().getCurrentUsername();
     const ret = await this.fetchUserInfoById([userId]);
     if (ret.has(userId)) {
       let userInfo = new ChatUserInfo(ret.get(userId)!);
@@ -95,7 +95,7 @@ export class ChatUserInfoManager extends Native {
    */
   public async fetchOwnInfo(): Promise<ChatUserInfo | undefined> {
     chatlog.log(`${ChatUserInfoManager.TAG}: fetchOwnInfo: `);
-    const id = await ChatClient.getInstance().getCurrentUsername();
+    const id = await Factory.getChatClient().getCurrentUsername();
     if (id) {
       const ret = await this.fetchUserInfoById([id]);
       if (ret.size > 0) {

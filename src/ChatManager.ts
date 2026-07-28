@@ -107,9 +107,9 @@ import {
   MTupdateChatThreadSubject,
   MTupdateConversationMessage,
   MTgetMessagesWithIds,
+  MTonStreamMessagesReceived,
 } from './__internal__/Consts';
 import { Native } from './__internal__/Native';
-import { ChatClient } from './ChatClient';
 import type { ChatMessageEventListener } from './ChatEvents';
 import { chatlog } from './common/ChatConst';
 import {
@@ -123,10 +123,10 @@ import { ChatCursorResult } from './common/ChatCursorResult';
 import { ChatError } from './common/ChatError';
 import { ChatGroupMessageAck } from './common/ChatGroup';
 import {
-  ChatFetchMessageOptions,
+  type ChatFetchMessageOptions,
   ChatMessage,
-  ChatMessageBody,
-  ChatMessageChatType,
+  type ChatMessageBody,
+  type ChatMessageChatType,
   ChatMessagePinInfo,
   ChatMessageSearchScope,
   ChatMessageStatus,
@@ -144,6 +144,7 @@ import {
   ChatMessageThreadEvent,
 } from './common/ChatMessageThread';
 import { ChatTranslateLanguage } from './common/ChatTranslateLanguage';
+import { Factory } from './__internal__/Factory';
 
 /**
  * 聊天管理类，该类负责收发消息、管理会话（加载，删除等）、下载消息附件等。
@@ -186,7 +187,6 @@ import { ChatTranslateLanguage } from './common/ChatTranslateLanguage';
  */
 export class ChatManager extends BaseManager {
   static TAG = 'ChatManager';
-
   private _messageListeners: Set<ChatMessageEventListener>;
 
   constructor() {
@@ -268,6 +268,11 @@ export class ChatManager extends BaseManager {
     event.addListener(
       MTonMessagePinChanged,
       this.onMessagePinChanged.bind(this)
+    );
+    event.removeAllListeners(MTonStreamMessagesReceived);
+    event.addListener(
+      MTonStreamMessagesReceived,
+      this.onStreamMessagesReceived.bind(this)
     );
   }
 
@@ -475,6 +480,17 @@ export class ChatManager extends BaseManager {
         pinOperation: params.pinOperation,
         pinInfo: new ChatMessagePinInfo(params.pinInfo),
       });
+    });
+  }
+
+  private onStreamMessagesReceived(messages: any): void {
+    chatlog.log(`${ChatManager.TAG}: onStreamMessagesReceived: `, messages);
+    if (this._messageListeners.size === 0) {
+      return;
+    }
+    let list: Array<ChatMessage> = this.createReceiveMessage(messages);
+    this._messageListeners.forEach((listener: ChatMessageEventListener) => {
+      listener.onStreamMessagesReceived?.(list);
     });
   }
 
@@ -3226,7 +3242,7 @@ export class ChatManager extends BaseManager {
       );
       throw new ChatError({ code: 1, description: 'msgIds count is 0' });
     }
-    if ((await ChatClient.getInstance().isLoginBefore()) === false) {
+    if ((await Factory.getChatClient().isLoginBefore()) === false) {
       // todo: temp fix native
       console.log(
         `${ChatManager.TAG}: removeMessagesFromServerWithMsgIds: not logged in yet.`
@@ -3280,7 +3296,7 @@ export class ChatManager extends BaseManager {
       );
       throw new ChatError({ code: 1, description: 'timestamp <= 0' });
     }
-    if ((await ChatClient.getInstance().isLoginBefore()) === false) {
+    if ((await Factory.getChatClient().isLoginBefore()) === false) {
       // todo: temp fix native
       console.log(
         `${ChatManager.TAG}: removeMessagesFromServerWithTimestamp: not logged in yet.`

@@ -577,6 +577,13 @@ export interface ChatMessageEventListener {
   onMessagesReceived?(messages: Array<ChatMessage>): void;
 
   /**
+   * 收到流式消息回调。
+   *
+   * @param messages 收到的流式消息。
+   */
+  onStreamMessagesReceived?(messages: Array<ChatMessage>): void;
+
+  /**
    * 收到命令消息回调。
    *
    * 与 {@link onMessagesReceived} 不同, 这个回调只包含命令的消息，命令消息通常不对用户展示。

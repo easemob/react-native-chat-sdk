@@ -1,10 +1,11 @@
 import { ExceptionHandler } from '../__internal__/ErrorHandler';
 import { generateMessageId, getNowTimestamp } from '../__internal__/Utils';
-import { ChatClient } from '../ChatClient';
 import type { ChatSearchDirection } from './ChatConversation';
 import { ChatError, ChatException } from './ChatError';
 import type { ChatMessageReaction } from './ChatMessageReaction';
 import type { ChatMessageThread } from './ChatMessageThread';
+import { Factory } from '../__internal__/Factory';
+import type { ChatStreamChunk } from './ChatMessageStreamChunk';
 
 /**
  * 会话类型枚举。
@@ -495,6 +496,11 @@ export class ChatMessage {
   isContentReplaced: boolean;
 
   /**
+   *  消息流分片信息。
+   */
+  streamChunk?: ChatStreamChunk;
+
+  /**
    * 构造消息。
    */
   public constructor(params: {
@@ -521,6 +527,7 @@ export class ChatMessage {
     receiverList?: string[];
     isBroadcast?: boolean;
     isContentReplaced?: boolean;
+    streamChunk?: ChatStreamChunk;
   }) {
     this.msgId = params.msgId ?? generateMessageId();
     this.conversationId = params.conversationId ?? '';
@@ -546,6 +553,7 @@ export class ChatMessage {
     this.receiverList = params.receiverList;
     this.isBroadcast = params.isBroadcast ?? false;
     this.isContentReplaced = params.isContentReplaced ?? false;
+    this.streamChunk = params.streamChunk;
   }
 
   private fromAttributes(attributes: any) {
@@ -626,7 +634,7 @@ export class ChatMessage {
     receiverList?: string[];
   }): ChatMessage {
     let r = new ChatMessage({
-      from: ChatClient.getInstance().currentUserName ?? '',
+      from: Factory.getChatClient().currentUserName ?? '',
       body: params.body,
       direction: 'send',
       to: params.targetId,
@@ -1101,7 +1109,7 @@ export class ChatMessage {
    * 获取 Reaction 列表。
    */
   public get reactionList(): Promise<Array<ChatMessageReaction>> {
-    return ChatClient.getInstance().chatManager.getReactionList(this.msgId);
+    return Factory.getChatClient().chatManager.getReactionList(this.msgId);
   }
 
   /**
@@ -1109,7 +1117,7 @@ export class ChatMessage {
    *
    */
   public get groupReadCount(): Promise<number | undefined> {
-    return ChatClient.getInstance().chatManager.groupAckCount(this.msgId);
+    return Factory.getChatClient().chatManager.groupAckCount(this.msgId);
   }
 
   /**
@@ -1117,14 +1125,14 @@ export class ChatMessage {
    *
    */
   public get threadInfo(): Promise<ChatMessageThread | undefined> {
-    return ChatClient.getInstance().chatManager.getMessageThread(this.msgId);
+    return Factory.getChatClient().chatManager.getMessageThread(this.msgId);
   }
 
   /**
    * 获取消息的置顶信息。
    */
   public get getPinInfo(): Promise<ChatMessagePinInfo | undefined> {
-    return ChatClient.getInstance().chatManager.getMessagePinInfo(this.msgId);
+    return Factory.getChatClient().chatManager.getMessagePinInfo(this.msgId);
   }
 
   /**

@@ -1,4 +1,5 @@
 import { type EmitterSubscription, NativeEventEmitter } from 'react-native';
+import { Factory } from './__internal__/Factory';
 
 import { BaseManager } from './__internal__/Base';
 import {
@@ -8,7 +9,9 @@ import {
   MTcreateAccount,
   MTgetCurrentUser,
   MTgetLoggedInDevicesFromServer,
+  MTgetRTCTokenInfoWithChannelName,
   MTgetToken,
+  MTgetUserIdsWithRTCUids,
   MTinit,
   MTisConnected,
   MTisLoggedInBefore,
@@ -64,6 +67,7 @@ import { ChatPushConfig } from './common/ChatPushConfig';
 import { eventEmitter } from './__specs__';
 import { Native } from './__internal__/Native';
 import { ChatError } from './common/ChatError';
+import { ChatRTCTokenInfo } from './common/ChatRTCTokenInfo';
 
 chatlog.log('dev:eventEmitter: ', eventEmitter);
 
@@ -117,6 +121,7 @@ export class ChatClient extends BaseManager {
 
   private constructor() {
     super();
+    Factory.setChatClient(this);
 
     this._chatManager = new ChatManager();
     this._groupManager = new ChatGroupManager();
@@ -945,9 +950,65 @@ export class ChatClient extends BaseManager {
   }
 
   /**
-   * 设置连接状态监听器。
+   * 根据频道名称（channelName）获取与 Agora Chat 用户 ID 匹配的声网 RTC token、token 过期时间和 RTC UID。
    *
-   *  @param listener 要添加的连接状态监听器。
+   * 调用此 API 之前必须启用声网 RTC 功能。
+   *
+   * 如果频道名称设置为 null，将生成对所有频道有效的 RTC token。
+   *
+   * 这是一个异步方法。
+   *
+   * @param channelName 声网 RTC 频道名称。
+   * @returns RTC token 信息。详见 {@link ChatRTCTokenInfo}。
+   *
+   * @throws 异常描述。详见 {@link ChatError}。
+   */
+  public async getRTCTokenInfoWithChannelName(
+    channelName: string
+  ): Promise<ChatRTCTokenInfo> {
+    chatlog.log(
+      `${ChatClient.TAG}: getRTCTokenInfoWithChannelName: `,
+      channelName
+    );
+    let r: any = await Native._callMethod(MTgetRTCTokenInfoWithChannelName, {
+      [MTgetRTCTokenInfoWithChannelName]: {
+        channelName: channelName,
+      },
+    });
+    ChatClient.checkErrorFromResult(r);
+    const params = r?.[MTgetRTCTokenInfoWithChannelName];
+    return new ChatRTCTokenInfo({ ...params });
+  }
+
+  /**
+   * 获取与声网 RTC UID 匹配的 Agora Chat 用户 ID。
+   *
+   * @param ids 声网 RTC UID 列表。
+   * @returns 声网 RTC UID 和 Agora Chat 用户 ID 的映射关系。
+   *
+   * @throws 异常描述。详见 {@link ChatError}。
+   */
+  public async getUserIdsWithRTCUids(
+    ids: Array<number>
+  ): Promise<Map<number, string>> {
+    chatlog.log(`${ChatClient.TAG}: getUserIdsWithRTCUids: `, ids);
+    let r: any = await Native._callMethod(MTgetUserIdsWithRTCUids, {
+      [MTgetUserIdsWithRTCUids]: {
+        rtcUids: ids,
+      },
+    });
+    ChatClient.checkErrorFromResult(r);
+    const ret: Map<number, string> = new Map();
+    Object.entries(r?.[MTgetUserIdsWithRTCUids]).forEach((v: [string, any]) => {
+      ret.set(Number(v[0]), v[1]);
+    });
+    return ret;
+  }
+
+  /**
+   * 添加连接状态监听器。
+   *
+   * @param listener 要添加的连接状态监听器。
    */
   public addConnectionListener(listener: ChatConnectEventListener): void {
     chatlog.log(`${ChatClient.TAG}: addConnectionListener: `);

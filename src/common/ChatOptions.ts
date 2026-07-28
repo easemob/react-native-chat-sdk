@@ -220,6 +220,29 @@ export class ChatOptions {
   uikitVersion?: string;
 
   /**
+   * WebSocket 服务器。
+   *
+   * 该属性仅当 `enableDnsConfig` 为 `false` 时有效。
+   */
+  webSocketServer?: string;
+
+  /**
+   * WebSocket 服务器端口。
+   *
+   * 该属性仅当 `enableDnsConfig` 为 `false` 时有效。
+   */
+  webSocketPort?: number;
+
+  /**
+   * DoH 供应商。
+   *
+   * 0: 禁用 1: 中国 2: 全球
+   *
+   * 该属性用于在 `enableDNSConfig` 为 `true` 时指定 DoH 供应商。
+   */
+  dohVendor?: number;
+
+  /**
    * @deprecated 请使用 {@link withAppId} and {@link withAppKey} 替代.
    */
   constructor(params: {
@@ -257,6 +280,9 @@ export class ChatOptions {
     loginExtraInfo?: string;
     workPathCopiable?: boolean;
     uikitVersion?: string;
+    webSocketServer?: string;
+    webSocketPort?: number;
+    dohVendor?: number;
   }) {
     if (!params.appKey && !params.appId) {
       throw new ChatError({
@@ -304,6 +330,9 @@ export class ChatOptions {
     this.loginExtraInfo = params.loginExtraInfo;
     this.workPathCopiable = params.workPathCopiable ?? false;
     this.uikitVersion = params.uikitVersion;
+    this.webSocketServer = params.webSocketServer;
+    this.webSocketPort = params.webSocketPort ?? 0;
+    this.dohVendor = params.dohVendor ?? 1; // agora is 2.
   }
 
   static withAppId(params: {
@@ -340,6 +369,9 @@ export class ChatOptions {
     loginExtraInfo?: string;
     workPathCopiable?: boolean;
     uikitVersion?: string;
+    webSocketServer?: string;
+    webSocketPort?: number;
+    dohVendor?: number;
   }) {
     return new ChatOptions({
       ...params,
@@ -381,6 +413,9 @@ export class ChatOptions {
     loginExtraInfo?: string;
     workPathCopiable?: boolean;
     uikitVersion?: string;
+    webSocketServer?: string;
+    webSocketPort?: number;
+    dohVendor?: number;
   }) {
     return new ChatOptions({
       ...params,

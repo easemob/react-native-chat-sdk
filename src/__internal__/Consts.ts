@@ -208,6 +208,8 @@ export const MTfetchChatRoomAllowListFromServer =
   'fetchChatRoomAllowListFromServer';
 export const MTisMemberInChatRoomAllowListFromServer =
   'isMemberInChatRoomAllowListFromServer';
+export const MTisMemberInChatRoomMuteListFromServer =
+  'isMemberInChatRoomMuteListFromServer';
 
 export const MTmuteAllChatRoomMembers = 'muteAllChatRoomMembers';
 export const MTunMuteAllChatRoomMembers = 'unMuteAllChatRoomMembers';
@@ -386,3 +388,11 @@ export const MTgetMessageCountWithTimestamp = 'getMessageCountWithTimestamp';
 export const MTgetMessageCount = 'getMessageCount';
 export const MTonOfflineMessageSyncStart = 'onOfflineMessageSyncStart';
 export const MTonOfflineMessageSyncFinish = 'onOfflineMessageSyncFinish';
+
+// 2025-11-19 added
+export const MTgetRTCTokenInfoWithChannelName =
+  'getRTCTokenInfoWithChannelName';
+export const MTgetUserIdsWithRTCUids = 'getUserIdsWithRTCUids';
+
+// 2026-04-10 added
+export const MTonStreamMessagesReceived = 'onStreamMessagesReceived';

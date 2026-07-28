@@ -20,6 +20,7 @@ import {
   MTfetchPublicChatRoomsFromServer,
   MTgetChatRoom,
   MTisMemberInChatRoomAllowListFromServer,
+  MTisMemberInChatRoomMuteListFromServer,
   MTjoinChatRoom,
   MTleaveChatRoom,
   MTmuteAllChatRoomMembers,
@@ -922,14 +923,39 @@ export class ChatRoomManager extends Native {
   }
 
   /**
-   * 将成员加入聊天室白名单。
+   * 查询指定成员是否在聊天室禁言名单中。
+   *
+   * @param roomId 聊天室 ID。
+   * @returns 指定成员是否在聊天室禁言名单中。
+   *          - `true`：是。
+   *          - `false`：否。
+   *
+   * @throws 异常描述。详见 {@link ChatError}。
+   */
+  public async isMemberInChatRoomMuteList(roomId: string): Promise<boolean> {
+    chatlog.log(`${ChatRoomManager.TAG}: isMemberInChatRoomMuteList: `, roomId);
+    let r: any = await Native._callMethod(
+      MTisMemberInChatRoomMuteListFromServer,
+      {
+        [MTisMemberInChatRoomMuteListFromServer]: {
+          roomId,
+        },
+      }
+    );
+    ChatRoomManager.checkErrorFromResult(r);
+    let ret: boolean = r?.[MTisMemberInChatRoomMuteListFromServer];
+    return ret;
+  }
+
+  /**
+   * 将成员添加到聊天室白名单中。
    *
    * 仅聊天室所有者或者管理员有权限调用该方法。
    *
    * @param roomId 聊天室 ID。
-   * @param members 要加入聊天室白名单的成员用户 ID 列表。
+   * @param members 要添加到聊天室白名单的成员用户 ID 列表。
    *
-   * @throws 如果有异常会在这里抛出，包含错误码和错误描述，详见 {@link ChatError}。
+   * @throws 异常描述。详见 {@link ChatError}。
    */
   public async addMembersToChatRoomAllowList(
     roomId: string,
