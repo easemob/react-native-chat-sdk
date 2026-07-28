@@ -12,7 +12,8 @@ regexes = [
 paths = [
     '''gitleaks.toml''',
     '''(.*?)(jpg|gif|doc|pdf|bin|svg|socket)$''',
-    '''(go.mod|go.sum)$'''
+    '''(go.mod|go.sum)$''',
+    '''\.yarn/releases/'''
 ]
 
 
