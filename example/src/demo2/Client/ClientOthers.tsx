@@ -22,6 +22,8 @@ interface State {
   deviceId: string;
   deviceToken: string;
   version: string;
+  token: string;
+  tokenMap: number[];
 }
 
 export class ClientOthersScreen extends Component<
@@ -46,6 +48,8 @@ export class ClientOthersScreen extends Component<
       deviceId: '',
       deviceToken: '',
       version: '',
+      token: '',
+      tokenMap: [],
     };
   }
 
@@ -161,6 +165,43 @@ export class ClientOthersScreen extends Component<
       .catch();
   }
 
+  private getToken(): void {
+    // test get user token
+    const { token } = this.state;
+    ChatClient.getInstance()
+      .getRTCTokenInfoWithChannelName(token)
+      .then((info) => {
+        console.log('dev:getRTCTokenInfoWithChannelName:info', info);
+        this.setState({
+          result:
+            `getRTCTokenInfoWithChannelName: success` + JSON.stringify(info),
+        });
+      })
+      .catch((error) => {
+        console.log('dev:getRTCTokenInfoWithChannelName:error', error);
+      });
+  }
+
+  private getTokenMap(): void {
+    // test get user ids with rtc uids
+    const { tokenMap } = this.state;
+    ChatClient.getInstance()
+      .getUserIdsWithRTCUids(tokenMap)
+      .then((map) => {
+        console.log('dev:getUserIdsWithRTCUids:map', map);
+        let mapToString = '';
+        map.forEach((value, key) => {
+          mapToString += `{ ${key}: ${value}, }`;
+        });
+        this.setState({
+          result: `getUserIdsWithRTCUids: success` + mapToString,
+        });
+      })
+      .catch((error) => {
+        console.log('dev:getUserIdsWithRTCUids:error', error);
+      });
+  }
+
   componentDidMount?(): void {
     console.log(`${ClientOthersScreen.TAG}: componentDidMount: `);
   }
@@ -170,7 +211,15 @@ export class ClientOthersScreen extends Component<
   }
 
   render(): ReactNode {
-    const { result, agoraToken, newAppKey, deviceId, deviceToken } = this.state;
+    const {
+      result,
+      agoraToken,
+      newAppKey,
+      deviceId,
+      deviceToken,
+      token,
+      tokenMap,
+    } = this.state;
     return (
       <ScrollView>
         <View style={styleValues.containerColumn}>
@@ -247,6 +296,43 @@ export class ClientOthersScreen extends Component<
               }}
             />
           </View>
+
+          <View style={styleValues.containerRow}>
+            <Text style={styleValues.textStyle}>deviceToken: </Text>
+            <TextInput
+              style={styleValues.textInputStyle}
+              onChangeText={(text: string) => {
+                this.setState({ token: text });
+              }}
+            >
+              {token}
+            </TextInput>
+            <Button
+              title="getToken"
+              onPress={() => {
+                this.getToken();
+              }}
+            />
+          </View>
+
+          <View style={styleValues.containerRow}>
+            <Text style={styleValues.textStyle}>deviceToken: </Text>
+            <TextInput
+              style={styleValues.textInputStyle}
+              onChangeText={(text: string) => {
+                this.setState({ tokenMap: [Number(text)] });
+              }}
+            >
+              {tokenMap}
+            </TextInput>
+            <Button
+              title="getTokenMap"
+              onPress={() => {
+                this.getTokenMap();
+              }}
+            />
+          </View>
+
           <View style={styleValues.containerRow}>
             <Text style={styleValues.textStyle}>
               version: {this.state.version}

@@ -443,6 +443,9 @@
     case EMThreadOperationUpdate_msg:
         ret = 4;
         break;
+    case EMThreadOperationUserRemoved:
+        ret = 5;
+        break;
     }
 
     return ret;
@@ -508,6 +511,30 @@
     }
     return ret;
 }
++ (int)streamChunkStatus:(EMStreamChunkStatus)status {
+  int ret = 4;
+  switch (status) {
+    case EMStreamChunkStatusStart:
+      ret = 0;
+      break;
+    case EMStreamChunkStatusStartAndComplete:
+      ret = 1;
+      break;
+    case EMStreamChunkStatusProgress:
+      ret = 2;
+      break;
+    case EMStreamChunkStatusComplete:
+      ret = 3;
+      break;
+    case EMStreamChunkStatusError:
+      ret = 4;
+      break;
+
+    default:
+      break;
+  }
+  return ret;
+}
 @end
 
 @implementation EMChatroom (Json)
@@ -541,7 +568,7 @@
 - (NSDictionary *)toJsonObject {
     NSMutableDictionary *ret = [NSMutableDictionary dictionary];
     ret[@"convId"] = self.conversationId;
-    ret[@"convType"] = @([self.class conversationTypeToInt:self.type]);
+    ret[@"convType"] = @([ExtSdkConvertHelper conversationTypeToInt:self.type]);
     ret[@"isChatThread"] = @(self.isChatThread);
     ret[@"isPinned"] = @(self.isPinned);
     ret[@"pinnedTime"] = @(self.pinnedTime);
@@ -655,10 +682,10 @@
 
 + (EMGroupOptions *)fromJsonObject:(NSDictionary *)dict {
     EMGroupOptions *options = [[EMGroupOptions alloc] init];
-    options.maxUsers = [dict[@"maxCount"] intValue];
-    options.ext = dict[@"ext"];
-    options.IsInviteNeedConfirm = [dict[@"inviteNeedConfirm"] boolValue];
-    options.style = [ExtSdkConvertHelper groupStyleFromInt:[dict[@"style"] intValue]];
+    if (dict[@"maxCount"]) { options.maxUsers = [dict[@"maxCount"] intValue]; }
+    (dict[@"ext"] && [dict[@"ext"] length] > 0) ? (options.ext = dict[@"ext"]) : nil;
+    if (dict[@"inviteNeedConfirm"]) { options.IsInviteNeedConfirm = [dict[@"inviteNeedConfirm"] boolValue]; }
+    if (dict[@"style"]) { options.style = [ExtSdkConvertHelper groupStyleFromInt:[dict[@"style"] intValue]]; }
     return options;
 }
 
@@ -740,27 +767,25 @@
         msg.messageId = aJson[@"msgId"];
     }
 
-    msg.direction =
-        ({ [aJson[@"direction"] isEqualToString:@"send"] ? EMMessageDirectionSend : EMMessageDirectionReceive; });
+    if (aJson[@"direction"]) { msg.direction = [aJson[@"direction"] isEqualToString:@"send"] ? EMMessageDirectionSend : EMMessageDirectionReceive; }
 
-    msg.chatType = [ExtSdkConvertHelper chatTypeFromInt:[aJson[@"chatType"] intValue]];
-    msg.status = [ExtSdkConvertHelper messageStatusFromInt:[aJson[@"status"] intValue]];
-    msg.localTime = [aJson[@"localTime"] longLongValue];
-    msg.timestamp = [aJson[@"serverTime"] longLongValue];
-    msg.isReadAcked = [aJson[@"hasReadAck"] boolValue];
-    msg.isDeliverAcked = [aJson[@"hasDeliverAck"] boolValue];
-    msg.isRead = [aJson[@"hasRead"] boolValue];
-    msg.isNeedGroupAck = [aJson[@"needGroupAck"] boolValue];
+    if (aJson[@"chatType"]) { msg.chatType = [ExtSdkConvertHelper chatTypeFromInt:[aJson[@"chatType"] intValue]]; }
+    if (aJson[@"status"]) { msg.status = [ExtSdkConvertHelper messageStatusFromInt:[aJson[@"status"] intValue]]; }
+    if (aJson[@"localTime"]) { msg.localTime = [aJson[@"localTime"] longLongValue]; }
+    if (aJson[@"serverTime"]) { msg.timestamp = [aJson[@"serverTime"] longLongValue]; }
+    if (aJson[@"hasReadAck"]) { msg.isReadAcked = [aJson[@"hasReadAck"] boolValue]; }
+    if (aJson[@"hasDeliverAck"]) { msg.isDeliverAcked = [aJson[@"hasDeliverAck"] boolValue]; }
+    if (aJson[@"hasRead"]) { msg.isRead = [aJson[@"hasRead"] boolValue]; }
+    if (aJson[@"needGroupAck"]) { msg.isNeedGroupAck = [aJson[@"needGroupAck"] boolValue]; }
     // read only
     // msg.groupAckCount = [aJson[@"groupAckCount"] intValue]
     // msg.isContentReplaced = [aJson[@"isContentReplaced"] boolValue];
-    msg.isChatThreadMessage = [aJson[@"isChatThread"] boolValue];
-    msg.ext = aJson[@"attributes"];
-    msg.priority = [ExtSdkConvertHelper priorityFromInt:[aJson[@"priority"] intValue]];
-    msg.deliverOnlineOnly = [aJson[@"deliverOnlineOnly"] boolValue];
-    if (aJson[@"receiverList"]) {
-        msg.receiverList = aJson[@"receiverList"];
-    }
+    if (aJson[@"isChatThread"]) { msg.isChatThreadMessage = [aJson[@"isChatThread"] boolValue]; }
+    if (aJson[@"attributes"]) { msg.ext = aJson[@"attributes"]; }
+    if (aJson[@"priority"]) { msg.priority = [ExtSdkConvertHelper priorityFromInt:[aJson[@"priority"] intValue]]; }
+    if (aJson[@"deliverOnlineOnly"]) { msg.deliverOnlineOnly = [aJson[@"deliverOnlineOnly"] boolValue]; }
+    (aJson[@"receiverList"] && [aJson[@"receiverList"] count] > 0) ? (msg.receiverList = aJson[@"receiverList"]) : nil;
+
     return msg;
 }
 
@@ -789,6 +814,9 @@
     ret[@"receiverList"] = self.receiverList;
     ret[@"isBroadcast"] = @(self.broadcast);
     ret[@"isContentReplaced"] = @(self.isContentReplaced);
+  if (self.streamChunk) {
+    ret[@"streamChunk"] = [self.streamChunk toJsonObject];
+  }
 
     return ret;
 }
@@ -851,7 +879,7 @@
 
 + (EMMessageBody *)fromJsonObject:(NSDictionary *)aJson {
     EMTextMessageBody *body = [[EMTextMessageBody alloc] initWithText:aJson[@"content"]];
-    body.targetLanguages = aJson[@"targetLanguageCodes"];
+    (aJson[@"targetLanguageCodes"] && [aJson[@"targetLanguageCodes"] count] > 0) ? (body.targetLanguages = aJson[@"targetLanguageCodes"]) : nil;
     // 给底层的时候不需要设置
     return body;
 }
@@ -885,7 +913,9 @@
     double latitude = [aJson[@"latitude"] doubleValue];
     double longitude = [aJson[@"longitude"] doubleValue];
     NSString *address = aJson[@"address"];
+    address = (address && address.length > 0) ? address : nil;
     NSString *buildingName = aJson[@"buildingName"];
+    buildingName = (buildingName && buildingName.length > 0) ? buildingName : nil;
     EMLocationMessageBody *ret = [[EMLocationMessageBody alloc] initWithLatitude:latitude
                                                                        longitude:longitude
                                                                          address:address
@@ -916,7 +946,7 @@
 + (EMCmdMessageBody *)fromJsonObject:(NSDictionary *)aJson {
     EMCmdMessageBody *ret = [[EMCmdMessageBody alloc] initWithAction:aJson[@"action"]];
     //    ret.isDeliverOnlineOnly = [aJson[@"deliverOnlineOnly"] boolValue];
-    ret.action = aJson[@"action"];
+    // if (aJson[@"action"]) { ret.action = aJson[@"action"]; }
     return ret;
 }
 
@@ -980,21 +1010,21 @@
 + (EMMessageBody *)fromJsonObject:(NSDictionary *)aJson {
 
     NSString *title = aJson[@"title"];
+    title = (title && title.length > 0) ? title : nil;
     NSString *summary = aJson[@"summary"];
+    summary = (summary && summary.length > 0) ? summary : nil;
     NSArray *messageIdList = aJson[@"messageIdList"];
     NSString *compatibleText = aJson[@"compatibleText"];
-    NSString *localPath = aJson[@"localPath"];
-    NSString *remotePath = aJson[@"remotePath"];
-    NSString *secret = aJson[@"secret"];
+    compatibleText = (compatibleText && compatibleText.length > 0) ? compatibleText : nil;
 
     EMCombineMessageBody *ret = [[EMCombineMessageBody alloc] initWithTitle:title
                                                                     summary:summary
                                                              compatibleText:compatibleText
                                                               messageIdList:messageIdList];
 
-    ret.remotePath = remotePath;
-    ret.secretKey = secret;
-    ret.localPath = localPath;
+    (aJson[@"remotePath"] && [aJson[@"remotePath"] length] > 0) ? (ret.remotePath = aJson[@"remotePath"]) : nil;
+    (aJson[@"secret"] && [aJson[@"secret"] length] > 0) ? (ret.secretKey = aJson[@"secret"]) : nil;
+    (aJson[@"localPath"] && [aJson[@"localPath"] length] > 0) ? (ret.localPath = aJson[@"localPath"]) : nil;
     return ret;
 }
 - (NSDictionary *)toJsonObject {
@@ -1023,12 +1053,13 @@
 + (EMMessageBody *)fromJsonObject:(NSDictionary *)aJson {
     NSString *path = aJson[@"localPath"];
     NSString *displayName = aJson[@"displayName"];
+    displayName = (displayName && displayName.length > 0) ? displayName : nil;
     EMFileMessageBody *ret = [[EMFileMessageBody alloc] initWithLocalPath:[LocalFileHandler reset:path]
                                                               displayName:displayName];
-    ret.secretKey = aJson[@"secret"];
-    ret.remotePath = aJson[@"remotePath"];
-    ret.fileLength = [aJson[@"fileSize"] longLongValue];
-    ret.downloadStatus = [ExtSdkConvertHelper downloadStatusFromInt:[aJson[@"fileStatus"] intValue]];
+    (aJson[@"secret"] && [aJson[@"secret"] length] > 0) ? (ret.secretKey = aJson[@"secret"]) : (ret.secretKey = @"");
+    (aJson[@"remotePath"] && [aJson[@"remotePath"] length] > 0) ? (ret.remotePath = aJson[@"remotePath"]) : nil;
+    if (aJson[@"fileSize"]) { ret.fileLength = [aJson[@"fileSize"] longLongValue]; }
+    if (aJson[@"fileStatus"]) { ret.downloadStatus = [ExtSdkConvertHelper downloadStatusFromInt:[aJson[@"fileStatus"] intValue]]; }
     return ret;
 }
 
@@ -1057,23 +1088,20 @@
 + (EMMessageBody *)fromJsonObject:(NSDictionary *)aJson {
     NSString *path = aJson[@"localPath"];
     NSString *displayName = aJson[@"displayName"];
-    //    NSData *imageData = [NSData dataWithContentsOfFile:path];
-    //    EMImageMessageBody *ret =
-    //        [[EMImageMessageBody alloc] initWithData:imageData
-    //                                     displayName:displayName];
+    displayName = (displayName && displayName.length > 0) ? displayName : nil;
     EMImageMessageBody *ret = [[EMImageMessageBody alloc] initWithLocalPath:[LocalFileHandler reset:path]
                                                                 displayName:displayName];
 
-    ret.secretKey = aJson[@"secret"];
-    ret.remotePath = aJson[@"remotePath"];
-    ret.fileLength = [aJson[@"fileSize"] longLongValue];
-    ret.downloadStatus = [ExtSdkConvertHelper downloadStatusFromInt:[aJson[@"fileStatus"] intValue]];
-    ret.thumbnailLocalPath = aJson[@"thumbnailLocalPath"];
-    ret.thumbnailRemotePath = aJson[@"thumbnailRemotePath"];
-    ret.thumbnailSecretKey = aJson[@"thumbnailSecret"];
-    ret.size = CGSizeMake([aJson[@"width"] floatValue], [aJson[@"height"] floatValue]);
-    ret.thumbnailDownloadStatus = [ExtSdkConvertHelper downloadStatusFromInt:[aJson[@"thumbnailStatus"] intValue]];
-    ret.compressionRatio = [aJson[@"sendOriginalImage"] boolValue] ? 1.0 : 0.6;
+    (aJson[@"secret"] && [aJson[@"secret"] length] > 0) ? (ret.secretKey = aJson[@"secret"]) : nil;
+    (aJson[@"remotePath"] && [aJson[@"remotePath"] length] > 0) ? (ret.remotePath = aJson[@"remotePath"]) : nil;
+    if (aJson[@"fileSize"]) { ret.fileLength = [aJson[@"fileSize"] longLongValue]; }
+    if (aJson[@"fileStatus"]) { ret.downloadStatus = [ExtSdkConvertHelper downloadStatusFromInt:[aJson[@"fileStatus"] intValue]]; }
+    (aJson[@"thumbnailLocalPath"] && [aJson[@"thumbnailLocalPath"] length] > 0) ? (ret.thumbnailLocalPath = aJson[@"thumbnailLocalPath"]) : nil;
+    (aJson[@"thumbnailRemotePath"] && [aJson[@"thumbnailRemotePath"] length] > 0) ? (ret.thumbnailRemotePath = aJson[@"thumbnailRemotePath"]) : nil;
+    (aJson[@"thumbnailSecret"] && [aJson[@"thumbnailSecret"] length] > 0) ? (ret.thumbnailSecretKey = aJson[@"thumbnailSecret"]) : nil;
+    if (aJson[@"width"] && aJson[@"height"]) { ret.size = CGSizeMake([aJson[@"width"] floatValue], [aJson[@"height"] floatValue]); }
+    if (aJson[@"thumbnailStatus"]) { ret.thumbnailDownloadStatus = [ExtSdkConvertHelper downloadStatusFromInt:[aJson[@"thumbnailStatus"] intValue]]; }
+    if (aJson[@"sendOriginalImage"]) { ret.compressionRatio = [aJson[@"sendOriginalImage"] boolValue] ? 1.0 : 0.6; }
     return ret;
 }
 
@@ -1107,17 +1135,18 @@
 + (EMVideoMessageBody *)fromJsonObject:(NSDictionary *)aJson {
     NSString *path = aJson[@"localPath"];
     NSString *displayName = aJson[@"displayName"];
+    displayName = (displayName && displayName.length > 0) ? displayName : nil;
     EMVideoMessageBody *ret = [[EMVideoMessageBody alloc] initWithLocalPath:[LocalFileHandler reset:path]
                                                                 displayName:displayName];
-    ret.duration = [aJson[@"duration"] intValue];
-    ret.secretKey = aJson[@"secret"];
-    ret.remotePath = aJson[@"remotePath"];
-    ret.fileLength = [aJson[@"fileSize"] longLongValue];
-    ret.thumbnailLocalPath = aJson[@"thumbnailLocalPath"];
-    ret.thumbnailRemotePath = aJson[@"thumbnailRemotePath"];
-    ret.thumbnailSecretKey = aJson[@"thumbnailSecret"];
-    ret.thumbnailDownloadStatus = [ExtSdkConvertHelper downloadStatusFromInt:[aJson[@"thumbnailStatus"] intValue]];
-    ret.thumbnailSize = CGSizeMake([aJson[@"width"] floatValue], [aJson[@"height"] floatValue]);
+    if (aJson[@"duration"]) { ret.duration = [aJson[@"duration"] intValue]; }
+    (aJson[@"secret"] && [aJson[@"secret"] length] > 0) ? (ret.secretKey = aJson[@"secret"]) : nil;
+    (aJson[@"remotePath"] && [aJson[@"remotePath"] length] > 0) ? (ret.remotePath = aJson[@"remotePath"]) : nil;
+    if (aJson[@"fileSize"]) { ret.fileLength = [aJson[@"fileSize"] longLongValue]; }
+    (aJson[@"thumbnailLocalPath"] && [aJson[@"thumbnailLocalPath"] length] > 0) ? (ret.thumbnailLocalPath = aJson[@"thumbnailLocalPath"]) : nil;
+    (aJson[@"thumbnailRemotePath"] && [aJson[@"thumbnailRemotePath"] length] > 0) ? (ret.thumbnailRemotePath = aJson[@"thumbnailRemotePath"]) : nil;
+    (aJson[@"thumbnailSecret"] && [aJson[@"thumbnailSecret"] length] > 0) ? (ret.thumbnailSecretKey = aJson[@"thumbnailSecret"]) : nil;
+    if (aJson[@"thumbnailStatus"]) { ret.thumbnailDownloadStatus = [ExtSdkConvertHelper downloadStatusFromInt:[aJson[@"thumbnailStatus"] intValue]]; }
+    if (aJson[@"width"] && aJson[@"height"]) { ret.thumbnailSize = CGSizeMake([aJson[@"width"] floatValue], [aJson[@"height"] floatValue]); }
     return ret;
 }
 
@@ -1128,7 +1157,7 @@
     ret[@"secret"] = self.secretKey;
     ret[@"remotePath"] = self.remotePath;
     ret[@"thumbnailRemotePath"] = self.thumbnailRemotePath;
-    ret[@"thumbnailSecretKey"] = self.thumbnailSecretKey;
+    ret[@"thumbnailSecret"] = self.thumbnailSecretKey;
     ret[@"thumbnailStatus"] = @([ExtSdkConvertHelper downloadStatusToInt:self.thumbnailDownloadStatus]);
     ret[@"width"] = @(self.thumbnailSize.width);
     ret[@"height"] = @(self.thumbnailSize.height);
@@ -1150,12 +1179,13 @@
 + (EMVoiceMessageBody *)fromJsonObject:(NSDictionary *)aJson {
     NSString *path = aJson[@"localPath"];
     NSString *displayName = aJson[@"displayName"];
+    displayName = (displayName && displayName.length > 0) ? displayName : nil;
     EMVoiceMessageBody *ret = [[EMVoiceMessageBody alloc] initWithLocalPath:[LocalFileHandler reset:path]
                                                                 displayName:displayName];
-    ret.secretKey = aJson[@"secret"];
-    ret.remotePath = aJson[@"remotePath"];
-    ret.duration = [aJson[@"duration"] intValue];
-    ret.downloadStatus = [ExtSdkConvertHelper downloadStatusFromInt:[aJson[@"fileStatus"] intValue]];
+    (aJson[@"secret"] && [aJson[@"secret"] length] > 0) ? (ret.secretKey = aJson[@"secret"]) : nil;
+    (aJson[@"remotePath"] && [aJson[@"remotePath"] length] > 0) ? (ret.remotePath = aJson[@"remotePath"]) : nil;
+    if (aJson[@"duration"]) { ret.duration = [aJson[@"duration"] intValue]; }
+    if (aJson[@"fileStatus"]) { ret.downloadStatus = [ExtSdkConvertHelper downloadStatusFromInt:[aJson[@"fileStatus"] intValue]]; }
     return ret;
 }
 
@@ -1191,7 +1221,7 @@
     data[@"isChatRoomOwnerLeaveAllowed"] = @(self.canChatroomOwnerLeave);
     data[@"serverTransfer"] = @(self.isAutoTransferMessageAttachments);
     data[@"usingHttpsOnly"] = @(self.usingHttpsOnly);
-    data[@"pushConfig"] = @{@"pushConfig" : @{@"deviceId" : self.apnsCertName}};
+    data[@"pushConfig"] = @{@"deviceId" : self.apnsCertName};
     data[@"enableDNSConfig"] = @(self.enableDnsConfig);
     data[@"imPort"] = @(self.chatPort);
     data[@"imServer"] = self.chatServer;
@@ -1208,6 +1238,9 @@
     data[@"loginExtraInfo"] = self.loginExtensionInfo;
     data[@"workPathCopiable"] = @(self.workPathCopiable);
     data[@"appId"] = self.appId;
+    data[@"webSocketServer"] = self.webSocketServer;
+    data[@"webSocketPort"] = @(self.webSocketPort);
+    data[@"dohVendor"] = @(self.dohVendor);
 
     return data;
 }
@@ -1223,44 +1256,44 @@
         NSLog(@"EMOptions: fromJsonObject: appKey and appId is empty");
     }
 
-    options.isAutoLogin = [aJson[@"autoLogin"] boolValue];
-    options.enableConsoleLog = [aJson[@"debugModel"] boolValue];
-    options.enableRequireReadAck = [aJson[@"requireAck"] boolValue];
-    options.enableDeliveryAck = [aJson[@"requireDeliveryAck"] boolValue];
-    options.sortMessageByServerTime = [aJson[@"sortMessageByServerTime"] boolValue];
-    options.autoAcceptFriendInvitation = [aJson[@"acceptInvitationAlways"] boolValue];
-    options.autoAcceptGroupInvitation = [aJson[@"autoAcceptGroupInvitation"] boolValue];
-    options.deleteMessagesOnLeaveGroup = [aJson[@"deleteMessagesAsExitGroup"] boolValue];
-    options.deleteMessagesOnLeaveChatroom = [aJson[@"deleteMessagesAsExitChatRoom"] boolValue];
-    options.autoDownloadThumbnail = [aJson[@"isAutoDownload"] boolValue];
-    options.canChatroomOwnerLeave = [aJson[@"isChatRoomOwnerLeaveAllowed"] boolValue];
-    options.isAutoTransferMessageAttachments = [aJson[@"serverTransfer"] boolValue];
-    options.usingHttpsOnly = [aJson[@"usingHttpsOnly"] boolValue];
-    options.apnsCertName = aJson[@"pushConfig"][@"apnsCertName"];
-    options.enableDnsConfig = [aJson[@"enableDNSConfig"] boolValue];
-    options.chatPort = [aJson[@"imPort"] intValue];
-    options.chatServer = aJson[@"imServer"];
-    options.restServer = aJson[@"restServer"];
-    options.dnsURL = aJson[@"dnsURL"];
-    options.area = [ExtSdkConvertHelper AreaCodeFromInt:[aJson[@"areaCode"] intValue]];
-    options.loadEmptyConversations = [aJson[@"enableEmptyConversation"] boolValue];
-    options.customDeviceName = aJson[@"customDeviceName"];
+    if (aJson[@"autoLogin"]) { options.isAutoLogin = [aJson[@"autoLogin"] boolValue]; }
+    if (aJson[@"debugModel"]) { options.enableConsoleLog = [aJson[@"debugModel"] boolValue]; }
+    if (aJson[@"requireAck"]) { options.enableRequireReadAck = [aJson[@"requireAck"] boolValue]; }
+    if (aJson[@"requireDeliveryAck"]) { options.enableDeliveryAck = [aJson[@"requireDeliveryAck"] boolValue]; }
+    if (aJson[@"sortMessageByServerTime"]) { options.sortMessageByServerTime = [aJson[@"sortMessageByServerTime"] boolValue]; }
+    if (aJson[@"acceptInvitationAlways"]) { options.autoAcceptFriendInvitation = [aJson[@"acceptInvitationAlways"] boolValue]; }
+    if (aJson[@"autoAcceptGroupInvitation"]) { options.autoAcceptGroupInvitation = [aJson[@"autoAcceptGroupInvitation"] boolValue]; }
+    if (aJson[@"deleteMessagesAsExitGroup"]) { options.deleteMessagesOnLeaveGroup = [aJson[@"deleteMessagesAsExitGroup"] boolValue]; }
+    if (aJson[@"deleteMessagesAsExitChatRoom"]) { options.deleteMessagesOnLeaveChatroom = [aJson[@"deleteMessagesAsExitChatRoom"] boolValue]; }
+    if (aJson[@"isAutoDownload"]) { options.autoDownloadThumbnail = [aJson[@"isAutoDownload"] boolValue]; }
+    if (aJson[@"isChatRoomOwnerLeaveAllowed"]) { options.canChatroomOwnerLeave = [aJson[@"isChatRoomOwnerLeaveAllowed"] boolValue]; }
+    if (aJson[@"serverTransfer"]) { options.isAutoTransferMessageAttachments = [aJson[@"serverTransfer"] boolValue]; }
+    if (aJson[@"usingHttpsOnly"]) { options.usingHttpsOnly = [aJson[@"usingHttpsOnly"] boolValue]; }
+    (aJson[@"pushConfig"] && aJson[@"pushConfig"][@"deviceId"] && [aJson[@"pushConfig"][@"deviceId"] length] > 0) ? (options.apnsCertName = aJson[@"pushConfig"][@"deviceId"]) : nil;
+    if (aJson[@"enableDNSConfig"]) { options.enableDnsConfig = [aJson[@"enableDNSConfig"] boolValue]; }
+    if (aJson[@"imPort"]) { options.chatPort = [aJson[@"imPort"] intValue]; }
+    (aJson[@"imServer"] && [aJson[@"imServer"] length] > 0) ? (options.chatServer = aJson[@"imServer"]) : nil;
+    (aJson[@"restServer"] && [aJson[@"restServer"] length] > 0) ? (options.restServer = aJson[@"restServer"]) : nil;
+    (aJson[@"dnsUrl"] && [aJson[@"dnsUrl"] length] > 0) ? (options.dnsURL = aJson[@"dnsUrl"]) : nil;
+    if (aJson[@"areaCode"]) { options.area = [ExtSdkConvertHelper AreaCodeFromInt:[aJson[@"areaCode"] intValue]]; }
+    if (aJson[@"enableEmptyConversation"]) { options.loadEmptyConversations = [aJson[@"enableEmptyConversation"] boolValue]; }
+    (aJson[@"customDeviceName"] && [aJson[@"customDeviceName"] length] > 0) ? (options.customDeviceName = aJson[@"customDeviceName"]) : nil;
     if (aJson[@"customOSType"]) {
         options.customOSType = [aJson[@"customOSType"] intValue];
     }
 
-    NSDictionary *pushConfig = aJson[@"pushConfig"];
-    if (pushConfig != nil) {
-        options.apnsCertName = pushConfig[@"deviceId"];
-    }
+    if (aJson[@"enableTLS"]) { options.enableTLSConnection = [aJson[@"enableTLS"] boolValue]; }
+    if (aJson[@"useReplacedMessageContents"]) { options.useReplacedMessageContents = [aJson[@"useReplacedMessageContents"] boolValue]; }
+    if (aJson[@"messagesReceiveCallbackIncludeSend"]) { options.includeSendMessageInMessageListener = [aJson[@"messagesReceiveCallbackIncludeSend"] boolValue]; }
+    if (aJson[@"regardImportMessagesAsRead"]) { options.regardImportMessagesAsRead = [aJson[@"regardImportMessagesAsRead"] boolValue]; }
 
-    options.enableTLSConnection = [aJson[@"enableTLS"] boolValue];
-    options.useReplacedMessageContents = [aJson[@"useReplacedMessageContents"] boolValue];
-    options.includeSendMessageInMessageListener = [aJson[@"messagesReceiveCallbackIncludeSend"] boolValue];
-    options.regardImportMessagesAsRead = [aJson[@"regardImportMessagesAsRead"] boolValue];
+    (aJson[@"loginExtraInfo"] && [aJson[@"loginExtraInfo"] length] > 0) ? (options.loginExtensionInfo = aJson[@"loginExtraInfo"]) : nil;
+    if (aJson[@"workPathCopiable"]) { options.workPathCopiable = [aJson[@"workPathCopiable"] boolValue]; }
 
-    options.loginExtensionInfo = aJson[@"loginExtraInfo"];
-    options.workPathCopiable = aJson[@"workPathCopiable"];
+    (aJson[@"webSocketServer"] && [aJson[@"webSocketServer"] length] > 0) ? (options.webSocketServer = aJson[@"webSocketServer"]) : nil;
+    if (aJson[@"webSocketPort"]) { options.webSocketPort = [aJson[@"webSocketPort"] intValue]; }
+
+    if (aJson[@"dohVendor"]) { options.dohVendor = [aJson[@"dohVendor"] intValue]; }
 
     return options;
 }
@@ -1329,15 +1362,15 @@
 
 + (EMUserInfo *)fromJsonObject:(NSDictionary *)aJson {
     EMUserInfo *userInfo = EMUserInfo.new;
-    userInfo.userId = aJson[@"userId"];
-    userInfo.nickname = aJson[@"nickName"];
-    userInfo.avatarUrl = aJson[@"avatarUrl"];
-    userInfo.mail = aJson[@"mail"];
-    userInfo.phone = aJson[@"phone"];
-    userInfo.gender = [aJson[@"gender"] integerValue] ?: 0;
-    userInfo.sign = aJson[@"sign"];
-    userInfo.birth = aJson[@"birth"];
-    userInfo.ext = aJson[@"ext"];
+    if (aJson[@"userId"]) { userInfo.userId = aJson[@"userId"]; }
+    if (aJson[@"nickName"]) { userInfo.nickname = aJson[@"nickName"]; }
+    if (aJson[@"avatarUrl"]) { userInfo.avatarUrl = aJson[@"avatarUrl"]; }
+    if (aJson[@"mail"]) { userInfo.mail = aJson[@"mail"]; }
+    if (aJson[@"phone"]) { userInfo.phone = aJson[@"phone"]; }
+    if (aJson[@"gender"]) { userInfo.gender = [aJson[@"gender"] integerValue]; }
+    if (aJson[@"sign"]) { userInfo.sign = aJson[@"sign"]; }
+    if (aJson[@"birth"]) { userInfo.birth = aJson[@"birth"]; }
+    if (aJson[@"ext"]) { userInfo.ext = aJson[@"ext"]; }
     return [userInfo copy];
 }
 
@@ -1451,16 +1484,10 @@
 + (EMSilentModeParam *)fromJsonObject:(NSDictionary *)dict {
     EMSilentModeParamType paramType = [ExtSdkConvertHelper slientModeParamTypeFromInt:[dict[@"paramType"] intValue]];
     EMSilentModeParam *param = [[EMSilentModeParam alloc] initWithParamType:paramType];
-    NSDictionary *dictStartTime = dict[@"startTime"];
-    NSDictionary *dictEndTime = dict[@"endTime"];
-    int duration = [dict[@"duration"] intValue];
-
-    EMPushRemindType remindType = [ExtSdkConvertHelper remindTypeFromInt:[dict[@"remindType"] intValue]];
-
-    param.remindType = remindType;
-    param.silentModeStartTime = [EMSilentModeTime fromJsonObject:dictStartTime];
-    param.silentModeEndTime = [EMSilentModeTime fromJsonObject:dictEndTime];
-    param.silentModeDuration = duration;
+    if (dict[@"remindType"]) { param.remindType = [ExtSdkConvertHelper remindTypeFromInt:[dict[@"remindType"] intValue]]; }
+    if (dict[@"startTime"]) { param.silentModeStartTime = [EMSilentModeTime fromJsonObject:dict[@"startTime"]]; }
+    if (dict[@"endTime"]) { param.silentModeEndTime = [EMSilentModeTime fromJsonObject:dict[@"endTime"]]; }
+    if (dict[@"duration"]) { param.silentModeDuration = [dict[@"duration"] intValue]; }
     return param;
 }
 
@@ -1500,13 +1527,13 @@
         return nil;
     }
     EMFetchServerMessagesOption *options = [[EMFetchServerMessagesOption alloc] init];
-    options.direction = [dict[@"direction"] isEqual:@(0)] ? EMMessageSearchDirectionUp : EMMessageSearchDirectionDown;
-    options.startTime = [dict[@"startTs"] longLongValue];
-    options.endTime = [dict[@"endTs"] longLongValue];
+    if (dict[@"direction"]) { options.direction = [dict[@"direction"] isEqual:@(0)] ? EMMessageSearchDirectionUp : EMMessageSearchDirectionDown; }
+    if (dict[@"startTs"]) { options.startTime = [dict[@"startTs"] longLongValue]; }
+    if (dict[@"endTs"]) { options.endTime = [dict[@"endTs"] longLongValue]; }
     // !!! It has been marked as invalid in the typescript language.
-    options.from = dict[@"from"];
-    options.fromIds = dict[@"senders"];
-    options.isSave = [dict[@"needSave"] boolValue];
+    (dict[@"from"] && [dict[@"from"] length] > 0) ? (options.from = dict[@"from"]) : nil;
+    (dict[@"senders"] && [dict[@"senders"] count] > 0) ? (options.fromIds = dict[@"senders"]) : nil;
+    if (dict[@"needSave"]) { options.isSave = [dict[@"needSave"] boolValue]; }
     NSArray *types = dict[@"msgTypes"];
     NSMutableArray<NSNumber *> *list = [NSMutableArray new];
     if (types) {
@@ -1555,7 +1582,10 @@
 }
 
 + (nonnull EMContact *)fromJsonObject:(nonnull NSDictionary *)dict {
-    EMContact *contact = [[EMContact alloc] initWithUserId:dict[@"userId"] remark:dict[@"remark"]];
+    NSString *userId = dict[@"userId"];
+    NSString *remark = dict[@"remark"];
+    remark = (remark && remark.length > 0) ? remark : nil;
+    EMContact *contact = [[EMContact alloc] initWithUserId:userId remark:remark];
     return contact;
 }
 
@@ -1565,8 +1595,8 @@
 
 + (EMConversationFilter *)fromJsonObject:(NSDictionary *)dict {
     EMConversationFilter *filter = [[EMConversationFilter alloc] init];
-    filter.mark = (EMMarkType)[dict[@"mark"] integerValue];
-    filter.pageSize = [dict[@"pageSize"] intValue];
+    if (dict[@"mark"]) { filter.mark = (EMMarkType)[dict[@"mark"] integerValue]; }
+    if (dict[@"pageSize"]) { filter.pageSize = [dict[@"pageSize"] intValue]; }
     return filter;
 }
 
@@ -1591,8 +1621,8 @@
 @implementation EMMessagePinInfo (Json)
 + (EMMessagePinInfo *)fromJsonObject:(NSDictionary *)dict {
     EMMessagePinInfo *info = [[EMMessagePinInfo alloc] init];
-    info.operatorId = dict[@"operatorId"];
-    info.pinTime = [dict[@"pinTime"] integerValue];
+    (dict[@"operatorId"] && [dict[@"operatorId"] length] > 0) ? (info.operatorId = dict[@"operatorId"]) : nil;
+    if (dict[@"pinTime"]) { info.pinTime = [dict[@"pinTime"] integerValue]; }
     return info;
 }
 - (NSDictionary *)toJsonObject {
@@ -1628,4 +1658,16 @@
     return ret;
 }
 
+@end
+
+@implementation EMStreamChunk (Json)
+- (NSDictionary *)toJsonObject {
+  NSMutableDictionary *ret = [NSMutableDictionary dictionary];
+  ret[@"status"] = @([ExtSdkConvertHelper streamChunkStatus:self.status]);
+  ret[@"errorCode"] = @(self.errorCode);
+  ret[@"finishReason"] = @(self.finishReason);
+  ret[@"text"] = self.text;
+  ret[@"customType"] = self.customType;
+  return ret;
+}
 @end

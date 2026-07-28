@@ -38,6 +38,7 @@
 #import <HyphenateChat/EMSilentModeTime.h>
 #import <HyphenateChat/EMTranslateLanguage.h>
 #import <HyphenateChat/EMUserInfo.h>
+#import <HyphenateChat/EMStreamChunk.h>
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -68,6 +69,7 @@ NS_ASSUME_NONNULL_BEGIN
 + (NSString *)searchDirectionToString:(EMMessageSearchDirection)direction;
 + (EMMessageSearchScope)searchScopeFromInt:(int)aType;
 + (int)searchScopeToInt:(EMMessageSearchScope)scope;
++ (int)streamChunkStatus:(EMStreamChunkStatus)status;
 @end
 
 @protocol ExtSdkToJson <NSObject>
@@ -213,6 +215,10 @@ NS_ASSUME_NONNULL_BEGIN
 @end
 
 @interface EMGroupMemberInfo (Json) <ExtSdkToJson>
+- (NSDictionary *)toJsonObject;
+@end
+
+@interface EMStreamChunk (Json) <ExtSdkToJson>
 - (NSDictionary *)toJsonObject;
 @end
 

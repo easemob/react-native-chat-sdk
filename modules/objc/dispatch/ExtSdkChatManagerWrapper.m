@@ -1228,6 +1228,14 @@
     [self onReceive:ExtSdkMethodKeyOnMessagesReceived withParams:msgList];
 }
 
+- (void)onStreamMessagesReceived:(NSArray<EMChatMessage *> * _Nonnull)messages {
+  NSMutableArray *msgList = [NSMutableArray array];
+  for (EMChatMessage *msg in messages) {
+      [msgList addObject:[msg toJsonObject]];
+  }
+  [self onReceive:ExtSdkMethodKeyOnStreamMessagesReceived withParams:msgList];
+}
+
 - (void)cmdMessagesDidReceive:(NSArray *)aCmdMessages {
     NSMutableArray *cmdMsgList = [NSMutableArray array];
     for (EMChatMessage *msg in aCmdMessages) {

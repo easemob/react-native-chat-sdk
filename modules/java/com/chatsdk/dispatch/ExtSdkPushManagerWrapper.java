@@ -44,12 +44,17 @@ public class ExtSdkPushManagerWrapper extends ExtSdkWrapper {
 
     public void updatePushNickname(JSONObject params, String channelName, ExtSdkCallback result) throws JSONException {
         String nickname = params.getString("nickname");
-        try {
-            EMClient.getInstance().pushManager().updatePushNickname(nickname);
-            onSuccess(result, channelName, nickname);
-        } catch (HyphenateException e) {
-            ExtSdkWrapper.onError(result, e, null);
-        }
+        EMClient.getInstance().pushManager().asyncUpdatePushNickname(nickname, new EMCallBack() {
+            @Override
+            public void onSuccess() {
+                ExtSdkWrapper.onSuccess(result, channelName, nickname);
+            }
+
+            @Override
+            public void onError(int code, String error) {
+                ExtSdkWrapper.onError(result, code, error);
+            }
+        });
     }
 
     public void enableOfflinePush(JSONObject params, String channelName, ExtSdkCallback result) throws JSONException {

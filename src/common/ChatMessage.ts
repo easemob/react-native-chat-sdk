@@ -420,17 +420,17 @@ export class ChatMessage {
    */
   hasRead: boolean = false;
   /**
-   * 会话类型，包括单聊，群聊和聊天室。详见 {@link ChatType}。
+   * 消息的聊天类型，详见 {@link ChatMessageChatType}。
    */
-  chatType: ChatMessageChatType = ChatMessageChatType.ChatRoom;
+  chatType: ChatMessageChatType;
   /**
    * 消息方向，详见 {@link ChatMessageDirection}。
    */
   direction: ChatMessageDirection;
   /**
-   * 消息发送状态，详见 {@link ChatMessageStatus}。
+   * 消息状态，详见 {@link ChatMessageStatus}。
    */
-  status: ChatMessageStatus;
+  status: ChatMessageStatus = ChatMessageStatus.CREATE;
   /**
    * 消息的扩展属性。
    */
@@ -700,6 +700,7 @@ export class ChatMessage {
    * - 聊天室则为聊天室 ID。
    * @param filePath 文件路径。
    * @param chatType 会话类型。详见 {@link ChatType}。
+   * @param displayName 文件名称。
    * @params opt 消息扩展参数。
    *  - isChatThread: 是否是子区消息。默认不是子区消息。
    *  - isOnline: 是否为在线时收到的消息。
@@ -712,7 +713,7 @@ export class ChatMessage {
     filePath: string,
     chatType: ChatMessageChatType = ChatMessageChatType.PeerChat,
     opt?: {
-      displayName: string;
+      displayName?: string;
       isChatThread?: boolean;
       fileSize?: number;
       isOnline?: boolean;
@@ -723,7 +724,7 @@ export class ChatMessage {
     return ChatMessage.createSendMessage({
       body: new ChatFileMessageBody({
         localPath: filePath,
-        displayName: opt?.displayName ?? '',
+        displayName: opt?.displayName,
         fileSize: opt?.fileSize,
       }),
       targetId: targetId,
@@ -763,11 +764,11 @@ export class ChatMessage {
     filePath: string,
     chatType: ChatMessageChatType = ChatMessageChatType.PeerChat,
     opt?: {
-      displayName: string;
+      displayName?: string;
       thumbnailLocalPath?: string;
       sendOriginalImage?: boolean;
-      width: number;
-      height: number;
+      width?: number;
+      height?: number;
       isChatThread?: boolean;
       fileSize?: number;
       isOnline?: boolean;
@@ -779,9 +780,9 @@ export class ChatMessage {
     return ChatMessage.createSendMessage({
       body: new ChatImageMessageBody({
         localPath: filePath,
-        displayName: opt?.displayName ?? filePath,
+        displayName: opt?.displayName,
         thumbnailLocalPath: opt?.thumbnailLocalPath,
-        sendOriginalImage: opt?.sendOriginalImage ?? false,
+        sendOriginalImage: opt?.sendOriginalImage,
         width: opt?.width,
         height: opt?.height,
         fileSize: opt?.fileSize,
@@ -824,11 +825,11 @@ export class ChatMessage {
     filePath: string,
     chatType: ChatMessageChatType = ChatMessageChatType.PeerChat,
     opt?: {
-      displayName: string;
-      thumbnailLocalPath: string;
-      duration: number;
-      width: number;
-      height: number;
+      displayName?: string;
+      thumbnailLocalPath?: string;
+      duration?: number;
+      width?: number;
+      height?: number;
       isChatThread?: boolean;
       fileSize?: number;
       isOnline?: boolean;
@@ -839,7 +840,7 @@ export class ChatMessage {
     return ChatMessage.createSendMessage({
       body: new ChatVideoMessageBody({
         localPath: filePath,
-        displayName: opt?.displayName ?? '',
+        displayName: opt?.displayName,
         thumbnailLocalPath: opt?.thumbnailLocalPath,
         duration: opt?.duration,
         width: opt?.width,
@@ -882,7 +883,7 @@ export class ChatMessage {
     chatType: ChatMessageChatType = ChatMessageChatType.PeerChat,
     opt?: {
       displayName?: string;
-      duration: number;
+      duration?: number;
       isChatThread?: boolean;
       fileSize?: number;
       isOnline?: boolean;
@@ -893,7 +894,7 @@ export class ChatMessage {
     return ChatMessage.createSendMessage({
       body: new ChatVoiceMessageBody({
         localPath: filePath,
-        displayName: opt?.displayName ?? '',
+        displayName: opt?.displayName,
         duration: opt?.duration,
         fileSize: opt?.fileSize,
       }),
@@ -974,6 +975,7 @@ export class ChatMessage {
    * @param longitude 经度。
    * @param chatType 会话类型。
    * @params opt 消息扩展参数。
+   *  - address: 地址信息。
    *  - isChatThread: 是否是子区消息。默认不是子区消息。
    *  - isOnline: 是否为在线时收到的消息。
    *  - deliverOnlineOnly: 消息是否只投递给在线用户。
@@ -988,7 +990,7 @@ export class ChatMessage {
     longitude: string,
     chatType: ChatMessageChatType = ChatMessageChatType.PeerChat,
     opt?: {
-      address: string;
+      address?: string;
       isChatThread?: boolean;
       isOnline?: boolean;
       deliverOnlineOnly?: boolean;
@@ -999,7 +1001,7 @@ export class ChatMessage {
       body: new ChatLocationMessageBody({
         latitude: latitude,
         longitude: longitude,
-        address: opt?.address ?? '',
+        address: opt?.address,
       }),
       targetId: targetId,
       chatType: chatType,
@@ -1242,7 +1244,7 @@ export class ChatLocationMessageBody extends ChatMessageBody {
    */
   longitude: string;
   constructor(params: {
-    address: string;
+    address?: string;
     latitude: string;
     longitude: string;
     lastModifyOperatorId?: string;
@@ -1254,9 +1256,15 @@ export class ChatLocationMessageBody extends ChatMessageBody {
       lastModifyTime: params.lastModifyTime,
       modifyCount: params.modifyCount,
     });
-    this.address = params.address;
-    this.latitude = params.latitude;
-    this.longitude = params.longitude;
+    this.address = params.address ?? '';
+    this.latitude =
+      typeof params.latitude === 'number'
+        ? String(params.latitude)
+        : params.latitude;
+    this.longitude =
+      typeof params.longitude === 'number'
+        ? String(params.longitude)
+        : params.longitude;
   }
 }
 
@@ -1380,7 +1388,7 @@ export class ChatImageMessageBody extends _ChatFileMessageBody {
     remotePath?: string;
     fileStatus?: number;
     fileSize?: number;
-    displayName: string;
+    displayName?: string;
     sendOriginalImage?: boolean;
     thumbnailLocalPath?: string;
     thumbnailRemotePath?: string;
@@ -1456,7 +1464,7 @@ export class ChatVideoMessageBody extends _ChatFileMessageBody {
     remotePath?: string;
     fileStatus?: number;
     fileSize?: number;
-    displayName: string;
+    displayName?: string;
     duration?: number;
     thumbnailLocalPath?: string;
     thumbnailRemotePath?: string;
@@ -1506,7 +1514,7 @@ export class ChatVoiceMessageBody extends _ChatFileMessageBody {
     remotePath?: string;
     fileStatus?: number;
     fileSize?: number;
-    displayName: string;
+    displayName?: string;
     duration?: number;
     lastModifyOperatorId?: string;
     lastModifyTime?: number;

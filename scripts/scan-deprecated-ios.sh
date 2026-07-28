@@ -1,0 +1,58 @@
+#!/bin/bash
+set -e
+
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+PROJECT_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
+IOS_EXAMPLE_DIR="$PROJECT_ROOT/example/ios"
+
+# Check dependencies
+if ! command -v xcodebuild &> /dev/null; then
+    echo "Error: xcodebuild command not found"
+    exit 1
+fi
+
+if [ ! -d "$IOS_EXAMPLE_DIR/ChatSdkExample.xcworkspace" ]; then
+    echo "Error: ChatSdkExample.xcworkspace not found at $IOS_EXAMPLE_DIR"
+    exit 1
+fi
+
+if ! command -v jq &> /dev/null; then
+    echo "Error: jq command not found (required for JSON generation)"
+    exit 1
+fi
+
+echo "iOS deprecated API scan starting..." >&2
+TEMP_OUTPUT=$(mktemp)
+TEMP_JSON=$(mktemp)
+trap 'rm -f "$TEMP_OUTPUT" "$TEMP_JSON"' EXIT
+
+# Run xcodebuild (clean first to force re-compilation so deprecation warnings are emitted)
+# Note: || true is intentional - we want to parse the output even if the build fails
+# Note: -Wdeprecated-declarations is a clang flag, not an xcodebuild option. It must be
+# passed via OTHER_CFLAGS build setting. Clang emits deprecation warnings by default.
+# Build output goes to stderr so stdout only contains the final JSON.
+(cd "$IOS_EXAMPLE_DIR" && xcodebuild -workspace ChatSdkExample.xcworkspace -scheme ChatSdkExample -sdk iphonesimulator -configuration Debug clean build OTHER_CFLAGS='$(inherited) -Wdeprecated-declarations' 2>&1 | tee "$TEMP_OUTPUT" >&2) || true
+
+# Parse warnings and filter for project code
+# Build JSON array using jq for proper escaping
+# Note: Regex matches absolute paths containing modules/objc/ or ios/ to filter for project code
+while IFS= read -r line; do
+    if [[ $line =~ (.*(modules/objc/|/ios/)[^:]+\.[mh]):([0-9]+):[0-9]+:\ warning:\ \'([^\']+)\'\ is\ deprecated:\ (.*)\ \[-Wdeprecated-declarations\] ]]; then
+        file="${BASH_REMATCH[1]}"
+        line_num="${BASH_REMATCH[3]}"
+        api="${BASH_REMATCH[4]}"
+        message="${BASH_REMATCH[5]}"
+        # Skip example app's iOS files (Pods/, node_modules/) - we only want SDK code
+        if [[ $file == *"/Pods/"* || $file == *"/node_modules/"* ]]; then
+            continue
+        fi
+        jq -n --arg "file" "$file" --argjson "line" "$line_num" --arg "api" "$api" --arg "message" "$message" '{"file": $file, "line": $line, "api": $api, "message": $message}' >> "$TEMP_JSON"
+    fi
+done < "$TEMP_OUTPUT"
+
+if [ ! -s "$TEMP_JSON" ]; then
+    echo "[]"
+else
+    # Deduplicate by file+line+api combination
+    jq -s 'unique_by([.file, .line, .api])' "$TEMP_JSON"
+fi

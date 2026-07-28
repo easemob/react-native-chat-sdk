@@ -38,7 +38,9 @@ ChatSDK 是一个高度可靠的全球交流平台，您的用户可以在其中
 | {@link ChatClient.kickDevice kickDevice} | 将特定账号登录的指定设备下线。 |
 | {@link ChatClient.kickAllDevices kickAllDevices} | 将指定账号登录的所有设备都踢下线。 |
 | {@link ChatClient.updatePushConfig updatePushConfig} | 更新推送设置。 |
-| {@link ChatClient.addConnectionListener addConnectionListener} | 设置连接状态监听器。 |
+| {@link ChatClient.getRTCTokenInfoWithChannelName getRTCTokenInfoWithChannelName} | 根据频道名称（channelName）获取与 Agora Chat 用户 ID 匹配的声网 RTC token、token 过期时间和 RTC UID。 |
+| {@link ChatClient.getUserIdsWithRTCUids getUserIdsWithRTCUids} | 获取与声网 RTC UID 匹配的 Agora Chat 用户 ID。 |
+| {@link ChatClient.addConnectionListener addConnectionListener} | 添加连接状态监听器。 |
 | {@link ChatClient.removeConnectionListener removeConnectionListener} | 移除连接状态监听器。 |
 | {@link ChatClient.removeAllConnectionListener removeAllConnectionListener} | 移除所有连接状态监听器。 |
 | {@link ChatClient.addMultiDeviceListener addMultiDeviceListener} | 添加多设备监听器。 |
@@ -192,6 +194,7 @@ ChatSDK 是一个高度可靠的全球交流平台，您的用户可以在其中
 | Event | Description |
 | :----- | :---------- |
 | {@link ChatMessageEventListener.onMessagesReceived onMessagesReceived} | 收到消息回调。 |
+| {@link ChatMessageEventListener.onStreamMessagesReceived onStreamMessagesReceived} | 收到流式消息回调。 |
 | {@link ChatMessageEventListener.onCmdMessagesReceived onCmdMessagesReceived} | 收到命令消息回调。 |
 | {@link ChatMessageEventListener.onMessagesRead onMessagesRead} | 收到单聊消息已读回执的回调。 |
 | {@link ChatMessageEventListener.onGroupMessageRead onGroupMessageRead} | 收到群组消息的已读回执的回调。 |
@@ -358,7 +361,8 @@ ChatSDK 是一个高度可靠的全球交流平台，您的用户可以在其中
 | {@link ChatRoomManager.fetchChatRoomAnnouncement fetchChatRoomAnnouncement} | 从服务器获取聊天室公告内容。 |
 | {@link ChatRoomManager.fetchChatRoomAllowListFromServer fetchChatRoomAllowListFromServer} | 从服务器获取白名单列表。 |
 | {@link ChatRoomManager.isMemberInChatRoomAllowList isMemberInChatRoomAllowList} | 查询指定成员是否在聊天室白名单中。 |
-| {@link ChatRoomManager.addMembersToChatRoomAllowList addMembersToChatRoomAllowList} | 将成员加入聊天室白名单。 |
+| {@link ChatRoomManager.isMemberInChatRoomMuteList isMemberInChatRoomMuteList} | 查询指定成员是否在聊天室禁言名单中。 |
+| {@link ChatRoomManager.addMembersToChatRoomAllowList addMembersToChatRoomAllowList} | 将成员添加到聊天室白名单中。 |
 | {@link ChatRoomManager.removeMembersFromChatRoomAllowList removeMembersFromChatRoomAllowList} | 将聊天室成员从白名单中移除。 |
 | {@link ChatRoomManager.muteAllChatRoomMembers muteAllChatRoomMembers} | 禁言聊天室所有成员。 |
 | {@link ChatRoomManager.unMuteAllChatRoomMembers unMuteAllChatRoomMembers} | 解除聊天室全员禁言。 |

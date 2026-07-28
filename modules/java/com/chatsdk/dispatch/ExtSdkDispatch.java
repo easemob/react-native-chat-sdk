@@ -839,16 +839,16 @@ public class ExtSdkDispatch implements ExtSdkApi {
                 ExtSdkPushManagerWrapper.getInstance().fetchPreferredNotificationLanguage(jsonParams, methodType, callback);
                 break;
 
-            case ExtSdkMethodType.MJfetchChatRoomAttributes:
+            case ExtSdkMethodType.fetchChatRoomAttributes:
                 ExtSdkChatRoomManagerWrapper.getInstance().fetchChatRoomAttributes(jsonParams, methodType, callback);
                 break;
-            case ExtSdkMethodType.MJfetchChatRoomAllAttributes:
+            case ExtSdkMethodType.fetchChatRoomAllAttributes:
                 ExtSdkChatRoomManagerWrapper.getInstance().fetchChatRoomAllAttributes(jsonParams, methodType, callback);
                 break;
-            case ExtSdkMethodType.MJsetChatRoomAttributes:
+            case ExtSdkMethodType.setChatRoomAttributes:
                 ExtSdkChatRoomManagerWrapper.getInstance().setChatRoomAttributes(jsonParams, methodType, callback);
                 break;
-            case ExtSdkMethodType.MJremoveChatRoomAttributes:
+            case ExtSdkMethodType.removeChatRoomAttributes:
                 ExtSdkChatRoomManagerWrapper.getInstance().removeChatRoomAttributes(jsonParams, methodType, callback);
                 break;
             case ExtSdkMethodType.getConversationsFromServerWithCursor:
@@ -950,6 +950,18 @@ public class ExtSdkDispatch implements ExtSdkApi {
                 break;
             case ExtSdkMethodType.modifyMsgBody:
                 ExtSdkChatManagerWrapper.getInstance().modifyMsgBody(jsonParams, methodType, callback);
+                break;
+
+            case ExtSdkMethodType.isMemberInChatRoomMuteListFromServer:
+                ExtSdkChatRoomManagerWrapper.getInstance().isMemberInChatRoomMuteListFromServer(jsonParams, methodType, callback);
+                break;
+
+            case ExtSdkMethodType.getRTCTokenInfoWithChannelName:
+                ExtSdkClientWrapper.getInstance().getRTCTokenInfoWithChannelName(jsonParams, methodType, callback);
+                break;
+
+            case ExtSdkMethodType.getUserIdsWithRTCUids:
+                ExtSdkClientWrapper.getInstance().getUserIdsWithRTCUids(jsonParams, methodType, callback);
                 break;
 
             default:

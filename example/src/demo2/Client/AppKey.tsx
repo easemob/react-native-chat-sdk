@@ -5,6 +5,7 @@ import { ChatClient, ChatOptions, ChatPushConfig } from 'react-native-chat-sdk';
 import { datasheet } from '../__default__/Datasheet';
 import { styleValues } from '../__internal__/Css';
 import { Button } from '../__internal__/Button';
+import { restServers, webSocketServers } from '../../env';
 // import messaging from '@react-native-firebase/messaging';
 
 interface State {
@@ -12,16 +13,37 @@ interface State {
   appKey: string;
   appId: string;
   useAppId: boolean;
-  enablePush: string;
-  enableTLS: string;
-  messagesReceiveCallbackIncludeSend: string;
-  regardImportMessagesAsRead: string;
-  useReplacedMessageContents: string;
+  enablePush: boolean;
+  messagesReceiveCallbackIncludeSend: boolean;
+  regardImportMessagesAsRead: boolean;
+  useReplacedMessageContents: boolean;
+  webSocketServer?: string;
+  webSocketPort?: number;
+  enableDNSConfig?: boolean;
+  restServer?: string;
+  enableTLS?: boolean;
+  dohVendor?: number;
+  imServer?: string;
+  imPort?: number;
+  dnsUrl?: string;
 }
 
 let gAppkey = datasheet.AppKey[1] ?? '';
 let gAppId = datasheet.AppId[1] ?? '';
 let gUseAppId = false;
+let gWebSocketServer = webSocketServers[0] ?? undefined;
+let gWebSocketPort = 80;
+let gEnableDNSConfig = true;
+let gRestServer = restServers[0] ?? undefined;
+let gEnableTLS = false;
+let gEnablePush = false;
+let gUseReplacedMessageContents = false;
+let gMessagesReceiveCallbackIncludeSend = false;
+let gRegardImportMessagesAsRead = false;
+let gDohVendor = 1;
+let gImServer: string = '';
+let gImPort: number = 0;
+let gDnsUrl: string = '';
 
 export class AppKeyScreen extends Component<{ navigation: any }, State, any> {
   public static route = 'AppKeyScreen';
@@ -36,63 +58,21 @@ export class AppKeyScreen extends Component<{ navigation: any }, State, any> {
       appKey: gAppkey,
       appId: gAppId,
       useAppId: gUseAppId,
-      enablePush: '0',
-      useReplacedMessageContents: '0',
-      enableTLS: '0',
-      messagesReceiveCallbackIncludeSend: '0',
-      regardImportMessagesAsRead: '0',
+      enablePush: gEnablePush,
+      useReplacedMessageContents: gUseReplacedMessageContents,
+      enableTLS: gEnableTLS,
+      messagesReceiveCallbackIncludeSend: gMessagesReceiveCallbackIncludeSend,
+      regardImportMessagesAsRead: gRegardImportMessagesAsRead,
+      webSocketServer: gWebSocketServer,
+      webSocketPort: gWebSocketPort,
+      enableDNSConfig: gEnableDNSConfig,
+      restServer: gRestServer,
+      dohVendor: gDohVendor,
+      imServer: gImServer,
+      imPort: gImPort,
+      dnsUrl: gDnsUrl,
     };
   }
-
-  // private async requestUserPermission(): Promise<void> {
-  //   const authStatus = await messaging().requestPermission({
-  //     announcement: true,
-  //   });
-  //   const enabled =
-  //     authStatus === messaging.AuthorizationStatus.AUTHORIZED ||
-  //     authStatus === messaging.AuthorizationStatus.PROVISIONAL;
-
-  //   if (enabled) {
-  //     console.log('Authorization status:', authStatus);
-  //   }
-  // }
-
-  // private async checkApplicationPermission(): Promise<void> {
-  //   const authorizationStatus = await messaging().requestPermission();
-
-  //   if (authorizationStatus === messaging.AuthorizationStatus.AUTHORIZED) {
-  //     console.log('User has notification permissions enabled.');
-  //   } else if (
-  //     authorizationStatus === messaging.AuthorizationStatus.PROVISIONAL
-  //   ) {
-  //     console.log('User has provisional notification permissions.');
-  //   } else {
-  //     console.log('User has notification permissions disabled');
-  //   }
-  // }
-
-  // private async requestFcmToken() {
-  //   // https://rnfirebase.io/reference/messaging#getToken
-  //   // await messaging().registerDeviceForRemoteMessages();
-  //   const fcmToken = await messaging().getToken();
-  //   console.log('fcm token: ', fcmToken);
-  //   return fcmToken;
-  // }
-
-  // private onListenerNotification(): void {
-  //   console.log('fcm message listener:');
-  //   messaging().onMessage(async (remoteMessage) => {
-  //     const l = 'init: onMessage:' + JSON.stringify(remoteMessage);
-  //     Alert.alert(l);
-  //     console.log(l);
-  //   });
-  //   messaging().setBackgroundMessageHandler(async (remoteMessage) => {
-  //     const l =
-  //       'init: setBackgroundMessageHandler: ' + JSON.stringify(remoteMessage);
-  //     Alert.alert(l);
-  //     console.log(l);
-  //   });
-  // }
 
   private async initSDK(): Promise<void> {
     // from: https://console.firebase.google.com/project/test-push-6b4b6/settings/cloudmessaging/ios:com.easemob.reactnativechatsdk?hl=zh-cn
@@ -101,7 +81,7 @@ export class AppKeyScreen extends Component<{ navigation: any }, State, any> {
     // await this.checkApplicationPermission();
     // let fcmToken: string;
     let pushConfig: any;
-    if (this.state.enablePush === '1') {
+    if (this.state.enablePush) {
       // fcmToken = await this.requestFcmToken();
       pushConfig = new ChatPushConfig({
         deviceId: 'test_device_id',
@@ -119,6 +99,14 @@ export class AppKeyScreen extends Component<{ navigation: any }, State, any> {
       useReplacedMessageContents,
       messagesReceiveCallbackIncludeSend,
       regardImportMessagesAsRead,
+      webSocketPort,
+      webSocketServer,
+      restServer,
+      enableDNSConfig,
+      dohVendor,
+      imServer,
+      imPort,
+      dnsUrl,
     } = this.state;
 
     ChatClient.getInstance()
@@ -132,15 +120,20 @@ export class AppKeyScreen extends Component<{ navigation: any }, State, any> {
               requireAck: false,
               requireDeliveryAck: false,
               autoAcceptGroupInvitation: true,
-              enableTLS: enableTLS === '0' ? false : true,
-              useReplacedMessageContents:
-                useReplacedMessageContents === '0' ? false : true,
-              messagesReceiveCallbackIncludeSend:
-                messagesReceiveCallbackIncludeSend === '0' ? false : true,
-              regardImportMessagesAsRead:
-                regardImportMessagesAsRead === '0' ? false : true,
+              useReplacedMessageContents,
+              messagesReceiveCallbackIncludeSend,
+              regardImportMessagesAsRead,
               pushConfig: pushConfig,
               loginExtraInfo: 'rn-test',
+              webSocketServer,
+              webSocketPort,
+              enableDNSConfig,
+              enableTLS,
+              restServer,
+              dohVendor,
+              imServer,
+              imPort,
+              dnsUrl,
             })
           : ChatOptions.withAppId({
               appId: appId,
@@ -150,15 +143,16 @@ export class AppKeyScreen extends Component<{ navigation: any }, State, any> {
               requireAck: false,
               requireDeliveryAck: false,
               autoAcceptGroupInvitation: true,
-              enableTLS: enableTLS === '0' ? false : true,
-              useReplacedMessageContents:
-                useReplacedMessageContents === '0' ? false : true,
-              messagesReceiveCallbackIncludeSend:
-                messagesReceiveCallbackIncludeSend === '0' ? false : true,
-              regardImportMessagesAsRead:
-                regardImportMessagesAsRead === '0' ? false : true,
+              enableTLS,
+              useReplacedMessageContents,
+              messagesReceiveCallbackIncludeSend,
+              regardImportMessagesAsRead,
               pushConfig: pushConfig,
               loginExtraInfo: 'rn-test',
+              dohVendor,
+              imServer,
+              imPort,
+              dnsUrl,
             })
       )
       .then(() => {
@@ -172,6 +166,27 @@ export class AppKeyScreen extends Component<{ navigation: any }, State, any> {
         } else {
           gAppkey = appKey;
         }
+        gWebSocketServer =
+          ChatClient.getInstance().options?.webSocketServer ?? undefined;
+        gWebSocketPort = ChatClient.getInstance().options?.webSocketPort ?? 80;
+        gEnableDNSConfig =
+          ChatClient.getInstance().options?.enableDNSConfig ?? false;
+        gRestServer = ChatClient.getInstance().options?.restServer ?? undefined;
+        gEnableTLS = ChatClient.getInstance().options?.enableTLS ?? false;
+        gEnablePush = ChatClient.getInstance().options?.pushConfig
+          ? true
+          : false;
+        gUseReplacedMessageContents =
+          ChatClient.getInstance().options?.useReplacedMessageContents ?? false;
+        gMessagesReceiveCallbackIncludeSend =
+          ChatClient.getInstance().options
+            ?.messagesReceiveCallbackIncludeSend ?? false;
+        gRegardImportMessagesAsRead =
+          ChatClient.getInstance().options?.regardImportMessagesAsRead ?? false;
+        gDohVendor = ChatClient.getInstance().options?.dohVendor ?? 0;
+        gImServer = ChatClient.getInstance().options?.imServer ?? '';
+        gImPort = ChatClient.getInstance().options?.imPort ?? 0;
+        gDnsUrl = ChatClient.getInstance().options?.dnsUrl ?? '';
       })
       .catch((reason) => {
         console.error(reason);
@@ -207,6 +222,14 @@ export class AppKeyScreen extends Component<{ navigation: any }, State, any> {
       useReplacedMessageContents,
       messagesReceiveCallbackIncludeSend,
       regardImportMessagesAsRead,
+      restServer,
+      webSocketServer,
+      webSocketPort,
+      enableDNSConfig,
+      dohVendor,
+      imServer,
+      imPort,
+      dnsUrl,
     } = this.state;
     return (
       <ScrollView>
@@ -217,6 +240,7 @@ export class AppKeyScreen extends Component<{ navigation: any }, State, any> {
             </Text>
             <TextInput
               style={styleValues.textInputStyle}
+              autoCapitalize={'none'}
               onChangeText={(text: string) => {
                 if (useAppId) {
                   this.setState({ appId: text });
@@ -232,35 +256,27 @@ export class AppKeyScreen extends Component<{ navigation: any }, State, any> {
             <Text style={styleValues.textStyle}>enablePushConfig: </Text>
             <TextInput
               style={styleValues.textInputStyle}
+              autoCapitalize={'none'}
               onChangeText={(text: string) => {
-                this.setState({ enablePush: text === '1' ? '1' : '0' });
+                this.setState({ enablePush: text !== '0' ? true : false });
               }}
             >
-              {enablePush}
-            </TextInput>
-          </View>
-          <View style={styleValues.containerRow}>
-            <Text style={styleValues.textStyle}>enableTLS: </Text>
-            <TextInput
-              style={styleValues.textInputStyle}
-              onChangeText={(text: string) => {
-                this.setState({ enableTLS: text === '1' ? '1' : '0' });
-              }}
-            >
-              {enableTLS}
+              {enablePush ? '1' : '0'}
             </TextInput>
           </View>
           <View style={styleValues.containerRow}>
             <Text style={styleValues.textStyle}>messagesReceiveCallback: </Text>
             <TextInput
               style={styleValues.textInputStyle}
+              autoCapitalize={'none'}
               onChangeText={(text: string) => {
                 this.setState({
-                  messagesReceiveCallbackIncludeSend: text === '1' ? '1' : '0',
+                  messagesReceiveCallbackIncludeSend:
+                    text !== '0' ? true : false,
                 });
               }}
             >
-              {messagesReceiveCallbackIncludeSend}
+              {messagesReceiveCallbackIncludeSend ? '1' : '0'}
             </TextInput>
           </View>
 
@@ -270,13 +286,14 @@ export class AppKeyScreen extends Component<{ navigation: any }, State, any> {
             </Text>
             <TextInput
               style={styleValues.textInputStyle}
+              autoCapitalize={'none'}
               onChangeText={(text: string) => {
                 this.setState({
-                  regardImportMessagesAsRead: text === '1' ? '1' : '0',
+                  regardImportMessagesAsRead: text !== '0' ? true : false,
                 });
               }}
             >
-              {regardImportMessagesAsRead}
+              {regardImportMessagesAsRead ? '1' : '0'}
             </TextInput>
           </View>
 
@@ -286,13 +303,149 @@ export class AppKeyScreen extends Component<{ navigation: any }, State, any> {
             </Text>
             <TextInput
               style={styleValues.textInputStyle}
+              autoCapitalize={'none'}
               onChangeText={(text: string) => {
                 this.setState({
-                  useReplacedMessageContents: text === '1' ? '1' : '0',
+                  useReplacedMessageContents: text !== '0' ? true : false,
                 });
               }}
             >
-              {useReplacedMessageContents}
+              {useReplacedMessageContents ? '1' : '0'}
+            </TextInput>
+          </View>
+
+          <View style={styleValues.containerRow}>
+            <Text style={styleValues.textStyle}>webSocketServer: </Text>
+            <TextInput
+              style={styleValues.textInputStyle}
+              autoCapitalize={'none'}
+              onChangeText={(text: string) => {
+                this.setState({
+                  webSocketServer: text,
+                });
+              }}
+            >
+              {webSocketServer}
+            </TextInput>
+          </View>
+
+          <View style={styleValues.containerRow}>
+            <Text style={styleValues.textStyle}>webSocketPort: </Text>
+            <TextInput
+              style={styleValues.textInputStyle}
+              autoCapitalize={'none'}
+              onChangeText={(text: string) => {
+                this.setState({
+                  webSocketPort: text === '' ? 0 : Number(text),
+                });
+              }}
+            >
+              {String(webSocketPort)}
+            </TextInput>
+          </View>
+
+          <View style={styleValues.containerRow}>
+            <Text style={styleValues.textStyle}>restServer: </Text>
+            <TextInput
+              style={styleValues.textInputStyle}
+              autoCapitalize={'none'}
+              onChangeText={(text: string) => {
+                this.setState({
+                  restServer: text,
+                });
+              }}
+            >
+              {restServer}
+            </TextInput>
+          </View>
+
+          <View style={styleValues.containerRow}>
+            <Text style={styleValues.textStyle}>enableTLS: </Text>
+            <TextInput
+              style={styleValues.textInputStyle}
+              autoCapitalize={'none'}
+              onChangeText={(text: string) => {
+                this.setState({
+                  enableTLS: text !== '0' ? true : false,
+                });
+              }}
+            >
+              {enableTLS ? '1' : '0'}
+            </TextInput>
+          </View>
+
+          <View style={styleValues.containerRow}>
+            <Text style={styleValues.textStyle}>enableDNSConfig: </Text>
+            <TextInput
+              style={styleValues.textInputStyle}
+              autoCapitalize={'none'}
+              onChangeText={(text: string) => {
+                this.setState({
+                  enableDNSConfig: text !== '0' ? true : false,
+                });
+              }}
+            >
+              {enableDNSConfig ? '1' : '0'}
+            </TextInput>
+          </View>
+
+          <View style={styleValues.containerRow}>
+            <Text style={styleValues.textStyle}>dohVendor: </Text>
+            <TextInput
+              style={styleValues.textInputStyle}
+              autoCapitalize={'none'}
+              onChangeText={(text: string) => {
+                this.setState({
+                  dohVendor: text === '' ? 0 : Number(text),
+                });
+              }}
+            >
+              {String(dohVendor)}
+            </TextInput>
+          </View>
+
+          <View style={styleValues.containerRow}>
+            <Text style={styleValues.textStyle}>imServer: </Text>
+            <TextInput
+              style={styleValues.textInputStyle}
+              autoCapitalize={'none'}
+              onChangeText={(text: string) => {
+                this.setState({
+                  imServer: text,
+                });
+              }}
+            >
+              {imServer}
+            </TextInput>
+          </View>
+
+          <View style={styleValues.containerRow}>
+            <Text style={styleValues.textStyle}>imPort: </Text>
+            <TextInput
+              style={styleValues.textInputStyle}
+              autoCapitalize={'none'}
+              onChangeText={(text: string) => {
+                this.setState({
+                  imPort: text === '' ? 0 : Number(text),
+                });
+              }}
+            >
+              {String(imPort)}
+            </TextInput>
+          </View>
+
+          <View style={styleValues.containerRow}>
+            <Text style={styleValues.textStyle}>dnsUrl: </Text>
+            <TextInput
+              style={styleValues.textInputStyle}
+              autoCapitalize={'none'}
+              onChangeText={(text: string) => {
+                this.setState({
+                  dnsUrl: text,
+                });
+              }}
+            >
+              {dnsUrl}
             </TextInput>
           </View>
 

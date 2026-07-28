@@ -81,6 +81,14 @@ NS_ASSUME_NONNULL_BEGIN
           withMethodType:(NSString *)aChannelName
                   result:(nonnull id<ExtSdkCallbackObjc>)result;
 
+- (void)getRTCTokenInfoWithChannelName:(NSDictionary *)param
+                        withMethodType:(NSString *)aChannelName
+                                result:(nonnull id<ExtSdkCallbackObjc>)result;
+
+- (void)getUserIdsWithRTCUids:(NSDictionary *)param
+               withMethodType:(NSString *)aChannelName
+                       result:(nonnull id<ExtSdkCallbackObjc>)result;
+
 @end
 
 NS_ASSUME_NONNULL_END

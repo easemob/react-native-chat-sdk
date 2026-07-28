@@ -2,6 +2,67 @@ _English | [Chinese](./CHANGELOG.zh.md)_
 
 # Update Log
 
+## 1.15.3
+
+- Fix Android and iOS native input conversion so optional fields are only applied when provided, preserving explicit user input instead of overwriting it with bridge defaults.
+- Align TypeScript message factory and message body constructor optionality with native SDK semantics for file, image, video, voice, and location messages.
+- Correct `ChatPresence.lastTime`, `ChatPresence.expiryTime`, `ChatRoom.memberCount`, and `ChatRoom.maxUsers` types from string to number.
+- Update Android native wrappers to use async SDK APIs, and document Android-specific parameter limitations for `deleteContact.keepConversation` and `addMembers.welcome`.
+- Add native deprecated API scan scripts and Yarn commands for Android and iOS compatibility checks.
+- Add SDK upgrade workflow documentation and compatibility audit notes.
+- Update the project Yarn release from 3.6.1 to 4.14.1.
+
+## 1.15.2
+
+- Dependent native SDKs are upgraded to versions (Android 4.19.3).
+
+## 1.15.1
+
+- Fix iOS build error where Xcode attempts to compile markdown files in the objc module.
+
+## 1.15.0
+
+- Dependent native SDKs are upgraded to versions (iOS 4.19.1 and Android 4.19.2).
+- Supports receiving streaming messages sent by the server.
+- Supports LZ4 protocol compression.
+
+## 1.14.0
+
+- Dependent native SDKs are upgraded to versions (iOS 4.18.1 and Android 4.18.1).
+- Supports secure DNS resolution DoH at the underlying layer, improving connectivity.
+- Supports setting IPv6 format REST addresses for private deployment.
+
+## 1.13.0
+
+- Dependent native SDKs are upgraded to versions (iOS 4.17.1 and Android 4.17.1).
+- Add webSocketServer property in ChatOptions.
+- Add webSocketPort property in ChatOptions.
+- Fix bugs on native platform.
+
+## 1.12.0
+
+- Dependent native SDKs are upgraded to versions (iOS 4.16.2 and Android 4.16.1).
+
+## 1.11.5
+
+- Add 16KB page alignment support for Android 15+ compatibility.
+
+## 1.11.4
+
+- Fix circular dependencies between files.
+
+## 1.11.3
+
+- Fix the missing feature: Whether it is in the muted list of the chat.
+
+## 1.11.2
+
+- Fix the data conversion issue of EMFetchMessageOption on the android platform.
+
+## 1.11.1
+
+- Fix the data conversion issue of session types on the ios platform.
+
 ## 1.11.0
 
 - Dependent native SDKs are upgraded to versions (iOS 4.15.1 and Android 4.15.2).

@@ -14,7 +14,7 @@ Pod::Spec.new do |s|
   s.platforms    = { :ios => "11.0" }
   s.source       = { :git => "https://github.com/easemob/react-native-chat-sdk.git", :tag => "#{s.version}" }
 
-  s.source_files = ['ios/**/*.{h,m,mm}', 'modules/cpp/**/*.{h,cpp,mm}', 'modules/objc/**/*']
+  s.source_files = ['ios/**/*.{h,m,mm}', 'modules/cpp/**/*.{h,cpp,mm}', 'modules/objc/**/*.{h,m,mm}']
   s.private_header_files = ['modules/cpp/**/*.h']
   s.exclude_files = ['modules/cpp/java/**/*', 'modules/cpp/android/**/*', 'modules/objc/flutter/**/*']
 
@@ -41,7 +41,7 @@ Pod::Spec.new do |s|
     ]
   }
 
-  s.dependency 'HyphenateChat','~> 4.15.1'
+  s.dependency 'HyphenateChat','~> 4.19.1'
 
   # 添加本地依赖 AgoraChat.xcframework
   # s.vendored_frameworks = ['lib/ios/AgoraChat.xcframework','lib/ios/HyphenateChat.xcframework', 'lib/ios/aosl.xcframework']

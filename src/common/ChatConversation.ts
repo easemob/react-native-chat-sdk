@@ -1,4 +1,3 @@
-import { ChatClient } from '../ChatClient';
 import { ChatError } from './ChatError';
 import type {
   ChatMessage,
@@ -6,6 +5,7 @@ import type {
   ChatMessageType,
 } from './ChatMessage';
 import { ChatPushRemindType } from './ChatSilentMode';
+import { Factory } from '../__internal__/Factory';
 
 /**
  * 消息搜索方向枚举。
@@ -183,7 +183,7 @@ export class ChatConversation {
    */
   public async name(): Promise<string | undefined> {
     if (this.convType === ChatConversationType.PeerChat) {
-      const ret = await ChatClient.getInstance().userManager.fetchUserInfoById([
+      const ret = await Factory.getChatClient().userManager.fetchUserInfoById([
         this.convId,
       ]);
       if (ret.size > 0) {
@@ -191,7 +191,7 @@ export class ChatConversation {
       }
     } else if (this.convType === ChatConversationType.GroupChat) {
       const ret =
-        await ChatClient.getInstance().groupManager.fetchGroupInfoWithoutMembersFromServer(
+        await Factory.getChatClient().groupManager.fetchGroupInfoWithoutMembersFromServer(
           this.convId
         );
       if (ret) {
@@ -199,7 +199,7 @@ export class ChatConversation {
       }
     } else if (this.convType === ChatConversationType.RoomChat) {
       const ret =
-        await ChatClient.getInstance().roomManager.fetchChatRoomInfoFromServer(
+        await Factory.getChatClient().roomManager.fetchChatRoomInfoFromServer(
           this.convId
         );
       if (ret) {
@@ -222,7 +222,7 @@ export class ChatConversation {
    * @throws 如果有方法调用的异常会在这里抛出，可以看到具体错误原因。参见 {@link ChatError}。
    */
   public async getUnreadCount(): Promise<number> {
-    return ChatClient.getInstance().chatManager.getConversationUnreadCount(
+    return Factory.getChatClient().chatManager.getConversationUnreadCount(
       this.convId,
       this.convType,
       this.isChatThread
@@ -235,7 +235,7 @@ export class ChatConversation {
    * @throws 如果有方法调用的异常会在这里抛出，可以看到具体错误原因。参见 {@link ChatError}。
    */
   public async getMessageCount(): Promise<number> {
-    return ChatClient.getInstance().chatManager.getConversationMessageCount(
+    return Factory.getChatClient().chatManager.getConversationMessageCount(
       this.convId,
       this.convType,
       this.isChatThread
@@ -255,7 +255,7 @@ export class ChatConversation {
     start: number,
     end: number
   ): Promise<number> {
-    return ChatClient.getInstance().chatManager.getMessageCountWithTimestamp({
+    return Factory.getChatClient().chatManager.getMessageCountWithTimestamp({
       start: start,
       end: end,
       convId: this.convId,
@@ -272,7 +272,7 @@ export class ChatConversation {
    * @throws 如果有方法调用的异常会在这里抛出，可以看到具体错误原因。参见 {@link ChatError}。
    */
   public async getLatestMessage(): Promise<ChatMessage | undefined> {
-    return ChatClient.getInstance().chatManager.getLatestMessage(
+    return Factory.getChatClient().chatManager.getLatestMessage(
       this.convId,
       this.convType,
       this.isChatThread
@@ -287,7 +287,7 @@ export class ChatConversation {
    * @throws 如果有方法调用的异常会在这里抛出，可以看到具体错误原因。参见 {@link ChatError}。
    */
   public async getLatestReceivedMessage(): Promise<ChatMessage | undefined> {
-    return ChatClient.getInstance().chatManager.getLatestReceivedMessage(
+    return Factory.getChatClient().chatManager.getLatestReceivedMessage(
       this.convId,
       this.convType,
       this.isChatThread
@@ -304,7 +304,7 @@ export class ChatConversation {
   public async setConversationExtension(ext: {
     [key: string]: string | number;
   }): Promise<void> {
-    await ChatClient.getInstance().chatManager.setConversationExtension(
+    await Factory.getChatClient().chatManager.setConversationExtension(
       this.convId,
       this.convType,
       this.ext,
@@ -321,7 +321,7 @@ export class ChatConversation {
    * @throws 如果有方法调用的异常会在这里抛出，可以看到具体错误原因。参见 {@link ChatError}。
    */
   public async markMessageAsRead(msgId: string): Promise<void> {
-    return ChatClient.getInstance().chatManager.markMessageAsRead(
+    return Factory.getChatClient().chatManager.markMessageAsRead(
       this.convId,
       this.convType,
       msgId,
@@ -335,7 +335,7 @@ export class ChatConversation {
    * @throws 如果有方法调用的异常会在这里抛出，可以看到具体错误原因。参见 {@link ChatError}。
    */
   public async markAllMessagesAsRead(): Promise<void> {
-    return ChatClient.getInstance().chatManager.markAllMessagesAsRead(
+    return Factory.getChatClient().chatManager.markAllMessagesAsRead(
       this.convId,
       this.convType,
       this.isChatThread
@@ -361,7 +361,7 @@ export class ChatConversation {
           'The Message conversation id is not same as conversation id',
       });
     }
-    return ChatClient.getInstance().chatManager.updateConversationMessage(
+    return Factory.getChatClient().chatManager.updateConversationMessage(
       this.convId,
       this.convType,
       msg,
@@ -377,7 +377,7 @@ export class ChatConversation {
    * @throws 如果有方法调用的异常会在这里抛出，可以看到具体错误原因。参见 {@link ChatError}。
    */
   public async deleteMessage(msgId: string): Promise<void> {
-    return ChatClient.getInstance().chatManager.deleteMessage(
+    return Factory.getChatClient().chatManager.deleteMessage(
       this.convId,
       this.convType,
       msgId,
@@ -398,7 +398,7 @@ export class ChatConversation {
     startTs: number;
     endTs: number;
   }): Promise<void> {
-    return ChatClient.getInstance().chatManager.deleteMessagesWithTimestamp(
+    return Factory.getChatClient().chatManager.deleteMessagesWithTimestamp(
       this.convId,
       this.convType,
       params,
@@ -414,7 +414,7 @@ export class ChatConversation {
    * @throws 如果有方法调用的异常会在这里抛出，可以看到具体错误原因。参见 {@link ChatError}。
    */
   public async deleteAllMessages(): Promise<void> {
-    return ChatClient.getInstance().chatManager.deleteConversationAllMessages(
+    return Factory.getChatClient().chatManager.deleteConversationAllMessages(
       this.convId,
       this.convType,
       this.isChatThread
@@ -441,7 +441,7 @@ export class ChatConversation {
     count: number = 20,
     sender?: string
   ): Promise<Array<ChatMessage>> {
-    return ChatClient.getInstance().chatManager.getMessagesWithMsgType(
+    return Factory.getChatClient().chatManager.getMessagesWithMsgType(
       this.convId,
       this.convType,
       msgType,
@@ -480,7 +480,7 @@ export class ChatConversation {
     sender?: string;
     senders?: Array<string>;
   }): Promise<Array<ChatMessage>> {
-    return ChatClient.getInstance().chatManager.getMsgsWithMsgType({
+    return Factory.getChatClient().chatManager.getMsgsWithMsgType({
       ...params,
       convId: this.convId,
       convType: this.convType,
@@ -514,7 +514,7 @@ export class ChatConversation {
     direction: ChatSearchDirection = ChatSearchDirection.UP,
     loadCount: number = 20
   ): Promise<Array<ChatMessage>> {
-    return ChatClient.getInstance().chatManager.getMessages(
+    return Factory.getChatClient().chatManager.getMessages(
       this.convId,
       this.convType,
       startMsgId,
@@ -548,7 +548,7 @@ export class ChatConversation {
     direction?: ChatSearchDirection;
     loadCount?: number;
   }): Promise<Array<ChatMessage>> {
-    return ChatClient.getInstance().chatManager.getMsgs({
+    return Factory.getChatClient().chatManager.getMsgs({
       ...params,
       convId: this.convId,
       convType: this.convType,
@@ -568,7 +568,7 @@ export class ChatConversation {
   public async getMessagesWithIds(params: {
     msgIds: Array<string>;
   }): Promise<Array<ChatMessage>> {
-    return ChatClient.getInstance().chatManager.getMessagesWithIds({
+    return Factory.getChatClient().chatManager.getMessagesWithIds({
       ...params,
       convId: this.convId,
       convType: this.convType,
@@ -599,7 +599,7 @@ export class ChatConversation {
     count: number = 20,
     sender?: string
   ): Promise<Array<ChatMessage>> {
-    return ChatClient.getInstance().chatManager.getMessagesWithKeyword(
+    return Factory.getChatClient().chatManager.getMessagesWithKeyword(
       this.convId,
       this.convType,
       keywords,
@@ -642,7 +642,7 @@ export class ChatConversation {
     senders?: Array<string>;
     searchScope?: ChatMessageSearchScope;
   }): Promise<Array<ChatMessage>> {
-    return ChatClient.getInstance().chatManager.getConvMsgsWithKeyword({
+    return Factory.getChatClient().chatManager.getConvMsgsWithKeyword({
       ...params,
       convId: this.convId,
       convType: this.convType,
@@ -671,7 +671,7 @@ export class ChatConversation {
     direction: ChatSearchDirection = ChatSearchDirection.UP,
     count: number = 20
   ): Promise<Array<ChatMessage>> {
-    return ChatClient.getInstance().chatManager.getMessageWithTimestamp(
+    return Factory.getChatClient().chatManager.getMessageWithTimestamp(
       this.convId,
       this.convType,
       startTime,
@@ -705,7 +705,7 @@ export class ChatConversation {
     direction?: ChatSearchDirection;
     count?: number;
   }): Promise<Array<ChatMessage>> {
-    return ChatClient.getInstance().chatManager.getMsgWithTimestamp({
+    return Factory.getChatClient().chatManager.getMsgWithTimestamp({
       ...params,
       convId: this.convId,
       convType: this.convType,
@@ -723,7 +723,7 @@ export class ChatConversation {
   public async removeMessagesFromServerWithMsgIds(
     msgIds: string[]
   ): Promise<void> {
-    return ChatClient.getInstance().chatManager.removeMessagesFromServerWithMsgIds(
+    return Factory.getChatClient().chatManager.removeMessagesFromServerWithMsgIds(
       this.convId,
       this.convType,
       msgIds,
@@ -741,7 +741,7 @@ export class ChatConversation {
   public async removeMessagesFromServerWithTimestamp(
     timestamp: number
   ): Promise<void> {
-    return ChatClient.getInstance().chatManager.removeMessagesFromServerWithTimestamp(
+    return Factory.getChatClient().chatManager.removeMessagesFromServerWithTimestamp(
       this.convId,
       this.convType,
       timestamp,
@@ -757,7 +757,7 @@ export class ChatConversation {
    * @throws 异常的描述。 请参阅{@link ChatError}。
    */
   public async getPinnedMessages(): Promise<ChatMessage[]> {
-    return ChatClient.getInstance().chatManager.getPinnedMessages(
+    return Factory.getChatClient().chatManager.getPinnedMessages(
       this.convId,
       this.convType,
       this.isChatThread
@@ -772,7 +772,7 @@ export class ChatConversation {
    * @throws 异常的描述。 请参阅{@link ChatError}。
    */
   public async fetchPinnedMessages(): Promise<ChatMessage[]> {
-    return ChatClient.getInstance().chatManager.fetchPinnedMessages(
+    return Factory.getChatClient().chatManager.fetchPinnedMessages(
       this.convId,
       this.convType,
       this.isChatThread
@@ -800,7 +800,7 @@ export class ChatConversation {
     from?: string;
     direction?: ChatSearchDirection;
   }): Promise<ChatMessage[]> {
-    return ChatClient.getInstance().chatManager.searchMessagesInConversation({
+    return Factory.getChatClient().chatManager.searchMessagesInConversation({
       ...params,
       convId: this.convId,
       convType: this.convType,
@@ -818,7 +818,7 @@ export class ChatConversation {
   public async removeMessagesWithTimestamp(params: {
     timestamp: number;
   }): Promise<void> {
-    return ChatClient.getInstance().chatManager.removeMessagesWithTimestamp({
+    return Factory.getChatClient().chatManager.removeMessagesWithTimestamp({
       ...params,
       convId: this.convId,
       convType: this.convType,

@@ -2,6 +2,67 @@ _Chinese | [English](./CHANGELOG.md)_
 
 # Update Log
 
+## 1.15.3
+
+- 修复 Android 和 iOS 原生输入转换问题，仅在提供可选字段时才应用对应值，避免桥接层默认值覆盖用户显式输入。
+- 对齐 TypeScript 消息工厂方法和消息体构造函数的可选参数语义，使文件、图片、视频、语音和位置消息与原生 SDK 行为保持一致。
+- 修正 `ChatPresence.lastTime`、`ChatPresence.expiryTime`、`ChatRoom.memberCount` 和 `ChatRoom.maxUsers` 的类型，由 string 调整为 number。
+- 更新 Android 原生 wrapper，改用 SDK 异步接口，并补充 `deleteContact.keepConversation` 和 `addMembers.welcome` 的 Android 平台参数限制说明。
+- 新增 Android 和 iOS 原生废弃 API 扫描脚本及 Yarn 命令，用于兼容性检查。
+- 新增 SDK 升级流程文档和兼容性审计说明。
+- 更新项目 Yarn 版本，由 3.6.1 升级到 4.14.1。
+
+## 1.15.2
+
+- 依赖的原生 SDK 升级到版本（`Android` 4.19.3）。
+
+## 1.15.1
+
+- 修复 iOS 编译时 Xcode 尝试编译 objc 模块中的 markdown 文件导致的错误。
+
+## 1.15.0
+
+- 依赖的原生 SDK 升级到版本（`iOS` 4.19.1 和`Android` 4.19.2）。
+- 支持 接收服务端发送的流式消息。
+- 支持 LZ4 协议压缩。
+
+## 1.14.0
+
+- 依赖的原生 SDK 升级到版本（`iOS` 4.18.1 和`Android` 4.18.1）。
+- 底层支持安全 DNS 解析 DoH，提高连通性。
+- 支持私有部署时设置 IPv6 格式的 REST 地址。
+
+## 1.13.0
+
+- 依赖的原生 SDK 升级到版本（`iOS` 4.17.1 和`Android` 4.17.1）。
+- 在 ChatOptions 中新增 webSocketServer 属性。
+- 在 ChatOptions 中新增 webSocketPort 属性。
+- 修复原生平台上的 bug。
+
+## 1.12.0
+
+- 依赖的原生 SDK 升级到版本（`iOS` 4.16.2 和`Android` 4.16.1）。
+
+## 1.11.5
+
+- 新增对 Android 15+ 兼容性的 16KB 页面对齐支持。
+
+## 1.11.4
+
+- 修复文件之间循环引用问题。
+
+## 1.11.3
+
+- 修复缺失的功能：是否在聊天的禁言列表。
+
+## 1.11.2
+
+- 修复 android 平台 搜索历史消息的数据 转换问题。
+
+## 1.11.1
+
+- 修复 ios 平台 会话类型的数据 转换问题。
+
 ## 1.11.0
 
 - 依赖的原生 SDK 升级到版本（`iOS` 4.15.1 和`Android` 4.15.2）。

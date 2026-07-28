@@ -14,16 +14,19 @@ import com.chatsdk.common.ExtSdkThreadUtil;
 import com.hyphenate.EMCallBack;
 import com.hyphenate.EMConnectionListener;
 import com.hyphenate.EMMultiDeviceListener;
+import com.hyphenate.EMValueCallBack;
 import com.hyphenate.chat.EMClient;
 import com.hyphenate.chat.EMConversation;
 import com.hyphenate.chat.EMDeviceInfo;
 import com.hyphenate.chat.EMLoginExtensionInfo;
 import com.hyphenate.chat.EMOptions;
+import com.hyphenate.chat.EMRTCTokenInfo;
 import com.hyphenate.exceptions.HyphenateException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -311,6 +314,53 @@ public class ExtSdkClientWrapper extends ExtSdkWrapper {
             @Override
             public void onError(int code, String error) {
                 ExtSdkWrapper.onError(result, code, error);
+            }
+        });
+    }
+
+    public void getRTCTokenInfoWithChannelName(JSONObject param, String channelName, ExtSdkCallback result)
+        throws JSONException {
+        String c = param.getString("channelName");
+        EMClient.getInstance().asyncGetRTCTokenInfoWithChannelName(c, new EMValueCallBack<EMRTCTokenInfo>() {
+            @Override
+            public void onSuccess(EMRTCTokenInfo emrtcTokenInfo) {
+                Map<String, Object> data = new HashMap<>();
+                data.put("rtcToken", emrtcTokenInfo.getRtcToken());
+                data.put("expireTimeStamp", emrtcTokenInfo.getExpireTimeStamp());
+                data.put("uid", emrtcTokenInfo.getUid());
+                ExtSdkWrapper.onSuccess(result, channelName, data);
+            }
+
+            @Override
+            public void onError(int i, String s) {
+                ExtSdkWrapper.onError(result, i, s);
+            }
+        });
+    }
+
+    public void getUserIdsWithRTCUids(JSONObject param, String channelName, ExtSdkCallback result)
+        throws JSONException {
+        JSONArray idsarray = param.getJSONArray("rtcUids");
+        List<Integer> ids = new ArrayList<>();
+        for (int i = 0; i < idsarray.length(); i++) {
+            ids.add(idsarray.getInt(i));
+        }
+
+        EMClient.getInstance().asyncGetUserIdsWithRTCUids(ids, new EMValueCallBack<Map<Integer, String>>() {
+            @Override
+            public void onSuccess(Map<Integer, String> integerStringMap) {
+              HashMap<String, String> list = new HashMap<String, String>();
+              for (Map.Entry<Integer, String> entry : integerStringMap.entrySet()) {
+                Integer key = entry.getKey();
+                String value = entry.getValue();
+                list.put(String.valueOf(key), value);
+              }
+                ExtSdkWrapper.onSuccess(result, channelName, list);
+            }
+
+            @Override
+            public void onError(int i, String s) {
+                ExtSdkWrapper.onError(result, i, s);
             }
         });
     }

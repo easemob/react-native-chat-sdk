@@ -34,3 +34,11 @@ target_include_directories(
   PRIVATE ${EXTSDK_SOURCE_DIR}/core)
 
 target_link_libraries(ext_sdk ${log-lib})
+
+# Add 16KB page alignment support for Android 15+ compatibility
+if(ANDROID)
+  set_target_properties(ext_sdk PROPERTIES
+    LINK_FLAGS "-Wl,-z,max-page-size=16384"
+  )
+endif()
+

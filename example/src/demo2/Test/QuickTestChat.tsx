@@ -78,6 +78,12 @@ export class QuickTestScreenChat extends QuickTestScreenBase<
         constructor(parent: any) {
           this.that = parent as QuickTestScreenChat;
         }
+        onStreamMessagesReceived(messages: Array<ChatMessage>): void {
+          console.log(
+            `${QuickTestScreenChat.TAG}: onStreamMessagesReceived: `,
+            messages
+          );
+        }
         onMessageReactionDidChange(
           list: Array<ChatMessageReactionEvent>
         ): void {

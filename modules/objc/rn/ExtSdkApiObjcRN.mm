@@ -292,10 +292,10 @@ RCT_EXPORT_METHOD(multiply : (double)a b : (double)b resolve : (RCTPromiseResolv
         ExtSdkMethodKeyMuteAllChatRoomMembers,
         ExtSdkMethodKeyUnMuteAllChatRoomMembers,
 
-        MKfetchChatRoomAttributes,
-        MKfetchChatRoomAllAttributes,
-        MKsetChatRoomAttributes,
-        MKremoveChatRoomAttributes,
+        ExtSdkMethodKeyfetchChatRoomAttributes,
+        ExtSdkMethodKeyfetchChatRoomAllAttributes,
+        ExtSdkMethodKeysetChatRoomAttributes,
+        ExtSdkMethodKeyremoveChatRoomAttributes,
 
         ExtSdkMethodKeyChatroomChanged,
 
@@ -369,15 +369,15 @@ RCT_EXPORT_METHOD(multiply : (double)a b : (double)b resolve : (RCTPromiseResolv
         ExtSdkMethodKeyGetNoPushUsers,
         ExtSdkMethodKeyUpdatePushConfig,
 
-        ExtSdkReportPushAction,
-        ExtSdkSetConversationSilentMode,
-        ExtSdkRemoveConversationSilentMode,
-        ExtSdkFetchConversationSilentMode,
-        ExtSdkSetSilentModeForAll,
-        ExtSdkFetchSilentModeForAll,
-        ExtSdkFetchSilentModeForConversations,
-        ExtSdkSetPreferredNotificationLanguage,
-        ExtSdkFetchPreferredNotificationLanguage,
+        ExtSdkMethodKeyReportPushAction,
+        ExtSdkMethodKeySetConversationSilentMode,
+        ExtSdkMethodKeyRemoveConversationSilentMode,
+        ExtSdkMethodKeyFetchConversationSilentMode,
+        ExtSdkMethodKeySetSilentModeForAll,
+        ExtSdkMethodKeyFetchSilentModeForAll,
+        ExtSdkMethodKeyFetchSilentModeForConversations,
+        ExtSdkMethodKeySetPreferredNotificationLanguage,
+        ExtSdkMethodKeyFetchPreferredNotificationLanguage,
 
         /// EMUserInfoManagerWrapper
         ExtSdkMethodKeyUpdateOwnUserInfo,
@@ -428,8 +428,8 @@ RCT_EXPORT_METHOD(multiply : (double)a b : (double)b resolve : (RCTPromiseResolv
         ExtSdkMethodKeyModifyMessage,
         ExtSdkMethodKeyDownloadAndParseCombineMessage,
         ExtSdkMethodKeyOnMessageContentChanged,
-        ExtSdkSetPushTemplate,
-        ExtSdkGetPushTemplate,
+        ExtSdkMethodKeySetPushTemplate,
+        ExtSdkMethodKeyGetPushTemplate,
         ExtSdkMethodKeyOnMultiDeviceEventContact,
         ExtSdkMethodKeyOnMultiDeviceEventGroup,
         ExtSdkMethodKeyOnMultiDeviceEventThread,
@@ -471,6 +471,13 @@ RCT_EXPORT_METHOD(multiply : (double)a b : (double)b resolve : (RCTPromiseResolv
         ExtSdkMethodKeygetMessagesWithIds,
         ExtSdkMethodKeygetConvsMsgsWithKeyword,
         ExtSdkMethodKeymodifyMsgBody,
+
+        ExtSdkMethodKeyIsMemberInChatRoomMuteListFromServer,
+
+        ExtSdkMethodKeygetRTCTokenInfoWithChannelName,
+        ExtSdkMethodKeygetUserIdsWithRTCUids,
+
+        ExtSdkMethodKeyOnStreamMessagesReceived,
     ];
     //    NSLog(@"%@: supportedEvents: %@", TAG, ret);
     return ret;

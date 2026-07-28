@@ -5,8 +5,15 @@ pre-commit:
       glob: "*.{js,ts,jsx,tsx}"
       run: npx eslint {staged_files}
     types:
-      glob: "*.{js,ts, jsx, tsx}"
+      glob: "*.{js,ts,jsx,tsx}"
       run: npx tsc --noEmit
+    test:
+      glob: "*.{ts,tsx,js,jsx}"
+      exclude: "src/__tests__/contract/"
+      run: yarn test --bail --findRelatedTests {staged_files} --passWithNoTests --testPathPattern="src/__tests__/unit" --no-watchman
+    contract:
+      glob: "{src/__internal__/Consts.ts,modules/java/com/chatsdk/common/ExtSdkMethodType.java,modules/objc/common/ExtSdkMethodTypeObjc.h,modules/objc/common/ExtSdkMethodTypeObjc.m,modules/objc/rn/ExtSdkApiObjcRN.mm}"
+      run: yarn test:contract
 commit-msg:
   parallel: true
   commands:

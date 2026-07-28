@@ -38,6 +38,8 @@ ChatSDK is a highly reliable global communication platform where your users can 
 | {@link ChatClient.kickDevice kickDevice} | Logs out from a specified account on a device. |
 | {@link ChatClient.kickAllDevices kickAllDevices} | Logs out from a specified account on all devices. |
 | {@link ChatClient.updatePushConfig updatePushConfig} | Update push configurations. |
+| {@link ChatClient.getRTCTokenInfoWithChannelName getRTCTokenInfoWithChannelName} | Gets the Agora RTC token, token expiration time, and RTC UID matching the Agora Chat user ID according to the channel name (channelName). |
+| {@link ChatClient.getUserIdsWithRTCUids getUserIdsWithRTCUids} | Gets the Agora Chat user IDs matching the Agora RTC UIDs. |
 | {@link ChatClient.addConnectionListener addConnectionListener} | Adds the connection status listener. |
 | {@link ChatClient.removeConnectionListener removeConnectionListener} | Removes the connection status listener. |
 | {@link ChatClient.removeAllConnectionListener removeAllConnectionListener} | Removes all the connection status listeners for the chat server. |
@@ -192,6 +194,7 @@ ChatSDK is a highly reliable global communication platform where your users can 
 | Event | Description |
 | :----- | :---------- |
 | {@link ChatMessageEventListener.onMessagesReceived onMessagesReceived} | Occurs when a message is received. |
+| {@link ChatMessageEventListener.onStreamMessagesReceived onStreamMessagesReceived} | Occurs when the SDK receives new messages. |
 | {@link ChatMessageEventListener.onCmdMessagesReceived onCmdMessagesReceived} | Occurs when a command message is received. |
 | {@link ChatMessageEventListener.onMessagesRead onMessagesRead} | Occurs when a read receipt is received for a message. |
 | {@link ChatMessageEventListener.onGroupMessageRead onGroupMessageRead} | Occurs when a read receipt is received for a group message. |
@@ -281,7 +284,7 @@ ChatSDK is a highly reliable global communication platform where your users can 
 | {@link ChatGroupManager.downloadGroupSharedFile downloadGroupSharedFile} | Downloads the shared file of the group. |
 | {@link ChatGroupManager.removeGroupSharedFile removeGroupSharedFile} | Removes a shared file of the group. |
 | {@link ChatGroupManager.updateGroupAnnouncement updateGroupAnnouncement} | Updates the group announcement. |
-| {@link ChatGroupManager.updateGroupAvatar updateGroupAvatar} | Updates the group announcement. |
+| {@link ChatGroupManager.updateGroupAvatar updateGroupAvatar} | Updates the group avatar. |
 | {@link ChatGroupManager.updateGroupExtension updateGroupExtension} | Updates the group extension field. |
 | {@link ChatGroupManager.joinPublicGroup joinPublicGroup} | Joins a public group. |
 | {@link ChatGroupManager.requestToJoinPublicGroup requestToJoinPublicGroup} | Requests to join a group. |
@@ -358,6 +361,7 @@ ChatSDK is a highly reliable global communication platform where your users can 
 | {@link ChatRoomManager.fetchChatRoomAnnouncement fetchChatRoomAnnouncement} | Gets the chat room announcement from the server. |
 | {@link ChatRoomManager.fetchChatRoomAllowListFromServer fetchChatRoomAllowListFromServer} | Gets the allow list from the server. |
 | {@link ChatRoomManager.isMemberInChatRoomAllowList isMemberInChatRoomAllowList} | Checks whether the member is on the allow list of the chat room. |
+| {@link ChatRoomManager.isMemberInChatRoomMuteList isMemberInChatRoomMuteList} | Checks whether the member is in the mute list of the chat room. |
 | {@link ChatRoomManager.addMembersToChatRoomAllowList addMembersToChatRoomAllowList} | Adds members to the allow list of the chat room. |
 | {@link ChatRoomManager.removeMembersFromChatRoomAllowList removeMembersFromChatRoomAllowList} | Removes members from the allow list of the chat room. |
 | {@link ChatRoomManager.muteAllChatRoomMembers muteAllChatRoomMembers} | Mutes all members. |

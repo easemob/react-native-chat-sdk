@@ -11,13 +11,13 @@ export class ChatPresence {
    */
   statusDescription: string;
   /**
-   * 在线状态更新 Unix 时间戳，单位为秒。
+   * 上一次更新时间戳，单位为毫秒。
    */
-  lastTime: string;
+  lastTime: number;
   /**
-   * 在线状态订阅到期 Unix 时间戳，单位为秒。
+   * 在线状态的到期时间戳，单位为毫秒。
    */
-  expiryTime: string;
+  expiryTime: number;
   /**
    * 该用户的当前在线状态详情。
    */
@@ -26,8 +26,8 @@ export class ChatPresence {
   constructor(params: {
     publisher: string;
     statusDescription: string;
-    lastTime: string;
-    expiryTime: string;
+    lastTime: number;
+    expiryTime: number;
     statusDetails: any;
   }) {
     this.publisher = params.publisher;

@@ -84,13 +84,13 @@ export class ChatRoom {
    */
   announcement?: string;
   /**
-   * 聊天室成员数量。
+   * 聊天室当前的成员数量。
    */
-  memberCount?: string;
+  memberCount?: number;
   /**
-   * 聊天室最大成员数，在聊天室创建时设定。
+   * 聊天室的最大成员数量。
    */
-  maxUsers?: string;
+  maxUsers?: number;
   /**
    * 聊天室管理员列表。
    */
@@ -157,8 +157,8 @@ export class ChatRoom {
     description?: string;
     owner: string;
     announcement?: string;
-    memberCount?: string;
-    maxUsers?: string;
+    memberCount?: number;
+    maxUsers?: number;
     adminList?: Array<string>;
     memberList?: Array<string>;
     blockList?: Array<string>;

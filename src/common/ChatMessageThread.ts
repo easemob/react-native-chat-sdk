@@ -92,6 +92,11 @@ export enum ChatMessageThreadOperation {
    * 更新子区最新一条消息。
    */
   Update_Msg,
+
+  /**
+   * 用户被从子区移除。
+   */
+  User_Removed,
 }
 
 /**

@@ -1,7 +1,4 @@
-/**
- * 错误类，包含错误码和错误描述。
- */
-export class ChatError {
+export class ChatError extends Error {
   /**
    * 错误码。
    *
@@ -16,12 +13,22 @@ export class ChatError {
   description: string;
 
   constructor(params: { code: number; description: string }) {
+    super(params.description);
+    if (Object.setPrototypeOf) {
+      Object.setPrototypeOf(this, new.target.prototype);
+    }
+    this.name = 'ChatError';
     this.code = params.code;
     this.description = params.description;
   }
 }
 
 /**
- * 异常对象，继承自 {@link ChatError}。
+ * 聊天异常类，继承自 ChatError。
  */
-export class ChatException extends ChatError {}
+export class ChatException extends ChatError {
+  constructor(params: { code: number; description: string }) {
+    super(params);
+    this.name = 'ChatException';
+  }
+}

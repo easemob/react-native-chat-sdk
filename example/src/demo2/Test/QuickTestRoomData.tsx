@@ -34,6 +34,7 @@ export const MN = {
   fetchChatRoomAttributes: 'fetchChatRoomAttributes',
   addAttributes: 'addAttributes',
   removeAttributes: 'removeAttributes',
+  isMemberInChatRoomMuteList: 'isMemberInChatRoomMuteList',
 };
 
 export const metaDataList = new Map<string, ApiParams>([
@@ -534,6 +535,20 @@ export const metaDataList = new Map<string, ApiParams>([
     MN.isMemberInChatRoomAllowList,
     {
       methodName: MN.isMemberInChatRoomAllowList,
+      params: [
+        {
+          paramName: 'roomId',
+          paramType: 'string',
+          paramDefaultValue: '187507809517570',
+          domType: 'input',
+        },
+      ],
+    },
+  ],
+  [
+    MN.isMemberInChatRoomMuteList,
+    {
+      methodName: MN.isMemberInChatRoomMuteList,
       params: [
         {
           paramName: 'roomId',
