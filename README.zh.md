@@ -35,6 +35,13 @@ npm install react-native-chat-sdk
 yarn add react-native-chat-sdk
 ```
 
+iOS 端的 `HyphenateChat` 原生依赖支持两种集成方式：
+
+- CocoaPods（默认）：在 `ios` 目录正常执行 `pod install`。
+- Swift Package Manager（可选，React Native 0.75+）：在 `ios` 目录执行 `USE_FRAMEWORKS=dynamic pod install`，此时 `HyphenateChat` 将通过官方 [SPM 包](https://github.com/easemob/HyphenateChat_iOS) 集成，不再依赖 CocoaPods trunk。
+
+详见 [iOS 集成方式：CocoaPods 与 Swift Package Manager](docs/spm.md)。
+
 ## 快速开始
 
 1. 初始化 SDK

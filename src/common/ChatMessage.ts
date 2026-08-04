@@ -576,7 +576,7 @@ export class ChatMessage {
           // !!! maybe json string
           try {
             this.attributes[key] = JSON.parse(v);
-          } catch (error) {
+          } catch {
             this.attributes[key] = v;
           }
         } else {

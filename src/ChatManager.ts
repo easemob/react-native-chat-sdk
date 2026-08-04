@@ -307,7 +307,7 @@ export class ChatManager extends BaseManager {
     return list;
   }
 
-  private onMessagesReceived(messages: any[]): void {
+  private onMessagesReceived(messages: any): void {
     chatlog.log(`${ChatManager.TAG}: onMessagesReceived: `, messages);
     if (this._messageListeners.size === 0) {
       return;
@@ -317,7 +317,7 @@ export class ChatManager extends BaseManager {
       listener.onMessagesReceived?.(list);
     });
   }
-  private onCmdMessagesReceived(messages: any[]): void {
+  private onCmdMessagesReceived(messages: any): void {
     chatlog.log(`${ChatManager.TAG}: onCmdMessagesReceived: `, messages);
     if (this._messageListeners.size === 0) {
       return;
@@ -327,7 +327,7 @@ export class ChatManager extends BaseManager {
       listener.onCmdMessagesReceived?.(list);
     });
   }
-  private onMessagesRead(messages: any[]): void {
+  private onMessagesRead(messages: any): void {
     chatlog.log(`${ChatManager.TAG}: onMessagesRead: `, messages);
     if (this._messageListeners.size === 0) {
       return;
@@ -337,7 +337,7 @@ export class ChatManager extends BaseManager {
       listener.onMessagesRead?.(list);
     });
   }
-  private onGroupMessageRead(messages: any[]): void {
+  private onGroupMessageRead(messages: any): void {
     chatlog.log(`${ChatManager.TAG}: onGroupMessageRead: `, messages);
     if (this._messageListeners.size === 0) {
       return;
@@ -351,7 +351,7 @@ export class ChatManager extends BaseManager {
       listener.onGroupMessageRead?.(messages);
     });
   }
-  private onMessagesDelivered(messages: any[]): void {
+  private onMessagesDelivered(messages: any): void {
     chatlog.log(`${ChatManager.TAG}: onMessagesDelivered: `, messages);
     if (this._messageListeners.size === 0) {
       return;
@@ -361,7 +361,7 @@ export class ChatManager extends BaseManager {
       listener.onMessagesDelivered?.(list);
     });
   }
-  private onMessagesRecalledInfo(params: any[]): void {
+  private onMessagesRecalledInfo(params: any): void {
     chatlog.log(`${ChatManager.TAG}: onMessagesRecalledInfo: `, params);
     if (this._messageListeners.size === 0) {
       return;
