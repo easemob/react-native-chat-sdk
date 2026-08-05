@@ -398,4 +398,5 @@ example/src/env.ts
 src/version.ts
 *.tgz
 .workbuddy/
+.worktree
 
