@@ -11573,7 +11573,6 @@ __metadata:
     react-dom: "npm:19.2.0"
     react-native: "npm:0.83.10"
     react-native-builder-bob: "npm:^0.41.0"
-    react-native-document-picker: "npm:^9.3.1"
     react-native-fs: "npm:^2.20.0"
     react-native-gesture-handler: "npm:^3.1.0"
     react-native-image-picker: "npm:^8.2.1"
@@ -11627,22 +11626,6 @@ __metadata:
     react-native: "*"
   languageName: unknown
   linkType: soft
-
-"react-native-document-picker@npm:^9.3.1":
-  version: 9.3.1
-  resolution: "react-native-document-picker@npm:9.3.1"
-  dependencies:
-    invariant: "npm:^2.2.4"
-  peerDependencies:
-    react: "*"
-    react-native: "*"
-    react-native-windows: "*"
-  peerDependenciesMeta:
-    react-native-windows:
-      optional: true
-  checksum: 10/26829e8b0e48e789defea3f418ab41a154c05b72be742f2a2de182812c86eb2f35f31dcd5488b5b99e6bbf3b8c920c76acf06bc44d0222889e6cdf32d13cc1df
-  languageName: node
-  linkType: hard
 
 "react-native-fs@npm:^2.20.0":
   version: 2.20.0
