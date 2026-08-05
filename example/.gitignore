@@ -1,0 +1,3 @@
+# 自动化脚本模式的真实数据文件（appKey、账号、token 等），不入库。
+# 脚本（script.json）可入库，其引用的 config.json 一律忽略。
+config.json
