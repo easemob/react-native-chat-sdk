@@ -13,6 +13,12 @@ This project is a monorepo managed using [Yarn workspaces](https://yarnpkg.com/f
 
 To get started with the project, make sure you have the correct version of [Node.js](https://nodejs.org/) installed. See the [`.nvmrc`](./.nvmrc) file for the version used in this project.
 
+### Supported React Native versions
+
+- The SDK supports React Native **0.76 or higher**, and only the [New Architecture](https://reactnative.dev/docs/the-new-architecture/landing-page): the Android old-architecture sources have been removed, and while iOS still contains legacy code paths, they are untested.
+- The repository itself is developed and tested against **React Native 0.83.x** (see the `react-native` version in [`example/package.json`](./example/package.json)).
+- The example app runs with the New Architecture enabled (`newArchEnabled=true` in `example/android/gradle.properties`, which is also the default and only mode on React Native 0.82+).
+
 Run `yarn` in the root directory to install the required dependencies for each package:
 
 ```sh
@@ -20,6 +26,14 @@ yarn
 ```
 
 > Since the project relies on Yarn workspaces, you cannot use [`npm`](https://github.com/npm/cli) for development without manually migrating.
+
+Then run the full initialization — it generates the version, CMake and env files and builds the library outputs into `lib/`:
+
+```sh
+yarn prepare
+```
+
+Re-run it whenever changes in `src/` need to be reflected in the built output. Do not edit files under `lib/` directly; they are generated.
 
 The [example app](/example/) demonstrates usage of the library. You need to run it to test any changes you make.
 
@@ -43,9 +57,10 @@ To run the example app on Android:
 yarn example android
 ```
 
-To run the example app on iOS:
+To run the example app on iOS (install the pods first):
 
 ```sh
+(cd example/ios && pod install)
 yarn example ios
 ```
 
@@ -63,29 +78,20 @@ To run the example app on Web:
 yarn example web
 ```
 
-Make sure your code passes TypeScript:
+### Validating your changes
 
-```sh
-yarn typecheck
-```
+Make sure your code passes TypeScript, lint and tests before committing:
 
-To check for linting errors, run the following:
+- `yarn typecheck` — TypeScript type checking.
+- `yarn lint` — lint with [ESLint](https://eslint.org/); `yarn lint --fix` to auto-fix.
+- `yarn test` — run all [Jest](https://jestjs.io/) tests. Useful subsets:
+  - `yarn test:unit` — unit tests only (`src/__tests__/unit`).
+  - `yarn test:contract` — contract tests that keep the TS method names in sync with the native method tables in `modules/java/` and `modules/objc/`.
+  - `yarn test:coverage` — run tests with a coverage report.
+- `yarn scan:deprecated` — scan for deprecated API usage (`yarn scan:deprecated:android` / `yarn scan:deprecated:ios` per platform).
+- `yarn check:circular:dpdm` or `yarn check:circular:madge` — detect circular imports in `src/`.
 
-```sh
-yarn lint
-```
-
-To fix formatting errors, run the following:
-
-```sh
-yarn lint --fix
-```
-
-Remember to add tests for your change if possible. Run the unit tests by:
-
-```sh
-yarn test
-```
+Remember to add tests for your change if possible. Note that the native wrapper code in `modules/java/` and `modules/objc/` is **not** covered by automated tests — after changing it, manually exercise the affected feature in the example app.
 
 
 ### Commit message convention
@@ -100,6 +106,8 @@ We follow the [conventional commits specification](https://www.conventionalcommi
 - `chore`: tooling changes, e.g. change CI config.
 
 Our pre-commit hooks verify that your commit message matches this format when committing.
+
+The Git hooks are managed with [lefthook](https://github.com/evilmartians/lefthook); run `yarn hooks:install` once after cloning. Besides commitlint, the pre-commit hook runs ESLint, `tsc` and the unit tests related to your staged files, plus the contract tests when the native method tables change.
 
 
 ### Publishing to npm
@@ -117,15 +125,14 @@ yarn release
 
 The `package.json` file contains various scripts for common tasks:
 
-- `yarn`: setup project by installing dependencies.
-- `yarn typecheck`: type-check files with TypeScript.
-  - `yarn lint`: lint files with [ESLint](https://eslint.org/).
-    - `yarn test`: run unit tests with [Jest](https://jestjs.io/).
-  - `yarn example start`: start the Metro server for the example app.
-- `yarn example android`: run the example app on Android.
-- `yarn example ios`: run the example app on iOS.
-  - `yarn example web`: run the example app on Web.
-- `yarn example build:web`: build the example app for Web.
+- `yarn`: install dependencies for all workspaces.
+- `yarn prepare`: full initialization — generate version/CMake/env files and build the library.
+- `yarn clean`: remove build outputs (`lib/`, `android/build`, example build directories).
+- `yarn typecheck`, `yarn lint`, `yarn test*`, `yarn scan:deprecated`, `yarn check:circular:*`: see [Validating your changes](#validating-your-changes).
+- `yarn example start` / `android` / `ios` / `web`: run the example app.
+- `yarn doc:en` / `yarn doc:cn` / `yarn doc:md`: generate the API reference with TypeDoc.
+- `yarn hooks:install`: install the lefthook Git hooks.
+- `yarn release`: publish a new version (see [Publishing to npm](#publishing-to-npm)).
   
 ### Sending a pull request
 

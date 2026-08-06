@@ -1,6 +1,6 @@
 _Chinese | [English](./README.md)_
 
-_Update time: 2024-12-19_
+_Update time: 2026-08-06_
 
 - [ChatSDK 介绍](#chatsdk-介绍)
   - [开发环境要求](#开发环境要求)
@@ -16,7 +16,7 @@ _Update time: 2024-12-19_
 ## 开发环境要求
 
 - MacOS 12 或更高版本
-- React-Native 0.66 或更高版本
+- React-Native 0.76 或更高版本
 - NodeJs 16.18 或更高版本
 
 对于 iOS 应用：
@@ -35,10 +35,12 @@ npm install react-native-chat-sdk
 yarn add react-native-chat-sdk
 ```
 
+> **注意**：本 SDK 仅支持 React Native [新架构](https://reactnative.dev/docs/the-new-architecture/landing-page)（New Architecture）。React Native 0.82 起新架构是唯一模式；在 0.76–0.81 上需手动开启：在 `android/gradle.properties` 中设置 `newArchEnabled=true`，并在 `ios/Podfile` 的 `use_react_native!` 之前设置 `ENV['RCT_NEW_ARCH_ENABLED'] = '1'`。
+
 iOS 端的 `HyphenateChat` 原生依赖支持两种集成方式：
 
 - CocoaPods（默认）：在 `ios` 目录正常执行 `pod install`。
-- Swift Package Manager（可选，React Native 0.75+）：在 `ios` 目录执行 `USE_FRAMEWORKS=dynamic pod install`，此时 `HyphenateChat` 将通过官方 [SPM 包](https://github.com/easemob/HyphenateChat_iOS) 集成，不再依赖 CocoaPods trunk。
+- Swift Package Manager（可选）：在 `ios` 目录执行 `USE_FRAMEWORKS=dynamic pod install`，此时 `HyphenateChat` 将通过官方 [SPM 包](https://github.com/easemob/HyphenateChat_iOS) 集成，不再依赖 CocoaPods trunk。
 
 详见 [iOS 集成方式：CocoaPods 与 Swift Package Manager](docs/spm.md)。
 

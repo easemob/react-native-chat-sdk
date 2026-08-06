@@ -1,6 +1,6 @@
 _English | [Chinese](./README.zh.md)_
 
-_Update time: 2024-12-19_
+_Update time: 2026-08-06_
 
 - [Introduction to ChatSDK](#introduction-to-chatsdk)
   - [Development environment requirements](#development-environment-requirements)
@@ -16,7 +16,7 @@ An Instant Messaging SDK (Software Development Kit) is a collection of tools, li
 ## Development environment requirements
 
 - MacOS 12 or higher
-- React-Native 0.66 or higher
+- React-Native 0.76 or higher
 - NodeJs 16.18 or higher
 
 For iOS app:
@@ -35,10 +35,12 @@ npm install react-native-chat-sdk
 yarn add react-native-chat-sdk
 ```
 
+> **Note**: The SDK only supports the React Native [New Architecture](https://reactnative.dev/docs/the-new-architecture/landing-page). It is the only mode on React Native 0.82 and higher; on React Native 0.76–0.81, enable it by setting `newArchEnabled=true` in `android/gradle.properties` and `ENV['RCT_NEW_ARCH_ENABLED'] = '1'` in `ios/Podfile` (before `use_react_native!`).
+
 For iOS, the native `HyphenateChat` dependency can be integrated in two ways:
 
 - CocoaPods (default): run `pod install` in the `ios` directory as usual.
-- Swift Package Manager (optional, React Native 0.75+): run `USE_FRAMEWORKS=dynamic pod install` in the `ios` directory. The `HyphenateChat` dependency is then resolved through the official [SPM package](https://github.com/easemob/HyphenateChat_iOS) instead of the CocoaPods trunk.
+- Swift Package Manager (optional): run `USE_FRAMEWORKS=dynamic pod install` in the `ios` directory. The `HyphenateChat` dependency is then resolved through the official [SPM package](https://github.com/easemob/HyphenateChat_iOS) instead of the CocoaPods trunk.
 
 See [iOS integration: CocoaPods and Swift Package Manager](docs/spm.md) for details.
 
