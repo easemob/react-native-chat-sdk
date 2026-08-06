@@ -751,6 +751,22 @@ static NSString *const TAG = @"ExtSdkDispatch";
                                                                withMethodType:methodType
                                                                        result:callback];
         break;
+    case ExtSdkMethodKeyGetLocalUserInfoByIdsValue:
+        [[ExtSdkUserInfoManagerWrapper getInstance] getLocalUserInfoByIds:ps
+                                                           withMethodType:methodType
+                                                                   result:callback];
+        break;
+    case ExtSdkMethodKeySubscribeUsersInfoValue:
+        [[ExtSdkUserInfoManagerWrapper getInstance] subscribeUsersInfo:ps withMethodType:methodType result:callback];
+        break;
+    case ExtSdkMethodKeyUnsubscribeUsersInfoValue:
+        [[ExtSdkUserInfoManagerWrapper getInstance] unsubscribeUsersInfo:ps withMethodType:methodType result:callback];
+        break;
+    case ExtSdkMethodKeyFetchSubscribedUsersValue:
+        [[ExtSdkUserInfoManagerWrapper getInstance] fetchSubscribedUsers:ps
+                                                          withMethodType:methodType
+                                                                  result:callback];
+        break;
 
     case ExtSdkMethodKeyTranslateMessageValue:
         [[ExtSdkChatManagerWrapper getInstance] translateMessage:ps withMethodType:methodType result:callback];
@@ -987,6 +1003,12 @@ static NSString *const TAG = @"ExtSdkDispatch";
     case ExtSdkMethodKeyfetchMembersAttributesFromGroupValue:
         [[ExtSdkGroupManagerWrapper getInstance] fetchMembersAttributes:ps withMethodType:methodType result:callback];
         break;
+    case ExtSdkMethodKeyUpdateGroupNamecardValue:
+        [[ExtSdkGroupManagerWrapper getInstance] updateGroupNamecard:ps withMethodType:methodType result:callback];
+        break;
+    case ExtSdkMethodKeyGetGroupNamecardValue:
+        [[ExtSdkGroupManagerWrapper getInstance] getGroupNamecard:ps withMethodType:methodType result:callback];
+        break;
 
     case ExtSdkMethodKeyGetConversationsFromServerWithCursorValue:
         [[ExtSdkChatManagerWrapper getInstance] getConversationsFromServerWithCursor:ps
@@ -1008,6 +1030,15 @@ static NSString *const TAG = @"ExtSdkDispatch";
         [[ExtSdkChatManagerWrapper getInstance] downloadAndParseCombineMessage:ps
                                                                 withMethodType:methodType
                                                                         result:callback];
+        break;
+    case ExtSdkMethodKeyVoiceMessageToTextValue:
+        [[ExtSdkChatManagerWrapper getInstance] voiceMessageToText:ps withMethodType:methodType result:callback];
+        break;
+    case ExtSdkMethodKeyVoiceFileToTextValue:
+        [[ExtSdkChatManagerWrapper getInstance] voiceFileToText:ps withMethodType:methodType result:callback];
+        break;
+    case ExtSdkMethodKeyDownloadBigImageValue:
+        [[ExtSdkChatManagerWrapper getInstance] downloadBigImage:ps withMethodType:methodType result:callback];
         break;
     case ExtSdkMethodKeySetPushTemplateValue:
         [[ExtSdkPushManagerWrapper getInstance] setPushTemplate:ps withMethodType:methodType result:callback];

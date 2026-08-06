@@ -964,6 +964,35 @@ public class ExtSdkDispatch implements ExtSdkApi {
                 ExtSdkClientWrapper.getInstance().getUserIdsWithRTCUids(jsonParams, methodType, callback);
                 break;
 
+            // 2026-08-05 4.22.0
+            case ExtSdkMethodType.updateGroupNamecard:
+                ExtSdkGroupManagerWrapper.getInstance().updateGroupNamecard(jsonParams, methodType, callback);
+                break;
+            case ExtSdkMethodType.getGroupNamecard:
+                ExtSdkGroupManagerWrapper.getInstance().getGroupNamecard(jsonParams, methodType, callback);
+                break;
+            case ExtSdkMethodType.voiceMessageToText:
+                ExtSdkChatManagerWrapper.getInstance().voiceMessageToText(jsonParams, methodType, callback);
+                break;
+            case ExtSdkMethodType.voiceFileToText:
+                ExtSdkChatManagerWrapper.getInstance().voiceFileToText(jsonParams, methodType, callback);
+                break;
+            case ExtSdkMethodType.downloadBigImage:
+                ExtSdkChatManagerWrapper.getInstance().downloadBigImage(jsonParams, methodType, callback);
+                break;
+            case ExtSdkMethodType.getLocalUserInfoByIds:
+                ExtSdkUserInfoManagerWrapper.getInstance().getLocalUserInfoByIds(jsonParams, methodType, callback);
+                break;
+            case ExtSdkMethodType.subscribeUsersInfo:
+                ExtSdkUserInfoManagerWrapper.getInstance().subscribeUsersInfo(jsonParams, methodType, callback);
+                break;
+            case ExtSdkMethodType.unsubscribeUsersInfo:
+                ExtSdkUserInfoManagerWrapper.getInstance().unsubscribeUsersInfo(jsonParams, methodType, callback);
+                break;
+            case ExtSdkMethodType.fetchSubscribedUsers:
+                ExtSdkUserInfoManagerWrapper.getInstance().fetchSubscribedUsers(jsonParams, methodType, callback);
+                break;
+
             default:
                 callback.fail(1, "no implement: " + methodType);
                 break;

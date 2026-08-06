@@ -96,6 +96,7 @@ export class ChatClient extends BaseManager {
     this._pushManager.setNativeListener(this.getEventEmitter());
     this._chatRoomManager.setNativeListener(this.getEventEmitter());
     this._presenceManager.setNativeListener(this.getEventEmitter());
+    this._userInfoManager.setNativeListener(this.getEventEmitter());
     chatlog.log('eventEmitter has finished.');
   }
 

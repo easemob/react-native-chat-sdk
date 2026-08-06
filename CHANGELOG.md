@@ -2,6 +2,19 @@ _English | [Chinese](./CHANGELOG.zh.md)_
 
 # Update Log
 
+## 1.18.0
+
+- Dependent native SDKs are upgraded to versions (iOS 4.22.0 and Android 4.22.0).
+- Add `enableUserInfo` and `enableAutoSyncContacts` properties in `ChatOptions`.
+- Add `ChatGroupManager.updateGroupNamecard` and `ChatGroupManager.getGroupNamecard` methods to update and get the group namecard, and the `ChatGroupEventListener.onUserGroupNamecardChanged` callback.
+- Add `namecard`, `nickname`, and `avatarUrl` properties in `ChatGroupMember`.
+- Add `userInfo` and `addTimestamp` properties in `ChatContact`, and the `onContactSyncStart`, `onContactSyncFinish`, and `onContactInfoUpdate` callbacks in `ChatContactEventListener`.
+- Add `ChatUserInfoManager.getLocalUserInfoByIds`, `subscribeUsersInfo`, `unsubscribeUsersInfo`, and `fetchSubscribedUsers` methods, and the `ChatUserInfoEventListener` listener.
+- Add `ChatManager.voiceMessageToText` and `ChatManager.voiceFileToText` methods to convert voice to text, and the `ChatVoiceParam` class.
+- Add `ChatManager.downloadBigImage` method, and the `bigImageLocalPath`, `bigImageRemotePath`, `bigImageDownloadStatus`, and `isOriginalImage` properties in `ChatImageMessageBody`.
+- Add the `text` property in `ChatVoiceMessageBody`.
+- Add the `senderInfo` property in `ChatMessage`, and the `ChatMessageSenderInfo` class.
+
 ## 1.15.3
 
 - Fix Android and iOS native input conversion so optional fields are only applied when provided, preserving explicit user input instead of overwriting it with bridge defaults.

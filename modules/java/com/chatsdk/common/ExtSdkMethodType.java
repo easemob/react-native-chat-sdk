@@ -363,6 +363,20 @@ public class ExtSdkMethodType {
 
   public static final String onStreamMessagesReceived = "onStreamMessagesReceived";
 
+    // 2026-08-05 4.22.0
+    public static final String updateGroupNamecard = "updateGroupNamecard";
+    public static final String getGroupNamecard = "getGroupNamecard";
+    public static final String voiceMessageToText = "voiceMessageToText";
+    public static final String voiceFileToText = "voiceFileToText";
+    public static final String downloadBigImage = "downloadBigImage";
+    public static final String getLocalUserInfoByIds = "getLocalUserInfoByIds";
+    public static final String subscribeUsersInfo = "subscribeUsersInfo";
+    public static final String unsubscribeUsersInfo = "unsubscribeUsersInfo";
+    public static final String fetchSubscribedUsers = "fetchSubscribedUsers";
+
+    /// EMUserInfoManagerListener
+    public static final String onUserInfoChanged = "onUserInfoChanged";
+
 
     // TODO: EMChatThreadManagerListener
 }

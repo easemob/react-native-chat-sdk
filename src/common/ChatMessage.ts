@@ -3,6 +3,7 @@ import { generateMessageId, getNowTimestamp } from '../__internal__/Utils';
 import type { ChatSearchDirection } from './ChatConversation';
 import { ChatError, ChatException } from './ChatError';
 import type { ChatMessageReaction } from './ChatMessageReaction';
+import { ChatMessageSenderInfo } from './ChatMessageSenderInfo';
 import type { ChatMessageThread } from './ChatMessageThread';
 import { Factory } from '../__internal__/Factory';
 import type { ChatStreamChunk } from './ChatMessageStreamChunk';
@@ -506,6 +507,11 @@ export class ChatMessage {
   streamChunk?: ChatStreamChunk;
 
   /**
+   * The display information of the message sender. See {@link ChatMessageSenderInfo}.
+   */
+  senderInfo?: ChatMessageSenderInfo;
+
+  /**
    * Constructs a message.
    */
   public constructor(params: {
@@ -533,6 +539,7 @@ export class ChatMessage {
     isBroadcast?: boolean;
     isContentReplaced?: boolean;
     streamChunk?: ChatStreamChunk;
+    senderInfo?: ChatMessageSenderInfo;
   }) {
     this.msgId = params.msgId ?? generateMessageId();
     this.conversationId = params.conversationId ?? '';
@@ -559,6 +566,9 @@ export class ChatMessage {
     this.isBroadcast = params.isBroadcast ?? false;
     this.isContentReplaced = params.isContentReplaced ?? false;
     this.streamChunk = params.streamChunk;
+    this.senderInfo = params.senderInfo
+      ? new ChatMessageSenderInfo(params.senderInfo)
+      : undefined;
   }
 
   private fromAttributes(attributes: any) {
@@ -1392,6 +1402,22 @@ export class ChatImageMessageBody extends _ChatFileMessageBody {
    * Whether the image is a GIF.
    */
   isGif?: boolean;
+  /**
+   * The local path of the big image as a string.
+   */
+  bigImageLocalPath?: string;
+  /**
+   * The URL of the big image on the server.
+   */
+  bigImageRemotePath?: string;
+  /**
+   * The download status of the big image. See {@link ChatDownloadStatus}
+   */
+  bigImageDownloadStatus?: ChatDownloadStatus;
+  /**
+   * Whether the image is the original image.
+   */
+  isOriginalImage?: boolean;
   constructor(params: {
     localPath: string;
     secret?: string;
@@ -1407,6 +1433,10 @@ export class ChatImageMessageBody extends _ChatFileMessageBody {
     width?: number;
     height?: number;
     isGif?: boolean;
+    bigImageLocalPath?: string;
+    bigImageRemotePath?: string;
+    bigImageDownloadStatus?: number;
+    isOriginalImage?: boolean;
     lastModifyOperatorId?: string;
     lastModifyTime?: number;
     modifyCount?: number;
@@ -1433,6 +1463,13 @@ export class ChatImageMessageBody extends _ChatFileMessageBody {
     this.width = params.width ?? 0;
     this.height = params.height ?? 0;
     this.isGif = params.isGif ?? false;
+    this.bigImageLocalPath = params.bigImageLocalPath;
+    this.bigImageRemotePath = params.bigImageRemotePath;
+    this.bigImageDownloadStatus =
+      params.bigImageDownloadStatus !== undefined
+        ? ChatDownloadStatusFromNumber(params.bigImageDownloadStatus)
+        : undefined;
+    this.isOriginalImage = params.isOriginalImage;
   }
 }
 
@@ -1518,6 +1555,10 @@ export class ChatVoiceMessageBody extends _ChatFileMessageBody {
    * The voice duration in seconds.
    */
   duration: number;
+  /**
+   * The text converted from the voice.
+   */
+  text?: string;
   constructor(params: {
     localPath: string;
     secret?: string;
@@ -1526,6 +1567,7 @@ export class ChatVoiceMessageBody extends _ChatFileMessageBody {
     fileSize?: number;
     displayName?: string;
     duration?: number;
+    text?: string;
     lastModifyOperatorId?: string;
     lastModifyTime?: number;
     modifyCount?: number;
@@ -1543,6 +1585,7 @@ export class ChatVoiceMessageBody extends _ChatFileMessageBody {
       displayName: params.displayName,
     });
     this.duration = params.duration ?? 0;
+    this.text = params.text;
   }
 }
 

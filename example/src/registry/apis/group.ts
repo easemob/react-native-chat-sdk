@@ -14,4 +14,33 @@ export const groupApis: ApiEntry[] = [
       );
     },
   },
+  {
+    name: 'ChatGroupManager.updateGroupNamecard',
+    group: 'ChatGroupManager',
+    description:
+      '更新当前用户在群内的名片。groupId：群 ID；namecard 可选，省略表示清除名片。',
+    paramsTemplate: JSON.stringify(
+      { groupId: 'ID', namecard: 'my namecard' },
+      null,
+      2
+    ),
+    invoke: async (params) => {
+      return ChatClient.getInstance().groupManager.updateGroupNamecard(
+        String(params.groupId),
+        params.namecard === undefined ? undefined : String(params.namecard)
+      );
+    },
+  },
+  {
+    name: 'ChatGroupManager.getGroupNamecard',
+    group: 'ChatGroupManager',
+    description: '获取群成员名片。groupId：群 ID；userId：成员用户 ID。',
+    paramsTemplate: JSON.stringify({ groupId: 'ID', userId: 'ID' }, null, 2),
+    invoke: async (params) => {
+      return ChatClient.getInstance().groupManager.getGroupNamecard(
+        String(params.groupId),
+        String(params.userId)
+      );
+    },
+  },
 ];

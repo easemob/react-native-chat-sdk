@@ -1,9 +1,19 @@
+import type { EmitterSubscription, NativeEventEmitter } from 'react-native';
+
 import {
+  MTfetchSubscribedUsers,
   MTfetchUserInfoById,
+  MTgetLocalUserInfoByIds,
+  MTonUserInfoChanged,
+  MTsubscribeUsersInfo,
+  MTunsubscribeUsersInfo,
   MTupdateOwnUserInfo,
 } from './__internal__/Consts';
+import { ExceptionHandler } from './__internal__/ErrorHandler';
 import { Native } from './__internal__/Native';
+import type { ChatUserInfoEventListener } from './ChatEvents';
 import { chatlog } from './common/ChatConst';
+import { ChatException } from './common/ChatError';
 import { ChatUserInfo } from './common/ChatUserInfo';
 import { Factory } from './__internal__/Factory';
 
@@ -13,8 +23,83 @@ import { Factory } from './__internal__/Factory';
 export class ChatUserInfoManager extends Native {
   private static TAG = 'ChatUserInfoManager';
 
+  private _userInfoListeners: Set<ChatUserInfoEventListener>;
+  private _userInfoSubscriptions: Map<string, EmitterSubscription>;
+
   constructor() {
     super();
+    this._userInfoListeners = new Set<ChatUserInfoEventListener>();
+    this._userInfoSubscriptions = new Map<string, EmitterSubscription>();
+  }
+
+  public setNativeListener(event: NativeEventEmitter): void {
+    chatlog.log(`${ChatUserInfoManager.TAG}: setNativeListener: `);
+    this._userInfoSubscriptions.forEach((value: EmitterSubscription) => {
+      value.remove();
+    });
+    this._userInfoSubscriptions.clear();
+    this._userInfoSubscriptions.set(
+      MTonUserInfoChanged,
+      event.addListener(MTonUserInfoChanged, (params: any) => {
+        this.invokeUserInfoListener(params);
+      })
+    );
+  }
+
+  private invokeUserInfoListener(params: any): void {
+    this._userInfoListeners.forEach((listener: ChatUserInfoEventListener) => {
+      const userInfoEventType = params.type;
+      switch (userInfoEventType) {
+        case 'onSelfUserInfoUpdate':
+          listener.onSelfUserInfoUpdate?.(new ChatUserInfo(params.userInfo));
+          break;
+        case 'onUserInfoUpdate': {
+          const ret: ChatUserInfo[] = [];
+          const l: Array<any> = params?.userInfos;
+          l?.forEach((value: any) => {
+            ret.push(new ChatUserInfo(value));
+          });
+          listener.onUserInfoUpdate?.(ret);
+          break;
+        }
+        default:
+          ExceptionHandler.getInstance().sendExcept({
+            except: new ChatException({
+              code: 1,
+              description: `This type is not supported. ` + userInfoEventType,
+            }),
+            from: ChatUserInfoManager.TAG,
+          });
+      }
+    });
+  }
+
+  /**
+   * Adds a user information listener.
+   *
+   * @param listener The listener to add.
+   */
+  public addUserInfoListener(listener: ChatUserInfoEventListener): void {
+    chatlog.log(`${ChatUserInfoManager.TAG}: addUserInfoListener: `);
+    this._userInfoListeners.add(listener);
+  }
+
+  /**
+   * Removes the user information listener.
+   *
+   * @param listener The listener to remove.
+   */
+  public removeUserInfoListener(listener: ChatUserInfoEventListener): void {
+    chatlog.log(`${ChatUserInfoManager.TAG}: removeUserInfoListener: `);
+    this._userInfoListeners.delete(listener);
+  }
+
+  /**
+   * Removes all user information listeners.
+   */
+  public removeAllUserInfoListener(): void {
+    chatlog.log(`${ChatUserInfoManager.TAG}: removeAllUserInfoListener: `);
+    this._userInfoListeners.clear();
   }
 
   /**
@@ -83,6 +168,91 @@ export class ChatUserInfoManager extends Native {
       const userInfo = new ChatUserInfo(value[1]);
       ret.set(value[0], userInfo);
     });
+    return ret;
+  }
+
+  /**
+   * Gets the user attributes of the specified users from the local database.
+   *
+   * @param userIds The user ID array.
+   * @returns A map that contains key-value pairs where the key is the user ID and the value is user attributes, see {@link ChatUserInfo}.
+   *
+   * @throws A description of the exception. See {@link ChatError}.
+   */
+  public async getLocalUserInfoByIds(
+    userIds: Array<string>
+  ): Promise<Map<string, ChatUserInfo>> {
+    chatlog.log(`${ChatUserInfoManager.TAG}: getLocalUserInfoByIds: `, userIds);
+    let r: any = await Native._callMethod(MTgetLocalUserInfoByIds, {
+      [MTgetLocalUserInfoByIds]: {
+        userIds: userIds,
+      },
+    });
+    ChatUserInfoManager.checkErrorFromResult(r);
+    const ret = new Map<string, ChatUserInfo>();
+    Object.entries(r?.[MTgetLocalUserInfoByIds] ?? {}).forEach(
+      (value: [string, any]) => {
+        const userInfo = new ChatUserInfo(value[1]);
+        ret.set(value[0], userInfo);
+      }
+    );
+    return ret;
+  }
+
+  /**
+   * Subscribes to the user attributes of the specified users.
+   *
+   * When the user attributes of a subscribed user are updated, the {@link ChatUserInfoEventListener.onUserInfoUpdate} callback is triggered.
+   *
+   * @param userIds The user ID array.
+   *
+   * @throws A description of the exception. See {@link ChatError}.
+   */
+  public async subscribeUsersInfo(userIds: Array<string>): Promise<void> {
+    chatlog.log(`${ChatUserInfoManager.TAG}: subscribeUsersInfo: `, userIds);
+    let r: any = await Native._callMethod(MTsubscribeUsersInfo, {
+      [MTsubscribeUsersInfo]: {
+        userIds: userIds,
+      },
+    });
+    ChatUserInfoManager.checkErrorFromResult(r);
+  }
+
+  /**
+   * Unsubscribes from the user attributes of the specified users.
+   *
+   * @param userIds The user ID array.
+   *
+   * @throws A description of the exception. See {@link ChatError}.
+   */
+  public async unsubscribeUsersInfo(userIds: Array<string>): Promise<void> {
+    chatlog.log(`${ChatUserInfoManager.TAG}: unsubscribeUsersInfo: `, userIds);
+    let r: any = await Native._callMethod(MTunsubscribeUsersInfo, {
+      [MTunsubscribeUsersInfo]: {
+        userIds: userIds,
+      },
+    });
+    ChatUserInfoManager.checkErrorFromResult(r);
+  }
+
+  /**
+   * Gets the list of users whose user attributes are subscribed by the current user.
+   *
+   * @returns The list of user attributes of the subscribed users. See {@link ChatUserInfo}.
+   *
+   * @throws A description of the exception. See {@link ChatError}.
+   */
+  public async fetchSubscribedUsers(): Promise<ChatUserInfo[]> {
+    chatlog.log(`${ChatUserInfoManager.TAG}: fetchSubscribedUsers: `);
+    let r: any = await Native._callMethod(MTfetchSubscribedUsers, {
+      [MTfetchSubscribedUsers]: {},
+    });
+    ChatUserInfoManager.checkErrorFromResult(r);
+    const list: any[] = r?.[MTfetchSubscribedUsers]?.users ?? [];
+    const ret: ChatUserInfo[] = [];
+    for (const i of list) {
+      ret.push(new ChatUserInfo(i));
+    }
     return ret;
   }
 

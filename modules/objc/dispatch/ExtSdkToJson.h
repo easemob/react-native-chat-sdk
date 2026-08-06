@@ -118,6 +118,10 @@ NS_ASSUME_NONNULL_BEGIN
 - (NSDictionary *)toJsonObject;
 @end
 
+@interface EMMessageSenderInfo (Json) <ExtSdkToJson>
+- (NSDictionary *)toJsonObject;
+@end
+
 @interface EMMessageBody (Json) <ExtSdkToJson>
 + (EMMessageBody *)fromJsonObject:(NSDictionary *)aJson;
 - (NSDictionary *)toJsonObject;

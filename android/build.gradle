@@ -88,5 +88,5 @@ android {
 
 dependencies {
   implementation "com.facebook.react:react-android"
-  implementation 'io.hyphenate:hyphenate-chat:4.19.3'
+  implementation 'io.hyphenate:hyphenate-chat:4.22.1'
 }

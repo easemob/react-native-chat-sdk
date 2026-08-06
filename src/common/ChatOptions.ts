@@ -262,6 +262,22 @@ export class ChatOptions {
   dohVendor?: number;
 
   /**
+   * Whether to enable the user information feature, including user attributes and contact information.
+   *
+   * - `true`: Yes.
+   * - (Default) `false`: No.
+   */
+  enableUserInfo: boolean;
+
+  /**
+   * Whether to automatically sync the contact list after login.
+   *
+   * - `true`: Yes.
+   * - (Default) `false`: No.
+   */
+  enableAutoSyncContacts: boolean;
+
+  /**
    * @deprecated Use {@link withAppId} and {@link withAppKey} instead.
    */
   constructor(params: {
@@ -302,6 +318,8 @@ export class ChatOptions {
     webSocketServer?: string;
     webSocketPort?: number;
     dohVendor?: number;
+    enableUserInfo?: boolean;
+    enableAutoSyncContacts?: boolean;
   }) {
     if (!params.appKey && !params.appId) {
       throw new ChatError({
@@ -352,6 +370,8 @@ export class ChatOptions {
     this.webSocketServer = params.webSocketServer;
     this.webSocketPort = params.webSocketPort ?? 0;
     this.dohVendor = params.dohVendor ?? 1; // agora is 2.
+    this.enableUserInfo = params.enableUserInfo ?? false;
+    this.enableAutoSyncContacts = params.enableAutoSyncContacts ?? false;
   }
 
   static withAppId(params: {
@@ -391,6 +411,8 @@ export class ChatOptions {
     webSocketServer?: string;
     webSocketPort?: number;
     dohVendor?: number;
+    enableUserInfo?: boolean;
+    enableAutoSyncContacts?: boolean;
   }) {
     return new ChatOptions({
       ...params,
@@ -435,6 +457,8 @@ export class ChatOptions {
     webSocketServer?: string;
     webSocketPort?: number;
     dohVendor?: number;
+    enableUserInfo?: boolean;
+    enableAutoSyncContacts?: boolean;
   }) {
     return new ChatOptions({
       ...params,

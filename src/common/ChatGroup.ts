@@ -435,13 +435,31 @@ export class ChatGroupMember {
    * The role of the group member.
    */
   role: ChatGroupPermissionType;
+  /**
+   * The namecard of the group member in the group.
+   */
+  namecard?: string;
+  /**
+   * The nickname of the group member.
+   */
+  nickname?: string;
+  /**
+   * The avatar URL of the group member.
+   */
+  avatarUrl?: string;
   constructor(params: {
     memberId: string;
     joinedTimestamp: number;
     role: ChatGroupPermissionType;
+    namecard?: string;
+    nickname?: string;
+    avatarUrl?: string;
   }) {
     this.memberId = params.memberId;
     this.joinedTimestamp = params.joinedTimestamp;
     this.role = params.role;
+    this.namecard = params.namecard;
+    this.nickname = params.nickname;
+    this.avatarUrl = params.avatarUrl;
   }
 }

@@ -24,6 +24,7 @@ import {
   MTfetchMemberInfoListFromServer,
   MTgetGroupMemberListFromServer,
   MTgetGroupMuteListFromServer,
+  MTgetGroupNamecard,
   MTgetGroupSpecificationFromServer,
   MTgetGroupWithId,
   MTgetJoinedGroups,
@@ -50,6 +51,7 @@ import {
   MTupdateGroupAnnouncement,
   MTupdateGroupAvatar,
   MTupdateGroupExt,
+  MTupdateGroupNamecard,
   MTupdateGroupOwner,
   MTupdateGroupSubject,
   MTuploadGroupSharedFile,
@@ -272,6 +274,13 @@ export class ChatGroupManager extends BaseManager {
             member: params.member,
             operator: params.operator,
             attributes: params.attributes,
+          });
+          break;
+        case 'onUserGroupNamecardChanged':
+          listener.onUserGroupNamecardChanged?.({
+            groupId: params.groupId,
+            userId: params.userId,
+            namecard: params.namecard,
           });
           break;
         default:
@@ -900,6 +909,57 @@ export class ChatGroupManager extends BaseManager {
       },
     });
     ChatGroupManager.checkErrorFromResult(r);
+  }
+
+  /**
+   * Updates the namecard of the current user in the group.
+   *
+   * @param groupId The group ID.
+   * @param namecard (optional) The new namecard. If this parameter is not set or set to `null`, the namecard is cleared.
+   *
+   * @throws A description of the exception. See {@link ChatError}.
+   */
+  public async updateGroupNamecard(
+    groupId: string,
+    namecard?: string
+  ): Promise<void> {
+    chatlog.log(
+      `${ChatGroupManager.TAG}: updateGroupNamecard: `,
+      groupId,
+      namecard
+    );
+    let r: any = await Native._callMethod(MTupdateGroupNamecard, {
+      [MTupdateGroupNamecard]: {
+        groupId,
+        namecard,
+      },
+    });
+    ChatGroupManager.checkErrorFromResult(r);
+  }
+
+  /**
+   * Gets the namecard of a member in the group.
+   *
+   * @param groupId The group ID.
+   * @param userId The user ID of the member.
+   * @returns The namecard of the member if the method succeeds; otherwise, `undefined`.
+   *
+   * @throws A description of the exception. See {@link ChatError}.
+   */
+  public async getGroupNamecard(
+    groupId: string,
+    userId: string
+  ): Promise<string | undefined> {
+    chatlog.log(`${ChatGroupManager.TAG}: getGroupNamecard: `, groupId, userId);
+    let r: any = await Native._callMethod(MTgetGroupNamecard, {
+      [MTgetGroupNamecard]: {
+        groupId,
+        userId,
+      },
+    });
+    ChatGroupManager.checkErrorFromResult(r);
+    const ret: string | null = r?.[MTgetGroupNamecard]?.namecard;
+    return ret ?? undefined;
   }
 
   /**

@@ -58,6 +58,7 @@
     [ExtSdkChatroomManagerWrapper.getInstance initSDK];
     [ExtSdkContactManagerWrapper.getInstance initSdk];
     [ExtSdkGroupManagerWrapper.getInstance initSdk];
+    [ExtSdkUserInfoManagerWrapper.getInstance initSdk];
     [ExtSdkPresenceManagerWrapper.getInstance initSdk];
     [ExtSdkChatThreadManagerWrapper.getInstance initSDK];
     [ExtSdkPushManagerWrapper.getInstance initSDK];

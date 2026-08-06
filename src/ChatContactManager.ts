@@ -26,7 +26,7 @@ import type { ChatContactEventListener } from './ChatEvents';
 import { chatlog } from './common/ChatConst';
 import { ChatContact } from './common/ChatContact';
 import { ChatCursorResult } from './common/ChatCursorResult';
-import { ChatException } from './common/ChatError';
+import { ChatError, ChatException } from './common/ChatError';
 
 /**
  * The contact manager class, which manages chat contacts such as adding, retrieving, modifying, and deleting contacts.
@@ -74,6 +74,17 @@ export class ChatContactManager extends BaseManager {
           break;
         case 'onFriendRequestDeclined':
           listener.onFriendRequestDeclined?.(params.username);
+          break;
+        case 'onContactSyncStart':
+          listener.onContactSyncStart?.();
+          break;
+        case 'onContactSyncFinish':
+          listener.onContactSyncFinish?.(
+            params.error ? new ChatError(params.error) : undefined
+          );
+          break;
+        case 'onContactInfoUpdate':
+          listener.onContactInfoUpdate?.(new ChatContact(params.contact));
           break;
 
         default:

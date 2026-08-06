@@ -1195,6 +1195,37 @@ public class ExtSdkGroupManagerWrapper extends ExtSdkWrapper {
         });
     }
 
+    public void updateGroupNamecard(JSONObject param, String channelName, ExtSdkCallback result)
+        throws JSONException {
+        String groupId = param.getString("groupId");
+        String namecard = null;
+        if (param.has("namecard") && !param.isNull("namecard")) {
+            namecard = param.getString("namecard");
+        }
+
+        EMClient.getInstance().groupManager().asyncUpdateGroupNamecard(groupId, namecard, new EMCallBack() {
+            @Override
+            public void onSuccess() {
+                ExtSdkWrapper.onSuccess(result, channelName, null);
+            }
+
+            @Override
+            public void onError(int i, String s) {
+                ExtSdkWrapper.onError(result, i, s);
+            }
+        });
+    }
+
+    public void getGroupNamecard(JSONObject param, String channelName, ExtSdkCallback result) throws JSONException {
+        String groupId = param.getString("groupId");
+        String userId = param.getString("userId");
+
+        String namecard = EMClient.getInstance().groupManager().getGroupNamecard(groupId, userId);
+        Map<String, Object> data = new HashMap<>();
+        data.put("namecard", namecard);
+        ExtSdkWrapper.onSuccess(result, channelName, data);
+    }
+
     private void registerEaseListener() {
         if (this.groupChangeListener != null) {
             EMClient.getInstance().groupManager().removeGroupChangeListener(this.groupChangeListener);
@@ -1466,6 +1497,16 @@ public class ExtSdkGroupManagerWrapper extends ExtSdkWrapper {
                 data.put("member", userId);
                 data.put("attributes", attribute);
                 data.put("operator", from);
+                ExtSdkWrapper.onReceive(ExtSdkMethodType.onGroupChanged, data);
+            }
+
+            @Override
+            public void onUserGroupNamecardUpdated(String groupId, String userId, String groupNamecard) {
+                Map<String, Object> data = new HashMap<>();
+                data.put("type", "onUserGroupNamecardChanged");
+                data.put("groupId", groupId);
+                data.put("userId", userId);
+                data.put("namecard", groupNamecard);
                 ExtSdkWrapper.onReceive(ExtSdkMethodType.onGroupChanged, data);
             }
         };

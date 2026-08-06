@@ -117,6 +117,10 @@ static NSString *_Nonnull const ExtSdkMethodKeyPinConversation = @"pinConversati
 static NSString *_Nonnull const ExtSdkMethodKeyModifyMessage = @"modifyMessage";
 static NSString *_Nonnull const ExtSdkMethodKeyDownloadAndParseCombineMessage = @"downloadAndParseCombineMessage";
 
+static NSString *_Nonnull const ExtSdkMethodKeyVoiceMessageToText = @"voiceMessageToText";
+static NSString *_Nonnull const ExtSdkMethodKeyVoiceFileToText = @"voiceFileToText";
+static NSString *_Nonnull const ExtSdkMethodKeyDownloadBigImage = @"downloadBigImage";
+
 #pragma mark - EMChatManagerDelegate
 static NSString *_Nonnull const ExtSdkMethodKeyOnMessagesReceived = @"onMessagesReceived";
 static NSString *_Nonnull const ExtSdkMethodKeyOnStreamMessagesReceived = @"onStreamMessagesReceived";
@@ -267,6 +271,9 @@ static NSString *_Nonnull const ExtSdkMethodKeyfetchMemberAttributesFromGroup = 
 static NSString *_Nonnull const ExtSdkMethodKeyfetchMembersAttributesFromGroup = @"fetchMembersAttributesFromGroup";
 static NSString *_Nonnull const ExtSdkMethodKeyIgnoreGroupPush = @"ignoreGroupPush"; // deprecated 2022.05.25
 
+static NSString *_Nonnull const ExtSdkMethodKeyUpdateGroupNamecard = @"updateGroupNamecard";
+static NSString *_Nonnull const ExtSdkMethodKeyGetGroupNamecard = @"getGroupNamecard";
+
 static NSString *_Nonnull const ExtSdkMethodKeyOnGroupChanged = @"onGroupChanged";
 
 #pragma mark - EMPushManagerWrapper
@@ -307,6 +314,13 @@ static NSString *_Nonnull const ExtSdkMethodKeyUpdateOwnUserInfo = @"updateOwnUs
 static NSString *_Nonnull const ExtSdkMethodKeyUpdateOwnUserInfoWithType = @"updateOwnUserInfoWithType";
 static NSString *_Nonnull const ExtSdkMethodKeyFetchUserInfoById = @"fetchUserInfoById";
 static NSString *_Nonnull const ExtSdkMethodKeyFetchUserInfoByIdWithType = @"fetchUserInfoByIdWithType";
+static NSString *_Nonnull const ExtSdkMethodKeyGetLocalUserInfoByIds = @"getLocalUserInfoByIds";
+static NSString *_Nonnull const ExtSdkMethodKeySubscribeUsersInfo = @"subscribeUsersInfo";
+static NSString *_Nonnull const ExtSdkMethodKeyUnsubscribeUsersInfo = @"unsubscribeUsersInfo";
+static NSString *_Nonnull const ExtSdkMethodKeyFetchSubscribedUsers = @"fetchSubscribedUsers";
+
+#pragma mark - EMUserInfoManagerDelegate
+static NSString *_Nonnull const ExtSdkMethodKeyOnUserInfoChanged = @"onUserInfoChanged";
 
 #pragma make - EMPresenceManagerWrapper
 static NSString *_Nonnull const ExtSdkMethodKeyPublishPresenceWithDescription = @"publishPresenceWithDescription";
@@ -499,6 +513,9 @@ static const int ExtSdkMethodKeyGetPinnedConversationsFromServerWithCursorValue 
 static const int ExtSdkMethodKeyPinConversationValue = 538;
 static const int ExtSdkMethodKeyModifyMessageValue = 539;
 static const int ExtSdkMethodKeyDownloadAndParseCombineMessageValue = 540;
+static const int ExtSdkMethodKeyVoiceMessageToTextValue = 543;
+static const int ExtSdkMethodKeyVoiceFileToTextValue = 544;
+static const int ExtSdkMethodKeyDownloadBigImageValue = 545;
 
 #pragma mark - EMChatManagerDelegate value
 static const int ExtSdkMethodKeyOnMessagesReceivedValue = 600;
@@ -645,6 +662,8 @@ static const int ExtSdkMethodKeyOnGroupChangedValue = 946;
 static const int ExtSdkMethodKeysetMemberAttributesFromGroupValue = 947;
 static const int ExtSdkMethodKeyfetchMemberAttributesFromGroupValue = 948;
 static const int ExtSdkMethodKeyfetchMembersAttributesFromGroupValue = 949;
+static const int ExtSdkMethodKeyUpdateGroupNamecardValue = 950;
+static const int ExtSdkMethodKeyGetGroupNamecardValue = 951;
 
 #pragma mark - EMPushManagerWrapper value
 static const int ExtSdkMethodKeyGetImPushConfigValue = 1000;
@@ -682,6 +701,13 @@ static const int ExtSdkMethodKeyUpdateOwnUserInfoValue = 1100;
 static const int ExtSdkMethodKeyUpdateOwnUserInfoWithTypeValue = 1101;
 static const int ExtSdkMethodKeyFetchUserInfoByIdValue = 1102;
 static const int ExtSdkMethodKeyFetchUserInfoByIdWithTypeValue = 1103;
+static const int ExtSdkMethodKeyGetLocalUserInfoByIdsValue = 1104;
+static const int ExtSdkMethodKeySubscribeUsersInfoValue = 1105;
+static const int ExtSdkMethodKeyUnsubscribeUsersInfoValue = 1106;
+static const int ExtSdkMethodKeyFetchSubscribedUsersValue = 1107;
+
+#pragma mark - EMUserInfoManagerDelegate value
+static const int ExtSdkMethodKeyOnUserInfoChangedValue = 1108;
 
 #pragma mark - EMPresenceManagerWrapper value
 static const int ExtSdkMethodKeyPublishPresenceWithDescriptionValue = 1400;

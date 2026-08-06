@@ -20,6 +20,7 @@ import {
   MTdownloadAndParseCombineMessage,
   MTdownloadAttachment,
   MTdownloadAttachmentInCombine,
+  MTdownloadBigImage,
   MTdownloadThumbnail,
   MTdownloadThumbnailInCombine,
   MTfetchChatThreadDetail,
@@ -108,6 +109,8 @@ import {
   MTupdateConversationMessage,
   MTgetMessagesWithIds,
   MTonStreamMessagesReceived,
+  MTvoiceFileToText,
+  MTvoiceMessageToText,
 } from './__internal__/Consts';
 import { Native } from './__internal__/Native';
 import type { ChatMessageEventListener } from './ChatEvents';
@@ -144,6 +147,7 @@ import {
   ChatMessageThreadEvent,
 } from './common/ChatMessageThread';
 import { ChatTranslateLanguage } from './common/ChatTranslateLanguage';
+import type { ChatVoiceParam } from './common/ChatVoiceParam';
 import { Factory } from './__internal__/Factory';
 
 /**
@@ -530,6 +534,19 @@ export class ChatManager extends BaseManager {
   ): void {
     ChatManager.handleMessageCallback(
       MTdownloadThumbnail,
+      self,
+      message,
+      callback
+    );
+  }
+
+  private static handleDownloadBigImageCallback(
+    self: ChatManager,
+    message: ChatMessage,
+    callback?: ChatMessageStatusCallback
+  ): void {
+    ChatManager.handleMessageCallback(
+      MTdownloadBigImage,
       self,
       message,
       callback
@@ -1016,6 +1033,79 @@ export class ChatManager extends BaseManager {
       },
     });
     Native.checkErrorFromResult(r);
+  }
+
+  /**
+   * Downloads the big image of the image message.
+   *
+   * @param message The image message with the big image to be downloaded.
+   * @param callback The listener that listens for message changes.
+   *
+   * @throws A description of the exception. See {@link ChatError}.
+   */
+  public async downloadBigImage(
+    message: ChatMessage,
+    callback?: ChatMessageStatusCallback
+  ): Promise<void> {
+    chatlog.log(
+      `${ChatManager.TAG}: downloadBigImage: ${message.msgId}, ${message.localTime}`,
+      message
+    );
+    ChatManager.handleDownloadBigImageCallback(this, message, callback);
+    let r: any = await Native._callMethod(MTdownloadBigImage, {
+      [MTdownloadBigImage]: {
+        message: message,
+      },
+    });
+    Native.checkErrorFromResult(r);
+  }
+
+  /**
+   * Converts the voice in the voice message to text.
+   *
+   * @param message The voice message to convert.
+   * @returns The text converted from the voice if the method succeeds.
+   *
+   * @throws A description of the exception. See {@link ChatError}.
+   */
+  public async voiceMessageToText(message: ChatMessage): Promise<string> {
+    chatlog.log(
+      `${ChatManager.TAG}: voiceMessageToText: ${message.msgId}, ${message.localTime}`,
+      message
+    );
+    let r: any = await Native._callMethod(MTvoiceMessageToText, {
+      [MTvoiceMessageToText]: {
+        message: message,
+      },
+    });
+    Native.checkErrorFromResult(r);
+    const ret: string = r?.[MTvoiceMessageToText]?.text;
+    return ret;
+  }
+
+  /**
+   * Converts the voice file to text.
+   *
+   * @param filePath The local path of the voice file.
+   * @param voiceParam (optional) The format information of the voice file. See {@link ChatVoiceParam}.
+   * @returns The text converted from the voice file if the method succeeds.
+   *
+   * @throws A description of the exception. See {@link ChatError}.
+   */
+  public async voiceFileToText(
+    filePath: string,
+    voiceParam?: ChatVoiceParam
+  ): Promise<string> {
+    chatlog.log(`${ChatManager.TAG}: voiceFileToText: ${filePath}`, voiceParam);
+    let r: any = await Native._callMethod(MTvoiceFileToText, {
+      [MTvoiceFileToText]: {
+        filePath: filePath,
+        voiceParam: voiceParam,
+      },
+    });
+    Native.checkErrorFromResult(r);
+    const ret: string = r?.[MTvoiceFileToText]?.text;
+    return ret;
   }
 
   /**

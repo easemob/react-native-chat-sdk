@@ -817,7 +817,24 @@
   if (self.streamChunk) {
     ret[@"streamChunk"] = [self.streamChunk toJsonObject];
   }
+  if (self.senderInfo) {
+    ret[@"senderInfo"] = [self.senderInfo toJsonObject];
+  }
 
+    return ret;
+}
+
+@end
+
+@implementation EMMessageSenderInfo (Json)
+
+- (NSDictionary *)toJsonObject {
+    NSMutableDictionary *ret = [NSMutableDictionary dictionary];
+    if (self.userId) { ret[@"userId"] = self.userId; }
+    if (self.nickname) { ret[@"nickname"] = self.nickname; }
+    if (self.avatarUrl) { ret[@"avatarUrl"] = self.avatarUrl; }
+    if (self.remark) { ret[@"remark"] = self.remark; }
+    if (self.groupNameCard) { ret[@"groupNameCard"] = self.groupNameCard; }
     return ret;
 }
 
@@ -1120,6 +1137,10 @@
     ret[@"displayName"] = self.displayName;
     ret[@"localPath"] = self.localPath;
     ret[@"sendOriginalImage"] = self.compressionRatio == 1.0 ? @(YES) : @(NO);
+    if (self.bigImageLocalPath) { ret[@"bigImageLocalPath"] = self.bigImageLocalPath; }
+    if (self.bigImageRemotePath) { ret[@"bigImageRemotePath"] = self.bigImageRemotePath; }
+    ret[@"bigImageDownloadStatus"] = @([ExtSdkConvertHelper downloadStatusToInt:self.bigImageDownloadStatus]);
+    ret[@"isOriginalImage"] = @(self.isOriginalImage);
     return ret;
 }
 @end
@@ -1198,6 +1219,7 @@
     ret[@"secret"] = self.secretKey;
     ret[@"remotePath"] = self.remotePath;
     ret[@"fileStatus"] = @([ExtSdkConvertHelper downloadStatusToInt:self.downloadStatus]);
+    if (self.text) { ret[@"text"] = self.text; }
     ;
     return ret;
 }
@@ -1241,6 +1263,8 @@
     data[@"webSocketServer"] = self.webSocketServer;
     data[@"webSocketPort"] = @(self.webSocketPort);
     data[@"dohVendor"] = @(self.dohVendor);
+    data[@"enableUserInfo"] = @(self.enableUserInfo);
+    data[@"enableAutoSyncContacts"] = @(self.enableAutoSyncContacts);
 
     return data;
 }
@@ -1294,6 +1318,9 @@
     if (aJson[@"webSocketPort"]) { options.webSocketPort = [aJson[@"webSocketPort"] intValue]; }
 
     if (aJson[@"dohVendor"]) { options.dohVendor = [aJson[@"dohVendor"] intValue]; }
+
+    if (aJson[@"enableUserInfo"]) { options.enableUserInfo = [aJson[@"enableUserInfo"] boolValue]; }
+    if (aJson[@"enableAutoSyncContacts"]) { options.enableAutoSyncContacts = [aJson[@"enableAutoSyncContacts"] boolValue]; }
 
     return options;
 }
@@ -1578,6 +1605,8 @@
     NSMutableDictionary *data = [NSMutableDictionary dictionary];
     data[@"userId"] = self.userId;
     data[@"remark"] = self.remark;
+    if (self.userInfo) { data[@"userInfo"] = [self.userInfo toJsonObject]; }
+    data[@"addTimestamp"] = @(self.addTimestamp);
     return data;
 }
 
@@ -1585,7 +1614,8 @@
     NSString *userId = dict[@"userId"];
     NSString *remark = dict[@"remark"];
     remark = (remark && remark.length > 0) ? remark : nil;
-    EMContact *contact = [[EMContact alloc] initWithUserId:userId remark:remark];
+    NSUInteger createAt = dict[@"addTimestamp"] ? [dict[@"addTimestamp"] unsignedLongLongValue] : 0;
+    EMContact *contact = [[EMContact alloc] initWithUserId:userId remark:remark createAt:createAt];
     return contact;
 }
 
@@ -1655,6 +1685,9 @@
     ret[@"memberId"] = self.userId;
     ret[@"joinedTimestamp"] = @(self.joinedTimestamp);
     ret[@"role"] = @([ExtSdkConvertHelper groupPremissionTypeToInt:self.role]);
+    if (self.namecard) { ret[@"namecard"] = self.namecard; }
+    if (self.nickname) { ret[@"nickname"] = self.nickname; }
+    if (self.avatarUrl) { ret[@"avatarUrl"] = self.avatarUrl; }
     return ret;
 }
 

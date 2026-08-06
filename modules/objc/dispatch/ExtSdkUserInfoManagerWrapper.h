@@ -13,6 +13,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 + (nonnull instancetype)getInstance;
 
+- (void)initSdk;
+
 - (void)updateOwnUserInfo:(NSDictionary *)param
            withMethodType:(NSString *)aChannelName
                    result:(nonnull id<ExtSdkCallbackObjc>)result;
@@ -28,6 +30,22 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)fetchUserInfoByIdWithType:(NSDictionary *)param
                    withMethodType:(NSString *)aChannelName
                            result:(nonnull id<ExtSdkCallbackObjc>)result;
+
+- (void)getLocalUserInfoByIds:(NSDictionary *)param
+               withMethodType:(NSString *)aChannelName
+                       result:(nonnull id<ExtSdkCallbackObjc>)result;
+
+- (void)subscribeUsersInfo:(NSDictionary *)param
+            withMethodType:(NSString *)aChannelName
+                    result:(nonnull id<ExtSdkCallbackObjc>)result;
+
+- (void)unsubscribeUsersInfo:(NSDictionary *)param
+              withMethodType:(NSString *)aChannelName
+                      result:(nonnull id<ExtSdkCallbackObjc>)result;
+
+- (void)fetchSubscribedUsers:(NSDictionary *)param
+              withMethodType:(NSString *)aChannelName
+                      result:(nonnull id<ExtSdkCallbackObjc>)result;
 @end
 
 NS_ASSUME_NONNULL_END

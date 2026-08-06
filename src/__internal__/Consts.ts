@@ -80,6 +80,9 @@ export const MTdownloadAttachmentInCombine = 'downloadAttachmentInCombine';
 export const MTdownloadThumbnailInCombine = 'downloadThumbnailInCombine';
 export const MTdownloadAttachment = 'downloadAttachment';
 export const MTdownloadThumbnail = 'downloadThumbnail';
+export const MTdownloadBigImage = 'downloadBigImage';
+export const MTvoiceMessageToText = 'voiceMessageToText';
+export const MTvoiceFileToText = 'voiceFileToText';
 export const MTimportMessages = 'importMessages';
 export const MTloadAllConversations = 'loadAllConversations';
 export const MTgetConversationsFromServer = 'getConversationsFromServer'; // deprecated. 2023-07-24
@@ -278,6 +281,8 @@ export const MTfetchMemberAttributesFromGroup =
   'fetchMemberAttributesFromGroup';
 export const MTfetchMembersAttributesFromGroup =
   'fetchMembersAttributesFromGroup';
+export const MTupdateGroupNamecard = 'updateGroupNamecard';
+export const MTgetGroupNamecard = 'getGroupNamecard';
 
 /// ChatGroupManager listener
 export const MTonGroupChanged = 'onGroupChanged';
@@ -325,6 +330,13 @@ export const MTupdateOwnUserInfo = 'updateOwnUserInfo';
 export const MTupdateOwnUserInfoWithType = 'updateOwnUserInfoWithType';
 export const MTfetchUserInfoById = 'fetchUserInfoById';
 export const MTfetchUserInfoByIdWithType = 'fetchUserInfoByIdWithType';
+export const MTgetLocalUserInfoByIds = 'getLocalUserInfoByIds';
+export const MTsubscribeUsersInfo = 'subscribeUsersInfo';
+export const MTunsubscribeUsersInfo = 'unsubscribeUsersInfo';
+export const MTfetchSubscribedUsers = 'fetchSubscribedUsers';
+
+/// ChatUserInfoManager listener
+export const MTonUserInfoChanged = 'onUserInfoChanged';
 
 /// PresenceManager methods
 export const MTpublishPresenceWithDescription =

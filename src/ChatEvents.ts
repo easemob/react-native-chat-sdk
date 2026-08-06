@@ -1,6 +1,7 @@
 import { ExceptionHandler } from './__internal__/ErrorHandler';
+import type { ChatContact } from './common/ChatContact';
 import type { ChatConversationType } from './common/ChatConversation';
-import { ChatException } from './common/ChatError';
+import { ChatError, ChatException } from './common/ChatError';
 import type { ChatGroup, ChatGroupMessageAck } from './common/ChatGroup';
 import type {
   ChatMessage,
@@ -11,6 +12,7 @@ import type { ChatMessageReactionEvent } from './common/ChatMessageReaction';
 import type { ChatMessageThreadEvent } from './common/ChatMessageThread';
 import type { ChatPresence } from './common/ChatPresence';
 import type { ChatRoom } from './common/ChatRoom';
+import type { ChatUserInfo } from './common/ChatUserInfo';
 
 /**
  *  The event types in multi-device login scenarios.
@@ -1030,6 +1032,20 @@ export interface ChatGroupEventListener {
     attributes: any;
     operator: string;
   }): void;
+
+  /**
+   * Occurs when the namecard of a group member is changed.
+   *
+   * @params params
+   * - groupId: The group ID.
+   * - userId: The user ID of the member whose namecard is changed.
+   * - namecard: The new namecard of the member. It is `undefined` if the namecard is cleared.
+   */
+  onUserGroupNamecardChanged?(params: {
+    groupId: string;
+    userId: string;
+    namecard?: string;
+  }): void;
 }
 
 /**
@@ -1081,6 +1097,42 @@ export interface ChatContactEventListener {
    * @param userName The user who initiates the friend request.
    */
   onFriendRequestDeclined?(userName: string): void;
+  /**
+   * Occurs when the contact list starts to be synchronized from the server.
+   */
+  onContactSyncStart?(): void;
+  /**
+   * Occurs when the contact list synchronization from the server is finished.
+   *
+   * @param error The error information if the synchronization fails. See {@link ChatError}.
+   */
+  onContactSyncFinish?(error?: ChatError): void;
+  /**
+   * Occurs when the information of a contact is updated.
+   *
+   * @param contact The contact whose information is updated. See {@link ChatContact}.
+   */
+  onContactInfoUpdate?(contact: ChatContact): void;
+}
+
+/**
+ * The user information event listener.
+ *
+ * It listens for user attribute changes, including changes of the current user's own attributes and the attributes of subscribed users.
+ */
+export interface ChatUserInfoEventListener {
+  /**
+   * Occurs when the user attributes of the current user are updated.
+   *
+   * @param userInfo The updated user attributes of the current user. See {@link ChatUserInfo}.
+   */
+  onSelfUserInfoUpdate?(userInfo: ChatUserInfo): void;
+  /**
+   * Occurs when the user attributes of the subscribed users are updated.
+   *
+   * @param userInfos The list of updated user attributes. See {@link ChatUserInfo}.
+   */
+  onUserInfoUpdate?(userInfos: ChatUserInfo[]): void;
 }
 
 /**
