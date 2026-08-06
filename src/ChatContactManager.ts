@@ -1,4 +1,4 @@
-import type { EmitterSubscription, NativeEventEmitter } from 'react-native';
+import type { EventSubscription, NativeEventEmitter } from 'react-native';
 
 import { BaseManager } from './__internal__/Base';
 import {
@@ -36,15 +36,15 @@ export class ChatContactManager extends BaseManager {
   constructor() {
     super();
     this._contactListeners = new Set<ChatContactEventListener>();
-    this._contactSubscriptions = new Map<string, EmitterSubscription>();
+    this._contactSubscriptions = new Map<string, EventSubscription>();
   }
 
   private _contactListeners: Set<ChatContactEventListener>;
-  private _contactSubscriptions: Map<string, EmitterSubscription>;
+  private _contactSubscriptions: Map<string, EventSubscription>;
 
   public setNativeListener(event: NativeEventEmitter): void {
     chatlog.log(`${ChatContactManager.TAG}: setNativeListener: `);
-    this._contactSubscriptions.forEach((value: EmitterSubscription) => {
+    this._contactSubscriptions.forEach((value: EventSubscription) => {
       value.remove();
     });
     this._contactSubscriptions.clear();

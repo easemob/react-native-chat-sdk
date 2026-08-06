@@ -1,4 +1,4 @@
-import type { EmitterSubscription, NativeEventEmitter } from 'react-native';
+import type { EventSubscription, NativeEventEmitter } from 'react-native';
 
 import { BaseManager } from './__internal__/Base';
 import {
@@ -78,7 +78,7 @@ export class ChatGroupManager extends BaseManager {
   protected static TAG = 'ChatGroupManager';
 
   private _groupListeners: Set<ChatGroupEventListener>;
-  private _groupSubscriptions: Map<string, EmitterSubscription>;
+  private _groupSubscriptions: Map<string, EventSubscription>;
 
   constructor() {
     super();
@@ -89,7 +89,7 @@ export class ChatGroupManager extends BaseManager {
   public setNativeListener(event: NativeEventEmitter): void {
     this._eventEmitter = event;
     chatlog.log(`${ChatGroupManager.TAG}: setNativeListener: `);
-    this._groupSubscriptions.forEach((value: EmitterSubscription) => {
+    this._groupSubscriptions.forEach((value: EventSubscription) => {
       value.remove();
     });
     this._groupSubscriptions.clear();

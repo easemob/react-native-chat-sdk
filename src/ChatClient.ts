@@ -1,4 +1,4 @@
-import { type EmitterSubscription, NativeEventEmitter } from 'react-native';
+import { type EventSubscription, NativeEventEmitter } from 'react-native';
 import { Factory } from './__internal__/Factory';
 
 import { BaseManager } from './__internal__/Base';
@@ -78,7 +78,7 @@ export class ChatClient extends BaseManager {
   public static eventType = 2; // 1.remove 2.subscription(suggested)
   protected static TAG = 'ChatClient';
   private static _instance: ChatClient;
-  private _connectionSubscriptions: Map<string, EmitterSubscription>;
+  private _connectionSubscriptions: Map<string, EventSubscription>;
   public static getInstance(): ChatClient {
     if (ChatClient._instance === null || ChatClient._instance === undefined) {
       ChatClient._instance = new ChatClient();
@@ -133,7 +133,7 @@ export class ChatClient extends BaseManager {
     this._presenceManager = new ChatPresenceManager();
 
     this._connectionListeners = new Set<ChatConnectEventListener>();
-    this._connectionSubscriptions = new Map<string, EmitterSubscription>();
+    this._connectionSubscriptions = new Map<string, EventSubscription>();
 
     this._multiDeviceListeners = new Set<ChatMultiDeviceEventListener>();
     this._customListeners = new Set<ChatCustomEventListener>();
@@ -151,9 +151,9 @@ export class ChatClient extends BaseManager {
     chatlog.log(`${ChatClient.TAG}: setNativeListener: `);
     this._connectionSubscriptions.forEach(
       (
-        value: EmitterSubscription,
+        value: EventSubscription,
         key: string,
-        map: Map<string, EmitterSubscription>
+        map: Map<string, EventSubscription>
       ) => {
         chatlog.log(`${ChatClient.TAG}: setNativeListener:`, key, value, map);
         value.remove();

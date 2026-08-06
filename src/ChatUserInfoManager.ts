@@ -1,4 +1,4 @@
-import type { EmitterSubscription, NativeEventEmitter } from 'react-native';
+import type { EventSubscription, NativeEventEmitter } from 'react-native';
 
 import {
   MTfetchSubscribedUsers,
@@ -24,17 +24,17 @@ export class ChatUserInfoManager extends Native {
   private static TAG = 'ChatUserInfoManager';
 
   private _userInfoListeners: Set<ChatUserInfoEventListener>;
-  private _userInfoSubscriptions: Map<string, EmitterSubscription>;
+  private _userInfoSubscriptions: Map<string, EventSubscription>;
 
   constructor() {
     super();
     this._userInfoListeners = new Set<ChatUserInfoEventListener>();
-    this._userInfoSubscriptions = new Map<string, EmitterSubscription>();
+    this._userInfoSubscriptions = new Map<string, EventSubscription>();
   }
 
   public setNativeListener(event: NativeEventEmitter): void {
     chatlog.log(`${ChatUserInfoManager.TAG}: setNativeListener: `);
-    this._userInfoSubscriptions.forEach((value: EmitterSubscription) => {
+    this._userInfoSubscriptions.forEach((value: EventSubscription) => {
       value.remove();
     });
     this._userInfoSubscriptions.clear();
