@@ -193,6 +193,8 @@ const CHAT_OPTIONS_KEYS = [
   'webSocketServer',
   'webSocketPort',
   'dohVendor',
+  'enableUserInfo',
+  'enableAutoSyncContacts',
 ];
 
 function deriveInitParams(

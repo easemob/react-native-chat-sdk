@@ -4,6 +4,7 @@ import type {
   ChatContactEventListener,
   ChatGroupEventListener,
   ChatMessageEventListener,
+  ChatUserInfoEventListener,
 } from 'react-native-chat-sdk';
 import { addLog } from './log/log_store';
 
@@ -92,6 +93,7 @@ const GROUP_METHODS = [
   'onDetailChanged',
   'onStateChanged',
   'onMemberAttributesChanged',
+  'onUserGroupNamecardChanged',
 ];
 
 const CONTACT_METHODS = [
@@ -100,7 +102,12 @@ const CONTACT_METHODS = [
   'onContactInvited',
   'onFriendRequestAccepted',
   'onFriendRequestDeclined',
+  'onContactSyncStart',
+  'onContactSyncFinish',
+  'onContactInfoUpdate',
 ];
+
+const USERINFO_METHODS = ['onSelfUserInfoUpdate', 'onUserInfoUpdate'];
 
 let registered = false;
 
@@ -134,10 +141,17 @@ export function registerAllListeners(): void {
       CONTACT_METHODS
     )
   );
+  client.userManager.addUserInfoListener(
+    makeListener<ChatUserInfoEventListener>(
+      'ChatUserInfoEventListener',
+      USERINFO_METHODS
+    )
+  );
   addLog('listeners.registered', {
     connection: CONNECT_METHODS.length,
     message: MESSAGE_METHODS.length,
     group: GROUP_METHODS.length,
     contact: CONTACT_METHODS.length,
+    userInfo: USERINFO_METHODS.length,
   });
 }

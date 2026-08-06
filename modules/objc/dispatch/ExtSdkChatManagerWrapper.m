@@ -468,6 +468,10 @@
     }
 
     EMChatMessage *needDownMSg = [EMClient.sharedClient.chatManager getMessageWithMessageId:msg.messageId];
+    if ([self checkMessageParams:result withMethodType:aChannelName withMessage:needDownMSg]) {
+        return;
+    }
+
     [EMClient.sharedClient.chatManager downloadBigImageAttachment:needDownMSg
         progress:^(int progress) {
           [weakSelf onReceive:aChannelName
@@ -512,6 +516,9 @@
     }
 
     EMChatMessage *dbMsg = [EMClient.sharedClient.chatManager getMessageWithMessageId:msg.messageId];
+    if ([self checkMessageParams:result withMethodType:aChannelName withMessage:dbMsg]) {
+        return;
+    }
 
     __weak typeof(self) weakSelf = self;
     [EMClient.sharedClient.chatManager voiceMessageToText:dbMsg
