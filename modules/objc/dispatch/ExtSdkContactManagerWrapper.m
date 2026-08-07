@@ -304,4 +304,24 @@
     [self onReceive:ExtSdkMethodKeyOnContactChanged withParams:map];
 }
 
+- (void)onFriendStartSync {
+    NSDictionary *map = @{@"type" : @"onContactSyncStart"};
+    [self onReceive:ExtSdkMethodKeyOnContactChanged withParams:map];
+}
+
+- (void)onFriendSyncFinished:(EMError *_Nullable)error {
+    NSMutableDictionary *map = [NSMutableDictionary dictionary];
+    map[@"type"] = @"onContactSyncFinish";
+    if (error) {
+        map[@"error"] = [error toJsonObject];
+    }
+    [self onReceive:ExtSdkMethodKeyOnContactChanged withParams:map];
+}
+
+- (void)onFriendInfoChanged:(EMContact *_Nonnull)contact {
+    NSDictionary *map =
+        @{@"type" : @"onContactInfoUpdate", @"contact" : [contact toJsonObject]};
+    [self onReceive:ExtSdkMethodKeyOnContactChanged withParams:map];
+}
+
 @end

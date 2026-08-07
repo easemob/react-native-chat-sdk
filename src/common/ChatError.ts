@@ -1,3 +1,6 @@
+/**
+ * 聊天错误类，包含错误码和错误描述。
+ */
 export class ChatError extends Error {
   /**
    * 错误码。

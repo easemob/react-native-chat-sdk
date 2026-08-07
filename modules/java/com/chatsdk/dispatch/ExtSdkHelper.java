@@ -39,6 +39,7 @@ import com.hyphenate.chat.EMPresence;
 import com.hyphenate.chat.EMPushConfigs;
 import com.hyphenate.chat.EMPushManager;
 import com.hyphenate.chat.EMRecallMessageInfo;
+import com.hyphenate.chat.EMSenderInfo;
 import com.hyphenate.chat.EMSilentModeParam;
 import com.hyphenate.chat.EMSilentModeResult;
 import com.hyphenate.chat.EMSilentModeTime;
@@ -352,6 +353,10 @@ class ExtSdkOptionsHelper {
         // 2026-01-16
         if (json.has("dohVendor")) { options.setDohVendor(json.getInt("dohVendor")); }
 
+        // 2026-08-05 4.22.0
+        if (json.has("enableUserInfo")) { options.setEnableUserInfo(json.getBoolean("enableUserInfo")); }
+        if (json.has("enableAutoSyncContacts")) { options.setEnableAutoSyncContacts(json.getBoolean("enableAutoSyncContacts")); }
+
         return options;
     }
 
@@ -394,6 +399,8 @@ class ExtSdkOptionsHelper {
         data.put("webSocketServer", options.getWebSocketServer());
         data.put("webSocketPort", options.getWebSocketPort());
         data.put("dohVendor", options.getDohVendor());
+        data.put("enableUserInfo", options.isEnableUserInfo());
+        data.put("enableAutoSyncContacts", options.isEnableAutoSyncContacts());
         return data;
     }
 }
@@ -442,6 +449,15 @@ class ExtSdkGroupMemberInfoHelper {
         data.put("memberId", memberInfo.getMemberId());
         data.put("joinedTimestamp", memberInfo.getJoinTime());
         data.put("role", InternalConvertHelper.intTypeFromGroupPermissionType(memberInfo.getRole()));
+        if (memberInfo.getNamecard() != null) {
+            data.put("namecard", memberInfo.getNamecard());
+        }
+        if (memberInfo.getNickname() != null) {
+            data.put("nickname", memberInfo.getNickname());
+        }
+        if (memberInfo.getAvatarUrl() != null) {
+            data.put("avatarUrl", memberInfo.getAvatarUrl());
+        }
         return data;
     }
 }
@@ -762,6 +778,25 @@ class ExtSdkMessageHelper {
           data.put("streamChunk", ExtSdkStreamChunkHelper.toJson(message.getStreamChunk()));
         }
 
+        if (message.getSenderInfo() != null) {
+            data.put("senderInfo", ExtSdkSenderInfoHelper.toJson(message.getSenderInfo()));
+        }
+
+        return data;
+    }
+}
+
+class ExtSdkSenderInfoHelper {
+    static Map<String, Object> toJson(EMSenderInfo senderInfo) {
+        if (senderInfo == null) {
+            return null;
+        }
+        Map<String, Object> data = new HashMap<>();
+        data.put("userId", senderInfo.getUserId());
+        data.put("nickname", senderInfo.getNickname());
+        data.put("avatarUrl", senderInfo.getAvatar());
+        data.put("remark", senderInfo.getRemark());
+        data.put("groupNameCard", senderInfo.getNamecard());
         return data;
     }
 }
@@ -993,6 +1028,10 @@ class ExtSdkMessageBodyHelper {
         data.put("width", body.getWidth());
         data.put("sendOriginalImage", body.isSendOriginalImage());
         data.put("fileSize", body.getFileSize());
+        data.put("bigImageLocalPath", body.getBigImageLocalUrl());
+        data.put("bigImageRemotePath", body.getBigImageRemoteUrl());
+        data.put("bigImageDownloadStatus", InternalConvertHelper.downloadStatusToInt(body.getBigImageDownloadStatus()));
+        data.put("isOriginalImage", body.isOriginalImage());
         data.put("type", "img");
         return data;
     }
@@ -1057,6 +1096,7 @@ class ExtSdkMessageBodyHelper {
         data.put("secret", body.getSecret());
         data.put("type", "voice");
         data.put("fileSize", body.getFileSize());
+        data.put("text", body.getText());
         return data;
     }
 }
@@ -1566,6 +1606,11 @@ class ExtSdkContactHelper {
         if (remark != null) {
             data.put("remark", remark);
         }
+        EMUserInfo userInfo = contact.getUserInfo();
+        if (userInfo != null) {
+            data.put("userInfo", ExtSdkUserInfoHelper.toJson(userInfo));
+        }
+        data.put("addTimestamp", contact.getAddTimestamp());
         return data;
     }
 }

@@ -1,12 +1,17 @@
 {
   "name": "react-native-chat-sdk",
-  "version": "1.15.3",
+  "version": "1.18.0",
   "description": "An instant messaging SDK product is a software development kit that provides interfaces and functionalities for building and integrating real-time messaging features, enabling developers to implement instant messaging services within their applications.",
-  "main": "lib/commonjs/index",
-  "module": "lib/module/index",
-  "types": "lib/typescript/src/index.d.ts",
-  "react-native": "src/index",
-  "source": "src/index",
+  "main": "./lib/module/index.js",
+  "types": "./lib/typescript/src/index.d.ts",
+  "exports": {
+    ".": {
+      "react-native-chat-sdk-source": "./src/index.ts",
+      "types": "./lib/typescript/src/index.d.ts",
+      "default": "./lib/module/index.js"
+    },
+    "./package.json": "./package.json"
+  },
   "files": [
     "src",
     "lib",
@@ -19,8 +24,9 @@
     "modules/cpp/CMakeLists.txt",
     "scripts/generate-cmake.js",
     "scripts/generate-version.js",
+    "scripts/generate-env.js",
     "*.podspec",
-    "!build",
+    "react-native.config.js",
     "!ios/build",
     "!android/build",
     "!android/gradle",
@@ -35,86 +41,83 @@
     "!**/.*"
   ],
   "scripts": {
-    "example": "yarn workspace rn-cs-example",
+    "example": "yarn workspace react-native-chat-sdk-example",
+    "clean": "del-cli android/build example/android/build example/android/app/build example/ios/build lib",
+    "prepare": "yarn run gen:version_file && yarn run gen:cmake_file && yarn run gen:env_file && bob build",
+    "typecheck": "tsc",
+    "lint": "eslint \"**/*.{js,ts,tsx}\"",
     "test": "jest",
     "test:unit": "jest src/__tests__/unit",
     "test:contract": "jest src/__tests__/contract",
     "test:coverage": "jest --coverage",
-    "typecheck": "tsc --noEmit",
-    "lint": "yarn run lint:sdk && yarn run lint:example",
-    "lint:sdk": "eslint \"src/**/*.{js,ts,tsx}\"",
-    "lint:example": "eslint \"example/src/**/*.{js,ts,tsx}\"",
-    "clean": "yarn run clean:generated && yarn run clean:docs && yarn run clean:node_modules",
-    "clean:generated": "del-cli android/build example/android/build example/android/app/build example/ios/build lib",
-    "clean:node_modules": "rm -rf example/node_modules && rm -rf node_modules/",
-    "clean:docs": "del-cli docs/build",
     "scan:deprecated": "bash scripts/scan-deprecated.sh",
     "scan:deprecated:android": "bash scripts/scan-deprecated-android.sh",
     "scan:deprecated:ios": "bash scripts/scan-deprecated-ios.sh",
-    "prepare": "yarn run gen:version_file && yarn run gen:cmake_file && yarn run gen:env_file && yarn run build:exports && yarn run check:circular:dpdm",
-    "hooks:install": "lefthook install -f",
-    "hooks:repair": "node ./scripts/repair-lefthook-hooks.js",
     "gen:env_file": "cd scripts && node generate-env.js",
     "gen:version_file": "cd scripts && node generate-version.js",
     "gen:cmake_file": "cd scripts && node generate-cmake.js",
-    "gen:xcode:env": "echo export NODE_BINARY=$(command -v node) > example/ios/.xcode.env.local",
-    "build:exports": "bob build",
-    "yarn_pack": "mkdir build && yarn run prepare && yarn pack --out build/react-native-chat-sdk.tgz",
-    "doc:en": "mkdir -p ./docs/build/en && yarn exec typedoc --out ./docs/build/en --json ./docs/build/typedoc.json --tsconfig ./tsconfig.json --readme ./docs/rn_api_overview.md ./src/index.ts",
-    "doc:cn": "mkdir -p ./docs/build/cn && yarn exec typedoc --out ./docs/build/cn --json ./docs/build/typedoc.json --tsconfig ./tsconfig.json --readme ./docs/rn_api_overview.zh.md ./src/index.ts",
-    "doc:md": "mkdir -p ./docs/build/md && yarn exec typedoc --plugin typedoc-plugin-markdown --out ./docs/build/md --tsconfig ./tsconfig.json --readme ./docs/rn_api_overview.md ./src/index.ts",
-    "doc:cn:update": "node ./scripts/update_api_docs.js 1.15.0 undefined easemob cn",
-    "doc:agora:update": "node ./scripts/update_api_docs.js 1.4.0 undefined agora en",
-    "doc:shengwang:update": "node ./scripts/update_api_docs.js 1.4.0 undefined shengwang en",
     "check:circular:dpdm": "dpdm --circular --transform --include ts src/",
     "check:circular:madge": "madge --circular --extensions ts src/",
-    "release": "release-it"
+    "doc": "node ./scripts/docs/build_api_docs.js",
+    "doc:md": "mkdir -p ./docs/build/md && yarn exec typedoc --plugin typedoc-plugin-markdown --out ./docs/build/md --tsconfig ./tsconfig.json --readme ./docs/rn_api_overview.md ./src/index.ts",
+    "doc:agora:update": "node ./scripts/update_api_docs.js 1.4.0 undefined agora en",
+    "doc:shengwang:update": "node ./scripts/update_api_docs.js 1.4.0 undefined shengwang en",
+    "hooks:install": "lefthook install -f",
+    "hooks:repair": "node ./scripts/repair-lefthook-hooks.js",
+    "release": "release-it --only-version",
+    "web": "vite",
+    "build:web": "vite build"
   },
   "keywords": [
     "react-native",
     "ios",
     "android"
   ],
-  "repository": "https://github.com/easemob/react-native-chat-sdk",
-  "author": "asteriskzuo <zuoyuhsywn@hotmail.com> (https://github.com/asteriskzuo)",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AsteriskZuo/react-native-chat-sdk.git"
+  },
+  "author": "asteriskzuo <zuoyuhsywn@hotmail.com> (https://github.com/AsteriskZuo)",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/easemob/react-native-chat-sdk/issues"
+    "url": "https://github.com/AsteriskZuo/react-native-chat-sdk/issues"
   },
-  "homepage": "https://github.com/easemob/react-native-chat-sdk#readme",
+  "homepage": "https://github.com/AsteriskZuo/react-native-chat-sdk#readme",
   "publishConfig": {
     "registry": "https://registry.npmjs.org/"
   },
   "devDependencies": {
-    "@commitlint/config-conventional": "^17.0.2",
-    "@evilmartians/lefthook": "^1.5.0",
-    "@react-native/eslint-config": "^0.72.2",
-    "@release-it/conventional-changelog": "^5.0.0",
+    "@commitlint/config-conventional": "^21.0.2",
+    "@eslint/compat": "^2.1.0",
+    "@eslint/eslintrc": "^3.3.5",
+    "@eslint/js": "^10.0.1",
+    "@jest/globals": "^29.7.0",
+    "@react-native/babel-preset": "0.83.10",
+    "@react-native/eslint-config": "0.85.0",
+    "@react-native/jest-preset": "0.85.0",
+    "@release-it/conventional-changelog": "^11.0.1",
     "@types/jest": "^28.1.2",
-    "@types/react": "~17.0.21",
-    "@types/react-native": "0.70.0",
-    "commitlint": "^17.0.2",
-    "del-cli": "^5.0.0",
-    "dpdm": "^3.14.0",
-    "eslint": "^8.4.1",
-    "eslint-config-prettier": "^8.5.0",
-    "eslint-plugin-prettier": "^4.0.0",
-    "fast-check": "^4.8.0",
-    "jest": "^28.1.1",
+    "@types/react": "^19.2.0",
+    "commitlint": "^21.0.2",
+    "del-cli": "^7.0.0",
+    "dpdm": "^4.3.0",
+    "eslint": "^9.39.4",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-ft-flow": "^3.0.11",
+    "eslint-plugin-prettier": "^5.5.6",
+    "jest": "^29.7.0",
+    "lefthook": "^2.1.9",
     "madge": "^8.0.0",
-    "pod-install": "^0.1.0",
-    "prettier": "^2.0.5",
-    "react": "18.2.0",
-    "react-native": "0.72.17",
-    "react-native-builder-bob": "^0.20.0",
-    "release-it": "^15.0.0",
-    "turbo": "^1.10.7",
-    "typedoc": "^0.28.16",
-    "typedoc-plugin-markdown": "^4.9.0",
-    "typescript": "^5.0.2"
-  },
-  "resolutions": {
-    "@types/react": "17.0.21"
+    "prettier": "^3.8.3",
+    "react": "19.2.0",
+    "react-native": "0.83.10",
+    "react-native-builder-bob": "^0.41.0",
+    "react-native-web": "~0.21.2",
+    "release-it": "^20.2.0",
+    "turbo": "^2.9.16",
+    "typedoc": "^0.28.20",
+    "typedoc-plugin-markdown": "^4.12.0",
+    "typescript": "~5.9.3"
   },
   "peerDependencies": {
     "react": "*",
@@ -125,20 +128,59 @@
   ],
   "packageManager": "yarn@4.14.1",
   "engines": {
-    "node": ">= 16.16.1"
+    "node": ">=24"
+  },
+  "react-native-builder-bob": {
+    "source": "src",
+    "output": "lib",
+    "targets": [
+      [
+        "module",
+        {
+          "esm": true
+        }
+      ],
+      [
+        "typescript",
+        {
+          "project": "tsconfig.build.json"
+        }
+      ]
+    ]
+  },
+  "codegenConfig": {
+    "name": "RNChatSdkSpec",
+    "type": "modules",
+    "jsSrcsDir": "src/__specs__",
+    "android": {
+      "javaPackageName": "com.chatsdk"
+    }
+  },
+  "prettier": {
+    "quoteProps": "consistent",
+    "singleQuote": true,
+    "tabWidth": 2,
+    "trailingComma": "es5",
+    "useTabs": false
   },
   "jest": {
-    "preset": "react-native",
+    "preset": "@react-native/jest-preset",
+    "testEnvironmentOptions": {
+      "customExportConditions": [
+        "require",
+        "react-native",
+        "<%- project.sourceCondition -%>"
+      ]
+    },
     "modulePathIgnorePatterns": [
       "<rootDir>/example/node_modules",
-      "<rootDir>/lib/",
-      "<rootDir>/.worktree/"
+      "<rootDir>/lib/"
     ],
     "setupFilesAfterEnv": [
       "<rootDir>/src/__tests__/setup.ts"
     ],
     "testPathIgnorePatterns": [
-      "<rootDir>/.kiro/",
+      "<rootDir>/.worktree/",
       "<rootDir>/src/__tests__/helpers/",
       "<rootDir>/src/__tests__/setup.ts",
       "<rootDir>/src/__tests__/contract/parsers.ts"
@@ -173,8 +215,7 @@
           "test",
           "tag",
           "api",
-          "example",
-          "tag"
+          "example"
         ]
       ]
     }
@@ -192,60 +233,22 @@
     },
     "plugins": {
       "@release-it/conventional-changelog": {
-        "preset": "angular"
+        "preset": {
+          "name": "angular"
+        }
       }
     }
   },
-  "eslintConfig": {
-    "root": true,
-    "extends": [
-      "@react-native",
-      "prettier"
+  "create-react-native-library": {
+    "type": "turbo-module",
+    "languages": "kotlin-objc",
+    "tools": [
+      "eslint",
+      "jest",
+      "lefthook",
+      "release-it",
+      "vite"
     ],
-    "rules": {
-      "prettier/prettier": [
-        "error",
-        {
-          "quoteProps": "consistent",
-          "singleQuote": true,
-          "tabWidth": 2,
-          "trailingComma": "es5",
-          "useTabs": false
-        }
-      ]
-    }
-  },
-  "eslintIgnore": [
-    "node_modules/",
-    "lib/"
-  ],
-  "prettier": {
-    "quoteProps": "consistent",
-    "singleQuote": true,
-    "tabWidth": 2,
-    "trailingComma": "es5",
-    "useTabs": false
-  },
-  "react-native-builder-bob": {
-    "source": "src",
-    "output": "lib",
-    "targets": [
-      "commonjs",
-      "module",
-      [
-        "typescript",
-        {
-          "project": "tsconfig.build.json"
-        }
-      ]
-    ]
-  },
-  "codegenConfig": {
-    "name": "RNChatSdkSpec",
-    "type": "modules",
-    "jsSrcsDir": "src/__specs__",
-    "android": {
-      "javaPackageName": "com.chatsdk"
-    }
+    "version": "0.63.0"
   }
 }

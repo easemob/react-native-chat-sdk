@@ -243,7 +243,23 @@ export class ChatOptions {
   dohVendor?: number;
 
   /**
-   * @deprecated 请使用 {@link withAppId} and {@link withAppKey} 替代.
+   * 是否开启用户信息功能，包括用户属性和联系人信息。
+   *
+   * - `true`：开启。
+   * - （默认）`false`：关闭。
+   */
+  enableUserInfo: boolean;
+
+  /**
+   * 是否在登录后自动同步联系人列表。
+   *
+   * - `true`：是。
+   * - （默认）`false`：否。
+   */
+  enableAutoSyncContacts: boolean;
+
+  /**
+   * @deprecated 请使用 {@link withAppId} 和 {@link withAppKey} 替代.
    */
   constructor(params: {
     appKey: string;
@@ -283,6 +299,8 @@ export class ChatOptions {
     webSocketServer?: string;
     webSocketPort?: number;
     dohVendor?: number;
+    enableUserInfo?: boolean;
+    enableAutoSyncContacts?: boolean;
   }) {
     if (!params.appKey && !params.appId) {
       throw new ChatError({
@@ -333,6 +351,8 @@ export class ChatOptions {
     this.webSocketServer = params.webSocketServer;
     this.webSocketPort = params.webSocketPort ?? 0;
     this.dohVendor = params.dohVendor ?? 1; // agora is 2.
+    this.enableUserInfo = params.enableUserInfo ?? false;
+    this.enableAutoSyncContacts = params.enableAutoSyncContacts ?? false;
   }
 
   static withAppId(params: {
@@ -372,6 +392,8 @@ export class ChatOptions {
     webSocketServer?: string;
     webSocketPort?: number;
     dohVendor?: number;
+    enableUserInfo?: boolean;
+    enableAutoSyncContacts?: boolean;
   }) {
     return new ChatOptions({
       ...params,
@@ -416,6 +438,8 @@ export class ChatOptions {
     webSocketServer?: string;
     webSocketPort?: number;
     dohVendor?: number;
+    enableUserInfo?: boolean;
+    enableAutoSyncContacts?: boolean;
   }) {
     return new ChatOptions({
       ...params,

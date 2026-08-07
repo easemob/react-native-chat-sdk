@@ -1,4 +1,4 @@
-import type { EmitterSubscription, NativeEventEmitter } from 'react-native';
+import type { EventSubscription, NativeEventEmitter } from 'react-native';
 
 import {
   MTaddChatRoomAdmin,
@@ -52,15 +52,15 @@ export class ChatRoomManager extends Native {
   constructor() {
     super();
     this._roomListeners = new Set<ChatRoomEventListener>();
-    this._roomSubscriptions = new Map<string, EmitterSubscription>();
+    this._roomSubscriptions = new Map<string, EventSubscription>();
   }
 
   private _roomListeners: Set<ChatRoomEventListener>;
-  private _roomSubscriptions: Map<string, EmitterSubscription>;
+  private _roomSubscriptions: Map<string, EventSubscription>;
 
   public setNativeListener(event: NativeEventEmitter): void {
     chatlog.log(`${ChatRoomManager.TAG}: setNativeListener: `);
-    this._roomSubscriptions.forEach((value: EmitterSubscription) => {
+    this._roomSubscriptions.forEach((value: EventSubscription) => {
       value.remove();
     });
     this._roomSubscriptions.clear();

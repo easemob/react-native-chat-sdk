@@ -113,6 +113,9 @@ ChatSDK 是一个高度可靠的全球交流平台，您的用户可以在其中
 | {@link ChatManager.downloadThumbnailInCombine downloadThumbnailInCombine} | 下载消息缩略图。 |
 | {@link ChatManager.downloadAttachment downloadAttachment} | 下载消息附件。 |
 | {@link ChatManager.downloadThumbnail downloadThumbnail} | 下载消息的缩略图。 |
+| {@link ChatManager.downloadBigImage downloadBigImage} | 下载图片消息的大图。 |
+| {@link ChatManager.voiceMessageToText voiceMessageToText} | 将语音消息中的语音转换为文本。 |
+| {@link ChatManager.voiceFileToText voiceFileToText} | 将语音文件转换为文本。 |
 | {@link ChatManager.fetchHistoryMessages fetchHistoryMessages} | 分页获取指定会话的历史消息。 |
 | {@link ChatManager.fetchHistoryMessagesByOptions fetchHistoryMessagesByOptions} | 根据消息拉取参数配置从服务器分页获取指定会话的历史消息。 |
 | {@link ChatManager.searchMsgFromDB searchMsgFromDB} | 从本地数据库获取指定会话中包含特定关键字的消息。 |
@@ -240,6 +243,9 @@ ChatSDK 是一个高度可靠的全球交流平台，您的用户可以在其中
 | {@link ChatContactEventListener.onContactInvited onContactInvited} | 当前用户收到好友请求的回调。 |
 | {@link ChatContactEventListener.onFriendRequestAccepted onFriendRequestAccepted} | 当前用户同意好友请求的回调。 |
 | {@link ChatContactEventListener.onFriendRequestDeclined onFriendRequestDeclined} | 拒绝好友请求的回调。 |
+| {@link ChatContactEventListener.onContactSyncStart onContactSyncStart} | 开始从服务器同步联系人列表时触发。 |
+| {@link ChatContactEventListener.onContactSyncFinish onContactSyncFinish} | 从服务器同步联系人列表完成时触发。 |
+| {@link ChatContactEventListener.onContactInfoUpdate onContactInfoUpdate} | 联系人信息更新时触发。 |
 ## ChatGroupManager
 | Method | Description |
 | :----- | :---------- |
@@ -261,6 +267,8 @@ ChatSDK 是一个高度可靠的全球交流平台，您的用户可以在其中
 | {@link ChatGroupManager.fetchGroupFileListFromServer fetchGroupFileListFromServer} | 从服务器分页获取群共享文件。 |
 | {@link ChatGroupManager.fetchAnnouncementFromServer fetchAnnouncementFromServer} | 从服务器获取群组公告。 |
 | {@link ChatGroupManager.addMembers addMembers} | 向群组中添加新成员。 |
+| {@link ChatGroupManager.updateGroupNamecard updateGroupNamecard} | 更新当前用户在群组中的群名片。 |
+| {@link ChatGroupManager.getGroupNamecard getGroupNamecard} | 获取群组中指定成员的群名片。 |
 | {@link ChatGroupManager.inviteUser inviteUser} | 邀请用户加入群组。 |
 | {@link ChatGroupManager.removeMembers removeMembers} | 从群组中移除用户。 |
 | {@link ChatGroupManager.blockMembers blockMembers} | 将成员加入群组的黑名单列表。 |
@@ -329,6 +337,7 @@ ChatSDK 是一个高度可靠的全球交流平台，您的用户可以在其中
 | {@link ChatGroupEventListener.onDetailChanged onDetailChanged} | 群组详情变更回调。群组所有成员会收到该事件。 |
 | {@link ChatGroupEventListener.onStateChanged onStateChanged} | 群组状态变更回调。群组所有成员会收到该事件。 |
 | {@link ChatGroupEventListener.onMemberAttributesChanged onMemberAttributesChanged} | 群组成员属性变化通知。 |
+| {@link ChatGroupEventListener.onUserGroupNamecardChanged onUserGroupNamecardChanged} | 群组成员的群名片发生变化时触发。 |
 ## ChatRoomManager
 | Method | Description |
 | :----- | :---------- |
@@ -425,8 +434,16 @@ ChatSDK 是一个高度可靠的全球交流平台，您的用户可以在其中
 ## ChatUserInfoManager
 | Method | Description |
 | :----- | :---------- |
+| {@link ChatUserInfoManager.setNativeListener setNativeListener} | 用户信息管理类，负责更新及获取用户属性。 |
+| {@link ChatUserInfoManager.addUserInfoListener addUserInfoListener} | 添加用户信息监听器。 |
+| {@link ChatUserInfoManager.removeUserInfoListener removeUserInfoListener} | 移除用户信息监听器。 |
+| {@link ChatUserInfoManager.removeAllUserInfoListener removeAllUserInfoListener} | 移除所有用户信息监听器。 |
 | {@link ChatUserInfoManager.updateOwnUserInfo updateOwnUserInfo} | 修改当前用户的信息。 |
 | {@link ChatUserInfoManager.fetchUserInfoById fetchUserInfoById} | 获取指定用户的用户属性。 |
+| {@link ChatUserInfoManager.getLocalUserInfoByIds getLocalUserInfoByIds} | 从本地数据库获取指定用户的用户属性信息。 |
+| {@link ChatUserInfoManager.subscribeUsersInfo subscribeUsersInfo} | 订阅指定用户的用户属性。 |
+| {@link ChatUserInfoManager.unsubscribeUsersInfo unsubscribeUsersInfo} | 取消订阅指定用户的用户属性。 |
+| {@link ChatUserInfoManager.fetchSubscribedUsers fetchSubscribedUsers} | 获取当前用户已订阅用户属性的用户列表。 |
 | {@link ChatUserInfoManager.fetchOwnInfo fetchOwnInfo} | 从服务器获取当前用户的用户属性信息。 |
 ## ChatMessage
 | Method | Description |

@@ -457,6 +457,111 @@
     [weakSelf onResult:result withMethodType:aChannelName withError:nil withParams:[msg toJsonObject]];
 }
 
+- (void)downloadBigImage:(NSDictionary *)param
+          withMethodType:(NSString *)aChannelName
+                  result:(nonnull id<ExtSdkCallbackObjc>)result {
+    __weak typeof(self) weakSelf = self;
+    __block EMChatMessage *msg = [EMChatMessage fromJsonObject:param[@"message"]];
+
+    if ([self checkMessageParams:result withMethodType:aChannelName withMessage:msg]) {
+        return;
+    }
+
+    EMChatMessage *needDownMSg = [EMClient.sharedClient.chatManager getMessageWithMessageId:msg.messageId];
+    if ([self checkMessageParams:result withMethodType:aChannelName withMessage:needDownMSg]) {
+        return;
+    }
+
+    [EMClient.sharedClient.chatManager downloadBigImageAttachment:needDownMSg
+        progress:^(int progress) {
+          [weakSelf onReceive:aChannelName
+                   withParams:@{
+                       @"progress" : @(progress),
+                       @"localTime" : @(msg.localTime),
+                       @"msgId" : msg.messageId,
+                       @"callbackType" : ExtSdkMethodKeyOnMessageProgressUpdate
+                   }];
+        }
+        completion:^(EMChatMessage *message, EMError *error) {
+          if (error) {
+              [weakSelf onReceive:aChannelName
+                       withParams:@{
+                           @"error" : [error toJsonObject],
+                           @"localTime" : @(msg.localTime),
+                           @"message" : [message toJsonObject],
+                           @"msgId" : msg.messageId,
+                           @"callbackType" : ExtSdkMethodKeyOnMessageError
+                       }];
+          } else {
+              [weakSelf onReceive:aChannelName
+                       withParams:@{
+                           @"message" : [message toJsonObject],
+                           @"localTime" : @(msg.localTime),
+                           @"msgId" : msg.messageId,
+                           @"callbackType" : ExtSdkMethodKeyOnMessageSuccess
+                       }];
+          }
+        }];
+
+    [weakSelf onResult:result withMethodType:aChannelName withError:nil withParams:[msg toJsonObject]];
+}
+
+- (void)voiceMessageToText:(NSDictionary *)param
+            withMethodType:(NSString *)aChannelName
+                    result:(nonnull id<ExtSdkCallbackObjc>)result {
+    EMChatMessage *msg = [EMChatMessage fromJsonObject:param[@"message"]];
+
+    if ([self checkMessageParams:result withMethodType:aChannelName withMessage:msg]) {
+        return;
+    }
+
+    EMChatMessage *dbMsg = [EMClient.sharedClient.chatManager getMessageWithMessageId:msg.messageId];
+    if ([self checkMessageParams:result withMethodType:aChannelName withMessage:dbMsg]) {
+        return;
+    }
+
+    __weak typeof(self) weakSelf = self;
+    [EMClient.sharedClient.chatManager voiceMessageToText:dbMsg
+                                               completion:^(NSString *text, EMError *error) {
+                                                 [weakSelf onResult:result
+                                                     withMethodType:aChannelName
+                                                          withError:error
+                                                         withParams:@{@"text" : text ?: @""}];
+                                               }];
+}
+
+- (void)voiceFileToText:(NSDictionary *)param
+         withMethodType:(NSString *)aChannelName
+                 result:(nonnull id<ExtSdkCallbackObjc>)result {
+    NSString *filePath = param[@"filePath"];
+    NSDictionary *voiceParamJson = param[@"voiceParam"];
+    EMVoiceParam *voiceParam = nil;
+    if ([voiceParamJson isKindOfClass:[NSDictionary class]]) {
+        voiceParam = [[EMVoiceParam alloc] init];
+        NSString *format = voiceParamJson[@"format"];
+        if ([format isEqualToString:@"amr"]) {
+            voiceParam.format = EMVoiceFormatAMR;
+        } else if ([format isEqualToString:@"mp3"]) {
+            voiceParam.format = EMVoiceFormatMP3;
+        } else {
+            voiceParam.format = EMVoiceFormatPCM;
+        }
+        if (voiceParamJson[@"sampleRate"]) { voiceParam.sampleRate = [voiceParamJson[@"sampleRate"] integerValue]; }
+        if (voiceParamJson[@"bitsPerSample"]) { voiceParam.bitsPerSample = [voiceParamJson[@"bitsPerSample"] integerValue]; }
+        if (voiceParamJson[@"channels"]) { voiceParam.channels = [voiceParamJson[@"channels"] integerValue]; }
+    }
+
+    __weak typeof(self) weakSelf = self;
+    [EMClient.sharedClient.chatManager voiceFileToText:filePath
+                                            voiceParam:voiceParam
+                                            completion:^(NSString *text, EMError *error) {
+                                              [weakSelf onResult:result
+                                                  withMethodType:aChannelName
+                                                       withError:error
+                                                      withParams:@{@"text" : text ?: @""}];
+                                            }];
+}
+
 - (void)loadAllConversations:(NSDictionary *)param
               withMethodType:(NSString *)aChannelName
                       result:(nonnull id<ExtSdkCallbackObjc>)result {

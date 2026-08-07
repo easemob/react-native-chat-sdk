@@ -1,4 +1,4 @@
-import type { EmitterSubscription, NativeEventEmitter } from 'react-native';
+import type { EventSubscription, NativeEventEmitter } from 'react-native';
 
 import { BaseManager } from './__internal__/Base';
 import {
@@ -26,7 +26,7 @@ import type { ChatContactEventListener } from './ChatEvents';
 import { chatlog } from './common/ChatConst';
 import { ChatContact } from './common/ChatContact';
 import { ChatCursorResult } from './common/ChatCursorResult';
-import { ChatException } from './common/ChatError';
+import { ChatError, ChatException } from './common/ChatError';
 
 /**
  * 联系人管理类，用于添加、查询和删除联系人。
@@ -36,15 +36,15 @@ export class ChatContactManager extends BaseManager {
   constructor() {
     super();
     this._contactListeners = new Set<ChatContactEventListener>();
-    this._contactSubscriptions = new Map<string, EmitterSubscription>();
+    this._contactSubscriptions = new Map<string, EventSubscription>();
   }
 
   private _contactListeners: Set<ChatContactEventListener>;
-  private _contactSubscriptions: Map<string, EmitterSubscription>;
+  private _contactSubscriptions: Map<string, EventSubscription>;
 
   public setNativeListener(event: NativeEventEmitter): void {
     chatlog.log(`${ChatContactManager.TAG}: setNativeListener: `);
-    this._contactSubscriptions.forEach((value: EmitterSubscription) => {
+    this._contactSubscriptions.forEach((value: EventSubscription) => {
       value.remove();
     });
     this._contactSubscriptions.clear();
@@ -74,6 +74,17 @@ export class ChatContactManager extends BaseManager {
           break;
         case 'onFriendRequestDeclined':
           listener.onFriendRequestDeclined?.(params.username);
+          break;
+        case 'onContactSyncStart':
+          listener.onContactSyncStart?.();
+          break;
+        case 'onContactSyncFinish':
+          listener.onContactSyncFinish?.(
+            params.error ? new ChatError(params.error) : undefined
+          );
+          break;
+        case 'onContactInfoUpdate':
+          listener.onContactInfoUpdate?.(new ChatContact(params.contact));
           break;
 
         default:

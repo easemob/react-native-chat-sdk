@@ -20,6 +20,7 @@ import {
   MTdownloadAndParseCombineMessage,
   MTdownloadAttachment,
   MTdownloadAttachmentInCombine,
+  MTdownloadBigImage,
   MTdownloadThumbnail,
   MTdownloadThumbnailInCombine,
   MTfetchChatThreadDetail,
@@ -108,6 +109,8 @@ import {
   MTupdateConversationMessage,
   MTgetMessagesWithIds,
   MTonStreamMessagesReceived,
+  MTvoiceFileToText,
+  MTvoiceMessageToText,
 } from './__internal__/Consts';
 import { Native } from './__internal__/Native';
 import type { ChatMessageEventListener } from './ChatEvents';
@@ -144,6 +147,7 @@ import {
   ChatMessageThreadEvent,
 } from './common/ChatMessageThread';
 import { ChatTranslateLanguage } from './common/ChatTranslateLanguage';
+import type { ChatVoiceParam } from './common/ChatVoiceParam';
 import { Factory } from './__internal__/Factory';
 
 /**
@@ -307,7 +311,7 @@ export class ChatManager extends BaseManager {
     return list;
   }
 
-  private onMessagesReceived(messages: any[]): void {
+  private onMessagesReceived(messages: any): void {
     chatlog.log(`${ChatManager.TAG}: onMessagesReceived: `, messages);
     if (this._messageListeners.size === 0) {
       return;
@@ -317,7 +321,7 @@ export class ChatManager extends BaseManager {
       listener.onMessagesReceived?.(list);
     });
   }
-  private onCmdMessagesReceived(messages: any[]): void {
+  private onCmdMessagesReceived(messages: any): void {
     chatlog.log(`${ChatManager.TAG}: onCmdMessagesReceived: `, messages);
     if (this._messageListeners.size === 0) {
       return;
@@ -327,7 +331,7 @@ export class ChatManager extends BaseManager {
       listener.onCmdMessagesReceived?.(list);
     });
   }
-  private onMessagesRead(messages: any[]): void {
+  private onMessagesRead(messages: any): void {
     chatlog.log(`${ChatManager.TAG}: onMessagesRead: `, messages);
     if (this._messageListeners.size === 0) {
       return;
@@ -337,7 +341,7 @@ export class ChatManager extends BaseManager {
       listener.onMessagesRead?.(list);
     });
   }
-  private onGroupMessageRead(messages: any[]): void {
+  private onGroupMessageRead(messages: any): void {
     chatlog.log(`${ChatManager.TAG}: onGroupMessageRead: `, messages);
     if (this._messageListeners.size === 0) {
       return;
@@ -351,7 +355,7 @@ export class ChatManager extends BaseManager {
       listener.onGroupMessageRead?.(messages);
     });
   }
-  private onMessagesDelivered(messages: any[]): void {
+  private onMessagesDelivered(messages: any): void {
     chatlog.log(`${ChatManager.TAG}: onMessagesDelivered: `, messages);
     if (this._messageListeners.size === 0) {
       return;
@@ -361,7 +365,7 @@ export class ChatManager extends BaseManager {
       listener.onMessagesDelivered?.(list);
     });
   }
-  private onMessagesRecalledInfo(params: any[]): void {
+  private onMessagesRecalledInfo(params: any): void {
     chatlog.log(`${ChatManager.TAG}: onMessagesRecalledInfo: `, params);
     if (this._messageListeners.size === 0) {
       return;
@@ -530,6 +534,19 @@ export class ChatManager extends BaseManager {
   ): void {
     ChatManager.handleMessageCallback(
       MTdownloadThumbnail,
+      self,
+      message,
+      callback
+    );
+  }
+
+  private static handleDownloadBigImageCallback(
+    self: ChatManager,
+    message: ChatMessage,
+    callback?: ChatMessageStatusCallback
+  ): void {
+    ChatManager.handleMessageCallback(
+      MTdownloadBigImage,
       self,
       message,
       callback
@@ -1016,19 +1033,96 @@ export class ChatManager extends BaseManager {
   }
 
   /**
+   * 下载图片消息的大图。
+   *
+   * @param message 待下载大图的图片消息。
+   * @param callback 消息状态变化监听器。
+   *
+   * @throws 如果有异常会在这里抛出，包含错误码和错误描述，详见 {@link ChatError}。
+   */
+  public async downloadBigImage(
+    message: ChatMessage,
+    callback?: ChatMessageStatusCallback
+  ): Promise<void> {
+    chatlog.log(
+      `${ChatManager.TAG}: downloadBigImage: ${message.msgId}, ${message.localTime}`,
+      message
+    );
+    ChatManager.handleDownloadBigImageCallback(this, message, callback);
+    let r: any = await Native._callMethod(MTdownloadBigImage, {
+      [MTdownloadBigImage]: {
+        message: message,
+      },
+    });
+    Native.checkErrorFromResult(r);
+  }
+
+  /**
+   * 将语音消息中的语音转换为文本。
+   *
+   * @param message 待转换的语音消息。
+   * @returns 方法成功时返回由语音转换成的文本。
+   *
+   * @throws 如果有异常会在这里抛出，包含错误码和错误描述，详见 {@link ChatError}。
+   */
+  public async voiceMessageToText(message: ChatMessage): Promise<string> {
+    chatlog.log(
+      `${ChatManager.TAG}: voiceMessageToText: ${message.msgId}, ${message.localTime}`,
+      message
+    );
+    let r: any = await Native._callMethod(MTvoiceMessageToText, {
+      [MTvoiceMessageToText]: {
+        message: message,
+      },
+    });
+    Native.checkErrorFromResult(r);
+    const ret: string = r?.[MTvoiceMessageToText]?.text;
+    return ret;
+  }
+
+  /**
+   * 将语音文件转换为文本。
+   *
+   * @param filePath 语音文件的本地路径。
+   * @param voiceParam （可选）语音文件的格式信息。详见 {@link ChatVoiceParam}。
+   * @returns 方法成功时返回由语音文件转换成的文本。
+   *
+   * @throws 如果有异常会在这里抛出，包含错误码和错误描述，详见 {@link ChatError}。
+   */
+  public async voiceFileToText(
+    filePath: string,
+    voiceParam?: ChatVoiceParam
+  ): Promise<string> {
+    chatlog.log(`${ChatManager.TAG}: voiceFileToText: ${filePath}`, voiceParam);
+    let r: any = await Native._callMethod(MTvoiceFileToText, {
+      [MTvoiceFileToText]: {
+        filePath: filePath,
+        voiceParam: voiceParam,
+      },
+    });
+    Native.checkErrorFromResult(r);
+    const ret: string = r?.[MTvoiceFileToText]?.text;
+    return ret;
+  }
+
+  /**
    * 分页获取指定会话的历史消息。
    *
    * **注意** 调用该方法，如果会话对象不存在则创建。
    *
    * @param convId 会话 ID。
-   * @param chatType 会话类型。详见 {@link ChatConversationType}。
-   * @param -
-   * - pageSize: 每页期望返回的消息数量。
-   * - startMsgId: 开始消息 ID。如果该参数为空字符串或 `null`，SDK 按服务器最新接收消息的时间倒序获取。
-   * - direction: 消息搜索方向，详见 {@link ChatSearchDirection}
-   * @returns 获取到的消息和下次查询的 cursor。
+   * @param convType 会话类型。详见 {@link ChatConversationType}。
+   * @params params -
+   * - pageSize: 每页期望返回的消息数量。取值范围为 [1,50]。
+   * - startMsgId: 开始消息 ID。设置该参数后，SDK 从指定消息开始，按服务器接收消息的时间倒序获取。如果该参数为空字符串，SDK 从最新消息开始，按服务器接收消息的时间倒序获取。
+   * - direction: 消息搜索方向，详见 {@link ChatSearchDirection}。
+   *                  - （默认）`ChatSearchDirection.Up`：按消息中包含的 Unix 时间戳降序获取。
+   *                  - `ChatSearchDirection.Down`：按消息中包含的 Unix 时间戳升序获取。
+   * @returns 获取到的消息列表（不包含起始 ID 的消息）和下次查询的 cursor。
    *
    * @throws 如果有异常会在这里抛出，包含错误码和错误描述，详见 {@link ChatError}。
+   *
+   * @deprecated 2024-08-15 请使用 {@link fetchHistoryMessagesByOptions} 替代。
    */
   public async fetchHistoryMessages(
     convId: string,

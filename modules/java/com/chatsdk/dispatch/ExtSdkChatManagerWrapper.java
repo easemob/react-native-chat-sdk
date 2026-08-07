@@ -7,6 +7,7 @@ import com.hyphenate.EMCallBack;
 import com.hyphenate.EMConversationListener;
 import com.hyphenate.EMMessageListener;
 import com.hyphenate.EMValueCallBack;
+import com.hyphenate.chat.EMAudioParams;
 import com.hyphenate.chat.EMClient;
 import com.hyphenate.chat.EMConversation;
 import com.hyphenate.chat.EMConversationFilter;
@@ -267,7 +268,7 @@ public class ExtSdkChatManagerWrapper extends ExtSdkWrapper {
             onError(result, 1, "Invalid message parameters.");
             return;
         }
-        finalMsg.setMessageStatusCallback(new EMCallBack() {
+        EMCallBack callBack = new EMCallBack() {
             @Override
             public void onSuccess() {
 
@@ -304,9 +305,9 @@ public class ExtSdkChatManagerWrapper extends ExtSdkWrapper {
                 map.put("callbackType", ExtSdkMethodType.onMessageError);
                 ExtSdkWrapper.onReceive(channelName, map);
             }
-        });
+        };
 
-        EMClient.getInstance().chatManager().downloadAttachment(finalMsg);
+        EMClient.getInstance().chatManager().downloadAttachment(finalMsg, callBack);
         onSuccess(result, channelName, ExtSdkMessageHelper.toJson(finalMsg));
     }
 
@@ -317,7 +318,7 @@ public class ExtSdkChatManagerWrapper extends ExtSdkWrapper {
             onError(result, 1, "Invalid message parameters.");
             return;
         }
-        finalMsg.setMessageStatusCallback(new EMCallBack() {
+        EMCallBack callBack = new EMCallBack() {
             @Override
             public void onSuccess() {
 
@@ -354,9 +355,9 @@ public class ExtSdkChatManagerWrapper extends ExtSdkWrapper {
                 map.put("callbackType", ExtSdkMethodType.onMessageError);
                 ExtSdkWrapper.onReceive(channelName, map);
             }
-        });
+        };
 
-        EMClient.getInstance().chatManager().downloadThumbnail(finalMsg);
+        EMClient.getInstance().chatManager().downloadThumbnail(finalMsg, callBack);
         onSuccess(result, channelName, ExtSdkMessageHelper.toJson(finalMsg));
     }
 
@@ -370,7 +371,7 @@ public class ExtSdkChatManagerWrapper extends ExtSdkWrapper {
         if (ExtSdkWrapper.checkMessageParams(msg, channelName, result)) {
             return;
         }
-        msg.setMessageStatusCallback(new EMCallBack() {
+        EMCallBack callBack = new EMCallBack() {
             @Override
             public void onSuccess() {
 
@@ -407,9 +408,9 @@ public class ExtSdkChatManagerWrapper extends ExtSdkWrapper {
                 map.put("callbackType", ExtSdkMethodType.onMessageError);
                 ExtSdkWrapper.onReceive(channelName, map);
             }
-        });
+        };
 
-        EMClient.getInstance().chatManager().downloadAttachment(msg);
+        EMClient.getInstance().chatManager().downloadAttachment(msg, callBack);
         onSuccess(result, channelName, ExtSdkMessageHelper.toJson(msg));
     }
 
@@ -427,7 +428,7 @@ public class ExtSdkChatManagerWrapper extends ExtSdkWrapper {
             msg = tempMsg;
         }
         EMMessage finalMsg = msg;
-        msg.setMessageStatusCallback(new EMCallBack() {
+        EMCallBack callBack = new EMCallBack() {
             @Override
             public void onSuccess() {
 
@@ -464,10 +465,127 @@ public class ExtSdkChatManagerWrapper extends ExtSdkWrapper {
                 map.put("callbackType", ExtSdkMethodType.onMessageError);
                 ExtSdkWrapper.onReceive(channelName, map);
             }
-        });
+        };
 
-        EMClient.getInstance().chatManager().downloadThumbnail(msg);
+        EMClient.getInstance().chatManager().downloadThumbnail(msg, callBack);
         onSuccess(result, channelName, ExtSdkMessageHelper.toJson(msg));
+    }
+
+    public void downloadBigImage(JSONObject param, String channelName, ExtSdkCallback result) throws JSONException {
+        EMMessage tempMsg = ExtSdkMessageHelper.fromJson(param.getJSONObject("message"));
+        if (tempMsg == null) {
+            onError(result, 1, "Invalid message parameters.");
+            return;
+        }
+        EMMessage msg = EMClient.getInstance().chatManager().getMessage(tempMsg.getMsgId());
+        if (ExtSdkWrapper.checkMessageParams(msg, channelName, result)) {
+            return;
+        }
+        EMCallBack callBack = new EMCallBack() {
+            @Override
+            public void onSuccess() {
+
+                Map<String, Object> map = new HashMap<>();
+                map.put("message", ExtSdkMessageHelper.toJson(msg));
+                map.put("localTime", msg.localTime());
+                map.put("msgId", msg.getMsgId());
+                map.put("callbackType", ExtSdkMethodType.onMessageSuccess);
+                ExtSdkWrapper.onReceive(channelName, map);
+            }
+
+            @Override
+            public void onProgress(int progress, String status) {
+
+                Map<String, Object> map = new HashMap<>();
+                map.put("progress", progress);
+                map.put("localTime", msg.localTime());
+                map.put("msgId", msg.getMsgId());
+                map.put("callbackType", ExtSdkMethodType.onMessageProgressUpdate);
+                ExtSdkWrapper.onReceive(channelName, map);
+            }
+
+            @Override
+            public void onError(int code, String desc) {
+                Map<String, Object> data = new HashMap<>();
+                data.put("code", code);
+                data.put("description", desc);
+
+                Map<String, Object> map = new HashMap<>();
+                map.put("message", ExtSdkMessageHelper.toJson(msg));
+                map.put("localTime", msg.localTime());
+                map.put("msgId", msg.getMsgId());
+                map.put("error", data);
+                map.put("callbackType", ExtSdkMethodType.onMessageError);
+                ExtSdkWrapper.onReceive(channelName, map);
+            }
+        };
+
+        EMClient.getInstance().chatManager().downloadBigImage(msg, callBack);
+        onSuccess(result, channelName, null);
+    }
+
+    public void voiceMessageToText(JSONObject param, String channelName, ExtSdkCallback result) throws JSONException {
+        EMMessage msg = ExtSdkMessageHelper.fromJson(param.getJSONObject("message"));
+        if (msg == null) {
+            onError(result, 1, "Invalid message parameters.");
+            return;
+        }
+        EMMessage dbMsg = EMClient.getInstance().chatManager().getMessage(msg.getMsgId());
+        if (ExtSdkWrapper.checkMessageParams(dbMsg, channelName, result)) {
+            return;
+        }
+        EMClient.getInstance().chatManager().voiceMessageToText(dbMsg, new EMValueCallBack<String>() {
+            @Override
+            public void onSuccess(String value) {
+                Map<String, Object> data = new HashMap<>();
+                data.put("text", value);
+                ExtSdkWrapper.onSuccess(result, channelName, data);
+            }
+
+            @Override
+            public void onError(int error, String errorMsg) {
+                ExtSdkWrapper.onError(result, error, errorMsg);
+            }
+        });
+    }
+
+    public void voiceFileToText(JSONObject param, String channelName, ExtSdkCallback result) throws JSONException {
+        String filePath = param.getString("filePath");
+        EMAudioParams audioParams = null;
+        if (param.has("voiceParam") && !param.isNull("voiceParam")) {
+            JSONObject voiceParam = param.getJSONObject("voiceParam");
+            audioParams = new EMAudioParams();
+            if (voiceParam.has("format")) {
+                String format = voiceParam.getString("format");
+                switch (format) {
+                case "pcm": {
+                    audioParams.setFormat(EMAudioParams.AudioFormat.PCM);
+                } break;
+                case "mp3": {
+                    audioParams.setFormat(EMAudioParams.AudioFormat.MP3);
+                } break;
+                case "amr": {
+                    audioParams.setFormat(EMAudioParams.AudioFormat.AMR);
+                } break;
+                }
+            }
+            if (voiceParam.has("sampleRate")) { audioParams.setSampleRate(voiceParam.getInt("sampleRate")); }
+            if (voiceParam.has("bitsPerSample")) { audioParams.setBitsPerSample(voiceParam.getInt("bitsPerSample")); }
+            if (voiceParam.has("channels")) { audioParams.setChannels(voiceParam.getInt("channels")); }
+        }
+        EMClient.getInstance().chatManager().voiceFileToText(filePath, audioParams, new EMValueCallBack<String>() {
+            @Override
+            public void onSuccess(String value) {
+                Map<String, Object> data = new HashMap<>();
+                data.put("text", value);
+                ExtSdkWrapper.onSuccess(result, channelName, data);
+            }
+
+            @Override
+            public void onError(int error, String errorMsg) {
+                ExtSdkWrapper.onError(result, error, errorMsg);
+            }
+        });
     }
 
     public void loadAllConversations(JSONObject param, String channelName, ExtSdkCallback result) throws JSONException {

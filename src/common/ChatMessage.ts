@@ -3,6 +3,7 @@ import { generateMessageId, getNowTimestamp } from '../__internal__/Utils';
 import type { ChatSearchDirection } from './ChatConversation';
 import { ChatError, ChatException } from './ChatError';
 import type { ChatMessageReaction } from './ChatMessageReaction';
+import { ChatMessageSenderInfo } from './ChatMessageSenderInfo';
 import type { ChatMessageThread } from './ChatMessageThread';
 import { Factory } from '../__internal__/Factory';
 import type { ChatStreamChunk } from './ChatMessageStreamChunk';
@@ -501,6 +502,11 @@ export class ChatMessage {
   streamChunk?: ChatStreamChunk;
 
   /**
+   * 消息发送者的展示信息。详见 {@link ChatMessageSenderInfo}。
+   */
+  senderInfo?: ChatMessageSenderInfo;
+
+  /**
    * 构造消息。
    */
   public constructor(params: {
@@ -528,6 +534,7 @@ export class ChatMessage {
     isBroadcast?: boolean;
     isContentReplaced?: boolean;
     streamChunk?: ChatStreamChunk;
+    senderInfo?: ChatMessageSenderInfo;
   }) {
     this.msgId = params.msgId ?? generateMessageId();
     this.conversationId = params.conversationId ?? '';
@@ -554,6 +561,9 @@ export class ChatMessage {
     this.isBroadcast = params.isBroadcast ?? false;
     this.isContentReplaced = params.isContentReplaced ?? false;
     this.streamChunk = params.streamChunk;
+    this.senderInfo = params.senderInfo
+      ? new ChatMessageSenderInfo(params.senderInfo)
+      : undefined;
   }
 
   private fromAttributes(attributes: any) {
@@ -571,7 +581,7 @@ export class ChatMessage {
           // !!! maybe json string
           try {
             this.attributes[key] = JSON.parse(v);
-          } catch (error) {
+          } catch {
             this.attributes[key] = v;
           }
         } else {
@@ -1343,7 +1353,7 @@ export class ChatFileMessageBody extends _ChatFileMessageBody {
 }
 
 /**
- * The image message body class.
+ * 图片消息体类。
  */
 export class ChatImageMessageBody extends _ChatFileMessageBody {
   /**
@@ -1382,6 +1392,22 @@ export class ChatImageMessageBody extends _ChatFileMessageBody {
    * - (默认）`false`: 不是 GIF 图片。
    */
   isGif?: boolean;
+  /**
+   * 大图的本地路径。
+   */
+  bigImageLocalPath?: string;
+  /**
+   * 大图在服务器上的 URL。
+   */
+  bigImageRemotePath?: string;
+  /**
+   * 大图的下载状态。详见 {@link ChatDownloadStatus}。
+   */
+  bigImageDownloadStatus?: ChatDownloadStatus;
+  /**
+   * 是否为原图。
+   */
+  isOriginalImage?: boolean;
   constructor(params: {
     localPath: string;
     secret?: string;
@@ -1397,6 +1423,10 @@ export class ChatImageMessageBody extends _ChatFileMessageBody {
     width?: number;
     height?: number;
     isGif?: boolean;
+    bigImageLocalPath?: string;
+    bigImageRemotePath?: string;
+    bigImageDownloadStatus?: number;
+    isOriginalImage?: boolean;
     lastModifyOperatorId?: string;
     lastModifyTime?: number;
     modifyCount?: number;
@@ -1423,6 +1453,13 @@ export class ChatImageMessageBody extends _ChatFileMessageBody {
     this.width = params.width ?? 0;
     this.height = params.height ?? 0;
     this.isGif = params.isGif ?? false;
+    this.bigImageLocalPath = params.bigImageLocalPath;
+    this.bigImageRemotePath = params.bigImageRemotePath;
+    this.bigImageDownloadStatus =
+      params.bigImageDownloadStatus !== undefined
+        ? ChatDownloadStatusFromNumber(params.bigImageDownloadStatus)
+        : undefined;
+    this.isOriginalImage = params.isOriginalImage;
   }
 }
 
@@ -1508,6 +1545,10 @@ export class ChatVoiceMessageBody extends _ChatFileMessageBody {
    * 语音时长，单位为秒。
    */
   duration: number;
+  /**
+   * 由语音转换成的文本。
+   */
+  text?: string;
   constructor(params: {
     localPath: string;
     secret?: string;
@@ -1516,6 +1557,7 @@ export class ChatVoiceMessageBody extends _ChatFileMessageBody {
     fileSize?: number;
     displayName?: string;
     duration?: number;
+    text?: string;
     lastModifyOperatorId?: string;
     lastModifyTime?: number;
     modifyCount?: number;
@@ -1533,6 +1575,7 @@ export class ChatVoiceMessageBody extends _ChatFileMessageBody {
       displayName: params.displayName,
     });
     this.duration = params.duration ?? 0;
+    this.text = params.text;
   }
 }
 

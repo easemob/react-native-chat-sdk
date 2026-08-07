@@ -346,6 +346,8 @@ RCT_EXPORT_METHOD(multiply : (double)a b : (double)b resolve : (RCTPromiseResolv
         ExtSdkMethodKeyDeclineJoinApplication,
         ExtSdkMethodKeyAcceptInvitationFromGroup,
         ExtSdkMethodKeyDeclineInvitationFromGroup,
+        ExtSdkMethodKeyUpdateGroupNamecard,
+        ExtSdkMethodKeyGetGroupNamecard,
         ExtSdkMethodKeyIgnoreGroupPush,
 
         ExtSdkMethodKeyOnGroupChanged,
@@ -384,6 +386,13 @@ RCT_EXPORT_METHOD(multiply : (double)a b : (double)b resolve : (RCTPromiseResolv
         ExtSdkMethodKeyUpdateOwnUserInfoWithType,
         ExtSdkMethodKeyFetchUserInfoById,
         ExtSdkMethodKeyFetchUserInfoByIdWithType,
+        ExtSdkMethodKeyGetLocalUserInfoByIds,
+        ExtSdkMethodKeySubscribeUsersInfo,
+        ExtSdkMethodKeyUnsubscribeUsersInfo,
+        ExtSdkMethodKeyFetchSubscribedUsers,
+
+        /// EMUserInfoManagerDelegate
+        ExtSdkMethodKeyOnUserInfoChanged,
 
         /// EMPresenceManagerWrapper
         ExtSdkMethodKeyPublishPresenceWithDescription,
@@ -427,6 +436,9 @@ RCT_EXPORT_METHOD(multiply : (double)a b : (double)b resolve : (RCTPromiseResolv
         ExtSdkMethodKeyPinConversation,
         ExtSdkMethodKeyModifyMessage,
         ExtSdkMethodKeyDownloadAndParseCombineMessage,
+        ExtSdkMethodKeyVoiceMessageToText,
+        ExtSdkMethodKeyVoiceFileToText,
+        ExtSdkMethodKeyDownloadBigImage,
         ExtSdkMethodKeyOnMessageContentChanged,
         ExtSdkMethodKeySetPushTemplate,
         ExtSdkMethodKeyGetPushTemplate,

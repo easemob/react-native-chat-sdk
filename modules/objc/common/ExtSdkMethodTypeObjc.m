@@ -249,6 +249,8 @@
           ExtSdkMethodKeyAcceptInvitationFromGroup : @(ExtSdkMethodKeyAcceptInvitationFromGroupValue),
           ExtSdkMethodKeyDeclineInvitationFromGroup : @(ExtSdkMethodKeyDeclineInvitationFromGroupValue),
           ExtSdkMethodKeyIgnoreGroupPush : @(ExtSdkMethodKeyIgnoreGroupPushValue), // deprecated
+          ExtSdkMethodKeyUpdateGroupNamecard : @(ExtSdkMethodKeyUpdateGroupNamecardValue),
+          ExtSdkMethodKeyGetGroupNamecard : @(ExtSdkMethodKeyGetGroupNamecardValue),
 
           ExtSdkMethodKeyOnGroupChanged : @(ExtSdkMethodKeyOnGroupChangedValue),
 
@@ -286,6 +288,12 @@
           ExtSdkMethodKeyUpdateOwnUserInfoWithType : @(ExtSdkMethodKeyUpdateOwnUserInfoWithTypeValue),
           ExtSdkMethodKeyFetchUserInfoById : @(ExtSdkMethodKeyFetchUserInfoByIdValue),
           ExtSdkMethodKeyFetchUserInfoByIdWithType : @(ExtSdkMethodKeyFetchUserInfoByIdWithTypeValue),
+          ExtSdkMethodKeyGetLocalUserInfoByIds : @(ExtSdkMethodKeyGetLocalUserInfoByIdsValue),
+          ExtSdkMethodKeySubscribeUsersInfo : @(ExtSdkMethodKeySubscribeUsersInfoValue),
+          ExtSdkMethodKeyUnsubscribeUsersInfo : @(ExtSdkMethodKeyUnsubscribeUsersInfoValue),
+          ExtSdkMethodKeyFetchSubscribedUsers : @(ExtSdkMethodKeyFetchSubscribedUsersValue),
+
+          ExtSdkMethodKeyOnUserInfoChanged : @(ExtSdkMethodKeyOnUserInfoChangedValue),
 
           /// EMPresenceManagerWrapper
           ExtSdkMethodKeyPublishPresenceWithDescription : @(ExtSdkMethodKeyPublishPresenceWithDescriptionValue),
@@ -334,6 +342,9 @@
           ExtSdkMethodKeyPinConversation : @(ExtSdkMethodKeyPinConversationValue),
           ExtSdkMethodKeyModifyMessage : @(ExtSdkMethodKeyModifyMessageValue),
           ExtSdkMethodKeyDownloadAndParseCombineMessage : @(ExtSdkMethodKeyDownloadAndParseCombineMessageValue),
+          ExtSdkMethodKeyVoiceMessageToText : @(ExtSdkMethodKeyVoiceMessageToTextValue),
+          ExtSdkMethodKeyVoiceFileToText : @(ExtSdkMethodKeyVoiceFileToTextValue),
+          ExtSdkMethodKeyDownloadBigImage : @(ExtSdkMethodKeyDownloadBigImageValue),
           ExtSdkMethodKeyOnMessageContentChanged : @(ExtSdkMethodKeyOnMessageContentChangedValue),
           ExtSdkMethodKeySetPushTemplate : @(ExtSdkMethodKeySetPushTemplateValue),
           ExtSdkMethodKeyGetPushTemplate : @(ExtSdkMethodKeyGetPushTemplateValue),

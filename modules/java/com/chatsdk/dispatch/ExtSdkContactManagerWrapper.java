@@ -314,6 +314,34 @@ public class ExtSdkContactManagerWrapper extends ExtSdkWrapper {
                 data.put("username", userName);
                 onReceive(ExtSdkMethodType.onContactChanged, data);
             }
+
+            @Override
+            public void onContactSyncStart() {
+                Map<String, Object> data = new HashMap<>();
+                data.put("type", "onContactSyncStart");
+                onReceive(ExtSdkMethodType.onContactChanged, data);
+            }
+
+            @Override
+            public void onContactSyncFinishWithError(int errorCode, String errorMessage) {
+                Map<String, Object> data = new HashMap<>();
+                data.put("type", "onContactSyncFinish");
+                if (errorCode != 0) {
+                    Map<String, Object> error = new HashMap<>();
+                    error.put("code", errorCode);
+                    error.put("description", errorMessage);
+                    data.put("error", error);
+                }
+                onReceive(ExtSdkMethodType.onContactChanged, data);
+            }
+
+            @Override
+            public void onContactInfoUpdate(EMContact contact) {
+                Map<String, Object> data = new HashMap<>();
+                data.put("type", "onContactInfoUpdate");
+                data.put("contact", ExtSdkContactHelper.toJson(contact));
+                onReceive(ExtSdkMethodType.onContactChanged, data);
+            }
         };
         EMClient.getInstance().contactManager().setContactListener(this.contactListener);
     }

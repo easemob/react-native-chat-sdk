@@ -657,6 +657,36 @@
                                                   }];
 }
 
+- (void)updateGroupNamecard:(NSDictionary *)param
+             withMethodType:(NSString *)aChannelName
+                     result:(nonnull id<ExtSdkCallbackObjc>)result {
+    __weak typeof(self) weakSelf = self;
+    NSString *groupId = param[@"groupId"];
+    NSString *namecard = param[@"namecard"];
+    if ([namecard isKindOfClass:[NSNull class]]) {
+        namecard = nil;
+    }
+    [EMClient.sharedClient.groupManager updateGroupNamecard:groupId
+                                                   namecard:namecard
+                                                 completion:^(EMError *aError) {
+                                                   [weakSelf onResult:result
+                                                       withMethodType:aChannelName
+                                                            withError:aError
+                                                           withParams:nil];
+                                                 }];
+}
+
+- (void)getGroupNamecard:(NSDictionary *)param
+          withMethodType:(NSString *)aChannelName
+                  result:(nonnull id<ExtSdkCallbackObjc>)result {
+    NSString *namecard = [EMClient.sharedClient.groupManager getGroupNamecardWithGroupId:param[@"groupId"]
+                                                                                  userId:param[@"userId"]];
+    [self onResult:result
+        withMethodType:aChannelName
+             withError:nil
+            withParams:@{@"namecard" : namecard ?: [NSNull null]}];
+}
+
 - (void)joinPublicGroup:(NSDictionary *)param
          withMethodType:(NSString *)aChannelName
                  result:(nonnull id<ExtSdkCallbackObjc>)result {
@@ -1030,6 +1060,18 @@
         @"member" : userId,
         @"attributes" : attributes,
         @"operator" : operatorId,
+    };
+    [self onReceive:ExtSdkMethodKeyOnGroupChanged withParams:map];
+}
+
+- (void)onUserGroupNamecardChanged:(NSString *_Nonnull)groupId
+                            userId:(NSString *_Nonnull)userId
+                          namecard:(NSString *_Nullable)namecard {
+    NSDictionary *map = @{
+        @"type" : @"onUserGroupNamecardChanged",
+        @"groupId" : groupId,
+        @"userId" : userId,
+        @"namecard" : namecard ?: [NSNull null],
     };
     [self onReceive:ExtSdkMethodKeyOnGroupChanged withParams:map];
 }

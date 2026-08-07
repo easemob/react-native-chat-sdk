@@ -10,18 +10,16 @@ function deleteContent(dir, xxx) {
   const files = fs.readdirSync(dir);
   files.forEach((file) => {
     const filePath = path.join(dir, file);
-    fs.stat(filePath, (_err, stat) => {
-      if (_err) throw _err;
-      if (stat.isFile()) {
-        let content = fs.readFileSync(filePath, 'utf8');
-        content = content.replace(xxx, '');
-        fs.writeFileSync(filePath, content);
-      } else if (stat.isDirectory()) {
-        if (filePath.includes('assets') === false) {
-          deleteContent(filePath, xxx);
-        }
+    const stat = fs.statSync(filePath);
+    if (stat.isFile()) {
+      let content = fs.readFileSync(filePath, 'utf8');
+      content = content.replace(xxx, '');
+      fs.writeFileSync(filePath, content);
+    } else if (stat.isDirectory()) {
+      if (filePath.includes('assets') === false) {
+        deleteContent(filePath, xxx);
       }
-    });
+    }
   });
 }
 
@@ -31,18 +29,16 @@ function replaceContent(dir, aaa, bbb) {
   const files = fs.readdirSync(dir);
   files.forEach((file) => {
     const filePath = path.join(dir, file);
-    fs.stat(filePath, (_err, stat) => {
-      if (_err) throw _err;
-      if (stat.isFile()) {
-        let content = fs.readFileSync(filePath, 'utf8');
-        content = content.replace(aaa, bbb);
-        fs.writeFileSync(filePath, content);
-      } else if (stat.isDirectory()) {
-        if (filePath.includes('assets') === false) {
-          replaceContent(filePath, aaa, bbb);
-        }
+    const stat = fs.statSync(filePath);
+    if (stat.isFile()) {
+      let content = fs.readFileSync(filePath, 'utf8');
+      content = content.replace(aaa, bbb);
+      fs.writeFileSync(filePath, content);
+    } else if (stat.isDirectory()) {
+      if (filePath.includes('assets') === false) {
+        replaceContent(filePath, aaa, bbb);
       }
-    });
+    }
   });
 }
 
@@ -66,15 +62,24 @@ console.log('test:type:', type);
 console.log('test:language:', language);
 // process.exit();
 
+if (!fs.existsSync(dirPath)) {
+  console.error(`error: directory not found: ${dirPath}`);
+  console.error('hint: run `yarn doc:en` (or `yarn doc:cn`) first.');
+  process.exit(1);
+}
+
 console.log('test:start:');
 
 // Delete content reference `docs/developer.md`
+// typedoc >= 0.28: permalink icons are rendered as
+// <a href="#..." aria-label="Permalink" class="tsd-anchor-icon">...</a>
 const del1 =
-  /<svg xmlns="http:\/\/www\.w3\.org\/2000\/svg" class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"><\/path><path d="M10 14a3\.5 3\.5 0 0 0 5 0l4 -4a3\.5 3\.5 0 0 0 -5 -5l-.5 .5"><\/path><path d="M14 10a3\.5 3\.5 0 0 0 -5 0l-4 4a3\.5 3\.5 0 0 0 5 5l\.5 -\.5"><\/path><\/svg>/g;
-const del2 =
-  /<li>Defined in <a href="https:\/\/github\.com\/easemob\/react-native-chat-sdk(_|\/|\s|[0-9]|[a-z]|[A-Z]|#|\.|"|>|:)+<\/a><\/li>/g;
-const del3 =
-  /<ul><li>Defined in (_|\/|\s|[0-9]|[a-z]|[A-Z]|#|\.|"|>|:)+<\/li><\/ul>/g;
+  /<a href="#[^"]*" aria-label="Permalink" class="tsd-anchor-icon">[\s\S]*?<\/a>/g;
+// "Defined in <file>:<line>" source locations (with or without a github link)
+const del2 = /<ul>\s*<li>Defined in[\s\S]*?<\/li>\s*<\/ul>/g;
+// empty <aside class="tsd-sources"> left after removing the "Defined in" list
+// (kept when it still contains "Overrides ..." paragraphs)
+const del3 = /<aside class="tsd-sources">\s*<\/aside>/g;
 const title = `class="title">Chat SDK for React Native ${version}</a>`;
 
 deleteContent(dirPath, del1);

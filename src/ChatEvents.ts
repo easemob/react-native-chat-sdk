@@ -1,6 +1,7 @@
 import { ExceptionHandler } from './__internal__/ErrorHandler';
+import type { ChatContact } from './common/ChatContact';
 import type { ChatConversationType } from './common/ChatConversation';
-import { ChatException } from './common/ChatError';
+import { ChatError, ChatException } from './common/ChatError';
 import type { ChatGroup, ChatGroupMessageAck } from './common/ChatGroup';
 import type {
   ChatMessage,
@@ -11,6 +12,7 @@ import type { ChatMessageReactionEvent } from './common/ChatMessageReaction';
 import type { ChatMessageThreadEvent } from './common/ChatMessageThread';
 import type { ChatPresence } from './common/ChatPresence';
 import type { ChatRoom } from './common/ChatRoom';
+import type { ChatUserInfo } from './common/ChatUserInfo';
 
 /**
  * 多设备登录事件类型。
@@ -1022,6 +1024,20 @@ export interface ChatGroupEventListener {
     attributes: any;
     operator: string;
   }): void;
+
+  /**
+   * 群组成员的群名片发生变化时触发。
+   *
+   * @params params -
+   * - groupId: 群组 ID。
+   * - userId: 群名片发生变化的成员的用户 ID。
+   * - namecard: 成员的新群名片。群名片被清除时为 `undefined`。
+   */
+  onUserGroupNamecardChanged?(params: {
+    groupId: string;
+    userId: string;
+    namecard?: string;
+  }): void;
 }
 
 /**
@@ -1073,6 +1089,42 @@ export interface ChatContactEventListener {
    * @param userName 发起好友请求的用户 ID。
    */
   onFriendRequestDeclined?(userName: string): void;
+  /**
+   * 开始从服务器同步联系人列表时触发。
+   */
+  onContactSyncStart?(): void;
+  /**
+   * 从服务器同步联系人列表完成时触发。
+   *
+   * @param error 同步失败时的错误信息。详见 {@link ChatError}。
+   */
+  onContactSyncFinish?(error?: ChatError): void;
+  /**
+   * 联系人信息更新时触发。
+   *
+   * @param contact 信息发生更新的联系人。详见 {@link ChatContact}。
+   */
+  onContactInfoUpdate?(contact: ChatContact): void;
+}
+
+/**
+ * 用户信息事件监听器。
+ *
+ * 用于监听用户属性变化，包括当前用户自身属性变化和已订阅用户的属性变化。
+ */
+export interface ChatUserInfoEventListener {
+  /**
+   * 当前用户的用户属性更新时触发。
+   *
+   * @param userInfo 当前用户更新后的用户属性。详见 {@link ChatUserInfo}。
+   */
+  onSelfUserInfoUpdate?(userInfo: ChatUserInfo): void;
+  /**
+   * 已订阅用户的用户属性更新时触发。
+   *
+   * @param userInfos 更新后的用户属性列表。详见 {@link ChatUserInfo}。
+   */
+  onUserInfoUpdate?(userInfos: ChatUserInfo[]): void;
 }
 
 /**

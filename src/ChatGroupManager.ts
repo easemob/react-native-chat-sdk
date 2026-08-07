@@ -1,4 +1,4 @@
-import type { EmitterSubscription, NativeEventEmitter } from 'react-native';
+import type { EventSubscription, NativeEventEmitter } from 'react-native';
 
 import { BaseManager } from './__internal__/Base';
 import {
@@ -24,6 +24,7 @@ import {
   MTfetchMemberInfoListFromServer,
   MTgetGroupMemberListFromServer,
   MTgetGroupMuteListFromServer,
+  MTgetGroupNamecard,
   MTgetGroupSpecificationFromServer,
   MTgetGroupWithId,
   MTgetJoinedGroups,
@@ -50,6 +51,7 @@ import {
   MTupdateGroupAnnouncement,
   MTupdateGroupAvatar,
   MTupdateGroupExt,
+  MTupdateGroupNamecard,
   MTupdateGroupOwner,
   MTupdateGroupSubject,
   MTuploadGroupSharedFile,
@@ -76,7 +78,7 @@ export class ChatGroupManager extends BaseManager {
   protected static TAG = 'ChatGroupManager';
 
   private _groupListeners: Set<ChatGroupEventListener>;
-  private _groupSubscriptions: Map<string, EmitterSubscription>;
+  private _groupSubscriptions: Map<string, EventSubscription>;
 
   constructor() {
     super();
@@ -87,7 +89,7 @@ export class ChatGroupManager extends BaseManager {
   public setNativeListener(event: NativeEventEmitter): void {
     this._eventEmitter = event;
     chatlog.log(`${ChatGroupManager.TAG}: setNativeListener: `);
-    this._groupSubscriptions.forEach((value: EmitterSubscription) => {
+    this._groupSubscriptions.forEach((value: EventSubscription) => {
       value.remove();
     });
     this._groupSubscriptions.clear();
@@ -272,6 +274,13 @@ export class ChatGroupManager extends BaseManager {
             member: params.member,
             operator: params.operator,
             attributes: params.attributes,
+          });
+          break;
+        case 'onUserGroupNamecardChanged':
+          listener.onUserGroupNamecardChanged?.({
+            groupId: params.groupId,
+            userId: params.userId,
+            namecard: params.namecard,
           });
           break;
         default:
@@ -891,12 +900,63 @@ export class ChatGroupManager extends BaseManager {
   }
 
   /**
+   * 更新当前用户在群组中的群名片。
+   *
+   * @param groupId 群组 ID。
+   * @param namecard （可选）新群名片。不传或传 `null` 时清除群名片。
+   *
+   * @throws 如果有异常会在这里抛出，包含错误码和错误描述，详见 {@link ChatError}。
+   */
+  public async updateGroupNamecard(
+    groupId: string,
+    namecard?: string
+  ): Promise<void> {
+    chatlog.log(
+      `${ChatGroupManager.TAG}: updateGroupNamecard: `,
+      groupId,
+      namecard
+    );
+    let r: any = await Native._callMethod(MTupdateGroupNamecard, {
+      [MTupdateGroupNamecard]: {
+        groupId,
+        namecard,
+      },
+    });
+    ChatGroupManager.checkErrorFromResult(r);
+  }
+
+  /**
+   * 获取群组中指定成员的群名片。
+   *
+   * @param groupId 群组 ID。
+   * @param userId 成员的用户 ID。
+   * @returns 方法成功时返回该成员的群名片；否则返回 `undefined`。
+   *
+   * @throws 如果有异常会在这里抛出，包含错误码和错误描述，详见 {@link ChatError}。
+   */
+  public async getGroupNamecard(
+    groupId: string,
+    userId: string
+  ): Promise<string | undefined> {
+    chatlog.log(`${ChatGroupManager.TAG}: getGroupNamecard: `, groupId, userId);
+    let r: any = await Native._callMethod(MTgetGroupNamecard, {
+      [MTgetGroupNamecard]: {
+        groupId,
+        userId,
+      },
+    });
+    ChatGroupManager.checkErrorFromResult(r);
+    const ret: string | null = r?.[MTgetGroupNamecard]?.namecard;
+    return ret ?? undefined;
+  }
+
+  /**
    * 邀请用户加入群组。
    *
-   * 该方法只适用于以下三种类型的群组： `PrivateOnlyOwnerInvite`、`PrivateMemberCanInvite` 和 `PublicJoinNeedApproval`。
-   * 对于 `PrivateOnlyOwnerInvite` 类型，只有群主可以邀请其他用户加入群组。
-   * 对于 `PrivateMemberCanInvite` 类型，所有成员都可以邀请其他用户加入群组。
-   * 对于 `PublicJoinNeedApproval` 类型，所有成员都可以邀请其他用户加入群组，但邀请后需要群主或群管理员审批。
+   * 该方法只适用于以下三种类型的群组：
+   * - `PrivateOnlyOwnerInvite`：只有群主可以邀请其他用户加入群组。
+   * - `PrivateMemberCanInvite`：所有成员都可以邀请其他用户加入群组。
+   * - `PublicJoinNeedApproval`：所有成员都可以邀请其他用户加入群组，但邀请后需要群主或群管理员审批。
    *
    * @param groupId 群组 ID。
    * @param members 受邀用户的用户 ID 列表。

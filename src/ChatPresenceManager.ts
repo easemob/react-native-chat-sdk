@@ -1,4 +1,4 @@
-import type { EmitterSubscription, NativeEventEmitter } from 'react-native';
+import type { EventSubscription, NativeEventEmitter } from 'react-native';
 
 import {
   MTfetchPresenceStatus,
@@ -20,7 +20,7 @@ export class ChatPresenceManager extends Native {
   private static TAG = 'ChatPresenceManager';
 
   private _presenceListeners: Set<ChatPresenceEventListener>;
-  private _presenceSubscriptions: Map<string, EmitterSubscription>;
+  private _presenceSubscriptions: Map<string, EventSubscription>;
 
   constructor() {
     super();
@@ -30,7 +30,7 @@ export class ChatPresenceManager extends Native {
 
   public setNativeListener(event: NativeEventEmitter): void {
     chatlog.log(`${ChatPresenceManager.TAG}: setNativeListener: `);
-    this._presenceSubscriptions.forEach((value: EmitterSubscription) => {
+    this._presenceSubscriptions.forEach((value: EventSubscription) => {
       value.remove();
     });
     this._presenceSubscriptions.clear();

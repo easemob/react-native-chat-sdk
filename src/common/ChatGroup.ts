@@ -431,13 +431,31 @@ export class ChatGroupMember {
    * 群组成员的角色。
    */
   role: ChatGroupPermissionType;
+  /**
+   * 群组成员在群组中的群名片。
+   */
+  namecard?: string;
+  /**
+   * 群组成员的昵称。
+   */
+  nickname?: string;
+  /**
+   * 群组成员的头像 URL。
+   */
+  avatarUrl?: string;
   constructor(params: {
     memberId: string;
     joinedTimestamp: number;
     role: ChatGroupPermissionType;
+    namecard?: string;
+    nickname?: string;
+    avatarUrl?: string;
   }) {
     this.memberId = params.memberId;
     this.joinedTimestamp = params.joinedTimestamp;
     this.role = params.role;
+    this.namecard = params.namecard;
+    this.nickname = params.nickname;
+    this.avatarUrl = params.avatarUrl;
   }
 }
