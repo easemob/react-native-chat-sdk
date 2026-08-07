@@ -113,6 +113,9 @@ ChatSDK is a highly reliable global communication platform where your users can 
 | {@link ChatManager.downloadThumbnailInCombine downloadThumbnailInCombine} | Downloads the message thumbnail. |
 | {@link ChatManager.downloadAttachment downloadAttachment} | Downloads the message attachment. |
 | {@link ChatManager.downloadThumbnail downloadThumbnail} | Downloads the message thumbnail. |
+| {@link ChatManager.downloadBigImage downloadBigImage} | Downloads the big image of the image message. |
+| {@link ChatManager.voiceMessageToText voiceMessageToText} | Converts the voice in the voice message to text. |
+| {@link ChatManager.voiceFileToText voiceFileToText} | Converts the voice file to text. |
 | {@link ChatManager.fetchHistoryMessages fetchHistoryMessages} | Uses the pagination to get messages in the specified conversation from the server. |
 | {@link ChatManager.fetchHistoryMessagesByOptions fetchHistoryMessagesByOptions} | retrieve the history message for the specified session from the server. |
 | {@link ChatManager.searchMsgFromDB searchMsgFromDB} | Retrieves messages with keywords in a conversation from the local database. |
@@ -240,6 +243,9 @@ ChatSDK is a highly reliable global communication platform where your users can 
 | {@link ChatContactEventListener.onContactInvited onContactInvited} | Occurs when a friend request is received by the current user. |
 | {@link ChatContactEventListener.onFriendRequestAccepted onFriendRequestAccepted} | Occurs when a friend request is accepted by the current user. |
 | {@link ChatContactEventListener.onFriendRequestDeclined onFriendRequestDeclined} | Occurs when a friend request is declined by the current user. |
+| {@link ChatContactEventListener.onContactSyncStart onContactSyncStart} | Occurs when the contact list starts to be synchronized from the server. |
+| {@link ChatContactEventListener.onContactSyncFinish onContactSyncFinish} | Occurs when the contact list synchronization from the server is finished. |
+| {@link ChatContactEventListener.onContactInfoUpdate onContactInfoUpdate} | Occurs when the information of a contact is updated. |
 ## ChatGroupManager
 | Method | Description |
 | :----- | :---------- |
@@ -261,6 +267,8 @@ ChatSDK is a highly reliable global communication platform where your users can 
 | {@link ChatGroupManager.fetchGroupFileListFromServer fetchGroupFileListFromServer} | Uses the pagination to get the shared files of the group from the server. |
 | {@link ChatGroupManager.fetchAnnouncementFromServer fetchAnnouncementFromServer} | Gets the group announcement from the server. |
 | {@link ChatGroupManager.addMembers addMembers} | Adds users to the group. |
+| {@link ChatGroupManager.updateGroupNamecard updateGroupNamecard} | Updates the namecard of the current user in the group. |
+| {@link ChatGroupManager.getGroupNamecard getGroupNamecard} | Gets the namecard of a member in the group. |
 | {@link ChatGroupManager.inviteUser inviteUser} | Invites users to join the group. |
 | {@link ChatGroupManager.removeMembers removeMembers} | Removes a member from the group. |
 | {@link ChatGroupManager.blockMembers blockMembers} | Adds the user to the block list of the group. |
@@ -329,6 +337,7 @@ ChatSDK is a highly reliable global communication platform where your users can 
 | {@link ChatGroupEventListener.onDetailChanged onDetailChanged} | Occurs when the chat group detail change. All chat group members receive this event. |
 | {@link ChatGroupEventListener.onStateChanged onStateChanged} | Occurs when the disabled state of group changes. |
 | {@link ChatGroupEventListener.onMemberAttributesChanged onMemberAttributesChanged} | Occurs when a custom attribute(s) of a group member is/are changed. |
+| {@link ChatGroupEventListener.onUserGroupNamecardChanged onUserGroupNamecardChanged} | Occurs when the namecard of a group member is changed. |
 ## ChatRoomManager
 | Method | Description |
 | :----- | :---------- |
@@ -425,8 +434,16 @@ ChatSDK is a highly reliable global communication platform where your users can 
 ## ChatUserInfoManager
 | Method | Description |
 | :----- | :---------- |
+| {@link ChatUserInfoManager.setNativeListener setNativeListener} | The user information manager for updating and getting user attributes. |
+| {@link ChatUserInfoManager.addUserInfoListener addUserInfoListener} | Adds a user information listener. |
+| {@link ChatUserInfoManager.removeUserInfoListener removeUserInfoListener} | Removes the user information listener. |
+| {@link ChatUserInfoManager.removeAllUserInfoListener removeAllUserInfoListener} | Removes all user information listeners. |
 | {@link ChatUserInfoManager.updateOwnUserInfo updateOwnUserInfo} | Modifies the user attributes of the current user. |
 | {@link ChatUserInfoManager.fetchUserInfoById fetchUserInfoById} | Gets the user attributes of the specified users. |
+| {@link ChatUserInfoManager.getLocalUserInfoByIds getLocalUserInfoByIds} | Gets the user attributes of the specified users from the local database. |
+| {@link ChatUserInfoManager.subscribeUsersInfo subscribeUsersInfo} | Subscribes to the user attributes of the specified users. |
+| {@link ChatUserInfoManager.unsubscribeUsersInfo unsubscribeUsersInfo} | Unsubscribes from the user attributes of the specified users. |
+| {@link ChatUserInfoManager.fetchSubscribedUsers fetchSubscribedUsers} | Gets the list of users whose user attributes are subscribed by the current user. |
 | {@link ChatUserInfoManager.fetchOwnInfo fetchOwnInfo} | Gets attributes of the current user from the server. |
 ## ChatMessage
 | Method | Description |

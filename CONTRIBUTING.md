@@ -130,7 +130,7 @@ The `package.json` file contains various scripts for common tasks:
 - `yarn clean`: remove build outputs (`lib/`, `android/build`, example build directories).
 - `yarn typecheck`, `yarn lint`, `yarn test*`, `yarn scan:deprecated`, `yarn check:circular:*`: see [Validating your changes](#validating-your-changes).
 - `yarn example start` / `android` / `ios` / `web`: run the example app.
-- `yarn doc:en` / `yarn doc:cn` / `yarn doc:md`: generate the API reference with TypeDoc.
+- `yarn doc <en|cn> [version]`: generate the HTML API reference with TypeDoc (refreshes the API overview, builds into `docs/build/<lang>`, then strips source locations and stamps the version; `version` defaults to `package.json`). `yarn doc:md`: generate the Markdown API reference.
 - `yarn hooks:install`: install the lefthook Git hooks.
 - `yarn release`: publish a new version (see [Publishing to npm](#publishing-to-npm)).
   
