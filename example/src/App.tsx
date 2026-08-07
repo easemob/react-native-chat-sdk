@@ -13,6 +13,7 @@ import { LoginPage } from './pages/LoginPage';
 import { SearchPage } from './pages/SearchPage';
 import { ApiCallPage } from './pages/ApiCallPage';
 import { FloatingLog } from './log/floating_log';
+import { FloatingAttachment } from './tools/floating_attachment';
 import { addLog, LOG_FILE_PATH } from './log/log_store';
 import { isAutoMode, runAutoMode, type AutoModeHooks } from './auto/auto_mode';
 
@@ -37,6 +38,12 @@ function StatusBar() {
 function FloatingLogHost() {
   const sdk = useSdkState();
   return sdk.initialized ? <FloatingLog /> : null;
+}
+
+/** 悬浮附件工具同样在 init 成功后挂载（绿色球，默认在日志球下方） */
+function FloatingAttachmentHost() {
+  const sdk = useSdkState();
+  return sdk.initialized ? <FloatingAttachment /> : null;
 }
 
 function AutoModeRunner() {
@@ -97,6 +104,7 @@ function AppBody() {
         </Stack.Navigator>
       </NavigationContainer>
       <FloatingLogHost />
+      <FloatingAttachmentHost />
     </View>
   );
 }
