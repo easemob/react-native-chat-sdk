@@ -54,6 +54,8 @@ class DiffBasedMerger:
         self.target_dir = Path(target_dir)
         self.restored_block_count = 0
         self.english_block_count = 0
+        self.repaired_block_count = 0
+        self.salvaged_block_count = 0
         self.invalid_files: List[str] = []
         self.failed = False
 
@@ -166,8 +168,26 @@ class DiffBasedMerger:
         return bool(re.search(r"[a-zA-Z]{2,}", text))
 
     def remove_english_from_comment_block(self, comment_lines: List[str]) -> List[str]:
-        """从注释块中移除英文，保留中文"""
-        result = []
+        """从注释块中移除英文，保留中文。
+
+        git 可能把旧中文注释与新英文注释错位对齐（新增 API 插入或注释改写
+        共用 context 行导致），kept（`-` + context 行）可能缺 opener、缺
+        closer、或两者都缺；dropped（`+` 行）也可能是完整英文注释。缺边界
+        的注释直接输出会产生未闭合注释吞掉后续代码、或无 opener 的注释碎片
+        泄漏为代码（两者都是代码一致性校验失败的根因）。
+
+        处理规则：
+        - kept 缺 opener：借用 dropped 的 opener，或按首行缩进合成 `/**`；
+        - kept 缺 closer：按 opener 缩进合成 ` */`；
+        - dropped 构成完整或半完整英文注释（含 opener 或 closer）：补齐边界
+          后作为独立注释块接在中文块之后，避免新 API 注释无声丢失，并计为
+          待人工翻译项；dropped 只是注释正文碎片（同 API 注释的英文改写）
+          时直接丢弃。
+        修复产出的中文块都可能与下方 API 不符（错位堆叠），已在统计中计数，
+        需人工通读 diff 时核对归属。
+        """
+        kept: List[str] = []
+        dropped_plus: List[str] = []
 
         for line in comment_lines:
             prefix = line[0] if line else " "
@@ -175,15 +195,53 @@ class DiffBasedMerger:
 
             if prefix == "-":
                 # 删除的行（原中文），保留
-                result.append(content)
+                kept.append(content)
             elif prefix == "+":
-                # 添加的行（新英文），需要删除
-                continue
+                # 添加的行（新英文），暂不输出
+                dropped_plus.append(content)
             elif prefix == " ":
                 # 未修改的行，保留
-                result.append(content)
+                kept.append(content)
 
-        return result
+        def is_opener(l: str) -> bool:
+            return self.comment_start in l or self.comment_start2 in l
+
+        opener = next((l for l in kept if is_opener(l)), None)
+        has_close = any(self.comment_end in l for l in kept)
+        dropped_opener = next((l for l in dropped_plus if is_opener(l)), None)
+        dropped_has_close = any(self.comment_end in l for l in dropped_plus)
+
+        # 正常情况：kept 是完整注释，dropped 只是同 API 注释的英文改写正文
+        if opener is not None and has_close and not dropped_has_close:
+            return kept
+
+        # 以下为错位修复：先把中文块（kept）的边界补齐
+        repaired = False
+        indent_src = opener or dropped_opener or (kept[0] if kept else " /**")
+        indent = indent_src[: len(indent_src) - len(indent_src.lstrip())]
+        if opener is None:
+            kept.insert(0, dropped_opener or f"{indent}/**")
+            repaired = True
+        if not has_close:
+            kept.append(f"{indent} */")
+            repaired = True
+
+        # 英文块（dropped）为完整或半完整注释时补齐边界并抢救输出
+        if dropped_opener is not None or dropped_has_close:
+            english_block = list(dropped_plus)
+            if dropped_opener is None:
+                # kept[0] 此时已是 opener，借用它补齐英文块
+                english_block.insert(0, kept[0])
+            if not dropped_has_close:
+                # kept[-1] 此时已是 closer，借用它补齐英文块
+                english_block.append(kept[-1])
+            kept.extend(english_block)
+            self.salvaged_block_count += 1
+            self.english_block_count += 1
+
+        if repaired:
+            self.repaired_block_count += 1
+        return kept
 
     def extract_comment_block(
         self, content_lines: List[str], start_index: int
@@ -263,9 +321,13 @@ class DiffBasedMerger:
                 comment_block, next_index = self.extract_comment_block(content_lines, i)
 
                 # 需要判断下一行是否存在，如果存在判断是否开头是减号，如果是减号则注释快整体删除
+                # 仅限纯删除块（块内无 + 行）：若块内包含 + 行，说明是新旧注释
+                # 错位对齐而非注释被移除，直接删除会吞掉新英文注释，走正常处理
                 if next_index < len(content_lines):
                     next_line = content_lines[next_index]
-                    if next_line.startswith("-"):
+                    if next_line.startswith("-") and not any(
+                        l.startswith("+") for l in comment_block
+                    ):
                         # 删除整个注释块
                         i = next_index
                         continue
@@ -362,6 +424,10 @@ class DiffBasedMerger:
         print(f"无变更文件数: {total_count - modified_count}")
         print(f"恢复中文注释块数: {self.restored_block_count}")
         print(f"保留英文注释块数（待人工翻译）: {self.english_block_count}")
+        if self.repaired_block_count or self.salvaged_block_count:
+            print(f"错位块闭合修复数: {self.repaired_block_count}")
+            print(f"错位块抢救英文注释数: {self.salvaged_block_count}")
+            print("提示: 错位块处的中文注释可能贴在新增 API 上方，人工通读 diff 时重点核对这些位置")
         if self.invalid_files:
             print(f"代码一致性校验失败文件数（已保留英文版本，需人工处理）: {len(self.invalid_files)}")
             for f in self.invalid_files:
