@@ -20,7 +20,11 @@ runs:
         path: |
           **/node_modules
           .yarn/install-state.gz
-        key: ${{ runner.os }}-yarn-${{ hashFiles('yarn.lock') }}-${{ hashFiles('**/package.json', '!node_modules/**') }}
+        # Job name at the end keeps the save key unique per job (concurrent jobs on
+        # the same OS otherwise race to save the identical key and one fails with
+        # "Unable to reserve cache"), while restore-keys prefix matching still lets
+        # jobs reuse each other's cache.
+        key: ${{ runner.os }}-yarn-${{ hashFiles('yarn.lock') }}-${{ hashFiles('**/package.json', '!node_modules/**') }}-${{ github.job }}
         restore-keys: |
           ${{ runner.os }}-yarn-${{ hashFiles('yarn.lock') }}
           ${{ runner.os }}-yarn-
