@@ -24,6 +24,15 @@ export default defineConfig([
     },
   },
   {
-    ignores: ['node_modules/', 'lib/', 'scripts/', 'docs/'],
+    ignores: [
+      '**/node_modules/',
+      '**/lib/',
+      'scripts/',
+      'docs/',
+      '**/.worktree/',
+      '**/build/',
+      'coverage/',
+      '**/Pods/',
+    ],
   },
 ]);
