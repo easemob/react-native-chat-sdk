@@ -9,8 +9,21 @@ runs:
       with:
         node-version-file: .nvmrc
 
-    - name: Enable corepack
-      run: corepack enable
+    - name: Setup Yarn from checked-in release
+      # Corepack ignores `yarnPath` in .yarnrc.yml and always downloads
+      # yarn@<packageManager> from repo.yarnpkg.com on fresh runners. That
+      # download is a spurious network dependency and has failed CI with
+      # connect timeouts. The repo already commits the Yarn release, so put a
+      # shim for it on PATH instead of using corepack. GITHUB_PATH prepends,
+      # so this wins over the runner image's preinstalled Yarn 1.x.
+      run: |
+        yarn_path=$(sed -n 's/^yarnPath:[[:space:]]*//p' .yarnrc.yml)
+        test -f "$yarn_path" || { echo "yarnPath not found: $yarn_path"; exit 1; }
+        shim_dir="$RUNNER_TEMP/yarn-shim"
+        mkdir -p "$shim_dir"
+        printf '#!/usr/bin/env bash\nexec node "%s/%s" "$@"\n' "$GITHUB_WORKSPACE" "$yarn_path" > "$shim_dir/yarn"
+        chmod +x "$shim_dir/yarn"
+        echo "$shim_dir" >> "$GITHUB_PATH"
       shell: bash
 
     - name: Restore dependencies

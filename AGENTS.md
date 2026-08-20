@@ -72,6 +72,7 @@ yarn example ios        # run on iOS
 - Jobs: `quality` (runs `scripts/ci/run_quality.sh`, uploads coverage), `android-build` (JDK 17 + Gradle cache + deprecated API scan), `ios-build` (bundler-managed CocoaPods + Pods cache + deprecated API scan).
 - Keep CI logic in scripts rather than inline YAML so local runs match CI (`scripts/ci/run_quality.sh`).
 - Toolchain versions are pinned by the repo itself: Node via `.nvmrc`, Yarn via `.yarnrc.yml` `yarnPath`, CocoaPods via `example/Gemfile.lock` (always `bundle exec`).
+- CI does not use corepack (it ignores `yarnPath` and downloads Yarn from repo.yarnpkg.com, a network failure point); `.github/actions/setup` puts a shim for the checked-in `.yarn/releases/yarn-*.cjs` on PATH instead.
 
 ## Architecture
 
@@ -138,5 +139,6 @@ The `modules/` directory contains native code shared between React Native and Fl
 - TS-side unit tests and the TS↔Native contract tests run on every commit via Lefthook pre-commit.
 - Contract tests (`src/__tests__/contract/`) check method-name parity across TS / Java / ObjC, TS-side event wiring (every non-deprecated `MTon*` const must be referenced in `src/` or explicitly allowlisted), and duplicate const values.
 - Unit tests (`src/__tests__/unit/`) focus on logic-bearing points: event dispatch (native event → listener fan-out), send-callback routing (`BaseManager`), model decoding, and error mapping — not per-API pass-through coverage.
+- Coverage policy: line coverage is a reference metric, not a gate. Most uncovered lines are thin per-API wrappers in the manager classes (`ChatManager`, `ChatGroupManager`, etc.) whose bodies just forward to `Native._callMethod`. Mocking the native layer to assert "the mock was called with these params" only restates the implementation: it cannot see real native behavior, it breaks on every internal refactor, and the bugs it could catch (wrong method const, wrong param shape) are already covered statically by the contract tests. The real bug-prone seams are TS↔native contract drift (contract tests), event decoding/dispatch, and model encode/decode — tests target those. Do not add blanket pass-through tests to raise the coverage number, and do not set a coverage threshold.
 - Test code and comments are written in English.
 - Native wrapper code in `modules/java/` and `modules/objc/` is **not** covered by automated tests. After modifying any wrapper there, manually exercise the affected feature in `example/` before pushing.
