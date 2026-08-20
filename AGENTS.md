@@ -28,7 +28,7 @@ src/                            # TypeScript SDK source
 ├── common/                     # Shared types and models (ChatMessage, ChatConversation, ChatGroup, etc.)
 ├── __internal__/               # Native bridge base, method constants (Consts.ts), Factory, Utils
 ├── __specs__/                  # TurboModule spec (codegen)
-└── __tests__/                  # Jest unit tests
+└── __tests__/                  # Jest tests (unit/, contract/, helpers/)
 
 modules/                        # Shared native code (RN and Flutter)
 ├── cpp/common/                 # Method name constants (ExtSdkMethodType.*), must sync with Consts.ts
@@ -135,5 +135,8 @@ The `modules/` directory contains native code shared between React Native and Fl
 
 ## Testing Discipline
 
-- TS-side unit tests and the TS↔Native method-name contract test run on every commit via Lefthook pre-commit.
+- TS-side unit tests and the TS↔Native contract tests run on every commit via Lefthook pre-commit.
+- Contract tests (`src/__tests__/contract/`) check method-name parity across TS / Java / ObjC, TS-side event wiring (every non-deprecated `MTon*` const must be referenced in `src/` or explicitly allowlisted), and duplicate const values.
+- Unit tests (`src/__tests__/unit/`) focus on logic-bearing points: event dispatch (native event → listener fan-out), send-callback routing (`BaseManager`), model decoding, and error mapping — not per-API pass-through coverage.
+- Test code and comments are written in English.
 - Native wrapper code in `modules/java/` and `modules/objc/` is **not** covered by automated tests. After modifying any wrapper there, manually exercise the affected feature in `example/` before pushing.

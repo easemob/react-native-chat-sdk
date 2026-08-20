@@ -136,3 +136,44 @@ export function resolveRnSupportedEventValues(): string[] {
   }
   return result;
 }
+
+/**
+ * Collects all TS source files under `src/`, excluding the tests directory
+ * and the consts definition file itself, so event-wiring checks only see
+ * real usage sites.
+ */
+function collectTsSourceFiles(): string[] {
+  const srcRoot = path.join(REPO_ROOT, 'src');
+  const out: string[] = [];
+  const walk = (dir: string): void => {
+    for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
+      const full = path.join(dir, entry.name);
+      if (entry.isDirectory()) {
+        if (entry.name === '__tests__') continue;
+        walk(full);
+      } else if (entry.name.endsWith('.ts')) {
+        if (full === TS_CONSTS_PATH) continue;
+        out.push(full);
+      }
+    }
+  };
+  walk(srcRoot);
+  return out;
+}
+
+/**
+ * Returns the TS source files (relative to repo root) that reference the
+ * given const symbol name, e.g. `MTonMessagesReceived`. Matching is done on
+ * word boundaries so `MTonMessageRead` does not count as a reference to
+ * `MTonMessageReadAck`.
+ */
+export function findTsConstReferences(symbol: string): string[] {
+  const re = new RegExp(`\\b${symbol}\\b`);
+  const hits: string[] = [];
+  for (const file of collectTsSourceFiles()) {
+    if (re.test(readFile(file))) {
+      hits.push(path.relative(REPO_ROOT, file));
+    }
+  }
+  return hits;
+}
