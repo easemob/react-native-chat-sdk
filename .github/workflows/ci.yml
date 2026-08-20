@@ -71,7 +71,13 @@ jobs:
         # compile emits all warnings). If compile-artifact caching is ever added to
         # this job, builds become incremental and stop re-emitting warnings — split
         # the scan back into its own clean-build step (scripts/scan-deprecated-android.sh).
-        run: bash scripts/parse-deprecated-android.sh > build/reports/deprecated-android.json
+        # The redirect target dir is normally created by the build step above; create
+        # it here too so this always() step fails with the script's own message
+        # (missing raw log) instead of a shell redirect error when the build step
+        # was skipped or died before its mkdir.
+        run: |
+          mkdir -p build/reports
+          bash scripts/parse-deprecated-android.sh > build/reports/deprecated-android.json
 
       - name: Upload deprecated API report
         if: always()
@@ -145,7 +151,13 @@ jobs:
         # compile emits all warnings). If compile-artifact caching is ever added to
         # this job, builds become incremental and stop re-emitting warnings — split
         # the scan back into its own clean-build step (scripts/scan-deprecated-ios.sh).
-        run: bash scripts/parse-deprecated-ios.sh > build/reports/deprecated-ios.json
+        # The redirect target dir is normally created by the build step above; create
+        # it here too so this always() step fails with the script's own message
+        # (missing raw log) instead of a shell redirect error when the build step
+        # was skipped or died before its mkdir.
+        run: |
+          mkdir -p build/reports
+          bash scripts/parse-deprecated-ios.sh > build/reports/deprecated-ios.json
 
       - name: Upload deprecated API report
         if: always()
