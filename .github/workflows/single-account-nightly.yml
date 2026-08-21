@@ -84,6 +84,16 @@ jobs:
           bash scripts/ci/write_single_account_config.sh "$RUNNER_TEMP/rn_single_account_config.json"
           echo "E2E_CONFIG_PATH=$RUNNER_TEMP/rn_single_account_config.json" >> "$GITHUB_ENV"
 
+      - name: Enable KVM group perms
+        # The ubuntu-24.04 runner image has /dev/kvm but the runner user is
+        # not in the kvm group (actions/runner-images#8542). Without this
+        # udev rule the emulator silently falls back to ~10x slower software
+        # emulation and the test watchdog times out before the app starts.
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
+
       - name: Run nightly on Android emulator
         uses: reactivecircus/android-emulator-runner@a421e43855164a8197daf9d8d40fe71c6996bb0d # v2.38.0
         with:
