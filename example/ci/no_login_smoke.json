@@ -1,0 +1,47 @@
+{
+  "init": { "appKey": "easemob#easeim", "autoLogin": false },
+  "steps": [
+    {
+      "api": "ChatManager.fetchConversationsFromServerWithCursor",
+      "id": "chat.fetchConversationsFromServerWithCursor",
+      "params": { "pageSize": 20 },
+      "expect": { "errorCode": 201 }
+    },
+    {
+      "api": "ChatContactManager.fetchAllContacts",
+      "id": "contact.fetchAllContacts",
+      "params": {},
+      "expect": { "errorCode": 201 }
+    },
+    {
+      "api": "ChatGroupManager.fetchJoinedGroupsFromServer",
+      "id": "group.fetchJoinedGroupsFromServer",
+      "params": { "pageSize": 20, "pageNum": 0 },
+      "expect": { "errorCode": 201 }
+    },
+    {
+      "api": "ChatRoomManager.fetchPublicChatRoomsFromServer",
+      "id": "room.fetchPublicChatRoomsFromServer",
+      "params": { "pageNum": 1, "pageSize": 20 },
+      "expect": { "errorCode": 201 }
+    },
+    {
+      "api": "ChatPresenceManager.publishPresence",
+      "id": "presence.publishPresence",
+      "params": { "description": "rn-ci" },
+      "expect": { "errorCode": 201 }
+    },
+    {
+      "api": "ChatPushManager.fetchSilentModeForAll",
+      "id": "push.fetchSilentModeForAll",
+      "params": {},
+      "expect": { "errorCode": 201 }
+    },
+    {
+      "api": "ChatUserInfoManager.fetchSubscribedUsers",
+      "id": "userInfo.fetchSubscribedUsers",
+      "params": {},
+      "expect": { "errorCode": 201 }
+    }
+  ]
+}
