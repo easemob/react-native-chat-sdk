@@ -25,7 +25,7 @@ jobs:
         uses: ./.github/actions/setup
 
       - name: Set up Java
-        uses: actions/setup-java@c5195efecf7bdfc987ee8bae7a71cb8b11521c00 # v4.7.1
+        uses: actions/setup-java@b6effb05e454b25005698d916606bdc6ffcbf961 # v5.7.0
         with:
           distribution: temurin
           java-version: '17'
@@ -91,26 +91,21 @@ jobs:
           arch: x86_64
           profile: pixel_6
           disable-animations: true
-          # The device copy of the config holds credentials; delete it inside
+          # The action mangles multi-line scripts (only the first line reaches
+          # the shell), so all logic lives in a repo script. The device copy of
+          # the config holds credentials; DEVICE_CLEANUP_PATHS deletes it inside
           # the emulator session because the emulator is gone once this step
           # ends. The logcat dump must happen here for the same reason.
-          script: |
-            set +e
-            APK_PATH=artifacts/app-debug.apk \
-              SCRIPT_JSON=example/ci/single_account.json \
-              CONFIG_JSON="$E2E_CONFIG_PATH" \
-              DEVICE_SCRIPT_PATH=/data/local/tmp/rn_single_account.json \
-              DEVICE_CONFIG_PATH=/data/local/tmp/rn_single_account_config.json \
-              OUT_LOG=build/reports/nightly-android-api_test.log \
-              bash scripts/ci/run_device_android.sh
-            rc=$?
-            adb shell rm -f /data/local/tmp/rn_single_account.json \
-              /data/local/tmp/rn_single_account_config.json || true
-            if [ "$rc" -ne 0 ]; then
-              mkdir -p build/reports
-              adb logcat -d > build/reports/nightly-android-logcat.log || true
-            fi
-            exit "$rc"
+          script: bash scripts/ci/run_ci_android.sh
+        env:
+          APK_PATH: artifacts/app-debug.apk
+          SCRIPT_JSON: example/ci/single_account.json
+          CONFIG_JSON: ${{ env.E2E_CONFIG_PATH }}
+          DEVICE_SCRIPT_PATH: /data/local/tmp/rn_single_account.json
+          DEVICE_CONFIG_PATH: /data/local/tmp/rn_single_account_config.json
+          DEVICE_CLEANUP_PATHS: /data/local/tmp/rn_single_account.json /data/local/tmp/rn_single_account_config.json
+          OUT_LOG: build/reports/nightly-android-api_test.log
+          LOGCAT_LOG: build/reports/nightly-android-logcat.log
 
       - name: Remove protected test configuration
         if: always()
@@ -143,7 +138,7 @@ jobs:
         uses: ./.github/actions/setup
 
       - name: Cache bundler
-        uses: actions/cache@5a3ec84eff668545956fd18022155c47e93e2684 # v4.2.3
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
           path: example/vendor/bundle
           key: ${{ runner.os }}-bundler-${{ hashFiles('example/Gemfile.lock') }}
@@ -157,7 +152,7 @@ jobs:
           bundle install
 
       - name: Cache Pods
-        uses: actions/cache@5a3ec84eff668545956fd18022155c47e93e2684 # v4.2.3
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
           path: |
             example/ios/Pods
@@ -194,11 +189,18 @@ jobs:
             API_CONFIG=/tmp/rn_single_account_config.json \
             build
 
+      - name: Package nightly app
+        working-directory: example
+        # upload-artifact stores only the *contents* of a directory path, which
+        # would strip the ChatSdkExample.app wrapper; artifact download also
+        # drops the executable bit. Zip first so the bundle round-trips intact.
+        run: ditto -c -k --keepParent ios/build/Build/Products/Debug-iphonesimulator/ChatSdkExample.app ios/build/ChatSdkExample.app.zip
+
       - name: Upload nightly app
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: rn-nightly-ios-app-${{ github.run_id }}
-          path: example/ios/build/Build/Products/Debug-iphonesimulator/ChatSdkExample.app
+          path: example/ios/build/ChatSdkExample.app.zip
           retention-days: 1
 
   ios-test:
@@ -235,23 +237,22 @@ jobs:
 
       - name: Run nightly on iOS simulator
         run: |
-          # Artifact download may drop the executable bit on the app binary.
-          chmod +x artifacts/ChatSdkExample.app/ChatSdkExample || true
-          simulator_udid="$(bash scripts/ci/boot_ios_simulator.sh)"
-          echo "Using iOS simulator $simulator_udid"
-          DEVICE_UDID="$simulator_udid" APP_PATH=artifacts/ChatSdkExample.app \
-            SCRIPT_JSON=example/ci/single_account.json \
-            CONFIG_JSON="$E2E_CONFIG_PATH" \
-            HOST_SCRIPT_PATH=/tmp/rn_single_account.json \
-            HOST_CONFIG_PATH=/tmp/rn_single_account_config.json \
-            OUT_LOG=build/reports/nightly-ios-api_test.log \
-            bash scripts/ci/run_device_ios.sh
+          ditto -x -k artifacts/ChatSdkExample.app.zip artifacts
+          bash scripts/ci/run_ci_ios.sh
+        env:
+          APP_PATH: artifacts/ChatSdkExample.app
+          SCRIPT_JSON: example/ci/single_account.json
+          CONFIG_JSON: ${{ env.E2E_CONFIG_PATH }}
+          HOST_SCRIPT_PATH: /tmp/rn_single_account.json
+          HOST_CONFIG_PATH: /tmp/rn_single_account_config.json
+          OUT_LOG: build/reports/nightly-ios-api_test.log
 
       - name: Collect iOS diagnostics after failure
         if: failure()
+        # --output expects a directory; the archive name is generated.
         run: |
           mkdir -p build/reports
-          xcrun simctl diagnose --output build/reports/ios-sim-diagnose.tar.gz || true
+          xcrun simctl diagnose -b --output build/reports || true
 
       - name: Remove protected test configuration
         if: always()
@@ -266,6 +267,6 @@ jobs:
           name: rn-single-account-ios-${{ github.run_id }}
           path: |
             build/reports/nightly-ios-api_test.log
-            build/reports/ios-sim-diagnose.tar.gz
+            build/reports/*diagnose*.tar.gz
           if-no-files-found: warn
           retention-days: 7
