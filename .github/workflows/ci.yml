@@ -1,181 +1,171 @@
 name: CI
+
 on:
-  push:
-    branches:
-      - main
   pull_request:
-    branches:
-      - main
-  merge_group:
-    types:
-      - checks_requested
+  workflow_dispatch:
+
+permissions:
+  contents: read
 
 concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
+  group: rn-ci-${{ github.event.pull_request.number || github.ref }}
   cancel-in-progress: true
 
 jobs:
-  lint:
-    runs-on: ubuntu-latest
-
+  quality:
+    name: Quality and contracts
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
     steps:
-      - name: Checkout
+      - name: Check out source
         uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
 
-      - name: Setup
+      - name: Setup Node.js and dependencies
         uses: ./.github/actions/setup
 
-      - name: Lint files
-        run: yarn lint
+      - name: Run quality gates
+        run: bash scripts/ci/run_quality.sh
 
-      - name: Typecheck files
-        run: yarn typecheck
-
-  test:
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout
-        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
-
-      - name: Setup
-        uses: ./.github/actions/setup
-
-      - name: Run unit tests
-        run: yarn test --maxWorkers=2 --coverage
-
-  build-library:
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout
-        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
-
-      - name: Setup
-        uses: ./.github/actions/setup
-
-      - name: Build package
-        run: yarn prepare
-
-  build-android:
-    runs-on: ubuntu-latest
-
-    env:
-      TURBO_CACHE_DIR: .turbo/android
-
-    steps:
-      - name: Checkout
-        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
-
-      - name: Setup
-        uses: ./.github/actions/setup
-
-      - name: Cache turborepo for Android
-        uses: actions/cache@5a3ec84eff668545956fd18022155c47e93e2684 # v4.2.3
+      - name: Upload unit test coverage
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
-          path: ${{ env.TURBO_CACHE_DIR }}
-          key: ${{ runner.os }}-turborepo-android-${{ hashFiles('yarn.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-turborepo-android-
+          name: rn-unit-coverage-${{ github.run_id }}
+          path: coverage/lcov.info
+          if-no-files-found: warn
+          retention-days: 7
 
-      - name: Check turborepo cache for Android
-        run: |
-          TURBO_CACHE_STATUS=$(node -p "($(yarn turbo run build:android --cache-dir="${{ env.TURBO_CACHE_DIR }}" --dry=json)).tasks.find(t => t.task === 'build:android').cache.status")
+  android-build:
+    name: Android debug build
+    runs-on: ubuntu-24.04
+    timeout-minutes: 40
+    steps:
+      - name: Check out source
+        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
 
-          if [[ $TURBO_CACHE_STATUS == "HIT" ]]; then
-            echo "turbo_cache_hit=1" >> $GITHUB_ENV
-          fi
+      - name: Setup Node.js and dependencies
+        uses: ./.github/actions/setup
 
-      - name: Install JDK
-        if: env.turbo_cache_hit != 1
+      - name: Set up Java
         uses: actions/setup-java@c5195efecf7bdfc987ee8bae7a71cb8b11521c00 # v4.7.1
         with:
-          distribution: 'zulu'
+          distribution: temurin
           java-version: '17'
+          cache: gradle
 
-      - name: Finalize Android SDK
-        if: env.turbo_cache_hit != 1
+      - name: Generate build files
+        run: yarn gen:version_file && yarn gen:cmake_file && yarn gen:env_file
+
+      - name: Build Android example
         run: |
-          /bin/bash -c "yes | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --licenses > /dev/null"
+          mkdir -p build/reports
+          # tee captures the full build output as the raw log for the deprecation
+          # scan below. GH Actions runs bash with pipefail, so tee does not mask
+          # a build failure.
+          yarn example build:android 2>&1 | tee build/reports/deprecated-android-raw.log
 
+      - name: Scan deprecated Android APIs
+        if: always()
+        # Parse-only: reuses the raw log captured during the build above instead of
+        # a second clean build. This relies on CI runners being fresh machines (full
+        # compile emits all warnings). If compile-artifact caching is ever added to
+        # this job, builds become incremental and stop re-emitting warnings — split
+        # the scan back into its own clean-build step (scripts/scan-deprecated-android.sh).
+        # The redirect target dir is normally created by the build step above; create
+        # it here too so this always() step fails with the script's own message
+        # (missing raw log) instead of a shell redirect error when the build step
+        # was skipped or died before its mkdir.
+        run: |
+          mkdir -p build/reports
+          bash scripts/parse-deprecated-android.sh > build/reports/deprecated-android.json
 
-      - name: Cache Gradle
-        if: env.turbo_cache_hit != 1
+      - name: Upload deprecated API report
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: android-deprecated-api-${{ github.run_id }}
+          path: |
+            build/reports/deprecated-android.json
+            build/reports/deprecated-android-warnings.log
+          if-no-files-found: warn
+          retention-days: 7
+
+  ios-build:
+    name: iOS build
+    runs-on: macos-26
+    timeout-minutes: 60
+    env:
+      DEVELOPER_DIR: /Applications/Xcode_26.3.app/Contents/Developer
+      RCT_USE_RN_DEP: 1
+      RCT_USE_PREBUILT_RNCORE: 1
+    steps:
+      - name: Check out source
+        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+
+      - name: Setup Node.js and dependencies
+        uses: ./.github/actions/setup
+
+      - name: Cache bundler
+        uses: actions/cache@5a3ec84eff668545956fd18022155c47e93e2684 # v4.2.3
+        with:
+          path: example/vendor/bundle
+          key: ${{ runner.os }}-bundler-${{ hashFiles('example/Gemfile.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-bundler-
+
+      - name: Install CocoaPods via bundler
+        working-directory: example
+        run: |
+          bundle config set --local path vendor/bundle
+          bundle install
+
+      - name: Cache Pods
         uses: actions/cache@5a3ec84eff668545956fd18022155c47e93e2684 # v4.2.3
         with:
           path: |
-            ~/.gradle/wrapper
-            ~/.gradle/caches
-          key: ${{ runner.os }}-gradle-${{ hashFiles('example/android/gradle/wrapper/gradle-wrapper.properties') }}
+            example/ios/Pods
+            ~/.cocoapods
+          key: ${{ runner.os }}-pods-${{ hashFiles('example/ios/Podfile.lock') }}
           restore-keys: |
-            ${{ runner.os }}-gradle-
+            ${{ runner.os }}-pods-
 
-      - name: Build example for Android
-        env:
-          JAVA_OPTS: "-XX:MaxHeapSize=6g"
+      - name: Generate build files
+        run: yarn gen:version_file && yarn gen:cmake_file && yarn gen:env_file
+
+      - name: Install pods
+        working-directory: example
+        run: bundle exec pod install --project-directory=ios
+
+      - name: Build iOS example
         run: |
-          yarn turbo run build:android --cache-dir="${{ env.TURBO_CACHE_DIR }}"
+          mkdir -p build/reports
+          # tee captures the full build output as the raw log for the deprecation
+          # scan below. GH Actions runs bash with pipefail, so tee does not mask
+          # a build failure.
+          yarn example build:ios 2>&1 | tee build/reports/deprecated-ios-raw.log
 
-  build-ios:
-    runs-on: macos-latest
+      - name: Scan deprecated iOS APIs
+        if: always()
+        # Parse-only: reuses the raw log captured during the build above instead of
+        # a second clean build. This relies on CI runners being fresh machines (full
+        # compile emits all warnings). If compile-artifact caching is ever added to
+        # this job, builds become incremental and stop re-emitting warnings — split
+        # the scan back into its own clean-build step (scripts/scan-deprecated-ios.sh).
+        # The redirect target dir is normally created by the build step above; create
+        # it here too so this always() step fails with the script's own message
+        # (missing raw log) instead of a shell redirect error when the build step
+        # was skipped or died before its mkdir.
+        run: |
+          mkdir -p build/reports
+          bash scripts/parse-deprecated-ios.sh > build/reports/deprecated-ios.json
 
-    env:
-      XCODE_VERSION: 26
-      TURBO_CACHE_DIR: .turbo/ios
-      RCT_USE_RN_DEP: 1
-      RCT_USE_PREBUILT_RNCORE: 1
-
-    steps:
-      - name: Checkout
-        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
-
-      - name: Setup
-        uses: ./.github/actions/setup
-
-      - name: Cache turborepo for iOS
-        uses: actions/cache@5a3ec84eff668545956fd18022155c47e93e2684 # v4.2.3
+      - name: Upload deprecated API report
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
-          path: ${{ env.TURBO_CACHE_DIR }}
-          key: ${{ runner.os }}-turborepo-ios-${{ hashFiles('yarn.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-turborepo-ios-
-
-      - name: Check turborepo cache for iOS
-        run: |
-          TURBO_CACHE_STATUS=$(node -p "($(yarn turbo run build:ios --cache-dir="${{ env.TURBO_CACHE_DIR }}" --dry=json)).tasks.find(t => t.task === 'build:ios').cache.status")
-
-          if [[ $TURBO_CACHE_STATUS == "HIT" ]]; then
-            echo "turbo_cache_hit=1" >> $GITHUB_ENV
-          fi
-
-      - name: Use appropriate Xcode version
-        if: env.turbo_cache_hit != 1
-        uses: maxim-lobanov/setup-xcode@60606e260d2fc5762a71e64e74b2174e8ea3c8bd # v1.6.0
-        with:
-          xcode-version: ${{ env.XCODE_VERSION }}
-
-      - name: Install cocoapods
-        if: env.turbo_cache_hit != 1 && steps.cocoapods-cache.outputs.cache-hit != 'true'
-        run: |
-          cd example
-          bundle install
-          bundle exec pod repo update --verbose
-          bundle exec pod install --project-directory=ios
-
-      - name: Build example for iOS
-        run: |
-          yarn turbo run build:ios --cache-dir="${{ env.TURBO_CACHE_DIR }}"
-
-  build-web:
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout
-        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
-
-      - name: Setup
-        uses: ./.github/actions/setup
-
-      - name: Build example for Web
-        run: |
-          yarn example build:web
+          name: ios-deprecated-api-${{ github.run_id }}
+          path: |
+            build/reports/deprecated-ios.json
+            build/reports/deprecated-ios-warnings.log
+          if-no-files-found: warn
+          retention-days: 7

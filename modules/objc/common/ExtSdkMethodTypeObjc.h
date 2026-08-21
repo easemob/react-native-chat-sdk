@@ -142,8 +142,8 @@ static NSString *_Nonnull const ExtSdkMethodKeyOnMessageContentChanged = @"onMes
 static NSString *_Nonnull const ExtSdkMethodKeyOnMessageProgressUpdate = @"onMessageProgressUpdate";
 static NSString *_Nonnull const ExtSdkMethodKeyOnMessageSuccess = @"onMessageSuccess";
 static NSString *_Nonnull const ExtSdkMethodKeyOnMessageError = @"onMessageError";
-static NSString *_Nonnull const ExtSdkMethodKeyOnMessageReadAck = @"onMessageReadAck";
-static NSString *_Nonnull const ExtSdkMethodKeyOnMessageDeliveryAck = @"onMessageDeliveryAck";
+static NSString *_Nonnull const ExtSdkMethodKeyOnMessageReadAck = @"onMessageReadAck"; // deprecated 2026-08-20 use onMessagesRead instead
+static NSString *_Nonnull const ExtSdkMethodKeyOnMessageDeliveryAck = @"onMessageDeliveryAck"; // deprecated 2026-08-20 use onMessagesDelivered instead
 static NSString *_Nonnull const ExtSdkMethodKeyOnMessageStatusChanged =
     @"onMessageStatusChanged"; // deprecated 2022.05.04
 

@@ -1,0 +1,14 @@
+// Enable detailed javac deprecation warnings for every JavaCompile task.
+// Without -Xlint:deprecation javac only prints "Note: Some input files use or
+// override a deprecated API." and the per-call-site "[deprecation]" lines that
+// the deprecated-API scan parses are suppressed.
+//
+// This file is passed to gradle via -I (init script) so no repo build file has
+// to change. Referenced from:
+//   - example/package.json  "build:android" (so CI/local builds emit warnings)
+//   - scripts/scan-deprecated-android.sh
+allprojects {
+    tasks.withType(JavaCompile).configureEach {
+        options.compilerArgs << '-Xlint:deprecation'
+    }
+}
