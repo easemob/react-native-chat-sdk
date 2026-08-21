@@ -27,6 +27,13 @@ react {
     //   A list containing the node command and its flags. Default is just 'node'.
     // nodeExecutableAndArgs = ["node"]
     //
+    //   Device smoke tests (scripts/ci/run_smoke_android.sh) need the JS bundle
+    //   embedded in the debug APK so the app runs without Metro and API_SCRIPT is
+    //   inlined at bundle time. Opt in with `-PbundleInDebug=true`; normal debug
+    //   builds keep the default Metro-only behavior.
+    if (project.hasProperty("bundleInDebug") && project.property("bundleInDebug") == "true") {
+        debuggableVariants = []
+    }
     //   The command to run when bundling. By default is 'bundle'
     // bundleCommand = "ram-bundle"
     //

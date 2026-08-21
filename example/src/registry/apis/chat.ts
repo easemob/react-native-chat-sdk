@@ -32,6 +32,18 @@ function sendCallbacks(tag: string) {
 
 export const chatApis: ApiEntry[] = [
   {
+    name: 'ChatManager.fetchConversationsFromServerWithCursor',
+    group: 'ChatManager',
+    description: '从服务器分页获取会话列表。cursor/pageSize 均可选。',
+    paramsTemplate: JSON.stringify({ pageSize: 20 }, null, 2),
+    invoke: async (params) => {
+      return ChatClient.getInstance().chatManager.fetchConversationsFromServerWithCursor(
+        params.cursor === undefined ? undefined : String(params.cursor),
+        params.pageSize === undefined ? undefined : Number(params.pageSize)
+      );
+    },
+  },
+  {
     name: 'ChatManager.sendMessage',
     group: 'ChatManager',
     description:
