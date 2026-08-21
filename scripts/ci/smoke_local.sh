@@ -42,7 +42,7 @@ if [ "$PLATFORM" = "android" ]; then
       ./gradlew app:assembleDebug --no-daemon --console=plain \
       "-PreactNativeArchitectures=$ABI" -PbundleInDebug=true
   )
-  exec bash scripts/ci/run_smoke_android.sh
+  exec bash scripts/ci/run_device_android.sh
 fi
 
 # ios
@@ -74,4 +74,4 @@ echo ">> build smoke app (bundle embedded, API_SCRIPT inlined)"
     API_SCRIPT=/tmp/rn_smoke_no_login.json \
     build
 )
-exec bash scripts/ci/run_smoke_ios.sh
+exec bash scripts/ci/run_device_ios.sh

@@ -1,17 +1,25 @@
 #!/usr/bin/env node
 /**
- * Smoke test assertion script (no third-party dependencies).
+ * Auto-mode script assertion script (no third-party dependencies). Shared by
+ * the no-login smoke test and the single-account nightly test.
  *
  * Usage:
- *   node scripts/ci/assert_smoke.js <script.json> <api_test.log>
+ *   node scripts/ci/assert_script.js <script.json> <api_test.log>
  *
  * Reads the auto-mode script JSON and the device log file produced by the
  * example app (one JSON entry per line, optionally prefixed with
  * "[APITEST] " when captured from logcat), then verifies:
  *   1. `api.ChatClient.init` exists and succeeded;
- *   2. every step has a `script.step[i]` entry whose api matches the script,
- *      `result.success === false`, and `result.error.code === expect.errorCode`;
- *   3. `script.done` exists with `total === steps.length`.
+ *   2. when the log contains `api.ChatClient.login` entries (the script has a
+ *      login section, or login params are derived from API_CONFIG), the last
+ *      one must have succeeded;
+ *   3. every step has a `script.step[i]` entry whose api matches the script
+ *      and whose result matches the expectation:
+ *      - `expect.errorCode`: `result.success === false` and
+ *        `result.error.code === expect.errorCode` (no-login smoke);
+ *      - `expect.success === true`: `result.success === true`
+ *        (logged-in nightly);
+ *   4. `script.done` exists with `total === steps.length`.
  *
  * When several entries share a source (stale entries from an earlier run in
  * the same log file), the last one wins.
@@ -24,7 +32,7 @@ const fs = require('fs');
 const APITEST_PREFIX = '[APITEST] ';
 
 function fail2(message) {
-  console.error(`assert_smoke: error: ${message}`);
+  console.error(`assert_script: error: ${message}`);
   process.exit(2);
 }
 
@@ -63,7 +71,7 @@ function parseLogEntries(logPath) {
 function main() {
   const [, , scriptPath, logPath] = process.argv;
   if (scriptPath == null || logPath == null) {
-    fail2('usage: node assert_smoke.js <script.json> <api_test.log>');
+    fail2('usage: node assert_script.js <script.json> <api_test.log>');
   }
   if (!fs.existsSync(scriptPath)) {
     fail2(`script not found: ${scriptPath}`);
@@ -80,7 +88,7 @@ function main() {
 
   const { bySource, parsed } = parseLogEntries(logPath);
   console.log(
-    `assert_smoke: ${parsed} structured entries parsed from ${logPath}`
+    `assert_script: ${parsed} structured entries parsed from ${logPath}`
   );
 
   const failures = [];
@@ -97,13 +105,25 @@ function main() {
     );
   }
 
-  // 2. every step must have failed with the expected error code.
+  // 2. when login was attempted (script login section or API_CONFIG-derived
+  // credentials), the last login entry must have succeeded.
+  const loginEntry = bySource.get('api.ChatClient.login');
+  if (loginEntry != null && loginEntry.payload?.success !== true) {
+    failures.push(
+      `api.ChatClient.login did not succeed: ${JSON.stringify(
+        loginEntry.payload
+      )}`
+    );
+  }
+
+  // 3. every step must match its expectation.
   for (let i = 0; i < steps.length; i++) {
     const step = steps[i];
     const tag = `step[${i}] ${step.api}`;
     const expectCode = step.expect?.errorCode;
-    if (expectCode == null) {
-      failures.push(`${tag}: script step has no expect.errorCode`);
+    const expectSuccess = step.expect?.success === true;
+    if (expectCode == null && !expectSuccess) {
+      failures.push(`${tag}: script step has neither expect.errorCode nor expect.success`);
       continue;
     }
     const entry = bySource.get(`script.step[${i}]`);
@@ -119,6 +139,14 @@ function main() {
       continue;
     }
     const result = payload.result ?? {};
+    if (expectSuccess) {
+      if (result.success !== true) {
+        failures.push(
+          `${tag}: expected success but got: ${JSON.stringify(result)}`
+        );
+      }
+      continue;
+    }
     if (result.success !== false) {
       failures.push(
         `${tag}: expected failure but got success: ${JSON.stringify(result)}`
@@ -135,7 +163,7 @@ function main() {
     }
   }
 
-  // 3. script.done must cover all steps.
+  // 4. script.done must cover all steps.
   const doneEntry = bySource.get('script.done');
   if (doneEntry == null) {
     failures.push('missing log entry: script.done (script did not finish?)');
@@ -148,14 +176,15 @@ function main() {
   }
 
   if (failures.length > 0) {
-    console.error(`assert_smoke: FAILED (${failures.length} problem(s)):`);
+    console.error(`assert_script: FAILED (${failures.length} problem(s)):`);
     for (const f of failures) {
       console.error(`  - ${f}`);
     }
     process.exit(1);
   }
+  const scope = loginEntry != null ? 'init + login' : 'init';
   console.log(
-    `assert_smoke: OK (init + ${steps.length} step(s), all rejected as expected)`
+    `assert_script: OK (${scope} + ${steps.length} step(s), all as expected)`
   );
 }
 

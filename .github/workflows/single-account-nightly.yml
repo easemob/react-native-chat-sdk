@@ -1,20 +1,20 @@
-name: Device Smoke
+name: Single Account Nightly
 
 on:
   schedule:
-    - cron: '43 18 * * *'
+    - cron: '37 19 * * *'
   workflow_dispatch:
 
 permissions:
   contents: read
 
 concurrency:
-  group: rn-device-smoke-${{ github.ref }}
-  cancel-in-progress: true
+  group: rn-single-account-nightly
+  cancel-in-progress: false
 
 jobs:
   android-build:
-    name: Android smoke build
+    name: Android nightly build
     runs-on: ubuntu-24.04
     timeout-minutes: 45
     steps:
@@ -34,29 +34,32 @@ jobs:
       - name: Generate build files
         run: yarn gen:version_file && yarn gen:cmake_file && yarn gen:env_file
 
-      - name: Build Android smoke APK
+      - name: Build Android nightly APK
         working-directory: example/android
         env:
           # Inlined into the JS bundle by example/babel-plugin-inline-api-env.js;
-          # must match DEVICE_SCRIPT_PATH in scripts/ci/run_device_android.sh.
-          API_SCRIPT: /data/local/tmp/rn_smoke_no_login.json
+          # must match DEVICE_SCRIPT_PATH / DEVICE_CONFIG_PATH used by the
+          # android-test job.
+          API_SCRIPT: /data/local/tmp/rn_single_account.json
+          API_CONFIG: /data/local/tmp/rn_single_account_config.json
         # x86_64 for the CI emulator (the base CI builds arm64-v8a).
         # -PbundleInDebug=true embeds the JS bundle; debug builds normally load
         # JS from Metro, which a headless emulator cannot reach.
         run: ./gradlew app:assembleDebug --no-daemon --console=plain -PreactNativeArchitectures=x86_64 -PbundleInDebug=true
 
-      - name: Upload smoke APK
+      - name: Upload nightly APK
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
-          name: rn-smoke-android-apk-${{ github.run_id }}
+          name: rn-nightly-android-apk-${{ github.run_id }}
           path: example/android/app/build/outputs/apk/debug/app-debug.apk
           retention-days: 1
 
   android-test:
-    name: Android smoke test
+    name: Android nightly test
     needs: android-build
     runs-on: ubuntu-24.04
     timeout-minutes: 45
+    environment: rn-single-account
     steps:
       - name: Check out source
         uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
@@ -66,41 +69,66 @@ jobs:
         with:
           node-version-file: .nvmrc
 
-      - name: Download smoke APK
+      - name: Download nightly APK
         uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7
         with:
-          name: rn-smoke-android-apk-${{ github.run_id }}
+          name: rn-nightly-android-apk-${{ github.run_id }}
           path: artifacts
 
-      - name: Run smoke on Android emulator
+      - name: Prepare protected test configuration
+        env:
+          E2E_APP_KEY: ${{ secrets.E2E_APP_KEY }}
+          E2E_USER_ID: ${{ secrets.E2E_USER_ID }}
+          E2E_USER_PASSWORD: ${{ secrets.E2E_USER_PASSWORD }}
+        run: |
+          bash scripts/ci/write_single_account_config.sh "$RUNNER_TEMP/rn_single_account_config.json"
+          echo "E2E_CONFIG_PATH=$RUNNER_TEMP/rn_single_account_config.json" >> "$GITHUB_ENV"
+
+      - name: Run nightly on Android emulator
         uses: reactivecircus/android-emulator-runner@a421e43855164a8197daf9d8d40fe71c6996bb0d # v2.38.0
         with:
           api-level: 35
           arch: x86_64
           profile: pixel_6
           disable-animations: true
-          # The logcat dump must happen inside the emulator session; the
-          # emulator is gone once this step ends.
+          # The device copy of the config holds credentials; delete it inside
+          # the emulator session because the emulator is gone once this step
+          # ends. The logcat dump must happen here for the same reason.
           script: |
-            APK_PATH=artifacts/app-debug.apk bash scripts/ci/run_device_android.sh || {
+            set +e
+            APK_PATH=artifacts/app-debug.apk \
+              SCRIPT_JSON=example/ci/single_account.json \
+              CONFIG_JSON="$E2E_CONFIG_PATH" \
+              DEVICE_SCRIPT_PATH=/data/local/tmp/rn_single_account.json \
+              DEVICE_CONFIG_PATH=/data/local/tmp/rn_single_account_config.json \
+              OUT_LOG=build/reports/nightly-android-api_test.log \
+              bash scripts/ci/run_device_android.sh
+            rc=$?
+            adb shell rm -f /data/local/tmp/rn_single_account.json \
+              /data/local/tmp/rn_single_account_config.json || true
+            if [ "$rc" -ne 0 ]; then
               mkdir -p build/reports
-              adb logcat -d > build/reports/smoke-android-logcat.log || true
-              exit 1
-            }
+              adb logcat -d > build/reports/nightly-android-logcat.log || true
+            fi
+            exit "$rc"
 
-      - name: Upload Android smoke logs
+      - name: Remove protected test configuration
+        if: always()
+        run: rm -f "${E2E_CONFIG_PATH:-$RUNNER_TEMP/rn_single_account_config.json}"
+
+      - name: Upload Android nightly logs
         if: always()
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
-          name: rn-device-smoke-android-${{ github.run_id }}
+          name: rn-single-account-android-${{ github.run_id }}
           path: |
-            build/reports/smoke-android-api_test.log
-            build/reports/smoke-android-logcat.log
+            build/reports/nightly-android-api_test.log
+            build/reports/nightly-android-logcat.log
           if-no-files-found: warn
           retention-days: 7
 
   ios-build:
-    name: iOS smoke build
+    name: iOS nightly build
     runs-on: macos-26
     timeout-minutes: 45
     env:
@@ -145,14 +173,14 @@ jobs:
         working-directory: example
         run: bundle exec pod install --project-directory=ios
 
-      - name: Build iOS smoke app
+      - name: Build iOS nightly app
         working-directory: example
         # API_SCRIPT is passed as a user-defined build setting so the RN bundle
         # phase sees it (script phases only inherit build settings, not process
         # env). FORCE_BUNDLING=1 makes the Debug build embed the JS bundle;
         # Debug simulator builds normally skip bundling and load from Metro.
-        # The simulator shares the host file system, so the value must match
-        # HOST_SCRIPT_PATH in scripts/ci/run_device_ios.sh. Do NOT pass
+        # The simulator shares the host file system, so the values must match
+        # HOST_SCRIPT_PATH / HOST_CONFIG_PATH used by the ios-test job. Do NOT pass
         # CODE_SIGNING_ALLOWED=NO: the embedded HyphenateChat.framework must be
         # ad-hoc signed or dyld refuses to load it on Apple Silicon simulators.
         run: |
@@ -162,23 +190,25 @@ jobs:
             -sdk iphonesimulator \
             -derivedDataPath ios/build \
             FORCE_BUNDLING=1 \
-            API_SCRIPT=/tmp/rn_smoke_no_login.json \
+            API_SCRIPT=/tmp/rn_single_account.json \
+            API_CONFIG=/tmp/rn_single_account_config.json \
             build
 
-      - name: Upload smoke app
+      - name: Upload nightly app
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
-          name: rn-smoke-ios-app-${{ github.run_id }}
+          name: rn-nightly-ios-app-${{ github.run_id }}
           path: example/ios/build/Build/Products/Debug-iphonesimulator/ChatSdkExample.app
           retention-days: 1
 
   ios-test:
-    name: iOS smoke test
+    name: iOS nightly test
     needs: ios-build
     runs-on: macos-26
     timeout-minutes: 45
     env:
       DEVELOPER_DIR: /Applications/Xcode_26.3.app/Contents/Developer
+    environment: rn-single-account
     steps:
       - name: Check out source
         uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
@@ -188,19 +218,33 @@ jobs:
         with:
           node-version-file: .nvmrc
 
-      - name: Download smoke app
+      - name: Download nightly app
         uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7
         with:
-          name: rn-smoke-ios-app-${{ github.run_id }}
+          name: rn-nightly-ios-app-${{ github.run_id }}
           path: artifacts
 
-      - name: Run smoke on iOS simulator
+      - name: Prepare protected test configuration
+        env:
+          E2E_APP_KEY: ${{ secrets.E2E_APP_KEY }}
+          E2E_USER_ID: ${{ secrets.E2E_USER_ID }}
+          E2E_USER_PASSWORD: ${{ secrets.E2E_USER_PASSWORD }}
+        run: |
+          bash scripts/ci/write_single_account_config.sh "$RUNNER_TEMP/rn_single_account_config.json"
+          echo "E2E_CONFIG_PATH=$RUNNER_TEMP/rn_single_account_config.json" >> "$GITHUB_ENV"
+
+      - name: Run nightly on iOS simulator
         run: |
           # Artifact download may drop the executable bit on the app binary.
           chmod +x artifacts/ChatSdkExample.app/ChatSdkExample || true
           simulator_udid="$(bash scripts/ci/boot_ios_simulator.sh)"
           echo "Using iOS simulator $simulator_udid"
           DEVICE_UDID="$simulator_udid" APP_PATH=artifacts/ChatSdkExample.app \
+            SCRIPT_JSON=example/ci/single_account.json \
+            CONFIG_JSON="$E2E_CONFIG_PATH" \
+            HOST_SCRIPT_PATH=/tmp/rn_single_account.json \
+            HOST_CONFIG_PATH=/tmp/rn_single_account_config.json \
+            OUT_LOG=build/reports/nightly-ios-api_test.log \
             bash scripts/ci/run_device_ios.sh
 
       - name: Collect iOS diagnostics after failure
@@ -209,13 +253,19 @@ jobs:
           mkdir -p build/reports
           xcrun simctl diagnose --output build/reports/ios-sim-diagnose.tar.gz || true
 
-      - name: Upload iOS smoke evidence
+      - name: Remove protected test configuration
+        if: always()
+        # The iOS driver copies the config to HOST_CONFIG_PATH on the runner;
+        # remove both copies.
+        run: rm -f "${E2E_CONFIG_PATH:-$RUNNER_TEMP/rn_single_account_config.json}" /tmp/rn_single_account.json /tmp/rn_single_account_config.json
+
+      - name: Upload iOS nightly evidence
         if: always()
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
-          name: rn-device-smoke-ios-${{ github.run_id }}
+          name: rn-single-account-ios-${{ github.run_id }}
           path: |
-            build/reports/smoke-ios-api_test.log
+            build/reports/nightly-ios-api_test.log
             build/reports/ios-sim-diagnose.tar.gz
           if-no-files-found: warn
           retention-days: 7
