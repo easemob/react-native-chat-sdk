@@ -1,0 +1,46 @@
+{
+  "steps": [
+    {
+      "api": "ChatManager.fetchConversationsFromServerWithCursor",
+      "id": "chat.fetchConversationsFromServerWithCursor",
+      "params": { "pageSize": 20 },
+      "expect": { "success": true }
+    },
+    {
+      "api": "ChatContactManager.fetchAllContacts",
+      "id": "contact.fetchAllContacts",
+      "params": {},
+      "expect": { "success": true }
+    },
+    {
+      "api": "ChatGroupManager.fetchJoinedGroupsFromServer",
+      "id": "group.fetchJoinedGroupsFromServer",
+      "params": { "pageSize": 20, "pageNum": 0 },
+      "expect": { "success": true }
+    },
+    {
+      "api": "ChatRoomManager.fetchPublicChatRoomsFromServer",
+      "id": "room.fetchPublicChatRoomsFromServer",
+      "params": { "pageNum": 1, "pageSize": 20 },
+      "expect": { "success": true }
+    },
+    {
+      "api": "ChatPresenceManager.fetchPresenceStatus",
+      "id": "presence.fetchPresenceStatus",
+      "params": { "userIds": ["$config.accounts.0.id"] },
+      "expect": { "success": true }
+    },
+    {
+      "api": "ChatPushManager.fetchSilentModeForAll",
+      "id": "push.fetchSilentModeForAll",
+      "params": {},
+      "expect": { "success": true }
+    },
+    {
+      "api": "ChatUserInfoManager.fetchSubscribedUsers",
+      "id": "userInfo.fetchSubscribedUsers",
+      "params": {},
+      "expect": { "success": true }
+    }
+  ]
+}

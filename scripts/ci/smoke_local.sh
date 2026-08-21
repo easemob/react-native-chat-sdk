@@ -27,6 +27,12 @@ cd "$REPO_ROOT"
 [ -d node_modules ] || yarn install
 yarn gen:version_file && yarn gen:cmake_file && yarn gen:env_file
 
+# API_SCRIPT / API_CONFIG reach the bundler via environment variables, which
+# neither gradle's up-to-date checks nor metro's transform cache track (their
+# keys are file contents + transformer options only). Without these clears,
+# alternating smoke/nightly runs silently reuse the previously inlined paths.
+rm -rf "${TMPDIR:-/tmp}/metro-cache"
+
 if [ "$PLATFORM" = "android" ]; then
   adb get-state >/dev/null 2>&1 || {
     echo "error: no booted Android emulator/device reachable via adb" >&2
@@ -39,10 +45,11 @@ if [ "$PLATFORM" = "android" ]; then
   (
     cd example/android
     API_SCRIPT=/data/local/tmp/rn_smoke_no_login.json \
-      ./gradlew app:assembleDebug --no-daemon --console=plain \
+      ./gradlew app:cleanCreateBundleDebugJsAndAssets app:assembleDebug \
+      --no-daemon --console=plain \
       "-PreactNativeArchitectures=$ABI" -PbundleInDebug=true
   )
-  exec bash scripts/ci/run_smoke_android.sh
+  exec bash scripts/ci/run_device_android.sh
 fi
 
 # ios
@@ -74,4 +81,4 @@ echo ">> build smoke app (bundle embedded, API_SCRIPT inlined)"
     API_SCRIPT=/tmp/rn_smoke_no_login.json \
     build
 )
-exec bash scripts/ci/run_smoke_ios.sh
+exec bash scripts/ci/run_device_ios.sh

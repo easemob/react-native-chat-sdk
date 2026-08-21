@@ -1,26 +1,34 @@
 #!/usr/bin/env bash
-# No-login device smoke test driver for iOS. Shared by local runs and CI.
+# Auto-mode device driver for iOS. Shared by the no-login smoke test and the
+# single-account nightly test, both locally and in CI.
 #
 # Preconditions:
 #   - a booted simulator (or DEVICE_UDID pointing at one);
-#   - a Debug-iphonesimulator .app built with
-#     API_SCRIPT=/tmp/rn_smoke_no_login.json inlined at bundle time (the babel
-#     plugin in example/babel.config.js). The simulator shares the host file
-#     system, so the inlined path is a host path.
+#   - a Debug-iphonesimulator .app with the API_SCRIPT (and, for the nightly,
+#     API_CONFIG) host path inlined at bundle time (the babel plugin in
+#     example/babel.config.js), matching HOST_SCRIPT_PATH/HOST_CONFIG_PATH.
+#     The simulator shares the host file system, so the inlined path is a
+#     host path.
 #
 # Flow: copy the script to the host path the app will read -> install the .app
 # -> launch -> poll Documents/api_test.log in the app container until
-# `script.done` appears -> copy the log out -> assert every step was rejected
-# with the expected error code.
+# `script.done` appears -> copy the log out -> assert every step matched its
+# expectation.
 #
 # Tunables (environment variables):
 #   DEVICE_UDID        target simulator                (default: booted)
 #   APP_PATH           path to the built .app          (default: example build output)
-#   SCRIPT_JSON        smoke script on the host        (default: example/ci/no_login_smoke.json)
+#   SCRIPT_JSON        auto-mode script on the host     (default: example/ci/no_login_smoke.json)
 #   HOST_SCRIPT_PATH   where the app reads the script, must match the inlined API_SCRIPT
 #                                                       (default: /tmp/rn_smoke_no_login.json)
 #   OUT_DIR            where the copied log lands      (default: build/reports)
-#   SMOKE_TIMEOUT_S    max seconds to wait for script.done (default: 180)
+#   OUT_LOG            full path of the copied log      (default: $OUT_DIR/smoke-ios-api_test.log)
+#   CONFIG_JSON        optional auto-mode config (API_CONFIG) on the host; copied to
+#                      HOST_CONFIG_PATH when set (single-account nightly only)
+#   HOST_CONFIG_PATH   where the app reads the config, must match the inlined API_CONFIG
+#                                                       (default: /tmp/rn_single_account_config.json)
+#   SCRIPT_TIMEOUT_S   max seconds to wait for script.done (default: 180;
+#                      SMOKE_TIMEOUT_S is still accepted for compatibility)
 set -euo pipefail
 
 REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
@@ -31,8 +39,10 @@ APP_PATH="${APP_PATH:-$REPO_ROOT/example/ios/build/Build/Products/Debug-iphonesi
 SCRIPT_JSON="${SCRIPT_JSON:-$REPO_ROOT/example/ci/no_login_smoke.json}"
 HOST_SCRIPT_PATH="${HOST_SCRIPT_PATH:-/tmp/rn_smoke_no_login.json}"
 OUT_DIR="${OUT_DIR:-$REPO_ROOT/build/reports}"
-OUT_LOG="$OUT_DIR/smoke-ios-api_test.log"
-TIMEOUT_S="${SMOKE_TIMEOUT_S:-180}"
+OUT_LOG="${OUT_LOG:-$OUT_DIR/smoke-ios-api_test.log}"
+CONFIG_JSON="${CONFIG_JSON:-}"
+HOST_CONFIG_PATH="${HOST_CONFIG_PATH:-/tmp/rn_single_account_config.json}"
+TIMEOUT_S="${SCRIPT_TIMEOUT_S:-${SMOKE_TIMEOUT_S:-180}}"
 
 mkdir -p "$OUT_DIR"
 
@@ -41,6 +51,11 @@ mkdir -p "$OUT_DIR"
 
 echo "[1/5] stage script -> $HOST_SCRIPT_PATH"
 cp "$SCRIPT_JSON" "$HOST_SCRIPT_PATH"
+if [ -n "$CONFIG_JSON" ]; then
+  [ -f "$CONFIG_JSON" ] || { echo "error: config not found: $CONFIG_JSON" >&2; exit 2; }
+  echo "      stage config -> $HOST_CONFIG_PATH"
+  cp "$CONFIG_JSON" "$HOST_CONFIG_PATH"
+fi
 
 echo "[2/5] install $APP_PATH"
 xcrun simctl install "$DEVICE_UDID" "$APP_PATH"
@@ -78,4 +93,4 @@ if [ "$done_seen" != "1" ]; then
 fi
 
 echo "[5/5] assert $OUT_LOG"
-node "$REPO_ROOT/scripts/ci/assert_smoke.js" "$SCRIPT_JSON" "$OUT_LOG"
+node "$REPO_ROOT/scripts/ci/assert_script.js" "$SCRIPT_JSON" "$OUT_LOG"

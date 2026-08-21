@@ -219,6 +219,10 @@ function deriveInitParams(
       delete picked[key];
     }
   }
+  // auto-mode 一律关闭 autoLogin（ChatOptions 默认 true）：
+  // 避免设备上残留的持久化会话被自动登录——login 步骤必须真实走凭据登录，
+  // no-login 冒烟也必须保持未登录态
+  picked.autoLogin = false;
   return picked.appKey != null || picked.appId != null ? picked : null;
 }
 

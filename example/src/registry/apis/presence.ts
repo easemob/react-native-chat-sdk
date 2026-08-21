@@ -15,4 +15,15 @@ export const presenceApis: ApiEntry[] = [
       );
     },
   },
+  {
+    name: 'ChatPresenceManager.fetchPresenceStatus',
+    group: 'ChatPresenceManager',
+    description: '获取指定用户的在线状态。userIds：用户 ID 数组。',
+    paramsTemplate: JSON.stringify({ userIds: ['ID'] }, null, 2),
+    invoke: async (params) => {
+      return ChatClient.getInstance().presenceManager.fetchPresenceStatus(
+        params.userIds as string[]
+      );
+    },
+  },
 ];
