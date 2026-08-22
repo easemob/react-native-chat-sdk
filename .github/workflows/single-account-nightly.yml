@@ -259,10 +259,12 @@ jobs:
 
       - name: Collect iOS diagnostics after failure
         if: failure()
-        # --output expects a directory; the archive name is generated.
+        # Xcode 26 simctl only accepts --output=<path> (equals form) and
+        # pauses on an interactive "Press ENTER" prompt unless stdin is fed.
+        # The archive is written as <path>.tar.gz next to the given path.
         run: |
           mkdir -p build/reports
-          xcrun simctl diagnose -b --output build/reports || true
+          echo | xcrun simctl diagnose -b --output=build/reports/diagnose || true
 
       - name: Remove protected test configuration
         if: always()
