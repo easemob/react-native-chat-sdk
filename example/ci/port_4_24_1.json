@@ -1,0 +1,57 @@
+{
+  "init": {
+    "appKey": "1107240828153144#thread",
+    "autoLogin": false,
+    "ntpServers": ["ntp1.aliyun.com"]
+  },
+  "steps": [
+    {
+      "api": "ChatManager.sendMessage",
+      "id": "chat.sendMessage.webhookEnv",
+      "params": {
+        "targetId": "$config.accounts.1.id",
+        "content": "hello port 4.24.1 (webhookEnv)",
+        "chatType": 0,
+        "webhookEnv": "dev"
+      },
+      "expect": { "success": true }
+    },
+    {
+      "api": "ChatManager.sendMessage",
+      "id": "chat.sendMessage.plain",
+      "params": {
+        "targetId": "$config.accounts.1.id",
+        "content": "hello port 4.24.1 (no webhookEnv)",
+        "chatType": 0
+      },
+      "expect": { "success": true }
+    },
+    {
+      "api": "ChatManager.searchMessagesFromServer",
+      "id": "chat.searchMessagesFromServer",
+      "params": { "keywordList": ["hello"], "pageSize": 10, "pageNum": 1 },
+      "expect": { "errorCode": 505 }
+    },
+    {
+      "api": "ChatGroupManager.updateGroupExtension",
+      "id": "group.updateGroupExtension",
+      "params": {
+        "groupId": "323121563369473",
+        "ext": "port-4.24.1-test"
+      },
+      "expect": { "success": true }
+    },
+    {
+      "api": "ChatGroupManager.fetchJoinedGroupsFromServer",
+      "id": "group.fetchAfterUpdate",
+      "params": { "pageSize": 20, "pageNum": 0 },
+      "expect": { "success": true }
+    },
+    {
+      "api": "ChatPushManager.fetchPushOptionFromServer",
+      "id": "push.fetchPushOptionFromServer",
+      "params": {},
+      "expect": { "success": true }
+    }
+  ]
+}
