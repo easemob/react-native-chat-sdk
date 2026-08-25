@@ -2,6 +2,13 @@ _English | [Chinese](./CHANGELOG.zh.md)_
 
 # Update Log
 
+## 1.20.0
+
+- Dependent native SDKs are upgraded to versions (iOS 4.24.1 and Android 4.24.1).
+- Add `ChatManager.searchMessagesFromServer` method to search for messages from the server, and the `ChatMessageSearchOption`, `ChatSearchServerMessageResult`, and `ChatSearchKeywordMatchType` types. To use this method, you need to activate the message search value-added service on the Console.
+- Add the `webhookEnv` property in `ChatMessage`.
+- Add the `ntpServers` property in `ChatOptions`.
+
 ## 1.18.0
 
 - Dependent native SDKs are upgraded to versions (iOS 4.22.0 and Android 4.22.0).

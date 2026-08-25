@@ -408,3 +408,6 @@ export const MTgetUserIdsWithRTCUids = 'getUserIdsWithRTCUids';
 
 // 2026-04-10 added
 export const MTonStreamMessagesReceived = 'onStreamMessagesReceived';
+
+// 2026-08-25 added
+export const MTsearchMessagesFromServer = 'searchMessagesFromServer';

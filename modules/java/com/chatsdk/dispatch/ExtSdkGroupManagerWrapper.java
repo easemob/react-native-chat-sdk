@@ -918,12 +918,17 @@ public class ExtSdkGroupManagerWrapper extends ExtSdkWrapper {
         if (param.has("ext")) {
             ext = param.getString("ext");
         }
-        try {
-            EMGroup group = EMClient.getInstance().groupManager().updateGroupExtension(groupId, ext);
-            onSuccess(result, channelName, ExtSdkGroupHelper.toJson(group));
-        } catch (HyphenateException e) {
-            onError(result, e, null);
-        }
+        EMClient.getInstance().groupManager().asyncUpdateGroupExtension(groupId, ext, new EMValueCallBack<EMGroup>() {
+            @Override
+            public void onSuccess(EMGroup value) {
+                ExtSdkWrapper.onSuccess(result, channelName, ExtSdkGroupHelper.toJson(value));
+            }
+
+            @Override
+            public void onError(int error, String errorMsg) {
+                ExtSdkWrapper.onError(result, error, errorMsg);
+            }
+        });
     }
 
     public void joinPublicGroup(JSONObject param, String channelName, ExtSdkCallback result) throws JSONException {

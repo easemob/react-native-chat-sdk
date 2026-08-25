@@ -9,7 +9,6 @@ import com.hyphenate.chat.EMPushConfigs;
 import com.hyphenate.chat.EMPushManager;
 import com.hyphenate.chat.EMSilentModeParam;
 import com.hyphenate.chat.EMSilentModeResult;
-import com.hyphenate.exceptions.HyphenateException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -34,12 +33,17 @@ public class ExtSdkPushManagerWrapper extends ExtSdkWrapper {
 
     public void getImPushConfigFromServer(JSONObject params, String channelName, ExtSdkCallback result)
         throws JSONException {
-        try {
-            EMPushConfigs configs = EMClient.getInstance().pushManager().getPushConfigsFromServer();
-            onSuccess(result, channelName, ExtSdkPushConfigsHelper.toJson(configs));
-        } catch (HyphenateException e) {
-            ExtSdkWrapper.onError(result, e, null);
-        }
+        EMClient.getInstance().pushManager().asyncGetPushConfigsFromServer(new EMValueCallBack<EMPushConfigs>() {
+            @Override
+            public void onSuccess(EMPushConfigs value) {
+                ExtSdkWrapper.onSuccess(result, channelName, ExtSdkPushConfigsHelper.toJson(value));
+            }
+
+            @Override
+            public void onError(int error, String errorMsg) {
+                ExtSdkWrapper.onError(result, error, errorMsg);
+            }
+        });
     }
 
     public void updatePushNickname(JSONObject params, String channelName, ExtSdkCallback result) throws JSONException {

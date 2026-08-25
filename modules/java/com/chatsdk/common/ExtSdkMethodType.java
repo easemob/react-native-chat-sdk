@@ -374,6 +374,9 @@ public class ExtSdkMethodType {
     public static final String unsubscribeUsersInfo = "unsubscribeUsersInfo";
     public static final String fetchSubscribedUsers = "fetchSubscribedUsers";
 
+    // 2026-08-25 4.24.1
+    public static final String searchMessagesFromServer = "searchMessagesFromServer";
+
     /// EMUserInfoManagerListener
     public static final String onUserInfoChanged = "onUserInfoChanged";
 

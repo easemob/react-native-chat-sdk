@@ -39,6 +39,7 @@ import com.hyphenate.chat.EMPresence;
 import com.hyphenate.chat.EMPushConfigs;
 import com.hyphenate.chat.EMPushManager;
 import com.hyphenate.chat.EMRecallMessageInfo;
+import com.hyphenate.chat.EMSearchServerMessageResult;
 import com.hyphenate.chat.EMSenderInfo;
 import com.hyphenate.chat.EMSilentModeParam;
 import com.hyphenate.chat.EMSilentModeResult;
@@ -357,6 +358,18 @@ class ExtSdkOptionsHelper {
         if (json.has("enableUserInfo")) { options.setEnableUserInfo(json.getBoolean("enableUserInfo")); }
         if (json.has("enableAutoSyncContacts")) { options.setEnableAutoSyncContacts(json.getBoolean("enableAutoSyncContacts")); }
 
+        // 2026-08-25 4.24.1
+        if (json.has("ntpServers")) {
+            JSONArray ntpServersJson = json.optJSONArray("ntpServers");
+            if (ntpServersJson != null && ntpServersJson.length() > 0) {
+                List<String> ntpServers = new ArrayList<>();
+                for (int i = 0; i < ntpServersJson.length(); i++) {
+                    ntpServers.add(ntpServersJson.getString(i));
+                }
+                options.setNtpServers(ntpServers);
+            }
+        }
+
         return options;
     }
 
@@ -401,6 +414,7 @@ class ExtSdkOptionsHelper {
         data.put("dohVendor", options.getDohVendor());
         data.put("enableUserInfo", options.isEnableUserInfo());
         data.put("enableAutoSyncContacts", options.isEnableAutoSyncContacts());
+        data.put("ntpServers", options.getNtpServers());
         return data;
     }
 }
@@ -696,6 +710,7 @@ class ExtSdkMessageHelper {
         if (!json.optString("msgId").isEmpty()) { message.setMsgId(json.getString("msgId")); }
         if (json.has("isChatThread")) { message.setIsChatThreadMessage(json.getBoolean("isChatThread")); }
         if (json.has("deliverOnlineOnly")) { message.deliverOnlineOnly(json.getBoolean("deliverOnlineOnly")); }
+        if (json.has("webhookEnv")) { message.setWebhookEnv(json.getString("webhookEnv")); }
         if (json.has("attributes")) {
             JSONObject data = json.getJSONObject("attributes");
             parseAttributesFromJson(data, message);
@@ -767,6 +782,9 @@ class ExtSdkMessageHelper {
         data.put("isChatThread", message.isChatThreadMessage());
         data.put("isOnline", message.isOnlineState());
         data.put("deliverOnlineOnly", message.isDeliverOnlineOnly());
+        if (message.getWebhookEnv() != null) {
+            data.put("webhookEnv", message.getWebhookEnv());
+        }
         data.put("isBroadcast", message.isBroadcast());
         data.put("isContentReplaced", message.isContentReplaced());
         //        data.put("priority", ExtSdkMessageHelper.priorityToInt(;));
@@ -824,6 +842,40 @@ class ExtSdkMessageBodyHelper {
             data.put("lastModifyTime", body.operationTime());
             data.put("modifyCount", body.operationCount());
         }
+    }
+
+    static Map<String, Object> bodyToJson(EMMessageBody body) {
+        if (body == null) {
+            return null;
+        }
+        if (body instanceof EMTextMessageBody) {
+            return textBodyToJson((EMTextMessageBody)body);
+        }
+        if (body instanceof EMImageMessageBody) {
+            return imageBodyToJson((EMImageMessageBody)body);
+        }
+        if (body instanceof EMLocationMessageBody) {
+            return localBodyToJson((EMLocationMessageBody)body);
+        }
+        if (body instanceof EMVideoMessageBody) {
+            return videoBodyToJson((EMVideoMessageBody)body);
+        }
+        if (body instanceof EMVoiceMessageBody) {
+            return voiceBodyToJson((EMVoiceMessageBody)body);
+        }
+        if (body instanceof EMNormalFileMessageBody) {
+            return fileBodyToJson((EMNormalFileMessageBody)body);
+        }
+        if (body instanceof EMCmdMessageBody) {
+            return cmdBodyToJson((EMCmdMessageBody)body);
+        }
+        if (body instanceof EMCustomMessageBody) {
+            return customBodyToJson((EMCustomMessageBody)body);
+        }
+        if (body instanceof EMCombineMessageBody) {
+            return combineBodyToJson((EMCombineMessageBody)body);
+        }
+        return null;
     }
 
     static EMTextMessageBody textBodyFromJson(JSONObject json) throws JSONException {
@@ -1270,10 +1322,34 @@ class ExtSdkPageResultHelper {
                 if (obj instanceof EMChatRoom) {
                     jsonList.add(ExtSdkChatRoomHelper.toJson((EMChatRoom)obj));
                 }
+
+                if (obj instanceof EMSearchServerMessageResult) {
+                    jsonList.add(ExtSdkSearchServerMessageResultHelper.toJson((EMSearchServerMessageResult)obj));
+                }
             }
         }
 
         data.put("list", jsonList);
+        return data;
+    }
+}
+
+class ExtSdkSearchServerMessageResultHelper {
+
+    static Map<String, Object> toJson(EMSearchServerMessageResult result) {
+        if (result == null) {
+            return null;
+        }
+        Map<String, Object> data = new HashMap<>();
+        data.put("messageId", result.getMessageId());
+        data.put("body", ExtSdkMessageBodyHelper.bodyToJson(result.getBody()));
+        data.put("ext", result.getExt());
+        data.put("from", result.getFrom());
+        data.put("to", result.getTo());
+        data.put("conversationId", result.getConversationId());
+        data.put("chatType", InternalConvertHelper.chatTypeToInt(result.getChatType()));
+        data.put("timestamp", result.getTimestamp());
+        data.put("highlightTexts", result.getHighlightTexts());
         return data;
     }
 }
