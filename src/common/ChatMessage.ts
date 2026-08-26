@@ -1395,6 +1395,8 @@ export class ChatImageMessageBody extends _ChatFileMessageBody {
   thumbnailRemotePath: string;
   /**
    * The secret to access the thumbnail. A secret is required for verification for thumbnail download.
+   *
+   * @deprecated 2026-08-26. Use {@link ChatFileMessageBody.secret} instead.
    */
   thumbnailSecret: string;
   /**
