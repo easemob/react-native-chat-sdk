@@ -398,6 +398,8 @@
           ExtSdkMethodKeygetRTCTokenInfoWithChannelName : @(ExtSdkMethodKeygetRTCTokenInfoWithChannelNameValue),
           ExtSdkMethodKeygetUserIdsWithRTCUids : @(ExtSdkMethodKeygetUserIdsWithRTCUidsValue),
 
+          ExtSdkMethodKeySearchMessagesFromServer : @(ExtSdkMethodKeySearchMessagesFromServerValue),
+
           ExtSdkMethodKeyOnStreamMessagesReceived : @(ExtSdkMethodKeyOnStreamMessagesReceivedValue),
       };
     });

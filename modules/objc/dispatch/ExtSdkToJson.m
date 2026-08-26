@@ -785,6 +785,7 @@
     if (aJson[@"priority"]) { msg.priority = [ExtSdkConvertHelper priorityFromInt:[aJson[@"priority"] intValue]]; }
     if (aJson[@"deliverOnlineOnly"]) { msg.deliverOnlineOnly = [aJson[@"deliverOnlineOnly"] boolValue]; }
     (aJson[@"receiverList"] && [aJson[@"receiverList"] count] > 0) ? (msg.receiverList = aJson[@"receiverList"]) : nil;
+    if (aJson[@"webhookEnv"]) { msg.webhookEnv = aJson[@"webhookEnv"]; }
 
     return msg;
 }
@@ -812,6 +813,9 @@
     ret[@"priority"] = @([ExtSdkConvertHelper priorityToInt:self.priority]);
     ret[@"deliverOnlineOnly"] = @(self.deliverOnlineOnly);
     ret[@"receiverList"] = self.receiverList;
+    if (self.webhookEnv) {
+        ret[@"webhookEnv"] = self.webhookEnv;
+    }
     ret[@"isBroadcast"] = @(self.broadcast);
     ret[@"isContentReplaced"] = @(self.isContentReplaced);
   if (self.streamChunk) {
@@ -1265,6 +1269,8 @@
     data[@"dohVendor"] = @(self.dohVendor);
     data[@"enableUserInfo"] = @(self.enableUserInfo);
     data[@"enableAutoSyncContacts"] = @(self.enableAutoSyncContacts);
+    // 2026-08-25 4.24.1
+    data[@"ntpServers"] = self.ntpServers;
 
     return data;
 }
@@ -1321,6 +1327,9 @@
 
     if (aJson[@"enableUserInfo"]) { options.enableUserInfo = [aJson[@"enableUserInfo"] boolValue]; }
     if (aJson[@"enableAutoSyncContacts"]) { options.enableAutoSyncContacts = [aJson[@"enableAutoSyncContacts"] boolValue]; }
+
+    // 2026-08-25 4.24.1
+    if (aJson[@"ntpServers"]) { options.ntpServers = aJson[@"ntpServers"]; }
 
     return options;
 }
@@ -1702,5 +1711,26 @@
   ret[@"text"] = self.text;
   ret[@"customType"] = self.customType;
   return ret;
+}
+@end
+
+@implementation EMSearchServerMessageResult (Json)
+- (NSDictionary *)toJsonObject {
+    NSMutableDictionary *ret = [NSMutableDictionary dictionary];
+    ret[@"messageId"] = self.messageId;
+    EMMessageBody *body = self.body;
+    if (body) {
+        ret[@"body"] = [body toJsonObject];
+    }
+    ret[@"ext"] = self.ext ?: @{};
+    ret[@"from"] = self.from;
+    ret[@"to"] = self.to;
+    ret[@"conversationId"] = self.conversationId;
+    ret[@"chatType"] = @([ExtSdkConvertHelper chatTypeToInt:self.chatType]);
+    ret[@"timestamp"] = @(self.timestamp);
+    if (self.highlightTexts) {
+        ret[@"highlightTexts"] = self.highlightTexts;
+    }
+    return ret;
 }
 @end

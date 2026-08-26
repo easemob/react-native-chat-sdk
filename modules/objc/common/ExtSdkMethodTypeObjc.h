@@ -400,6 +400,9 @@ static NSString *_Nonnull const ExtSdkMethodKeymodifyMsgBody = @"modifyMsgBody";
 static NSString *_Nonnull const ExtSdkMethodKeygetRTCTokenInfoWithChannelName = @"getRTCTokenInfoWithChannelName";
 static NSString *_Nonnull const ExtSdkMethodKeygetUserIdsWithRTCUids = @"getUserIdsWithRTCUids";
 
+// 2026-08-25 4.24.1
+static NSString *_Nonnull const ExtSdkMethodKeySearchMessagesFromServer = @"searchMessagesFromServer";
+
 
 // ############################################################################
 // value start
@@ -787,6 +790,9 @@ static const int ExtSdkMethodKeyIsMemberInChatRoomMuteListFromServerValue = 2026
 // 2025-11-19
 static const int ExtSdkMethodKeygetRTCTokenInfoWithChannelNameValue = 2027;
 static const int ExtSdkMethodKeygetUserIdsWithRTCUidsValue = 2028;
+
+// 2026-08-25 4.24.1
+static const int ExtSdkMethodKeySearchMessagesFromServerValue = 2029;
 
 // 2026-04-10
 static const int ExtSdkMethodKeyOnStreamMessagesReceivedValue = 611;

@@ -512,6 +512,15 @@ export class ChatMessage {
   senderInfo?: ChatMessageSenderInfo;
 
   /**
+   * The routing environment identifier of the message callback webhook.
+   *
+   * If this parameter is not set, the message callback webhook is routed to the default environment.
+   *
+   * An empty string is handled as an unmatched route.
+   */
+  webhookEnv?: string;
+
+  /**
    * Constructs a message.
    */
   public constructor(params: {
@@ -540,6 +549,7 @@ export class ChatMessage {
     isContentReplaced?: boolean;
     streamChunk?: ChatStreamChunk;
     senderInfo?: ChatMessageSenderInfo;
+    webhookEnv?: string;
   }) {
     this.msgId = params.msgId ?? generateMessageId();
     this.conversationId = params.conversationId ?? '';
@@ -569,6 +579,7 @@ export class ChatMessage {
     this.senderInfo = params.senderInfo
       ? new ChatMessageSenderInfo(params.senderInfo)
       : undefined;
+    this.webhookEnv = params.webhookEnv;
   }
 
   private fromAttributes(attributes: any) {
@@ -596,7 +607,7 @@ export class ChatMessage {
     }
   }
 
-  private static getBody(params: any): ChatMessageBody {
+  public static getBody(params: any): ChatMessageBody {
     let type = ChatMessageTypeFromString(params.type as string);
     switch (type) {
       case ChatMessageType.TXT:
@@ -1384,6 +1395,8 @@ export class ChatImageMessageBody extends _ChatFileMessageBody {
   thumbnailRemotePath: string;
   /**
    * The secret to access the thumbnail. A secret is required for verification for thumbnail download.
+   *
+   * @deprecated 2026-08-26. Use {@link ChatFileMessageBody.secret} instead.
    */
   thumbnailSecret: string;
   /**

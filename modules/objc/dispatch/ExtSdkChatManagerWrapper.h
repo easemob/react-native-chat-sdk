@@ -215,6 +215,10 @@ NS_ASSUME_NONNULL_BEGIN
         withMethodType:(NSString *)aChannelName
                 result:(nonnull id<ExtSdkCallbackObjc>)result;
 
+- (void)searchMessagesFromServer:(NSDictionary *)param
+                  withMethodType:(NSString *)aChannelName
+                          result:(nonnull id<ExtSdkCallbackObjc>)result;
+
 - (void)removeMessagesWithTimestamp:(NSDictionary *)param
                      withMethodType:(NSString *)aChannelName
                              result:(nonnull id<ExtSdkCallbackObjc>)result;

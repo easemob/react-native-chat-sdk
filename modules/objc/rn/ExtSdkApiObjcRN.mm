@@ -473,6 +473,7 @@ RCT_EXPORT_METHOD(multiply : (double)a b : (double)b resolve : (RCTPromiseResolv
         ExtSdkMethodKeyOnMessagesRecalledInfo,
         ExtSdkMethodKeysearchMessages,
         ExtSdkMethodKeysearchMessagesInConversation,
+        ExtSdkMethodKeySearchMessagesFromServer,
         ExtSdkMethodKeyremoveMessagesWithTimestamp,
         ExtSdkMethodKeygetMessageCountWithTimestamp,
         ExtSdkMethodKeyOnUserDidLoginFromOtherDeviceWithInfo,

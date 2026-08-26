@@ -140,9 +140,11 @@ jobs:
         run: |
           mkdir -p build/reports
           # tee captures the full build output as the raw log for the deprecation
-          # scan below. GH Actions runs bash with pipefail, so tee does not mask
-          # a build failure.
-          yarn example build:ios 2>&1 | tee build/reports/deprecated-ios-raw.log
+          # scan below. --verbose is required: without it the RN CLI swallows
+          # xcodebuild output and only prints a progress spinner, so the raw log
+          # would contain no warning lines at all. GH Actions runs bash with
+          # pipefail, so tee does not mask a build failure.
+          yarn example build:ios --verbose 2>&1 | tee build/reports/deprecated-ios-raw.log
 
       - name: Scan deprecated iOS APIs
         if: always()

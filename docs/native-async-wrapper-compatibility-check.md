@@ -96,8 +96,8 @@ These methods have no matching Android async API in the checked SDK source. They
 
 | Wrapper method | Reason |
 |---|---|
-| `updateGroupExt` | No async equivalent found in the checked Android SDK source. |
-| `getPushConfigsFromServer` | No async equivalent found in the checked Android SDK source. |
+| `updateGroupExt` | ~~No async equivalent found in the checked Android SDK source.~~ Superseded: Android 4.24.0 added `asyncUpdateGroupExtension`; the wrapper was migrated to the async API in the 4.24.1 porting (2026-08-25). |
+| `getPushConfigsFromServer` | ~~No async equivalent found in the checked Android SDK source.~~ Superseded: Android 4.24.0 added `asyncGetPushConfigsFromServer`; the wrapper was migrated to the async API in the 4.24.1 porting (2026-08-25). |
 
 ## Implementation Notes
 

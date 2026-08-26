@@ -278,6 +278,17 @@ export class ChatOptions {
   enableAutoSyncContacts: boolean;
 
   /**
+   * The custom NTP server address list.
+   *
+   * Each address is in the format of `host` or `host:port`. If the port is not specified, the default port 123 is used.
+   *
+   * The NTP server must comply with NTPv4 (RFC 5905).
+   *
+   * This attribute can be set only when you call {@link ChatClient.init}.
+   */
+  ntpServers?: string[];
+
+  /**
    * @deprecated Use {@link withAppId} and {@link withAppKey} instead.
    */
   constructor(params: {
@@ -320,6 +331,7 @@ export class ChatOptions {
     dohVendor?: number;
     enableUserInfo?: boolean;
     enableAutoSyncContacts?: boolean;
+    ntpServers?: string[];
   }) {
     if (!params.appKey && !params.appId) {
       throw new ChatError({
@@ -372,6 +384,7 @@ export class ChatOptions {
     this.dohVendor = params.dohVendor ?? 1; // agora is 2.
     this.enableUserInfo = params.enableUserInfo ?? false;
     this.enableAutoSyncContacts = params.enableAutoSyncContacts ?? false;
+    this.ntpServers = params.ntpServers;
   }
 
   static withAppId(params: {
@@ -413,6 +426,7 @@ export class ChatOptions {
     dohVendor?: number;
     enableUserInfo?: boolean;
     enableAutoSyncContacts?: boolean;
+    ntpServers?: string[];
   }) {
     return new ChatOptions({
       ...params,
@@ -459,6 +473,7 @@ export class ChatOptions {
     dohVendor?: number;
     enableUserInfo?: boolean;
     enableAutoSyncContacts?: boolean;
+    ntpServers?: string[];
   }) {
     return new ChatOptions({
       ...params,

@@ -99,6 +99,7 @@ import {
   MTresendMessage,
   MTsearchChatMsgFromDB,
   MTsearchMessages,
+  MTsearchMessagesFromServer,
   MTsearchMessagesInConversation,
   MTsendMessage,
   MTsyncConversationExt,
@@ -143,9 +144,15 @@ import {
   ChatReactionOperation,
 } from './common/ChatMessageReaction';
 import {
+  ChatMessageSearchOption,
+  ChatSearchKeywordMatchType,
+} from './common/ChatMessageSearchOption';
+import {
   ChatMessageThread,
   ChatMessageThreadEvent,
 } from './common/ChatMessageThread';
+import { ChatPageResult } from './common/ChatPageResult';
+import { ChatSearchServerMessageResult } from './common/ChatSearchServerMessageResult';
 import { ChatTranslateLanguage } from './common/ChatTranslateLanguage';
 import type { ChatVoiceParam } from './common/ChatVoiceParam';
 import { Factory } from './__internal__/Factory';
@@ -3994,6 +4001,54 @@ export class ChatManager extends BaseManager {
         ret.push(new ChatMessage(value[1]));
       });
     }
+    return ret;
+  }
+
+  /**
+   * Searches for messages from the server.
+   *
+   * **Note** To use this method, you need to activate the message search value-added service on the Console.
+   *
+   * @param params -
+   * - option: The search options. See {@link ChatMessageSearchOption}.
+   * - pageSize: The number of messages that you expect to get on each page. The value range is [1,100]. The default value is 20.
+   * - pageNum: The page number, starting from 1. The default value is 1.
+   *
+   * @returns The paginated search results, sorted by relevance. See {@link ChatPageResult}.
+   *
+   * @throws A description of the exception. See {@link ChatError}.
+   */
+  public async searchMessagesFromServer(params: {
+    option: ChatMessageSearchOption;
+    pageSize?: number;
+    pageNum?: number;
+  }): Promise<ChatPageResult<ChatSearchServerMessageResult>> {
+    chatlog.log(`${ChatManager.TAG}: searchMessagesFromServer:`, params);
+    let r: any = await Native._callMethod(MTsearchMessagesFromServer, {
+      [MTsearchMessagesFromServer]: {
+        keywordList: params.option.keywordList,
+        keywordMatchType:
+          params.option.keywordMatchType ?? ChatSearchKeywordMatchType.OR,
+        conversationId: params.option.conversationId,
+        msgTypes: params.option.msgTypes,
+        startTime: params.option.startTime,
+        endTime: params.option.endTime,
+        searchScope: params.option.searchScope,
+        pageSize: params.pageSize ?? 20,
+        pageNum: params.pageNum ?? 1,
+      },
+    });
+    ChatManager.checkErrorFromResult(r);
+    const nativeReturn = r?.[MTsearchMessagesFromServer];
+    let ret = new ChatPageResult<ChatSearchServerMessageResult>({
+      pageCount: nativeReturn.count,
+      list: nativeReturn.list,
+      opt: {
+        map: (param: any) => {
+          return new ChatSearchServerMessageResult(param);
+        },
+      },
+    });
     return ret;
   }
 

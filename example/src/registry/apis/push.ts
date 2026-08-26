@@ -11,4 +11,13 @@ export const pushApis: ApiEntry[] = [
       return ChatClient.getInstance().pushManager.fetchSilentModeForAll();
     },
   },
+  {
+    name: 'ChatPushManager.fetchPushOptionFromServer',
+    group: 'ChatPushManager',
+    description: '从服务器获取推送配置。无参数。',
+    paramsTemplate: '{}',
+    invoke: async () => {
+      return ChatClient.getInstance().pushManager.fetchPushOptionFromServer();
+    },
+  },
 ];

@@ -89,8 +89,8 @@ These methods are still synchronous, but Android 4.19.3 source does not expose a
 | `fetchChatRoomInfoFromServer` | `fetchChatRoomFromServer(roomId, fetchMembers)` | Async API exists only as `asyncFetchChatRoomFromServer(roomId, EMValueCallBack<EMChatRoom>)` and does not expose `fetchMembers`; the sync overload with `fetchMembers` is deprecated. | Keep sync for now; revisit on SDK upgrade. |
 | `addMembers` | `groupManager().addUsersToGroup(groupId, members, welcome)` | Async API exists only as `asyncAddUsersToGroup(groupId, members, EMCallBack)` and does not expose `welcome`. | Keep sync for now; revisit on SDK upgrade. |
 | `getGroupSpecificationFromServer` | `getGroupFromServer(groupId, fetchMembers)` | Async API exists only as `asyncGetGroupFromServer(groupId, EMValueCallBack<EMGroup>)` and does not expose `fetchMembers`; the sync overload with `fetchMembers` is deprecated. | Keep sync for now; revisit on SDK upgrade. |
-| `updateGroupExt` | `updateGroupExtension(groupId, ext)` | No async equivalent found in Android 4.19.3 source. | Keep sync for now; revisit on SDK upgrade. |
-| `getPushConfigsFromServer` | `getPushConfigsFromServer()` | No async equivalent found in Android 4.19.3 source. | Keep sync for now; revisit on SDK upgrade. |
+| `updateGroupExt` | `asyncUpdateGroupExtension(groupId, ext, EMValueCallBack)`（自 4.24.1 起） | Android 4.24.0 added `asyncUpdateGroupExtension`; wrapper migrated to the async API in the 4.24.1 porting (2026-08-25). | Migrated to async on SDK upgrade. |
+| `getPushConfigsFromServer` | `asyncGetPushConfigsFromServer(EMValueCallBack)`（自 4.24.1 起） | Android 4.24.0 added `asyncGetPushConfigsFromServer`; wrapper migrated to the async API in the 4.24.1 porting (2026-08-25). | Migrated to async on SDK upgrade. |
 
 ## iOS Audit
 

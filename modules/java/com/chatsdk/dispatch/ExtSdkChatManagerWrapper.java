@@ -14,13 +14,17 @@ import com.hyphenate.chat.EMConversationFilter;
 import com.hyphenate.chat.EMCursorResult;
 import com.hyphenate.chat.EMFetchMessageOption;
 import com.hyphenate.chat.EMGroupReadAck;
+import com.hyphenate.chat.EMKeywordListMatchType;
 import com.hyphenate.chat.EMLanguage;
 import com.hyphenate.chat.EMMessage;
 import com.hyphenate.chat.EMMessageBody;
 import com.hyphenate.chat.EMMessagePinInfo;
 import com.hyphenate.chat.EMMessageReaction;
 import com.hyphenate.chat.EMMessageReactionChange;
+import com.hyphenate.chat.EMMessageSearchOption;
+import com.hyphenate.chat.EMPageResult;
 import com.hyphenate.chat.EMRecallMessageInfo;
+import com.hyphenate.chat.EMSearchServerMessageResult;
 import com.hyphenate.chat.EMStatisticsManager;
 import com.hyphenate.chat.adapter.message.EMAMessage;
 import com.hyphenate.exceptions.HyphenateException;
@@ -1306,6 +1310,73 @@ public class ExtSdkChatManagerWrapper extends ExtSdkWrapper {
             messages.add(ExtSdkMessageHelper.toJson(msg));
         }
         ExtSdkWrapper.onSuccess(result, channelName, messages);
+    }
+
+    public void searchMessagesFromServer(JSONObject param, String channelName, ExtSdkCallback result)
+        throws JSONException {
+        JSONArray keywordsJson = param.optJSONArray("keywordList");
+        if (keywordsJson == null || keywordsJson.length() == 0) {
+            ExtSdkWrapper.onError(result, 1, "keywordList is required and must not be empty.");
+            return;
+        }
+        List<String> keywordList = new ArrayList<>();
+        for (int i = 0; i < keywordsJson.length(); i++) {
+            String keyword = keywordsJson.optString(i, "");
+            if (keyword.isEmpty()) {
+                ExtSdkWrapper.onError(result, 1, "keywordList contains an invalid keyword.");
+                return;
+            }
+            keywordList.add(keyword);
+        }
+        if (!param.has("pageSize") || !param.has("pageNum")) {
+            ExtSdkWrapper.onError(result, 1, "pageSize and pageNum are required.");
+            return;
+        }
+        int pageSize = param.getInt("pageSize");
+        int pageNum = param.getInt("pageNum");
+        if (pageSize <= 0 || pageNum <= 0) {
+            ExtSdkWrapper.onError(result, 1, "pageSize and pageNum must be positive integers.");
+            return;
+        }
+
+        EMMessageSearchOption option = new EMMessageSearchOption();
+        option.setKeywordList(keywordList);
+        option.setKeywordMatchType(
+            param.optInt("keywordMatchType", 0) == 1 ? EMKeywordListMatchType.AND : EMKeywordListMatchType.OR);
+        String conversationId = param.optString("conversationId");
+        if (!conversationId.isEmpty()) {
+            option.setConversationId(conversationId);
+        }
+        JSONArray msgTypesJson = param.optJSONArray("msgTypes");
+        if (msgTypesJson != null && msgTypesJson.length() > 0) {
+            List<EMMessage.Type> msgTypes = new ArrayList<>();
+            for (int i = 0; i < msgTypesJson.length(); i++) {
+                msgTypes.add(ExtSdkEMMessageTypeHelper.toType(msgTypesJson.getString(i)));
+            }
+            option.setMsgTypes(msgTypes);
+        }
+        if (param.has("startTime")) {
+            option.setStartTime(param.getLong("startTime"));
+        }
+        if (param.has("endTime")) {
+            option.setEndTime(param.getLong("endTime"));
+        }
+        if (param.has("searchScope")) {
+            option.setSearchScope(InternalConvertHelper.searchScopeFromInt(param.getInt("searchScope")));
+        }
+
+        EMClient.getInstance().chatManager().asyncSearchMessagesFromServer(option, pageSize, pageNum,
+            new EMValueCallBack<EMPageResult<EMSearchServerMessageResult>>() {
+                @Override
+                public void onSuccess(EMPageResult<EMSearchServerMessageResult> value) {
+                    ExtSdkWrapper.onSuccess(result, channelName, ExtSdkPageResultHelper.toJson(value));
+                }
+
+                @Override
+                public void onError(int error, String errorMsg) {
+                    ExtSdkWrapper.onError(result, error, errorMsg);
+                }
+            });
     }
 
     public void removeMessagesWithTimestamp(JSONObject param, String channelName, ExtSdkCallback result)

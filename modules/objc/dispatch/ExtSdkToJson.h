@@ -33,6 +33,7 @@
 #import <HyphenateChat/EMPresence.h>
 #import <HyphenateChat/EMPushOptions.h>
 #import <HyphenateChat/EMRecallMessageInfo.h>
+#import <HyphenateChat/EMSearchServerMessageResult.h>
 #import <HyphenateChat/EMSilentModeParam.h>
 #import <HyphenateChat/EMSilentModeResult.h>
 #import <HyphenateChat/EMSilentModeTime.h>
@@ -223,6 +224,10 @@ NS_ASSUME_NONNULL_BEGIN
 @end
 
 @interface EMStreamChunk (Json) <ExtSdkToJson>
+- (NSDictionary *)toJsonObject;
+@end
+
+@interface EMSearchServerMessageResult (Json) <ExtSdkToJson>
 - (NSDictionary *)toJsonObject;
 @end
 

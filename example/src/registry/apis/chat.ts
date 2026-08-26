@@ -3,6 +3,7 @@ import {
   ChatConversationType,
   ChatMessage,
   ChatMessageChatType,
+  ChatMessageSearchOption,
   ChatVoiceParam,
 } from 'react-native-chat-sdk';
 import type { ApiEntry } from '../api_entry';
@@ -55,6 +56,7 @@ export const chatApis: ApiEntry[] = [
         targetId: 'ID',
         content: 'hello',
         chatType: 0,
+        webhookEnv: '',
       },
       null,
       2
@@ -65,11 +67,59 @@ export const chatApis: ApiEntry[] = [
         String(params.content),
         (params.chatType ?? ChatMessageChatType.PeerChat) as ChatMessageChatType
       );
+      if (params.webhookEnv !== undefined && params.webhookEnv !== '') {
+        msg.webhookEnv = String(params.webhookEnv);
+      }
       await ChatClient.getInstance().chatManager.sendMessage(
         msg,
         sendCallbacks('ChatManager.sendMessage')
       );
       return msg;
+    },
+  },
+  {
+    name: 'ChatManager.searchMessagesFromServer',
+    group: 'ChatManager',
+    description:
+      '服务端搜索消息（需在 Console 开通消息搜索增值服务）。' +
+      'keywordList 必填（最多 5 个关键词）；pageNum 从 1 开始，pageSize [1,100]。' +
+      'keywordMatchType：0 OR / 1 AND；conversationId/msgTypes/startTime/endTime/searchScope 可选。',
+    paramsTemplate: JSON.stringify(
+      {
+        keywordList: ['hello'],
+        pageSize: 10,
+        pageNum: 1,
+      },
+      null,
+      2
+    ),
+    invoke: async (params) => {
+      return ChatClient.getInstance().chatManager.searchMessagesFromServer({
+        option: new ChatMessageSearchOption({
+          keywordList: (params.keywordList ?? []).map(String),
+          keywordMatchType:
+            params.keywordMatchType === undefined
+              ? undefined
+              : Number(params.keywordMatchType),
+          conversationId:
+            params.conversationId === undefined
+              ? undefined
+              : String(params.conversationId),
+          msgTypes: params.msgTypes,
+          startTime:
+            params.startTime === undefined
+              ? undefined
+              : Number(params.startTime),
+          endTime:
+            params.endTime === undefined ? undefined : Number(params.endTime),
+          searchScope:
+            params.searchScope === undefined
+              ? undefined
+              : Number(params.searchScope),
+        }),
+        pageSize: Number(params.pageSize ?? 10),
+        pageNum: Number(params.pageNum ?? 1),
+      });
     },
   },
   {
