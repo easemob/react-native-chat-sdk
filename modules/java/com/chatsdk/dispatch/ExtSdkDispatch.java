@@ -926,6 +926,9 @@ public class ExtSdkDispatch implements ExtSdkApi {
             case ExtSdkMethodType.searchMessagesInConversation:
                 ExtSdkConversationWrapper.getInstance().searchMessages(jsonParams, methodType, callback);
                 break;
+            case ExtSdkMethodType.searchMessagesFromServer:
+                ExtSdkChatManagerWrapper.getInstance().searchMessagesFromServer(jsonParams, methodType, callback);
+                break;
             case ExtSdkMethodType.removeMessagesWithTimestamp:
                 ExtSdkChatManagerWrapper.getInstance().removeMessagesWithTimestamp(jsonParams, methodType, callback);
                 break;

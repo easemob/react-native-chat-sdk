@@ -128,8 +128,8 @@ public class ExtSdkMethodType {
     public static final String onMessageProgressUpdate = "onMessageProgressUpdate";
     public static final String onMessageError = "onMessageError";
     public static final String onMessageSuccess = "onMessageSuccess";
-    public static final String onMessageReadAck = "onMessageReadAck";
-    public static final String onMessageDeliveryAck = "onMessageDeliveryAck";
+    public static final String onMessageReadAck = "onMessageReadAck"; // deprecated 2026-08-20 use onMessagesRead instead
+    public static final String onMessageDeliveryAck = "onMessageDeliveryAck"; // deprecated 2026-08-20 use onMessagesDelivered instead
     public static final String onMessageStatusChanged = "onMessageStatusChanged"; // deprecated 2022.05.04
 
     /// EMConversation
@@ -373,6 +373,9 @@ public class ExtSdkMethodType {
     public static final String subscribeUsersInfo = "subscribeUsersInfo";
     public static final String unsubscribeUsersInfo = "unsubscribeUsersInfo";
     public static final String fetchSubscribedUsers = "fetchSubscribedUsers";
+
+    // 2026-08-25 4.24.1
+    public static final String searchMessagesFromServer = "searchMessagesFromServer";
 
     /// EMUserInfoManagerListener
     public static final String onUserInfoChanged = "onUserInfoChanged";

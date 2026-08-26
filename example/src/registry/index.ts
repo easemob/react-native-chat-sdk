@@ -3,6 +3,9 @@ import { chatApis } from './apis/chat';
 import { groupApis } from './apis/group';
 import { contactApis } from './apis/contact';
 import { userInfoApis } from './apis/userinfo';
+import { presenceApis } from './apis/presence';
+import { roomApis } from './apis/room';
+import { pushApis } from './apis/push';
 
 /**
  * 进入搜索/调用页的 API 全量清单。
@@ -13,6 +16,9 @@ export const ALL_APIS: ApiEntry[] = [
   ...groupApis,
   ...contactApis,
   ...userInfoApis,
+  ...presenceApis,
+  ...roomApis,
+  ...pushApis,
 ];
 
 export function findApi(name: string): ApiEntry | undefined {

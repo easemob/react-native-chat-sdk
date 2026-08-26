@@ -136,3 +136,42 @@ export function resolveRnSupportedEventValues(): string[] {
   }
   return result;
 }
+
+/**
+ * 收集 `src/` 下的所有 TS 源文件，排除测试目录和常量定义文件本身，
+ * 以便事件接线检查只看到真实的使用位置。
+ */
+function collectTsSourceFiles(): string[] {
+  const srcRoot = path.join(REPO_ROOT, 'src');
+  const out: string[] = [];
+  const walk = (dir: string): void => {
+    for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
+      const full = path.join(dir, entry.name);
+      if (entry.isDirectory()) {
+        if (entry.name === '__tests__') continue;
+        walk(full);
+      } else if (entry.name.endsWith('.ts')) {
+        if (full === TS_CONSTS_PATH) continue;
+        out.push(full);
+      }
+    }
+  };
+  walk(srcRoot);
+  return out;
+}
+
+/**
+ * 返回引用了指定常量符号名（例如 `MTonMessagesReceived`）的 TS 源文件
+ * （相对于仓库根目录）。匹配按单词边界进行，因此 `MTonMessageRead`
+ * 不会被计入 `MTonMessageReadAck` 的引用。
+ */
+export function findTsConstReferences(symbol: string): string[] {
+  const re = new RegExp(`\\b${symbol}\\b`);
+  const hits: string[] = [];
+  for (const file of collectTsSourceFiles()) {
+    if (re.test(readFile(file))) {
+      hits.push(path.relative(REPO_ROOT, file));
+    }
+  }
+  return hits;
+}

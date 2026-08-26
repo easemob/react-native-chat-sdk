@@ -507,6 +507,15 @@ export class ChatMessage {
   senderInfo?: ChatMessageSenderInfo;
 
   /**
+   * 消息回调 webhook 的路由环境标识。
+   *
+   * 如果未设置该参数，消息回调 webhook 将路由到默认环境。
+   *
+   * 空字符串会被视为未匹配的路由。
+   */
+  webhookEnv?: string;
+
+  /**
    * 构造消息。
    */
   public constructor(params: {
@@ -535,6 +544,7 @@ export class ChatMessage {
     isContentReplaced?: boolean;
     streamChunk?: ChatStreamChunk;
     senderInfo?: ChatMessageSenderInfo;
+    webhookEnv?: string;
   }) {
     this.msgId = params.msgId ?? generateMessageId();
     this.conversationId = params.conversationId ?? '';
@@ -564,6 +574,7 @@ export class ChatMessage {
     this.senderInfo = params.senderInfo
       ? new ChatMessageSenderInfo(params.senderInfo)
       : undefined;
+    this.webhookEnv = params.webhookEnv;
   }
 
   private fromAttributes(attributes: any) {
@@ -591,7 +602,7 @@ export class ChatMessage {
     }
   }
 
-  private static getBody(params: any): ChatMessageBody {
+  public static getBody(params: any): ChatMessageBody {
     let type = ChatMessageTypeFromString(params.type as string);
     switch (type) {
       case ChatMessageType.TXT:

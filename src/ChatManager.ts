@@ -99,6 +99,7 @@ import {
   MTresendMessage,
   MTsearchChatMsgFromDB,
   MTsearchMessages,
+  MTsearchMessagesFromServer,
   MTsearchMessagesInConversation,
   MTsendMessage,
   MTsyncConversationExt,
@@ -143,9 +144,15 @@ import {
   ChatReactionOperation,
 } from './common/ChatMessageReaction';
 import {
+  ChatMessageSearchOption,
+  ChatSearchKeywordMatchType,
+} from './common/ChatMessageSearchOption';
+import {
   ChatMessageThread,
   ChatMessageThreadEvent,
 } from './common/ChatMessageThread';
+import { ChatPageResult } from './common/ChatPageResult';
+import { ChatSearchServerMessageResult } from './common/ChatSearchServerMessageResult';
 import { ChatTranslateLanguage } from './common/ChatTranslateLanguage';
 import type { ChatVoiceParam } from './common/ChatVoiceParam';
 import { Factory } from './__internal__/Factory';
@@ -3981,7 +3988,53 @@ export class ChatManager extends BaseManager {
   }
 
   /**
-   * 从本地和服务器端删除指定会话的消息。
+   * 从服务器端搜索消息。
+   * **注意** 使用该方法前，你需要在环信控制台开通消息搜索增值服务。
+   * @params 参数集合 -
+   * - option: 搜索选项。详见 {@link ChatMessageSearchOption}。
+   * - pageSize: 期望每页获取的消息数量。取值范围为 [1,100]，默认值为 20。
+   * - pageNum: 页码，从 1 开始。默认值为 1。
+   *
+   * @returns 分页搜索结果，按相关性排序。详见 {@link ChatPageResult}。
+   *
+   * @throws 如果有异常会在此抛出，包括错误码和错误信息，详见 {@link ChatError}。
+   */
+  public async searchMessagesFromServer(params: {
+    option: ChatMessageSearchOption;
+    pageSize?: number;
+    pageNum?: number;
+  }): Promise<ChatPageResult<ChatSearchServerMessageResult>> {
+    chatlog.log(`${ChatManager.TAG}: searchMessagesFromServer:`, params);
+    let r: any = await Native._callMethod(MTsearchMessagesFromServer, {
+      [MTsearchMessagesFromServer]: {
+        keywordList: params.option.keywordList,
+        keywordMatchType:
+          params.option.keywordMatchType ?? ChatSearchKeywordMatchType.OR,
+        conversationId: params.option.conversationId,
+        msgTypes: params.option.msgTypes,
+        startTime: params.option.startTime,
+        endTime: params.option.endTime,
+        searchScope: params.option.searchScope,
+        pageSize: params.pageSize ?? 20,
+        pageNum: params.pageNum ?? 1,
+      },
+    });
+    ChatManager.checkErrorFromResult(r);
+    const nativeReturn = r?.[MTsearchMessagesFromServer];
+    let ret = new ChatPageResult<ChatSearchServerMessageResult>({
+      pageCount: nativeReturn.count,
+      list: nativeReturn.list,
+      opt: {
+        map: (param: any) => {
+          return new ChatSearchServerMessageResult(param);
+        },
+      },
+    });
+    return ret;
+  }
+
+  /**
+   * 删除当前用户的本地消息和服务器消息。单聊或群聊中其他用户的服务器消息不受影响，可通过消息漫游获取。
    *
    * @params 参数集合 -
    * - convId: 会话 ID。

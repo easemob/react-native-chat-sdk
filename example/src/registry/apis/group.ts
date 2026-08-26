@@ -32,6 +32,23 @@ export const groupApis: ApiEntry[] = [
     },
   },
   {
+    name: 'ChatGroupManager.updateGroupExtension',
+    group: 'ChatGroupManager',
+    description:
+      '更新群扩展字段（仅群主/管理员）。groupId：群 ID；ext：扩展内容。',
+    paramsTemplate: JSON.stringify(
+      { groupId: 'ID', ext: 'ext-content' },
+      null,
+      2
+    ),
+    invoke: async (params) => {
+      return ChatClient.getInstance().groupManager.updateGroupExtension(
+        String(params.groupId),
+        String(params.ext)
+      );
+    },
+  },
+  {
     name: 'ChatGroupManager.getGroupNamecard',
     group: 'ChatGroupManager',
     description: '获取群成员名片。groupId：群 ID；userId：成员用户 ID。',

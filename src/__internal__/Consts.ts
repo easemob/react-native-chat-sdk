@@ -143,8 +143,8 @@ export const MTonMessageContentChanged = 'onMessageContentChanged';
 export const MTonMessageProgressUpdate = 'onMessageProgressUpdate';
 export const MTonMessageError = 'onMessageError';
 export const MTonMessageSuccess = 'onMessageSuccess';
-export const MTonMessageReadAck = 'onMessageReadAck';
-export const MTonMessageDeliveryAck = 'onMessageDeliveryAck';
+export const MTonMessageReadAck = 'onMessageReadAck'; // deprecated 2026-08-20 use onMessagesRead instead
+export const MTonMessageDeliveryAck = 'onMessageDeliveryAck'; // deprecated 2026-08-20 use onMessagesDelivered instead
 export const MTonMessageStatusChanged = 'onMessageStatusChanged'; // deprecated 2022.05.05
 
 export const MTonChatThreadCreated = 'onChatThreadCreated';
@@ -408,3 +408,6 @@ export const MTgetUserIdsWithRTCUids = 'getUserIdsWithRTCUids';
 
 // 2026-04-10 added
 export const MTonStreamMessagesReceived = 'onStreamMessagesReceived';
+
+// 2026-08-25 added
+export const MTsearchMessagesFromServer = 'searchMessagesFromServer';

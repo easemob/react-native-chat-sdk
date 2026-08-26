@@ -6,10 +6,8 @@
     "android": "react-native run-android",
     "ios": "react-native run-ios",
     "start": "react-native start",
-    "build:android": "react-native build-android --extra-params \"--no-daemon --console=plain -PreactNativeArchitectures=arm64-v8a\"",
+    "build:android": "react-native build-android --extra-params \"--no-daemon --console=plain -PreactNativeArchitectures=arm64-v8a -I ../../scripts/ci/enable-deprecation-lint.gradle\"",
     "build:ios": "react-native build-ios --mode Debug",
-    "web": "vite",
-    "build:web": "vite build",
     "postinstall": "patch-package"
   },
   "dependencies": {
@@ -18,14 +16,12 @@
     "@react-navigation/native": "^7.3.14",
     "@react-navigation/native-stack": "^7.18.6",
     "react": "19.2.0",
-    "react-dom": "19.2.0",
     "react-native": "0.83.10",
     "react-native-fs": "^2.20.0",
     "react-native-gesture-handler": "^3.1.0",
     "react-native-image-picker": "^8.2.1",
     "react-native-safe-area-context": "^5.8.0",
-    "react-native-screens": "^4.26.2",
-    "react-native-web": "~0.21.2"
+    "react-native-screens": "^4.26.2"
   },
   "devDependencies": {
     "@babel/core": "^7.25.2",
@@ -38,12 +34,9 @@
     "@react-native/metro-config": "0.83.10",
     "@react-native/typescript-config": "0.83.10",
     "@types/react": "^19.2.0",
-    "@vitejs/plugin-react": "^5.0.0",
     "patch-package": "^8.0.1",
     "react-native-builder-bob": "^0.41.0",
-    "react-native-monorepo-config": "^0.4.0",
-    "vite": "^7.1.1",
-    "vite-plugin-commonjs": "^0.10.4"
+    "react-native-monorepo-config": "^0.4.0"
   },
   "engines": {
     "node": ">=20"

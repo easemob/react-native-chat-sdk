@@ -259,6 +259,17 @@ export class ChatOptions {
   enableAutoSyncContacts: boolean;
 
   /**
+   * 自定义 NTP 服务器地址列表。
+   *
+   * 每个地址的格式为 `host` 或 `host:port`。如果未指定端口，则使用默认端口 123。
+   *
+   * NTP 服务器必须符合 NTPv4 (RFC 5905)。
+   *
+   * 该属性只能在调用 {@link ChatClient.init} 时设置。
+   */
+  ntpServers?: string[];
+
+  /**
    * @deprecated 请使用 {@link withAppId} 和 {@link withAppKey} 替代.
    */
   constructor(params: {
@@ -301,6 +312,7 @@ export class ChatOptions {
     dohVendor?: number;
     enableUserInfo?: boolean;
     enableAutoSyncContacts?: boolean;
+    ntpServers?: string[];
   }) {
     if (!params.appKey && !params.appId) {
       throw new ChatError({
@@ -353,6 +365,7 @@ export class ChatOptions {
     this.dohVendor = params.dohVendor ?? 1; // agora is 2.
     this.enableUserInfo = params.enableUserInfo ?? false;
     this.enableAutoSyncContacts = params.enableAutoSyncContacts ?? false;
+    this.ntpServers = params.ntpServers;
   }
 
   static withAppId(params: {
@@ -394,6 +407,7 @@ export class ChatOptions {
     dohVendor?: number;
     enableUserInfo?: boolean;
     enableAutoSyncContacts?: boolean;
+    ntpServers?: string[];
   }) {
     return new ChatOptions({
       ...params,
@@ -440,6 +454,7 @@ export class ChatOptions {
     dohVendor?: number;
     enableUserInfo?: boolean;
     enableAutoSyncContacts?: boolean;
+    ntpServers?: string[];
   }) {
     return new ChatOptions({
       ...params,

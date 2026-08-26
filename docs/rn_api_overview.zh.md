@@ -190,7 +190,8 @@ ChatSDK 是一个高度可靠的全球交流平台，您的用户可以在其中
 | {@link ChatManager.getMessagePinInfo getMessagePinInfo} | 获取单条消息的置顶详情。 |
 | {@link ChatManager.searchMessages searchMessages} | 搜索消息。 |
 | {@link ChatManager.searchMessagesInConversation searchMessagesInConversation} | 搜索指定会话的消息。 |
-| {@link ChatManager.removeMessagesWithTimestamp removeMessagesWithTimestamp} | 从本地和服务器端删除指定会话的消息。 |
+| {@link ChatManager.searchMessagesFromServer searchMessagesFromServer} | 从服务器端搜索消息。 |
+| {@link ChatManager.removeMessagesWithTimestamp removeMessagesWithTimestamp} | 删除当前用户的本地消息和服务器消息。单聊或群聊中其他用户的服务器消息不受影响，可通过消息漫游获取。 |
 | {@link ChatManager.getMessageCountWithTimestamp getMessageCountWithTimestamp} | 获取消息数量。 |
 | {@link ChatManager.getMessageCount getMessageCount} | 获取本地消息数量。 |
 
@@ -449,6 +450,7 @@ ChatSDK 是一个高度可靠的全球交流平台，您的用户可以在其中
 | Method | Description |
 | :----- | :---------- |
 | {@link ChatMessage.constructor constructor} | 构造消息。 |
+| {@link ChatMessage.getBody getBody} | 构造消息。 |
 | {@link ChatMessage.createSendMessage createSendMessage} | 构造消息。 |
 | {@link ChatMessage.createTextMessage createTextMessage} | 创建一条待发送的文本消息。 |
 | {@link ChatMessage.createFileMessage createFileMessage} | 创建一条待发送的文件类型消息。 |

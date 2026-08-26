@@ -1227,6 +1227,49 @@
                      }];
 }
 
+- (void)searchMessagesFromServer:(NSDictionary *)param
+                  withMethodType:(NSString *)aChannelName
+                          result:(nonnull id<ExtSdkCallbackObjc>)result {
+    __weak typeof(self) weakSelf = self;
+    NSArray *keywordList = param[@"keywordList"];
+    if (![keywordList isKindOfClass:[NSArray class]] || keywordList.count == 0) {
+        EMError *error = [EMError errorWithDescription:@"searchMessagesFromServer: keywordList is required" code:1];
+        [weakSelf onResult:result withMethodType:aChannelName withError:error withParams:nil];
+        return;
+    }
+    EMMessageSearchOption *option = [[EMMessageSearchOption alloc] init];
+    option.keywordList = keywordList;
+    option.keywordMatchType = [param[@"keywordMatchType"] intValue] == 1 ? EMKeywordListMatchTypeAND : EMKeywordListMatchTypeOR;
+    NSString *conversationId = param[@"conversationId"];
+    if (conversationId.length > 0) {
+        option.conversationId = conversationId;
+    }
+    NSArray *msgTypesJson = param[@"msgTypes"];
+    if ([msgTypesJson isKindOfClass:[NSArray class]] && msgTypesJson.count > 0) {
+        NSMutableArray<NSNumber *> *msgTypes = [NSMutableArray array];
+        for (NSString *type in msgTypesJson) {
+            [msgTypes addObject:[NSNumber numberWithInteger:[ExtSdkConvertHelper messageBodyFromString:type]]];
+        }
+        option.msgTypes = msgTypes;
+    }
+    if (param[@"startTime"]) { option.startTime = [param[@"startTime"] longLongValue]; }
+    if (param[@"endTime"]) { option.endTime = [param[@"endTime"] longLongValue]; }
+    if (param[@"searchScope"]) { option.searchScope = [ExtSdkConvertHelper searchScopeFromInt:[param[@"searchScope"] intValue]]; }
+    NSInteger pageSize = [param[@"pageSize"] integerValue];
+    NSInteger pageNum = [param[@"pageNum"] integerValue];
+    [EMClient.sharedClient.chatManager
+        searchMessagesFromServerWithOption:option
+                                  pageSize:pageSize
+                                   pageNum:pageNum
+                                completion:^(EMPageResult<EMSearchServerMessageResult *> *_Nullable aResult,
+                                             EMError *_Nullable aError) {
+                                  [weakSelf onResult:result
+                                      withMethodType:aChannelName
+                                           withError:aError
+                                          withParams:[aResult toJsonObject]];
+                                }];
+}
+
 - (void)removeMessagesWithTimestamp:(NSDictionary *)param
                      withMethodType:(NSString *)aChannelName
                              result:(nonnull id<ExtSdkCallbackObjc>)result {
@@ -1391,7 +1434,7 @@
 - (void)messageAttachmentStatusDidChange:(EMChatMessage *)aMessage withError:(EMError *)aError {
 }
 
-- (void)groupMessageDidRead:(EMChatMessage *)aMessage groupAcks:(NSArray *)aGroupAcks {
+- (void)groupMessageDidRead:(NSArray<EMGroupMessageAck *> *)aGroupAcks {
     NSMutableArray *list = [NSMutableArray array];
     for (EMGroupMessageAck *ack in aGroupAcks) {
         NSDictionary *json = [ack toJsonObject];

@@ -142,8 +142,8 @@ static NSString *_Nonnull const ExtSdkMethodKeyOnMessageContentChanged = @"onMes
 static NSString *_Nonnull const ExtSdkMethodKeyOnMessageProgressUpdate = @"onMessageProgressUpdate";
 static NSString *_Nonnull const ExtSdkMethodKeyOnMessageSuccess = @"onMessageSuccess";
 static NSString *_Nonnull const ExtSdkMethodKeyOnMessageError = @"onMessageError";
-static NSString *_Nonnull const ExtSdkMethodKeyOnMessageReadAck = @"onMessageReadAck";
-static NSString *_Nonnull const ExtSdkMethodKeyOnMessageDeliveryAck = @"onMessageDeliveryAck";
+static NSString *_Nonnull const ExtSdkMethodKeyOnMessageReadAck = @"onMessageReadAck"; // deprecated 2026-08-20 use onMessagesRead instead
+static NSString *_Nonnull const ExtSdkMethodKeyOnMessageDeliveryAck = @"onMessageDeliveryAck"; // deprecated 2026-08-20 use onMessagesDelivered instead
 static NSString *_Nonnull const ExtSdkMethodKeyOnMessageStatusChanged =
     @"onMessageStatusChanged"; // deprecated 2022.05.04
 
@@ -399,6 +399,9 @@ static NSString *_Nonnull const ExtSdkMethodKeymodifyMsgBody = @"modifyMsgBody";
 
 static NSString *_Nonnull const ExtSdkMethodKeygetRTCTokenInfoWithChannelName = @"getRTCTokenInfoWithChannelName";
 static NSString *_Nonnull const ExtSdkMethodKeygetUserIdsWithRTCUids = @"getUserIdsWithRTCUids";
+
+// 2026-08-25 4.24.1
+static NSString *_Nonnull const ExtSdkMethodKeySearchMessagesFromServer = @"searchMessagesFromServer";
 
 
 // ############################################################################
@@ -787,6 +790,9 @@ static const int ExtSdkMethodKeyIsMemberInChatRoomMuteListFromServerValue = 2026
 // 2025-11-19
 static const int ExtSdkMethodKeygetRTCTokenInfoWithChannelNameValue = 2027;
 static const int ExtSdkMethodKeygetUserIdsWithRTCUidsValue = 2028;
+
+// 2026-08-25 4.24.1
+static const int ExtSdkMethodKeySearchMessagesFromServerValue = 2029;
 
 // 2026-04-10
 static const int ExtSdkMethodKeyOnStreamMessagesReceivedValue = 611;

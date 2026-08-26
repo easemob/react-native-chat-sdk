@@ -1,6 +1,6 @@
 {
   "name": "react-native-chat-sdk",
-  "version": "1.18.0",
+  "version": "1.20.0",
   "description": "An instant messaging SDK product is a software development kit that provides interfaces and functionalities for building and integrating real-time messaging features, enabling developers to implement instant messaging services within their applications.",
   "main": "./lib/module/index.js",
   "types": "./lib/typescript/src/index.d.ts",
@@ -64,9 +64,7 @@
     "doc:shengwang:update": "node ./scripts/update_api_docs.js 1.4.0 undefined shengwang en",
     "hooks:install": "lefthook install -f",
     "hooks:repair": "node ./scripts/repair-lefthook-hooks.js",
-    "release": "release-it --only-version",
-    "web": "vite",
-    "build:web": "vite build"
+    "release": "release-it --only-version"
   },
   "keywords": [
     "react-native",
@@ -112,9 +110,7 @@
     "react": "19.2.0",
     "react-native": "0.83.10",
     "react-native-builder-bob": "^0.41.0",
-    "react-native-web": "~0.21.2",
     "release-it": "^20.2.0",
-    "turbo": "^2.9.16",
     "typedoc": "^0.28.20",
     "typedoc-plugin-markdown": "^4.12.0",
     "typescript": "~5.9.3"
@@ -246,8 +242,7 @@
       "eslint",
       "jest",
       "lefthook",
-      "release-it",
-      "vite"
+      "release-it"
     ],
     "version": "0.63.0"
   }

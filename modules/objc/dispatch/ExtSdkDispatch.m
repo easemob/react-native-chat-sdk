@@ -1137,6 +1137,9 @@ static NSString *const TAG = @"ExtSdkDispatch";
     case ExtSdkMethodKeymodifyMsgBodyValue:
         [[ExtSdkChatManagerWrapper getInstance] modifyMsgBody:ps withMethodType:methodType result:callback];
         break;
+    case ExtSdkMethodKeySearchMessagesFromServerValue:
+        [[ExtSdkChatManagerWrapper getInstance] searchMessagesFromServer:ps withMethodType:methodType result:callback];
+        break;
 
     case ExtSdkMethodKeyIsMemberInChatRoomMuteListFromServerValue:
         [[ExtSdkChatroomManagerWrapper getInstance] isMemberInChatRoomMuteListFromServer:ps

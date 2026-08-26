@@ -1,0 +1,284 @@
+name: Single Account Nightly
+
+on:
+  schedule:
+    - cron: '37 19 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: rn-single-account-nightly
+  cancel-in-progress: false
+
+jobs:
+  android-build:
+    name: Android nightly build
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    steps:
+      - name: Check out source
+        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+
+      - name: Setup Node.js and dependencies
+        uses: ./.github/actions/setup
+
+      - name: Set up Java
+        uses: actions/setup-java@b6effb05e454b25005698d916606bdc6ffcbf961 # v5.7.0
+        with:
+          distribution: temurin
+          java-version: '17'
+          cache: gradle
+
+      - name: Generate build files
+        run: yarn gen:version_file && yarn gen:cmake_file && yarn gen:env_file
+
+      - name: Build Android nightly APK
+        working-directory: example/android
+        env:
+          # Inlined into the JS bundle by example/babel-plugin-inline-api-env.js;
+          # must match DEVICE_SCRIPT_PATH / DEVICE_CONFIG_PATH used by the
+          # android-test job.
+          API_SCRIPT: /data/local/tmp/rn_single_account.json
+          API_CONFIG: /data/local/tmp/rn_single_account_config.json
+        # x86_64 for the CI emulator (the base CI builds arm64-v8a).
+        # -PbundleInDebug=true embeds the JS bundle; debug builds normally load
+        # JS from Metro, which a headless emulator cannot reach.
+        run: ./gradlew app:assembleDebug --no-daemon --console=plain -PreactNativeArchitectures=x86_64 -PbundleInDebug=true
+
+      - name: Upload nightly APK
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: rn-nightly-android-apk-${{ github.run_id }}
+          path: example/android/app/build/outputs/apk/debug/app-debug.apk
+          retention-days: 1
+
+  android-test:
+    name: Android nightly test
+    needs: android-build
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    environment: rn-single-account
+    steps:
+      - name: Check out source
+        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version-file: .nvmrc
+
+      - name: Download nightly APK
+        uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7
+        with:
+          name: rn-nightly-android-apk-${{ github.run_id }}
+          path: artifacts
+
+      - name: Prepare protected test configuration
+        env:
+          E2E_APP_KEY: ${{ secrets.E2E_APP_KEY }}
+          E2E_USER_ID: ${{ secrets.E2E_USER_ID }}
+          E2E_USER_PASSWORD: ${{ secrets.E2E_USER_PASSWORD }}
+        run: |
+          bash scripts/ci/write_single_account_config.sh "$RUNNER_TEMP/rn_single_account_config.json"
+          echo "E2E_CONFIG_PATH=$RUNNER_TEMP/rn_single_account_config.json" >> "$GITHUB_ENV"
+
+      - name: Enable KVM group perms
+        # The ubuntu-24.04 runner image has /dev/kvm but the runner user is
+        # not in the kvm group (actions/runner-images#8542). Without this
+        # udev rule the emulator silently falls back to ~10x slower software
+        # emulation and the test watchdog times out before the app starts.
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
+
+      - name: Run nightly on Android emulator
+        uses: reactivecircus/android-emulator-runner@a421e43855164a8197daf9d8d40fe71c6996bb0d # v2.38.0
+        with:
+          api-level: 35
+          arch: x86_64
+          profile: pixel_6
+          disable-animations: true
+          # The action mangles multi-line scripts (only the first line reaches
+          # the shell), so all logic lives in a repo script. The device copy of
+          # the config holds credentials; DEVICE_CLEANUP_PATHS deletes it inside
+          # the emulator session because the emulator is gone once this step
+          # ends. The logcat dump must happen here for the same reason.
+          script: bash scripts/ci/run_ci_android.sh
+        env:
+          APK_PATH: artifacts/app-debug.apk
+          SCRIPT_JSON: example/ci/single_account.json
+          CONFIG_JSON: ${{ env.E2E_CONFIG_PATH }}
+          DEVICE_SCRIPT_PATH: /data/local/tmp/rn_single_account.json
+          DEVICE_CONFIG_PATH: /data/local/tmp/rn_single_account_config.json
+          DEVICE_CLEANUP_PATHS: /data/local/tmp/rn_single_account.json /data/local/tmp/rn_single_account_config.json
+          OUT_LOG: build/reports/nightly-android-api_test.log
+          LOGCAT_LOG: build/reports/nightly-android-logcat.log
+
+      - name: Remove protected test configuration
+        if: always()
+        run: rm -f "${E2E_CONFIG_PATH:-$RUNNER_TEMP/rn_single_account_config.json}"
+
+      - name: Upload Android nightly logs
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: rn-single-account-android-${{ github.run_id }}
+          path: |
+            build/reports/nightly-android-api_test.log
+            build/reports/nightly-android-logcat.log
+          if-no-files-found: warn
+          retention-days: 7
+
+  ios-build:
+    name: iOS nightly build
+    runs-on: macos-26
+    timeout-minutes: 45
+    env:
+      DEVELOPER_DIR: /Applications/Xcode_26.3.app/Contents/Developer
+      RCT_USE_RN_DEP: 1
+      RCT_USE_PREBUILT_RNCORE: 1
+    steps:
+      - name: Check out source
+        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+
+      - name: Setup Node.js and dependencies
+        uses: ./.github/actions/setup
+
+      - name: Cache bundler
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: example/vendor/bundle
+          key: ${{ runner.os }}-bundler-${{ hashFiles('example/Gemfile.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-bundler-
+
+      - name: Install CocoaPods via bundler
+        working-directory: example
+        run: |
+          bundle config set --local path vendor/bundle
+          bundle install
+
+      - name: Cache Pods
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: |
+            example/ios/Pods
+            ~/.cocoapods
+          key: ${{ runner.os }}-pods-${{ hashFiles('example/ios/Podfile.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-pods-
+
+      - name: Generate build files
+        run: yarn gen:version_file && yarn gen:cmake_file && yarn gen:env_file
+
+      - name: Install pods
+        working-directory: example
+        run: bundle exec pod install --project-directory=ios
+
+      - name: Build iOS nightly app
+        working-directory: example
+        # API_SCRIPT is passed as a user-defined build setting so the RN bundle
+        # phase sees it (script phases only inherit build settings, not process
+        # env). FORCE_BUNDLING=1 makes the Debug build embed the JS bundle;
+        # Debug simulator builds normally skip bundling and load from Metro.
+        # The simulator shares the host file system, so the values must match
+        # HOST_SCRIPT_PATH / HOST_CONFIG_PATH used by the ios-test job. Do NOT pass
+        # CODE_SIGNING_ALLOWED=NO: the embedded HyphenateChat.framework must be
+        # ad-hoc signed or dyld refuses to load it on Apple Silicon simulators.
+        run: |
+          xcodebuild -workspace ios/ChatSdkExample.xcworkspace \
+            -scheme ChatSdkExample \
+            -configuration Debug \
+            -sdk iphonesimulator \
+            -derivedDataPath ios/build \
+            FORCE_BUNDLING=1 \
+            API_SCRIPT=/tmp/rn_single_account.json \
+            API_CONFIG=/tmp/rn_single_account_config.json \
+            build
+
+      - name: Package nightly app
+        working-directory: example
+        # upload-artifact stores only the *contents* of a directory path, which
+        # would strip the ChatSdkExample.app wrapper; artifact download also
+        # drops the executable bit. Zip first so the bundle round-trips intact.
+        run: ditto -c -k --keepParent ios/build/Build/Products/Debug-iphonesimulator/ChatSdkExample.app ios/build/ChatSdkExample.app.zip
+
+      - name: Upload nightly app
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: rn-nightly-ios-app-${{ github.run_id }}
+          path: example/ios/build/ChatSdkExample.app.zip
+          retention-days: 1
+
+  ios-test:
+    name: iOS nightly test
+    needs: ios-build
+    runs-on: macos-26
+    timeout-minutes: 45
+    env:
+      DEVELOPER_DIR: /Applications/Xcode_26.3.app/Contents/Developer
+    environment: rn-single-account
+    steps:
+      - name: Check out source
+        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version-file: .nvmrc
+
+      - name: Download nightly app
+        uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7
+        with:
+          name: rn-nightly-ios-app-${{ github.run_id }}
+          path: artifacts
+
+      - name: Prepare protected test configuration
+        env:
+          E2E_APP_KEY: ${{ secrets.E2E_APP_KEY }}
+          E2E_USER_ID: ${{ secrets.E2E_USER_ID }}
+          E2E_USER_PASSWORD: ${{ secrets.E2E_USER_PASSWORD }}
+        run: |
+          bash scripts/ci/write_single_account_config.sh "$RUNNER_TEMP/rn_single_account_config.json"
+          echo "E2E_CONFIG_PATH=$RUNNER_TEMP/rn_single_account_config.json" >> "$GITHUB_ENV"
+
+      - name: Run nightly on iOS simulator
+        run: |
+          ditto -x -k artifacts/ChatSdkExample.app.zip artifacts
+          bash scripts/ci/run_ci_ios.sh
+        env:
+          APP_PATH: artifacts/ChatSdkExample.app
+          SCRIPT_JSON: example/ci/single_account.json
+          CONFIG_JSON: ${{ env.E2E_CONFIG_PATH }}
+          HOST_SCRIPT_PATH: /tmp/rn_single_account.json
+          HOST_CONFIG_PATH: /tmp/rn_single_account_config.json
+          OUT_LOG: build/reports/nightly-ios-api_test.log
+
+      - name: Collect iOS diagnostics after failure
+        if: failure()
+        # Xcode 26 simctl only accepts --output=<path> (equals form) and
+        # pauses on an interactive "Press ENTER" prompt unless stdin is fed.
+        # The archive is written as <path>.tar.gz next to the given path.
+        run: |
+          mkdir -p build/reports
+          echo | xcrun simctl diagnose -b --output=build/reports/diagnose || true
+
+      - name: Remove protected test configuration
+        if: always()
+        # The iOS driver copies the config to HOST_CONFIG_PATH on the runner;
+        # remove both copies.
+        run: rm -f "${E2E_CONFIG_PATH:-$RUNNER_TEMP/rn_single_account_config.json}" /tmp/rn_single_account.json /tmp/rn_single_account_config.json
+
+      - name: Upload iOS nightly evidence
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: rn-single-account-ios-${{ github.run_id }}
+          path: |
+            build/reports/nightly-ios-api_test.log
+            build/reports/*diagnose*.tar.gz
+          if-no-files-found: warn
+          retention-days: 7

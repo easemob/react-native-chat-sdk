@@ -2,6 +2,13 @@ _Chinese | [English](./CHANGELOG.md)_
 
 # Update Log
 
+## 1.20.0
+
+- 依赖的原生 SDK 升级到版本（`iOS` 4.24.1 和`Android` 4.24.1）。
+- 新增 `ChatManager.searchMessagesFromServer` 方法，用于从服务端搜索消息；新增 `ChatMessageSearchOption`、`ChatSearchServerMessageResult` 和 `ChatSearchKeywordMatchType` 类型。使用该方法需在 Console 开通消息搜索增值服务。
+- 在 `ChatMessage` 中新增 `webhookEnv` 属性。
+- 在 `ChatOptions` 中新增 `ntpServers` 属性。
+
 ## 1.18.0
 
 - 依赖的原生 SDK 升级到版本（`iOS` 4.22.0 和`Android` 4.22.0）。
