@@ -1,6 +1,6 @@
 {
   "init": {
-    "appKey": "1107240828153144#thread",
+    "appKey": "easemob-demo#zuoyu",
     "autoLogin": false,
     "ntpServers": ["ntp1.aliyun.com"]
   },
@@ -36,7 +36,7 @@
       "api": "ChatGroupManager.updateGroupExtension",
       "id": "group.updateGroupExtension",
       "params": {
-        "groupId": "323121563369473",
+        "groupId": "318686474862593",
         "ext": "port-4.24.1-test"
       },
       "expect": { "success": true }
