@@ -113,6 +113,7 @@ static NSString *_Nonnull const ExtSdkMethodKeyGetConversationsFromServerWithCur
     @"getConversationsFromServerWithCursor";
 static NSString *_Nonnull const ExtSdkMethodKeyGetPinnedConversationsFromServerWithCursor =
     @"getPinnedConversationsFromServerWithCursor";
+static NSString *_Nonnull const ExtSdkMethodKeyGetConversationsFromDBWithCursor = @"getConversationsFromDBWithCursor";
 static NSString *_Nonnull const ExtSdkMethodKeyPinConversation = @"pinConversation";
 static NSString *_Nonnull const ExtSdkMethodKeyModifyMessage = @"modifyMessage";
 static NSString *_Nonnull const ExtSdkMethodKeyDownloadAndParseCombineMessage = @"downloadAndParseCombineMessage";
@@ -513,6 +514,7 @@ static const int ExtSdkMethodKeyRemoveMessagesFromServerWithTsValue = 534;
 static const int ExtSdkMethodKeyfetchHistoryMessagesByOptionsValue = 535;
 static const int ExtSdkMethodKeyGetConversationsFromServerWithCursorValue = 536;
 static const int ExtSdkMethodKeyGetPinnedConversationsFromServerWithCursorValue = 537;
+static const int ExtSdkMethodKeyGetConversationsFromDBWithCursorValue = 546;
 static const int ExtSdkMethodKeyPinConversationValue = 538;
 static const int ExtSdkMethodKeyModifyMessageValue = 539;
 static const int ExtSdkMethodKeyDownloadAndParseCombineMessageValue = 540;

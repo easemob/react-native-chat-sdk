@@ -104,6 +104,7 @@ public class ExtSdkMethodType {
     public static final String getConversationsFromServerWithCursor = "getConversationsFromServerWithCursor";
     public static final String getPinnedConversationsFromServerWithCursor =
         "getPinnedConversationsFromServerWithCursor";
+    public static final String getConversationsFromDBWithCursor = "getConversationsFromDBWithCursor";
     public static final String pinConversation = "pinConversation";
     public static final String modifyMessage = "modifyMessage";
     public static final String downloadAndParseCombineMessage = "downloadAndParseCombineMessage";

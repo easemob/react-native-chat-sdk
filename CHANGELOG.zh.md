@@ -2,6 +2,12 @@ _Chinese | [English](./CHANGELOG.md)_
 
 # Update Log
 
+## 1.21.0
+
+- 依赖的原生 SDK 升级到版本（`iOS` 4.25.0 和`Android` 4.25.0）。
+- 新增 `ChatManager.fetchConversationsFromDB` 方法，用于分页从本地数据库获取会话列表。调用该方法前，需将 `ChatOptions.autoLoadConversations` 设置为 `false`。
+- 在 `ChatOptions` 中新增 `enableChatroomConversation` 和 `autoLoadConversations` 属性。
+
 ## 1.20.0
 
 - 依赖的原生 SDK 升级到版本（`iOS` 4.24.1 和`Android` 4.24.1）。

@@ -857,6 +857,9 @@ public class ExtSdkDispatch implements ExtSdkApi {
             case ExtSdkMethodType.getPinnedConversationsFromServerWithCursor:
                 ExtSdkChatManagerWrapper.getInstance().getPinnedConversationsFromServerWithCursor(jsonParams, methodType, callback);
                 break;
+            case ExtSdkMethodType.getConversationsFromDBWithCursor:
+                ExtSdkChatManagerWrapper.getInstance().getConversationsFromDBWithCursor(jsonParams, methodType, callback);
+                break;
             case ExtSdkMethodType.pinConversation:
                 ExtSdkChatManagerWrapper.getInstance().pinConversation(jsonParams, methodType, callback);
                 break;

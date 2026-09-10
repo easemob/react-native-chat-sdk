@@ -1271,6 +1271,9 @@
     data[@"enableAutoSyncContacts"] = @(self.enableAutoSyncContacts);
     // 2026-08-25 4.24.1
     data[@"ntpServers"] = self.ntpServers;
+    // 2026-09-10 4.25.0
+    data[@"enableChatroomConversation"] = @(self.enableChatroomConversation);
+    data[@"autoLoadConversations"] = @(self.autoLoadConversations);
 
     return data;
 }
@@ -1330,6 +1333,9 @@
 
     // 2026-08-25 4.24.1
     if (aJson[@"ntpServers"]) { options.ntpServers = aJson[@"ntpServers"]; }
+    // 2026-09-10 4.25.0
+    if (aJson[@"enableChatroomConversation"]) { options.enableChatroomConversation = [aJson[@"enableChatroomConversation"] boolValue]; }
+    if (aJson[@"autoLoadConversations"]) { options.autoLoadConversations = [aJson[@"autoLoadConversations"] boolValue]; }
 
     return options;
 }

@@ -171,6 +171,10 @@ NS_ASSUME_NONNULL_BEGIN
                                     withMethodType:(NSString *)aChannelName
                                             result:(nonnull id<ExtSdkCallbackObjc>)result;
 
+- (void)getConversationsFromDBWithCursor:(NSDictionary *)param
+                          withMethodType:(NSString *)aChannelName
+                                  result:(nonnull id<ExtSdkCallbackObjc>)result;
+
 - (void)pinConversation:(NSDictionary *)param
          withMethodType:(NSString *)aChannelName
                  result:(nonnull id<ExtSdkCallbackObjc>)result;

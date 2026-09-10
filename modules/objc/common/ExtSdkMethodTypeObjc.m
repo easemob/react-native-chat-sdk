@@ -339,6 +339,7 @@
               @(ExtSdkMethodKeyGetConversationsFromServerWithCursorValue),
           ExtSdkMethodKeyGetPinnedConversationsFromServerWithCursor :
               @(ExtSdkMethodKeyGetPinnedConversationsFromServerWithCursorValue),
+          ExtSdkMethodKeyGetConversationsFromDBWithCursor : @(ExtSdkMethodKeyGetConversationsFromDBWithCursorValue),
           ExtSdkMethodKeyPinConversation : @(ExtSdkMethodKeyPinConversationValue),
           ExtSdkMethodKeyModifyMessage : @(ExtSdkMethodKeyModifyMessageValue),
           ExtSdkMethodKeyDownloadAndParseCombineMessage : @(ExtSdkMethodKeyDownloadAndParseCombineMessageValue),

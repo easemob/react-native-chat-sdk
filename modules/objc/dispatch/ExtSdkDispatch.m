@@ -1020,6 +1020,11 @@ static NSString *const TAG = @"ExtSdkDispatch";
                                                                             withMethodType:methodType
                                                                                     result:callback];
         break;
+    case ExtSdkMethodKeyGetConversationsFromDBWithCursorValue:
+        [[ExtSdkChatManagerWrapper getInstance] getConversationsFromDBWithCursor:ps
+                                                                  withMethodType:methodType
+                                                                          result:callback];
+        break;
     case ExtSdkMethodKeyPinConversationValue:
         [[ExtSdkChatManagerWrapper getInstance] pinConversation:ps withMethodType:methodType result:callback];
         break;

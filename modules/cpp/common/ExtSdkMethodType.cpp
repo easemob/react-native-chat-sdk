@@ -63,6 +63,7 @@ const std::string ExtSdkMethodType::fetchHistoryMessages = "fetchHistoryMessages
 const std::string ExtSdkMethodType::searchChatMsgFromDB = "searchChatMsgFromDB";
 const std::string ExtSdkMethodType::getMessage = "getMessage";
 const std::string ExtSdkMethodType::asyncFetchGroupAcks = "asyncFetchGroupAcks";
+const std::string ExtSdkMethodType::getConversationsFromDBWithCursor = "getConversationsFromDBWithCursor";
 
 /// EMChatManager listener
 const std::string ExtSdkMethodType::onMessagesReceived = "onMessagesReceived";

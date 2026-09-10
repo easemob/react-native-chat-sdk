@@ -69,6 +69,7 @@ public:
     static const std::string searchChatMsgFromDB;
     static const std::string getMessage;
     static const std::string asyncFetchGroupAcks;
+    static const std::string getConversationsFromDBWithCursor;
 
     /// EMChatManager listener
     static const std::string onMessagesReceived;

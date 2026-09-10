@@ -2,6 +2,12 @@ _English | [Chinese](./CHANGELOG.zh.md)_
 
 # Update Log
 
+## 1.21.0
+
+- Dependent native SDKs are upgraded to versions (iOS 4.25.0 and Android 4.25.0).
+- Add `ChatManager.fetchConversationsFromDB` method to get the list of conversations from the local database with pagination. Before calling this method, you need to set `ChatOptions.autoLoadConversations` to `false`.
+- Add the `enableChatroomConversation` and `autoLoadConversations` properties in `ChatOptions`.
+
 ## 1.20.0
 
 - Dependent native SDKs are upgraded to versions (iOS 4.24.1 and Android 4.24.1).

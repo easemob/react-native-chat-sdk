@@ -278,6 +278,24 @@ export class ChatOptions {
   enableAutoSyncContacts: boolean;
 
   /**
+   * Whether to create conversations for chat room messages.
+   *
+   * - `true`: Yes. A conversation is created when a chat room message is sent or received.
+   * - (Default) `false`: No.
+   */
+  enableChatroomConversation: boolean;
+
+  /**
+   * Whether to automatically load all conversations into memory during SDK initialization.
+   *
+   * - (Default) `true`: Yes.
+   * - `false`: No. You need to load conversations with pagination by calling {@link ChatManager.fetchConversationsFromDB}.
+   *
+   * When automatic conversation loading is enabled, loading conversations with pagination becomes meaningless.
+   */
+  autoLoadConversations: boolean;
+
+  /**
    * The custom NTP server address list.
    *
    * Each address is in the format of `host` or `host:port`. If the port is not specified, the default port 123 is used.
@@ -331,6 +349,8 @@ export class ChatOptions {
     dohVendor?: number;
     enableUserInfo?: boolean;
     enableAutoSyncContacts?: boolean;
+    enableChatroomConversation?: boolean;
+    autoLoadConversations?: boolean;
     ntpServers?: string[];
   }) {
     if (!params.appKey && !params.appId) {
@@ -384,6 +404,9 @@ export class ChatOptions {
     this.dohVendor = params.dohVendor ?? 1; // agora is 2.
     this.enableUserInfo = params.enableUserInfo ?? false;
     this.enableAutoSyncContacts = params.enableAutoSyncContacts ?? false;
+    this.enableChatroomConversation =
+      params.enableChatroomConversation ?? false;
+    this.autoLoadConversations = params.autoLoadConversations ?? true;
     this.ntpServers = params.ntpServers;
   }
 
@@ -426,6 +449,8 @@ export class ChatOptions {
     dohVendor?: number;
     enableUserInfo?: boolean;
     enableAutoSyncContacts?: boolean;
+    enableChatroomConversation?: boolean;
+    autoLoadConversations?: boolean;
     ntpServers?: string[];
   }) {
     return new ChatOptions({
@@ -473,6 +498,8 @@ export class ChatOptions {
     dohVendor?: number;
     enableUserInfo?: boolean;
     enableAutoSyncContacts?: boolean;
+    enableChatroomConversation?: boolean;
+    autoLoadConversations?: boolean;
     ntpServers?: string[];
   }) {
     return new ChatOptions({

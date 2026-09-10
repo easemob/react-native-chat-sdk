@@ -45,6 +45,19 @@ export const chatApis: ApiEntry[] = [
     },
   },
   {
+    name: 'ChatManager.fetchConversationsFromDB',
+    group: 'ChatManager',
+    description:
+      '从本地数据库分页获取会话列表。cursor/pageSize 均可选。需先将 ChatOptions.autoLoadConversations 设为 false。',
+    paramsTemplate: JSON.stringify({ pageSize: 20 }, null, 2),
+    invoke: async (params) => {
+      return ChatClient.getInstance().chatManager.fetchConversationsFromDB(
+        params.cursor === undefined ? undefined : String(params.cursor),
+        params.pageSize === undefined ? undefined : Number(params.pageSize)
+      );
+    },
+  },
+  {
     name: 'ChatManager.sendMessage',
     group: 'ChatManager',
     description:

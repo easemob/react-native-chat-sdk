@@ -117,6 +117,8 @@ export const MTgetConversationsFromServerWithCursor =
   'getConversationsFromServerWithCursor';
 export const MTgetPinnedConversationsFromServerWithCursor =
   'getPinnedConversationsFromServerWithCursor';
+export const MTgetConversationsFromDBWithCursor =
+  'getConversationsFromDBWithCursor';
 export const MTpinConversation = 'pinConversation';
 export const MTmodifyMessage = 'modifyMessage';
 export const MTmodifyMsgBody = 'modifyMsgBody';

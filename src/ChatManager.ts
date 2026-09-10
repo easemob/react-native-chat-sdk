@@ -39,6 +39,7 @@ import {
   MTfetchSupportLanguages,
   MTgetConvsMsgsWithKeyword,
   MTgetConversation,
+  MTgetConversationsFromDBWithCursor,
   MTgetConversationsFromServer,
   MTgetConversationsFromServerWithCursor,
   MTgetLatestMessage,
@@ -3505,6 +3506,47 @@ export class ChatManager extends BaseManager {
     let ret = new ChatCursorResult<ChatConversation>({
       cursor: r?.[MTgetPinnedConversationsFromServerWithCursor].cursor,
       list: r?.[MTgetPinnedConversationsFromServerWithCursor].list,
+      opt: {
+        map: (param: any) => {
+          return new ChatConversation(param);
+        },
+      },
+    });
+    return ret;
+  }
+
+  /**
+   * Gets the list of conversations from the local database with pagination.
+   *
+   * Before calling this method, you need to set {@link ChatOptions.autoLoadConversations} to `false`, because when automatic conversation loading is enabled, the SDK loads all conversations into memory during initialization, and loading conversations with pagination becomes meaningless.
+   *
+   * The SDK retrieves the list of conversations in the following order: pinned conversations in the reverse chronological order of their pinning, then conversations in the reverse chronological order of the server timestamp of their latest message, then conversations with the same timestamp in the reverse alphabetical order of conversation IDs (case-insensitive).
+   *
+   * @param cursor The cursor position from which to start querying data. If you pass in an empty string or `undefined`, the SDK retrieves conversations from the latest one.
+   *
+   * @param pageSize The number of conversations that you expect to get on each page. The value range is [1,100].
+   *
+   * @returns The list of retrieved conversations.
+   *
+   * @throws A description of the exception. If an invalid cursor is passed, the SDK throws a {@link ChatError} with the error code `INVALID_PARAM`. See {@link ChatError}.
+   */
+  public async fetchConversationsFromDB(
+    cursor?: string,
+    pageSize?: number
+  ): Promise<ChatCursorResult<ChatConversation>> {
+    chatlog.log(
+      `${ChatManager.TAG}: fetchConversationsFromDB: ${cursor}, ${pageSize}`
+    );
+    let r: any = await Native._callMethod(MTgetConversationsFromDBWithCursor, {
+      [MTgetConversationsFromDBWithCursor]: {
+        cursor: cursor ?? '',
+        pageSize: pageSize ?? 20,
+      },
+    });
+    Native.checkErrorFromResult(r);
+    let ret = new ChatCursorResult<ChatConversation>({
+      cursor: r?.[MTgetConversationsFromDBWithCursor].cursor,
+      list: r?.[MTgetConversationsFromDBWithCursor].list,
       opt: {
         map: (param: any) => {
           return new ChatConversation(param);
