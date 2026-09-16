@@ -18,10 +18,6 @@ NS_ASSUME_NONNULL_BEGIN
                 withMethodType:(NSString *)aChannelName
                         result:(nonnull id<ExtSdkCallbackObjc>)result;
 
-- (void)createChatRoom:(NSDictionary *)param
-        withMethodType:(NSString *)aChannelName
-                result:(nonnull id<ExtSdkCallbackObjc>)result;
-
 - (void)joinChatRoom:(NSDictionary *)param
       withMethodType:(NSString *)aChannelName
               result:(nonnull id<ExtSdkCallbackObjc>)result;
@@ -30,10 +26,6 @@ NS_ASSUME_NONNULL_BEGIN
        withMethodType:(NSString *)aChannelName
                result:(nonnull id<ExtSdkCallbackObjc>)result;
 
-- (void)destroyChatRoom:(NSDictionary *)param
-         withMethodType:(NSString *)aChannelName
-                 result:(nonnull id<ExtSdkCallbackObjc>)result;
-
 - (void)fetchChatroomFromServer:(NSDictionary *)param
                  withMethodType:(NSString *)aChannelName
                          result:(nonnull id<ExtSdkCallbackObjc>)result;
@@ -41,10 +33,6 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)getChatRoom:(NSDictionary *)param
      withMethodType:(NSString *)aChannelName
              result:(nonnull id<ExtSdkCallbackObjc>)result;
-
-- (void)getAllChatRooms:(NSDictionary *)param
-         withMethodType:(NSString *)aChannelName
-                 result:(nonnull id<ExtSdkCallbackObjc>)result;
 
 - (void)getChatroomMemberListFromServer:(NSDictionary *)param
                          withMethodType:(NSString *)aChannelName

@@ -165,6 +165,21 @@ export class ChatConversation {
    */
   remindType?: ChatPushRemindType;
 
+  /**
+   * The display name of the conversation.
+   *
+   * **Note** This field is returned by the native SDK. To get the conversation name
+   * by conversation type at the RN layer, see {@link ChatConversation.name}.
+   */
+  readonly displayName?: string;
+
+  /**
+   * The display avatar of the conversation.
+   *
+   * **Note** This field is returned by the native SDK.
+   */
+  readonly displayAvatar?: string;
+
   constructor(params: {
     convId: string;
     convType: ChatConversationType;
@@ -174,6 +189,8 @@ export class ChatConversation {
     pinnedTime?: number;
     marks?: ChatConversationMarkType[];
     remindType?: ChatPushRemindType;
+    name?: string;
+    avatar?: string;
   }) {
     this.convId = params.convId;
     this.convType = params.convType;
@@ -183,6 +200,8 @@ export class ChatConversation {
     this.pinnedTime = params.pinnedTime ?? 0;
     this.marks = params.marks;
     this.remindType = params.remindType ?? ChatPushRemindType.ALL;
+    this.displayName = params.name;
+    this.displayAvatar = params.avatar;
   }
 
   /**
@@ -323,35 +342,6 @@ export class ChatConversation {
   }
 
   /**
-   * Marks a message as read.
-   *
-   * @param msgId The message ID.
-   *
-   * @throws A description of the exception. See {@link ChatError}.
-   */
-  public async markMessageAsRead(msgId: string): Promise<void> {
-    return Factory.getChatClient().chatManager.markMessageAsRead(
-      this.convId,
-      this.convType,
-      msgId,
-      this.isChatThread
-    );
-  }
-
-  /**
-   * Marks all messages as read.
-   *
-   * @throws A description of the exception. See {@link ChatError}.
-   */
-  public async markAllMessagesAsRead(): Promise<void> {
-    return Factory.getChatClient().chatManager.markAllMessagesAsRead(
-      this.convId,
-      this.convType,
-      this.isChatThread
-    );
-  }
-
-  /**
    * Updates a message in the local database.
    *
    * After you modify a message, the message ID remains unchanged and the SDK automatically updates attributes of the conversation, like `latestMessage`.
@@ -429,42 +419,6 @@ export class ChatConversation {
   }
 
   /**
-   * Gets messages of a certain type that a specified user sends in a conversation.
-   *
-   * @param msgType The message type. See {@link ChatMessageType}.
-   * @param direction The message search direction. See {@link ChatSearchDirection}.
-   * - (Default) `ChatSearchDirection.UP`: Messages are retrieved in the descending order of the Unix timestamp ({@link ChatOptions.sortMessageByServerTime}) included in them.
-   * - `ChatSearchDirection.DOWN`: Messages are retrieved in the ascending of the Unix timestamp ({@link ChatOptions.sortMessageByServerTime}) included in them.
-   * @param timestamp The starting Unix timestamp in the message for query. The unit is millisecond. After this parameter is set, the SDK retrieves messages, starting from the specified one, according to the message search direction.
-   *                  If you set this parameter as a negative value, the SDK retrieves messages, starting from the current time, in the descending order of the timestamp included in them.
-   * @param count The maximum number of messages to retrieve each time. The value range is [1,400].
-   * @param sender The user ID or group ID for retrieval. Usually, it is the conversation ID.
-   * @returns The list of retrieved messages (excluding the one with the starting timestamp). If no message is obtained, an empty list is returned.
-   *
-   * @throws A description of the exception. See {@link ChatError}.
-   *
-   * @deprecated 2024-04-17 This method is deprecated. Use {@link getMsgsWithMsgType} instead.
-   */
-  public async getMessagesWithMsgType(
-    msgType: ChatMessageType,
-    direction: ChatSearchDirection = ChatSearchDirection.UP,
-    timestamp: number = -1,
-    count: number = 20,
-    sender?: string
-  ): Promise<Array<ChatMessage>> {
-    return Factory.getChatClient().chatManager.getMessagesWithMsgType(
-      this.convId,
-      this.convType,
-      msgType,
-      direction,
-      timestamp,
-      count,
-      sender,
-      this.isChatThread
-    );
-  }
-
-  /**
    * Gets messages of a certain type in the conversation from the local database.
    *
    * **note** If the conversation object does not exist, this method will create it.
@@ -498,42 +452,6 @@ export class ChatConversation {
       convType: this.convType,
       isChatThread: this.isChatThread,
     });
-  }
-
-  /**
-   * Gets messages of a certain quantity in a conversation from the local database.
-   *
-   * **Note**
-   *
-   * The obtained messages will also join the existing messages of the conversation stored in the memory.
-   *
-   * @param startMsgId The starting message ID for query. After this parameter is set, the SDK retrieves messages, starting from the specified one, according to the message search direction.
-   *                   If this parameter is set an empty string, the SDK retrieves messages according to the message search direction while ignoring this parameter.
-   *                  - If `direction` is set as `ChatSearchDirection.UP`, the SDK retrieves messages, starting from the latest one, in the descending order of the Unix timestamp ({@link ChatOptions.sortMessageByServerTime}) included in them.
-   *                 - If `direction` is set as `ChatSearchDirection.DOWN`, the SDK retrieves messages, starting from the oldest one, in the ascending order of the Unix timestamp ({@link ChatOptions.sortMessageByServerTime}) included in them.
-   * @param direction The message search direction. See {@link ChatSearchDirection}.
-   * - (Default) `ChatSearchDirection.UP`: Messages are retrieved in the descending order of the Unix timestamp ({@link ChatOptions.sortMessageByServerTime}) included in them.
-   * - `ChatSearchDirection.DOWN`: Messages are retrieved in the ascending order of the Unix timestamp ({@link ChatOptions.sortMessageByServerTime}) included in them.
-   * @param loadCount The maximum number of messages to retrieve each time. The value range is [1,400].
-   * @returns The message list (excluding the ones with the starting or ending timestamp). If no message is obtained, an empty list is returned.
-   *
-   * @throws A description of the exception. See {@link ChatError}.
-   *
-   * @deprecated 2024-04-17 This method is deprecated. Use {@link getMsgs} instead.
-   */
-  public async getMessages(
-    startMsgId: string,
-    direction: ChatSearchDirection = ChatSearchDirection.UP,
-    loadCount: number = 20
-  ): Promise<Array<ChatMessage>> {
-    return Factory.getChatClient().chatManager.getMessages(
-      this.convId,
-      this.convType,
-      startMsgId,
-      direction,
-      loadCount,
-      this.isChatThread
-    );
   }
 
   /**
@@ -588,42 +506,6 @@ export class ChatConversation {
   }
 
   /**
-   * Gets messages with keywords in a conversation in the local database.
-   *
-   * @param keywords The keywords for query.
-   * @param direction The message search direction. See {@link ChatSearchDirection}.
-   * - (Default) `ChatSearchDirection.Up`: Messages are retrieved in the descending order of the Unix timestamp ({@link ChatOptions.sortMessageByServerTime}) included in them.
-   * - `ChatSearchDirection.Down`: Messages are retrieved in the ascending order of the Unix timestamp ({@link ChatOptions.sortMessageByServerTime}) included in them.
-   * @param timestamp The starting Unix timestamp in the message for query. The unit is millisecond. After this parameter is set, the SDK retrieves messages, starting from the specified one, according to the message search direction.
-   *                  If you set this parameter as a negative value, the SDK retrieves messages, starting from the current time, in the descending order of the the Unix timestamp ({@link ChatOptions.sortMessageByServerTime}) included in them.
-   * @param count The maximum number of messages to retrieve each time. The value range is [1,400].
-   * @param sender The user ID or group ID for retrieval. Usually, it is the conversation ID.
-   * @returns  The list of retrieved messages (excluding the one with the starting timestamp). If no message is obtained, an empty list is returned.
-   *
-   * @throws A description of the exception. See {@link ChatError}.
-   *
-   * @deprecated 2024-04-17 This method is deprecated. Use {@link getMsgsWithKeyword} instead.
-   */
-  public async getMessagesWithKeyword(
-    keywords: string,
-    direction: ChatSearchDirection = ChatSearchDirection.UP,
-    timestamp: number = -1,
-    count: number = 20,
-    sender?: string
-  ): Promise<Array<ChatMessage>> {
-    return Factory.getChatClient().chatManager.getMessagesWithKeyword(
-      this.convId,
-      this.convType,
-      keywords,
-      direction,
-      timestamp,
-      count,
-      sender,
-      this.isChatThread
-    );
-  }
-
-  /**
    * Gets messages that the specified user sends in a conversation in a certain period.
    *
    * This method gets data from the local database.
@@ -661,38 +543,6 @@ export class ChatConversation {
       convType: this.convType,
       isChatThread: this.isChatThread,
     });
-  }
-
-  /**
-   * Gets messages that are sent and received in a certain period in a conversation in the local database.
-   *
-   * @param startTime The starting Unix timestamp for search. The unit is millisecond.
-   * @param endTime The ending Unix timestamp for search. The unit is millisecond.
-   * @param direction The message search direction. See {@link ChatSearchDirection}.
-   * - (Default) `ChatSearchDirection.UP`: Messages are retrieved in the descending order of the Unix timestamp ({@link ChatOptions.sortMessageByServerTime}) included in them.
-   * - `ChatSearchDirection.DOWN`: Messages are retrieved in the ascending order of the Unix timestamp ({@link ChatOptions.sortMessageByServerTime}) included in them.
-   * @param count The maximum number of messages to retrieve each time. The value range is [1,400].
-   * @returns The list of retrieved messages (excluding the ones with the starting or ending timestamp). If no message is obtained, an empty list is returned.
-   *
-   * @throws A description of the exception. See {@link ChatError}.
-   *
-   * @deprecated 2024-04-17 This method is deprecated. Use {@link getMsgWithTimestamp} instead.
-   */
-  public async getMessageWithTimestamp(
-    startTime: number,
-    endTime: number,
-    direction: ChatSearchDirection = ChatSearchDirection.UP,
-    count: number = 20
-  ): Promise<Array<ChatMessage>> {
-    return Factory.getChatClient().chatManager.getMessageWithTimestamp(
-      this.convId,
-      this.convType,
-      startTime,
-      endTime,
-      direction,
-      count,
-      this.isChatThread
-    );
   }
 
   /**
@@ -836,65 +686,6 @@ export class ChatConversation {
       convId: this.convId,
       convType: this.convType,
       isChatThread: this.isChatThread,
-    });
-  }
-}
-
-/**
- * The conversation filter class.
- */
-export class ChatConversationFetchOptions {
-  /**
-   * The number of conversations to retrieve.
-   *
-   * If you retrieve marked conversations, the value range is [1,10], with 10 as the default. Otherwise, the value range is [1,50].
-   */
-  pageSize?: number;
-  /**
-   * The cursor to specify where to start retrieving conversations.
-   */
-  cursor?: string;
-  /**
-   * Whether to get pinned conversations.
-   * - `true`: Yes.
-   * - `false`: No.
-   */
-  pinned?: boolean;
-  /**
-   * Whether to get marked conversations.
-   * - `true`: Yes.
-   * - `false`: No.
-   */
-  mark?: ChatConversationMarkType;
-  constructor(params: {
-    pageSize?: number;
-    cursor?: string;
-    pinned?: boolean;
-    mark?: ChatConversationMarkType;
-  }) {
-    this.pageSize = params.pageSize;
-    this.cursor = params.cursor;
-    this.pinned = params.pinned;
-    this.mark = params.mark;
-  }
-  static default(): ChatConversationFetchOptions {
-    return new ChatConversationFetchOptions({
-      pageSize: 20,
-      pinned: false,
-    });
-  }
-  static pinned(): ChatConversationFetchOptions {
-    return new ChatConversationFetchOptions({
-      pageSize: 20,
-      pinned: true,
-    });
-  }
-  static withMark(
-    mark: ChatConversationMarkType
-  ): ChatConversationFetchOptions {
-    return new ChatConversationFetchOptions({
-      pageSize: 20,
-      mark: mark,
     });
   }
 }

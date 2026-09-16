@@ -17,10 +17,6 @@ NS_ASSUME_NONNULL_BEGIN
          withMethodType:(NSString *)aChannelName
                  result:(nonnull id<ExtSdkCallbackObjc>)result;
 
-- (void)getGroupAckCount:(NSDictionary *)param
-          withMethodType:(NSString *)aChannelName
-                  result:(nonnull id<ExtSdkCallbackObjc>)result;
-
 - (void)getMessagePinInfo:(NSDictionary *)param
            withMethodType:(NSString *)aChannelName
                    result:(nonnull id<ExtSdkCallbackObjc>)result;

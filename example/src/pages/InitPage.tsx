@@ -24,7 +24,6 @@ import { appKey } from '../env';
 function buildDefaultTemplate(): string {
   const template: Record<string, unknown> = {
     appKey: appKey[0] ?? '',
-    autoLogin: false,
     debugModel: true,
   };
   // const id = appId[0];
@@ -52,7 +51,9 @@ export function InitPage({ navigation }: Props) {
     setRunning(true);
     try {
       const parsed = JSON.parse(json);
-      const options = new ChatOptions(parsed);
+      const options = parsed.appKey
+        ? ChatOptions.withAppKey(parsed)
+        : ChatOptions.withAppId(parsed);
       await ChatClient.getInstance().init(options);
       const result = okResult();
       addLog('api.ChatClient.init', result);

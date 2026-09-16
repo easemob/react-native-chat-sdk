@@ -29,7 +29,7 @@ ChatSDK 是一个高度可靠的全球交流平台，您的用户可以在其中
 | {@link ChatClient.login login} | 通过密码或环信 token 登录 Chat 服务器。 |
 | {@link ChatClient.loginWithToken loginWithToken} | 通过用户ID和token登录。 |
 | {@link ChatClient.loginWithAgoraToken loginWithAgoraToken} | 通过用户ID和token登录。 |
-| {@link ChatClient.renewAgoraToken renewAgoraToken} | 更新声网 token。 |
+| {@link ChatClient.renewToken renewToken} | 更新 token。 |
 | {@link ChatClient.logout logout} | 退出登录。 |
 | {@link ChatClient.changeAppKey changeAppKey} | 修改 App Key。 |
 | {@link ChatClient.changeAppId changeAppId} | 更新 app iD。 |

@@ -1,6 +1,6 @@
 {
   "name": "react-native-chat-sdk-example",
-  "version": "1.20.0",
+  "version": "5.0.0",
   "private": true,
   "scripts": {
     "android": "react-native run-android",

@@ -2,6 +2,23 @@ _Chinese | [English](./CHANGELOG.md)_
 
 # Update Log
 
+## 5.0.0
+
+本次为大版本升级，包含不兼容变更。自本版本起，React Native SDK 版本号与依赖的原生 SDK 版本号保持同步。
+
+- 依赖的原生 SDK 升级到版本（`iOS` 5.0.0 和`Android` 5.0.0）。
+- 登录：客户端下线密码登录、Agora Token 登录与账号注册，仅保留 Token 登录（`ChatClient.loginWithToken`）。移除 `ChatClient.login`、`ChatClient.loginWithAgoraToken`、`ChatClient.createAccount` 和 `ChatClient.isLoginBefore`。自动登录移除：删除 `ChatOptions` 的 `autoLogin` 属性与 `onUserDidLoginFromOtherDevice` 回调，应用启动后需主动调用 `loginWithToken`。`ChatClient.renewAgoraToken` 更名为 `ChatClient.renewToken`。`onAppActiveNumberReachLimit` 回调在 iOS 端不再触发（原生 delegate 已移除），Android 端保持可用。
+- 设备管理接口改用 Token 鉴权（原为密码）：`ChatClient.getLoggedInDevicesFromServer(userId, token)`、`ChatClient.kickDevice(userId, token, resource)`、`ChatClient.kickAllDevices(userId, token)`。
+- 数据同步：`ChatOptions` 新增 `dataSyncType` 属性与 `ChatDataSyncType` 枚举，用于配置登录后自动同步会话、好友和已加入群组；`ChatConnectEventListener` 新增 `onDataSyncStart`、`onDataSyncFinish` 和 `onDatabaseOpened` 回调。相应移除服务端拉取接口：`ChatManager.fetchAllConversations`、`fetchConversationsFromServerWithPage`、`fetchConversationsFromServerWithCursor`、`fetchPinnedConversationsFromServerWithCursor`、`fetchConversationsByOptions`，`ChatGroupManager.fetchJoinedGroupsFromServer`，`ChatContactManager.getAllContactsFromServer`、`fetchAllContacts`、`fetchContacts`；请在 `onDataSyncFinish` 后改为读取本地数据。移除 `onContactSyncStart`、`onContactSyncFinish` 回调；移除 `ChatOptions` 的 `requireAck`、`enableAutoSyncContacts` 属性及 `ChatConversationFetchOptions` 类。
+- 消息已读回执重构为批量发送：移除 `ChatManager.sendMessageReadAck`、`sendGroupMessageReadAck`、`sendConversationReadAck`、`markAllConversationsAsRead`、`markMessageAsRead`、`markAllMessagesAsRead`、`fetchGroupAcks`、`groupAckCount`；新增 `ChatManager.sendMessageReadReceipts`（批量发送已读回执）、`clearConversationUnreadMessageCount`、`clearAllConversationUnreadMessageCount`（清除未读数不再附带发送已读回执）、`getGroupMessageReadReceipts`、`fetchGroupMessageReadReceipts`。移除 `onMessagesRead`、`onGroupMessageRead`、`onConversationRead` 回调，`ChatMessageEventListener` 新增统一的 `onMessageReadReceipts` 回调；`ChatGroupMessageAck` 模型替换为 `ChatGroupReadReceipt`（`from` 字段由用户 ID 字符串改为 `ChatGroupMemberInfo` 对象，移除 `content` 字段），新增 `ChatMessageReadReceipt` 模型。
+- `ChatMessage` 已读相关属性改名：`hasReadAck` 改为 `isPeerRead`，`hasRead` 改为 `isRead`，`needGroupAck` 改为 `isNeedReadReceipt`，`groupAckCount` 改为 `groupReadReceiptCount`。其中 `isPeerRead`、`isRead`、`groupReadReceiptCount` 变为只读；如需消息已读回执，请在发送前设置 `isNeedReadReceipt`。
+- 群组配置模型重构：移除 `ChatGroupStyle` 枚举与 `ChatGroupOptions` 类；新增 `ChatGroupConfigs` 类（`isPublic`、`joinApprovalRequired`、`allowInvites`、`maxCount`、`inviteNeedConfirm`、`ext`）与 `ChatGroupConfigsType` 枚举。`ChatGroup` 的 `options` 属性替换为 `configs`；`createGroupEx` 参数由 `options` 改为 `configs`；移除已废弃的 `createGroup` 方法；`isDisabled` 属性移至 `ChatGroup` 顶层。新增 `ChatGroupManager.updateGroupConfigs`，支持建群后按配置类型更新群组属性。移除 `ChatGroupManager.fetchPublicGroupsFromServer`。
+- 会话：`ChatConversation` 新增 `displayName` 和 `displayAvatar` 属性（均可为空）。`ChatManager.getUnreadMessageCount` 统计范围调整：不再统计聊天室会话、Thread 消息以及推送提醒方式为 `MentionOnly` 或 `None` 的会话。`ChatManager.getMessage` 查询消息时不再自动标记已读，清除未读数请使用 `clearConversationUnreadMessageCount`。
+- 聊天室：移除 `ChatRoomManager.createChatRoom` 和 `ChatRoomManager.destroyChatRoom`，请改用服务端 REST API 创建和解散聊天室。移除 `ChatRoomManager.getAllChatRooms`（双端原生 SDK 均已移除）。
+- 移除 `ChatManager.reportMessage`，请将消息举报提交至业务服务器。
+- 新增多设备事件 `ConversationUnreadMessageCountCleared`(65) 和 `AllConversationUnreadMessageCountCleared`(66)：当前账号的其他设备清除会话未读数时触发。
+- 清理长期废弃的 API（请使用替代项）：`ChatRoomManager.joinChatRoom`（改用 `joinChatRoomEx`）、`ChatGroupManager.fetchGroupInfoFromServer`（改用 `fetchGroupInfoWithoutMembersFromServer`）、`ChatManager.searchMsgFromDB`/`getMessagesWithMsgType`/`getMessages`/`getMessagesWithKeyword`/`getMessageWithTimestamp` 及 `ChatConversation` 同名四个废弃方法（分别改用 `getMsgsWithMsgType`/`getMsgs`/`getMsgsWithKeyword`/`getMsgWithTimestamp`）、`ChatManager.modifyMessageBody`（改用 `modifyMsgBody`）、`ChatImageMessageBody.thumbnailSecret`（改用 `secret`）、`ChatFetchMessageOptions.from`（改用 `senders`）、`ChatRoom.muteList`（改用 `muteKVList`）、群组废弃回调 `onMemberJoined`/`onMemberExited`（改用 `onMembersJoined`/`onMembersExited`）、聊天室废弃回调 `onMuteListAdded`（改用 `onMuteListAddedV2`）。`ChatOptions` 公开构造函数移除，请使用 `ChatOptions.withAppKey` 或 `ChatOptions.withAppId`。废弃事件常量 `onMessagesRecalled`、`onMessageReadAck`、`onMessageDeliveryAck`、`onMessageStatusChanged` 一并移除。
+
 ## 1.20.0
 
 - 依赖的原生 SDK 升级到版本（`iOS` 4.24.1 和`Android` 4.24.1）。

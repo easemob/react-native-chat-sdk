@@ -1,6 +1,42 @@
-import { ChatAreaCode } from './ChatAreaCode';
 import { ChatError } from './ChatError';
 import type { ChatPushConfig } from './ChatPushConfig';
+
+export enum ChatAreaCode {
+  GLOB = -1,
+  CN = 1,
+  NA = 2,
+  EU = 4,
+  AS = 8,
+  JP = 16,
+  IN = 32,
+}
+
+/**
+ * The data synchronization types.
+ *
+ * The type is a bitmask. Multiple types can be combined with the bitwise OR operator,
+ * for example, `ChatDataSyncType.Conversations | ChatDataSyncType.Contacts`.
+ *
+ * See {@link ChatOptions.dataSyncType}.
+ */
+export enum ChatDataSyncType {
+  /**
+   * No data is synchronized.
+   */
+  None = 0,
+  /**
+   * The conversation data is synchronized.
+   */
+  Conversations = 1, // 1 << 0
+  /**
+   * The contact data is synchronized.
+   */
+  Contacts = 2, // 1 << 1
+  /**
+   * The data of joined groups is synchronized.
+   */
+  JoinedGroups = 4, // 1 << 2
+}
 
 /**
  * The chat setting class that defines parameters and options of the SDK, including whether to encrypt the messages before sending them and whether to automatically accept the friend invitations.
@@ -14,13 +50,6 @@ export class ChatOptions {
    * It is the unique identifier of your app.
    */
   appId: string;
-  /**
-   * Whether to enable automatic login.
-   *
-   * - (Default) `true`: Enables automatic login.
-   * - `false`: Disables automatic login.
-   */
-  autoLogin: boolean;
   /**
    * Whether to output the debug information.
    * - `true`: Yes.
@@ -50,16 +79,6 @@ export class ChatOptions {
    * - (Default) `false`: No.
    */
   autoAcceptGroupInvitation: boolean;
-  /**
-   * Whether to require the message read receipt from the recipient.
-   *
-   * - (Default) `true`: Yes.
-   * - `false`: No.
-   *
-   * This property does not take effect for {@link ChatManager.sendConversationReadAck}.
-   *
-   */
-  requireAck: boolean;
   /**
    * Whether to require the delivery receipt.
    *
@@ -270,12 +289,13 @@ export class ChatOptions {
   enableUserInfo: boolean;
 
   /**
-   * Whether to automatically sync the contact list after login.
+   * The data types to be synchronized from the server after login. See {@link ChatDataSyncType}.
    *
-   * - `true`: Yes.
-   * - (Default) `false`: No.
+   * The value is a bitmask, for example, `ChatDataSyncType.Conversations | ChatDataSyncType.Contacts`.
+   *
+   * If this attribute is not set, the native SDK default is used.
    */
-  enableAutoSyncContacts: boolean;
+  dataSyncType?: ChatDataSyncType;
 
   /**
    * The custom NTP server address list.
@@ -288,17 +308,12 @@ export class ChatOptions {
    */
   ntpServers?: string[];
 
-  /**
-   * @deprecated Use {@link withAppId} and {@link withAppKey} instead.
-   */
-  constructor(params: {
+  private constructor(params: {
     appKey: string;
     appId: string;
-    autoLogin?: boolean;
     debugModel?: boolean;
     acceptInvitationAlways?: boolean;
     autoAcceptGroupInvitation?: boolean;
-    requireAck?: boolean;
     requireDeliveryAck?: boolean;
     deleteMessagesAsExitGroup?: boolean;
     deleteMessagesAsExitChatRoom?: boolean;
@@ -330,7 +345,7 @@ export class ChatOptions {
     webSocketPort?: number;
     dohVendor?: number;
     enableUserInfo?: boolean;
-    enableAutoSyncContacts?: boolean;
+    dataSyncType?: ChatDataSyncType;
     ntpServers?: string[];
   }) {
     if (!params.appKey && !params.appId) {
@@ -341,11 +356,9 @@ export class ChatOptions {
     }
     this.appId = params.appId;
     this.appKey = params.appKey;
-    this.autoLogin = params.autoLogin ?? true;
     this.debugModel = params.debugModel ?? false;
     this.acceptInvitationAlways = params.acceptInvitationAlways ?? false;
     this.autoAcceptGroupInvitation = params.autoAcceptGroupInvitation ?? false;
-    this.requireAck = params.requireAck ?? true;
     this.requireDeliveryAck = params.requireDeliveryAck ?? false;
     this.deleteMessagesAsExitGroup = params.deleteMessagesAsExitGroup ?? true;
     this.deleteMessagesAsExitChatRoom =
@@ -383,17 +396,15 @@ export class ChatOptions {
     this.webSocketPort = params.webSocketPort ?? 0;
     this.dohVendor = params.dohVendor ?? 1; // agora is 2.
     this.enableUserInfo = params.enableUserInfo ?? false;
-    this.enableAutoSyncContacts = params.enableAutoSyncContacts ?? false;
+    this.dataSyncType = params.dataSyncType;
     this.ntpServers = params.ntpServers;
   }
 
   static withAppId(params: {
     appId: string;
-    autoLogin?: boolean;
     debugModel?: boolean;
     acceptInvitationAlways?: boolean;
     autoAcceptGroupInvitation?: boolean;
-    requireAck?: boolean;
     requireDeliveryAck?: boolean;
     deleteMessagesAsExitGroup?: boolean;
     deleteMessagesAsExitChatRoom?: boolean;
@@ -425,7 +436,7 @@ export class ChatOptions {
     webSocketPort?: number;
     dohVendor?: number;
     enableUserInfo?: boolean;
-    enableAutoSyncContacts?: boolean;
+    dataSyncType?: ChatDataSyncType;
     ntpServers?: string[];
   }) {
     return new ChatOptions({
@@ -436,11 +447,9 @@ export class ChatOptions {
   }
   static withAppKey(params: {
     appKey: string;
-    autoLogin?: boolean;
     debugModel?: boolean;
     acceptInvitationAlways?: boolean;
     autoAcceptGroupInvitation?: boolean;
-    requireAck?: boolean;
     requireDeliveryAck?: boolean;
     deleteMessagesAsExitGroup?: boolean;
     deleteMessagesAsExitChatRoom?: boolean;
@@ -472,7 +481,7 @@ export class ChatOptions {
     webSocketPort?: number;
     dohVendor?: number;
     enableUserInfo?: boolean;
-    enableAutoSyncContacts?: boolean;
+    dataSyncType?: ChatDataSyncType;
     ntpServers?: string[];
   }) {
     return new ChatOptions({

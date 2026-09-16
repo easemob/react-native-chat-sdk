@@ -52,31 +52,6 @@
                             }];
 }
 
-- (void)createChatRoom:(NSDictionary *)param
-        withMethodType:(NSString *)aChannelName
-                result:(nonnull id<ExtSdkCallbackObjc>)result {
-
-    __weak typeof(self) weakSelf = self;
-
-    NSString *subject = param[@"subject"];
-    NSString *description = param[@"desc"];
-    NSArray *invitees = param[@"members"];
-    NSString *message = param[@"welcomeMsg"];
-    NSInteger maxMembersCount = [param[@"maxUserCount"] integerValue];
-    [EMClient.sharedClient.roomManager
-        createChatroomWithSubject:subject
-                      description:description
-                         invitees:invitees
-                          message:message
-                  maxMembersCount:maxMembersCount
-                       completion:^(EMChatroom *aChatroom, EMError *aError) {
-                         [weakSelf onResult:result
-                             withMethodType:aChannelName
-                                  withError:aError
-                                 withParams:[aChatroom toJsonObject]];
-                       }];
-}
-
 - (void)joinChatRoom:(NSDictionary *)param
       withMethodType:(NSString *)aChannelName
               result:(nonnull id<ExtSdkCallbackObjc>)result {
@@ -113,22 +88,6 @@
                                                      withError:aError
                                                     withParams:nil];
                                           }];
-}
-
-- (void)destroyChatRoom:(NSDictionary *)param
-         withMethodType:(NSString *)aChannelName
-                 result:(nonnull id<ExtSdkCallbackObjc>)result {
-
-    __weak typeof(self) weakSelf = self;
-
-    NSString *chatroomId = param[@"roomId"];
-    [EMClient.sharedClient.roomManager destroyChatroom:chatroomId
-                                            completion:^(EMError *aError) {
-                                              [weakSelf onResult:result
-                                                  withMethodType:aChannelName
-                                                       withError:aError
-                                                      withParams:nil];
-                                            }];
 }
 
 - (void)fetchChatroomFromServer:(NSDictionary *)param
@@ -180,28 +139,6 @@
         withMethodType:aChannelName
              withError:nil
             withParams:[chatroom toJsonObject]];
-}
-
-- (void)getAllChatRooms:(NSDictionary *)param
-         withMethodType:(NSString *)aChannelName
-                 result:(nonnull id<ExtSdkCallbackObjc>)result {
-
-    __weak typeof(self) weakSelf = self;
-    [EMClient.sharedClient.roomManager
-        getChatroomsFromServerWithPage:0
-                              pageSize:-1
-                            completion:^(EMPageResult *aResult,
-                                         EMError *aError) {
-                              NSMutableArray *list = [NSMutableArray array];
-                              for (EMChatroom *room in aResult.list) {
-                                  [list addObject:[room toJsonObject]];
-                              }
-
-                              [weakSelf onResult:result
-                                  withMethodType:aChannelName
-                                       withError:aError
-                                      withParams:list];
-                            }];
 }
 
 - (void)getChatroomMemberListFromServer:(NSDictionary *)param
@@ -777,18 +714,6 @@
         };
     }
 
-    [self onReceive:ExtSdkMethodKeyChatroomChanged withParams:map];
-}
-
-- (void)chatroomMuteListDidUpdate:(EMChatroom *)aChatroom
-                addedMutedMembers:(NSArray *)aMutes
-                       muteExpire:(NSInteger)aMuteExpire {
-    NSDictionary *map = @{
-        @"type" : @"onMuteListAdded",
-        @"roomId" : aChatroom.chatroomId,
-        @"mutes" : aMutes,
-        @"expireTime" : [NSString stringWithFormat:@"%ld", aMuteExpire]
-    };
     [self onReceive:ExtSdkMethodKeyChatroomChanged withParams:map];
 }
 

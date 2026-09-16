@@ -1,21 +1,21 @@
 {
   "steps": [
     {
-      "api": "ChatManager.fetchConversationsFromServerWithCursor",
-      "id": "chat.fetchConversationsFromServerWithCursor",
-      "params": { "pageSize": 20 },
-      "expect": { "success": true }
-    },
-    {
-      "api": "ChatContactManager.fetchAllContacts",
-      "id": "contact.fetchAllContacts",
+      "api": "ChatManager.getAllConversations",
+      "id": "chat.getAllConversations",
       "params": {},
       "expect": { "success": true }
     },
     {
-      "api": "ChatGroupManager.fetchJoinedGroupsFromServer",
-      "id": "group.fetchJoinedGroupsFromServer",
-      "params": { "pageSize": 20, "pageNum": 0 },
+      "api": "ChatContactManager.getAllContacts",
+      "id": "contact.getAllContacts",
+      "params": {},
+      "expect": { "success": true }
+    },
+    {
+      "api": "ChatGroupManager.getJoinedGroups",
+      "id": "group.getJoinedGroups",
+      "params": {},
       "expect": { "success": true }
     },
     {

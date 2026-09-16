@@ -100,54 +100,6 @@ public class ExtSdkChatRoomManagerWrapper extends ExtSdkWrapper {
         onSuccess(result, channelName, ExtSdkChatRoomHelper.toJson(room));
     }
 
-    public void getAllChatRooms(JSONObject param, String channelName, ExtSdkCallback result) throws JSONException {
-        List<EMChatRoom> list = EMClient.getInstance().chatroomManager().getAllChatRooms();
-        List<Map<String, Object>> roomList = new ArrayList<>();
-        for (EMChatRoom room : list) {
-            roomList.add(ExtSdkChatRoomHelper.toJson(room));
-        }
-        onSuccess(result, channelName, roomList);
-    }
-
-    public void createChatRoom(JSONObject param, String channelName, ExtSdkCallback result) throws JSONException {
-        String subject = param.getString("subject");
-        String description = param.getString("desc");
-        String welcomeMessage = param.getString("welcomeMsg");
-        int maxUserCount = param.getInt("maxUserCount");
-        JSONArray members = param.getJSONArray("members");
-        List<String> membersList = new ArrayList<>();
-        for (int i = 0; i < members.length(); i++) {
-            membersList.add((String)members.get(i));
-        }
-        EMClient.getInstance().chatroomManager().asyncCreateChatRoom(
-            subject, description, welcomeMessage, maxUserCount, membersList, new EMValueCallBack<EMChatRoom>() {
-                @Override
-                public void onSuccess(EMChatRoom value) {
-                    ExtSdkWrapper.onSuccess(result, channelName, ExtSdkChatRoomHelper.toJson(value));
-                }
-
-                @Override
-                public void onError(int error, String errorMsg) {
-                    ExtSdkWrapper.onError(result, error, errorMsg);
-                }
-            });
-    }
-
-    public void destroyChatRoom(JSONObject param, String channelName, ExtSdkCallback result) throws JSONException {
-        String roomId = param.getString("roomId");
-        EMClient.getInstance().chatroomManager().asyncDestroyChatRoom(roomId, new EMCallBack() {
-            @Override
-            public void onSuccess() {
-                ExtSdkWrapper.onSuccess(result, channelName, null);
-            }
-
-            @Override
-            public void onError(int code, String error) {
-                ExtSdkWrapper.onError(result, code, error);
-            }
-        });
-    }
-
     public void changeChatRoomSubject(JSONObject param, String channelName, ExtSdkCallback result)
         throws JSONException {
         String roomId = param.getString("roomId");
@@ -682,7 +634,7 @@ public class ExtSdkChatRoomManagerWrapper extends ExtSdkWrapper {
 
     private void registerEaseListener() {
         if (this.roomChangeListener != null) {
-            EMClient.getInstance().chatroomManager().removeChatRoomListener(this.roomChangeListener);
+            EMClient.getInstance().chatroomManager().removeChatRoomChangeListener(this.roomChangeListener);
         }
         this.roomChangeListener = new EMChatRoomChangeListener() {
             @Override
@@ -749,16 +701,6 @@ public class ExtSdkChatRoomManagerWrapper extends ExtSdkWrapper {
                 data.put("participant", participant);
                 data.put("reason", reason);
                 data.put("type", "onRemovedFromChatRoom");
-                ExtSdkWrapper.onReceive(ExtSdkMethodType.chatRoomChange, data);
-            }
-
-            @Override
-            public void onMuteListAdded(String chatRoomId, List<String> mutes, long expireTime) {
-                Map<String, Object> data = new HashMap<>();
-                data.put("roomId", chatRoomId);
-                data.put("mutes", mutes);
-                data.put("expireTime", String.valueOf(expireTime));
-                data.put("type", "onMuteListAdded");
                 ExtSdkWrapper.onReceive(ExtSdkMethodType.chatRoomChange, data);
             }
 

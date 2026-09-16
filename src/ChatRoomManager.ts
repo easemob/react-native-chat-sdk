@@ -8,8 +8,6 @@ import {
   MTchangeChatRoomOwner,
   MTchangeChatRoomSubject,
   MTchatRoomChange,
-  MTcreateChatRoom,
-  MTdestroyChatRoom,
   MTfetchChatRoomAllowListFromServer,
   MTfetchChatRoomAnnouncement,
   MTfetchChatRoomAttributes,
@@ -105,21 +103,10 @@ export class ChatRoomManager extends Native {
           });
           break;
         case 'onMuteListAdded':
-          {
-            const hasKV = params.muteKVs;
-            if (hasKV) {
-              listener.onMuteListAddedV2?.({
-                roomId: params.roomId,
-                mutes: params.muteKVs,
-              });
-            } else {
-              listener.onMuteListAdded?.({
-                roomId: params.roomId,
-                mutes: params.mutes,
-                expireTime: params.expireTime,
-              });
-            }
-          }
+          listener.onMuteListAddedV2?.({
+            roomId: params.roomId,
+            mutes: params.muteKVs,
+          });
           break;
         case 'onMuteListRemoved':
           listener.onMuteListRemoved?.({
@@ -230,27 +217,6 @@ export class ChatRoomManager extends Native {
   public removeAllRoomListener(): void {
     chatlog.log(`${ChatRoomManager.TAG}: removeAllRoomListener: `);
     this._roomListeners.clear();
-  }
-
-  /**
-   * Joins the chat room.
-   *
-   * To leave the chat room, you can call {@link leaveChatRoom}.
-   *
-   * @param roomId The ID of the chat room to join.
-   *
-   * @throws A description of the exception. See {@link ChatError}.
-   *
-   * @deprecated 2024-08-15 replaced by {@link joinChatRoomEx}
-   */
-  public async joinChatRoom(roomId: string): Promise<void> {
-    chatlog.log(`${ChatRoomManager.TAG}: joinChatRoom: ${roomId}`);
-    let r: any = await Native._callMethod(MTjoinChatRoom, {
-      [MTjoinChatRoom]: {
-        roomId: roomId,
-      },
-    });
-    ChatRoomManager.checkErrorFromResult(r);
   }
 
   /**
@@ -385,66 +351,6 @@ export class ChatRoomManager extends Native {
       return new ChatRoom(rr);
     }
     return undefined;
-  }
-
-  /**
-   * Creates a chat room.
-   *
-   * @param subject The chat room name.
-   * @param description The chat room description.
-   * @param welcome A welcome message for new chat room members.
-   * @param members The list of members invited to join the chat room.
-   * @param maxCount The maximum number of members allowed to join the chat room.
-   * @returns The chat room instance.
-   *
-   * @throws A description of the exception. See {@link ChatError}.
-   */
-  public async createChatRoom(
-    subject: string,
-    description?: string,
-    welcome?: string,
-    members?: Array<string>,
-    maxCount: number = 300
-  ): Promise<ChatRoom> {
-    chatlog.log(
-      `${ChatRoomManager.TAG}: createChatRoom: `,
-      subject,
-      description,
-      welcome,
-      members,
-      maxCount
-    );
-    let r: any = await Native._callMethod(MTcreateChatRoom, {
-      [MTcreateChatRoom]: {
-        subject: subject,
-        desc: description,
-        welcomeMsg: welcome,
-        members: members,
-        maxUserCount: maxCount,
-      },
-    });
-    ChatRoomManager.checkErrorFromResult(r);
-    let ret: ChatRoom = new ChatRoom(r?.[MTcreateChatRoom]);
-    return ret;
-  }
-
-  /**
-   * Destroys a chat room.
-   *
-   * Only the chat room owner can call this method.
-   *
-   * @param roomId The chat room ID.
-   *
-   * @throws A description of the exception. See {@link ChatError}.
-   */
-  public async destroyChatRoom(roomId: string): Promise<void> {
-    chatlog.log(`${ChatRoomManager.TAG}: destroyChatRoom: `, roomId);
-    let r: any = await Native._callMethod(MTdestroyChatRoom, {
-      [MTdestroyChatRoom]: {
-        roomId,
-      },
-    });
-    ChatRoomManager.checkErrorFromResult(r);
   }
 
   /**

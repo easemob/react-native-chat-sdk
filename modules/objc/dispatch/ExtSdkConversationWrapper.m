@@ -95,23 +95,6 @@
                         }];
 }
 
-- (void)markMsgAsRead:(NSDictionary *)param
-       withMethodType:(NSString *)aChannelName
-               result:(nonnull id<ExtSdkCallbackObjc>)result {
-    __weak typeof(self) weakSelf = self;
-    [self getConversationWithParam:param
-                        completion:^(EMConversation *conversation) {
-                          NSString *msgId = param[@"msg_id"];
-                          EMError *error = nil;
-                          [conversation markMessageAsReadWithId:msgId error:&error];
-
-                          [weakSelf onResult:result
-                              withMethodType:ExtSdkMethodKeyMarkMsgAsRead
-                                   withError:error
-                                  withParams:nil];
-                        }];
-}
-
 - (void)syncConversationExt:(NSDictionary *)param
              withMethodType:(NSString *)aChannelName
                      result:(nonnull id<ExtSdkCallbackObjc>)result {
@@ -123,21 +106,6 @@
                           [weakSelf onResult:result
                               withMethodType:ExtSdkMethodKeySyncConversationExt
                                    withError:nil
-                                  withParams:nil];
-                        }];
-}
-
-- (void)markAllMsgsAsRead:(NSDictionary *)param
-           withMethodType:(NSString *)aChannelName
-                   result:(nonnull id<ExtSdkCallbackObjc>)result {
-    __weak typeof(self) weakSelf = self;
-    [self getConversationWithParam:param
-                        completion:^(EMConversation *conversation) {
-                          EMError *error = nil;
-                          [conversation markAllMessagesAsRead:&error];
-                          [weakSelf onResult:result
-                              withMethodType:ExtSdkMethodKeyMarkAllMsgsAsRead
-                                   withError:error
                                   withParams:nil];
                         }];
 }

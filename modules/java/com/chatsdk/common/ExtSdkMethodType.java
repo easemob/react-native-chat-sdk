@@ -3,12 +3,10 @@ package com.chatsdk.common;
 public class ExtSdkMethodType {
     /// EMClient methods
     public static final String init = "init";
-    public static final String createAccount = "createAccount";
     public static final String login = "login";
     public static final String logout = "logout";
     public static final String changeAppKey = "changeAppKey";
     public static final String changeAppId = "changeAppId";
-    public static final String isLoggedInBefore = "isLoggedInBefore";
     public static final String updateCurrentUserNick = "updateCurrentUserNick"; // deprecated 2026-05-21
     public static final String uploadLog = "uploadLog";
     public static final String compressLogs = "compressLogs";
@@ -17,7 +15,6 @@ public class ExtSdkMethodType {
     public static final String getLoggedInDevicesFromServer = "getLoggedInDevicesFromServer";
     public static final String getCurrentUser = "getCurrentUser";
     public static final String getToken = "getToken";
-    public static final String loginWithAgoraToken = "loginWithAgoraToken";
     public static final String isConnected = "isConnected";
     public static final String renewToken = "renewToken";
 
@@ -33,10 +30,12 @@ public class ExtSdkMethodType {
     public static final String onTokenWillExpire = "onTokenWillExpire";
     public static final String onTokenDidExpire = "onTokenDidExpire";
 
-    public static final String onUserDidLoginFromOtherDevice = "onUserDidLoginFromOtherDevice";
     public static final String onUserDidLoginFromOtherDeviceWithInfo = "onUserDidLoginFromOtherDeviceWithInfo";
     public static final String onOfflineMessageSyncStart = "onOfflineMessageSyncStart";
     public static final String onOfflineMessageSyncFinish = "onOfflineMessageSyncFinish";
+    public static final String onDataSyncStart = "onDataSyncStart";
+    public static final String onDataSyncFinish = "onDataSyncFinish";
+    public static final String onDatabaseOpened = "onDatabaseOpened";
     public static final String onUserDidRemoveFromServer = "onUserDidRemoveFromServer";
     public static final String onUserDidForbidByServer = "onUserDidForbidByServer";
     public static final String onUserDidChangePassword = "onUserDidChangePassword";
@@ -48,7 +47,6 @@ public class ExtSdkMethodType {
     /// EMContactManager methods
     public static final String addContact = "addContact";
     public static final String deleteContact = "deleteContact";
-    public static final String getAllContactsFromServer = "getAllContactsFromServer";
     public static final String getAllContactsFromDB = "getAllContactsFromDB";
     public static final String addUserToBlockList = "addUserToBlockList";
     public static final String removeUserFromBlockList = "removeUserFromBlockList";
@@ -63,12 +61,13 @@ public class ExtSdkMethodType {
     /// EMChatManager methods
     public static final String sendMessage = "sendMessage";
     public static final String resendMessage = "resendMessage";
-    public static final String ackMessageRead = "ackMessageRead";
-    public static final String ackGroupMessageRead = "ackGroupMessageRead";
-    public static final String ackConversationRead = "ackConversationRead";
+    public static final String sendMessageReadReceipts = "sendMessageReadReceipts";
+    public static final String clearConversationUnreadMessageCount = "clearConversationUnreadMessageCount";
+    public static final String clearAllConversationUnreadMessageCount = "clearAllConversationUnreadMessageCount";
+    public static final String getGroupMessageReadReceipts = "getGroupMessageReadReceipts";
+    public static final String fetchGroupMessageReadReceipts = "fetchGroupMessageReadReceipts";
     public static final String recallMessage = "recallMessage";
     public static final String getConversation = "getConversation";
-    public static final String markAllChatMsgAsRead = "markAllChatMsgAsRead";
     public static final String getUnreadMessageCount = "getUnreadMessageCount";
     public static final String updateChatMessage = "updateChatMessage";
 
@@ -78,13 +77,10 @@ public class ExtSdkMethodType {
     public static final String downloadThumbnail = "downloadThumbnail";
     public static final String importMessages = "importMessages";
     public static final String loadAllConversations = "loadAllConversations";
-    public static final String getConversationsFromServer = "getConversationsFromServer";
     public static final String deleteConversation = "deleteConversation";
-    public static final String fetchHistoryMessages = "fetchHistoryMessages";
     public static final String fetchHistoryMessagesByOptions = "fetchHistoryMessagesByOptions";
     public static final String searchChatMsgFromDB = "searchChatMsgFromDB";
     public static final String getMessage = "getMessage";
-    public static final String asyncFetchGroupAcks = "asyncFetchGroupAcks";
     public static final String deleteRemoteConversation = "deleteRemoteConversation";
     public static final String deleteMessagesBeforeTimestamp = "deleteMessagesBeforeTimestamp";
 
@@ -95,15 +91,10 @@ public class ExtSdkMethodType {
     public static final String removeReaction = "removeReaction";
     public static final String fetchReactionList = "fetchReactionList";
     public static final String fetchReactionDetail = "fetchReactionDetail";
-    public static final String reportMessage = "reportMessage";
 
-    public static final String fetchConversationsFromServerWithPage = "fetchConversationsFromServerWithPage";
     public static final String removeMessagesFromServerWithMsgIds = "removeMessagesFromServerWithMsgIds";
     public static final String removeMessagesFromServerWithTs = "removeMessagesFromServerWithTs";
 
-    public static final String getConversationsFromServerWithCursor = "getConversationsFromServerWithCursor";
-    public static final String getPinnedConversationsFromServerWithCursor =
-        "getPinnedConversationsFromServerWithCursor";
     public static final String pinConversation = "pinConversation";
     public static final String modifyMessage = "modifyMessage";
     public static final String downloadAndParseCombineMessage = "downloadAndParseCombineMessage";
@@ -111,16 +102,13 @@ public class ExtSdkMethodType {
     /// EMChatManager listener
     public static final String onMessagesReceived = "onMessagesReceived";
     public static final String onCmdMessagesReceived = "onCmdMessagesReceived";
-    public static final String onMessagesRead = "onMessagesRead";
-    public static final String onGroupMessageRead = "onGroupMessageRead";
+    public static final String onMessageReadReceipts = "onMessageReadReceipts";
     public static final String onMessagesDelivered = "onMessagesDelivered";
     public static final String onMessagesRecalled = "onMessagesRecalled";
     public static final String onMessagesRecalledInfo = "onMessagesRecalledInfo";
 
     public static final String onConversationUpdate = "onConversationUpdate";
-    public static final String onConversationHasRead = "onConversationHasRead";
 
-    public static final String onReadAckForGroupMessageUpdated = "onReadAckForGroupMessageUpdated";
     public static final String onMessageReactionDidChange = "messageReactionDidChange";
     public static final String onMessageContentChanged = "onMessageContentChanged";
 
@@ -128,15 +116,13 @@ public class ExtSdkMethodType {
     public static final String onMessageProgressUpdate = "onMessageProgressUpdate";
     public static final String onMessageError = "onMessageError";
     public static final String onMessageSuccess = "onMessageSuccess";
-    public static final String onMessageReadAck = "onMessageReadAck"; // deprecated 2026-08-20 use onMessagesRead instead
+    public static final String onMessageReadAck = "onMessageReadAck"; // deprecated 2026-08-20
     public static final String onMessageDeliveryAck = "onMessageDeliveryAck"; // deprecated 2026-08-20 use onMessagesDelivered instead
     public static final String onMessageStatusChanged = "onMessageStatusChanged"; // deprecated 2022.05.04
 
     /// EMConversation
     public static final String getUnreadMsgCount = "getUnreadMsgCount";
     public static final String getMsgCount = "getMsgCount";
-    public static final String markAllMessagesAsRead = "markAllMessagesAsRead";
-    public static final String markMessageAsRead = "markMessageAsRead";
     public static final String syncConversationExt = "syncConversationExt";
     public static final String syncConversationName = "syncConversationName"; // deprecated 2022.05.04
     public static final String removeMessage = "removeMessage";
@@ -156,7 +142,6 @@ public class ExtSdkMethodType {
 
     // EMMessage method
     public static final String getReactionList = "getReactionList";
-    public static final String groupAckCount = "groupAckCount";
 
     // EMChatRoomManager
     public static final String joinChatRoom = "joinChatRoom";
@@ -164,9 +149,6 @@ public class ExtSdkMethodType {
     public static final String fetchPublicChatRoomsFromServer = "fetchPublicChatRoomsFromServer";
     public static final String fetchChatRoomInfoFromServer = "fetchChatRoomInfoFromServer";
     public static final String getChatRoom = "getChatRoom";
-    public static final String getAllChatRooms = "getAllChatRooms";
-    public static final String createChatRoom = "createChatRoom";
-    public static final String destroyChatRoom = "destroyChatRoom";
     public static final String changeChatRoomSubject = "changeChatRoomSubject";
     public static final String changeChatRoomDescription = "changeChatRoomDescription";
     public static final String fetchChatRoomMembers = "fetchChatRoomMembers";
@@ -203,9 +185,8 @@ public class ExtSdkMethodType {
     public static final String getGroupWithId = "getGroupWithId";
     public static final String getJoinedGroups = "getJoinedGroups";
     public static final String getGroupsWithoutPushNotification = "getGroupsWithoutPushNotification";
-    public static final String getJoinedGroupsFromServer = "getJoinedGroupsFromServer";
-    public static final String getPublicGroupsFromServer = "getPublicGroupsFromServer";
     public static final String createGroup = "createGroup";
+    public static final String updateGroupConfigs = "updateGroupConfigs";
     public static final String getGroupSpecificationFromServer = "getGroupSpecificationFromServer";
     public static final String getGroupMemberListFromServer = "getGroupMemberListFromServer";
     public static final String getGroupBlockListFromServer = "getGroupBlockListFromServer";
@@ -326,8 +307,6 @@ public class ExtSdkMethodType {
     public static final String getAllContacts = "getAllContacts";
     public static final String setContactRemark = "setContactRemark";
     public static final String getContact = "getContact";
-    public static final String fetchAllContacts = "fetchAllContacts";
-    public static final String fetchContacts = "fetchContacts";
     public static final String fetchJoinedGroupCount = "fetchJoinedGroupCount";
 
     // 2024-04-16 4.5.0
@@ -336,7 +315,6 @@ public class ExtSdkMethodType {
     public static final String onMessagePinChanged = "onMessagePinChanged";
     public static final String addRemoteAndLocalConversationsMark = "addRemoteAndLocalConversationsMark";
     public static final String deleteRemoteAndLocalConversationsMark = "deleteRemoteAndLocalConversationsMark";
-    public static final String fetchConversationsByOptions = "fetchConversationsByOptions";
     public static final String deleteAllMessageAndConversation = "deleteAllMessageAndConversation";
     public static final String pinMessage = "pinMessage";
     public static final String unpinMessage = "unpinMessage";

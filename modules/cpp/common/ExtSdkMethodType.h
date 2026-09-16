@@ -14,11 +14,9 @@ class ExtSdkMethodType {
 public:
     /// EMClient methods
     static const std::string init;
-    static const std::string createAccount;
     static const std::string login;
     static const std::string logout;
     static const std::string changeAppKey;
-    static const std::string isLoggedInBefore;
     static const std::string updateCurrentUserNick;
     static const std::string uploadLog;
     static const std::string compressLogs;
@@ -31,11 +29,13 @@ public:
     static const std::string onDisconnected;
     static const std::string onMultiDeviceEvent;
     static const std::string onSendDataToFlutter;
+    static const std::string onDataSyncStart;
+    static const std::string onDataSyncFinish;
+    static const std::string onDatabaseOpened;
 
     /// EMContactManager methods
     static const std::string addContact;
     static const std::string deleteContact;
-    static const std::string getAllContactsFromServer;
     static const std::string getAllContactsFromDB;
     static const std::string addUserToBlockList;
     static const std::string removeUserFromBlockList;
@@ -51,35 +51,31 @@ public:
     /// EMChatManager methods
     static const std::string sendMessage;
     static const std::string resendMessage;
-    static const std::string ackMessageRead;
-    static const std::string ackGroupMessageRead;
-    static const std::string ackConversationRead;
+    static const std::string sendMessageReadReceipts;
+    static const std::string clearConversationUnreadMessageCount;
+    static const std::string clearAllConversationUnreadMessageCount;
+    static const std::string getGroupMessageReadReceipts;
+    static const std::string fetchGroupMessageReadReceipts;
     static const std::string recallMessage;
     static const std::string getConversation;
-    static const std::string markAllChatMsgAsRead;
     static const std::string getUnreadMessageCount;
     static const std::string updateChatMessage;
     static const std::string downloadAttachment;
     static const std::string downloadThumbnail;
     static const std::string importMessages;
     static const std::string loadAllConversations;
-    static const std::string getConversationsFromServer;
     static const std::string deleteConversation;
-    static const std::string fetchHistoryMessages;
     static const std::string searchChatMsgFromDB;
     static const std::string getMessage;
-    static const std::string asyncFetchGroupAcks;
 
     /// EMChatManager listener
     static const std::string onMessagesReceived;
     static const std::string onCmdMessagesReceived;
-    static const std::string onMessagesRead;
-    static const std::string onGroupMessageRead;
+    static const std::string onMessageReadReceipts;
     static const std::string onMessagesDelivered;
     static const std::string onMessagesRecalled;
 
     static const std::string onConversationUpdate;
-    static const std::string onConversationHasRead;
 
     /// EMMessage listener
     static const std::string onMessageProgressUpdate;
@@ -91,8 +87,6 @@ public:
 
     /// EMConversation
     static const std::string getUnreadMsgCount;
-    static const std::string markAllMessagesAsRead;
-    static const std::string markMessageAsRead;
     static const std::string syncConversationExt;
     static const std::string syncConversationName;
     static const std::string removeMessage;
@@ -120,9 +114,6 @@ public:
     static const std::string fetchPublicChatRoomsFromServer;
     static const std::string fetchChatRoomInfoFromServer;
     static const std::string getChatRoom;
-    static const std::string getAllChatRooms;
-    static const std::string createChatRoom;
-    static const std::string destroyChatRoom;
     static const std::string changeChatRoomSubject;
     static const std::string changeChatRoomDescription;
     static const std::string fetchChatRoomMembers;
@@ -155,9 +146,8 @@ public:
     static const std::string getGroupWithId;
     static const std::string getJoinedGroups;
     static const std::string getGroupsWithoutPushNotification;
-    static const std::string getJoinedGroupsFromServer;
-    static const std::string getPublicGroupsFromServer;
     static const std::string createGroup;
+    static const std::string updateGroupConfigs;
     static const std::string getGroupSpecificationFromServer;
     static const std::string getGroupMemberListFromServer;
     static const std::string getGroupBlockListFromServer;

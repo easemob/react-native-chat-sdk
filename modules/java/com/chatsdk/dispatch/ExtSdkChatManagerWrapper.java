@@ -1,6 +1,5 @@
 package com.chatsdk.dispatch;
 
-import android.util.Log;
 import com.chatsdk.common.ExtSdkCallback;
 import com.chatsdk.common.ExtSdkMethodType;
 import com.hyphenate.EMCallBack;
@@ -10,10 +9,9 @@ import com.hyphenate.EMValueCallBack;
 import com.hyphenate.chat.EMAudioParams;
 import com.hyphenate.chat.EMClient;
 import com.hyphenate.chat.EMConversation;
-import com.hyphenate.chat.EMConversationFilter;
 import com.hyphenate.chat.EMCursorResult;
 import com.hyphenate.chat.EMFetchMessageOption;
-import com.hyphenate.chat.EMGroupReadAck;
+import com.hyphenate.chat.EMGroupReadReceipt;
 import com.hyphenate.chat.EMKeywordListMatchType;
 import com.hyphenate.chat.EMLanguage;
 import com.hyphenate.chat.EMMessage;
@@ -21,16 +19,12 @@ import com.hyphenate.chat.EMMessageBody;
 import com.hyphenate.chat.EMMessagePinInfo;
 import com.hyphenate.chat.EMMessageReaction;
 import com.hyphenate.chat.EMMessageReactionChange;
+import com.hyphenate.chat.EMMessageReadReceipt;
 import com.hyphenate.chat.EMMessageSearchOption;
 import com.hyphenate.chat.EMPageResult;
 import com.hyphenate.chat.EMRecallMessageInfo;
 import com.hyphenate.chat.EMSearchServerMessageResult;
-import com.hyphenate.chat.EMStatisticsManager;
-import com.hyphenate.chat.adapter.message.EMAMessage;
-import com.hyphenate.exceptions.HyphenateException;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -141,44 +135,105 @@ public class ExtSdkChatManagerWrapper extends ExtSdkWrapper {
         onSuccess(result, channelName, ExtSdkMessageHelper.toJson(tempMsg));
     }
 
-    public void ackMessageRead(JSONObject param, String channelName, ExtSdkCallback result) throws JSONException {
-        String msgId = param.getString("msg_id");
-        String to = param.getString("to");
-
-        try {
-            EMClient.getInstance().chatManager().ackMessageRead(to, msgId);
-            onSuccess(result, channelName, true);
-        } catch (HyphenateException e) {
-            onError(result, e, null);
+    public void sendMessageReadReceipts(JSONObject param, String channelName, ExtSdkCallback result)
+        throws JSONException {
+        JSONArray msgIdsJson = param.getJSONArray("msg_ids");
+        List<EMMessage> messages = new ArrayList<>();
+        for (int i = 0; i < msgIdsJson.length(); i++) {
+            EMMessage msg = EMClient.getInstance().chatManager().getMessage(msgIdsJson.getString(i));
+            if (msg != null) {
+                messages.add(msg);
+            }
         }
+        EMClient.getInstance().chatManager().asyncSendMessageReadReceipts(messages, new EMCallBack() {
+            @Override
+            public void onSuccess() {
+                ExtSdkWrapper.onSuccess(result, channelName, null);
+            }
+
+            @Override
+            public void onError(int code, String error) {
+                ExtSdkWrapper.onError(result, code, error);
+            }
+        });
     }
 
-    public void ackGroupMessageRead(JSONObject param, String channelName, ExtSdkCallback result) throws JSONException {
-        String msgId = param.getString("msg_id");
-        String to = param.getString("group_id");
-        String content = null;
-        if (param.has("content")) {
-            content = param.getString("content");
-        }
-        String finalContent = content;
+    public void clearConversationUnreadMessageCount(JSONObject param, String channelName, ExtSdkCallback result)
+        throws JSONException {
+        String convId = param.getString("convId");
+        EMClient.getInstance().chatManager().asyncClearConversationUnreadMessageCount(convId, new EMCallBack() {
+            @Override
+            public void onSuccess() {
+                ExtSdkWrapper.onSuccess(result, channelName, null);
+            }
 
-        try {
-            EMClient.getInstance().chatManager().ackGroupMessageRead(to, msgId, finalContent);
-            onSuccess(result, channelName, null);
-        } catch (HyphenateException e) {
-            onError(result, e, null);
-        }
+            @Override
+            public void onError(int code, String error) {
+                ExtSdkWrapper.onError(result, code, error);
+            }
+        });
     }
 
-    public void ackConversationRead(JSONObject param, String channelName, ExtSdkCallback result) throws JSONException {
-        String conversationId = param.getString("convId");
+    public void clearAllConversationUnreadMessageCount(JSONObject param, String channelName, ExtSdkCallback result)
+        throws JSONException {
+        EMClient.getInstance().chatManager().asyncClearAllConversationUnreadMessageCount(new EMCallBack() {
+            @Override
+            public void onSuccess() {
+                ExtSdkWrapper.onSuccess(result, channelName, null);
+            }
 
-        try {
-            EMClient.getInstance().chatManager().ackConversationRead(conversationId);
-            onSuccess(result, channelName, true);
-        } catch (HyphenateException e) {
-            onError(result, e, null);
+            @Override
+            public void onError(int code, String error) {
+                ExtSdkWrapper.onError(result, code, error);
+            }
+        });
+    }
+
+    public void getGroupMessageReadReceipts(JSONObject param, String channelName, ExtSdkCallback result)
+        throws JSONException {
+        JSONArray msgIdsJson = param.getJSONArray("msg_ids");
+        List<EMMessage> messages = new ArrayList<>();
+        for (int i = 0; i < msgIdsJson.length(); i++) {
+            EMMessage msg = EMClient.getInstance().chatManager().getMessage(msgIdsJson.getString(i));
+            if (msg != null) {
+                messages.add(msg);
+            }
         }
+        EMClient.getInstance().chatManager().asyncGetGroupMessageReadReceipts(
+            messages, new EMValueCallBack<List<EMMessageReadReceipt>>() {
+                @Override
+                public void onSuccess(List<EMMessageReadReceipt> value) {
+                    List<Map> receipts = new ArrayList<>();
+                    for (EMMessageReadReceipt receipt : value) {
+                        receipts.add(ExtSdkMessageReadReceiptHelper.toJson(receipt));
+                    }
+                    ExtSdkWrapper.onSuccess(result, channelName, receipts);
+                }
+
+                @Override
+                public void onError(int error, String errorMsg) {
+                    ExtSdkWrapper.onError(result, error, errorMsg);
+                }
+            });
+    }
+
+    public void fetchGroupMessageReadReceipts(JSONObject param, String channelName, ExtSdkCallback result)
+        throws JSONException {
+        String msgId = param.getString("msg_id");
+        String startAckId = param.optString("receipt_id");
+        int pageSize = param.optInt("pageSize");
+        EMClient.getInstance().chatManager().asyncFetchGroupMessageReadReceipts(
+            msgId, pageSize, startAckId, new EMValueCallBack<EMCursorResult<EMGroupReadReceipt>>() {
+                @Override
+                public void onSuccess(EMCursorResult<EMGroupReadReceipt> value) {
+                    ExtSdkWrapper.onSuccess(result, channelName, ExtSdkCursorResultHelper.toJson(value));
+                }
+
+                @Override
+                public void onError(int error, String errorMsg) {
+                    ExtSdkWrapper.onError(result, error, errorMsg);
+                }
+            });
     }
 
     public void recallMessage(JSONObject param, String channelName, ExtSdkCallback result) throws JSONException {
@@ -219,12 +274,6 @@ public class ExtSdkChatManagerWrapper extends ExtSdkWrapper {
     public void getConversation(JSONObject param, String channelName, ExtSdkCallback result) throws JSONException {
         EMConversation conversation = this.getConversation(param);
         onSuccess(result, channelName, ExtSdkConversationHelper.toJson(conversation));
-    }
-
-    public void markAllChatMsgAsRead(JSONObject param, String channelName, ExtSdkCallback result) throws JSONException {
-        EMClient.getInstance().chatManager().markAllConversationsAsRead();
-
-        onSuccess(result, channelName, null);
     }
 
     public void getUnreadMessageCount(JSONObject param, String channelName, ExtSdkCallback result)
@@ -602,24 +651,6 @@ public class ExtSdkChatManagerWrapper extends ExtSdkWrapper {
         onSuccess(result, channelName, conversations);
     }
 
-    public void getConversationsFromServer(JSONObject param, String channelName, ExtSdkCallback result)
-        throws JSONException {
-
-        try {
-            List<EMConversation> list =
-                new ArrayList<>(EMClient.getInstance().chatManager().fetchConversationsFromServer().values());
-            Collections.sort(
-                list, (o1, o2) -> (o2.getLastMessage().getMsgTime() - o1.getLastMessage().getMsgTime() > 0 ? 1 : -1));
-            List<Map> conversations = new ArrayList<>();
-            for (EMConversation conversation : list) {
-                conversations.add(ExtSdkConversationHelper.toJson(conversation));
-            }
-            onSuccess(result, channelName, conversations);
-        } catch (HyphenateException e) {
-            onError(result, e, null);
-        }
-    }
-
     public void deleteConversation(JSONObject param, String channelName, ExtSdkCallback result) throws JSONException {
         String conId = param.getString("convId");
         boolean isDelete = param.getBoolean("deleteMessages");
@@ -629,23 +660,6 @@ public class ExtSdkChatManagerWrapper extends ExtSdkWrapper {
             onSuccess(result, channelName, null);
         } else {
             onError(result, 1, "remove conversation is failed.");
-        }
-    }
-
-    public void fetchHistoryMessages(JSONObject param, String channelName, ExtSdkCallback result) throws JSONException {
-        String conId = param.getString("convId");
-        EMConversation.EMConversationType type =
-            InternalConvertHelper.conversationTypeFromInt(param.getInt("convType"));
-        int pageSize = param.getInt("pageSize");
-        String startMsgId = param.getString("startMsgId");
-        EMConversation.EMSearchDirection direction =
-            ExtSdkEMSearchDirectionHelper.toDirection(param.getString("direction"));
-        try {
-            EMCursorResult<EMMessage> cursorResult =
-                EMClient.getInstance().chatManager().fetchHistoryMessages(conId, type, pageSize, startMsgId, direction);
-            onSuccess(result, channelName, ExtSdkCursorResultHelper.toJson(cursorResult));
-        } catch (HyphenateException e) {
-            onError(result, e, null);
         }
     }
 
@@ -696,24 +710,6 @@ public class ExtSdkChatManagerWrapper extends ExtSdkWrapper {
             messages.add(ExtSdkMessageHelper.toJson(msg));
         }
         onSuccess(result, channelName, messages);
-    }
-
-    public void asyncFetchGroupAcks(JSONObject param, String channelName, ExtSdkCallback result) throws JSONException {
-        String msgId = param.getString("msg_id");
-        String ackId = param.getString("ack_id");
-        int pageSize = param.getInt("pageSize");
-        EMClient.getInstance().chatManager().asyncFetchGroupReadAcks(
-            msgId, pageSize, ackId, new EMValueCallBack<EMCursorResult<EMGroupReadAck>>() {
-                @Override
-                public void onSuccess(EMCursorResult<EMGroupReadAck> value) {
-                    ExtSdkWrapper.onSuccess(result, channelName, ExtSdkCursorResultHelper.toJson(value));
-                }
-
-                @Override
-                public void onError(int error, String errorMsg) {
-                    ExtSdkWrapper.onError(result, error, errorMsg);
-                }
-            });
     }
 
     public void deleteRemoteConversation(JSONObject param, String channelName, ExtSdkCallback result)
@@ -922,77 +918,6 @@ public class ExtSdkChatManagerWrapper extends ExtSdkWrapper {
             });
     }
 
-    public void reportMessage(JSONObject param, String channelName, ExtSdkCallback result) throws JSONException {
-        String msgId = param.getString("msgId");
-        String tag = param.getString("tag");
-        String reason = param.getString("reason");
-        EMClient.getInstance().chatManager().asyncReportMessage(msgId, tag, reason, new EMCallBack() {
-            @Override
-            public void onSuccess() {
-                ExtSdkWrapper.onSuccess(result, channelName, null);
-            }
-
-            @Override
-            public void onError(int code, String error) {
-                ExtSdkWrapper.onError(result, code, error);
-            }
-        });
-    }
-
-    public void fetchConversationsFromServerWithPage(JSONObject param, String channelName, ExtSdkCallback result)
-        throws JSONException {
-        int pageNum = param.getInt("pageNum");
-        int pageSize = param.getInt("pageSize");
-        EMClient.getInstance().chatManager().asyncFetchConversationsFromServer(
-            pageNum, pageSize, new EMValueCallBack<Map<String, EMConversation>>() {
-                @Override
-                public void onSuccess(Map<String, EMConversation> value) {
-                    ArrayList<EMConversation> list = new ArrayList<>(value.values());
-                    boolean retry = false;
-                    List<Map> conversations = new ArrayList<>();
-                    do {
-                        try {
-                            retry = false;
-                            Collections.sort(list, new Comparator<EMConversation>() {
-                                @Override
-                                public int compare(EMConversation o1, EMConversation o2) {
-                                    if (o1 == null || o2 == null) {
-                                        return 0;
-                                    }
-                                    if (o1.getLastMessage() == null) {
-                                        return 1;
-                                    }
-
-                                    if (o2.getLastMessage() == null) {
-                                        return -1;
-                                    }
-
-                                    if (o1.getLastMessage().getMsgTime() == o2.getLastMessage().getMsgTime()) {
-                                        return 0;
-                                    }
-
-                                    return o2.getLastMessage().getMsgTime() - o1.getLastMessage().getMsgTime() > 0 ? 1
-                                                                                                                   : -1;
-                                }
-                            });
-                            for (EMConversation conversation : list) {
-                                conversations.add(ExtSdkConversationHelper.toJson(conversation));
-                            }
-
-                        } catch (IllegalArgumentException e) {
-                            retry = true;
-                        }
-                    } while (retry);
-                    ExtSdkWrapper.onSuccess(result, channelName, conversations);
-                }
-
-                @Override
-                public void onError(int error, String errorMsg) {
-                    ExtSdkWrapper.onError(result, error, errorMsg);
-                }
-            });
-    }
-
     public void removeMessagesFromServerWithMsgIds(JSONObject param, String channelName, ExtSdkCallback result)
         throws JSONException {
         EMConversation conversation = this.getConversation(param);
@@ -1034,44 +959,6 @@ public class ExtSdkChatManagerWrapper extends ExtSdkWrapper {
         });
     }
 
-    public void getConversationsFromServerWithCursor(JSONObject param, String channelName, ExtSdkCallback result)
-        throws JSONException {
-        String cursor = param.optString("cursor");
-        int pageSize = param.optInt("pageSize");
-        EMClient.getInstance().chatManager().asyncFetchConversationsFromServer(
-            pageSize, cursor, new EMValueCallBack<EMCursorResult<EMConversation>>() {
-                @Override
-                public void onSuccess(EMCursorResult<EMConversation> emConversationEMCursorResult) {
-                    ExtSdkWrapper.onSuccess(result, channelName,
-                                            ExtSdkCursorResultHelper.toJson(emConversationEMCursorResult));
-                }
-
-                @Override
-                public void onError(int i, String s) {
-                    ExtSdkWrapper.onError(result, i, s);
-                }
-            });
-    }
-
-    public void getPinnedConversationsFromServerWithCursor(JSONObject param, String channelName, ExtSdkCallback result)
-        throws JSONException {
-        String cursor = param.optString("cursor");
-        int pageSize = param.optInt("pageSize");
-        EMClient.getInstance().chatManager().asyncFetchPinnedConversationsFromServer(
-            pageSize, cursor, new EMValueCallBack<EMCursorResult<EMConversation>>() {
-                @Override
-                public void onSuccess(EMCursorResult<EMConversation> emConversationEMCursorResult) {
-                    ExtSdkWrapper.onSuccess(result, channelName,
-                                            ExtSdkCursorResultHelper.toJson(emConversationEMCursorResult));
-                }
-
-                @Override
-                public void onError(int i, String s) {
-                    ExtSdkWrapper.onError(result, i, s);
-                }
-            });
-    }
-
     public void pinConversation(JSONObject param, String channelName, ExtSdkCallback result) throws JSONException {
         String convId = param.optString("convId");
         Boolean isPinned = param.optBoolean("isPinned", false);
@@ -1092,17 +979,21 @@ public class ExtSdkChatManagerWrapper extends ExtSdkWrapper {
         String msgId = param.optString("msgId");
         JSONObject bodyJson = param.optJSONObject("body");
         EMMessageBody body = ExtSdkMessageBodyHelper.textBodyFromJson(bodyJson != null ? bodyJson : new JSONObject());
-        EMClient.getInstance().chatManager().asyncModifyMessage(msgId, body, new EMValueCallBack<EMMessage>() {
-            @Override
-            public void onSuccess(EMMessage emMessage) {
-                ExtSdkWrapper.onSuccess(result, channelName, ExtSdkMessageHelper.toJson(emMessage));
-            }
+        JSONObject attributesJson = param.optJSONObject("ext");
+        Map<String, Object> attributes =
+            attributesJson != null ? ExtSdkMessageHelper.attributesFromJson(attributesJson) : null;
+        EMClient.getInstance().chatManager().asyncModifyMessage(
+            msgId, body, attributes, new EMValueCallBack<EMMessage>() {
+                @Override
+                public void onSuccess(EMMessage emMessage) {
+                    ExtSdkWrapper.onSuccess(result, channelName, ExtSdkMessageHelper.toJson(emMessage));
+                }
 
-            @Override
-            public void onError(int i, String s) {
-                ExtSdkWrapper.onError(result, i, s);
-            }
-        });
+                @Override
+                public void onError(int i, String s) {
+                    ExtSdkWrapper.onError(result, i, s);
+                }
+            });
     }
 
     public void downloadAndParseCombineMessage(JSONObject param, String channelName, ExtSdkCallback result)
@@ -1170,59 +1061,6 @@ public class ExtSdkChatManagerWrapper extends ExtSdkWrapper {
                 ExtSdkWrapper.onError(result, code, error);
             }
         });
-    }
-
-    public void fetchConversationsByOptions(JSONObject param, String channelName, ExtSdkCallback result)
-        throws JSONException {
-        String cursor = ExtSdkConversationFilterHelper.cursor(param);
-        Boolean isPinned = ExtSdkConversationFilterHelper.pinned(param);
-        Boolean isMark = ExtSdkConversationFilterHelper.hasMark(param);
-        int pageSize = ExtSdkConversationFilterHelper.pageSize(param);
-        if (isPinned) {
-            EMClient.getInstance().chatManager().asyncFetchPinnedConversationsFromServer(
-                pageSize, cursor, new EMValueCallBack<EMCursorResult<EMConversation>>() {
-                    @Override
-                    public void onSuccess(EMCursorResult<EMConversation> emCursorResult) {
-                        ExtSdkWrapper.onSuccess(result, channelName, ExtSdkCursorResultHelper.toJson(emCursorResult));
-                    }
-
-                    @Override
-                    public void onError(int i, String s) {
-                        ExtSdkWrapper.onError(result, i, s);
-                    }
-                });
-            return;
-        }
-
-        if (isMark) {
-            EMConversationFilter filter = ExtSdkConversationFilterHelper.fromJson(param);
-            EMClient.getInstance().chatManager().asyncGetConversationsFromServerWithCursor(
-                cursor, filter, new EMValueCallBack<EMCursorResult<EMConversation>>() {
-                    @Override
-                    public void onSuccess(EMCursorResult<EMConversation> value) {
-                        ExtSdkWrapper.onSuccess(result, channelName, ExtSdkCursorResultHelper.toJson(value));
-                    }
-
-                    @Override
-                    public void onError(int error, String errorMsg) {
-                        ExtSdkWrapper.onError(result, error, errorMsg);
-                    }
-                });
-            return;
-        }
-
-        EMClient.getInstance().chatManager().asyncFetchConversationsFromServer(
-            pageSize, cursor, new EMValueCallBack<EMCursorResult<EMConversation>>() {
-                @Override
-                public void onSuccess(EMCursorResult<EMConversation> emCursorResult) {
-                    ExtSdkWrapper.onSuccess(result, channelName, ExtSdkCursorResultHelper.toJson(emCursorResult));
-                }
-
-                @Override
-                public void onError(int i, String s) {
-                    ExtSdkWrapper.onError(result, i, s);
-                }
-            });
     }
 
     public void deleteAllMessageAndConversation(JSONObject param, String channelName, ExtSdkCallback result)
@@ -1521,14 +1359,14 @@ public class ExtSdkChatManagerWrapper extends ExtSdkWrapper {
             }
 
             @Override
-            public void onMessageRead(List<EMMessage> messages) {
-                ArrayList<Map<String, Object>> msgList = new ArrayList<>();
-                for (EMMessage message : messages) {
-                    msgList.add(ExtSdkMessageHelper.toJson(message));
-                    ExtSdkWrapper.onReceive(ExtSdkMethodType.onMessageReadAck, ExtSdkMessageHelper.toJson(message));
+            public void onMessageReadReceipts(List<EMMessageReadReceipt> receipts) {
+                ArrayList<Map<String, Object>> list = new ArrayList<>();
+                for (EMMessageReadReceipt receipt : receipts) {
+                    list.add(ExtSdkMessageReadReceiptHelper.toJson(receipt));
                 }
-
-                ExtSdkWrapper.onReceive(ExtSdkMethodType.onMessagesRead, msgList);
+                Map<String, Object> data = new HashMap<>();
+                data.put("receipts", list);
+                ExtSdkWrapper.onReceive(ExtSdkMethodType.onMessageReadReceipts, data);
             }
 
             @Override
@@ -1553,20 +1391,6 @@ public class ExtSdkChatManagerWrapper extends ExtSdkWrapper {
                     }
                 }
                 ExtSdkWrapper.onReceive(ExtSdkMethodType.onMessagesRecalledInfo, msgList);
-            }
-
-            @Override
-            public void onGroupMessageRead(List<EMGroupReadAck> var1) {
-                ArrayList<Map<String, Object>> msgList = new ArrayList<>();
-                for (EMGroupReadAck ack : var1) {
-                    msgList.add(ExtSdkGroupAckHelper.toJson(ack));
-                }
-                ExtSdkWrapper.onReceive(ExtSdkMethodType.onGroupMessageRead, msgList);
-            }
-
-            @Override
-            public void onReadAckForGroupMessageUpdated() {
-                ExtSdkWrapper.onReceive(ExtSdkMethodType.onReadAckForGroupMessageUpdated, null);
             }
 
             @Override
@@ -1609,14 +1433,6 @@ public class ExtSdkChatManagerWrapper extends ExtSdkWrapper {
             public void onConversationUpdate() {
                 Map<String, Object> data = new HashMap<>();
                 ExtSdkWrapper.onReceive(ExtSdkMethodType.onConversationUpdate, data);
-            }
-
-            @Override
-            public void onConversationRead(String from, String to) {
-                Map<String, Object> data = new HashMap<>();
-                data.put("from", from);
-                data.put("to", to);
-                ExtSdkWrapper.onReceive(ExtSdkMethodType.onConversationHasRead, data);
             }
         };
         EMClient.getInstance().chatManager().addConversationListener(this.conversationListener);

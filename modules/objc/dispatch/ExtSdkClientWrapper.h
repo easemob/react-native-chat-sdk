@@ -21,10 +21,6 @@ NS_ASSUME_NONNULL_BEGIN
          withMethodType:(NSString *)aChannelName
                  result:(nonnull id<ExtSdkCallbackObjc>)result;
 
-- (void)createAccount:(NSDictionary *)param
-       withMethodType:(NSString *)aChannelName
-               result:(nonnull id<ExtSdkCallbackObjc>)result;
-
 - (void)login:(NSDictionary *)param
     withMethodType:(NSString *)aChannelName
             result:(nonnull id<ExtSdkCallbackObjc>)result;
@@ -61,17 +57,9 @@ NS_ASSUME_NONNULL_BEGIN
         withMethodType:(NSString *)aChannelName
                 result:(nonnull id<ExtSdkCallbackObjc>)result;
 
-- (void)isLoggedInBefore:(NSDictionary *)param
-          withMethodType:(NSString *)aChannelName
-                  result:(nonnull id<ExtSdkCallbackObjc>)result;
-
 - (void)getLoggedInDevicesFromServer:(NSDictionary *)param
                       withMethodType:(NSString *)aChannelName
                               result:(nonnull id<ExtSdkCallbackObjc>)result;
-
-- (void)loginWithAgoraToken:(NSDictionary *)param
-             withMethodType:(NSString *)aChannelName
-                     result:(nonnull id<ExtSdkCallbackObjc>)result;
 
 - (void)isConnected:(NSDictionary *)param
      withMethodType:(NSString *)aChannelName

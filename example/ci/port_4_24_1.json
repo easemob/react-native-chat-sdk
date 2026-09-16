@@ -1,7 +1,6 @@
 {
   "init": {
     "appKey": "easemob-demo#zuoyu",
-    "autoLogin": false,
     "ntpServers": ["ntp1.aliyun.com"]
   },
   "steps": [
@@ -42,9 +41,9 @@
       "expect": { "success": true }
     },
     {
-      "api": "ChatGroupManager.fetchJoinedGroupsFromServer",
+      "api": "ChatGroupManager.getJoinedGroups",
       "id": "group.fetchAfterUpdate",
-      "params": { "pageSize": 20, "pageNum": 0 },
+      "params": {},
       "expect": { "success": true }
     },
     {

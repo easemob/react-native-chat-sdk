@@ -9,18 +9,17 @@ import com.hyphenate.chat.EMCmdMessageBody;
 import com.hyphenate.chat.EMCombineMessageBody;
 import com.hyphenate.chat.EMContact;
 import com.hyphenate.chat.EMConversation;
-import com.hyphenate.chat.EMConversationFilter;
 import com.hyphenate.chat.EMCursorResult;
 import com.hyphenate.chat.EMCustomMessageBody;
 import com.hyphenate.chat.EMDeviceInfo;
 import com.hyphenate.chat.EMFetchMessageOption;
 import com.hyphenate.chat.EMFileMessageBody;
 import com.hyphenate.chat.EMGroup;
+import com.hyphenate.chat.EMGroupConfigs;
 import com.hyphenate.chat.EMGroupInfo;
 import com.hyphenate.chat.EMGroupManager;
 import com.hyphenate.chat.EMGroupMemberInfo;
-import com.hyphenate.chat.EMGroupOptions;
-import com.hyphenate.chat.EMGroupReadAck;
+import com.hyphenate.chat.EMGroupReadReceipt;
 import com.hyphenate.chat.EMImageMessageBody;
 import com.hyphenate.chat.EMLanguage;
 import com.hyphenate.chat.EMLocationMessageBody;
@@ -31,6 +30,7 @@ import com.hyphenate.chat.EMMessagePinInfo;
 import com.hyphenate.chat.EMMessageReaction;
 import com.hyphenate.chat.EMMessageReactionChange;
 import com.hyphenate.chat.EMMessageReactionOperation;
+import com.hyphenate.chat.EMMessageReadReceipt;
 import com.hyphenate.chat.EMMucSharedFile;
 import com.hyphenate.chat.EMNormalFileMessageBody;
 import com.hyphenate.chat.EMOptions;
@@ -52,6 +52,7 @@ import com.hyphenate.chat.EMVoiceMessageBody;
 import com.hyphenate.exceptions.HyphenateException;
 import com.hyphenate.push.EMPushConfig;
 import java.util.ArrayList;
+import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -164,34 +165,37 @@ class InternalConvertHelper {
         return 0;
     }
 
-    static EMGroupManager.EMGroupStyle groupStyleFromInt(int style) {
-        switch (style) {
-        case 0:
-            return EMGroupManager.EMGroupStyle.EMGroupStylePrivateOnlyOwnerInvite;
+    static EMOptions.AreaCode areaCodeFromInt(int areaCode) {
+        switch (areaCode) {
         case 1:
-            return EMGroupManager.EMGroupStyle.EMGroupStylePrivateMemberCanInvite;
+            return EMOptions.AreaCode.CN;
         case 2:
-            return EMGroupManager.EMGroupStyle.EMGroupStylePublicJoinNeedApproval;
-        case 3:
-            return EMGroupManager.EMGroupStyle.EMGroupStylePublicOpenJoin;
+            return EMOptions.AreaCode.NA;
+        case 4:
+            return EMOptions.AreaCode.EU;
+        case 8:
+            return EMOptions.AreaCode.AS;
+        case 16:
+            return EMOptions.AreaCode.JP;
+        case 32:
+            return EMOptions.AreaCode.IN;
+        default:
+            return EMOptions.AreaCode.GLOB;
         }
-
-        return EMGroupManager.EMGroupStyle.EMGroupStylePrivateOnlyOwnerInvite;
     }
 
-    static int groupStyleToInt(EMGroupManager.EMGroupStyle style) {
-        switch (style) {
-        case EMGroupStylePrivateOnlyOwnerInvite:
-            return 0;
-        case EMGroupStylePrivateMemberCanInvite:
-            return 1;
-        case EMGroupStylePublicJoinNeedApproval:
-            return 2;
-        case EMGroupStylePublicOpenJoin:
-            return 3;
-        }
-
-        return 0;
+    // Cross-platform contract mask: AllowInvites=1, MaxUsers=2, InviteNeedConfirm=4,
+    // JoinApprovalRequired=8, IsPublic=16, Ext=32. The Android enum bit order differs,
+    // so map bit by bit instead of using EMGroupConfigsType.toNativeMask.
+    static EnumSet<EMGroupManager.EMGroupConfigsType> groupConfigsTypeFromInt(int mask) {
+        EnumSet<EMGroupManager.EMGroupConfigsType> types = EnumSet.noneOf(EMGroupManager.EMGroupConfigsType.class);
+        if ((mask & 1) != 0) { types.add(EMGroupManager.EMGroupConfigsType.ALLOW_INVITES); }
+        if ((mask & 2) != 0) { types.add(EMGroupManager.EMGroupConfigsType.MAX_USERS); }
+        if ((mask & 4) != 0) { types.add(EMGroupManager.EMGroupConfigsType.INVITE_NEED_CONFIRM); }
+        if ((mask & 8) != 0) { types.add(EMGroupManager.EMGroupConfigsType.JOIN_APPROVAL_REQUIRED); }
+        if ((mask & 16) != 0) { types.add(EMGroupManager.EMGroupConfigsType.IS_PUBLIC); }
+        if ((mask & 32) != 0) { types.add(EMGroupManager.EMGroupConfigsType.EXT); }
+        return types;
     }
 
     static EMFileMessageBody.EMDownloadStatus downloadStatusFromInt(int downloadStatus) {
@@ -289,8 +293,6 @@ class ExtSdkOptionsHelper {
         EMOptions options = new EMOptions();
         if (!json.optString("appKey").isEmpty()) { options.setAppKey(json.getString("appKey")); }
         if (!json.optString("appId").isEmpty()) { options.setAppId(json.getString("appId")); }
-        if (json.has("autoLogin")) { options.setAutoLogin(json.getBoolean("autoLogin")); }
-        if (json.has("requireAck")) { options.setRequireAck(json.getBoolean("requireAck")); }
         if (json.has("requireDeliveryAck")) { options.setRequireDeliveryAck(json.getBoolean("requireDeliveryAck")); }
         if (json.has("sortMessageByServerTime")) { options.setSortMessageByServerTime(json.getBoolean("sortMessageByServerTime")); }
         if (json.has("acceptInvitationAlways")) { options.setAcceptInvitationAlways(json.getBoolean("acceptInvitationAlways")); }
@@ -308,7 +310,10 @@ class ExtSdkOptionsHelper {
             if (!json.optString("restServer").isEmpty()) { options.setRestServer(json.getString("restServer")); }
             if (!json.optString("dnsUrl").isEmpty()) { options.setDnsUrl(json.getString("dnsUrl")); }
         }
-        if (json.has("areaCode")) { options.setAreaCode(json.getInt("areaCode")); }
+        if (json.has("areaCode")) { options.setAreaCode(InternalConvertHelper.areaCodeFromInt(json.getInt("areaCode"))); }
+        if (json.has("dataSyncType")) {
+            options.setDataSyncType(EMOptions.EMDataSyncType.fromNativeMask(json.getInt("dataSyncType")));
+        }
         if (json.has("enableEmptyConversation")) { options.setLoadEmptyConversations(json.getBoolean("enableEmptyConversation")); }
         if (!json.optString("customDeviceName").isEmpty()) { options.setCustomDeviceName(json.getString("customDeviceName")); }
         if (json.has("customOSType")) { options.setCustomOSPlatform(json.getInt("customOSType")); }
@@ -356,7 +361,6 @@ class ExtSdkOptionsHelper {
 
         // 2026-08-05 4.22.0
         if (json.has("enableUserInfo")) { options.setEnableUserInfo(json.getBoolean("enableUserInfo")); }
-        if (json.has("enableAutoSyncContacts")) { options.setEnableAutoSyncContacts(json.getBoolean("enableAutoSyncContacts")); }
 
         // 2026-08-25 4.24.1
         if (json.has("ntpServers")) {
@@ -379,9 +383,7 @@ class ExtSdkOptionsHelper {
         }
         Map<String, Object> data = new HashMap<>();
         data.put("appKey", options.getAppKey());
-        data.put("autoLogin", options.getAutoLogin());
 //        data.put("debugModel", options.)
-        data.put("requireAck", options.getRequireAck());
         data.put("requireDeliveryAck", options.getRequireDeliveryAck());
         data.put("sortMessageByServerTime", options.isSortMessageByServerTime());
         data.put("acceptInvitationAlways", options.getAcceptInvitationAlways());
@@ -399,6 +401,7 @@ class ExtSdkOptionsHelper {
         data.put("restServer", options.getRestServer());
         data.put("dnsUrl", options.getDnsUrl());
         data.put("areaCode", options.getAreaCode());
+        data.put("dataSyncType", EMOptions.EMDataSyncType.toNativeMask(options.getDataSyncType()));
         data.put("enableEmptyConversation", options.isLoadEmptyConversations());
         data.put("customDeviceName", options.getCustomDeviceName());
         data.put("customOSType", options.getCustomOSPlatform());
@@ -413,7 +416,6 @@ class ExtSdkOptionsHelper {
         data.put("webSocketPort", options.getWebSocketPort());
         data.put("dohVendor", options.getDohVendor());
         data.put("enableUserInfo", options.isEnableUserInfo());
-        data.put("enableAutoSyncContacts", options.isEnableAutoSyncContacts());
         data.put("ntpServers", options.getNtpServers());
         return data;
     }
@@ -438,16 +440,17 @@ class ExtSdkGroupHelper {
         data.put("muteList", group.getMuteList());
         data.put("messageBlocked", group.isMsgBlocked());
         data.put("isAllMemberMuted", group.isAllMemberMuted());
+        data.put("isDisabled", group.isDisabled());
         data.put("permissionType",
                  InternalConvertHelper.intTypeFromGroupPermissionType(group.getGroupPermissionType()));
 
-        Map<String, Object> option = new HashMap<>();
-        option.put("maxCount", group.getMaxUserCount());
-        option.put("inviteNeedConfirm", group.isMemberAllowToInvite());
-        option.put("ext", group.getExtension());
-        option.put("isDisabled", group.isDisabled());
-        option.put("isMemberOnly", group.isMemberOnly());
-        data.put("options", option);
+        Map<String, Object> configs = new HashMap<>();
+        configs.put("maxCount", group.getMaxUserCount());
+        configs.put("ext", group.getExtension());
+        configs.put("isPublic", group.isPublic());
+        configs.put("joinApprovalRequired", group.isJoinApprovalRequired());
+        configs.put("allowInvites", group.isMemberAllowToInvite());
+        data.put("configs", configs);
 
         return data;
     }
@@ -498,23 +501,27 @@ class ExtSdkMucSharedFileHelper {
     }
 }
 
-class ExtSdkGroupOptionsHelper {
+class ExtSdkGroupConfigsHelper {
 
-    static EMGroupOptions fromJson(JSONObject json) throws JSONException {
-        EMGroupOptions options = new EMGroupOptions();
-        if (json.has("maxCount")) { options.maxUsers = json.getInt("maxCount"); }
-        if (json.has("inviteNeedConfirm")) { options.inviteNeedConfirm = json.getBoolean("inviteNeedConfirm"); }
-        if (!json.optString("ext").isEmpty()) { options.extField = json.getString("ext"); }
-        if (json.has("style")) { options.style = InternalConvertHelper.groupStyleFromInt(json.getInt("style")); }
-        return options;
+    static EMGroupConfigs fromJson(JSONObject json) throws JSONException {
+        EMGroupConfigs configs = new EMGroupConfigs();
+        if (json.has("maxCount")) { configs.maxUsers = json.getInt("maxCount"); }
+        if (json.has("inviteNeedConfirm")) { configs.inviteNeedConfirm = json.getBoolean("inviteNeedConfirm"); }
+        if (!json.optString("ext").isEmpty()) { configs.extField = json.getString("ext"); }
+        if (json.has("isPublic")) { configs.isPublic = json.getBoolean("isPublic"); }
+        if (json.has("joinApprovalRequired")) { configs.joinApprovalRequired = json.getBoolean("joinApprovalRequired"); }
+        if (json.has("allowInvites")) { configs.allowInvites = json.getBoolean("allowInvites"); }
+        return configs;
     }
 
-    static Map<String, Object> toJson(EMGroupOptions options) {
+    static Map<String, Object> toJson(EMGroupConfigs configs) {
         Map<String, Object> data = new HashMap<>();
-        data.put("maxCount", options.maxUsers);
-        data.put("inviteNeedConfirm", options.inviteNeedConfirm);
-        data.put("ext", options.extField);
-        data.put("style", InternalConvertHelper.groupStyleToInt(options.style));
+        data.put("maxCount", configs.maxUsers);
+        data.put("inviteNeedConfirm", configs.inviteNeedConfirm);
+        data.put("ext", configs.extField);
+        data.put("isPublic", configs.isPublic);
+        data.put("joinApprovalRequired", configs.joinApprovalRequired);
+        data.put("allowInvites", configs.allowInvites);
         return data;
     }
 }
@@ -695,14 +702,9 @@ class ExtSdkMessageHelper {
 
         if (!json.optString("to").isEmpty()) { message.setTo(json.getString("to")); }
         if (!json.optString("from").isEmpty()) { message.setFrom(json.getString("from")); }
-        if (json.has("hasReadAck")) { message.setAcked(json.getBoolean("hasReadAck")); }
-        if (json.has("status") && InternalConvertHelper.messageStatusFromInt(json.getInt("status")) == EMMessage.Status.SUCCESS) {
-            if (json.has("hasRead")) { message.setUnread(!json.getBoolean("hasRead")); }
-        }
         // sdk auto invoke
         //        message.setDelivered(json.getBoolean("hasDeliverAck"));
-        if (json.has("needGroupAck")) { message.setIsNeedGroupAck(json.getBoolean("needGroupAck")); }
-        if (json.has("groupAckCount")) { message.setGroupAckCount(json.getInt("groupAckCount")); }
+        if (json.has("isNeedReadReceipt")) { message.setIsNeedReadReceipt(json.getBoolean("isNeedReadReceipt")); }
         if (json.has("localTime")) { message.setLocalTime(json.getLong("localTime")); }
         if (json.has("serverTime")) { message.setMsgTime(json.getLong("serverTime")); }
         if (json.has("status")) { message.setStatus(InternalConvertHelper.messageStatusFromInt(json.getInt("status"))); }
@@ -767,7 +769,7 @@ class ExtSdkMessageHelper {
         }
         data.put("from", message.getFrom());
         data.put("to", message.getTo());
-        data.put("hasReadAck", message.isAcked());
+        data.put("isPeerRead", message.isPeerRead());
         data.put("hasDeliverAck", message.isDelivered());
         data.put("localTime", message.localTime());
         data.put("serverTime", message.getMsgTime());
@@ -776,9 +778,9 @@ class ExtSdkMessageHelper {
         data.put("direction", message.direct() == EMMessage.Direct.SEND ? "send" : "rec");
         data.put("conversationId", message.conversationId());
         data.put("msgId", message.getMsgId());
-        data.put("hasRead", !message.isUnread());
-        data.put("needGroupAck", message.isNeedGroupAck());
-        data.put("groupAckCount", message.groupAckCount());
+        data.put("isRead", message.isRead());
+        data.put("isNeedReadReceipt", message.isNeedReadReceipt());
+        data.put("groupReadReceiptCount", message.readReceiptCount());
         data.put("isChatThread", message.isChatThreadMessage());
         data.put("isOnline", message.isOnlineState());
         data.put("deliverOnlineOnly", message.isDeliverOnlineOnly());
@@ -820,16 +822,30 @@ class ExtSdkSenderInfoHelper {
 }
 
 class ExtSdkGroupAckHelper {
-    static Map<String, Object> toJson(EMGroupReadAck ack) {
+    static Map<String, Object> toJson(EMGroupReadReceipt ack) {
+        if (ack == null) {
+            return null;
+        }
         Map<String, Object> data = new HashMap<>();
         data.put("msg_id", ack.getMsgId());
         data.put("ack_id", ack.getAckId());
-        data.put("from", ack.getFrom());
+        data.put("from", ExtSdkGroupMemberInfoHelper.toJson(ack.getFrom()));
         data.put("count", ack.getCount());
         data.put("timestamp", ack.getTimestamp());
-        if (ack.getContent() != null) {
-            data.put("content", ack.getContent());
+        return data;
+    }
+}
+
+class ExtSdkMessageReadReceiptHelper {
+    static Map<String, Object> toJson(EMMessageReadReceipt receipt) {
+        if (receipt == null) {
+            return null;
         }
+        Map<String, Object> data = new HashMap<>();
+        data.put("msg_id", receipt.getMessageId());
+        data.put("conv_id", receipt.getConversationId());
+        data.put("isPeerReceipt", receipt.isPeerReceipt());
+        data.put("readCount", receipt.getReadCount());
         return data;
     }
 }
@@ -1162,6 +1178,8 @@ class ExtSdkConversationHelper {
         Map<String, Object> data = new HashMap<>();
         data.put("convId", conversation.conversationId());
         data.put("convType", InternalConvertHelper.conversationTypeToInt(conversation.getType()));
+        data.put("name", conversation.getConversationName());
+        data.put("avatar", conversation.getConversationAvatar());
         data.put("isChatThread", conversation.isChatThread());
         data.put("isPinned", conversation.isPinned());
         data.put("pinnedTime", conversation.getPinnedTime());
@@ -1261,8 +1279,8 @@ class ExtSdkCursorResultHelper {
                     jsonList.add(ExtSdkChatRoomHelper.toJson((EMChatRoom)obj));
                 }
 
-                if (obj instanceof EMGroupReadAck) {
-                    jsonList.add(ExtSdkGroupAckHelper.toJson((EMGroupReadAck)obj));
+                if (obj instanceof EMGroupReadReceipt) {
+                    jsonList.add(ExtSdkGroupAckHelper.toJson((EMGroupReadReceipt)obj));
                 }
 
                 if (obj instanceof String) {
@@ -1698,41 +1716,6 @@ class ExtSdkMessagePinInfoHelper {
         data.put("pinTime", info.pinTime());
         data.put("operatorId", info.operatorId());
         return data;
-    }
-}
-
-class ExtSdkConversationFilterHelper {
-    static EMConversationFilter fromJson(JSONObject json) throws JSONException {
-        EMConversation.EMMarkType markType = EMConversation.EMMarkType.values()[json.getInt("mark")];
-        int pageSize = json.has("pageSize") ? json.getInt("pageSize") : 20;
-        EMConversationFilter filter = new EMConversationFilter(markType, pageSize);
-        return filter;
-    }
-
-    static String cursor(JSONObject json) throws JSONException {
-        if (json.has("cursor")) {
-            return json.getString("cursor");
-        } else {
-            return null;
-        }
-    }
-
-    static Boolean pinned(JSONObject json) throws JSONException {
-        if (json.has("pinned")) {
-            return json.getBoolean("pinned");
-        } else {
-            return false;
-        }
-    }
-
-    static Boolean hasMark(JSONObject json) throws JSONException { return json.has("mark"); }
-
-    static int pageSize(JSONObject json) throws JSONException {
-        if (json.has("pageSize")) {
-            return json.getInt("pageSize");
-        } else {
-            return 0;
-        }
     }
 }
 

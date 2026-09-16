@@ -1,23 +1,23 @@
 {
-  "init": { "appKey": "easemob#easeim", "autoLogin": false },
+  "init": { "appKey": "easemob#easeim" },
   "steps": [
     {
-      "api": "ChatManager.fetchConversationsFromServerWithCursor",
-      "id": "chat.fetchConversationsFromServerWithCursor",
-      "params": { "pageSize": 20 },
+      "api": "ChatManager.searchMessagesFromServer",
+      "id": "chat.searchMessagesFromServer",
+      "params": { "keywordList": ["rn-ci"], "pageSize": 10, "pageNum": 1 },
       "expect": { "errorCode": 201 }
     },
     {
-      "api": "ChatContactManager.fetchAllContacts",
-      "id": "contact.fetchAllContacts",
+      "api": "ChatContactManager.addContact",
+      "id": "contact.addContact",
+      "params": { "userId": "rn-ci-nonexistent-user", "reason": "rn-ci" },
+      "expect": { "errorCode": 201 }
+    },
+    {
+      "api": "ChatGroupManager.getJoinedGroups",
+      "id": "group.getJoinedGroups",
       "params": {},
-      "expect": { "errorCode": 201 }
-    },
-    {
-      "api": "ChatGroupManager.fetchJoinedGroupsFromServer",
-      "id": "group.fetchJoinedGroupsFromServer",
-      "params": { "pageSize": 20, "pageNum": 0 },
-      "expect": { "errorCode": 201 }
+      "expect": { "success": true }
     },
     {
       "api": "ChatRoomManager.fetchPublicChatRoomsFromServer",

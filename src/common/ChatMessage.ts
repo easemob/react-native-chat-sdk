@@ -397,30 +397,30 @@ export class ChatMessage {
    */
   hasDeliverAck: boolean = false;
   /**
-   * Whether the the read receipt from the recipient is received by the sender during a one-to-one chat. Upon reading the message, the recipient calls the {@link ChatManager.sendMessageReadAck} or `{@link ChatManager.sendConversationReadAck}` method to send a read receipt to the sender. If read receipts are required, you need to set {@link ChatOptions.requireAck} to `true` during the SDK initialization.
+   * Whether the the read receipt from the recipient is received by the sender during a one-to-one chat. Upon reading the message, the recipient calls the {@link ChatManager.sendMessageReadReceipts} method to send a read receipt to the sender.
    *
    * - `true`: Yes.
    * - (Default) `false`: No.
    */
-  hasReadAck: boolean = false;
+  isPeerRead: boolean = false;
   /**
    * Whether read receipts are required for a group message.
    *
    * - `true`: Yes.
    * - (Default) `false`: No.
    */
-  needGroupAck: boolean = false;
+  isNeedReadReceipt: boolean = false;
   /**
-   * The number of group members that have read a message. Upon reading a message, members in the group call {@link ChatManager.sendGroupMessageReadAck} or {@link ChatManager.sendConversationReadAck} to send a read receipt for a message or a conversation. To enable the read receipt function for group messages, you need to set {@link ChatOptions.requireAck} to `true` during SDK initialization and set {@link needGroupAck} to `true` when sending a message.
+   * The number of group members that have read a message. Upon reading a message, members in the group call {@link ChatManager.sendMessageReadReceipts} to send read receipts. To enable the read receipt function for group messages, you need to set {@link isNeedReadReceipt} to `true` when sending a message.
    */
-  groupAckCount: number = 0;
+  groupReadReceiptCount: number = 0;
   /**
-   * Whether the the message is read by the recipient during a one-to-one chat or group chat. This parameter setting has connection with the number of unread messages in a conversation. Upon reading the message, the recipient calls  {@link ChatManager.markMessageAsRead} to mark a message read or {@link ChatManager.markAllMessagesAsRead}  to mark all unread messages in the conversation read.
+   * Whether the the message is read by the recipient during a one-to-one chat or group chat. This parameter setting has connection with the number of unread messages in a conversation. The recipient can call {@link ChatManager.clearConversationUnreadMessageCount} to clear the unread message count of the conversation.
    *
    * - `true`: Yes.
    * - (Default) `false`: No.
    */
-  hasRead: boolean = false;
+  isRead: boolean = false;
   /**
    * The conversation type. See {@link ChatType}.
    */
@@ -532,10 +532,10 @@ export class ChatMessage {
     localTime?: number;
     serverTime?: number;
     hasDeliverAck?: boolean;
-    hasReadAck?: boolean;
-    needGroupAck?: boolean;
-    groupAckCount?: number;
-    hasRead?: boolean;
+    isPeerRead?: boolean;
+    isNeedReadReceipt?: boolean;
+    groupReadReceiptCount?: number;
+    isRead?: boolean;
     chatType?: number;
     direction?: string;
     status?: number;
@@ -558,10 +558,10 @@ export class ChatMessage {
     this.localTime = params.localTime ?? getNowTimestamp();
     this.serverTime = params.serverTime ?? getNowTimestamp();
     this.hasDeliverAck = params.hasDeliverAck ?? false;
-    this.hasReadAck = params.hasReadAck ?? false;
-    this.needGroupAck = params.needGroupAck ?? false;
-    this.groupAckCount = params.groupAckCount ?? 0;
-    this.hasRead = params.hasRead ?? false;
+    this.isPeerRead = params.isPeerRead ?? false;
+    this.isNeedReadReceipt = params.isNeedReadReceipt ?? false;
+    this.groupReadReceiptCount = params.groupReadReceiptCount ?? 0;
+    this.isRead = params.isRead ?? false;
     this.chatType = ChatMessageChatTypeFromNumber(params.chatType ?? 0);
     this.direction = ChatMessageDirectionFromString(params.direction ?? 'send');
     this.status = ChatMessageStatusFromNumber(params.status ?? 0);
@@ -664,7 +664,7 @@ export class ChatMessage {
       body: params.body,
       direction: 'send',
       to: params.targetId,
-      hasRead: true,
+      isRead: true,
       chatType: params.chatType,
       isChatThread: params.isChatThread,
       conversationId: params.targetId,
@@ -1150,13 +1150,6 @@ export class ChatMessage {
   }
 
   /**
-   * Gets the count of read receipts of a group message.
-   */
-  public get groupReadCount(): Promise<number | undefined> {
-    return Factory.getChatClient().chatManager.groupAckCount(this.msgId);
-  }
-
-  /**
    * Gets details of a message thread.
    */
   public get threadInfo(): Promise<ChatMessageThread | undefined> {
@@ -1394,12 +1387,6 @@ export class ChatImageMessageBody extends _ChatFileMessageBody {
    */
   thumbnailRemotePath: string;
   /**
-   * The secret to access the thumbnail. A secret is required for verification for thumbnail download.
-   *
-   * @deprecated 2026-08-26. Use {@link ChatFileMessageBody.secret} instead.
-   */
-  thumbnailSecret: string;
-  /**
    * The download status of the thumbnail. See {@link ChatDownloadStatus}
    */
   thumbnailStatus: ChatDownloadStatus;
@@ -1441,7 +1428,6 @@ export class ChatImageMessageBody extends _ChatFileMessageBody {
     sendOriginalImage?: boolean;
     thumbnailLocalPath?: string;
     thumbnailRemotePath?: string;
-    thumbnailSecret?: string;
     thumbnailStatus?: number;
     width?: number;
     height?: number;
@@ -1469,7 +1455,6 @@ export class ChatImageMessageBody extends _ChatFileMessageBody {
     this.sendOriginalImage = params.sendOriginalImage ?? false;
     this.thumbnailLocalPath = params.thumbnailLocalPath ?? '';
     this.thumbnailRemotePath = params.thumbnailRemotePath ?? '';
-    this.thumbnailSecret = params.thumbnailSecret ?? '';
     this.thumbnailStatus = ChatDownloadStatusFromNumber(
       params.thumbnailStatus ?? -1
     );
@@ -1734,12 +1719,6 @@ export class ChatMessagePinInfo {
  */
 export class ChatFetchMessageOptions {
   /**
-   * The user ID of the message sender in the group conversation.
-   *
-   * @deprecated 2025-07-21. Use `senders` instead.
-   */
-  from?: string;
-  /**
    * The array of user IDs of the message senders in the group conversation.
    */
   senders?: Array<string>;
@@ -1766,7 +1745,6 @@ export class ChatFetchMessageOptions {
    */
   needSave: boolean;
   constructor(params: {
-    from?: string;
     senders?: Array<string>;
     msgTypes?: ChatMessageType[];
     startTs: number;
@@ -1774,7 +1752,6 @@ export class ChatFetchMessageOptions {
     direction: ChatSearchDirection;
     needSave: boolean;
   }) {
-    this.from = params.from;
     this.senders = params.senders;
     this.startTs = params.startTs;
     this.endTs = params.endTs;

@@ -7,7 +7,6 @@ import com.hyphenate.EMContactListener;
 import com.hyphenate.EMValueCallBack;
 import com.hyphenate.chat.EMClient;
 import com.hyphenate.chat.EMContact;
-import com.hyphenate.chat.EMCursorResult;
 import com.hyphenate.exceptions.HyphenateException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -58,21 +57,6 @@ public class ExtSdkContactManagerWrapper extends ExtSdkWrapper {
             @Override
             public void onError(int code, String error) {
                 ExtSdkWrapper.onError(result, code, error);
-            }
-        });
-    }
-
-    public void getAllContactsFromServer(JSONObject params, String channelName, ExtSdkCallback result)
-        throws JSONException {
-        EMClient.getInstance().contactManager().asyncGetAllContactsFromServer(new EMValueCallBack<List<String>>() {
-            @Override
-            public void onSuccess(List<String> value) {
-                ExtSdkWrapper.onSuccess(result, channelName, value);
-            }
-
-            @Override
-            public void onError(int error, String errorMsg) {
-                ExtSdkWrapper.onError(result, error, errorMsg);
             }
         });
     }
@@ -231,44 +215,6 @@ public class ExtSdkContactManagerWrapper extends ExtSdkWrapper {
         }
     }
 
-    public void fetchAllContacts(JSONObject params, String channelName, ExtSdkCallback result) throws JSONException {
-        EMClient.getInstance().contactManager().asyncFetchAllContactsFromServer(new EMValueCallBack<List<EMContact>>() {
-            @Override
-            public void onSuccess(List<EMContact> value) {
-                List<Map> contactList = new ArrayList<>();
-                for (EMContact contact : value) {
-                    contactList.add(ExtSdkContactHelper.toJson(contact));
-                }
-                ExtSdkWrapper.onSuccess(result, channelName, contactList);
-            }
-
-            @Override
-            public void onError(int error, String errorMsg) {
-                ExtSdkWrapper.onError(result, error, errorMsg);
-            }
-        });
-    }
-
-    public void fetchContacts(JSONObject params, String channelName, ExtSdkCallback result) throws JSONException {
-        int pageSize = params.getInt("pageSize");
-        String cursor = null;
-        if (params.has("cursor")) {
-            cursor = params.getString("cursor");
-        }
-        EMClient.getInstance().contactManager().asyncFetchAllContactsFromServer(
-            pageSize, cursor, new EMValueCallBack<EMCursorResult<EMContact>>() {
-                @Override
-                public void onSuccess(EMCursorResult<EMContact> value) {
-                    ExtSdkWrapper.onSuccess(result, channelName, ExtSdkCursorResultHelper.toJson(value));
-                }
-
-                @Override
-                public void onError(int error, String errorMsg) {
-                    ExtSdkWrapper.onError(result, error, errorMsg);
-                }
-            });
-    }
-
     private void registerEaseListener() {
         if (this.contactListener != null) {
             EMClient.getInstance().contactManager().removeContactListener(this.contactListener);
@@ -312,26 +258,6 @@ public class ExtSdkContactManagerWrapper extends ExtSdkWrapper {
                 Map<String, Object> data = new HashMap<>();
                 data.put("type", "onFriendRequestDeclined");
                 data.put("username", userName);
-                onReceive(ExtSdkMethodType.onContactChanged, data);
-            }
-
-            @Override
-            public void onContactSyncStart() {
-                Map<String, Object> data = new HashMap<>();
-                data.put("type", "onContactSyncStart");
-                onReceive(ExtSdkMethodType.onContactChanged, data);
-            }
-
-            @Override
-            public void onContactSyncFinishWithError(int errorCode, String errorMessage) {
-                Map<String, Object> data = new HashMap<>();
-                data.put("type", "onContactSyncFinish");
-                if (errorCode != 0) {
-                    Map<String, Object> error = new HashMap<>();
-                    error.put("code", errorCode);
-                    error.put("description", errorMessage);
-                    data.put("error", error);
-                }
                 onReceive(ExtSdkMethodType.onContactChanged, data);
             }
 

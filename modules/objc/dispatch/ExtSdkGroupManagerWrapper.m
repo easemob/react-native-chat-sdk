@@ -54,60 +54,6 @@
     [weakSelf onResult:result withMethodType:aChannelName withError:nil withParams:list];
 }
 
-- (void)getGroupsWithoutPushNotification:(NSDictionary *)param
-                          withMethodType:(NSString *)aChannelName
-                                  result:(nonnull id<ExtSdkCallbackObjc>)result {
-    __weak typeof(self) weakSelf = self;
-    EMError *error = nil;
-    // !!! It has been marked as invalid in the typescript language.
-    NSArray *groups = [EMClient.sharedClient.groupManager getGroupsWithoutPushNotification:&error];
-    NSMutableArray *list = [NSMutableArray array];
-    for (EMGroup *group in groups) {
-        [list addObject:[group toJsonObject]];
-    }
-    [weakSelf onResult:result withMethodType:aChannelName withError:error withParams:list];
-}
-
-- (void)getJoinedGroupsFromServer:(NSDictionary *)param
-                   withMethodType:(NSString *)aChannelName
-                           result:(nonnull id<ExtSdkCallbackObjc>)result {
-    __weak typeof(self) weakSelf = self;
-    int pageNum = [param[@"pageNum"] intValue];
-    int pageSize = [param[@"pageSize"] intValue];
-    BOOL needRole = [param[@"needRole"] boolValue];
-    BOOL needMemberCount = [param[@"needMemberCount"] boolValue];
-    [EMClient.sharedClient.groupManager
-        getJoinedGroupsFromServerWithPage:pageNum
-                                 pageSize:pageSize
-                          needMemberCount:needMemberCount
-                                 needRole:needRole
-                               completion:^(NSArray<EMGroup *> *aList, EMError *_Nullable aError) {
-                                 NSMutableArray *list = [NSMutableArray array];
-                                 for (EMGroup *group in aList) {
-                                     [list addObject:[group toJsonObject]];
-                                 }
-                                 [weakSelf onResult:result
-                                     withMethodType:aChannelName
-                                          withError:aError
-                                         withParams:list];
-                               }];
-}
-
-- (void)getPublicGroupsFromServer:(NSDictionary *)param
-                   withMethodType:(NSString *)aChannelName
-                           result:(nonnull id<ExtSdkCallbackObjc>)result {
-    __weak typeof(self) weakSelf = self;
-    [EMClient.sharedClient.groupManager
-        getPublicGroupsFromServerWithCursor:param[@"cursor"]
-                                   pageSize:[param[@"pageSize"] integerValue]
-                                 completion:^(EMCursorResult *aResult, EMError *aError) {
-                                   [weakSelf onResult:result
-                                       withMethodType:aChannelName
-                                            withError:aError
-                                           withParams:[aResult toJsonObject]];
-                                 }];
-}
-
 - (void)createGroup:(NSDictionary *)param
      withMethodType:(NSString *)aChannelName
              result:(nonnull id<ExtSdkCallbackObjc>)result {
@@ -117,13 +63,31 @@
                                                    description:param[@"desc"]
                                                       invitees:param[@"inviteMembers"]
                                                        message:param[@"inviteReason"]
-                                                       setting:[EMGroupOptions fromJsonObject:param[@"options"]]
+                                                       setting:[EMGroupConfigs fromJsonObject:param[@"configs"]]
                                                     completion:^(EMGroup *aGroup, EMError *aError) {
                                                       [weakSelf onResult:result
                                                           withMethodType:aChannelName
                                                                withError:aError
                                                               withParams:[aGroup toJsonObject]];
                                                     }];
+}
+
+- (void)updateGroupConfigs:(NSDictionary *)param
+            withMethodType:(NSString *)aChannelName
+                    result:(nonnull id<ExtSdkCallbackObjc>)result {
+    __weak typeof(self) weakSelf = self;
+    NSString *groupId = param[@"group_id"];
+    EMGroupConfigsType types = (EMGroupConfigsType)[param[@"types"] unsignedIntegerValue];
+    EMGroupConfigs *configs = [EMGroupConfigs fromJsonObject:param[@"configs"]];
+    [EMClient.sharedClient.groupManager updateGroupWithId:groupId
+                                                    types:types
+                                                  configs:configs
+                                               completion:^(EMGroup *_Nullable group, EMError *_Nullable error) {
+                                                 [weakSelf onResult:result
+                                                     withMethodType:aChannelName
+                                                          withError:error
+                                                         withParams:[group toJsonObject]];
+                                               }];
 }
 
 - (void)getGroupSpecificationFromServer:(NSDictionary *)param
@@ -996,18 +960,9 @@
     [self onReceive:ExtSdkMethodKeyOnGroupChanged withParams:map];
 }
 
-- (void)userDidJoinGroup:(EMGroup *)aGroup user:(NSString *)aUsername {
-    NSDictionary *map = @{@"type" : @"onMemberJoined", @"groupId" : aGroup.groupId, @"member" : aUsername};
-    [self onReceive:ExtSdkMethodKeyOnGroupChanged withParams:map];
-}
 - (void)userDidJoinGroup:(EMGroup *)group users:(NSArray<NSString *> *)userIds {
     // !!! It has been marked as invalid in the typescript language.
     NSDictionary *map = @{@"type" : @"onMembersJoined", @"groupId" : group.groupId, @"members" : userIds};
-    [self onReceive:ExtSdkMethodKeyOnGroupChanged withParams:map];
-}
-
-- (void)userDidLeaveGroup:(EMGroup *)aGroup user:(NSString *)aUsername {
-    NSDictionary *map = @{@"type" : @"onMemberExited", @"groupId" : aGroup.groupId, @"member" : aUsername};
     [self onReceive:ExtSdkMethodKeyOnGroupChanged withParams:map];
 }
 

@@ -29,7 +29,7 @@ ChatSDK is a highly reliable global communication platform where your users can 
 | {@link ChatClient.login login} | Logs in to the chat server with a password or an Easemob token. An exception message is thrown if the login fails. |
 | {@link ChatClient.loginWithToken loginWithToken} | Logs in to the chat server with a token. An exception message is thrown if the login fails. |
 | {@link ChatClient.loginWithAgoraToken loginWithAgoraToken} | @deprecated 2023-11-17 Use {@link login} instead. |
-| {@link ChatClient.renewAgoraToken renewAgoraToken} | Renews the Agora token. |
+| {@link ChatClient.renewToken renewToken} | Renews the token. |
 | {@link ChatClient.logout logout} | Logs out of the chat app. An exception message is thrown if the logout fails. |
 | {@link ChatClient.changeAppKey changeAppKey} | Updates the App Key, which is the unique identifier used to access the chat service. |
 | {@link ChatClient.changeAppId changeAppId} | Updates the App id, which is the unique identifier used to access the chat service. |

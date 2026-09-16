@@ -13,21 +13,21 @@
 #import <HyphenateChat/EMChatroom.h>
 #import <HyphenateChat/EMContact.h>
 #import <HyphenateChat/EMConversation.h>
-#import <HyphenateChat/EMConversationFilter.h>
 #import <HyphenateChat/EMCursorResult.h>
 #import <HyphenateChat/EMDeviceConfig.h>
 #import <HyphenateChat/EMError.h>
 #import <HyphenateChat/EMFetchServerMessagesOption.h>
 #import <HyphenateChat/EMFileMessageBody.h>
 #import <HyphenateChat/EMGroup.h>
+#import <HyphenateChat/EMGroupConfigs.h>
 #import <HyphenateChat/EMGroupMemberInfo.h>
-#import <HyphenateChat/EMGroupMessageAck.h>
-#import <HyphenateChat/EMGroupOptions.h>
+#import <HyphenateChat/EMGroupReadReceipt.h>
 #import <HyphenateChat/EMGroupSharedFile.h>
 #import <HyphenateChat/EMMessageBody.h>
 #import <HyphenateChat/EMMessageReaction.h>
 #import <HyphenateChat/EMMessageReactionChange.h>
 #import <HyphenateChat/EMMessageReactionOperation.h>
+#import <HyphenateChat/EMMessageReadReceipt.h>
 #import <HyphenateChat/EMOptions.h>
 #import <HyphenateChat/EMPageResult.h>
 #import <HyphenateChat/EMPresence.h>
@@ -49,8 +49,6 @@ NS_ASSUME_NONNULL_BEGIN
 + (int)roomPremissionTypeToInt:(EMChatroomPermissionType)type;
 + (EMGroupPermissionType)groupPremissionTypeFromInt:(int)type;
 + (int)groupPremissionTypeToInt:(EMGroupPermissionType)type;
-+ (EMGroupStyle)groupStyleFromInt:(int)style;
-+ (int)groupStyleToInt:(EMGroupStyle)style;
 + (EMChatType)chatTypeFromInt:(int)aType;
 + (int)chatTypeToInt:(EMChatType)aType;
 + (EMChatRoomMessagePriority)priorityFromInt:(int)priority;
@@ -101,8 +99,8 @@ NS_ASSUME_NONNULL_BEGIN
 - (NSDictionary *)toJsonObject;
 @end
 
-@interface EMGroupOptions (Json) <ExtSdkToJson>
-+ (EMGroupOptions *)fromJsonObject:(NSDictionary *)dict;
+@interface EMGroupConfigs (Json) <ExtSdkToJson>
++ (EMGroupConfigs *)fromJsonObject:(NSDictionary *)dict;
 - (NSDictionary *)toJsonObject;
 @end
 
@@ -110,7 +108,11 @@ NS_ASSUME_NONNULL_BEGIN
 - (NSDictionary *)toJsonObject;
 @end
 
-@interface EMGroupMessageAck (Json) <ExtSdkToJson>
+@interface EMGroupReadReceipt (Json) <ExtSdkToJson>
+- (NSDictionary *)toJsonObject;
+@end
+
+@interface EMMessageReadReceipt (Json) <ExtSdkToJson>
 - (NSDictionary *)toJsonObject;
 @end
 
@@ -199,14 +201,6 @@ NS_ASSUME_NONNULL_BEGIN
 @interface EMContact (Json) <ExtSdkToJson>
 + (EMContact *)fromJsonObject:(NSDictionary *)dict;
 - (NSDictionary *)toJsonObject;
-@end
-
-@interface EMConversationFilter (Json)
-+ (EMConversationFilter *)fromJsonObject:(NSDictionary *)dict;
-+ (NSString *)getCursor:(NSDictionary *)dict;
-+ (BOOL)getPinned:(NSDictionary *)dict;
-+ (BOOL)hasMark:(NSDictionary *)dict;
-+ (NSInteger)pageSize:(NSDictionary *)dict;
 @end
 
 @interface EMMessagePinInfo (Json) <ExtSdkToJson>

@@ -24,21 +24,13 @@ NS_ASSUME_NONNULL_BEGIN
          withMethodType:(NSString *)aChannelName
                  result:(nonnull id<ExtSdkCallbackObjc>)result;
 
-- (void)getGroupsWithoutPushNotification:(NSDictionary *)param
-                          withMethodType:(NSString *)aChannelName
-                                  result:(nonnull id<ExtSdkCallbackObjc>)result;
-
-- (void)getJoinedGroupsFromServer:(NSDictionary *)param
-                   withMethodType:(NSString *)aChannelName
-                           result:(nonnull id<ExtSdkCallbackObjc>)result;
-
-- (void)getPublicGroupsFromServer:(NSDictionary *)param
-                   withMethodType:(NSString *)aChannelName
-                           result:(nonnull id<ExtSdkCallbackObjc>)result;
-
 - (void)createGroup:(NSDictionary *)param
      withMethodType:(NSString *)aChannelName
              result:(nonnull id<ExtSdkCallbackObjc>)result;
+
+- (void)updateGroupConfigs:(NSDictionary *)param
+            withMethodType:(NSString *)aChannelName
+                    result:(nonnull id<ExtSdkCallbackObjc>)result;
 
 - (void)getGroupSpecificationFromServer:(NSDictionary *)param
                          withMethodType:(NSString *)aChannelName

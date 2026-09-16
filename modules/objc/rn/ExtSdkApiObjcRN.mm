@@ -118,11 +118,9 @@ RCT_EXPORT_METHOD(multiply : (double)a b : (double)b resolve : (RCTPromiseResolv
     NSArray<NSString *> *ret = @[
         /// EMClientWrapper
         ExtSdkMethodKeyInit,
-        ExtSdkMethodKeyCreateAccount,
         ExtSdkMethodKeyLogin,
         ExtSdkMethodKeyLogout,
         ExtSdkMethodKeyChangeAppKey,
-        ExtSdkMethodKeyIsLoggedInBefore,
         ExtSdkMethodKeyUploadLog,
         ExtSdkMethodKeyCompressLogs,
         ExtSdkMethodKeyKickDevice,
@@ -130,7 +128,6 @@ RCT_EXPORT_METHOD(multiply : (double)a b : (double)b resolve : (RCTPromiseResolv
         ExtSdkMethodKeyCurrentUser,
         ExtSdkMethodKeyGetLoggedInDevicesFromServer,
         ExtSdkMethodKeyGetToken,
-        ExtSdkMethodKeyLoginWithAgoraToken,
         ExtSdkMethodKeyGetCurrentUser,
         ExtSdkMethodKeyIsConnected,
 
@@ -143,8 +140,10 @@ RCT_EXPORT_METHOD(multiply : (double)a b : (double)b resolve : (RCTPromiseResolv
         ExtSdkMethodKeyOnTokenDidExpire,
         ExtSdkMethodKeyOnOfflineMessageSyncStart,
         ExtSdkMethodKeyOnOfflineMessageSyncFinish,
+        ExtSdkMethodKeyOnDataSyncStart,
+        ExtSdkMethodKeyOnDataSyncFinish,
+        ExtSdkMethodKeyOnDatabaseOpened,
 
-        ExtSdkMethodKeyOnUserDidLoginFromOtherDevice,
         ExtSdkMethodKeyOnUserDidRemoveFromServer,
         ExtSdkMethodKeyOnUserDidForbidByServer,
         ExtSdkMethodKeyOnUserDidChangePassword,
@@ -155,7 +154,6 @@ RCT_EXPORT_METHOD(multiply : (double)a b : (double)b resolve : (RCTPromiseResolv
         /// EMContactManagerWrapper
         ExtSdkMethodKeyAddContact,
         ExtSdkMethodKeyDeleteContact,
-        ExtSdkMethodKeyGetAllContactsFromServer,
         ExtSdkMethodKeyGetAllContactsFromDB,
         ExtSdkMethodKeyAddUserToBlockList,
         ExtSdkMethodKeyRemoveUserFromBlockList,
@@ -171,28 +169,21 @@ RCT_EXPORT_METHOD(multiply : (double)a b : (double)b resolve : (RCTPromiseResolv
         /// EMChatManagerWrapper
         ExtSdkMethodKeySendMessage,
         ExtSdkMethodKeyResendMessage,
-        ExtSdkMethodKeyAckMessageRead,
-        ExtSdkMethodKeyAckGroupMessageRead,
-        ExtSdkMethodKeyAckConversationRead,
         ExtSdkMethodKeyRecallMessage,
         ExtSdkMethodKeyGetConversation,
-        ExtSdkMethodKeyMarkAllChatMsgAsRead,
         ExtSdkMethodKeyGetUnreadMessageCount,
         ExtSdkMethodKeyUpdateChatMessage,
         ExtSdkMethodKeyDownloadAttachment,
         ExtSdkMethodKeyDownloadThumbnail,
         ExtSdkMethodKeyImportMessages,
         ExtSdkMethodKeyLoadAllConversations,
-        ExtSdkMethodKeyGetConversationsFromServer,
 
         ExtSdkMethodKeyDeleteConversation,
         // ExtSdkMethodKeySetVoiceMessageListened,
         // ExtSdkMethodKeyUpdateParticipant,
         ExtSdkMethodKeyUpdateConversationsName,
-        ExtSdkMethodKeyFetchHistoryMessages,
         ExtSdkMethodKeySearchChatMsgFromDB,
         ExtSdkMethodKeyGetMessage,
-        ExtSdkMethodKeyAsyncFetchGroupAcks,
         ExtSdkMethodKeydeleteRemoteConversation,
         ExtSdkMethodKeyDeleteMessagesBeforeTimestamp,
 
@@ -203,24 +194,19 @@ RCT_EXPORT_METHOD(multiply : (double)a b : (double)b resolve : (RCTPromiseResolv
         ExtSdkMethodKeyChatRemoveReaction,
         ExtSdkMethodKeyChatFetchReactionList,
         ExtSdkMethodKeyChatFetchReactionDetail,
-        ExtSdkMethodKeyChatReportMessage,
 
-        ExtSdkMethodKeyFetchConversationsFromServerWithPage,
         ExtSdkMethodKeyRemoveMessagesFromServerWithMsgIds,
         ExtSdkMethodKeyRemoveMessagesFromServerWithTs,
 
         /// EMChatManagerDelegate
         ExtSdkMethodKeyOnMessagesReceived,
         ExtSdkMethodKeyOnCmdMessagesReceived,
-        ExtSdkMethodKeyOnMessagesRead,
-        ExtSdkMethodKeyOnGroupMessageRead,
         ExtSdkMethodKeyOnMessagesDelivered,
         ExtSdkMethodKeyOnMessagesRecalled,
+        ExtSdkMethodKeyOnMessageReadReceipts,
 
         ExtSdkMethodKeyOnConversationUpdate,
-        ExtSdkMethodKeyOnConversationHasRead,
 
-        ExtSdkMethodKeyChatOnReadAckForGroupMessageUpdated,
         ExtSdkMethodKeyChatOnMessageReactionDidChange,
 
         /// EMMessageListener
@@ -237,8 +223,6 @@ RCT_EXPORT_METHOD(multiply : (double)a b : (double)b resolve : (RCTPromiseResolv
         /// EMConversationWrapper
 
         ExtSdkMethodKeyGetUnreadMsgCount,
-        ExtSdkMethodKeyMarkAllMsgsAsRead,
-        ExtSdkMethodKeyMarkMsgAsRead,
         ExtSdkMethodKeySyncConversationExt,
         ExtSdkMethodKeySyncConversationName,
         ExtSdkMethodKeyRemoveMsg,
@@ -256,7 +240,6 @@ RCT_EXPORT_METHOD(multiply : (double)a b : (double)b resolve : (RCTPromiseResolv
         ExtSdkMethodKeyLoadMsgWithTime,
 
         ExtSdkMethodKeyChatGetReactionList,
-        ExtSdkMethodKeyChatGroupAckCount,
 
         /// EMChatroomManagerWrapper
 
@@ -265,9 +248,6 @@ RCT_EXPORT_METHOD(multiply : (double)a b : (double)b resolve : (RCTPromiseResolv
         ExtSdkMethodKeyGetChatroomsFromServer,
         ExtSdkMethodKeyFetchChatRoomFromServer,
         ExtSdkMethodKeyGetChatRoom,
-        ExtSdkMethodKeyGetAllChatRooms,
-        ExtSdkMethodKeyCreateChatRoom,
-        ExtSdkMethodKeyDestroyChatRoom,
         ExtSdkMethodKeyChatRoomUpdateSubject,
         ExtSdkMethodKeyChatRoomUpdateDescription,
         ExtSdkMethodKeyGetChatroomMemberListFromServer,
@@ -304,8 +284,6 @@ RCT_EXPORT_METHOD(multiply : (double)a b : (double)b resolve : (RCTPromiseResolv
         ExtSdkMethodKeyGetGroupWithId,
         ExtSdkMethodKeyGetJoinedGroups,
         ExtSdkMethodKeyGetGroupsWithoutPushNotification,
-        ExtSdkMethodKeyGetJoinedGroupsFromServer,
-        ExtSdkMethodKeyGetPublicGroupsFromServer,
         ExtSdkMethodKeyCreateGroup,
         ExtSdkMethodKeyGetGroupSpecificationFromServer,
         ExtSdkMethodKeyGetGroupMemberListFromServer,
@@ -431,8 +409,6 @@ RCT_EXPORT_METHOD(multiply : (double)a b : (double)b resolve : (RCTPromiseResolv
         ExtSdkMethodKeyfetchMembersAttributesFromGroup,
         ExtSdkMethodKeyOnAppActiveNumberReachLimit,
 
-        ExtSdkMethodKeyGetConversationsFromServerWithCursor,
-        ExtSdkMethodKeyGetPinnedConversationsFromServerWithCursor,
         ExtSdkMethodKeyPinConversation,
         ExtSdkMethodKeyModifyMessage,
         ExtSdkMethodKeyDownloadAndParseCombineMessage,
@@ -453,8 +429,6 @@ RCT_EXPORT_METHOD(multiply : (double)a b : (double)b resolve : (RCTPromiseResolv
         ExtSdkMethodKeygetAllContacts,
         ExtSdkMethodKeysetContactRemark,
         ExtSdkMethodKeygetContact,
-        ExtSdkMethodKeyfetchAllContacts,
-        ExtSdkMethodKeyfetchContacts,
         ExtSdkMethodKeyfetchJoinedGroupCount,
         ExtSdkMethodKeyDownloadAttachmentInCombine,
         ExtSdkMethodKeyDownloadThumbnailInCombine,
@@ -464,7 +438,6 @@ RCT_EXPORT_METHOD(multiply : (double)a b : (double)b resolve : (RCTPromiseResolv
         ExtSdkMethodKeyonMessagePinChanged,
         ExtSdkMethodKeyaddRemoteAndLocalConversationsMark,
         ExtSdkMethodKeydeleteRemoteAndLocalConversationsMark,
-        ExtSdkMethodKeyfetchConversationsByOptions,
         ExtSdkMethodKeydeleteAllMessageAndConversation,
         ExtSdkMethodKeypinMessage,
         ExtSdkMethodKeyunpinMessage,
@@ -491,6 +464,13 @@ RCT_EXPORT_METHOD(multiply : (double)a b : (double)b resolve : (RCTPromiseResolv
         ExtSdkMethodKeygetUserIdsWithRTCUids,
 
         ExtSdkMethodKeyOnStreamMessagesReceived,
+
+        ExtSdkMethodKeysendMessageReadReceipts,
+        ExtSdkMethodKeyclearConversationUnreadMessageCount,
+        ExtSdkMethodKeyclearAllConversationUnreadMessageCount,
+        ExtSdkMethodKeygetGroupMessageReadReceipts,
+        ExtSdkMethodKeyfetchGroupMessageReadReceipts,
+        ExtSdkMethodKeyupdateGroupConfigs,
     ];
     //    NSLog(@"%@: supportedEvents: %@", TAG, ret);
     return ret;

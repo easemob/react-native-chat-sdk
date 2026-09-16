@@ -33,15 +33,13 @@ function sendCallbacks(tag: string) {
 
 export const chatApis: ApiEntry[] = [
   {
-    name: 'ChatManager.fetchConversationsFromServerWithCursor',
+    name: 'ChatManager.getAllConversations',
     group: 'ChatManager',
-    description: '从服务器分页获取会话列表。cursor/pageSize 均可选。',
-    paramsTemplate: JSON.stringify({ pageSize: 20 }, null, 2),
-    invoke: async (params) => {
-      return ChatClient.getInstance().chatManager.fetchConversationsFromServerWithCursor(
-        params.cursor === undefined ? undefined : String(params.cursor),
-        params.pageSize === undefined ? undefined : Number(params.pageSize)
-      );
+    description:
+      '获取全部会话列表（本地数据，服务端拉取接口已在 5.0 移除）。无参数。',
+    paramsTemplate: '{}',
+    invoke: async () => {
+      return ChatClient.getInstance().chatManager.getAllConversations();
     },
   },
   {

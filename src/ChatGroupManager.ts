@@ -28,8 +28,6 @@ import {
   MTgetGroupSpecificationFromServer,
   MTgetGroupWithId,
   MTgetJoinedGroups,
-  MTgetJoinedGroupsFromServer,
-  MTgetPublicGroupsFromServer,
   MTinviterUser,
   MTisMemberInAllowListFromServer,
   MTjoinPublicGroup,
@@ -50,6 +48,7 @@ import {
   MTupdateDescription,
   MTupdateGroupAnnouncement,
   MTupdateGroupAvatar,
+  MTupdateGroupConfigs,
   MTupdateGroupExt,
   MTupdateGroupNamecard,
   MTupdateGroupOwner,
@@ -64,10 +63,10 @@ import { ChatCursorResult } from './common/ChatCursorResult';
 import { ChatException } from './common/ChatError';
 import {
   ChatGroup,
+  type ChatGroupConfigs,
+  type ChatGroupConfigsType,
   type ChatGroupFileStatusCallback,
-  ChatGroupInfo,
   ChatGroupMember,
-  ChatGroupOptions,
   ChatGroupSharedFile,
 } from './common/ChatGroup';
 
@@ -202,22 +201,10 @@ export class ChatGroupManager extends BaseManager {
             oldOwner: params.oldOwner,
           });
           break;
-        case 'onMemberJoined':
-          listener.onMemberJoined?.({
-            groupId: params.groupId,
-            member: params.member,
-          });
-          break;
         case 'onMembersJoined':
           listener.onMembersJoined?.({
             groupId: params.groupId,
             members: params.members,
-          });
-          break;
-        case 'onMemberExited':
-          listener.onMemberExited?.({
-            groupId: params.groupId,
-            member: params.member,
           });
           break;
         case 'onMembersExited':
@@ -369,133 +356,18 @@ export class ChatGroupManager extends BaseManager {
   }
 
   /**
-   * Gets the list of groups that the current user has joined.
-   *
-   * This method gets data from the server.
-   *
-   * This method returns a group list which does not contain member information. If you want to update information of a group to include its member information, call {@link fetchMemberListFromServer}.
-   *
-   * @param pageSize The number of groups that you expect to return on each page [1, 20].
-   * @param pageNum The page number, starting from 0.
-   * @returns The list of groups that the current user joins.
-   *
-   * @throws A description of the exception. See {@link ChatError}.
-   */
-  public async fetchJoinedGroupsFromServer(
-    pageSize: number,
-    pageNum: number
-  ): Promise<Array<ChatGroup>> {
-    chatlog.log(
-      `${ChatGroupManager.TAG}: fetchJoinedGroupsFromServer: `,
-      pageSize,
-      pageNum
-    );
-    let r: any = await Native._callMethod(MTgetJoinedGroupsFromServer, {
-      [MTgetJoinedGroupsFromServer]: {
-        pageSize,
-        pageNum,
-        needRole: true,
-        needMemberCount: true,
-      },
-    });
-    ChatGroupManager.checkErrorFromResult(r);
-    const ret: ChatGroup[] = [];
-    Object.entries(r?.[MTgetJoinedGroupsFromServer]).forEach(
-      (value: [string, any]) => {
-        ret.push(new ChatGroup(value[1]));
-      }
-    );
-    return ret;
-  }
-
-  /**
-   * Gets public groups from the server with pagination.
-   *
-   * @param pageSize The number of public groups that you expect on each page.
-   * @param cursor The cursor position from which to start to get data. At the first method call, if you set `cursor` as `null`, the SDK gets the data in the reverse chronological order of when groups are created.
-   * @returns The group list and the cursor for the next query. See {@link ChatCursorResult}.
-   *
-   * @throws A description of the exception. See {@link ChatError}.
-   */
-  public async fetchPublicGroupsFromServer(
-    pageSize: number,
-    cursor?: string
-  ): Promise<ChatCursorResult<ChatGroupInfo>> {
-    chatlog.log(
-      `${ChatGroupManager.TAG}: fetchPublicGroupsFromServer: `,
-      pageSize,
-      cursor
-    );
-    let r: any = await Native._callMethod(MTgetPublicGroupsFromServer, {
-      [MTgetPublicGroupsFromServer]: {
-        pageSize,
-        cursor,
-      },
-    });
-    ChatGroupManager.checkErrorFromResult(r);
-    let ret = new ChatCursorResult<ChatGroupInfo>({
-      cursor: r?.[MTgetPublicGroupsFromServer].cursor,
-      list: r?.[MTgetPublicGroupsFromServer].list,
-      opt: {
-        map: (param: any) => {
-          return new ChatGroupInfo(param);
-        },
-      },
-    });
-    return ret;
-  }
-
-  /**
    * Creates a group instance.
    *
    * After the group is created, the data in the memory and database will be updated and multiple devices will receive the notification event and update the group to the memory and database.
    *
    * You can set {@link ChatGroupEventListener} to listen for the event.
    *
-   * @param options The options for creating a group. See {@link ChatGroupOptions}.
-   * The options are as follows:
+   * @param configs The configs for creating a group. See {@link ChatGroupConfigs}.
+   * The configs are as follows:
    * - The maximum number of members allowed in the group. The default value is 200.
-   * - The group style. See {@link ChatGroupStyle}. The default value is {@link ChatGroupStyle.PrivateOnlyOwnerInvite}.
-   * - Whether to ask for permission when inviting a user to join the group. The default value is `false`, indicating that invitees are automatically added to the group without their permission.
-   * - The extension of group details.
-   * @param groupName The group name.
-   * @param groupAvatar The group avatar.
-   * @param desc The group description.
-   * @param inviteMembers The group member array.
-   * @param inviteReason The group joining invitation.
-   * @returns The created group instance.
-   *
-   * @throws A description of the exception. See {@link ChatError}.
-   *
-   * @deprecated 2025-07-23 Use {@link createGroupEx} instead.
-   */
-  public async createGroup(
-    options: ChatGroupOptions,
-    groupName: string,
-    desc?: string,
-    inviteMembers?: Array<string>,
-    inviteReason?: string
-  ): Promise<ChatGroup> {
-    return this.createGroupEx({
-      options,
-      groupName,
-      desc,
-      inviteMembers,
-      inviteReason,
-    });
-  }
-
-  /**
-   * Creates a group instance.
-   *
-   * After the group is created, the data in the memory and database will be updated and multiple devices will receive the notification event and update the group to the memory and database.
-   *
-   * You can set {@link ChatGroupEventListener} to listen for the event.
-   *
-   * @param options The options for creating a group. See {@link ChatGroupOptions}.
-   * The options are as follows:
-   * - The maximum number of members allowed in the group. The default value is 200.
-   * - The group style. See {@link ChatGroupStyle}. The default value is {@link ChatGroupStyle.PrivateOnlyOwnerInvite}.
+   * - Whether the group is a public group. The default value is `false`.
+   * - Whether joining the group requires the approval of the group owner or an admin. The default value is `false`.
+   * - Whether group members are allowed to invite other users to join the group. The default value is `false`.
    * - Whether to ask for permission when inviting a user to join the group. The default value is `false`, indicating that invitees are automatically added to the group without their permission.
    * - The extension of group details.
    * @param groupName The group name.
@@ -508,7 +380,7 @@ export class ChatGroupManager extends BaseManager {
    * @throws A description of the exception. See {@link ChatError}.
    */
   public async createGroupEx(params: {
-    options: ChatGroupOptions;
+    configs: ChatGroupConfigs;
     groupName: string;
     groupAvatar?: string;
     desc?: string;
@@ -516,7 +388,7 @@ export class ChatGroupManager extends BaseManager {
     inviteReason?: string;
   }): Promise<ChatGroup> {
     const {
-      options,
+      configs,
       groupName,
       groupAvatar,
       desc,
@@ -525,7 +397,7 @@ export class ChatGroupManager extends BaseManager {
     } = params;
     chatlog.log(
       `${ChatGroupManager.TAG}: createGroupEx: `,
-      options,
+      configs,
       groupName,
       groupAvatar,
       desc,
@@ -539,7 +411,7 @@ export class ChatGroupManager extends BaseManager {
         desc,
         inviteMembers,
         inviteReason,
-        options,
+        configs,
       },
     });
     ChatGroupManager.checkErrorFromResult(r);
@@ -547,39 +419,37 @@ export class ChatGroupManager extends BaseManager {
   }
 
   /**
-   * Gets the group information from the server.
+   * Updates the configs of a group.
+   *
+   * Only the group owner and admins can call this method.
    *
    * @param groupId The group ID.
-   * @param isFetchMembers Whether to get group member information:
-   *                       - `true`: Yes. This method can return information of at most 200 group members. To get information of all group members, you can call {@link fetchMemberListFromServer}.
-   *                       - `false`: No.
-   * @returns The group instance. The SDK returns `undefined` if the group does not exist.
+   * @param types The types of the configs to update. It is a bitmask of {@link ChatGroupConfigsType}. Only the configs specified by this parameter are updated.
+   * @param configs The new group configs. See {@link ChatGroupConfigs}.
+   * @returns The updated group instance.
    *
    * @throws A description of the exception. See {@link ChatError}.
-   *
-   * @deprecated Use {@link fetchGroupInfoWithoutMembersFromServer} instead.
    */
-  public async fetchGroupInfoFromServer(
+  public async updateGroupConfigs(
     groupId: string,
-    isFetchMembers: boolean = false
-  ): Promise<ChatGroup | undefined> {
+    types: ChatGroupConfigsType,
+    configs: ChatGroupConfigs
+  ): Promise<ChatGroup> {
     chatlog.log(
-      `${ChatGroupManager.TAG}: fetchGroupInfoFromServer: `,
+      `${ChatGroupManager.TAG}: updateGroupConfigs: `,
       groupId,
-      isFetchMembers
+      types,
+      configs
     );
-    let r: any = await Native._callMethod(MTgetGroupSpecificationFromServer, {
-      [MTgetGroupSpecificationFromServer]: {
-        groupId: groupId,
-        fetchMembers: isFetchMembers,
+    let r: any = await Native._callMethod(MTupdateGroupConfigs, {
+      [MTupdateGroupConfigs]: {
+        group_id: groupId,
+        types: types,
+        configs: configs,
       },
     });
     ChatGroupManager.checkErrorFromResult(r);
-    const g = r?.[MTgetGroupSpecificationFromServer];
-    if (g) {
-      return new ChatGroup(g);
-    }
-    return undefined;
+    return new ChatGroup(r?.[MTupdateGroupConfigs]);
   }
 
   /**
@@ -1593,7 +1463,7 @@ export class ChatGroupManager extends BaseManager {
    *
    * For a group that requires no authentication，users can join it freely without obtaining permissions from the group owner or admin.
    *
-   * For a group that requires authentication, users need to wait for the group owner or admin to agree before joining the group. For details, see {@link ChatGroupStyle}.
+   * For a group that requires authentication, users need to wait for the group owner or admin to agree before joining the group. For details, see {@link ChatGroupConfigs.joinApprovalRequired}.
    *
    * @param groupId The group ID.
    *
@@ -1612,7 +1482,7 @@ export class ChatGroupManager extends BaseManager {
   /**
    * Requests to join a group.
    *
-   * You can call this method to only join public groups requiring authentication, i.e., groups with the style of {@link ChatGroupStyle.PublicJoinNeedApproval}.
+   * You can call this method to only join public groups requiring authentication, i.e., groups with {@link ChatGroupConfigs.joinApprovalRequired} set to `true`.
    *
    * @param groupId The group ID.
    * @param reason The reason for requesting to join the group.

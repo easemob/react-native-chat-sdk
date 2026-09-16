@@ -158,11 +158,9 @@ function resolveValue(value: unknown, ctx: RefContext): unknown {
 const CHAT_OPTIONS_KEYS = [
   'appKey',
   'appId',
-  'autoLogin',
   'debugModel',
   'acceptInvitationAlways',
   'autoAcceptGroupInvitation',
-  'requireAck',
   'requireDeliveryAck',
   'deleteMessagesAsExitGroup',
   'deleteMessagesAsExitChatRoom',
@@ -194,7 +192,7 @@ const CHAT_OPTIONS_KEYS = [
   'webSocketPort',
   'dohVendor',
   'enableUserInfo',
-  'enableAutoSyncContacts',
+  'dataSyncType',
 ];
 
 function deriveInitParams(
@@ -219,10 +217,8 @@ function deriveInitParams(
       delete picked[key];
     }
   }
-  // auto-mode 一律关闭 autoLogin（ChatOptions 默认 true）：
-  // 避免设备上残留的持久化会话被自动登录——login 步骤必须真实走凭据登录，
+  // native 5.0 已无自动登录：login 步骤必须真实走凭据登录，
   // no-login 冒烟也必须保持未登录态
-  picked.autoLogin = false;
   return picked.appKey != null || picked.appId != null ? picked : null;
 }
 
@@ -259,9 +255,9 @@ async function runInit(
   hooks: AutoModeHooks
 ): Promise<void> {
   const optionsJson = JSON.stringify(initParams, null, 2);
-  const options = new ChatOptions(
-    initParams as { appKey: string; appId: string }
-  );
+  const options = initParams.appKey
+    ? ChatOptions.withAppKey(initParams as unknown as { appKey: string })
+    : ChatOptions.withAppId(initParams as unknown as { appId: string });
   await ChatClient.getInstance().init(options);
   addLog('api.ChatClient.init', okResult());
   registerAllListeners();
@@ -277,17 +273,13 @@ async function runLogin(
   let lastError: unknown = null;
   for (let attempt = 1; attempt <= LOGIN_MAX_ATTEMPTS; attempt++) {
     try {
-      const isPassword = loginParams.password != null;
-      const pwdOrToken = isPassword
-        ? String(loginParams.password)
-        : String(loginParams.token ?? '');
-      await ChatClient.getInstance().login(
+      const token = loginParams.token ?? loginParams.password ?? '';
+      await ChatClient.getInstance().loginWithToken(
         loginParams.userId,
-        pwdOrToken,
-        isPassword
+        String(token)
       );
       addLog(
-        'api.ChatClient.login',
+        'api.ChatClient.loginWithToken',
         okResult({ userId: loginParams.userId, attempt })
       );
       hooks.markLoggedIn(loginParams.userId);
@@ -295,7 +287,7 @@ async function runLogin(
       return;
     } catch (e) {
       lastError = e;
-      addLog('api.ChatClient.login', {
+      addLog('api.ChatClient.loginWithToken', {
         ...errResult(e),
         attempt,
         maxAttempts: LOGIN_MAX_ATTEMPTS,

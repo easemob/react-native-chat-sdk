@@ -71,15 +71,14 @@
 
     EMPushDisplayStyle pushStyle = [param[@"pushStyle"] intValue];
 
-    dispatch_async(
-        dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-          EMError *aError = [EMClient.sharedClient.pushManager
-              updatePushDisplayStyle:pushStyle];
-          [weakSelf onResult:result
-              withMethodType:aChannelName
-                   withError:aError
-                  withParams:@(!aError)];
-        });
+    [EMClient.sharedClient.pushManager
+        updatePushDisplayStyle:pushStyle
+                    completion:^(EMError *_Nullable aError) {
+                      [weakSelf onResult:result
+                          withMethodType:aChannelName
+                               withError:aError
+                              withParams:@(!aError)];
+                    }];
 }
 
 - (void)updateGroupPushService:(NSDictionary *)param

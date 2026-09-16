@@ -1,26 +1,5 @@
 import type { ChatError } from './ChatError';
-
-/**
- * The group types.
- */
-export enum ChatGroupStyle {
-  /**
-   * Private groups where only the group owner or admins can invite users to join.
-   */
-  PrivateOnlyOwnerInvite = 0,
-  /**
-   * Private groups where each group member can invite users to join.
-   */
-  PrivateMemberCanInvite = 1,
-  /**
-   * Public groups where users can join only after an invitation is received from the group owner(admin) or the join request is accepted by the  group owner(admin).
-   */
-  PublicJoinNeedApproval = 2,
-  /**
-   * Public groups where users can join freely, without the approval of the group owner or admins.
-   */
-  PublicOpenJoin = 3,
-}
+import { ChatGroupMemberInfo } from './ChatGroupMemberInfo';
 
 /**
  * The group role types.
@@ -42,37 +21,6 @@ export enum ChatGroupPermissionType {
    * The group owner.
    */
   Owner = 2,
-}
-
-/**
- * Converts the group type from Int to enum.
- *
- * @param params The group type of the Int type.
- * @returns The group type of the enum type.
- */
-export function ChatGroupStyleFromNumber(params: number): ChatGroupStyle {
-  switch (params) {
-    case 0:
-      return ChatGroupStyle.PrivateOnlyOwnerInvite;
-    case 1:
-      return ChatGroupStyle.PrivateMemberCanInvite;
-    case 2:
-      return ChatGroupStyle.PublicJoinNeedApproval;
-    case 3:
-      return ChatGroupStyle.PublicOpenJoin;
-    default:
-      return params;
-  }
-}
-
-/**
- * Converts the group type from enum to string.
- *
- * @param params The group type of the enum type.
- * @returns The group type of the string type.
- */
-export function ChatGroupStyleToString(params: ChatGroupStyle): string {
-  return ChatGroupStyle[params]!;
 }
 
 /**
@@ -111,21 +59,21 @@ export function ChatGroupPermissionTypeToString(
 }
 
 /**
- *The class for read receipts of group messages.
+ * The class for read receipts of group messages.
  */
-export class ChatGroupMessageAck {
+export class ChatGroupReadReceipt {
   /**
    * The group message ID.
    */
-  msg_id: string;
+  msgId: string;
   /**
    * The ID of the read receipt of a group message.
    */
-  ack_id: string;
+  ackId: string;
   /**
-   * The ID of the user who sends the read receipt.
+   * The information of the group member who sends the read receipt. See {@link ChatGroupMemberInfo}.
    */
-  from: string;
+  from: ChatGroupMemberInfo;
   /**
    * The number of read receipts of group messages.
    */
@@ -134,26 +82,18 @@ export class ChatGroupMessageAck {
    * The Unix timestamp of sending the read receipt of a group message. The unit is millisecond.
    */
   timestamp: number;
-  /**
-   * The extension information of a read receipt.
-   */
-  content?: string;
   constructor(params: {
     msg_id: string;
     ack_id: string;
-    from: string;
+    from: any;
     count: number;
     timestamp: number;
-    ext?: { content: string };
   }) {
-    this.msg_id = params.msg_id;
-    this.ack_id = params.ack_id;
-    this.from = params.from;
+    this.msgId = params.msg_id;
+    this.ackId = params.ack_id;
+    this.from = new ChatGroupMemberInfo(params.from);
     this.count = params.count;
     this.timestamp = params.timestamp;
-    if (params.ext) {
-      this.content = params.ext.content;
-    }
   }
 }
 
@@ -224,14 +164,20 @@ export class ChatGroup {
    */
   permissionType: ChatGroupPermissionType;
   /**
-   * The group options.
+   * The group configs. See {@link ChatGroupConfigs}.
    */
-  options?: ChatGroupOptions;
+  configs?: ChatGroupConfigs;
+  /**
+   * Whether the group is disabled:
+   * - `true`: Yes.
+   * - `false`: No.
+   */
+  isDisabled: boolean;
   /**
    * Gets the maximum number of members allowed in a group. The parameter is set when the group is created.
    */
   get maxCount(): number {
-    return this.options?.maxCount ?? 0;
+    return this.configs?.maxCount ?? 0;
   }
 
   constructor(params: {
@@ -249,7 +195,8 @@ export class ChatGroup {
     messageBlocked?: boolean;
     isAllMemberMuted?: boolean;
     permissionType: number;
-    options?: any;
+    configs?: any;
+    isDisabled?: boolean;
   }) {
     this.groupId = params.groupId;
     this.groupName = params.groupName ?? '';
@@ -267,22 +214,54 @@ export class ChatGroup {
     this.permissionType = ChatGroupPermissionTypeFromNumber(
       params.permissionType
     );
-    if (params.options) {
-      this.options = new ChatGroupOptions(params.options);
+    if (params.configs) {
+      this.configs = new ChatGroupConfigs(params.configs);
     }
+    this.isDisabled = params.isDisabled ?? false;
   }
 }
 
 /**
- * The group options to be configured when the chat group is created.
+ * The group config types, used to specify which group configs to update.
+ *
+ * The type is a bitmask. Multiple types can be combined with the bitwise OR operator,
+ * for example, `ChatGroupConfigsType.MaxUsers | ChatGroupConfigsType.Ext`.
+ *
+ * See {@link ChatGroupManager.updateGroupConfigs}.
  */
-export class ChatGroupOptions {
+export enum ChatGroupConfigsType {
   /**
-   * The group style.
+   * Whether group members are allowed to invite others to join the group.
    */
-  style: ChatGroupStyle;
+  AllowInvites = 1, // 1 << 0
   /**
-   * The maximum number of members allowed in a group.
+   * The maximum number of members allowed in the group.
+   */
+  MaxUsers = 2, // 1 << 1
+  /**
+   * Whether to ask for consent when inviting a user to join the group.
+   */
+  InviteNeedConfirm = 4, // 1 << 2
+  /**
+   * Whether joining the group requires the approval of the group owner or an admin.
+   */
+  JoinApprovalRequired = 8, // 1 << 3
+  /**
+   * Whether the group is a public group.
+   */
+  IsPublic = 16, // 1 << 4
+  /**
+   * The group extension information.
+   */
+  Ext = 32, // 1 << 5
+}
+
+/**
+ * The group configs to be set when the chat group is created or updated.
+ */
+export class ChatGroupConfigs {
+  /**
+   * The maximum number of members allowed in a group. The default value is 200.
    */
   maxCount: number;
   /**
@@ -290,7 +269,7 @@ export class ChatGroupOptions {
    *
    * Whether to automatically accept the invitation to join a group depends on two settings:
    *
-   * - {@link GroupOptions.inviteNeedConfirm}, an option for group creation.
+   * - {@link ChatGroupConfigs.inviteNeedConfirm}, an option for group creation.
    * - {@link ChatOptions.autoAcceptGroupInvitation}: Determines whether to automatically accept an invitation to join the group.
    *
    * There are two cases:
@@ -306,28 +285,40 @@ export class ChatGroupOptions {
    */
   ext?: string;
   /**
-   * Whether the group is disabled:
+   * Whether the group is a public group:
    * - `true`: Yes.
-   * - `false`: No.
+   * - (Default) `false`: No.
    */
-  isDisabled: boolean;
+  isPublic: boolean;
   /**
-   * Construct a group option.
+   * Whether joining the group requires the approval of the group owner or an admin:
+   * - `true`: Yes.
+   * - (Default) `false`: No.
+   */
+  joinApprovalRequired: boolean;
+  /**
+   * Whether group members are allowed to invite other users to join the group:
+   * - `true`: Yes.
+   * - (Default) `false`: No.
+   */
+  allowInvites: boolean;
+  /**
+   * Construct a group configs object.
    */
   constructor(params: {
-    style?: number;
     maxCount?: number;
     inviteNeedConfirm?: boolean;
     ext?: string;
-    isDisabled?: boolean;
+    isPublic?: boolean;
+    joinApprovalRequired?: boolean;
+    allowInvites?: boolean;
   }) {
-    this.style = params.style
-      ? ChatGroupStyleFromNumber(params.style)
-      : ChatGroupStyle.PublicJoinNeedApproval;
     this.maxCount = params.maxCount ?? 200;
     this.inviteNeedConfirm = params.inviteNeedConfirm ?? false;
     this.ext = params.ext;
-    this.isDisabled = params.isDisabled ?? false;
+    this.isPublic = params.isPublic ?? false;
+    this.joinApprovalRequired = params.joinApprovalRequired ?? false;
+    this.allowInvites = params.allowInvites ?? false;
   }
 }
 

@@ -64,19 +64,6 @@
                   }];
 }
 
-- (void)getAllContactsFromServer:(NSDictionary *)param
-                  withMethodType:(NSString *)aChannelName
-                          result:(nonnull id<ExtSdkCallbackObjc>)result {
-    __weak typeof(self) weakSelf = self;
-    [EMClient.sharedClient.contactManager
-        getContactsFromServerWithCompletion:^(NSArray *aList, EMError *aError) {
-          [weakSelf onResult:result
-              withMethodType:ExtSdkMethodKeyGetAllContactsFromServer
-                   withError:aError
-                  withParams:aList];
-        }];
-}
-
 - (void)getAllContactsFromDB:(NSDictionary *)param
               withMethodType:(NSString *)aChannelName
                       result:(nonnull id<ExtSdkCallbackObjc>)result {
@@ -232,43 +219,6 @@
             withParams:[contact toJsonObject]];
 }
 
-- (void)fetchAllContacts:(NSDictionary *)param
-          withMethodType:(NSString *)aChannelName
-                  result:(nonnull id<ExtSdkCallbackObjc>)result {
-    __weak typeof(self) weakSelf = self;
-    [EMClient.sharedClient.contactManager
-        getAllContactsFromServerWithCompletion:^(
-            NSArray<EMContact *> *_Nullable aList, EMError *_Nullable aError) {
-          NSMutableArray *contactList = [NSMutableArray array];
-          for (EMContact *contact in aList) {
-              [contactList addObject:[contact toJsonObject]];
-          }
-          [weakSelf onResult:result
-              withMethodType:aChannelName
-                   withError:aError
-                  withParams:contactList];
-        }];
-}
-
-- (void)fetchContacts:(NSDictionary *)param
-       withMethodType:(NSString *)aChannelName
-               result:(nonnull id<ExtSdkCallbackObjc>)result {
-    __weak typeof(self) weakSelf = self;
-    NSString *cursor = param[@"cursor"];
-    int pageSize = [param[@"pageSize"] intValue];
-    [EMClient.sharedClient.contactManager
-        getContactsFromServerWithCursor:cursor
-                               pageSize:pageSize
-                             completion:^(
-                                 EMCursorResult<EMContact *> *_Nullable aResult,
-                                 EMError *_Nullable aError) {
-                               [weakSelf onResult:result
-                                   withMethodType:aChannelName
-                                        withError:aError
-                                       withParams:[aResult toJsonObject]];
-                             }];
-}
-
 #pragma mark - ExtSdkContactManagerDelegate
 
 - (void)friendshipDidAddByUser:(NSString *)aUsername {
@@ -301,20 +251,6 @@
 - (void)friendRequestDidDeclineByUser:(NSString *)aUsername {
     NSDictionary *map =
         @{@"type" : @"onFriendRequestDeclined", @"username" : aUsername};
-    [self onReceive:ExtSdkMethodKeyOnContactChanged withParams:map];
-}
-
-- (void)onFriendStartSync {
-    NSDictionary *map = @{@"type" : @"onContactSyncStart"};
-    [self onReceive:ExtSdkMethodKeyOnContactChanged withParams:map];
-}
-
-- (void)onFriendSyncFinished:(EMError *_Nullable)error {
-    NSMutableDictionary *map = [NSMutableDictionary dictionary];
-    map[@"type"] = @"onContactSyncFinish";
-    if (error) {
-        map[@"error"] = [error toJsonObject];
-    }
     [self onReceive:ExtSdkMethodKeyOnContactChanged withParams:map];
 }
 

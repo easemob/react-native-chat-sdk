@@ -8,12 +8,13 @@ import com.hyphenate.EMValueCallBack;
 import com.hyphenate.chat.EMClient;
 import com.hyphenate.chat.EMCursorResult;
 import com.hyphenate.chat.EMGroup;
-import com.hyphenate.chat.EMGroupInfo;
+import com.hyphenate.chat.EMGroupConfigs;
+import com.hyphenate.chat.EMGroupManager;
 import com.hyphenate.chat.EMGroupMemberInfo;
-import com.hyphenate.chat.EMGroupOptions;
 import com.hyphenate.chat.EMMucSharedFile;
 import com.hyphenate.exceptions.HyphenateException;
 import java.util.ArrayList;
+import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -39,7 +40,6 @@ public class ExtSdkGroupManagerWrapper extends ExtSdkWrapper {
     }
 
     public void getJoinedGroups(JSONObject param, String channelName, ExtSdkCallback result) throws JSONException {
-        EMClient.getInstance().groupManager().loadAllGroups();
         List<EMGroup> groups = EMClient.getInstance().groupManager().getAllGroups();
         List<Map> groupList = new ArrayList<>();
         for (EMGroup group : groups) {
@@ -51,68 +51,6 @@ public class ExtSdkGroupManagerWrapper extends ExtSdkWrapper {
     public void getGroupsWithoutPushNotification(JSONObject param, String channelName, ExtSdkCallback result)
         throws JSONException {
         onSuccess(result, channelName, null);
-    }
-
-    public void getJoinedGroupsFromServer(JSONObject param, String channelName, ExtSdkCallback result)
-        throws JSONException {
-
-        int pageSize = 0;
-        if (param.has("pageSize")) {
-            pageSize = param.getInt("pageSize");
-        }
-        int pageNum = 0;
-        if (param.has("pageNum")) {
-            pageNum = param.getInt("pageNum");
-        }
-        boolean needRole = false;
-        if (param.has("needRole")) {
-            needRole = param.getBoolean("needRole");
-        }
-        boolean needMemberCount = false;
-        if (param.has("needMemberCount")) {
-            needMemberCount = param.getBoolean("needMemberCount");
-        }
-
-        EMClient.getInstance().groupManager().asyncGetJoinedGroupsFromServer(
-            pageNum, pageSize, needMemberCount, needRole, new EMValueCallBack<List<EMGroup>>() {
-                @Override
-                public void onSuccess(List<EMGroup> value) {
-                    List<Map> groupList = new ArrayList<>();
-                    for (EMGroup group : value) {
-                        groupList.add(ExtSdkGroupHelper.toJson(group));
-                    }
-                    ExtSdkWrapper.onSuccess(result, channelName, groupList);
-                }
-
-                @Override
-                public void onError(int error, String errorMsg) {
-                    ExtSdkWrapper.onError(result, error, errorMsg);
-                }
-            });
-    }
-
-    public void getPublicGroupsFromServer(JSONObject param, String channelName, ExtSdkCallback result)
-        throws JSONException {
-        int pageSize = 0;
-        if (param.has("pageSize")) {
-            pageSize = param.getInt("pageSize");
-        }
-        String cursor = null;
-        if (param.has("cursor")) {
-            cursor = param.getString("cursor");
-        }
-        EMClient.getInstance().groupManager().asyncGetPublicGroupsFromServer(
-            pageSize, cursor, new EMValueCallBack<EMCursorResult<EMGroupInfo>>() {
-                @Override
-                public void onSuccess(EMCursorResult<EMGroupInfo> value) {
-                    ExtSdkWrapper.onSuccess(result, channelName, ExtSdkCursorResultHelper.toJson(value));
-                }
-
-                @Override
-                public void onError(int error, String errorMsg) {
-                    ExtSdkWrapper.onError(result, error, errorMsg);
-                }
-            });
     }
 
     public void createGroup(JSONObject param, String channelName, ExtSdkCallback result) throws JSONException {
@@ -146,9 +84,29 @@ public class ExtSdkGroupManagerWrapper extends ExtSdkWrapper {
             inviteReason = param.getString("inviteReason");
         }
 
-        EMGroupOptions options = ExtSdkGroupOptionsHelper.fromJson(param.getJSONObject("options"));
+        EMGroupConfigs configs = ExtSdkGroupConfigsHelper.fromJson(param.getJSONObject("configs"));
         EMClient.getInstance().groupManager().asyncCreateGroup(
-            groupName, groupAvatar, desc, members, inviteReason, options, new EMValueCallBack<EMGroup>() {
+            groupName, groupAvatar, desc, members, inviteReason, configs, new EMValueCallBack<EMGroup>() {
+                @Override
+                public void onSuccess(EMGroup value) {
+                    ExtSdkWrapper.onSuccess(result, channelName, ExtSdkGroupHelper.toJson(value));
+                }
+
+                @Override
+                public void onError(int error, String errorMsg) {
+                    ExtSdkWrapper.onError(result, error, errorMsg);
+                }
+            });
+    }
+
+    public void updateGroupConfigs(JSONObject param, String channelName, ExtSdkCallback result) throws JSONException {
+        String groupId = param.getString("group_id");
+        int types = param.getInt("types");
+        EMGroupConfigs configs = ExtSdkGroupConfigsHelper.fromJson(param.getJSONObject("configs"));
+        EnumSet<EMGroupManager.EMGroupConfigsType> configsTypes =
+            InternalConvertHelper.groupConfigsTypeFromInt(types);
+        EMClient.getInstance().groupManager().asyncUpdateGroupConfigs(
+            groupId, configsTypes, configs, new EMValueCallBack<EMGroup>() {
                 @Override
                 public void onSuccess(EMGroup value) {
                     ExtSdkWrapper.onSuccess(result, channelName, ExtSdkGroupHelper.toJson(value));
@@ -1296,17 +1254,6 @@ public class ExtSdkGroupManagerWrapper extends ExtSdkWrapper {
             }
 
             @Override
-            public void onRequestToJoinDeclined(String groupId, String groupName, String decliner, String reason) {
-                // Map<String, Object> data = new HashMap<>();
-                // data.put("type", "onRequestToJoinDeclined");
-                // data.put("groupId", groupId);
-                // data.put("groupName", groupName);
-                // data.put("decliner", decliner);
-                // data.put("reason", reason);
-                // ExtSdkWrapper.onReceive(ExtSdkMethodType.onGroupChanged, data);
-            }
-
-            @Override
             public void onRequestToJoinDeclined(String groupId, String groupName, String decliner, String reason,
                                                 String applicant) {
                 Map<String, Object> data = new HashMap<>();
@@ -1415,29 +1362,11 @@ public class ExtSdkGroupManagerWrapper extends ExtSdkWrapper {
             }
 
             @Override
-            public void onMemberJoined(String groupId, String member) {
-                Map<String, Object> data = new HashMap<>();
-                data.put("type", "onMemberJoined");
-                data.put("groupId", groupId);
-                data.put("member", member);
-                ExtSdkWrapper.onReceive(ExtSdkMethodType.onGroupChanged, data);
-            }
-
-            @Override
             public void onMembersJoined(String groupId, List<String> members) {
                 Map<String, Object> data = new HashMap<>();
                 data.put("type", "onMembersJoined");
                 data.put("groupId", groupId);
                 data.put("members", members);
-                ExtSdkWrapper.onReceive(ExtSdkMethodType.onGroupChanged, data);
-            }
-
-            @Override
-            public void onMemberExited(String groupId, String member) {
-                Map<String, Object> data = new HashMap<>();
-                data.put("type", "onMemberExited");
-                data.put("groupId", groupId);
-                data.put("member", member);
                 ExtSdkWrapper.onReceive(ExtSdkMethodType.onGroupChanged, data);
             }
 

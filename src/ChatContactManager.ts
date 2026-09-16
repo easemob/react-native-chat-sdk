@@ -7,11 +7,8 @@ import {
   MTaddUserToBlockList,
   MTdeclineInvitation,
   MTdeleteContact,
-  MTfetchAllContacts,
-  MTfetchContacts,
   MTgetAllContacts,
   MTgetAllContactsFromDB,
-  MTgetAllContactsFromServer,
   MTgetBlockListFromDB,
   MTgetBlockListFromServer,
   MTgetContact,
@@ -25,8 +22,7 @@ import { Native } from './__internal__/Native';
 import type { ChatContactEventListener } from './ChatEvents';
 import { chatlog } from './common/ChatConst';
 import { ChatContact } from './common/ChatContact';
-import { ChatCursorResult } from './common/ChatCursorResult';
-import { ChatError, ChatException } from './common/ChatError';
+import { ChatException } from './common/ChatError';
 
 /**
  * The contact manager class, which manages chat contacts such as adding, retrieving, modifying, and deleting contacts.
@@ -74,14 +70,6 @@ export class ChatContactManager extends BaseManager {
           break;
         case 'onFriendRequestDeclined':
           listener.onFriendRequestDeclined?.(params.username);
-          break;
-        case 'onContactSyncStart':
-          listener.onContactSyncStart?.();
-          break;
-        case 'onContactSyncFinish':
-          listener.onContactSyncFinish?.(
-            params.error ? new ChatError(params.error) : undefined
-          );
           break;
         case 'onContactInfoUpdate':
           listener.onContactInfoUpdate?.(new ChatContact(params.contact));
@@ -172,21 +160,6 @@ export class ChatContactManager extends BaseManager {
       },
     });
     ChatContactManager.checkErrorFromResult(r);
-  }
-
-  /**
-   * Gets the contact list from the server.
-   *
-   * @returns The list of contacts.
-   *
-   * @throws A description of the exception. See {@link ChatError}.
-   */
-  public async getAllContactsFromServer(): Promise<Array<string>> {
-    chatlog.log(`${ChatContactManager.TAG}: getAllContactsFromServer: `);
-    let r: any = await Native._callMethod(MTgetAllContactsFromServer);
-    ChatContactManager.checkErrorFromResult(r);
-    const ret: string[] = r?.[MTgetAllContactsFromServer];
-    return ret;
   }
 
   /**
@@ -355,60 +328,6 @@ export class ChatContactManager extends BaseManager {
       return new ChatContact(g);
     }
     return undefined;
-  }
-
-  /**
-   * Gets all contacts from the server.
-   *
-   * @returns The list of contacts.
-   *
-   * @throws A description of the exception. See {@link ChatError}.
-   */
-  public async fetchAllContacts(): Promise<ChatContact[]> {
-    chatlog.log(`${ChatContactManager.TAG}: fetchAllContacts: `);
-    let r: any = await Native._callMethod(MTfetchAllContacts);
-    ChatContactManager.checkErrorFromResult(r);
-    const list: any[] = r?.[MTfetchAllContacts];
-    const ret: ChatContact[] = [];
-    for (const i of list) {
-      ret.push(new ChatContact(i));
-    }
-    return ret;
-  }
-
-  /**
-   * Gets the contacts from the server.
-   * @params params -
-   * - cursor: The cursor of the page to get. The first page is an empty string.
-   * - pageSize: The number of contacts to get. The default value is 20. [1-50]
-   * @returns The list of contacts.
-   *
-   * @throws A description of the exception. See {@link ChatError}.
-   */
-  public async fetchContacts(params: {
-    cursor?: string;
-    pageSize?: number;
-  }): Promise<ChatCursorResult<ChatContact>> {
-    chatlog.log(
-      `${ChatContactManager.TAG}: fetchContacts: ${params.cursor}, ${params.pageSize}`
-    );
-    let r: any = await Native._callMethod(MTfetchContacts, {
-      [MTfetchContacts]: {
-        cursor: params.cursor,
-        pageSize: params.pageSize ?? 20,
-      },
-    });
-    ChatContactManager.checkErrorFromResult(r);
-    let ret = new ChatCursorResult<ChatContact>({
-      cursor: r?.[MTfetchContacts].cursor,
-      list: r?.[MTfetchContacts].list,
-      opt: {
-        map: (param: any) => {
-          return new ChatContact(param);
-        },
-      },
-    });
-    return ret;
   }
 
   /**

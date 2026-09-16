@@ -1,7 +1,7 @@
 /**
- * Contract test for `ChatGroupManager.fetchGroupInfoFromServer`: verifies
- * the MT constant, the nested `{ groupId, fetchMembers }` payload shape,
- * and that the native payload is decoded into a `ChatGroup` instance.
+ * Contract test for `ChatGroupManager.fetchGroupInfoWithoutMembersFromServer`:
+ * verifies the MT constant, the nested `{ groupId }` payload shape, and that
+ * the native payload is decoded into a `ChatGroup` instance.
  */
 
 import { ChatGroupManager } from '../../ChatGroupManager';
@@ -13,7 +13,7 @@ import { getLastCall, mockCallMethodOnce } from '../helpers/nativeMock';
 describe('ChatGroupManager call-method contract', () => {
   const manager = new ChatGroupManager();
 
-  test('fetchGroupInfoFromServer calls MTgetGroupSpecificationFromServer with { groupId, fetchMembers } and decodes ChatGroup', async () => {
+  test('fetchGroupInfoWithoutMembersFromServer calls MTgetGroupSpecificationFromServer with { groupId } and decodes ChatGroup', async () => {
     mockCallMethodOnce({
       [MTgetGroupSpecificationFromServer]: {
         groupId: 'g1',
@@ -23,14 +23,13 @@ describe('ChatGroupManager call-method contract', () => {
       },
     });
 
-    const group = await manager.fetchGroupInfoFromServer('g1', true);
+    const group = await manager.fetchGroupInfoWithoutMembersFromServer('g1');
 
     const last = getLastCall();
     expect(last?.method).toBe(MTgetGroupSpecificationFromServer);
     expect(last?.args).toMatchObject({
       [MTgetGroupSpecificationFromServer]: {
         groupId: 'g1',
-        fetchMembers: true,
       },
     });
     expect(group).toBeInstanceOf(ChatGroup);
@@ -39,12 +38,12 @@ describe('ChatGroupManager call-method contract', () => {
     expect(group?.owner).toBe('alice');
   });
 
-  test('fetchGroupInfoFromServer rejects with ChatError when native returns { error }', async () => {
+  test('fetchGroupInfoWithoutMembersFromServer rejects with ChatError when native returns { error }', async () => {
     mockCallMethodOnce({
       error: { code: 404, description: 'group not found' },
     });
 
-    const p = manager.fetchGroupInfoFromServer('g1', true);
+    const p = manager.fetchGroupInfoWithoutMembersFromServer('g1');
 
     await expect(p).rejects.toBeInstanceOf(ChatError);
     await expect(p).rejects.toMatchObject({

@@ -104,12 +104,6 @@ export class ChatRoom {
   /**
    * The mute list of the chat room.
    *
-   * @deprecated 2024-12-03 Please use `muteKVList` instead.
-   */
-  muteList?: Array<string>;
-  /**
-   * The mute list of the chat room.
-   *
    * key: userId
    * value: mute expire time
    */
@@ -162,7 +156,6 @@ export class ChatRoom {
     adminList?: Array<string>;
     memberList?: Array<string>;
     blockList?: Array<string>;
-    muteList?: Array<string>;
     muteKVList?: Record<string, number>;
     isAllMemberMuted?: boolean;
     permissionType: number;
@@ -180,7 +173,6 @@ export class ChatRoom {
     this.adminList = params.adminList;
     this.memberList = params.memberList;
     this.blockList = params.blockList;
-    this.muteList = params.muteList;
     this.muteKVList = params.muteKVList;
     this.isAllMemberMuted = params.isAllMemberMuted;
     this.permissionType = ChatRoomPermissionTypeFromNumber(
