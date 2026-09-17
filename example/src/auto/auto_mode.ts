@@ -18,7 +18,8 @@ import { navigateReplace } from '../navigation';
  * 中的自定义 babel 插件在打包时内联（@react-native/babel-preset 0.83 不再内置
  * inline-environment-variables）。未传时内联为 `undefined`，即人工模式。
  *
- * 数据源：默认取打包进来的 `src/env.ts`（scripts/generate-env.js 生成，
+ * 数据源：默认取打包进来的 `src/env.ts`（占位模板由 scripts/generate-env.js 生成，
+ * 真实凭据由 scripts/env-gettoken.js 按集群生成 env.ts.<cluster>、env:use 激活；
  * 与人工模式同一份数据）；打包期传入 `API_CONFIG=<json 路径>` 可整体覆盖。
  *
  * 脚本格式：

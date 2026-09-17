@@ -22,7 +22,7 @@ const envDir = path.join(projectRoot, 'example', 'src');
 
 const CONFIG_TEMPLATE = {
   _comment:
-    '本文件被 git 忽略，存放本地敏感配置。修改后运行 yarn env:gettoken 重新生成 env.ts.<cluster>。可选字段: tokenTtl（user token 有效期秒数，缺省由服务端决定）、pushInfo（{sendId, keyId}）。accounts/groups 条目缺省 cluster 时归到 defaultCluster。',
+    '本文件被 git 忽略，存放本地敏感配置。修改后运行 yarn env:gettoken 重新生成 env.ts.<cluster>。可选字段: tokenTtl（user token 有效期秒数，缺省由服务端决定）、pushInfo（{sendId, keyId}）。accounts/groups 条目缺省 cluster 时归到 defaultCluster。chatOptions 对应 SDK 的 ChatOptions，平铺为 env.ts 顶层导出（键见 example/src/auto/auto_mode.ts 的 CHAT_OPTIONS_KEYS），支持全局与集群级 clusters.<name>.chatOptions（集群级覆盖全局）。enablePrivateConfig 为私有化部署开关，缺省 false（公有集群，webSocketServer/restServer/msyncServer 不生成）；置 true 时三个私有化参数生成进 env.ts（TODO/空值跳过）。',
   defaultCluster: 'ebs',
   clusters: {
     ebs: {
@@ -44,6 +44,10 @@ const CONFIG_TEMPLATE = {
   ],
   groups: [{ id: 'TODO', owner: 'TODO-user1', name: 'TODO' }],
   chatOptions: {},
+  enablePrivateConfig: false,
+  webSocketServer: 'TODO',
+  restServer: 'TODO',
+  msyncServer: 'TODO',
 };
 
 function isPlaceholder(v) {
@@ -140,13 +144,25 @@ function renderEnvTs(clusterName, cluster, config, accounts) {
     )} };`,
     `export const accounts = ${v(accounts)};`,
     `export const groups = ${v(groups)};`,
-    `export const webSocketServers = ${v(cluster.webSocketServers ?? [])};`,
-    `export const restServers = ${v(cluster.restServers ?? [cluster.restApi])};`,
-    `export const msyncServers = ${v(cluster.msyncServers ?? [])};`,
   ];
-  // chatOptions 扩展位: 键值平铺为顶层导出，auto 模式的 CHAT_OPTIONS_KEYS 可直接消费
-  for (const [key, value] of Object.entries(config.chatOptions ?? {})) {
+  // chatOptions 对应 SDK 的 ChatOptions: 全局 chatOptions + 集群级 cluster.chatOptions
+  // （集群级覆盖全局），键值平铺为顶层导出，auto 模式的 CHAT_OPTIONS_KEYS 可直接消费。
+  const chatOptions = {
+    ...(config.chatOptions ?? {}),
+    ...(cluster.chatOptions ?? {}),
+  };
+  for (const [key, value] of Object.entries(chatOptions)) {
     lines.push(`export const ${key} = ${v(value)};`);
+  }
+  // 私有化部署配置: enablePrivateConfig 为公私切换开关，缺省 false（公有集群，
+  // 三个参数不生成）；置 true 时 webSocketServer/restServer/msyncServer 生成进
+  // env.ts（TODO 占位或空值跳过）。
+  if (config.enablePrivateConfig === true) {
+    for (const key of ['webSocketServer', 'restServer', 'msyncServer']) {
+      if (!isPlaceholder(config[key])) {
+        lines.push(`export const ${key} = ${v(config[key])};`);
+      }
+    }
   }
   return lines.join('\n') + '\n';
 }
