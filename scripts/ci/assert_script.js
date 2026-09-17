@@ -106,8 +106,12 @@ function main() {
   }
 
   // 2. when login was attempted (script login section or API_CONFIG-derived
-  // credentials), the last login entry must have succeeded.
-  const loginEntry = bySource.get('api.ChatClient.login');
+  // credentials), the last login entry must have succeeded. Since 5.0.0 the
+  // auto mode logs `api.ChatClient.loginWithToken` (password login removed);
+  // `api.ChatClient.login` is kept for older logs.
+  const loginEntry =
+    bySource.get('api.ChatClient.login') ??
+    bySource.get('api.ChatClient.loginWithToken');
   if (loginEntry != null && loginEntry.payload?.success !== true) {
     failures.push(
       `api.ChatClient.login did not succeed: ${JSON.stringify(

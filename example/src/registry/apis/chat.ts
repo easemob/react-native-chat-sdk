@@ -4,6 +4,7 @@ import {
   ChatMessage,
   ChatMessageChatType,
   ChatMessageSearchOption,
+  ChatTextMessageBody,
   ChatVoiceParam,
 } from 'react-native-chat-sdk';
 import type { ApiEntry } from '../api_entry';
@@ -47,6 +48,7 @@ export const chatApis: ApiEntry[] = [
     group: 'ChatManager',
     description:
       '发送文本消息。chatType：0 单聊 / 1 群聊 / 2 聊天室。' +
+      'isNeedReadReceipt 可选：群消息已读回执开关（验证 sendMessageReadReceipts 时开启）。' +
       '返回已发送消息 JSON（含 msgId、localTime），发送进度/成败回调见悬浮日志。' +
       'round-trip：返回的消息 JSON 可作为后续消息类 API 的输入。',
     paramsTemplate: JSON.stringify(
@@ -55,6 +57,7 @@ export const chatApis: ApiEntry[] = [
         content: 'hello',
         chatType: 0,
         webhookEnv: '',
+        isNeedReadReceipt: false,
       },
       null,
       2
@@ -68,11 +71,119 @@ export const chatApis: ApiEntry[] = [
       if (params.webhookEnv !== undefined && params.webhookEnv !== '') {
         msg.webhookEnv = String(params.webhookEnv);
       }
+      if (params.isNeedReadReceipt === true) {
+        msg.isNeedReadReceipt = true;
+      }
       await ChatClient.getInstance().chatManager.sendMessage(
         msg,
         sendCallbacks('ChatManager.sendMessage')
       );
       return msg;
+    },
+  },
+  {
+    name: 'ChatManager.sendMessageReadReceipts',
+    group: 'ChatManager',
+    description:
+      '【5.0.0 新增】发送消息已读回执（替代已删除的 sendMessageReadAck）。' +
+      'msgIds：消息 ID 列表，最多 50 条且须属于同一会话；' +
+      '仅对 isNeedReadReceipt=true 的消息生效。',
+    paramsTemplate: JSON.stringify({ msgIds: ['ID'] }, null, 2),
+    invoke: async (params) => {
+      return ChatClient.getInstance().chatManager.sendMessageReadReceipts(
+        (params.msgIds ?? []).map(String)
+      );
+    },
+  },
+  {
+    name: 'ChatManager.clearConversationUnreadMessageCount',
+    group: 'ChatManager',
+    description:
+      '【5.0.0 新增】清空指定会话的本地未读数并同步多设备（不发已读回执）。' +
+      'convId：会话 ID。',
+    paramsTemplate: JSON.stringify({ convId: 'ID' }, null, 2),
+    invoke: async (params) => {
+      return ChatClient.getInstance().chatManager.clearConversationUnreadMessageCount(
+        String(params.convId)
+      );
+    },
+  },
+  {
+    name: 'ChatManager.clearAllConversationUnreadMessageCount',
+    group: 'ChatManager',
+    description:
+      '【5.0.0 新增】清空所有会话的本地未读数并同步多设备（不发已读回执）。无参数。',
+    paramsTemplate: '{}',
+    invoke: async () => {
+      return ChatClient.getInstance().chatManager.clearAllConversationUnreadMessageCount();
+    },
+  },
+  {
+    name: 'ChatManager.getGroupMessageReadReceipts',
+    group: 'ChatManager',
+    description:
+      '【5.0.0 新增】从本地获取群消息已读回执。' +
+      'msgIds：消息 ID 列表，最多 20 条且须属于同一会话。' +
+      '返回 ChatMessageReadReceipt 列表。',
+    paramsTemplate: JSON.stringify({ msgIds: ['ID'] }, null, 2),
+    invoke: async (params) => {
+      return ChatClient.getInstance().chatManager.getGroupMessageReadReceipts(
+        (params.msgIds ?? []).map(String)
+      );
+    },
+  },
+  {
+    name: 'ChatManager.fetchGroupMessageReadReceipts',
+    group: 'ChatManager',
+    description:
+      '【5.0.0 新增】分页从服务器获取群消息已读回执（替代已删除的 fetchGroupAcks）。' +
+      'msgId：消息 ID；groupId：群 ID；cursor/pageSize 可选。' +
+      '返回 {cursor, list, totalCount?}（totalCount 仅 iOS）。',
+    paramsTemplate: JSON.stringify(
+      { msgId: 'ID', groupId: 'ID', cursor: '', pageSize: 20 },
+      null,
+      2
+    ),
+    invoke: async (params) => {
+      return ChatClient.getInstance().chatManager.fetchGroupMessageReadReceipts(
+        String(params.msgId),
+        String(params.groupId),
+        params.cursor === undefined ? undefined : String(params.cursor),
+        params.pageSize === undefined ? undefined : Number(params.pageSize)
+      );
+    },
+  },
+  {
+    name: 'ChatManager.modifyMsgBody',
+    group: 'ChatManager',
+    description:
+      '修改消息（5.0.0 起支持同时修改 ext 扩展）。msgId：消息 ID；' +
+      'content 可选：新的文本内容（仅文本/自定义消息可改 body）；' +
+      'ext 可选：新的扩展（整体覆盖）。返回修改后的消息 JSON。',
+    paramsTemplate: JSON.stringify(
+      { msgId: 'ID', content: 'modified', ext: { k: 'v' } },
+      null,
+      2
+    ),
+    invoke: async (params) => {
+      return ChatClient.getInstance().chatManager.modifyMsgBody({
+        msgId: String(params.msgId),
+        body:
+          params.content === undefined
+            ? undefined
+            : new ChatTextMessageBody({ content: String(params.content) }),
+        ext: params.ext,
+      });
+    },
+  },
+  {
+    name: 'ChatManager.getUnreadCount',
+    group: 'ChatManager',
+    description:
+      '获取所有会话未读数总和（5.0.0 起不再统计聊天室与免打扰会话）。无参数。返回数字。',
+    paramsTemplate: '{}',
+    invoke: async () => {
+      return ChatClient.getInstance().chatManager.getUnreadCount();
     },
   },
   {
