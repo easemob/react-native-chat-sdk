@@ -1178,8 +1178,10 @@ class ExtSdkConversationHelper {
         Map<String, Object> data = new HashMap<>();
         data.put("convId", conversation.conversationId());
         data.put("convType", InternalConvertHelper.conversationTypeToInt(conversation.getType()));
-        data.put("name", conversation.getConversationName());
-        data.put("avatar", conversation.getConversationAvatar());
+        if (conversation.getConversationName() != null)
+            data.put("name", conversation.getConversationName());
+        if (conversation.getConversationAvatar() != null)
+            data.put("avatar", conversation.getConversationAvatar());
         data.put("isChatThread", conversation.isChatThread());
         data.put("isPinned", conversation.isPinned());
         data.put("pinnedTime", conversation.getPinnedTime());
