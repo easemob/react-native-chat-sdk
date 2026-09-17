@@ -395,6 +395,8 @@ $RECYCLE.BIN/
 
 # End of https://www.toptal.com/developers/gitignore/api/windows,macos,linux,reactnative
 example/src/env.ts
+example/src/env.ts.*
+example/config.local.json
 src/version.ts
 *.tgz
 .workbuddy/
