@@ -221,9 +221,9 @@
 - (void)renewToken:(NSDictionary *)param
     withMethodType:(NSString *)aChannelName
             result:(nonnull id<ExtSdkCallbackObjc>)result {
-    NSString *newAgoraToken = param[@"agora_token"];
+    NSString *token = param[@"token"];
     __weak typeof(self) weakSelf = self;
-    [EMClient.sharedClient renewToken:newAgoraToken
+    [EMClient.sharedClient renewToken:token
                            completion:^(EMError *_Nullable aError) {
                              [weakSelf onResult:result
                                  withMethodType:ExtSdkMethodKeyRenewToken
@@ -299,7 +299,7 @@
                  withError:aError
                 withParams:nil];
       }
-                                         
+
                                        }];
 }
 

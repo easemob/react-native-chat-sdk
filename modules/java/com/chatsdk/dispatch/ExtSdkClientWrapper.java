@@ -210,8 +210,8 @@ public class ExtSdkClientWrapper extends ExtSdkWrapper {
     }
 
     public void renewToken(JSONObject param, String channelName, ExtSdkCallback result) throws JSONException {
-        String agoraToken = param.getString("agora_token");
-        EMClient.getInstance().renewToken(agoraToken, new EMCallBack() {
+        String token = param.getString("token");
+        EMClient.getInstance().renewToken(token, new EMCallBack() {
             @Override
             public void onSuccess() {
                 ExtSdkWrapper.onSuccess(result, channelName, null);
