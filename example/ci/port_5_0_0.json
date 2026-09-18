@@ -1,5 +1,5 @@
 {
-  "_comment": "5.0.0 平版 新增/修改 API 登录态验证脚本（auto 模式）。数据源为打包进来的 env.ts（yarn env:gettoken 生成）。覆盖：已读回执体系 4 个新 API、未读数 2 个新 API + getUnreadCount、modifyMsgBody(ext)、createGroupEx(configs)/updateGroupConfigs、设备管理 token 鉴权三方法、renewToken。登录事件（onDataSyncStart/onDataSyncFinish/onDatabaseOpened）与会话 displayName/displayAvatar 由日志人工核对。注意：modifyMsgBody 预期 305（ngi 集群未开通消息编辑服务，SERVER_SERVICE_RESTRICTED，能拿到服务端业务错误即证明链路正确）；kickDevice 对不存在的 resource 服务端返回成功；kickAllDevices 会踢掉本端，固定放最后。单账号限制：已读回执只能对自己发的消息调用，onMessageReadReceipts 事件需双账号人工验证。",
+  "_comment": "5.0.0 平版 新增/修改 API 登录态验证脚本（auto 模式）。数据源为打包进来的 env.ts（yarn env:gettoken 生成）。覆盖：已读回执体系 4 个新 API、未读数 2 个新 API + getUnreadCount、modifyMsgBody(ext)、createGroupEx(configs)/updateGroupConfigs、设备管理 token 鉴权三方法、renewToken，以及 3 个不存在消息的错误路径。登录事件（onDataSyncStart/onDataSyncFinish/onDatabaseOpened）与会话 displayName/displayAvatar 由报告器核对。注意：modifyMsgBody 预期 305（ngi 集群未开通消息编辑服务，SERVER_SERVICE_RESTRICTED，能拿到服务端业务错误即证明链路正确）；kickDevice 对不存在的 resource 服务端返回成功；kickAllDevices 会踢掉本端，固定放最后。单账号限制：已读回执只能对自己发的消息调用，onMessageReadReceipts 事件与 ChatGroupMemberInfo 需双账号验证。",
   "steps": [
     {
       "api": "ChatManager.getUnreadCount",
@@ -150,6 +150,29 @@
       "id": "grp_destroy",
       "params": { "groupId": "$step.grp.groupId" },
       "expect": { "success": true }
+    },
+    {
+      "api": "ChatManager.sendMessageReadReceipts",
+      "id": "receipt_missing",
+      "params": { "msgIds": ["not-exist-msg-id-500"] },
+      "expect": { "success": false }
+    },
+    {
+      "api": "ChatManager.getGroupMessageReadReceipts",
+      "id": "group_receipt_missing",
+      "params": { "msgIds": ["not-exist-group-msg-id-500"] },
+      "expect": { "success": false }
+    },
+    {
+      "api": "ChatManager.fetchGroupMessageReadReceipts",
+      "id": "fetch_group_receipt_missing",
+      "params": {
+        "msgId": "not-exist-group-msg-id-500",
+        "groupId": "$step.grp.groupId",
+        "cursor": "",
+        "pageSize": 20
+      },
+      "expect": { "success": false }
     },
     {
       "api": "ChatClient.kickAllDevices",

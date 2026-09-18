@@ -51,7 +51,10 @@ yarn lint               # ESLint (+ Prettier) over js/ts/tsx
 yarn test               # run all Jest tests (unit + contract)
 yarn test:unit          # unit tests only
 yarn test:contract      # TS <-> native method-name contract tests
+yarn test:ci-scripts    # Node tests for auto-mode result parsing/reporting
 yarn check:circular:dpdm  # circular dependency check
+yarn report:api --platform android  # run the 5.0.0 API scenario and archive a local report
+yarn report:api --platform ios      # same for a booted iOS simulator
 yarn scan:deprecated    # native deprecated API scan (needs gradle / xcodebuild):
                         # clean build + parse; stdout is JSON, full build log and a
                         # warnings-only copy (SDK code only) land in build/reports/.
@@ -77,6 +80,7 @@ yarn example ios        # run on iOS
 - Smoke cases live in `example/ci/no_login_smoke.json` (one no-login API call per manager, each with an `expect.errorCode`). The example app's auto mode (`example/src/auto/auto_mode.ts`) executes the script on launch; `scripts/ci/assert_script.js` compares the pulled device log against the expected error codes. Local runs match CI: `bash scripts/ci/smoke_local.sh <android|ios>` builds the smoke package and runs the driver (`scripts/ci/run_device_android.sh` / `run_device_ios.sh`) in one step.
 - CI test jobs do not call the drivers directly: they go through `scripts/ci/run_ci_android.sh` / `run_ci_ios.sh` (thin wrappers around the drivers; the Android one exists because android-emulator-runner's `script:` input mangles multi-line scripts — only the first line reaches the shell — and it also handles on-device cleanup plus the logcat dump). The iOS build jobs zip the `.app` with `ditto` before upload-artifact: uploading a directory path strips the `ChatSdkExample.app` wrapper and download drops the executable bit. Android test jobs must keep the "Enable KVM group perms" udev step before android-emulator-runner: the ubuntu-24.04 image has /dev/kvm but the runner user is not in the kvm group (actions/runner-images#8542), and without it the emulator silently falls back to ~10x slower software emulation and the driver's `script.done` watchdog (default 180s) times out during app startup.
 - Smoke builds differ from dev builds because they must embed the JS bundle: Android `./gradlew app:assembleDebug -PbundleInDebug=true -PreactNativeArchitectures=x86_64` with `API_SCRIPT=/data/local/tmp/rn_smoke_no_login.json` in the environment; iOS `xcodebuild ... FORCE_BUNDLING=1 API_SCRIPT=/tmp/rn_smoke_no_login.json` (both are user-defined build settings so the RN bundle phase sees them). Debug builds normally skip bundling and load JS from Metro.
+- Traceable 5.0.0 API verification uses `yarn report:api --platform <android|ios> [--device <id>]`. The runner reuses `smoke_local.sh` and the device drivers, then writes sanitized `run.json`, `events.jsonl`, `steps.json`, `summary.md`, `issues.md`, and `crash.log` under the Git-ignored `build/reports/5.0.0/<run-id>/`. Compare completed runs with `yarn report:api --android-report <run-dir> --ios-report <run-dir>`; only reviewed, sanitized conclusions belong in `docs/porting/`.
 - Single-account nightly workflow: `.github/workflows/single-account-nightly.yml`, triggered daily (UTC 19:37) and by manual dispatch. It logs in with a real account and calls one read-only fetch API per manager, expecting success. Cases live in `example/ci/single_account.json` (a pure case file like `no_login_smoke.json`; the presence case references the account via `$config.accounts.0.id`). `scripts/ci/write_single_account_config.sh` generates the API_CONFIG (appKey + account, mirroring `example/src/env.ts`'s shape) from the `E2E_APP_KEY` / `E2E_USER_ID` / `E2E_USER_PASSWORD` secrets (stored in the GitHub environment `rn-single-account`) as a 0600 file that is deleted after the run; auto-mode derives init/login from it. The four jobs (build/test per platform) run in two parallel lanes; the console has multi-device login enabled for the account, so Android and iOS may log in at the same time. The driver scripts are the smoke ones with `SCRIPT_JSON` / `CONFIG_JSON` / `DEVICE_SCRIPT_PATH` / `DEVICE_CONFIG_PATH` / `HOST_SCRIPT_PATH` / `HOST_CONFIG_PATH` / `OUT_LOG` overrides; the nightly build inlines `API_SCRIPT` + `API_CONFIG` (`/data/local/tmp/rn_single_account{,_config}.json` on Android, `/tmp/rn_single_account{,_config}.json` on iOS). Local runs match CI: export the three `E2E_*` variables, then `bash scripts/ci/nightly_local.sh <android|ios>`.
 
 ## Architecture
@@ -122,6 +126,7 @@ TypeScript Manager → Native._callMethod(methodName, args) → NativeModule.cal
 ### Shared Native Code
 
 The `modules/` directory contains native code shared between React Native and Flutter SDKs:
+
 - `modules/cpp/common/ExtSdkMethodType.*` defines all method name constants (must stay in sync with `src/__internal__/Consts.ts`)
 - `modules/java/com/chatsdk/dispatch/` and `modules/objc/dispatch/` contain the actual SDK wrapper implementations
 - `modules/*/rn/` contains React Native-specific adapters

@@ -4,7 +4,7 @@
 
 - **任务**：环信 React Native SDK 主版本平版——native 依赖 iOS `HyphenateChat` 4.24.1 → 5.0.0、Android `io.hyphenate:hyphenate-chat` 4.24.1 → 5.0.0；RN 自身版本 1.20.0 → **5.0.0**（本次起与 native 版本号同步）。
 - **工作位置**：仓库 `react-native-chat-sdk`，worktree `.worktree/5.0.0`，分支 `5.0.0`（从 dev/1.20.0 切出）。
-- **⚠️ 代码状态：全部改动尚未提交（uncommitted）**，审查通过前不执行 git 提交。
+- **代码状态**：5.0.0 平版主体已提交；2026-09-18 新增的自动报告器、21 步错误路径用例和发送 round-trip 修正尚未提交（uncommitted）。
 - **依据文档**（同目录）：
   - `01-api-diff.md` —— 双端对照总变更清单 171 条（include 70 / defer 101 / skip 0）+ 未匹配清单 34 条 + 迁移文档交叉验证。本报告不重复粘贴签名全量，逐条引用其 id。
   - `02-contract.md` —— 跨端契约（已冻结），含 §5 删除清单、§6 defer 处理原则、§7 待决策 5 条。
@@ -378,7 +378,7 @@
 | example 构建（iOS） | ✅（SPM 路径） | 验证时 CocoaPods trunk 无 5.0.0，走 SPM 集成路径完成；**2026-09-16 用户确认 CocoaPods 与 SPM 远端均已发布 5.0.0**，默认 CocoaPods 路径可用 |
 | 无登录冒烟（Android / iOS，各 init+7 步） | ✅ | 双端全绿；contact 步初跑跨端分歧（getAllContacts：Android error 3 / iOS 空成功），已校准为 `addContact` 步骤，复测双端一致 201 |
 | 契约要素 grep 抽查（MT 常量四层、事件 supportedEvents、消息四 key、isRead 取反、掩码映射、版本号对齐、CHANGELOG） | ✅ | 见 04-verification.md §4 |
-| 登录态功能验证（群已读回执、设备管理、dataSync 事件等） | ⏭️ 未执行 | 缺真实 appKey 与双测试账号；建议配 `E2E_*` 后跑 `nightly_local.sh` 或人工双账号验证 |
+| 登录态功能验证（群已读回执、设备管理、dataSync 事件等） | ❌ 部分不通过 | 2026-09-18 单账号 21 步复验：Android 19 passed / 1 crashed / 1 not-run；iOS 20 passed / 1 failed。dataSync 三事件两端已观察；双账号回执事件仍未执行 |
 | 阶段四门禁（porting_guard.sh gate） | ✅ | exit=0 无输出 |
 
 **第二轮（审查决策落实，2026-09-16）验证：**
@@ -390,3 +390,20 @@
 | example 构建（iOS） | ✅ | 子代理改动后 `yarn example build:ios` 成功（SPM 路径） |
 | 无登录冒烟（Android / iOS） | ✅ | 第二轮改动后双端复测全绿（init + 7 步） |
 | 门禁复跑 | ✅ | exit=0 无输出 |
+
+**第三轮（可追溯运行报告与错误路径复验，2026-09-18）：**
+
+| 验证项 | Android | iOS | 结论 |
+| --- | --- | --- | --- |
+| 21 步登录态脚本 | 19 passed / 1 crashed / 1 not-run | 20 passed / 1 failed | 正向 API 与两个批量缺失消息错误路径通过；分页缺失消息行为不一致 |
+| `fetchGroupMessageReadReceipts` 传本地不存在的 msgId | native `NullPointerException`，进程终止 | 空成功 `{cursor:"", totalCount:0, list:[]}` | ❌ 需要确定统一语义并在 wrapper 层防护 |
+| 三个 dataSync 事件 | 均观察到 | 均观察到 | ✅ |
+| `onMessageReadReceipts` / `ChatGroupMemberInfo` | 未覆盖 | 未覆盖 | ⏭️ 需要双账号 |
+
+权威本地证据：Android `build/reports/5.0.0/20260918070127-android-emulator-5554/`，iOS `build/reports/5.0.0/20260918070518-ios-4BEA133B-4B24-430F-96FC-924632C2CF53/`，跨端对比 `build/reports/5.0.0/comparison-20260918071059.md`。这些目录被 Git 忽略，仅脱敏结论进入本报告。
+
+## 7. 第三轮新增待决策项（2026-09-18）
+
+1. **缺失消息的分页群回执统一语义**：Android 当前崩溃，iOS 当前空成功。建议双端 wrapper 在调用 native 前检查本地消息是否存在，不存在时统一返回错误；具体错误码需用户确认（现有两个批量 API 返回 110 `messages is empty`）。
+2. **消息 JSON 既有跨端字段差异**：报告发现 `body.targetLanguageCodes`、`receiverList` 仅 Android 返回；不属于本次 5.0.0 新增字段，建议先标记为既有差异，不在本轮顺手扩 scope，除非用户要求统一。
+3. **双账号验证**：`onMessageReadReceipts` 和非空 `ChatGroupMemberInfo` 仍需协调第二账号读取群消息后复验。

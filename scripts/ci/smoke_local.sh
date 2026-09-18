@@ -70,12 +70,17 @@ if ! xcrun simctl list devices booted | grep -q Booted; then
 fi
 
 echo ">> build smoke app (bundle embedded, API_SCRIPT inlined)"
+IOS_DESTINATION=()
+if [ -n "${DEVICE_UDID:-}" ]; then
+  IOS_DESTINATION=(-destination "id=$DEVICE_UDID")
+fi
 (
   cd example
   xcodebuild -workspace ios/ChatSdkExample.xcworkspace \
     -scheme ChatSdkExample \
     -configuration Debug \
     -sdk iphonesimulator \
+    "${IOS_DESTINATION[@]}" \
     -derivedDataPath ios/build \
     FORCE_BUNDLING=1 \
     API_SCRIPT=/tmp/rn_smoke_no_login.json \

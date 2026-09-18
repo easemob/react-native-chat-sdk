@@ -41,11 +41,17 @@
 | 双语 CHANGELOG 5.0.0 条目 | ✅ | CHANGELOG.md / CHANGELOG.zh.md 同步，含 native 依赖升级行 |
 | 新类型 `src/index.ts` 导出 | ✅ | 由 contract 测试与 typecheck 覆盖 |
 
-## 5. 登录态功能验证（双账号已读回执、设备管理 token 鉴权、dataSync 事件等）
+## 5. 登录态功能验证（2026-09-18 更新）
+
+原 2026-09-16 记录为“缺真实账号、未执行”。2026-09-18 已使用本地 token 环境和 `example/ci/port_5_0_0.json` 完成 Android/iOS 单账号 21 步真实模拟器复验；双账号事件仍未执行。
 
 | 验证项 | 结果 | 失败原因/备注 |
 |---|---|---|
-| 登录态新 API 实机回归（群已读回执、设备管理、onDataSyncStart/Finish/onDatabaseOpened 事件等） | ⏭️ 未执行 | 缺真实 appKey 与双测试账号（本机无 `E2E_APP_KEY`/`E2E_USER_ID`/`E2E_USER_PASSWORD`），超出本次可执行范围。建议后续：配置三个 E2E_* 环境变量后跑 `bash scripts/ci/nightly_local.sh <android\|ios>`（single_account.json  nightly 回归），或对验收报告 ⚠️ 项涉及的功能做人工双账号验证 |
+| Android 登录态 21 步（Android 15，`emulator-5554`） | ❌ 19 步符合预期 / 1 步崩溃 / 1 步未执行 | 正向 17 步及前两个不存在消息错误路径均符合预期；`fetch_group_receipt_missing` 调 native 后 `EMMessage.getChatType()` 空指针崩溃，`kick_all` 未执行。证据：`build/reports/5.0.0/20260918070127-android-emulator-5554/` |
+| iOS 登录态 21 步（iOS 18.2，iPhone 16 Pro simulator） | ❌ 20 步符合预期 / 1 步不符合 | 同一 `fetch_group_receipt_missing` 未报错，返回空成功 `{cursor:"", totalCount:0, list:[]}`；无崩溃，其余步骤通过。证据：`build/reports/5.0.0/20260918070518-ios-4BEA133B-4B24-430F-96FC-924632C2CF53/` |
+| Android / iOS 结构化对比 | ❌ 1 个行为差异 + 2 个后续状态差异 | 权威对比：`build/reports/5.0.0/comparison-20260918071059.md`；另观察到消息 JSON 的 `body.targetLanguageCodes`、`receiverList` 仅 Android 返回，分页 `totalCount` 仅 iOS 返回（后者为已接受契约） |
+| `onDatabaseOpened` / `onDataSyncStart` / `onDataSyncFinish` | ✅ | 两端结构化日志均观察到 |
+| `onMessageReadReceipts` / `ChatGroupMemberInfo` | ⏭️ 未执行 | 单账号无法产生另一成员已读回执；需双账号协同场景 |
 
 ## 6. 阶段门禁
 
@@ -56,7 +62,9 @@ gate exit=0（无输出，通过）
 
 ## 7. 结论
 
-阶段四门禁通过：静态检查、双端构建、双端冒烟、契约抽查全绿；登录态功能验证因缺真实账号标 ⏭️，列入验收报告遗留事项。验证时的唯一环境限制（CocoaPods trunk 未发布 HyphenateChat 5.0.0，iOS 走 SPM 路径完成验证）已于 2026-09-16 解除——用户确认 CocoaPods trunk 与 SPM 远端均已发布 5.0.0，默认 CocoaPods 路径可用。
+2026-09-16 阶段四门禁当时通过：静态检查、双端构建、双端冒烟、契约抽查全绿；登录态功能验证当时因缺真实账号标 ⏭️。验证时的唯一环境限制（CocoaPods trunk 未发布 HyphenateChat 5.0.0，iOS 走 SPM 路径完成验证）已于 2026-09-16 解除——用户确认 CocoaPods trunk 与 SPM 远端均已发布 5.0.0，默认 CocoaPods 路径可用。
+
+**2026-09-18 更新：阶段四运行时门禁重新打开。** 21 步错误路径复验确认 Android native 崩溃及 iOS 空成功语义差异；在 wrapper 防护与跨端预期完成裁决、修复、双端重验之前，不应把登录态 API 验证标为完成。静态门禁结果不受影响。
 
 ## 8. 第二轮验证（审查决策落实后，2026-09-16）
 
@@ -70,3 +78,12 @@ gate exit=0（无输出，通过）
 | 无登录冒烟 Android | ✅ | init + 7 步全过（19 条结构化日志） |
 | 无登录冒烟 iOS | ✅ | init + 7 步全过 |
 | 门禁复跑 | ✅ | exit=0 无输出 |
+
+## 9. 第三轮：可追溯自动报告与错误路径复验（2026-09-18）
+
+- 新增 `yarn report:api --platform <android|ios> [--device <id>]`，复用 `smoke_local.sh` 与现有设备驱动，不另建构建链路。
+- 每次运行在 Git 忽略的 `build/reports/5.0.0/<run-id>/` 生成 `run.json`、`events.jsonl`、`steps.json`、`summary.md`、`issues.md`、`crash.log`；记录 commit、dirty 状态、脚本/报告器 SHA-256、双端 native 版本、设备与时间，不保存 token/clientSecret。
+- `assert_script.js` 与报告器共用同一结果分类器；`expect.success=false` 和固定 `errorCode` 均可作为通过条件，不再把 `script.done.failed` 的原始失败数误当最终结论。
+- 5.0.0 脚本从 18 步扩为 21 步，增加 `sendMessageReadReceipts`、`getGroupMessageReadReceipts`、`fetchGroupMessageReadReceipts` 三个不存在消息错误路径。
+- example 的 `ChatManager.sendMessage` 注册项改为等待 `onSuccess` 并返回服务端回写后的消息；否则步骤拿到临时 msgId，正向本地查询会误报 `messages is empty`，并可能提前触发 native 崩溃。
+- 报告器单测：`yarn test:ci-scripts`，10/10 通过；`yarn typecheck`、`yarn lint`、`yarn check:circular:dpdm`、全量 Jest 19 suites / 110 tests 通过；porting gate exit 0。

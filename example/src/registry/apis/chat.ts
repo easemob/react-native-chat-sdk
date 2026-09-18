@@ -32,6 +32,51 @@ function sendCallbacks(tag: string) {
   };
 }
 
+/** 等服务端发送回调后再返回，确保后续步骤拿到可从本地库查回的消息 ID。 */
+function sendMessageAndWait(message: ChatMessage): Promise<ChatMessage> {
+  return new Promise((resolve, reject) => {
+    let settled = false;
+    ChatClient.getInstance()
+      .chatManager.sendMessage(message, {
+        onProgress: (localMsgId: string, progress: number) => {
+          addLog('ChatManager.sendMessage.onProgress', {
+            localMsgId,
+            progress,
+          });
+        },
+        onError: (
+          localMsgId: string,
+          error: { code: number; description: string }
+        ) => {
+          addLog('ChatManager.sendMessage.onError', {
+            localMsgId,
+            code: error.code,
+            description: error.description,
+          });
+          if (!settled) {
+            settled = true;
+            reject(error);
+          }
+        },
+        onSuccess: (sentMessage: ChatMessage) => {
+          addLog('ChatManager.sendMessage.onSuccess', {
+            msgId: sentMessage.msgId,
+          });
+          if (!settled) {
+            settled = true;
+            resolve(sentMessage);
+          }
+        },
+      })
+      .catch((error) => {
+        if (!settled) {
+          settled = true;
+          reject(error);
+        }
+      });
+  });
+}
+
 export const chatApis: ApiEntry[] = [
   {
     name: 'ChatManager.getAllConversations',
@@ -74,11 +119,7 @@ export const chatApis: ApiEntry[] = [
       if (params.isNeedReadReceipt === true) {
         msg.isNeedReadReceipt = true;
       }
-      await ChatClient.getInstance().chatManager.sendMessage(
-        msg,
-        sendCallbacks('ChatManager.sendMessage')
-      );
-      return msg;
+      return sendMessageAndWait(msg);
     },
   },
   {
