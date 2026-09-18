@@ -1,6 +1,8 @@
 #!/usr/bin/env node
 
 const assert = require('node:assert/strict');
+const fs = require('node:fs');
+const path = require('node:path');
 const test = require('node:test');
 const {
   collectStepReferences,
@@ -9,11 +11,20 @@ const {
   parseLogText,
 } = require('./script_results');
 const {
+  collectIssues,
   differentShapePaths,
   extractCrashEvidence,
   sanitize,
   shapeOf,
 } = require('./auto_report');
+
+const REPO_ROOT = path.resolve(__dirname, '../..');
+
+function readScript(name) {
+  return JSON.parse(
+    fs.readFileSync(path.join(REPO_ROOT, 'example/ci', name), 'utf8')
+  );
+}
 
 function entry(source, payload, seq = 1) {
   return { ts: 1, seq, source, payload };
@@ -162,5 +173,60 @@ test('differentShapePaths reports concise field-level differences', () => {
       { data: { cursor: 'string', list: [], totalCount: 'number' } }
     ),
     ['data.totalCount']
+  );
+});
+
+test('5.0.0 positive and negative scripts keep pairable APIs separated', () => {
+  const positive = readScript('port_5_0_0_positive.json');
+  const negative = readScript('port_5_0_0_negative.json');
+  const positiveApis = new Set(positive.steps.map((step) => step.api));
+  const negativeApis = new Set(negative.steps.map((step) => step.api));
+  const pairableApis = [
+    'ChatGroupManager.createGroupEx',
+    'ChatGroupManager.updateGroupConfigs',
+    'ChatManager.modifyMsgBody',
+    'ChatManager.clearConversationUnreadMessageCount',
+    'ChatManager.sendMessageReadReceipts',
+    'ChatManager.getGroupMessageReadReceipts',
+    'ChatClient.getLoggedInDevicesFromServer',
+    'ChatClient.renewToken',
+    'ChatClient.kickDevice',
+    'ChatClient.kickAllDevices',
+  ];
+
+  assert.ok(
+    positive.steps.every((step) => step.expect?.success === true),
+    'positive-path steps must all expect success'
+  );
+  assert.ok(
+    negative.steps.every(
+      (step) =>
+        step.expect?.success === false ||
+        typeof step.expect?.errorCode === 'number'
+    ),
+    'negative-path steps must all expect an error'
+  );
+  for (const api of pairableApis) {
+    assert.ok(positiveApis.has(api), `positive path missing ${api}`);
+    assert.ok(negativeApis.has(api), `negative path missing ${api}`);
+  }
+  assert.ok(positiveApis.has('ChatManager.fetchGroupMessageReadReceipts'));
+  assert.ok(!negativeApis.has('ChatManager.fetchGroupMessageReadReceipts'));
+});
+
+test('negative report records the intentionally disabled native crash case', () => {
+  const scriptName = 'port_5_0_0_negative.json';
+  const script = readScript(scriptName);
+  const issues = collectIssues(
+    path.join(REPO_ROOT, 'example/ci', scriptName),
+    'android',
+    script,
+    { outcomes: [], bySource: new Map() },
+    ''
+  );
+  assert.ok(
+    issues.some(
+      (item) => item.key === 'fetch-group-receipt-missing-disabled'
+    )
   );
 });

@@ -12,7 +12,10 @@ const { execFileSync, spawnSync } = require('node:child_process');
 const { evaluateScript, parseLogText } = require('./script_results');
 
 const REPO_ROOT = path.resolve(__dirname, '../..');
-const DEFAULT_SCRIPT = path.join(REPO_ROOT, 'example/ci/port_5_0_0.json');
+const DEFAULT_SCRIPT = path.join(
+  REPO_ROOT,
+  'example/ci/port_5_0_0_positive.json'
+);
 const CRASH_PATTERN =
   /FATAL EXCEPTION|SIG(?:SEGV|ABRT)|NullPointerException|uncaught exception|Terminating app|fatal error|REPORT_TIMEOUT|Lost connection to device/i;
 
@@ -22,8 +25,9 @@ function usage() {
   yarn report:api --platform <android|ios> --from-log <api_test.log> [--crash-log <log>]
   yarn report:api --android-report <run-dir> --ios-report <run-dir>
 
-The default script is example/ci/port_5_0_0.json. Per-run evidence is written
-under build/reports/<version>/<run-id>/ and remains Git-ignored.
+The default script is example/ci/port_5_0_0_positive.json. Run the negative
+path with --script example/ci/port_5_0_0_negative.json. Per-run evidence is
+written under build/reports/<version>/<run-id>/ and remains Git-ignored.
 `;
 }
 
@@ -282,7 +286,10 @@ function collectIssues(scriptPath, platform, script, evaluation, crashText) {
     });
   }
 
-  if (!path.basename(scriptPath).includes('port_5_0_0')) return issues;
+  const scriptName = path.basename(scriptPath);
+  if (!scriptName.includes('port_5_0_0')) return issues;
+  const isPositivePath = scriptName === 'port_5_0_0_positive.json';
+  const isNegativePath = scriptName === 'port_5_0_0_negative.json';
 
   const requiredEvents = [
     'ChatConnectEventListener.onDatabaseOpened',
@@ -301,6 +308,7 @@ function collectIssues(scriptPath, platform, script, evaluation, crashText) {
   }
 
   if (
+    isPositivePath &&
     script.steps.some(
       (step) => step.api === 'ChatManager.sendMessageReadReceipts'
     ) &&
@@ -369,20 +377,25 @@ function collectIssues(scriptPath, platform, script, evaluation, crashText) {
     });
   }
 
-  const requiredNegativeIds = [
-    'receipt_missing',
-    'group_receipt_missing',
-    'fetch_group_receipt_missing',
-  ];
-  for (const id of requiredNegativeIds) {
-    if (!script.steps.some((step) => step.id === id)) {
-      issues.push({
-        key: `${id}-coverage-gap`,
-        status: 'blocked',
-        summary: `Missing-message error path ${id} is absent from the script`,
-        evidence: relativeToRepo(scriptPath),
-      });
+  if (isNegativePath) {
+    for (const id of ['receipt_missing', 'group_receipt_missing']) {
+      if (!script.steps.some((step) => step.id === id)) {
+        issues.push({
+          key: `${id}-coverage-gap`,
+          status: 'blocked',
+          summary: `Missing-message error path ${id} is absent from the script`,
+          evidence: relativeToRepo(scriptPath),
+        });
+      }
     }
+    issues.push({
+      key: 'fetch-group-receipt-missing-disabled',
+      status: 'known-crash',
+      summary:
+        'The missing-message fetchGroupMessageReadReceipts case is intentionally disabled',
+      evidence:
+        'Android native crashes before returning; see docs/porting/5.0.0/04-verification.md',
+    });
   }
   return issues;
 }

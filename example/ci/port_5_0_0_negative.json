@@ -1,0 +1,102 @@
+{
+  "_comment": "5.0.0 平版新增/修改 API 反向路径（auto 模式）。只使用单账号可稳定构造的非法参数、缺失资源和无效 token；无参数本地查询没有可控错误输入，不强造反例。fetchGroupMessageReadReceipts 的缺失消息场景已确认会令 Android native 进程崩溃，按用户决策暂不执行，继续由 docs/porting/5.0.0/04-verification.md 和报告 issue candidate 记录。三个缺失消息回执 API 的目标契约为 500 MESSAGE_INVALID；本脚本执行其中两个不会崩溃的批量 API，当前返回 110 时应标记失败。",
+  "steps": [
+    {
+      "api": "ChatGroupManager.createGroupEx",
+      "id": "create_group_invalid_member",
+      "params": {
+        "groupName": "rn-port-500-negative",
+        "desc": "invalid member must reject group creation",
+        "inviteMembers": ["rn-ci-nonexistent-user"],
+        "configs": {
+          "maxCount": 200,
+          "inviteNeedConfirm": false,
+          "ext": "negative",
+          "isPublic": false,
+          "joinApprovalRequired": false,
+          "allowInvites": true
+        }
+      },
+      "expect": { "errorCode": 600 }
+    },
+    {
+      "api": "ChatGroupManager.updateGroupConfigs",
+      "id": "update_group_missing",
+      "params": {
+        "groupId": "not-exist-group-id-500",
+        "types": 32,
+        "configs": {
+          "maxCount": 200,
+          "inviteNeedConfirm": false,
+          "ext": "negative",
+          "isPublic": false,
+          "joinApprovalRequired": false,
+          "allowInvites": true
+        }
+      },
+      "expect": { "errorCode": 600 }
+    },
+    {
+      "api": "ChatManager.modifyMsgBody",
+      "id": "modify_message_missing",
+      "params": {
+        "msgId": "not-exist-msg-id-500",
+        "content": "must not be applied",
+        "ext": { "port": "5.0.0", "path": "negative" }
+      },
+      "expect": { "errorCode": 500 }
+    },
+    {
+      "api": "ChatManager.clearConversationUnreadMessageCount",
+      "id": "clear_conversation_empty",
+      "params": { "convId": "" },
+      "expect": { "errorCode": 110 }
+    },
+    {
+      "api": "ChatManager.sendMessageReadReceipts",
+      "id": "receipt_missing",
+      "params": { "msgIds": ["not-exist-msg-id-500"] },
+      "expect": { "errorCode": 500 }
+    },
+    {
+      "api": "ChatManager.getGroupMessageReadReceipts",
+      "id": "group_receipt_missing",
+      "params": { "msgIds": ["not-exist-group-msg-id-500"] },
+      "expect": { "errorCode": 500 }
+    },
+    {
+      "api": "ChatClient.getLoggedInDevicesFromServer",
+      "id": "devices_invalid_token",
+      "params": {
+        "userId": "$config.accounts.0.id",
+        "token": "rn-ci-invalid-token"
+      },
+      "expect": { "errorCode": 303 }
+    },
+    {
+      "api": "ChatClient.renewToken",
+      "id": "renew_invalid_token",
+      "params": { "token": "" },
+      "expect": { "errorCode": 104 }
+    },
+    {
+      "api": "ChatClient.kickDevice",
+      "id": "kick_device_invalid_token",
+      "params": {
+        "userId": "$config.accounts.0.id",
+        "token": "rn-ci-invalid-token",
+        "resource": "rn-ci-nonexistent-resource"
+      },
+      "expect": { "errorCode": 303 }
+    },
+    {
+      "api": "ChatClient.kickAllDevices",
+      "id": "kick_all_invalid_token",
+      "params": {
+        "userId": "$config.accounts.0.id",
+        "token": "rn-ci-invalid-token"
+      },
+      "expect": { "errorCode": 303 }
+    }
+  ]
+}

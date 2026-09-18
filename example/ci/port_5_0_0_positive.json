@@ -1,5 +1,5 @@
 {
-  "_comment": "5.0.0 平版 新增/修改 API 登录态验证脚本（auto 模式）。数据源为打包进来的 env.ts（yarn env:gettoken 生成）。覆盖：已读回执体系 4 个新 API、未读数 2 个新 API + getUnreadCount、modifyMsgBody(ext)、createGroupEx(configs)/updateGroupConfigs、设备管理 token 鉴权三方法、renewToken，以及 3 个不存在消息的错误路径。登录事件（onDataSyncStart/onDataSyncFinish/onDatabaseOpened）与会话 displayName/displayAvatar 由报告器核对。注意：modifyMsgBody 预期 305（ngi 集群未开通消息编辑服务，SERVER_SERVICE_RESTRICTED，能拿到服务端业务错误即证明链路正确）；kickDevice 对不存在的 resource 服务端返回成功；kickAllDevices 会踢掉本端，固定放最后。单账号限制：已读回执只能对自己发的消息调用，onMessageReadReceipts 事件与 ChatGroupMemberInfo 需双账号验证。",
+  "_comment": "5.0.0 平版新增/修改 API 正向路径（auto 模式）。数据源为 env.ts（yarn env:gettoken 生成）。辅助步骤 sendMessage/destroyGroup 仅用于准备与清理，不计入被测 API。modifyMsgBody 按公开契约期待成功；未开通消息编辑服务的集群会返回 305，并由报告如实标记为环境限制。kickDevice 使用 getLoggedInDevicesFromServer 返回的真实 resource，会踢掉当前设备，因此与 kickAllDevices 固定放在最后。单账号只验证回执 API 的成功调用；非空回执、onMessageReadReceipts 与 ChatGroupMemberInfo 暂不覆盖。",
   "steps": [
     {
       "api": "ChatManager.getUnreadCount",
@@ -12,7 +12,7 @@
       "id": "msg_self",
       "params": {
         "targetId": "$config.accounts.0.id",
-        "content": "port-5.0.0 self-chat",
+        "content": "port-5.0.0 positive self-chat",
         "chatType": 0
       },
       "delayAfterMs": 1000,
@@ -23,10 +23,10 @@
       "id": "modify_self",
       "params": {
         "msgId": "$step.msg_self.msgId",
-        "content": "port-5.0.0 self-chat (modified)",
-        "ext": { "port": "5.0.0" }
+        "content": "port-5.0.0 positive self-chat (modified)",
+        "ext": { "port": "5.0.0", "path": "positive" }
       },
-      "expect": { "errorCode": 305 }
+      "expect": { "success": true }
     },
     {
       "api": "ChatManager.clearConversationUnreadMessageCount",
@@ -56,8 +56,8 @@
       "api": "ChatGroupManager.createGroupEx",
       "id": "grp",
       "params": {
-        "groupName": "rn-port-500",
-        "desc": "5.0.0 porting verification",
+        "groupName": "rn-port-500-positive",
+        "desc": "5.0.0 positive-path verification",
         "configs": {
           "maxCount": 200,
           "inviteNeedConfirm": false,
@@ -78,7 +78,7 @@
         "configs": {
           "maxCount": 300,
           "inviteNeedConfirm": false,
-          "ext": "rn-port-500",
+          "ext": "rn-port-500-positive",
           "isPublic": false,
           "joinApprovalRequired": false,
           "allowInvites": true
@@ -91,7 +91,7 @@
       "id": "gmsg",
       "params": {
         "targetId": "$step.grp.groupId",
-        "content": "port-5.0.0 group receipt",
+        "content": "port-5.0.0 positive group receipt",
         "chatType": 1,
         "isNeedReadReceipt": true
       },
@@ -136,43 +136,20 @@
       "expect": { "success": true }
     },
     {
-      "api": "ChatClient.kickDevice",
-      "id": "kick_bogus",
-      "params": {
-        "userId": "$config.accounts.0.id",
-        "token": "$config.accounts.0.mm",
-        "resource": "rn-ci-nonexistent-resource"
-      },
-      "expect": { "success": true }
-    },
-    {
       "api": "ChatGroupManager.destroyGroup",
       "id": "grp_destroy",
       "params": { "groupId": "$step.grp.groupId" },
       "expect": { "success": true }
     },
     {
-      "api": "ChatManager.sendMessageReadReceipts",
-      "id": "receipt_missing",
-      "params": { "msgIds": ["not-exist-msg-id-500"] },
-      "expect": { "success": false }
-    },
-    {
-      "api": "ChatManager.getGroupMessageReadReceipts",
-      "id": "group_receipt_missing",
-      "params": { "msgIds": ["not-exist-group-msg-id-500"] },
-      "expect": { "success": false }
-    },
-    {
-      "api": "ChatManager.fetchGroupMessageReadReceipts",
-      "id": "fetch_group_receipt_missing",
+      "api": "ChatClient.kickDevice",
+      "id": "kick_current_device",
       "params": {
-        "msgId": "not-exist-group-msg-id-500",
-        "groupId": "$step.grp.groupId",
-        "cursor": "",
-        "pageSize": 20
+        "userId": "$config.accounts.0.id",
+        "token": "$config.accounts.0.mm",
+        "resource": "$step.devices.0.resource"
       },
-      "expect": { "success": false }
+      "expect": { "success": true }
     },
     {
       "api": "ChatClient.kickAllDevices",

@@ -87,3 +87,28 @@ gate exit=0（无输出，通过）
 - 5.0.0 脚本从 18 步扩为 21 步，增加 `sendMessageReadReceipts`、`getGroupMessageReadReceipts`、`fetchGroupMessageReadReceipts` 三个不存在消息错误路径。
 - example 的 `ChatManager.sendMessage` 注册项改为等待 `onSuccess` 并返回服务端回写后的消息；否则步骤拿到临时 msgId，正向本地查询会误报 `messages is empty`，并可能提前触发 native 崩溃。
 - 报告器单测：`yarn test:ci-scripts`，10/10 通过；`yarn typecheck`、`yarn lint`、`yarn check:circular:dpdm`、全量 Jest 19 suites / 110 tests 通过；porting gate exit 0。
+
+## 10. 第四轮：正向/反向用例拆分（2026-09-18）
+
+- 原 `example/ci/port_5_0_0.json` 拆为 `port_5_0_0_positive.json` 与 `port_5_0_0_negative.json`；`yarn report:api` 默认执行正向脚本，反向脚本通过 `--script example/ci/port_5_0_0_negative.json` 指定。
+- 正向脚本只断言成功返回；反向脚本覆盖不存在资源、非法参数及无效 token。无参数本地查询没有稳定可控的错误输入，不为满足数量机械构造无意义反例。
+- `fetchGroupMessageReadReceipts` 的缺失消息反例已确认会导致 Android native 崩溃，按用户决策在反向脚本中暂时屏蔽；报告器固定生成 `fetch-group-receipt-missing-disabled` 候选项，继续追踪而不阻断其他用例。
+- 双账号场景暂不实施；`onMessageReadReceipts` 和非空 `ChatGroupMemberInfo` 继续保留为后续验证项。
+- 报告目录及文件结构、Android/iOS 对比逻辑保持不变。
+- 脚本与报告器验证：`yarn test:ci-scripts` 12/12、`yarn lint`、`yarn typecheck`、porting gate 均通过。
+
+| 验证项 | Android | iOS | 结论 |
+| --- | --- | --- | --- |
+| 正向 18 步 | 17 passed / 1 failed | 17 passed / 1 failed | 唯一失败均为 `modifyMsgBody` 返回 305（当前集群未开通消息编辑服务）；其余正常路径完成，真实 resource 的 `kickDevice` 与后续 `kickAllDevices` 均成功 |
+| 反向 10 步 | 8 passed / 2 failed | 7 passed / 3 failed | 无崩溃、全部步骤执行完成；两个批量回执 API 当前均返回 110，与目标 500 不符；iOS 另有 `renewToken("")` 空成功差异 |
+| 反向一致项 | 600 / 600 / 500 / 110 / 303 / 303 / 303 | 同 Android | 非法群成员、不存在群、缺失修改消息、空会话 ID、设备管理三方法无效 token 的结果与错误码双端一致 |
+| `renewToken("")` | 104 `INVALID_TOKEN` | success | ❌ iOS native 5.0.0 的空 token 分支构造 `EMErrorInvalidToken` 后未立即返回，随后结果被 core 调用覆盖；本轮只记录、不修改 RN wrapper/native 行为 |
+
+权威本地证据：
+
+- 正向 Android：`build/reports/5.0.0/20260918085559-android-emulator-5554/`
+- 正向 iOS：`build/reports/5.0.0/20260918085608-ios-4BEA133B-4B24-430F-96FC-924632C2CF53/`
+- 正向双端对比：`build/reports/5.0.0/comparison-20260918085631.md`
+- 反向 Android：`build/reports/5.0.0/20260918085616-android-emulator-5554/`
+- 反向 iOS：`build/reports/5.0.0/20260918085623-ios-4BEA133B-4B24-430F-96FC-924632C2CF53/`
+- 反向双端对比：`build/reports/5.0.0/comparison-20260918085641.md`

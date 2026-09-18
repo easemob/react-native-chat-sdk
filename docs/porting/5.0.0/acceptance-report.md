@@ -407,3 +407,5 @@
 1. **缺失消息错误码统一**：用户已裁决 iOS/Android 最终统一为 `MESSAGE_INVALID`（500）；`fetchGroupMessageReadReceipts` 的 Android 崩溃、iOS 空成功及三个回执 API 的统一实现本轮暂缓。
 2. **消息 JSON 既有跨端字段差异**：报告发现 `body.targetLanguageCodes`、`receiverList` 仅 Android 返回；不属于本次 5.0.0 新增字段，建议先标记为既有差异，不在本轮顺手扩 scope，除非用户要求统一。
 3. **双账号验证**：`onMessageReadReceipts` 和非空 `ChatGroupMemberInfo` 仍需协调第二账号读取群消息后复验。
+4. **正向/反向用例拆分**：用户确认将 5.0.0 单账号脚本拆为 positive/negative 两条路径；报告目录结构与双端对比逻辑不变。已知会令 Android native 崩溃的 `fetchGroupMessageReadReceipts` 缺失消息用例暂不执行，只在报告中持续记录；双账号脚本暂不考虑。
+5. **反向用例新增发现**：双端对非法群成员、不存在群、缺失修改消息、空会话 ID 和设备管理无效 token 的错误码一致；两个批量回执 API 均仍返回 110，尚未落实已裁决的 500。`renewToken("")` 在 Android 返回 104、iOS 却成功；核对 iOS native 5.0.0 源码确认其空 token 分支构造错误后未立即返回。本轮仅记录，不修改 RN wrapper 或 native 行为。
