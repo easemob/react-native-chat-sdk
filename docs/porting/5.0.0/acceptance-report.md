@@ -4,7 +4,7 @@
 
 - **任务**：环信 React Native SDK 主版本平版——native 依赖 iOS `HyphenateChat` 4.24.1 → 5.0.0、Android `io.hyphenate:hyphenate-chat` 4.24.1 → 5.0.0；RN 自身版本 1.20.0 → **5.0.0**（本次起与 native 版本号同步）。
 - **工作位置**：仓库 `react-native-chat-sdk`，worktree `.worktree/5.0.0`，分支 `5.0.0`（从 dev/1.20.0 切出）。
-- **代码状态**：5.0.0 平版主体已提交；2026-09-18 新增的自动报告器、21 步错误路径用例和发送 round-trip 修正尚未提交（uncommitted）。
+- **代码状态**：5.0.0 平版主体及自动报告器已提交；`fetchGroupMessageReadReceipts` 崩溃修复暂缓，当前无对应代码改动。
 - **依据文档**（同目录）：
   - `01-api-diff.md` —— 双端对照总变更清单 171 条（include 70 / defer 101 / skip 0）+ 未匹配清单 34 条 + 迁移文档交叉验证。本报告不重复粘贴签名全量，逐条引用其 id。
   - `02-contract.md` —— 跨端契约（已冻结），含 §5 删除清单、§6 defer 处理原则、§7 待决策 5 条。
@@ -396,14 +396,14 @@
 | 验证项 | Android | iOS | 结论 |
 | --- | --- | --- | --- |
 | 21 步登录态脚本 | 19 passed / 1 crashed / 1 not-run | 20 passed / 1 failed | 正向 API 与两个批量缺失消息错误路径通过；分页缺失消息行为不一致 |
-| `fetchGroupMessageReadReceipts` 传本地不存在的 msgId | native `NullPointerException`，进程终止 | 空成功 `{cursor:"", totalCount:0, list:[]}` | ❌ 需要确定统一语义并在 wrapper 层防护 |
+| `fetchGroupMessageReadReceipts` 传本地不存在的 msgId | native `NullPointerException`，进程终止 | 空成功 `{cursor:"", totalCount:0, list:[]}` | ❌ 修复暂缓；最终错误码已裁决双端统一为 500 |
 | 三个 dataSync 事件 | 均观察到 | 均观察到 | ✅ |
 | `onMessageReadReceipts` / `ChatGroupMemberInfo` | 未覆盖 | 未覆盖 | ⏭️ 需要双账号 |
 
 权威本地证据：Android `build/reports/5.0.0/20260918070127-android-emulator-5554/`，iOS `build/reports/5.0.0/20260918070518-ios-4BEA133B-4B24-430F-96FC-924632C2CF53/`，跨端对比 `build/reports/5.0.0/comparison-20260918071059.md`。这些目录被 Git 忽略，仅脱敏结论进入本报告。
 
-## 7. 第三轮新增待决策项（2026-09-18）
+## 7. 第三轮决策与遗留项（2026-09-18）
 
-1. **缺失消息的分页群回执统一语义**：Android 当前崩溃，iOS 当前空成功。建议双端 wrapper 在调用 native 前检查本地消息是否存在，不存在时统一返回错误；具体错误码需用户确认（现有两个批量 API 返回 110 `messages is empty`）。
+1. **缺失消息错误码统一**：用户已裁决 iOS/Android 最终统一为 `MESSAGE_INVALID`（500）；`fetchGroupMessageReadReceipts` 的 Android 崩溃、iOS 空成功及三个回执 API 的统一实现本轮暂缓。
 2. **消息 JSON 既有跨端字段差异**：报告发现 `body.targetLanguageCodes`、`receiverList` 仅 Android 返回；不属于本次 5.0.0 新增字段，建议先标记为既有差异，不在本轮顺手扩 scope，除非用户要求统一。
 3. **双账号验证**：`onMessageReadReceipts` 和非空 `ChatGroupMemberInfo` 仍需协调第二账号读取群消息后复验。
