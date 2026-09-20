@@ -3,11 +3,13 @@
 # and run steps of .github/workflows/single-account-nightly.yml so a local run
 # exercises exactly what CI runs.
 #
-# Required environment (same names as the GitHub secrets):
-#   E2E_APP_KEY  E2E_USER_ID  E2E_USER_PASSWORD
+# Required environment (same names as the GitHub secrets; the user token is
+# fetched fresh via scripts/ci/fetch_e2e_user_token.js, not passed in):
+#   E2E_APP_KEY  E2E_USER_ID  E2E_REST_API  E2E_CLIENT_ID  E2E_CLIENT_SECRET
 #
 # Usage:
-#   E2E_APP_KEY=... E2E_USER_ID=... E2E_USER_PASSWORD=... \
+#   E2E_APP_KEY=... E2E_USER_ID=... E2E_REST_API=... \
+#   E2E_CLIENT_ID=... E2E_CLIENT_SECRET=... \
 #     bash scripts/ci/nightly_local.sh android   # needs a booted emulator/device
 #     ... ios                                    # boots a simulator if none is booted
 #
@@ -26,7 +28,7 @@ case "$PLATFORM" in
     ;;
 esac
 
-for var in E2E_APP_KEY E2E_USER_ID E2E_USER_PASSWORD; do
+for var in E2E_APP_KEY E2E_USER_ID E2E_REST_API E2E_CLIENT_ID E2E_CLIENT_SECRET; do
   if [ -z "${!var:-}" ]; then
     echo "error: environment variable $var is not set" >&2
     exit 2
@@ -34,6 +36,10 @@ for var in E2E_APP_KEY E2E_USER_ID E2E_USER_PASSWORD; do
 done
 
 cd "$REPO_ROOT"
+
+# User tokens expire in ~24h, so fetch a fresh one for every run (same as CI).
+E2E_USER_TOKEN="$(node scripts/ci/fetch_e2e_user_token.js)"
+export E2E_USER_TOKEN
 
 mkdir -p build/reports
 CONFIG="$REPO_ROOT/build/reports/rn_single_account_config.json"

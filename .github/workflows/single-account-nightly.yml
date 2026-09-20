@@ -76,11 +76,19 @@ jobs:
           path: artifacts
 
       - name: Prepare protected test configuration
+        # User tokens expire in ~24h and cannot be stored as secrets, so each
+        # test job exchanges the app credentials for a fresh token right here,
+        # before the emulator/simulator boots (fail fast on auth problems).
         env:
           E2E_APP_KEY: ${{ secrets.E2E_APP_KEY }}
           E2E_USER_ID: ${{ secrets.E2E_USER_ID }}
-          E2E_USER_PASSWORD: ${{ secrets.E2E_USER_PASSWORD }}
+          E2E_REST_API: ${{ secrets.E2E_REST_API }}
+          E2E_CLIENT_ID: ${{ secrets.E2E_CLIENT_ID }}
+          E2E_CLIENT_SECRET: ${{ secrets.E2E_CLIENT_SECRET }}
         run: |
+          E2E_USER_TOKEN="$(node scripts/ci/fetch_e2e_user_token.js)"
+          echo "::add-mask::$E2E_USER_TOKEN"
+          export E2E_USER_TOKEN
           bash scripts/ci/write_single_account_config.sh "$RUNNER_TEMP/rn_single_account_config.json"
           echo "E2E_CONFIG_PATH=$RUNNER_TEMP/rn_single_account_config.json" >> "$GITHUB_ENV"
 
@@ -237,11 +245,19 @@ jobs:
           path: artifacts
 
       - name: Prepare protected test configuration
+        # User tokens expire in ~24h and cannot be stored as secrets, so each
+        # test job exchanges the app credentials for a fresh token right here,
+        # before the emulator/simulator boots (fail fast on auth problems).
         env:
           E2E_APP_KEY: ${{ secrets.E2E_APP_KEY }}
           E2E_USER_ID: ${{ secrets.E2E_USER_ID }}
-          E2E_USER_PASSWORD: ${{ secrets.E2E_USER_PASSWORD }}
+          E2E_REST_API: ${{ secrets.E2E_REST_API }}
+          E2E_CLIENT_ID: ${{ secrets.E2E_CLIENT_ID }}
+          E2E_CLIENT_SECRET: ${{ secrets.E2E_CLIENT_SECRET }}
         run: |
+          E2E_USER_TOKEN="$(node scripts/ci/fetch_e2e_user_token.js)"
+          echo "::add-mask::$E2E_USER_TOKEN"
+          export E2E_USER_TOKEN
           bash scripts/ci/write_single_account_config.sh "$RUNNER_TEMP/rn_single_account_config.json"
           echo "E2E_CONFIG_PATH=$RUNNER_TEMP/rn_single_account_config.json" >> "$GITHUB_ENV"
 
