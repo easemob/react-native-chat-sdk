@@ -17,6 +17,7 @@ _Chinese | [English](./CHANGELOG.md)_
 - 聊天室：移除 `ChatRoomManager.createChatRoom` 和 `ChatRoomManager.destroyChatRoom`，请改用服务端 REST API 创建和解散聊天室。移除 `ChatRoomManager.getAllChatRooms`（双端原生 SDK 均已移除）。
 - 移除 `ChatManager.reportMessage`，请将消息举报提交至业务服务器。
 - 新增多设备事件 `ConversationUnreadMessageCountCleared`(65) 和 `AllConversationUnreadMessageCountCleared`(66)：当前账号的其他设备清除会话未读数时触发。
+- 新增多设备事件 `GROUP_UPDATE`(34)：当前账号的其他设备修改群组信息时由 iOS SDK 触发（Android SDK 通过 52 上报同一变更）。
 - 清理长期废弃的 API（请使用替代项）：`ChatRoomManager.joinChatRoom`（改用 `joinChatRoomEx`）、`ChatGroupManager.fetchGroupInfoFromServer`（改用 `fetchGroupInfoWithoutMembersFromServer`）、`ChatManager.searchMsgFromDB`/`getMessagesWithMsgType`/`getMessages`/`getMessagesWithKeyword`/`getMessageWithTimestamp` 及 `ChatConversation` 同名四个废弃方法（分别改用 `getMsgsWithMsgType`/`getMsgs`/`getMsgsWithKeyword`/`getMsgWithTimestamp`）、`ChatManager.modifyMessageBody`（改用 `modifyMsgBody`）、`ChatImageMessageBody.thumbnailSecret`（改用 `secret`）、`ChatFetchMessageOptions.from`（改用 `senders`）、`ChatRoom.muteList`（改用 `muteKVList`）、群组废弃回调 `onMemberJoined`/`onMemberExited`（改用 `onMembersJoined`/`onMembersExited`）、聊天室废弃回调 `onMuteListAdded`（改用 `onMuteListAddedV2`）。`ChatOptions` 公开构造函数移除，请使用 `ChatOptions.withAppKey` 或 `ChatOptions.withAppId`。废弃事件常量 `onMessagesRecalled`、`onMessageReadAck`、`onMessageDeliveryAck`、`onMessageStatusChanged` 一并移除。
 
 ## 1.20.0
