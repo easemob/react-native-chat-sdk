@@ -140,6 +140,41 @@ describe('ChatClient event dispatch', () => {
     );
   });
 
+  test('multi-device group update event routes to onGroupEvent', () => {
+    const listener: ChatMultiDeviceEventListener = {
+      onGroupEvent: jest.fn(),
+    };
+    client.addMultiDeviceListener(listener);
+
+    // 34 is iOS-only (`EMMultiDevicesEventGroupUpdate`).
+    emitNativeEvent(MTonMultiDeviceEvent, {
+      type: MTonMultiDeviceEventGroup,
+      event: 34,
+      target: 'g1',
+      ext: '',
+    });
+
+    expect(listener.onGroupEvent).toHaveBeenCalledWith(
+      ChatMultiDeviceEvent.GROUP_UPDATE,
+      'g1',
+      ''
+    );
+  });
+
+  test('multi-device group event values match the native enumerations', () => {
+    // The enum numbers its members implicitly, so inserting or reordering a
+    // member would silently shift the values the native bridge sends.
+    expect(ChatMultiDeviceEvent.GROUP_ADD_USER_ALLOW_LIST).toBe(30);
+    expect(ChatMultiDeviceEvent.GROUP_REMOVE_USER_ALLOW_LIST).toBe(31);
+    expect(ChatMultiDeviceEvent.GROUP_ALL_BAN).toBe(32);
+    expect(ChatMultiDeviceEvent.GROUP_REMOVE_ALL_BAN).toBe(33);
+    expect(ChatMultiDeviceEvent.GROUP_UPDATE).toBe(34);
+    expect(ChatMultiDeviceEvent.THREAD_CREATE).toBe(40);
+    expect(ChatMultiDeviceEvent.THREAD_UPDATE).toBe(44);
+    expect(ChatMultiDeviceEvent.THREAD_KICK).toBe(45);
+    expect(ChatMultiDeviceEvent.GROUP_METADATA_CHANGED).toBe(52);
+  });
+
   test('multi-device conversation event routes to onConversationEvent', () => {
     const listener: ChatMultiDeviceEventListener = {
       onConversationEvent: jest.fn(),

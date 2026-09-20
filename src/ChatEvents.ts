@@ -143,6 +143,12 @@ export enum ChatMultiDeviceEvent {
    */
   GROUP_REMOVE_ALL_BAN,
   /**
+   * If user A updates the chat group information on Device A1, this event is triggered on Device A2.
+   *
+   * Only the iOS SDK reports this event (native value 34, `EMMultiDevicesEventGroupUpdate`); the Android SDK reports group metadata changes with native value 52 instead.
+   */
+  GROUP_UPDATE,
+  /**
    * If user A creates a message thread on Device A1, this event is triggered on Device A2.
    */
   THREAD_CREATE = 40,
@@ -275,6 +281,8 @@ export function ChatMultiDeviceEventFromNumber(
       return ChatMultiDeviceEvent.GROUP_ALL_BAN;
     case 33:
       return ChatMultiDeviceEvent.GROUP_REMOVE_ALL_BAN;
+    case 34:
+      return ChatMultiDeviceEvent.GROUP_UPDATE;
 
     case 40:
       return ChatMultiDeviceEvent.THREAD_CREATE;
