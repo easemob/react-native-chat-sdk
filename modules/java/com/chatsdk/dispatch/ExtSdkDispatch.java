@@ -137,24 +137,6 @@ public class ExtSdkDispatch implements ExtSdkApi {
             case ExtSdkMethodType.onDatabaseOpened:
                 callback.fail(1, "no implement: " + methodType);
                 break;
-            case ExtSdkMethodType.onUserDidRemoveFromServer:
-                callback.fail(1, "no implement: " + methodType);
-                break;
-            case ExtSdkMethodType.onUserDidForbidByServer:
-                callback.fail(1, "no implement: " + methodType);
-                break;
-            case ExtSdkMethodType.onUserDidChangePassword:
-                callback.fail(1, "no implement: " + methodType);
-                break;
-            case ExtSdkMethodType.onUserDidLoginTooManyDevice:
-                callback.fail(1, "no implement: " + methodType);
-                break;
-            case ExtSdkMethodType.onUserKickedByOtherDevice:
-                callback.fail(1, "no implement: " + methodType);
-                break;
-            case ExtSdkMethodType.onUserAuthenticationFailed:
-                callback.fail(1, "no implement: " + methodType);
-                break;
 
                 /// EMContactManager methods
             case ExtSdkMethodType.addContact:

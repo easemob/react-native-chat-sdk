@@ -39,14 +39,6 @@
           ExtSdkMethodKeySendDataToFlutter : @(ExtSdkMethodKeySendDataToFlutterValue),
           ExtSdkMethodKeyOnTokenWillExpire : @(ExtSdkMethodKeyOnTokenWillExpireValue),
           ExtSdkMethodKeyOnTokenDidExpire : @(ExtSdkMethodKeyOnTokenDidExpireValue),
-          ExtSdkMethodKeyOnUserDidLoginFromOtherDeviceWithInfo :
-              @(ExtSdkMethodKeyOnUserDidLoginFromOtherDeviceWithInfoValue),
-          ExtSdkMethodKeyOnUserDidRemoveFromServer : @(ExtSdkMethodKeyOnUserDidRemoveFromServerValue),
-          ExtSdkMethodKeyOnUserDidForbidByServer : @(ExtSdkMethodKeyOnUserDidForbidByServerValue),
-          ExtSdkMethodKeyOnUserDidChangePassword : @(ExtSdkMethodKeyOnUserDidChangePasswordValue),
-          ExtSdkMethodKeyOnUserDidLoginTooManyDevice : @(ExtSdkMethodKeyOnUserDidLoginTooManyDeviceValue),
-          ExtSdkMethodKeyOnUserKickedByOtherDevice : @(ExtSdkMethodKeyOnUserKickedByOtherDeviceValue),
-          ExtSdkMethodKeyOnUserAuthenticationFailed : @(ExtSdkMethodKeyOnUserAuthenticationFailedValue),
 
           /// EMContactManagerWrapper
           ExtSdkMethodKeyAddContact : @(ExtSdkMethodKeyAddContactValue),
@@ -305,7 +297,6 @@
           ExtSdkMethodKeysetMemberAttributesFromGroup : @(ExtSdkMethodKeysetMemberAttributesFromGroupValue),
           ExtSdkMethodKeyfetchMemberAttributesFromGroup : @(ExtSdkMethodKeyfetchMemberAttributesFromGroupValue),
           ExtSdkMethodKeyfetchMembersAttributesFromGroup : @(ExtSdkMethodKeyfetchMembersAttributesFromGroupValue),
-          ExtSdkMethodKeyOnAppActiveNumberReachLimit : @(ExtSdkMethodKeyOnAppActiveNumberReachLimitValue),
 
           ExtSdkMethodKeyPinConversation : @(ExtSdkMethodKeyPinConversationValue),
           ExtSdkMethodKeyModifyMessage : @(ExtSdkMethodKeyModifyMessageValue),

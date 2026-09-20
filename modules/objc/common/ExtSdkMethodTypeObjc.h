@@ -36,16 +36,6 @@ static NSString *_Nonnull const ExtSdkMethodKeyOnMultiDeviceEventThread = @"onMu
 static NSString *_Nonnull const ExtSdkMethodKeyOnMultiDeviceEventRemoveMessage = @"onMultiDeviceEventRemoveMessage";
 static NSString *_Nonnull const ExtSdkMethodKeyOnMultiDeviceEventConversation = @"onMultiDeviceEventConversation";
 
-static NSString *_Nonnull const ExtSdkMethodKeyOnUserDidLoginFromOtherDeviceWithInfo =
-    @"onUserDidLoginFromOtherDeviceWithInfo";
-static NSString *_Nonnull const ExtSdkMethodKeyOnUserDidRemoveFromServer = @"onUserDidRemoveFromServer";
-static NSString *_Nonnull const ExtSdkMethodKeyOnUserDidForbidByServer = @"onUserDidForbidByServer";
-static NSString *_Nonnull const ExtSdkMethodKeyOnUserDidChangePassword = @"onUserDidChangePassword";
-static NSString *_Nonnull const ExtSdkMethodKeyOnUserDidLoginTooManyDevice = @"onUserDidLoginTooManyDevice";
-static NSString *_Nonnull const ExtSdkMethodKeyOnUserKickedByOtherDevice = @"onUserKickedByOtherDevice";
-static NSString *_Nonnull const ExtSdkMethodKeyOnUserAuthenticationFailed = @"onUserAuthenticationFailed";
-static NSString *_Nonnull const ExtSdkMethodKeyOnAppActiveNumberReachLimit = @"onAppActiveNumberReachLimit";
-
 #pragma mark - EMContactManagerWrapper
 static NSString *_Nonnull const ExtSdkMethodKeyAddContact = @"addContact";
 static NSString *_Nonnull const ExtSdkMethodKeyDeleteContact = @"deleteContact";
@@ -411,14 +401,6 @@ static const int ExtSdkMethodKeyOnMultiDeviceEventValue = 202;
 static const int ExtSdkMethodKeySendDataToFlutterValue = 203;
 static const int ExtSdkMethodKeyOnTokenWillExpireValue = 204;
 static const int ExtSdkMethodKeyOnTokenDidExpireValue = 205;
-static const int ExtSdkMethodKeyOnUserDidLoginFromOtherDeviceWithInfoValue = 219;
-static const int ExtSdkMethodKeyOnUserDidRemoveFromServerValue = 207;
-static const int ExtSdkMethodKeyOnUserDidForbidByServerValue = 208;
-static const int ExtSdkMethodKeyOnUserDidChangePasswordValue = 209;
-static const int ExtSdkMethodKeyOnUserDidLoginTooManyDeviceValue = 210;
-static const int ExtSdkMethodKeyOnUserKickedByOtherDeviceValue = 211;
-static const int ExtSdkMethodKeyOnUserAuthenticationFailedValue = 212;
-static const int ExtSdkMethodKeyOnAppActiveNumberReachLimitValue = 213;
 static const int ExtSdkMethodKeyOnMultiDeviceEventContactValue = 214;
 static const int ExtSdkMethodKeyOnMultiDeviceEventGroupValue = 215;
 static const int ExtSdkMethodKeyOnMultiDeviceEventThreadValue = 216;

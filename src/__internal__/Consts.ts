@@ -35,16 +35,6 @@ export const MTonMultiDeviceEventRemoveMessage =
 export const MTonMultiDeviceEventConversation =
   'onMultiDeviceEventConversation';
 
-export const MTonUserDidLoginFromOtherDeviceWithInfo =
-  'onUserDidLoginFromOtherDeviceWithInfo';
-export const MTonUserDidRemoveFromServer = 'onUserDidRemoveFromServer';
-export const MTonUserDidForbidByServer = 'onUserDidForbidByServer';
-export const MTonUserDidChangePassword = 'onUserDidChangePassword';
-export const MTonUserDidLoginTooManyDevice = 'onUserDidLoginTooManyDevice';
-export const MTonUserKickedByOtherDevice = 'onUserKickedByOtherDevice';
-export const MTonUserAuthenticationFailed = 'onUserAuthenticationFailed';
-export const MTonAppActiveNumberReachLimit = 'onAppActiveNumberReachLimit';
-
 export const MTonDataSyncStart = 'onDataSyncStart';
 export const MTonDataSyncFinish = 'onDataSyncFinish';
 export const MTonDatabaseOpened = 'onDatabaseOpened';

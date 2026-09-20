@@ -329,6 +329,82 @@ export function ChatMultiDeviceEventFromNumber(
 }
 
 /**
+ * The disconnection error code carried by {@link ChatConnectEventListener.onDisconnected}.
+ *
+ * The numeric values are identical to the `EMError` codes of the underlying native SDKs, so the native error code tables can be consulted for details.
+ */
+export enum ChatDisconnectErrorCode {
+  /**
+   * A network error occurred.
+   *
+   * The SDK reconnects automatically and the user remains logged in.
+   *
+   * This code is reported on Android only; on iOS a network disconnection is reported without a code.
+   */
+  NETWORK_ERROR = 2,
+
+  /**
+   * The number of daily active users (DAU) or monthly active users (MAU) for the app has reached the upper limit.
+   *
+   * This code is reported on Android only; the iOS SDK no longer reports it.
+   */
+  APP_ACTIVE_NUMBER_REACH_LIMIT = 8,
+
+  /**
+   * The user authentication failed.
+   *
+   * Note: with token-only login, authentication failures are usually reported by the login call instead of this callback.
+   */
+  USER_AUTHENTICATION_FAILED = 202,
+
+  /**
+   * The user has logged in from another device.
+   *
+   * The `info` parameter of the callback carries the name and extension information of that device.
+   */
+  USER_LOGIN_FROM_OTHER_DEVICE = 206,
+
+  /**
+   * The user was removed from the server.
+   */
+  USER_REMOVED_FROM_SERVER = 207,
+
+  /**
+   * The user is bound to another device and cannot stay logged in on this one.
+   *
+   * This code is reported on Android only.
+   */
+  USER_BIND_ANOTHER_DEVICE = 213,
+
+  /**
+   * The user is logged in on too many devices.
+   */
+  USER_LOGIN_TOO_MANY_DEVICES = 214,
+
+  /**
+   * The user has changed the password.
+   */
+  USER_KICKED_BY_CHANGE_PASSWORD = 216,
+
+  /**
+   * The user is kicked offline by another device.
+   */
+  USER_KICKED_BY_OTHER_DEVICE = 217,
+
+  /**
+   * The login device differs from the last login device; the user needs to log in again.
+   *
+   * This code is reported on Android only.
+   */
+  USER_DEVICE_CHANGED = 220,
+
+  /**
+   * The app is forbidden by the server.
+   */
+  SERVER_SERVICE_RESTRICTED = 305,
+}
+
+/**
  * The connection event listener.
  *
  * In the case of disconnection in an unstable network environment, the app using the SDK receives the `onDisconnected` callback.
@@ -337,7 +413,7 @@ export function ChatMultiDeviceEventFromNumber(
  *
  * There are two connection-related callbacks:
  * - `onConnected`: Occurs when the connection is set up.
- * - `onDisconnected`: Occurs when the connection breaks down.
+ * - `onDisconnected`: Occurs when the connection breaks down, carrying an error code for the reason. See {@link ChatDisconnectErrorCode}.
  *
  * Adds a connection event listener:
  *
@@ -352,8 +428,8 @@ export function ChatMultiDeviceEventFromNumber(
  *    onConnected(): void {
  *      chatlog.log('ConnectScreen.onConnected');
  *    }
- *    onDisconnected(errorCode?: number): void {
- *      chatlog.log('ConnectScreen.onDisconnected', errorCode);
+ *    onDisconnected(errorCode?: number, info?: { deviceName?: string; ext?: string }): void {
+ *      chatlog.log('ConnectScreen.onDisconnected', errorCode, info);
  *    }
  *  })();
  *  ChatClient.getInstance().addConnectionListener(listener);
@@ -373,9 +449,18 @@ export interface ChatConnectEventListener {
   /**
    * Occurs when the SDK disconnects from the chat server.
    *
-   * The user also remains logged in. For the cases where the user is disconnected by the server, see {@link ChatConnectEventListener.onAppActiveNumberReachLimit}, {@link ChatConnectEventListener.onUserDidLoginFromOtherDeviceWithInfo}, {@link ChatConnectEventListener.onUserDidRemoveFromServer}, {@link ChatConnectEventListener.onUserDidForbidByServer}, {@link ChatConnectEventListener.onUserDidChangePassword}, {@link ChatConnectEventListener.onUserDidLoginTooManyDevice}, {@link ChatConnectEventListener.onUserKickedByOtherDevice}, {@link ChatConnectEventListener.onUserAuthenticationFailed}.
+   * - Without an `errorCode` (or with {@link ChatDisconnectErrorCode.NETWORK_ERROR}): the connection broke in an unstable network environment. The SDK reconnects automatically and the user remains logged in.
+   * - With any other `errorCode`: the user is disconnected by the server and needs to log in again. See {@link ChatDisconnectErrorCode} for the possible codes and their platform availability.
+   *
+   * Note: a logout caused by token expiration does not trigger this callback; see {@link ChatConnectEventListener.onTokenDidExpire}.
+   *
+   * @param errorCode The reason of the disconnection. See {@link ChatDisconnectErrorCode}.
+   * @param info Present only when `errorCode` is {@link ChatDisconnectErrorCode.USER_LOGIN_FROM_OTHER_DEVICE}: `deviceName` is the name of the device that logged in, and `ext` is its extension information. See {@link ChatOptions.loginExtraInfo}.
    */
-  onDisconnected?(): void;
+  onDisconnected?(
+    errorCode?: number,
+    info?: { deviceName?: string; ext?: string }
+  ): void;
 
   /**
    * Occurs when the token is about to expire.
@@ -388,13 +473,6 @@ export interface ChatConnectEventListener {
    * Occurs when the token has expired.
    */
   onTokenDidExpire?(): void;
-
-  /**
-   * The number of daily active users (DAU) or monthly active users (MAU) for the app has reached the upper limit.
-   *
-   * The user is disconnected by the server.
-   */
-  onAppActiveNumberReachLimit?(): void;
 
   /**
    * Callback invoked when the synchronization of offline messages starts.
@@ -431,65 +509,6 @@ export interface ChatConnectEventListener {
    * @param errorCode The error code of the database opening result. `0` indicates success.
    */
   onDatabaseOpened?(username: string, errorCode: number): void;
-
-  /**
-   * Occurs when the current user account is logged in to another device.
-   *
-   * The user is disconnected by the server.
-   *
-   * @params -
-   * - Param [deviceName] The device name.
-   * - Param [ext] The extension of user information. see {@link ChatOptions.loginExtraInfo}.
-   *
-   */
-  onUserDidLoginFromOtherDeviceWithInfo?(params: {
-    deviceName: string;
-    ext?: string;
-  }): void;
-
-  /**
-   * Occurs when the current chat user is removed from the server.
-   *
-   * The user is disconnected by the server.
-   */
-  onUserDidRemoveFromServer?(): void;
-
-  /**
-   * Occurs when the current chat user is banned from accessing the server.
-   *
-   * The user is disconnected by the server.
-   */
-  onUserDidForbidByServer?(): void;
-
-  /**
-   * Occurs when the current chat user changed the password.
-   *
-   * The user is disconnected by the server.
-   */
-  onUserDidChangePassword?(): void;
-
-  /**
-   * Occurs when the current chat user logged in to many devices.
-   *
-   * The user is disconnected by the server.
-   */
-  onUserDidLoginTooManyDevice?(): void;
-
-  /**
-   * Occurs when the current chat user is kicked out of the app by another device.
-   *
-   * The user is disconnected by the server.
-   */
-  onUserKickedByOtherDevice?(): void;
-
-  /**
-   * Occurs when the current chat user authentication failed.
-   *
-   * This callback is triggered in the following typical scenarios: The token expires or token authentication fails.
-   *
-   * The user is disconnected by the server.
-   */
-  onUserAuthenticationFailed?(): void;
 }
 
 /**

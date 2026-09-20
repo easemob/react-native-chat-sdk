@@ -63,20 +63,14 @@ ChatSDK 是一个高度可靠的全球交流平台，您的用户可以在其中
 | Event | Description |
 | :----- | :---------- |
 | {@link ChatConnectEventListener.onConnected onConnected} | 成功连接到 chat 服务器时触发的回调。 |
-| {@link ChatConnectEventListener.onDisconnected onDisconnected} | 和 chat 服务器断开连接时触发的回调。 |
+| {@link ChatConnectEventListener.onDisconnected onDisconnected} | 和 chat 服务器断开连接时触发的回调，断开原因以错误码承载（见 `ChatDisconnectErrorCode`）。 |
 | {@link ChatConnectEventListener.onTokenWillExpire onTokenWillExpire} | Agora token 即将过期时触发。 |
 | {@link ChatConnectEventListener.onTokenDidExpire onTokenDidExpire} | Agora token 已过期时触发。 |
-| {@link ChatConnectEventListener.onAppActiveNumberReachLimit onAppActiveNumberReachLimit} | 应用程序的日活跃用户数量（DAU）或月活跃用户数量（MAU）达到上限时回调。 |
 | {@link ChatConnectEventListener.onOfflineMessageSyncStart onOfflineMessageSyncStart} | 开始接收离线消息的时候触发。 |
 | {@link ChatConnectEventListener.onOfflineMessageSyncFinish onOfflineMessageSyncFinish} | 结束接收离线消息的时候触发。 |
-| {@link ChatConnectEventListener.onUserDidLoginFromOtherDevice onUserDidLoginFromOtherDevice} | 其他设备登录通知。 |
-| {@link ChatConnectEventListener.onUserDidLoginFromOtherDeviceWithInfo onUserDidLoginFromOtherDeviceWithInfo} | 用户在其它设备登录。 |
-| {@link ChatConnectEventListener.onUserDidRemoveFromServer onUserDidRemoveFromServer} | 用户被移除通知。 |
-| {@link ChatConnectEventListener.onUserDidForbidByServer onUserDidForbidByServer} | 被服务器禁止连接通知。 |
-| {@link ChatConnectEventListener.onUserDidChangePassword onUserDidChangePassword} | 用户密码变更通知。 |
-| {@link ChatConnectEventListener.onUserDidLoginTooManyDevice onUserDidLoginTooManyDevice} | 登录设备数量超限通知。 |
-| {@link ChatConnectEventListener.onUserKickedByOtherDevice onUserKickedByOtherDevice} | 被其他设备踢掉通知。 |
-| {@link ChatConnectEventListener.onUserAuthenticationFailed onUserAuthenticationFailed} | 鉴权失败通知。 典型触发通知场景：token 过期、token 验证失败。 |
+| {@link ChatConnectEventListener.onDataSyncStart onDataSyncStart} | 开始从服务器同步指定类型的数据时触发。 |
+| {@link ChatConnectEventListener.onDataSyncFinish onDataSyncFinish} | 从服务器同步指定类型的数据完成时触发。 |
+| {@link ChatConnectEventListener.onDatabaseOpened onDatabaseOpened} | 本地数据库打开时触发。 |
 
 | Event | Description |
 | :----- | :---------- |

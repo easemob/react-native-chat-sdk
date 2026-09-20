@@ -73,6 +73,40 @@ describe('ChatClient event dispatch', () => {
     expect(listener.onDisconnected).not.toHaveBeenCalled();
   });
 
+  test('onDisconnected passes the error code through to the listeners', () => {
+    const listener: ChatConnectEventListener = { onDisconnected: jest.fn() };
+    client.addConnectionListener(listener);
+
+    emitNativeEvent(MTonDisconnected, { errorCode: 217 });
+
+    expect(listener.onDisconnected).toHaveBeenCalledWith(217, undefined);
+  });
+
+  test('onDisconnected wraps the device info only when present', () => {
+    const listener: ChatConnectEventListener = { onDisconnected: jest.fn() };
+    client.addConnectionListener(listener);
+
+    emitNativeEvent(MTonDisconnected, {
+      errorCode: 206,
+      deviceName: 'Pixel 8',
+      ext: '{"from":"other"}',
+    });
+
+    expect(listener.onDisconnected).toHaveBeenCalledWith(206, {
+      deviceName: 'Pixel 8',
+      ext: '{"from":"other"}',
+    });
+  });
+
+  test('a network disconnection arrives without an error code', () => {
+    const listener: ChatConnectEventListener = { onDisconnected: jest.fn() };
+    client.addConnectionListener(listener);
+
+    emitNativeEvent(MTonDisconnected);
+
+    expect(listener.onDisconnected).toHaveBeenCalledWith(undefined, undefined);
+  });
+
   test('removeAllConnectionListener clears every connection listener', () => {
     const l1: ChatConnectEventListener = { onTokenWillExpire: jest.fn() };
     const l2: ChatConnectEventListener = { onTokenWillExpire: jest.fn() };

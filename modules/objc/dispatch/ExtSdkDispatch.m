@@ -123,24 +123,6 @@ static NSString *const TAG = @"ExtSdkDispatch";
     case ExtSdkMethodKeyOnTokenDidExpireValue:
         [callback onFail:1 withExtension:[NSString stringWithFormat:@"not implement: %@", methodType]];
         break;
-    case ExtSdkMethodKeyOnUserDidRemoveFromServerValue:
-        [callback onFail:1 withExtension:[NSString stringWithFormat:@"not implement: %@", methodType]];
-        break;
-    case ExtSdkMethodKeyOnUserDidForbidByServerValue:
-        [callback onFail:1 withExtension:[NSString stringWithFormat:@"not implement: %@", methodType]];
-        break;
-    case ExtSdkMethodKeyOnUserDidChangePasswordValue:
-        [callback onFail:1 withExtension:[NSString stringWithFormat:@"not implement: %@", methodType]];
-        break;
-    case ExtSdkMethodKeyOnUserDidLoginTooManyDeviceValue:
-        [callback onFail:1 withExtension:[NSString stringWithFormat:@"not implement: %@", methodType]];
-        break;
-    case ExtSdkMethodKeyOnUserKickedByOtherDeviceValue:
-        [callback onFail:1 withExtension:[NSString stringWithFormat:@"not implement: %@", methodType]];
-        break;
-    case ExtSdkMethodKeyOnUserAuthenticationFailedValue:
-        [callback onFail:1 withExtension:[NSString stringWithFormat:@"not implement: %@", methodType]];
-        break;
 
     /// #pragma mark - EMContactManagerWrapper value
     case ExtSdkMethodKeyAddContactValue:
