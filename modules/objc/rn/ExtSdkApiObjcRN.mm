@@ -144,13 +144,6 @@ RCT_EXPORT_METHOD(multiply : (double)a b : (double)b resolve : (RCTPromiseResolv
         ExtSdkMethodKeyOnDataSyncFinish,
         ExtSdkMethodKeyOnDatabaseOpened,
 
-        ExtSdkMethodKeyOnUserDidRemoveFromServer,
-        ExtSdkMethodKeyOnUserDidForbidByServer,
-        ExtSdkMethodKeyOnUserDidChangePassword,
-        ExtSdkMethodKeyOnUserDidLoginTooManyDevice,
-        ExtSdkMethodKeyOnUserKickedByOtherDevice,
-        ExtSdkMethodKeyOnUserAuthenticationFailed,
-
         /// EMContactManagerWrapper
         ExtSdkMethodKeyAddContact,
         ExtSdkMethodKeyDeleteContact,
@@ -407,7 +400,6 @@ RCT_EXPORT_METHOD(multiply : (double)a b : (double)b resolve : (RCTPromiseResolv
         ExtSdkMethodKeysetMemberAttributesFromGroup,
         ExtSdkMethodKeyfetchMemberAttributesFromGroup,
         ExtSdkMethodKeyfetchMembersAttributesFromGroup,
-        ExtSdkMethodKeyOnAppActiveNumberReachLimit,
 
         ExtSdkMethodKeyPinConversation,
         ExtSdkMethodKeyModifyMessage,
@@ -449,7 +441,6 @@ RCT_EXPORT_METHOD(multiply : (double)a b : (double)b resolve : (RCTPromiseResolv
         ExtSdkMethodKeySearchMessagesFromServer,
         ExtSdkMethodKeyremoveMessagesWithTimestamp,
         ExtSdkMethodKeygetMessageCountWithTimestamp,
-        ExtSdkMethodKeyOnUserDidLoginFromOtherDeviceWithInfo,
         ExtSdkMethodKeygetMessageCount,
 
         ExtSdkMethodKeyfetchMemberInfoListFromServer,

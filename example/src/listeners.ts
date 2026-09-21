@@ -33,19 +33,11 @@ const CONNECT_METHODS = [
   'onDisconnected',
   'onTokenWillExpire',
   'onTokenDidExpire',
-  'onAppActiveNumberReachLimit',
   'onOfflineMessageSyncStart',
   'onOfflineMessageSyncFinish',
   'onDataSyncStart',
   'onDataSyncFinish',
   'onDatabaseOpened',
-  'onUserDidLoginFromOtherDeviceWithInfo',
-  'onUserDidRemoveFromServer',
-  'onUserDidForbidByServer',
-  'onUserDidChangePassword',
-  'onUserDidLoginTooManyDevice',
-  'onUserKickedByOtherDevice',
-  'onUserAuthenticationFailed',
 ];
 
 const MESSAGE_METHODS = [

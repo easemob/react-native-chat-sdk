@@ -13,6 +13,7 @@ import com.chatsdk.common.ExtSdkMethodType;
 import com.chatsdk.common.ExtSdkThreadUtil;
 import com.hyphenate.EMCallBack;
 import com.hyphenate.EMConnectionListener;
+import com.hyphenate.EMError;
 import com.hyphenate.EMMultiDeviceListener;
 import com.hyphenate.EMValueCallBack;
 import com.hyphenate.chat.EMClient;
@@ -358,25 +359,13 @@ public class ExtSdkClientWrapper extends ExtSdkWrapper {
 
             @Override
             public void onDisconnected(int errorCode) {
-                if (errorCode == 206) {
-                    // handled in onLogout(int, EMLoginExtensionInfo)
-                } else if (errorCode == 207) {
-                    onReceive(ExtSdkMethodType.onUserDidRemoveFromServer, null);
-                } else if (errorCode == 305) {
-                    onReceive(ExtSdkMethodType.onUserDidForbidByServer, null);
-                } else if (errorCode == 216) {
-                    onReceive(ExtSdkMethodType.onUserDidChangePassword, null);
-                } else if (errorCode == 214) {
-                    onReceive(ExtSdkMethodType.onUserDidLoginTooManyDevice, null);
-                } else if (errorCode == 217) {
-                    onReceive(ExtSdkMethodType.onUserKickedByOtherDevice, null);
-                } else if (errorCode == 202) {
-                    onReceive(ExtSdkMethodType.onUserAuthenticationFailed, null);
-                } else if (errorCode == 8) {
-                    onReceive(ExtSdkMethodType.onAppActiveNumberReachLimit, null);
-                } else {
-                    onReceive(ExtSdkMethodType.onDisconnected, null);
+                if (errorCode == EMError.USER_LOGIN_ANOTHER_DEVICE) {
+                    // 206 is emitted by onLogout(int, EMLoginExtensionInfo) below, which carries the device info.
+                    return;
                 }
+                Map<String, Object> data = new HashMap<>();
+                data.put("errorCode", Integer.valueOf(errorCode));
+                onReceive(ExtSdkMethodType.onDisconnected, data);
             }
 
             @Override
@@ -392,10 +381,15 @@ public class ExtSdkClientWrapper extends ExtSdkWrapper {
             @Override
             public void onLogout(int errorCode, EMLoginExtensionInfo info) {
                 EMConnectionListener.super.onLogout(errorCode, info);
-                Map<String, String> attributes = new HashMap<>();
-                attributes.put("deviceName", info.getDeviceInfo());
-                attributes.put("ext", info.getDeviceExt());
-                onReceive(ExtSdkMethodType.onUserDidLoginFromOtherDeviceWithInfo, attributes);
+                // onLogout fires for every forced logout, but onDisconnected(int) has already
+                // delivered the error code; only 206 carries extra device info worth emitting.
+                if (errorCode == EMError.USER_LOGIN_ANOTHER_DEVICE) {
+                    Map<String, Object> data = new HashMap<>();
+                    data.put("errorCode", Integer.valueOf(errorCode));
+                    data.put("deviceName", info.getDeviceInfo());
+                    data.put("ext", info.getDeviceExt());
+                    onReceive(ExtSdkMethodType.onDisconnected, data);
+                }
             }
 
             @Override

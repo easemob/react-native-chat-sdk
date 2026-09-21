@@ -1,5 +1,6 @@
 {
-  "init": { "appKey": "easemob#easeim" },
+  "init": { "appKey": "easemob-demo#zuoyu" },
+  "login": false,
   "steps": [
     {
       "api": "ChatManager.searchMessagesFromServer",

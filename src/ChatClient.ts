@@ -17,7 +17,6 @@ import {
   MTkickDevice,
   MTlogin,
   MTlogout,
-  MTonAppActiveNumberReachLimit,
   MTonConnected,
   MTonCustomEvent,
   MTonDatabaseOpened,
@@ -34,13 +33,6 @@ import {
   MTonOfflineMessageSyncStart,
   MTonTokenDidExpire,
   MTonTokenWillExpire,
-  MTonUserAuthenticationFailed,
-  MTonUserDidChangePassword,
-  MTonUserDidForbidByServer,
-  MTonUserDidLoginFromOtherDeviceWithInfo,
-  MTonUserDidLoginTooManyDevice,
-  MTonUserDidRemoveFromServer,
-  MTonUserKickedByOtherDevice,
   MTrenewToken,
   MTupdatePushConfig,
 } from './__internal__/Consts';
@@ -189,62 +181,6 @@ export class ChatClient extends BaseManager {
     );
 
     this._connectionSubscriptions.set(
-      MTonUserDidLoginFromOtherDeviceWithInfo,
-      event.addListener(
-        MTonUserDidLoginFromOtherDeviceWithInfo,
-        this.onUserDidLoginFromOtherDeviceWithInfo.bind(this)
-      )
-    );
-    this._connectionSubscriptions.set(
-      MTonUserDidRemoveFromServer,
-      event.addListener(
-        MTonUserDidRemoveFromServer,
-        this.onUserDidRemoveFromServer.bind(this)
-      )
-    );
-    this._connectionSubscriptions.set(
-      MTonUserDidForbidByServer,
-      event.addListener(
-        MTonUserDidForbidByServer,
-        this.onUserDidForbidByServer.bind(this)
-      )
-    );
-    this._connectionSubscriptions.set(
-      MTonUserDidChangePassword,
-      event.addListener(
-        MTonUserDidChangePassword,
-        this.onUserDidChangePassword.bind(this)
-      )
-    );
-    this._connectionSubscriptions.set(
-      MTonUserDidLoginTooManyDevice,
-      event.addListener(
-        MTonUserDidLoginTooManyDevice,
-        this.onUserDidLoginTooManyDevice.bind(this)
-      )
-    );
-    this._connectionSubscriptions.set(
-      MTonUserKickedByOtherDevice,
-      event.addListener(
-        MTonUserKickedByOtherDevice,
-        this.onUserKickedByOtherDevice.bind(this)
-      )
-    );
-    this._connectionSubscriptions.set(
-      MTonUserAuthenticationFailed,
-      event.addListener(
-        MTonUserAuthenticationFailed,
-        this.onUserAuthenticationFailed.bind(this)
-      )
-    );
-    this._connectionSubscriptions.set(
-      MTonAppActiveNumberReachLimit,
-      event.addListener(
-        MTonAppActiveNumberReachLimit,
-        this.onAppActiveNumberReachLimit.bind(this)
-      )
-    );
-    this._connectionSubscriptions.set(
       MTonOfflineMessageSyncStart,
       event.addListener(
         MTonOfflineMessageSyncStart,
@@ -287,9 +223,16 @@ export class ChatClient extends BaseManager {
   }
   private onDisconnected(params?: any): void {
     chatlog.log(`${ChatClient.TAG}: onDisconnected: `, params);
+    const errorCode = params?.errorCode as number | undefined;
+    const info =
+      params?.deviceName !== undefined || params?.ext !== undefined
+        ? {
+            deviceName: params?.deviceName as string | undefined,
+            ext: params?.ext as string | undefined,
+          }
+        : undefined;
     this._connectionListeners.forEach((element) => {
-      // let ec = params?.errorCode as number;
-      element.onDisconnected?.();
+      element.onDisconnected?.(errorCode, info);
     });
   }
   private onTokenWillExpire(params?: any): void {
@@ -350,54 +293,6 @@ export class ChatClient extends BaseManager {
     chatlog.log(`${ChatClient.TAG}: onCustomEvent: `, params);
     this._customListeners.forEach((element) => {
       element.onDataReceived(params);
-    });
-  }
-  private onUserDidLoginFromOtherDeviceWithInfo(params: any): void {
-    chatlog.log(`${ChatClient.TAG}: onUserDidLoginFromOtherDeviceWithInfo: `);
-    this._connectionListeners.forEach((element) => {
-      element.onUserDidLoginFromOtherDeviceWithInfo?.(params);
-    });
-  }
-  private onUserDidRemoveFromServer(): void {
-    chatlog.log(`${ChatClient.TAG}: onUserDidRemoveFromServer: `);
-    this._connectionListeners.forEach((element) => {
-      element.onUserDidRemoveFromServer?.();
-    });
-  }
-  private onUserDidForbidByServer(): void {
-    chatlog.log(`${ChatClient.TAG}: onUserDidForbidByServer: `);
-    this._connectionListeners.forEach((element) => {
-      element.onUserDidForbidByServer?.();
-    });
-  }
-  private onUserDidChangePassword(): void {
-    chatlog.log(`${ChatClient.TAG}: onUserDidChangePassword: `);
-    this._connectionListeners.forEach((element) => {
-      element.onUserDidChangePassword?.();
-    });
-  }
-  private onUserDidLoginTooManyDevice(): void {
-    chatlog.log(`${ChatClient.TAG}: onUserDidLoginTooManyDevice: `);
-    this._connectionListeners.forEach((element) => {
-      element.onUserDidLoginTooManyDevice?.();
-    });
-  }
-  private onUserKickedByOtherDevice(): void {
-    chatlog.log(`${ChatClient.TAG}: onUserKickedByOtherDevice: `);
-    this._connectionListeners.forEach((element) => {
-      element.onUserKickedByOtherDevice?.();
-    });
-  }
-  private onUserAuthenticationFailed(): void {
-    chatlog.log(`${ChatClient.TAG}: onUserAuthenticationFailed: `);
-    this._connectionListeners.forEach((element) => {
-      element.onUserAuthenticationFailed?.();
-    });
-  }
-  private onAppActiveNumberReachLimit(): void {
-    chatlog.log(`${ChatClient.TAG}: onAppActiveNumberReachLimit: `);
-    this._connectionListeners.forEach((element) => {
-      element.onAppActiveNumberReachLimit?.();
     });
   }
   private onOfflineMessageSyncStart(): void {

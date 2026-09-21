@@ -21,6 +21,10 @@
 #import <UserNotifications/UserNotifications.h>
 
 @interface ExtSdkClientWrapper () <EMClientDelegate, EMMultiDevicesDelegate>
+// Set when a forced-logout delegate fires; the SDK then tears down the
+// connection and connectionStateDidChange:(EMConnectionDisconnected) would
+// duplicate the coded onDisconnected event, so it is swallowed once.
+@property(nonatomic, assign) BOOL forcedLogoutPending;
 @end
 
 @implementation ExtSdkClientWrapper
@@ -320,10 +324,25 @@
 - (void)connectionStateDidChange:(EMConnectionState)aConnectionState {
     BOOL isConnected = aConnectionState == EMConnectionConnected;
     if (isConnected) {
+        self.forcedLogoutPending = NO;
         [self onReceive:ExtSdkMethodKeyOnConnected withParams:nil];
     } else {
+        if (self.forcedLogoutPending) {
+            self.forcedLogoutPending = NO;
+            return;
+        }
         [self onReceive:ExtSdkMethodKeyOnDisconnected withParams:nil];
     }
+}
+
+- (void)emitDisconnectedWithCode:(EMErrorCode)code params:(NSDictionary *_Nullable)extra {
+    NSMutableDictionary *data = [NSMutableDictionary dictionary];
+    data[@"errorCode"] = @(code);
+    if (extra) {
+        [data addEntriesFromDictionary:extra];
+    }
+    self.forcedLogoutPending = YES;
+    [self onReceive:ExtSdkMethodKeyOnDisconnected withParams:data];
 }
 
 - (void)tokenWillExpire:(EMErrorCode)aErrorCode {
@@ -357,28 +376,29 @@
 }
 
 - (void)userAccountDidLoginFromOtherDeviceWithInfo:(EMLoginExtensionInfo *_Nullable)info {
-    [self onReceive:ExtSdkMethodKeyOnUserDidLoginFromOtherDeviceWithInfo
-         withParams:@{@"deviceName" : info.deviceName, @"ext" : info.extensionInfo}];
+    NSMutableDictionary *extra = [NSMutableDictionary dictionary];
+    if (info.deviceName) {
+        extra[@"deviceName"] = info.deviceName;
+    }
+    if (info.extensionInfo) {
+        extra[@"ext"] = info.extensionInfo;
+    }
+    [self emitDisconnectedWithCode:EMErrorUserLoginOnAnotherDevice params:extra];
 }
 
 - (void)userAccountDidRemoveFromServer {
-    [self onReceive:ExtSdkMethodKeyOnUserDidRemoveFromServer withParams:nil];
+    [self emitDisconnectedWithCode:EMErrorUserRemoved params:nil];
 }
 
 - (void)userDidForbidByServer {
-    [self onReceive:ExtSdkMethodKeyOnUserDidForbidByServer withParams:nil];
+    [self emitDisconnectedWithCode:EMErrorServerServingForbidden params:nil];
 }
 
 - (void)userAccountDidForcedToLogout:(EMError *)aError {
-    if (aError.code == EMErrorUserKickedByChangePassword) {
-        [self onReceive:ExtSdkMethodKeyOnUserDidChangePassword withParams:nil];
-    } else if (aError.code == EMErrorUserLoginTooManyDevices) {
-        [self onReceive:ExtSdkMethodKeyOnUserDidLoginTooManyDevice withParams:nil];
-    } else if (aError.code == EMErrorUserKickedByOtherDevice) {
-        [self onReceive:ExtSdkMethodKeyOnUserKickedByOtherDevice withParams:nil];
-    } else if (aError.code == EMErrorUserAuthenticationFailed) {
-        [self onReceive:ExtSdkMethodKeyOnUserAuthenticationFailed withParams:nil];
+    if (!aError) {
+        return;
     }
+    [self emitDisconnectedWithCode:aError.code params:nil];
 }
 
 #pragma mark - EMMultiDevicesDelegate

@@ -30,19 +30,11 @@ public class ExtSdkMethodType {
     public static final String onTokenWillExpire = "onTokenWillExpire";
     public static final String onTokenDidExpire = "onTokenDidExpire";
 
-    public static final String onUserDidLoginFromOtherDeviceWithInfo = "onUserDidLoginFromOtherDeviceWithInfo";
     public static final String onOfflineMessageSyncStart = "onOfflineMessageSyncStart";
     public static final String onOfflineMessageSyncFinish = "onOfflineMessageSyncFinish";
     public static final String onDataSyncStart = "onDataSyncStart";
     public static final String onDataSyncFinish = "onDataSyncFinish";
     public static final String onDatabaseOpened = "onDatabaseOpened";
-    public static final String onUserDidRemoveFromServer = "onUserDidRemoveFromServer";
-    public static final String onUserDidForbidByServer = "onUserDidForbidByServer";
-    public static final String onUserDidChangePassword = "onUserDidChangePassword";
-    public static final String onUserDidLoginTooManyDevice = "onUserDidLoginTooManyDevice";
-    public static final String onUserKickedByOtherDevice = "onUserKickedByOtherDevice";
-    public static final String onUserAuthenticationFailed = "onUserAuthenticationFailed";
-    public static final String onAppActiveNumberReachLimit = "onAppActiveNumberReachLimit";
 
     /// EMContactManager methods
     public static final String addContact = "addContact";

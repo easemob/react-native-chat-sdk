@@ -33,9 +33,8 @@ export default defineConfig([
       '**/build/',
       'coverage/',
       '**/Pods/',
-      // 生成文件：scripts/env-gettoken.js / env-use.js 输出，不入 git
+      // 生成文件：scripts/env-gettoken.js 输出，不入 git
       'example/src/env.ts',
-      'example/src/env.ts.*',
     ],
   },
 ]);
