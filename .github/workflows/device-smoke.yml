@@ -2,7 +2,7 @@ name: Device Smoke
 
 on:
   schedule:
-    - cron: '43 18 * * *'
+    - cron: '37 19 * * *'
   workflow_dispatch:
 
 permissions:
