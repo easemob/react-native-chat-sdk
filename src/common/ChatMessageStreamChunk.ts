@@ -49,6 +49,4 @@ export interface ChatStreamChunk {
    * Custom type of the stream chunk.
    */
   customType?: string;
-
-  // sequenceNumber: number; // deprecated
 }
