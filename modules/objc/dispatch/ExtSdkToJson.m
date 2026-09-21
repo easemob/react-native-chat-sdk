@@ -506,7 +506,7 @@
     ret[@"memberList"] = self.memberList;
     ret[@"blockList"] = self.blacklist;
     // !!! It has been marked as invalid in the typescript language.
-    ret[@"muteList"] = self.muteList;
+    ret[@"muteList"] = self.muteMembers.allKeys;
     ret[@"muteKVList"] = self.muteMembers;
     ret[@"isAllMemberMuted"] = @(self.isMuteAllMembers);
     ret[@"announcement"] = self.announcement;
@@ -1514,8 +1514,6 @@
     if (dict[@"direction"]) { options.direction = [dict[@"direction"] isEqual:@(0)] ? EMMessageSearchDirectionUp : EMMessageSearchDirectionDown; }
     if (dict[@"startTs"]) { options.startTime = [dict[@"startTs"] longLongValue]; }
     if (dict[@"endTs"]) { options.endTime = [dict[@"endTs"] longLongValue]; }
-    // !!! It has been marked as invalid in the typescript language.
-    (dict[@"from"] && [dict[@"from"] length] > 0) ? (options.from = dict[@"from"]) : nil;
     (dict[@"senders"] && [dict[@"senders"] count] > 0) ? (options.fromIds = dict[@"senders"]) : nil;
     if (dict[@"needSave"]) { options.isSave = [dict[@"needSave"] boolValue]; }
     NSArray *types = dict[@"msgTypes"];

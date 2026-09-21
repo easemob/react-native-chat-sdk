@@ -373,47 +373,28 @@
     if (senders == nil) {
         NSString *sender = param[@"sender"];
         // !!! It has been marked as invalid in the typescript language.
-        [self getConversationWithParam:param
-                            completion:^(EMConversation *conversation) {
-                              [conversation loadMessagesWithKeyword:keywords
-                                                          timestamp:timestamp
-                                                              count:count
-                                                           fromUser:sender
-                                                    searchDirection:direction
-                                                              scope:scope
-                                                         completion:^(NSArray *aMessages, EMError *aError) {
-                                                           NSMutableArray *msgJsonAry = [NSMutableArray array];
-                                                           for (EMChatMessage *msg in aMessages) {
-                                                               [msgJsonAry addObject:[msg toJsonObject]];
-                                                           }
-                                                           [weakSelf onResult:result
-                                                               withMethodType:aChannelName
-                                                                    withError:aError
-                                                                   withParams:msgJsonAry];
-                                                         }];
-                            }];
-    } else {
-        [self getConversationWithParam:param
-                            completion:^(EMConversation *conversation) {
-                              [conversation loadMessagesWithKeyword:keywords
-                                                          timestamp:timestamp
-                                                              count:count
-                                                          fromUsers:senders
-                                                    searchDirection:direction
-                                                              scope:scope
-                                                         completion:^(NSArray<EMChatMessage *> *_Nullable aMessages,
-                                                                      EMError *_Nullable aError) {
-                                                           NSMutableArray *msgJsonAry = [NSMutableArray array];
-                                                           for (EMChatMessage *msg in aMessages) {
-                                                               [msgJsonAry addObject:[msg toJsonObject]];
-                                                           }
-                                                           [weakSelf onResult:result
-                                                               withMethodType:aChannelName
-                                                                    withError:aError
-                                                                   withParams:msgJsonAry];
-                                                         }];
-                            }];
+        senders = sender.length > 0 ? @[sender] : nil;
     }
+    [self getConversationWithParam:param
+                        completion:^(EMConversation *conversation) {
+                          [conversation loadMessagesWithKeyword:keywords
+                                                      timestamp:timestamp
+                                                          count:count
+                                                      fromUsers:senders
+                                                searchDirection:direction
+                                                          scope:scope
+                                                     completion:^(NSArray<EMChatMessage *> *_Nullable aMessages,
+                                                                  EMError *_Nullable aError) {
+                                                       NSMutableArray *msgJsonAry = [NSMutableArray array];
+                                                       for (EMChatMessage *msg in aMessages) {
+                                                           [msgJsonAry addObject:[msg toJsonObject]];
+                                                       }
+                                                       [weakSelf onResult:result
+                                                           withMethodType:aChannelName
+                                                                withError:aError
+                                                               withParams:msgJsonAry];
+                                                     }];
+                        }];
 }
 
 - (void)loadMsgWithTime:(NSDictionary *)param

@@ -78,7 +78,7 @@ public class ExtSdkWrapper {
             dbimage.setSecret(image.getSecret());
             dbimage.setFileLength(image.getFileSize());
             dbimage.setDownloadStatus(image.downloadStatus());
-            dbimage.setSendOriginalImage(image.isSendOriginalImage());
+            dbimage.setSendOriginalImage(image.isOriginalImage());
             dbimage.setThumbnailLocalPath(image.thumbnailLocalPath());
             dbimage.setThumbnailDownloadStatus(image.thumbnailDownloadStatus());
             dbimage.setThumbnailUrl(image.getThumbnailUrl());
