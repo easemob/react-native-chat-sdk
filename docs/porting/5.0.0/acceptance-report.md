@@ -409,3 +409,7 @@
 3. **双账号验证**：`onMessageReadReceipts` 和非空 `ChatGroupMemberInfo` 仍需协调第二账号读取群消息后复验。
 4. **正向/反向用例拆分**：用户确认将 5.0.0 单账号脚本拆为 positive/negative 两条路径；报告目录结构与双端对比逻辑不变。已知会令 Android native 崩溃的 `fetchGroupMessageReadReceipts` 缺失消息用例暂不执行，只在报告中持续记录；双账号脚本暂不考虑。
 5. **反向用例新增发现**：双端对非法群成员、不存在群、缺失修改消息、空会话 ID 和设备管理无效 token 的错误码一致；两个批量回执 API 均仍返回 110，尚未落实已裁决的 500。`renewToken("")` 在 Android 返回 104、iOS 却成功；核对 iOS native 5.0.0 源码确认其空 token 分支构造错误后未立即返回。本轮仅记录，不修改 RN wrapper 或 native 行为。
+
+## 8. 第四轮决策：项目侧移除多集群支持（2026-09-21）
+
+用户裁决：产品支持多种集群，但项目实现侧不做「多选」——`example/config.local.json` 只描述当前要跑的那一个环境，`restApi` / `appKey` / `clientId` / `clientSecret` 提到顶层，换环境＝直接改/换这个文件。需要多套环境时，使用者自行在 Git 外维护 `config.ngi.json` / `config.ebs.json` 这类副本（不入库、敏感信息人工管理，`.gitignore` 已加 `example/config.*.json` 兜底），用哪套就复制为 `config.local.json`。已移除：`yarn env:use`（含 `scripts/env-use.js`）、`env.ts.<cluster>` 缓存、`clusters` / `defaultCluster` / 每条资源的 `cluster` 字段、集群级 chatOptions 合并；`env-gettoken.js` 改为直接写 `example/src/env.ts` 且必填字段缺失即 fail fast。**保留私有化部署字段**（`enablePrivateConfig` + server 字段，描述「这一个环境是不是私有化」，与选集群无关）。旧格式配置会得到一句明确的迁移报错。与 Flutter 侧 `ece93914` 同一裁决。详见 `04-verification.md` 第 11 节。

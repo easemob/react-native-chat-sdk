@@ -112,3 +112,33 @@ gate exit=0（无输出，通过）
 - 反向 Android：`build/reports/5.0.0/20260918085616-android-emulator-5554/`
 - 反向 iOS：`build/reports/5.0.0/20260918085623-ios-4BEA133B-4B24-430F-96FC-924632C2CF53/`
 - 反向双端对比：`build/reports/5.0.0/comparison-20260918085641.md`
+
+## 11. 第五轮：项目侧移除多集群支持（2026-09-21）
+
+### 11.1 用户裁决
+
+example 的 `config.local.json` 一度支持多集群（`clusters` / `defaultCluster` / 每条资源的 `cluster` 字段，`env.ts.<cluster>` 缓存 + `yarn env:use` 激活）。用户裁决：**产品支持多种集群，但项目实现侧不做「多选」**——要换环境就把对应值直接填进 `config.local.json`；便利性由使用者在 Git 外自行维护（推荐自备 `config.ngi.json` / `config.ebs.json` 这类副本，不入库、敏感信息人工管理，用哪套就复制为 `config.local.json`）；不为多环境增加项目复杂度。Flutter 侧已先行实施同一裁决（im_flutter_sdk `ece93914`），本轮 RN 对齐。
+
+### 11.2 移除清单
+
+| 位置 | 移除内容 |
+| --- | --- |
+| `scripts/env-gettoken.js`（242 → 198 行） | `clusters` 遍历、`defaultCluster` 解析、accounts/groups 按集群过滤、集群级 chatOptions 合并、「跳过并累计失败」逻辑；改为直接写 `example/src/env.ts`，必填字段缺失/占位即 fail fast（退出码 1） |
+| `scripts/env-use.js` | 整个删除（激活集群 = 复制 env.ts.<cluster>，已无存在意义） |
+| `package.json` | `env:use` 命令 |
+| `.gitignore` | `example/src/env.ts.*`；新增 `example/config.*.json`（用户自管的多环境副本同样不入库） |
+| `eslint.config.mjs` | `example/src/env.ts.*` 忽略项 |
+| `example/src/auto/auto_mode.ts`、`scripts/ci/fetch_e2e_user_token.js` | 注释中的集群措辞 |
+
+### 11.3 保留与迁移
+
+- **保留私有化部署**：`enablePrivateConfig` + `webSocketServer` / `restServer` / `msyncServer`——它描述「这一个环境是不是私有化」，与选集群无关。
+- **旧格式有一句明确报错**：`config.local.json` 仍带 `clusters` 或 `defaultCluster` 时直接报错退出（退出码 1）；`accounts`/`groups` 条目里遗留的 `cluster` 键静默丢弃，避免从旧文件粘贴时被卡住。
+- 本地 `example/config.local.json` 已拍平（ngi 的值提到顶层，原文件备份在仓库外 `/tmp/config.local.json.pre-single-env`），旧的 `example/src/env.ts.ngi` 已删除。
+- CI 无改动：`.github/workflows/` 本就只走 `E2E_*` secrets，与集群机制无关。
+
+### 11.4 复验
+
+- `node --check scripts/env-gettoken.js` 语法通过；旧格式配置报错路径、缺字段 fail-fast 路径、模板生成路径均已本地实测。
+- 真实链路：`yarn env:gettoken`（ngi 凭据）exit 0，`zuoyu01` / `zuoyu02` 各取到 user token，`example/src/env.ts` 直接生成（无 `env.ts.<cluster>` 中间文件）。
+- `yarn typecheck` / `yarn lint` / `yarn test --no-watchman` / `yarn test:ci-scripts` 全绿。
