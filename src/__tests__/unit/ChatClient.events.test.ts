@@ -82,6 +82,15 @@ describe('ChatClient event dispatch', () => {
     expect(listener.onDisconnected).toHaveBeenCalledWith(217, undefined);
   });
 
+  test('onDisconnected delivers codes that are not listed in ChatDisconnectErrorCode unchanged', () => {
+    const listener: ChatConnectEventListener = { onDisconnected: jest.fn() };
+    client.addConnectionListener(listener);
+
+    emitNativeEvent(MTonDisconnected, { errorCode: 999 });
+
+    expect(listener.onDisconnected).toHaveBeenCalledWith(999, undefined);
+  });
+
   test('onDisconnected wraps the device info only when present', () => {
     const listener: ChatConnectEventListener = { onDisconnected: jest.fn() };
     client.addConnectionListener(listener);

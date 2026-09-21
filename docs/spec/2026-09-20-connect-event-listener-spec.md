@@ -2,7 +2,7 @@
 
 - 日期：2026-09-20
 - 分支/版本：5.0.0(worktree `.worktree/5.0.0`，依赖原生 SDK iOS/Android 5.0.0)
-- 状态：已实现(随 5.0.0 发布,属 breaking change)
+- 状态：已实现(随 5.0.0 发布,属 breaking change)；2026-09-21 有语义修订,见 §7
 - 关联:`docs/porting/5.0.0/02-contract.md` §4.1 末尾"连接事件收敛"裁决记录
 
 ## 1. 背景与问题
@@ -113,3 +113,40 @@ export interface ChatConnectEventListener {
 ## 6. 迁移说明(breaking)
 
 使用方删除 8 个回调的实现,改为在 `onDisconnected` 中按 `errorCode` 分支处理;需要"他端登录"设备信息时判断 `errorCode === ChatDisconnectErrorCode.USER_LOGIN_FROM_OTHER_DEVICE` 并读取 `info`。详见 `CHANGELOG.md` / `CHANGELOG.zh.md` 5.0.0 节。
+
+## 7. 修订(2026-09-21):补全断开码、修正语义规则
+
+依据 native 5.0.0 源码复查(emclient-linux `src/emsessionmanager.cpp:755-933`、emclient-ios `newSDK/HyphenateSDK/EMConnectionListener.mm:31-58`、emclient-android `hyphenatechatsdk/src/com/hyphenate/chat/EMClient.java:1661-1773`),并对齐 Flutter 侧同主题规格(`im_flutter_sdk` `docs/spec/2026-09-21-connection-event-normalization-spec.md`),对 §2/§3 做如下修正:
+
+### 7.1 断开码补全
+
+`ChatDisconnectErrorCode` 由 11 个码扩充为断开路径全量 19 个码(值与 native `EMError` 一致):
+
+- 退出原因(本地登录态失效,需重新登录):8、104、110、202、204、206、207、213、214、216、217、220、304、305。其中 **104/110/204 为本次新增**——core 已对这几个码执行登出,Android 以 `onDisconnected(code)` 送达(无 `onLogout`),iOS 折算为无码断开。
+- 连接原因(保持登录态,SDK 自动重连):2、4、300、303、306。其中 **4/300/303/306 为本次新增**——Android 弱网下的常见断开码是 300/303 而非 2。
+- 108(token 过期)仍只走 `onTokenDidExpire`,不属于断开事件,不收录。
+
+§2 表格的错误更正:
+
+- 8 在 iOS **有通道**:`userAccountDidForcedToLogout:` 的 `aError.code` 可为 8(原表"无通道"依据的是 delegate 删除,但 forcedToLogout 的透传码覆盖了它)。
+- 202 双端**均有真实触发源**:iOS `forcedToLogout(202)`;Android `doReconnect()` 刷新 token 失败时以 202 断开并登出(原表"无生产者"不成立)。
+- 213 在 iOS 已登出但只表现为无码断开;220 在 iOS 与 206 共用 `userAccountDidLoginFromOtherDeviceWithInfo:`,无法区分。
+- iOS `connectionStateDidChange:` 断开不携带任何原因码,因此 iOS 上 104/110/204/213 这类"静默登出"与普通网络断开无法从事件区分——这是平台限制,接入侧如需确认登录态,以后续 API 的未登录错误兜底。
+
+### 7.2 语义规则修正
+
+§3 的"其余 `errorCode` 均为强制下线"规则**作废**,替换为:
+
+- `errorCode` 原样透传,SDK 不过滤;枚举仅供阅读与比较,**未列出的码(含 native 未来新增)也会原样送达**。
+- 按 §7.1 的两组划分处理:退出原因回登录页;连接原因等自动重连。
+- 未列出的码默认按连接原因处理,除非 native SDK 另有说明。
+- 无 `errorCode` 表示平台未提供原因(如 iOS 网络断开、App 切后台),按连接事件处理,不得据此判定退出。
+- 退出共有两个事件通道:`onDisconnected`(退出原因码)与 `onTokenDidExpire`(token 过期),接入方必须两个都处理。
+
+### 7.3 平台可达性注释的取舍
+
+原枚举注释中"8/213/220 仅 Android 可达"的标注删除(8 在 iOS 可达,见 §7.1;跨端可达性会随平台版本漂移,以实际收到的码为准)。仅保留 2 的平台差异说明(iOS 网络断开无码),它影响"无码即网络断开"的解读。
+
+### 7.4 接线不变
+
+本次修订只改 TS 枚举、文档与单测;Android wrapper(`onDisconnected(int)` 透传 + `onLogout` 合并 206)与 iOS wrapper(`forcedToLogout` 透传 `aError.code`、固定折算 206/207/305、无码断开)原本就是透传/折算设计,新增码自动生效,无需改动。

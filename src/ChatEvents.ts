@@ -329,33 +329,47 @@ export function ChatMultiDeviceEventFromNumber(
 }
 
 /**
- * The disconnection error code carried by {@link ChatConnectEventListener.onDisconnected}.
+ * The disconnection reason code carried by {@link ChatConnectEventListener.onDisconnected}.
  *
- * The numeric values are identical to the `EMError` codes of the underlying native SDKs, so the native error code tables can be consulted for details.
+ * The numeric values are identical to the `EMError` codes of the underlying native SDKs. The SDK passes the codes through unchanged and does not filter them, so a code that is not listed here (including codes added by future native SDK versions) may still be received; the enum is provided for readability and comparison only.
+ *
+ * The reasons fall into two groups:
+ * - Logout reasons: the local login state is no longer valid and the user has to log in again.
+ * - Connection reasons: the connection broke while the user stays logged in, and the SDK reconnects automatically.
+ *
+ * Treat a received code that is not listed here as a connection reason unless the native SDK documents otherwise.
+ *
+ * Note: an expired token does not trigger `onDisconnected`; it is reported by {@link ChatConnectEventListener.onTokenDidExpire} instead.
  */
 export enum ChatDisconnectErrorCode {
-  /**
-   * A network error occurred.
-   *
-   * The SDK reconnects automatically and the user remains logged in.
-   *
-   * This code is reported on Android only; on iOS a network disconnection is reported without a code.
-   */
-  NETWORK_ERROR = 2,
+  // Logout reasons: the local login state is invalid; the user has to log in again.
 
   /**
    * The number of daily active users (DAU) or monthly active users (MAU) for the app has reached the upper limit.
-   *
-   * This code is reported on Android only; the iOS SDK no longer reports it.
    */
   APP_ACTIVE_NUMBER_REACH_LIMIT = 8,
 
   /**
+   * The token does not match the login information.
+   */
+  INVALID_TOKEN = 104,
+
+  /**
+   * The parameters used to set up the connection are invalid.
+   */
+  INVALID_PARAM = 110,
+
+  /**
    * The user authentication failed.
    *
-   * Note: with token-only login, authentication failures are usually reported by the login call instead of this callback.
+   * With token-only login, authentication failures are usually reported by the login call; this code can still occur when the SDK fails to refresh the token while reconnecting.
    */
   USER_AUTHENTICATION_FAILED = 202,
+
+  /**
+   * The user does not exist.
+   */
+  USER_NOT_FOUND = 204,
 
   /**
    * The user has logged in from another device.
@@ -371,8 +385,6 @@ export enum ChatDisconnectErrorCode {
 
   /**
    * The user is bound to another device and cannot stay logged in on this one.
-   *
-   * This code is reported on Android only.
    */
   USER_BIND_ANOTHER_DEVICE = 213,
 
@@ -394,14 +406,50 @@ export enum ChatDisconnectErrorCode {
   /**
    * The login device differs from the last login device; the user needs to log in again.
    *
-   * This code is reported on Android only.
+   * This reason takes effect only when the server enables the option that does not kick the other devices offline.
    */
   USER_DEVICE_CHANGED = 220,
+
+  /**
+   * No available server address can be obtained.
+   */
+  SERVER_GET_DNSLIST_FAILED = 304,
 
   /**
    * The app is forbidden by the server.
    */
   SERVER_SERVICE_RESTRICTED = 305,
+
+  // Connection reasons: the user stays logged in and the SDK reconnects automatically.
+
+  /**
+   * A network error occurred.
+   *
+   * This code is reported on Android only; on iOS a network disconnection is reported without a code.
+   */
+  NETWORK_ERROR = 2,
+
+  /**
+   * The number of users or the service quota of the app exceeds the limit.
+   */
+  EXCEED_SERVICE_LIMIT = 4,
+
+  /**
+   * The server is not reachable, for example the connection timed out, the DNS resolution failed, or the connection was refused.
+   *
+   * This is the most common reason under an unstable network.
+   */
+  SERVER_NOT_REACHABLE = 300,
+
+  /**
+   * An unknown server error occurred, for example an IO error or an unexpected closing of the connection stream.
+   */
+  SERVER_UNKNOWN_ERROR = 303,
+
+  /**
+   * The transfer decryption failed.
+   */
+  SERVER_DECRYPTION_FAILED = 306,
 }
 
 /**
@@ -449,10 +497,15 @@ export interface ChatConnectEventListener {
   /**
    * Occurs when the SDK disconnects from the chat server.
    *
-   * - Without an `errorCode` (or with {@link ChatDisconnectErrorCode.NETWORK_ERROR}): the connection broke in an unstable network environment. The SDK reconnects automatically and the user remains logged in.
-   * - With any other `errorCode`: the user is disconnected by the server and needs to log in again. See {@link ChatDisconnectErrorCode} for the possible codes and their platform availability.
+   * The `errorCode` is passed through from the native SDK unchanged and falls into two groups (see {@link ChatDisconnectErrorCode}):
+   * - Logout reasons (for example, `USER_LOGIN_FROM_OTHER_DEVICE`): the local login state is no longer valid; navigate back to the login page and log in again.
+   * - Connection reasons (for example, `NETWORK_ERROR`, `SERVER_NOT_REACHABLE`): the connection broke while the user stays logged in, and the SDK reconnects automatically; do not navigate to the login page for these codes.
    *
-   * Note: a logout caused by token expiration does not trigger this callback; see {@link ChatConnectEventListener.onTokenDidExpire}.
+   * A code that is not listed in {@link ChatDisconnectErrorCode} (including codes added by future native SDK versions) is still delivered as-is; treat it as a connection reason unless the native SDK documents otherwise.
+   *
+   * Without an `errorCode`, the platform provided no reason (for example, a network disconnection on iOS); treat it as a connection event as well.
+   *
+   * Note: a logout caused by token expiration does not trigger this callback; see {@link ChatConnectEventListener.onTokenDidExpire}. Handle both callbacks to cover all logout scenarios.
    *
    * @param errorCode The reason of the disconnection. See {@link ChatDisconnectErrorCode}.
    * @param info Present only when `errorCode` is {@link ChatDisconnectErrorCode.USER_LOGIN_FROM_OTHER_DEVICE}: `deviceName` is the name of the device that logged in, and `ext` is its extension information. See {@link ChatOptions.loginExtraInfo}.

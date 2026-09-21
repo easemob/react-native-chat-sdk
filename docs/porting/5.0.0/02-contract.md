@@ -82,11 +82,11 @@ $ echo '{}' | bash /Users/asterisk/Codes/zuoyu_rn/.agents/skills/platform-sdk-po
 
 连接事件收敛（用户裁决 2026-09-20，取代本节"每事件独立 MT key"通则中涉及强制下线回调的部分）：
 
-- `ChatConnectEventListener` 的 8 个服务器强制下线回调（`onAppActiveNumberReachLimit`、`onUserDidLoginFromOtherDeviceWithInfo`、`onUserDidRemoveFromServer`、`onUserDidForbidByServer`、`onUserDidChangePassword`、`onUserDidLoginTooManyDevice`、`onUserKickedByOtherDevice`、`onUserAuthenticationFailed`）全部删除，统一为 `onDisconnected?(errorCode?: number, info?: { deviceName?: string; ext?: string })`；新增 `ChatDisconnectErrorCode` 枚举（2/8/202/206/207/213/214/216/217/220/305，值与 native `EMError` 一致）。
+- `ChatConnectEventListener` 的 8 个服务器强制下线回调（`onAppActiveNumberReachLimit`、`onUserDidLoginFromOtherDeviceWithInfo`、`onUserDidRemoveFromServer`、`onUserDidForbidByServer`、`onUserDidChangePassword`、`onUserDidLoginTooManyDevice`、`onUserKickedByOtherDevice`、`onUserAuthenticationFailed`）全部删除，统一为 `onDisconnected?(errorCode?: number, info?: { deviceName?: string; ext?: string })`；新增 `ChatDisconnectErrorCode` 枚举（值与 native `EMError` 一致，覆盖断开路径全量码：退出原因 8/104/110/202/204/206/207/213/214/216/217/220/304/305，连接原因 2/4/300/303/306；2026-09-21 修订补全，见 `docs/spec/2026-09-20-connect-event-listener-spec.md` §7）。
 - 事件负载统一为 `{errorCode?: number, deviceName?: string, ext?: string}`，`deviceName`/`ext` 仅 206 携带。MT key 仅保留 `MTonDisconnected`，8 个被删事件的 MT 常量在 TS/Java/ObjC 三层同步删除（含 dispatch 的 "no implement" stub 与 `supportedEvents`）。
 - Android wrapper：`onDisconnected(int)` 直接透传 code（206 跳过，由 `onLogout(int, EMLoginExtensionInfo)` 合并 deviceName/ext 后发同一 `onDisconnected` 事件）；`onLogout` 仅处理 206，修掉"每次强制下线都多发一次 WithInfo 空参数事件"的双发问题。5.0.0 源码确认 `onDisconnected(int)` 对所有码无条件触发、`onLogout` 对 8/206/207/213/214/216/217/220/305 九个码额外触发。
 - iOS wrapper：`userAccountDidForcedToLogout:` 透传 `aError.code`；`userAccountDidRemoveFromServer`→207、`userDidForbidByServer`→305、`userAccountDidLoginFromOtherDeviceWithInfo:`→206+info（补 nil 保护）；`connectionStateDidChange(NO)` 发无码断开，用 `forcedLogoutPending` 标志吞掉强制下线后重复的断开回调。
-- 平台差异（写进枚举注释）：8/213/220 仅 Android 可达；网络断开 iOS 无码、Android 为 2；202 在 5.0.0 双端基本无触发源（保留码位）；token 过期登出不走 `onDisconnected`，仅 `onTokenDidExpire`。
+- 语义规则（2026-09-21 修订）：`errorCode` 原样透传、SDK 不过滤，枚举未列出的码（含 native 未来新增）也会送达，默认按连接原因处理；退出原因码见枚举的 logout 分组，收到时回登录页；连接原因码（2/4/300/303/306）保持登录态、自动重连；无 `errorCode` 表示平台未提供原因（如 iOS 网络断开、App 切后台），按连接事件处理；token 过期登出不走 `onDisconnected`，仅 `onTokenDidExpire`——退出共两个事件通道，接入方需同时处理。
 
 ### 4.2 options（ChatOptions）
 
