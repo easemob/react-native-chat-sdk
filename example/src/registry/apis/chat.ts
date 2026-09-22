@@ -123,6 +123,72 @@ export const chatApis: ApiEntry[] = [
     },
   },
   {
+    name: 'ChatManager.getConvMsgsWithKeyword',
+    group: 'ChatManager',
+    description:
+      '按关键字从本地库查询指定会话的消息（ChatConversation.getMsgsWithKeyword 的底层入口）。' +
+      'convId：会话 ID；convType：0 单聊 / 1 群聊 / 2 聊天室；' +
+      'senders 可选：发送者 ID 列表，省略则不过滤发送者。',
+    paramsTemplate: JSON.stringify(
+      {
+        convId: 'ID',
+        convType: 0,
+        keywords: 'hello',
+        timestamp: -1,
+        count: 50,
+        direction: 0,
+        searchScope: 2,
+        senders: ['ID'],
+      },
+      null,
+      2
+    ),
+    invoke: async (params) => {
+      const ret =
+        await ChatClient.getInstance().chatManager.getConvMsgsWithKeyword({
+          convId: String(params.convId),
+          convType: (params.convType ??
+            ChatConversationType.PeerChat) as ChatConversationType,
+          keywords: String(params.keywords),
+          timestamp: params.timestamp as number | undefined,
+          count: params.count as number | undefined,
+          direction: params.direction as number | undefined,
+          senders: params.senders as string[] | undefined,
+          searchScope: params.searchScope as number | undefined,
+        });
+      return ret.map((msg) => ({ msgId: msg.msgId, from: msg.from }));
+    },
+  },
+  {
+    name: 'ChatManager.getMsgs',
+    group: 'ChatManager',
+    description:
+      '从本地库加载指定会话的消息（无关键字过滤，用于对照验证）。' +
+      'convId：会话 ID；convType：0 单聊 / 1 群聊 / 2 聊天室；startMsgId 传空串则从最新开始。',
+    paramsTemplate: JSON.stringify(
+      {
+        convId: 'ID',
+        convType: 0,
+        startMsgId: '',
+        loadCount: 20,
+        direction: 0,
+      },
+      null,
+      2
+    ),
+    invoke: async (params) => {
+      const ret = await ChatClient.getInstance().chatManager.getMsgs({
+        convId: String(params.convId),
+        convType: (params.convType ??
+          ChatConversationType.PeerChat) as ChatConversationType,
+        startMsgId: String(params.startMsgId ?? ''),
+        loadCount: params.loadCount as number | undefined,
+        direction: params.direction as number | undefined,
+      });
+      return ret.map((msg) => ({ msgId: msg.msgId, from: msg.from }));
+    },
+  },
+  {
     name: 'ChatManager.sendMessageReadReceipts',
     group: 'ChatManager',
     description:

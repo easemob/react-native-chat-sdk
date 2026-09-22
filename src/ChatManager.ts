@@ -1901,7 +1901,6 @@ export class ChatManager extends BaseManager {
    * - searchScope The message search scope. See {@link ChatMessageSearchScope}.
    *                  If you set this parameter as a negative value, the SDK retrieves messages, starting from the current time, in the descending order of the timestamp included in them.
    * - count The maximum number of messages to retrieve each time. The value range is [1,400].
-   * - sender The user ID of the message sender. If you do not set this parameter, the SDK ignores this parameter when retrieving messages. use `senders` instead. 2025-07-22
    * - senders The user IDs of the message senders. If you do not set this parameter, the SDK ignores this parameter when retrieving messages.
    * - isChatThread Whether the conversation is a thread conversation.
    *
@@ -1916,7 +1915,6 @@ export class ChatManager extends BaseManager {
     direction?: ChatSearchDirection;
     timestamp?: number;
     count?: number;
-    sender?: string;
     senders?: Array<string>;
     searchScope?: ChatMessageSearchScope;
     isChatThread?: boolean;
@@ -1928,7 +1926,6 @@ export class ChatManager extends BaseManager {
       direction = ChatSearchDirection.UP,
       timestamp = -1,
       count = 20,
-      sender,
       senders,
       searchScope = ChatMessageSearchScope.All,
       isChatThread = false,
@@ -1942,7 +1939,6 @@ export class ChatManager extends BaseManager {
       timestamp,
       count,
       searchScope,
-      sender,
       senders,
       isChatThread
     );
@@ -1954,7 +1950,6 @@ export class ChatManager extends BaseManager {
         direction: direction === ChatSearchDirection.UP ? 'up' : 'down',
         timestamp: timestamp,
         count: count,
-        sender: sender,
         senders: senders,
         searchScope: searchScope,
         isChatThread: isChatThread,

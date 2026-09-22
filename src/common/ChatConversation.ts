@@ -521,7 +521,6 @@ export class ChatConversation {
    * - searchScope The message search scope. See {@link ChatMessageSearchScope}.
    *                  If you set this parameter as a negative value, the SDK retrieves messages, starting from the current time, in the descending order of the timestamp included in them.
    * - count The maximum number of messages to retrieve each time. The value range is [1,400].
-   * - sender The user ID or group ID for retrieval. Usually, it is the conversation ID. use `senders` instead. 2025-07-22
    * - senders The user IDs of the message senders. If you do not set this parameter, the SDK ignores this parameter when retrieving messages.
    *
    * @returns The list of retrieved messages (excluding the one with the starting timestamp). If no message is obtained, an empty list is returned.
@@ -533,7 +532,6 @@ export class ChatConversation {
     direction?: ChatSearchDirection;
     timestamp?: number;
     count?: number;
-    sender?: string;
     senders?: Array<string>;
     searchScope?: ChatMessageSearchScope;
   }): Promise<Array<ChatMessage>> {

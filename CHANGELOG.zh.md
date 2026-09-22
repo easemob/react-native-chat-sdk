@@ -33,7 +33,7 @@ _Chinese | [English](./CHANGELOG.md)_
 - 数据同步取代服务端拉取接口：移除 `ChatManager.fetchAllConversations`、`fetchConversationsFromServerWithPage`、`fetchConversationsFromServerWithCursor`、`fetchPinnedConversationsFromServerWithCursor`、`fetchConversationsByOptions`，`ChatGroupManager.fetchJoinedGroupsFromServer`，`ChatContactManager.getAllContactsFromServer`、`fetchAllContacts`、`fetchContacts`，请在 `onDataSyncFinish` 后改为读取本地数据；同时移除 `onContactSyncStart`、`onContactSyncFinish` 回调、`ChatOptions` 的 `requireAck`、`enableAutoSyncContacts` 属性及 `ChatConversationFetchOptions` 类。
 - 移除 `ChatRoomManager.createChatRoom` 和 `ChatRoomManager.destroyChatRoom`，请改用服务端 REST API 创建和解散聊天室；移除 `ChatRoomManager.getAllChatRooms`（双端原生 SDK 均已移除）。
 - 移除 `ChatManager.reportMessage`，请将消息举报提交至业务服务器。
-- 清理长期废弃的 API（请使用替代项）：`ChatRoomManager.joinChatRoom`（改用 `joinChatRoomEx`）、`ChatGroupManager.fetchGroupInfoFromServer`（改用 `fetchGroupInfoWithoutMembersFromServer`）、`ChatManager.searchMsgFromDB`/`getMessagesWithMsgType`/`getMessages`/`getMessagesWithKeyword`/`getMessageWithTimestamp` 及 `ChatConversation` 同名四个废弃方法（分别改用 `getMsgsWithMsgType`/`getMsgs`/`getMsgsWithKeyword`/`getMsgWithTimestamp`）、`ChatManager.modifyMessageBody`（改用 `modifyMsgBody`）、`ChatManager.fetchHistoryMessages`（改用 `fetchHistoryMessagesByOptions`）、`ChatImageMessageBody.thumbnailSecret`（改用 `secret`）、`ChatFetchMessageOptions.from`（改用 `senders`）、`ChatRoom.muteList`（改用 `muteKVList`）、群组废弃回调 `onMemberJoined`/`onMemberExited`（改用 `onMembersJoined`/`onMembersExited`）、聊天室废弃回调 `onMuteListAdded`（改用 `onMuteListAddedV2`）。`ChatOptions` 公开构造函数移除，请使用 `ChatOptions.withAppKey` 或 `ChatOptions.withAppId`。废弃事件常量 `onMessagesRecalled`、`onMessageReadAck`、`onMessageDeliveryAck`、`onMessageStatusChanged` 一并移除。
+- 清理长期废弃的 API（请使用替代项）：`ChatRoomManager.joinChatRoom`（改用 `joinChatRoomEx`）、`ChatGroupManager.fetchGroupInfoFromServer`（改用 `fetchGroupInfoWithoutMembersFromServer`）、`ChatManager.searchMsgFromDB`/`getMessagesWithMsgType`/`getMessages`/`getMessagesWithKeyword`/`getMessageWithTimestamp` 及 `ChatConversation` 同名四个废弃方法（分别改用 `getMsgsWithMsgType`/`getMsgs`/`getMsgsWithKeyword`/`getMsgWithTimestamp`）、`ChatManager.modifyMessageBody`（改用 `modifyMsgBody`）、`ChatManager.fetchHistoryMessages`（改用 `fetchHistoryMessagesByOptions`）、`ChatImageMessageBody.thumbnailSecret`（改用 `secret`）、`ChatFetchMessageOptions.from`（改用 `senders`）、`ChatManager.getConvMsgsWithKeyword` 和 `ChatConversation.getMsgsWithKeyword` 的废弃参数 `sender`（改用 `senders`）、`ChatRoom.muteList`（改用 `muteKVList`）、群组废弃回调 `onMemberJoined`/`onMemberExited`（改用 `onMembersJoined`/`onMembersExited`）、聊天室废弃回调 `onMuteListAdded`（改用 `onMuteListAddedV2`）。`ChatOptions` 公开构造函数移除，请使用 `ChatOptions.withAppKey` 或 `ChatOptions.withAppId`。废弃事件常量 `onMessagesRecalled`、`onMessageReadAck`、`onMessageDeliveryAck`、`onMessageStatusChanged` 一并移除。
 
 #### 其他行为变化
 
@@ -45,7 +45,11 @@ _Chinese | [English](./CHANGELOG.md)_
 - 数据同步：`ChatOptions` 新增 `dataSyncType` 属性与 `ChatDataSyncType` 枚举，用于配置登录后自动同步会话、好友和已加入群组；`ChatConnectEventListener` 新增 `onDataSyncStart`、`onDataSyncFinish` 和 `onDatabaseOpened` 回调。
 - `ChatConversation` 新增 `displayName` 和 `displayAvatar` 属性（均可为空）。
 - 新增多设备事件 `ConversationUnreadMessageCountCleared`(65) 和 `AllConversationUnreadMessageCountCleared`(66)：当前账号的其他设备清除会话未读数时触发。
-- 新增多设备事件 `GROUP_UPDATE`(34)：当前账号的其他设备修改群组信息时由 iOS SDK 触发（Android SDK 通过 52 上报同一变更）。
+- 新增多设备事件 `GROUP_UPDATE`(34)：当前账号的其他设备修改群组信息。
+
+### 问题修复（Bug Fixes）
+
+- 修复 Android 平台 `ChatManager.getConvMsgsWithKeyword` 的问题：省略可选参数 `senders` 时，原生桥接层会传入包含空字符串的发送者列表，导致本地关键字搜索始终返回空结果。现在省略 `senders` 即不按发送者过滤，与文档描述一致。
 
 ## 1.20.0
 

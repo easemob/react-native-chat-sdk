@@ -370,11 +370,6 @@
     EMMessageSearchDirection direction = [ExtSdkConvertHelper searchDirectionFromString:param[@"direction"]];
     EMMessageSearchScope scope = [ExtSdkConvertHelper searchScopeFromInt:[param[@"searchScope"] integerValue]];
     NSArray *senders = param[@"senders"];
-    if (senders == nil) {
-        NSString *sender = param[@"sender"];
-        // !!! It has been marked as invalid in the typescript language.
-        senders = sender.length > 0 ? @[sender] : nil;
-    }
     [self getConversationWithParam:param
                         completion:^(EMConversation *conversation) {
                           [conversation loadMessagesWithKeyword:keywords
