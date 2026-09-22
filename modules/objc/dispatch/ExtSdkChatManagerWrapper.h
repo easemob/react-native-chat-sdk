@@ -80,6 +80,10 @@ NS_ASSUME_NONNULL_BEGIN
             withMethodType:(NSString *)aChannelName
                     result:(nonnull id<ExtSdkCallbackObjc>)result;
 
+- (void)deleteConversations:(NSDictionary *)param
+             withMethodType:(NSString *)aChannelName
+                     result:(nonnull id<ExtSdkCallbackObjc>)result;
+
 - (void)searchChatMsgFromDB:(NSDictionary *)param
              withMethodType:(NSString *)aChannelName
                      result:(nonnull id<ExtSdkCallbackObjc>)result;

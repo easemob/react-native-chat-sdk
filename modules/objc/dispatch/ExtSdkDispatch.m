@@ -210,6 +210,9 @@ static NSString *const TAG = @"ExtSdkDispatch";
     case ExtSdkMethodKeyDeleteConversationValue:
         [[ExtSdkChatManagerWrapper getInstance] deleteConversation:ps withMethodType:methodType result:callback];
         break;
+    case ExtSdkMethodKeyDeleteConversationsValue:
+        [[ExtSdkChatManagerWrapper getInstance] deleteConversations:ps withMethodType:methodType result:callback];
+        break;
         //    case ExtSdkMethodKeySetVoiceMessageListenedValue:
         //        [callback onFail:1 withExtension:[NSString
         //        stringWithFormat:@"not implement: %@", methodType]]; break;

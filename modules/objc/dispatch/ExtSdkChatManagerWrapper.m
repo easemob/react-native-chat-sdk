@@ -539,6 +539,39 @@
                                                }];
 }
 
+- (void)deleteConversations:(NSDictionary *)param
+             withMethodType:(NSString *)aChannelName
+                     result:(nonnull id<ExtSdkCallbackObjc>)result {
+    __weak typeof(self) weakSelf = self;
+    NSArray *convIds = param[@"convIds"];
+    BOOL isDeleteMsgs = [param[@"deleteMessages"] boolValue];
+    NSMutableArray *conversations = [NSMutableArray array];
+    for (NSString *convId in convIds) {
+        EMConversation *conversation =
+            [EMClient.sharedClient.chatManager getConversationWithConvId:convId];
+        if (conversation) {
+            [conversations addObject:conversation];
+        }
+    }
+    if (convIds.count > 0 && conversations.count == 0) {
+        // Conversation IDs that do not exist are skipped, aligning with Android.
+        [weakSelf onResult:result
+            withMethodType:aChannelName
+                 withError:nil
+                withParams:@(YES)];
+        return;
+    }
+    [EMClient.sharedClient.chatManager
+        deleteConversations:conversations
+           isDeleteMessages:isDeleteMsgs
+                 completion:^(EMError *aError) {
+                   [weakSelf onResult:result
+                       withMethodType:aChannelName
+                            withError:aError
+                           withParams:@(!aError)];
+                 }];
+}
+
 - (void)fetchGroupMessageReadReceipts:(NSDictionary *)param
                        withMethodType:(NSString *)aChannelName
                                result:(nonnull id<ExtSdkCallbackObjc>)result {

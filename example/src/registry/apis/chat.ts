@@ -89,6 +89,24 @@ export const chatApis: ApiEntry[] = [
     },
   },
   {
+    name: 'ChatManager.deleteConversations',
+    group: 'ChatManager',
+    description:
+      '【5.0.0 新增】批量删除本地会话，可选是否同时删除会话内消息。' +
+      'convIds：会话 ID 列表（不存在的 ID 会被忽略）；deleteMessages：默认 true。',
+    paramsTemplate: JSON.stringify(
+      { convIds: ['ID'], deleteMessages: true },
+      null,
+      2
+    ),
+    invoke: async (params) => {
+      return ChatClient.getInstance().chatManager.deleteConversations(
+        (params.convIds ?? []).map(String),
+        params.deleteMessages ?? true
+      );
+    },
+  },
+  {
     name: 'ChatManager.sendMessage',
     group: 'ChatManager',
     description:

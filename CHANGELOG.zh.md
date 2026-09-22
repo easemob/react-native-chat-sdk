@@ -38,7 +38,6 @@ _Chinese | [English](./CHANGELOG.md)_
 #### 其他行为变化
 
 - `ChatManager.getUnreadMessageCount` 统计范围调整：不再统计聊天室会话、Thread 消息以及推送提醒方式为 `MentionOnly` 或 `None` 的会话。
-- `ChatManager.getMessage` 查询消息时不再自动标记已读，清除未读数请使用 `clearConversationUnreadMessageCount`。
 
 ### 新增功能（New Features）
 
@@ -46,10 +45,20 @@ _Chinese | [English](./CHANGELOG.md)_
 - `ChatConversation` 新增 `displayName` 和 `displayAvatar` 属性（均可为空）。
 - 新增多设备事件 `ConversationUnreadMessageCountCleared`(65) 和 `AllConversationUnreadMessageCountCleared`(66)：当前账号的其他设备清除会话未读数时触发。
 - 新增多设备事件 `GROUP_UPDATE`(34)：当前账号的其他设备修改群组信息。
+- 新增 `ChatManager.deleteConversations`，支持批量删除本地会话，并可选择是否同时删除会话内消息；不存在的会话 ID 会被忽略。
 
 ### 问题修复（Bug Fixes）
 
 - 修复 Android 平台 `ChatManager.getConvMsgsWithKeyword` 的问题：省略可选参数 `senders` 时，原生桥接层会传入包含空字符串的发送者列表，导致本地关键字搜索始终返回空结果。现在省略 `senders` 即不按发送者过滤，与文档描述一致。
+- 修复 iOS 平台 `ChatManager.getUnreadCount` 的问题：改用原生未读数统计接口，统计范围排除聊天室会话、消息话题及推送提醒方式为 `MentionOnly` 或 `None` 的会话，与 Android 保持一致。
+- 本次升级同步包含以下原生 SDK 修复：
+  - 修复账号被服务端强制断开（包括在其他设备登录、被移除或被禁用）后，本地登录状态可能未及时清理的问题。
+  - （Android）修复切换账号登录时可能复用上一账号数据库缓存的问题。
+  - （Android）修复修改消息时复用请求标识可能导致响应匹配异常的问题。
+  - （Android）修复部分场景下群名片无法设置为空字符串的问题。
+  - （Android）修复关闭附件 MD5 校验后，上传附件仍可能执行 MD5 预校验的问题。
+  - （Android）修复网络传输、任务队列和数据库缓存中的若干并发安全问题。
+  - （iOS）修复发送附件消息未设置 `displayName` 时上传附件可能有 2 MB 大小限制的问题，SDK 现在自动使用本地文件名作为显示名。
 
 ## 1.20.0
 

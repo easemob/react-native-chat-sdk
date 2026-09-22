@@ -663,6 +663,29 @@ public class ExtSdkChatManagerWrapper extends ExtSdkWrapper {
         }
     }
 
+    public void deleteConversations(JSONObject param, String channelName, ExtSdkCallback result) throws JSONException {
+        JSONArray ids = param.getJSONArray("convIds");
+        List<String> conversationIds = new ArrayList<>();
+        for (int i = 0; i < ids.length(); i++) {
+            conversationIds.add(ids.getString(i));
+        }
+        boolean deleteMessages = param.optBoolean("deleteMessages", true);
+        EMClient.getInstance().chatManager().asyncDeleteConversations(conversationIds, deleteMessages, new EMCallBack() {
+            @Override
+            public void onSuccess() {
+                ExtSdkWrapper.onSuccess(result, channelName, null);
+            }
+
+            @Override
+            public void onError(int code, String error) {
+                ExtSdkWrapper.onError(result, code, error);
+            }
+
+            @Override
+            public void onProgress(int progress, String status) {}
+        });
+    }
+
     public void fetchHistoryMessagesByOptions(JSONObject param, String channelName, ExtSdkCallback result)
         throws JSONException {
         String convId = param.getString("convId");

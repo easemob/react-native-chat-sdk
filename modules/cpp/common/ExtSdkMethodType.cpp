@@ -59,6 +59,7 @@ const std::string ExtSdkMethodType::downloadThumbnail = "downloadThumbnail";
 const std::string ExtSdkMethodType::importMessages = "importMessages";
 const std::string ExtSdkMethodType::loadAllConversations = "loadAllConversations";
 const std::string ExtSdkMethodType::deleteConversation = "deleteConversation";
+const std::string ExtSdkMethodType::deleteConversations = "deleteConversations";
 const std::string ExtSdkMethodType::searchChatMsgFromDB = "searchChatMsgFromDB";
 const std::string ExtSdkMethodType::getMessage = "getMessage";
 

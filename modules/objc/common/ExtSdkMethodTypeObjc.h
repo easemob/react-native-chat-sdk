@@ -66,6 +66,7 @@ static NSString *_Nonnull const ExtSdkMethodKeyImportMessages = @"importMessages
 static NSString *_Nonnull const ExtSdkMethodKeyLoadAllConversations = @"loadAllConversations";
 
 static NSString *_Nonnull const ExtSdkMethodKeyDeleteConversation = @"deleteConversation";
+static NSString *_Nonnull const ExtSdkMethodKeyDeleteConversations = @"deleteConversations";
 // static NSString * _Nonnull const ExtSdkMethodKeySetVoiceMessageListened = @"setVoiceMessageListened"; // deprecated 2022.05.04
 // static NSString * _Nonnull const ExtSdkMethodKeyUpdateParticipant = @"updateParticipant"; // deprecated 2022.05.04
 static NSString *_Nonnull const ExtSdkMethodKeyUpdateConversationsName = @"updateConversationsName"; // deprecated 2022.05.04
@@ -442,6 +443,7 @@ static const int ExtSdkMethodKeyImportMessagesValue = 512;
 static const int ExtSdkMethodKeyLoadAllConversationsValue = 513;
 
 static const int ExtSdkMethodKeyDeleteConversationValue = 515;
+static const int ExtSdkMethodKeyDeleteConversationsValue = 546;
 // static const int ExtSdkMethodKeySetVoiceMessageListenedValue = 516; // deprecated 2022.05.04
 // static const int ExtSdkMethodKeyUpdateParticipantValue = 517; // deprecated 2022.05.04
 static const int ExtSdkMethodKeyUpdateConversationsNameValue = 518; // deprecated 2022.05.04

@@ -70,6 +70,7 @@
           ExtSdkMethodKeyLoadAllConversations : @(ExtSdkMethodKeyLoadAllConversationsValue),
 
           ExtSdkMethodKeyDeleteConversation : @(ExtSdkMethodKeyDeleteConversationValue),
+          ExtSdkMethodKeyDeleteConversations : @(ExtSdkMethodKeyDeleteConversationsValue),
           // ExtSdkMethodKeySetVoiceMessageListened: @(ExtSdkMethodKeySetVoiceMessageListenedValue), // deprecated
           // ExtSdkMethodKeyUpdateParticipant: @(ExtSdkMethodKeyUpdateParticipantValue), // deprecated
           ExtSdkMethodKeyUpdateConversationsName : @(ExtSdkMethodKeyUpdateConversationsNameValue), // deprecated

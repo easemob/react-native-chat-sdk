@@ -229,6 +229,9 @@ public class ExtSdkDispatch implements ExtSdkApi {
             case ExtSdkMethodType.deleteConversation:
                 ExtSdkChatManagerWrapper.getInstance().deleteConversation(jsonParams, methodType, callback);
                 break;
+            case ExtSdkMethodType.deleteConversations:
+                ExtSdkChatManagerWrapper.getInstance().deleteConversations(jsonParams, methodType, callback);
+                break;
             case ExtSdkMethodType.fetchHistoryMessagesByOptions:
                 ExtSdkChatManagerWrapper.getInstance().fetchHistoryMessagesByOptions(jsonParams, methodType, callback);
                 break;

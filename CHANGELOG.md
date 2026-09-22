@@ -38,7 +38,6 @@ This is a major release with breaking changes. Starting from this version, the R
 #### Other Behavior Changes
 
 - The statistical scope of `ChatManager.getUnreadMessageCount` changes: chat room conversations, thread messages, and conversations whose push remind type is `MentionOnly` or `None` are no longer counted.
-- `ChatManager.getMessage` no longer marks the message as read; call `clearConversationUnreadMessageCount` to clear unread counts instead.
 
 ### New Features
 
@@ -46,10 +45,20 @@ This is a major release with breaking changes. Starting from this version, the R
 - Add the `displayName` and `displayAvatar` properties in `ChatConversation` (both may be empty).
 - Add the `ConversationUnreadMessageCountCleared`(65) and `AllConversationUnreadMessageCountCleared`(66) multi-device events, which are fired when another device of the current account clears conversation unread counts.
 - Add the `GROUP_UPDATE`(34) multi-device event, when another device of the current account updates the group information.
+- Add `ChatManager.deleteConversations` to delete multiple local conversations at once, with an option to also delete the messages in them. IDs of conversations that do not exist are ignored.
 
 ### Bug Fixes
 
 - Fix `ChatManager.getConvMsgsWithKeyword` on Android: when the optional `senders` parameter was omitted, the native bridge passed a sender list containing an empty string, so the keyword search in the local database always returned an empty result. Omitting `senders` now disables sender filtering as documented.
+- Fix `ChatManager.getUnreadCount` on iOS: it now uses the native unread-count statistic, so chat room conversations, chat threads, and conversations whose push remind type is `MentionOnly` or `None` are excluded, consistent with Android.
+- Fixes included from the upgraded native SDKs:
+  - Fix the issue where the local login state might not be cleaned up in time after the account is forcibly disconnected by the server (including login on another device, account removal, or account disablement).
+  - (Android) Fix the issue where the database cache of the previous account might be reused when switching accounts.
+  - (Android) Fix the issue where reusing the request identifier when modifying a message could cause response matching errors.
+  - (Android) Fix the issue where the group namecard could not be set to an empty string in some scenarios.
+  - (Android) Fix the issue where MD5 pre-verification might still be performed when uploading attachments after the attachment MD5 verification was disabled.
+  - (Android) Fix several concurrency safety issues in network transmission, task queues, and database caching.
+  - (iOS) Fix the issue where uploading an attachment might hit the 2 MB size limit when `displayName` was not set; the SDK now falls back to the local file name as the display name.
 
 ## 1.20.0
 

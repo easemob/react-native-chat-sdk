@@ -10,6 +10,7 @@ import {
   MTcreateChatThread,
   MTdeleteAllMessageAndConversation,
   MTdeleteConversation,
+  MTdeleteConversations,
   MTdeleteMessagesBeforeTimestamp,
   MTdeleteMessagesWithTs,
   MTdeleteRemoteAndLocalConversationsMark,
@@ -716,7 +717,7 @@ export class ChatManager extends BaseManager {
    *
    * **Note**
    *
-   * Since 5.0.0, this method only queries the message and no longer marks the message as read automatically. To clear the unread count of a conversation, call {@link clearConversationUnreadMessageCount} instead.
+   * This method only queries the message and does not mark it as read. To clear the unread count of a conversation, call {@link clearConversationUnreadMessageCount} instead.
    *
    * @param msgId The message ID.
    * @returns The message.
@@ -1416,6 +1417,32 @@ export class ChatManager extends BaseManager {
       [MTdeleteConversation]: {
         convId: convId,
         deleteMessages: withMessage,
+      },
+    });
+    Native.checkErrorFromResult(r);
+  }
+
+  /**
+   * Deletes multiple conversations from the local database.
+   *
+   * @param convIds The IDs of the conversations to delete. IDs of conversations that do not exist are ignored.
+   * @param deleteMessages Whether to delete the local historical messages in the conversations.
+   * - (Default) `true`: Yes.
+   * - `false`: No.
+   *
+   * @throws A description of the exception. See {@link ChatError}.
+   */
+  public async deleteConversations(
+    convIds: Array<string>,
+    deleteMessages: boolean = true
+  ): Promise<void> {
+    chatlog.log(
+      `${ChatManager.TAG}: deleteConversations: ${convIds}, ${deleteMessages}`
+    );
+    let r: any = await Native._callMethod(MTdeleteConversations, {
+      [MTdeleteConversations]: {
+        convIds: convIds,
+        deleteMessages: deleteMessages,
       },
     });
     Native.checkErrorFromResult(r);
