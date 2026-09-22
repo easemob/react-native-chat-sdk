@@ -68,7 +68,8 @@ const std::string ExtSdkMethodType::onMessagesReceived = "onMessagesReceived";
 const std::string ExtSdkMethodType::onCmdMessagesReceived = "onCmdMessagesReceived";
 const std::string ExtSdkMethodType::onMessageReadReceipts = "onMessageReadReceipts";
 const std::string ExtSdkMethodType::onMessagesDelivered = "onMessagesDelivered";
-const std::string ExtSdkMethodType::onMessagesRecalled = "onMessagesRecalled";
+const std::string ExtSdkMethodType::onMessagesRecalledInfo = "onMessagesRecalledInfo";
+const std::string ExtSdkMethodType::onStreamMessagesReceived = "onStreamMessagesReceived";
 
 const std::string ExtSdkMethodType::onConversationUpdate = "onConversationUpdate";
 
@@ -76,9 +77,6 @@ const std::string ExtSdkMethodType::onConversationUpdate = "onConversationUpdate
 const std::string ExtSdkMethodType::onMessageProgressUpdate = "onMessageProgressUpdate";
 const std::string ExtSdkMethodType::onMessageError = "onMessageError";
 const std::string ExtSdkMethodType::onMessageSuccess = "onMessageSuccess";
-const std::string ExtSdkMethodType::onMessageReadAck = "onMessageReadAck";
-const std::string ExtSdkMethodType::onMessageDeliveryAck = "onMessageDeliveryAck";
-const std::string ExtSdkMethodType::onMessageStatusChanged = "onMessageStatusChanged";
 
 /// EMConversation
 const std::string ExtSdkMethodType::getUnreadMsgCount = "getUnreadMsgCount";
@@ -140,7 +138,6 @@ const std::string ExtSdkMethodType::chatRoomChange = "onChatRoomChanged";
 /// EMGroupManager
 const std::string ExtSdkMethodType::getGroupWithId = "getGroupWithId";
 const std::string ExtSdkMethodType::getJoinedGroups = "getJoinedGroups";
-const std::string ExtSdkMethodType::getGroupsWithoutPushNotification = "getGroupsWithoutPushNotification";
 const std::string ExtSdkMethodType::createGroup = "createGroup";
 const std::string ExtSdkMethodType::updateGroupConfigs = "updateGroupConfigs";
 const std::string ExtSdkMethodType::getGroupSpecificationFromServer = "getGroupSpecificationFromServer";

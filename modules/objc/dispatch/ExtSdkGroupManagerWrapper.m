@@ -95,30 +95,13 @@
                                  result:(nonnull id<ExtSdkCallbackObjc>)result {
     __weak typeof(self) weakSelf = self;
     NSString *groupId = param[@"groupId"];
-    BOOL hasFetchMembers = NO;
-    BOOL fetchMembers = NO;
-    if (param[@"fetchMembers"]) {
-        fetchMembers = [param[@"fetchMembers"] boolValue];
-        hasFetchMembers = YES;
-    }
-    if (hasFetchMembers) {
-        [EMClient.sharedClient.groupManager getGroupSpecificationFromServerWithId:groupId
-                                                                     fetchMembers:fetchMembers
-                                                                       completion:^(EMGroup *aGroup, EMError *aError) {
-                                                                         [weakSelf onResult:result
-                                                                             withMethodType:aChannelName
-                                                                                  withError:aError
-                                                                                 withParams:[aGroup toJsonObject]];
-                                                                       }];
-    } else {
-        [EMClient.sharedClient.groupManager getGroupSpecificationFromServerWithId:groupId
-                                                                       completion:^(EMGroup *aGroup, EMError *aError) {
-                                                                         [weakSelf onResult:result
-                                                                             withMethodType:aChannelName
-                                                                                  withError:aError
-                                                                                 withParams:[aGroup toJsonObject]];
-                                                                       }];
-    }
+    [EMClient.sharedClient.groupManager getGroupSpecificationFromServerWithId:groupId
+                                                                   completion:^(EMGroup *aGroup, EMError *aError) {
+                                                                     [weakSelf onResult:result
+                                                                         withMethodType:aChannelName
+                                                                              withError:aError
+                                                                             withParams:[aGroup toJsonObject]];
+                                                                   }];
 }
 
 - (void)getGroupMemberListFromServer:(NSDictionary *)param
@@ -896,8 +879,13 @@
                             reason:(NSString *_Nullable)aReason
                           decliner:(NSString *_Nullable)aDecliner
                          applicant:(NSString *_Nonnull)aApplicant {
-    NSDictionary *map =
-        @{@"type" : @"onRequestToJoinDeclined", @"groupId" : aGroupId, @"applicant" : aApplicant, @"reason" : aReason};
+    NSDictionary *map = @{
+        @"type" : @"onRequestToJoinDeclined",
+        @"groupId" : aGroupId,
+        @"applicant" : aApplicant,
+        @"decliner" : aDecliner ?: @"",
+        @"reason" : aReason ?: @""
+    };
     [self onReceive:ExtSdkMethodKeyOnGroupChanged withParams:map];
 }
 

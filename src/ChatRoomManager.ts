@@ -154,7 +154,7 @@ export class ChatRoomManager extends Native {
         case 'onAllMemberMuteStateChanged':
           listener.onAllChatRoomMemberMuteStateChanged?.({
             roomId: params.roomId,
-            isAllMuted: params.isAllMuted,
+            isAllMuted: params.isMuted,
           });
           break;
         case 'onSpecificationChanged':

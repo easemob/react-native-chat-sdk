@@ -185,13 +185,13 @@ export class ChatGroupManager extends BaseManager {
         case 'onAdminAdded':
           listener.onAdminAdded?.({
             groupId: params.groupId,
-            admin: params.admin,
+            admin: params.administrator,
           });
           break;
         case 'onAdminRemoved':
           listener.onAdminRemoved?.({
             groupId: params.groupId,
-            admin: params.admin,
+            admin: params.administrator,
           });
           break;
         case 'onOwnerChanged':
@@ -246,7 +246,7 @@ export class ChatGroupManager extends BaseManager {
         case 'onAllMemberMuteStateChanged':
           listener.onAllGroupMemberMuteStateChanged?.({
             groupId: params.groupId,
-            isAllMuted: params.isAllMuted,
+            isAllMuted: params.isMuted,
           });
           break;
         case 'onStateChanged':

@@ -290,6 +290,7 @@ export class ChatManager extends BaseManager {
         recalledBy: param.recalledBy,
         recalledExt: param.recalledExt,
         recalledMessageId: param.recalledMessageId,
+        recalledConvId: param.recalledConvId,
       });
       list.push(m);
     });

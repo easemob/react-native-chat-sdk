@@ -261,9 +261,6 @@ public class ExtSdkDispatch implements ExtSdkApi {
             case ExtSdkMethodType.onMessagesDelivered:
                 callback.fail(1, "no implement: " + methodType);
                 break;
-            case ExtSdkMethodType.onMessagesRecalled:
-                callback.fail(1, "no implement: " + methodType);
-                break;
 
             case ExtSdkMethodType.onConversationUpdate:
                 callback.fail(1, "no implement: " + methodType);
@@ -277,15 +274,6 @@ public class ExtSdkDispatch implements ExtSdkApi {
                 callback.fail(1, "no implement: " + methodType);
                 break;
             case ExtSdkMethodType.onMessageSuccess:
-                callback.fail(1, "no implement: " + methodType);
-                break;
-            case ExtSdkMethodType.onMessageReadAck:
-                callback.fail(1, "no implement: " + methodType);
-                break;
-            case ExtSdkMethodType.onMessageDeliveryAck:
-                callback.fail(1, "no implement: " + methodType);
-                break;
-            case ExtSdkMethodType.onMessageStatusChanged:
                 callback.fail(1, "no implement: " + methodType);
                 break;
 
@@ -441,9 +429,6 @@ public class ExtSdkDispatch implements ExtSdkApi {
                 break;
             case ExtSdkMethodType.getJoinedGroups:
                 ExtSdkGroupManagerWrapper.getInstance().getJoinedGroups(jsonParams, methodType, callback);
-                break;
-            case ExtSdkMethodType.getGroupsWithoutPushNotification:
-                ExtSdkGroupManagerWrapper.getInstance().getGroupsWithoutPushNotification(jsonParams, methodType, callback);
                 break;
             case ExtSdkMethodType.createGroup:
                 ExtSdkGroupManagerWrapper.getInstance().createGroup(jsonParams, methodType, callback);

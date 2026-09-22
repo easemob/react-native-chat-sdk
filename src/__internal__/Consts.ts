@@ -196,8 +196,6 @@ export const MTchatRoomChange = 'onChatRoomChanged';
 /// ChatGroupManager methods
 export const MTgetGroupWithId = 'getGroupWithId';
 export const MTgetJoinedGroups = 'getJoinedGroups';
-export const MTgetGroupsWithoutPushNotification =
-  'getGroupsWithoutPushNotification';
 export const MTcreateGroup = 'createGroup';
 export const MTupdateGroupConfigs = 'updateGroupConfigs';
 export const MTgetGroupSpecificationFromServer =

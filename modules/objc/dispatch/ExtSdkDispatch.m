@@ -239,9 +239,6 @@ static NSString *const TAG = @"ExtSdkDispatch";
     case ExtSdkMethodKeyOnMessagesDeliveredValue:
         [callback onFail:1 withExtension:[NSString stringWithFormat:@"not implement: %@", methodType]];
         break;
-    case ExtSdkMethodKeyOnMessagesRecalledValue:
-        [callback onFail:1 withExtension:[NSString stringWithFormat:@"not implement: %@", methodType]];
-        break;
 
     case ExtSdkMethodKeyOnConversationUpdateValue:
         [callback onFail:1 withExtension:[NSString stringWithFormat:@"not implement: %@", methodType]];
@@ -255,15 +252,6 @@ static NSString *const TAG = @"ExtSdkDispatch";
         [callback onFail:1 withExtension:[NSString stringWithFormat:@"not implement: %@", methodType]];
         break;
     case ExtSdkMethodKeyOnMessageErrorValue:
-        [callback onFail:1 withExtension:[NSString stringWithFormat:@"not implement: %@", methodType]];
-        break;
-    case ExtSdkMethodKeyOnMessageReadAckValue:
-        [callback onFail:1 withExtension:[NSString stringWithFormat:@"not implement: %@", methodType]];
-        break;
-    case ExtSdkMethodKeyOnMessageDeliveryAckValue:
-        [callback onFail:1 withExtension:[NSString stringWithFormat:@"not implement: %@", methodType]];
-        break;
-    case ExtSdkMethodKeyOnMessageStatusChangedValue:
         [callback onFail:1 withExtension:[NSString stringWithFormat:@"not implement: %@", methodType]];
         break;
 
@@ -444,9 +432,6 @@ static NSString *const TAG = @"ExtSdkDispatch";
         break;
     case ExtSdkMethodKeyGetJoinedGroupsValue:
         [[ExtSdkGroupManagerWrapper getInstance] getJoinedGroups:ps withMethodType:methodType result:callback];
-        break;
-    case ExtSdkMethodKeyGetGroupsWithoutPushNotificationValue:
-        [callback onFail:1 withExtension:[NSString stringWithFormat:@"%@ is deprecated", methodType]];
         break;
     case ExtSdkMethodKeyCreateGroupValue:
         [[ExtSdkGroupManagerWrapper getInstance] createGroup:ps withMethodType:methodType result:callback];

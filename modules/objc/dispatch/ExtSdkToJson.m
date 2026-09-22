@@ -1071,7 +1071,6 @@
     if (aJson[@"fileStatus"]) { ret.downloadStatus = [ExtSdkConvertHelper downloadStatusFromInt:[aJson[@"fileStatus"] intValue]]; }
     (aJson[@"thumbnailLocalPath"] && [aJson[@"thumbnailLocalPath"] length] > 0) ? (ret.thumbnailLocalPath = aJson[@"thumbnailLocalPath"]) : nil;
     (aJson[@"thumbnailRemotePath"] && [aJson[@"thumbnailRemotePath"] length] > 0) ? (ret.thumbnailRemotePath = aJson[@"thumbnailRemotePath"]) : nil;
-    (aJson[@"thumbnailSecret"] && [aJson[@"thumbnailSecret"] length] > 0) ? (ret.thumbnailSecretKey = aJson[@"thumbnailSecret"]) : nil;
     if (aJson[@"width"] && aJson[@"height"]) { ret.size = CGSizeMake([aJson[@"width"] floatValue], [aJson[@"height"] floatValue]); }
     if (aJson[@"thumbnailStatus"]) { ret.thumbnailDownloadStatus = [ExtSdkConvertHelper downloadStatusFromInt:[aJson[@"thumbnailStatus"] intValue]]; }
     if (aJson[@"sendOriginalImage"]) { ret.compressionRatio = [aJson[@"sendOriginalImage"] boolValue] ? 1.0 : 0.6; }
@@ -1082,7 +1081,6 @@
     NSMutableDictionary *ret = [[super toJsonObject] mutableCopy];
     ret[@"thumbnailLocalPath"] = self.thumbnailLocalPath;
     ret[@"thumbnailRemotePath"] = self.thumbnailRemotePath;
-    ret[@"thumbnailSecret"] = self.thumbnailSecretKey;
     ret[@"thumbnailStatus"] = @([ExtSdkConvertHelper downloadStatusToInt:self.thumbnailDownloadStatus]);
     ret[@"fileStatus"] = @([ExtSdkConvertHelper downloadStatusToInt:self.downloadStatus]);
     ret[@"width"] = @(self.size.width);

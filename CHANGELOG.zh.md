@@ -31,7 +31,7 @@ _Chinese | [English](./CHANGELOG.md)_
 #### 移除的旧 API
 
 - 数据同步取代服务端拉取接口：移除 `ChatManager.fetchAllConversations`、`fetchConversationsFromServerWithPage`、`fetchConversationsFromServerWithCursor`、`fetchPinnedConversationsFromServerWithCursor`、`fetchConversationsByOptions`，`ChatGroupManager.fetchJoinedGroupsFromServer`，`ChatContactManager.getAllContactsFromServer`、`fetchAllContacts`、`fetchContacts`，请在 `onDataSyncFinish` 后改为读取本地数据；同时移除 `onContactSyncStart`、`onContactSyncFinish` 回调、`ChatOptions` 的 `requireAck`、`enableAutoSyncContacts` 属性及 `ChatConversationFetchOptions` 类。
-- 移除 `ChatRoomManager.createChatRoom` 和 `ChatRoomManager.destroyChatRoom`，请改用服务端 REST API 创建和解散聊天室；移除 `ChatRoomManager.getAllChatRooms`（双端原生 SDK 均已移除）。
+- 移除 `ChatRoomManager.createChatRoom` 和 `ChatRoomManager.destroyChatRoom`，请改用服务端 REST API 创建和解散聊天室；双端原生 SDK 的 `getAllChatRooms` 也已移除。
 - 移除 `ChatManager.reportMessage`，请将消息举报提交至业务服务器。
 - 清理长期废弃的 API（请使用替代项）：`ChatRoomManager.joinChatRoom`（改用 `joinChatRoomEx`）、`ChatGroupManager.fetchGroupInfoFromServer`（改用 `fetchGroupInfoWithoutMembersFromServer`）、`ChatManager.searchMsgFromDB`/`getMessagesWithMsgType`/`getMessages`/`getMessagesWithKeyword`/`getMessageWithTimestamp` 及 `ChatConversation` 同名四个废弃方法（分别改用 `getMsgsWithMsgType`/`getMsgs`/`getMsgsWithKeyword`/`getMsgWithTimestamp`）、`ChatManager.modifyMessageBody`（改用 `modifyMsgBody`）、`ChatManager.fetchHistoryMessages`（改用 `fetchHistoryMessagesByOptions`）、`ChatImageMessageBody.thumbnailSecret`（改用 `secret`）、`ChatFetchMessageOptions.from`（改用 `senders`）、`ChatManager.getConvMsgsWithKeyword` 和 `ChatConversation.getMsgsWithKeyword` 的废弃参数 `sender`（改用 `senders`）、`ChatRoom.muteList`（改用 `muteKVList`）、群组废弃回调 `onMemberJoined`/`onMemberExited`（改用 `onMembersJoined`/`onMembersExited`）、聊天室废弃回调 `onMuteListAdded`（改用 `onMuteListAddedV2`）。`ChatOptions` 公开构造函数移除，请使用 `ChatOptions.withAppKey` 或 `ChatOptions.withAppId`。废弃事件常量 `onMessagesRecalled`、`onMessageReadAck`、`onMessageDeliveryAck`、`onMessageStatusChanged` 一并移除。
 
@@ -51,6 +51,8 @@ _Chinese | [English](./CHANGELOG.md)_
 
 - 修复 Android 平台 `ChatManager.getConvMsgsWithKeyword` 的问题：省略可选参数 `senders` 时，原生桥接层会传入包含空字符串的发送者列表，导致本地关键字搜索始终返回空结果。现在省略 `senders` 即不按发送者过滤，与文档描述一致。
 - 修复 iOS 平台 `ChatManager.getUnreadCount` 的问题：改用原生未读数统计接口，统计范围排除聊天室会话、消息话题及推送提醒方式为 `MentionOnly` 或 `None` 的会话，与 Android 保持一致。
+- 修复原生桥接层与 TypeScript 层之间的事件载荷键名不一致问题：`ChatGroupEventListener` 的 `onAdminAdded`/`onAdminRemoved` 现在能正确携带 `admin`，`onAllGroupMemberMuteStateChanged`/`onAllChatRoomMemberMuteStateChanged` 现在能正确携带 `isAllMuted`，iOS 平台的 `onRequestToJoinDeclined` 回调现在能正确携带 `decliner`（此前 iOS 上始终为 `undefined`），`ChatRecalledMessageInfo.recalledConvId` 现在能从撤回事件中正确填充。
+- `ChatMessage.isPeerRead`、`ChatMessage.isRead` 和 `ChatMessage.groupReadReceiptCount` 在 TypeScript 类型层面标记为 `readonly`，与原生只读语义一致。
 - 本次升级同步包含以下原生 SDK 修复：
   - 修复账号被服务端强制断开（包括在其他设备登录、被移除或被禁用）后，本地登录状态可能未及时清理的问题。
   - （Android）修复切换账号登录时可能复用上一账号数据库缓存的问题。

@@ -195,7 +195,6 @@ RCT_EXPORT_METHOD(multiply : (double)a b : (double)b resolve : (RCTPromiseResolv
         ExtSdkMethodKeyOnMessagesReceived,
         ExtSdkMethodKeyOnCmdMessagesReceived,
         ExtSdkMethodKeyOnMessagesDelivered,
-        ExtSdkMethodKeyOnMessagesRecalled,
         ExtSdkMethodKeyOnMessageReadReceipts,
 
         ExtSdkMethodKeyOnConversationUpdate,
@@ -206,9 +205,6 @@ RCT_EXPORT_METHOD(multiply : (double)a b : (double)b resolve : (RCTPromiseResolv
         ExtSdkMethodKeyOnMessageProgressUpdate,
         ExtSdkMethodKeyOnMessageSuccess,
         ExtSdkMethodKeyOnMessageError,
-        ExtSdkMethodKeyOnMessageReadAck,
-        ExtSdkMethodKeyOnMessageDeliveryAck,
-        ExtSdkMethodKeyOnMessageStatusChanged,
 
         /// EMPresenceManagerDelegate
         ExtSdkMethodKeyOnPresenceStatusChanged,
@@ -276,7 +272,6 @@ RCT_EXPORT_METHOD(multiply : (double)a b : (double)b resolve : (RCTPromiseResolv
 
         ExtSdkMethodKeyGetGroupWithId,
         ExtSdkMethodKeyGetJoinedGroups,
-        ExtSdkMethodKeyGetGroupsWithoutPushNotification,
         ExtSdkMethodKeyCreateGroup,
         ExtSdkMethodKeyGetGroupSpecificationFromServer,
         ExtSdkMethodKeyGetGroupMemberListFromServer,

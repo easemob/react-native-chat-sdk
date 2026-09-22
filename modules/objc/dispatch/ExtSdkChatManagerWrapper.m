@@ -1260,7 +1260,6 @@
     for (EMChatMessage *msg in aMessages) {
         NSDictionary *json = [msg toJsonObject];
         [list addObject:json];
-        [self onReceive:ExtSdkMethodKeyOnMessageDeliveryAck withParams:@{@"message" : json}];
     }
 
     [self onReceive:ExtSdkMethodKeyOnMessagesDelivered withParams:list];

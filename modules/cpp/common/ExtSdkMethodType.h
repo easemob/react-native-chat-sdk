@@ -74,7 +74,8 @@ public:
     static const std::string onCmdMessagesReceived;
     static const std::string onMessageReadReceipts;
     static const std::string onMessagesDelivered;
-    static const std::string onMessagesRecalled;
+    static const std::string onMessagesRecalledInfo;
+    static const std::string onStreamMessagesReceived;
 
     static const std::string onConversationUpdate;
 
@@ -82,9 +83,6 @@ public:
     static const std::string onMessageProgressUpdate;
     static const std::string onMessageError;
     static const std::string onMessageSuccess;
-    static const std::string onMessageReadAck;
-    static const std::string onMessageDeliveryAck;
-    static const std::string onMessageStatusChanged;
 
     /// EMConversation
     static const std::string getUnreadMsgCount;
@@ -146,7 +144,6 @@ public:
     /// EMGroupManager
     static const std::string getGroupWithId;
     static const std::string getJoinedGroups;
-    static const std::string getGroupsWithoutPushNotification;
     static const std::string createGroup;
     static const std::string updateGroupConfigs;
     static const std::string getGroupSpecificationFromServer;
