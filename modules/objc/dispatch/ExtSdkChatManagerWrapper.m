@@ -171,13 +171,9 @@
                withMethodType:(NSString *)aChannelName
                        result:(nonnull id<ExtSdkCallbackObjc>)result {
     __weak typeof(self) weakSelf = self;
-    NSArray *conList = [EMClient.sharedClient.chatManager getAllConversations];
-    int unreadCount = 0;
+    NSInteger unreadCount = 0;
     EMError *error = nil;
-    for (EMConversation *con in conList) {
-        unreadCount += con.unreadMessagesCount;
-    }
-
+    unreadCount = [EMClient.sharedClient.chatManager getUnreadMessageCount];
     [weakSelf onResult:result withMethodType:aChannelName withError:error withParams:@(unreadCount)];
 }
 
