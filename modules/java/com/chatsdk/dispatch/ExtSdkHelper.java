@@ -463,7 +463,7 @@ class ExtSdkGroupMemberInfoHelper {
         }
 
         Map<String, Object> data = new HashMap<>();
-        data.put("memberId", memberInfo.getMemberId());
+        data.put("memberId", memberInfo.getUserId());
         data.put("joinedTimestamp", memberInfo.getJoinTime());
         data.put("role", InternalConvertHelper.intTypeFromGroupPermissionType(memberInfo.getRole()));
         if (memberInfo.getNamecard() != null) {
@@ -1094,7 +1094,7 @@ class ExtSdkMessageBodyHelper {
         data.put("thumbnailSecret", body.getThumbnailSecret());
         data.put("height", body.getHeight());
         data.put("width", body.getWidth());
-        data.put("sendOriginalImage", body.isSendOriginalImage());
+        data.put("sendOriginalImage", body.isOriginalImage());
         data.put("fileSize", body.getFileSize());
         data.put("bigImageLocalPath", body.getBigImageLocalUrl());
         data.put("bigImageRemotePath", body.getBigImageRemoteUrl());
@@ -1672,7 +1672,6 @@ class ExtSdkFetchMessageOptionHelper {
         if (json.has("needSave")) { options.setIsSave(json.getBoolean("needSave")); }
         if (json.has("startTs")) { options.setStartTime(json.getLong("startTs")); }
         if (json.has("endTs")) { options.setEndTime(json.getLong("endTs")); }
-        if (!json.optString("from").isEmpty()) { options.setFrom(json.getString("from")); }
         if (json.has("senders") && json.getJSONArray("senders").length() > 0) {
             List<String> fromIds = new ArrayList<>();
             JSONArray senders = json.getJSONArray("senders");
