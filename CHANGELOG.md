@@ -6,20 +6,46 @@ _English | [Chinese](./CHANGELOG.zh.md)_
 
 This is a major release with breaking changes. Starting from this version, the React Native SDK version number is kept in sync with the underlying native SDK versions.
 
+### Dependencies and Integration
+
 - Dependent native SDKs are upgraded to versions (iOS 5.0.0 and Android 5.0.0).
 - iOS integration: Swift Package Manager (SPM) is the recommended default integration from this version; CocoaPods remains supported, and `ChatSdk.podspec` picks one automatically based on the host app environment. See [SPM integration](./docs/spm.md).
+
+### Login and Connection
+
 - Login: password login, Agora token login, and account registration are removed from the client SDK. Only token login (`ChatClient.loginWithToken`) remains. Remove `ChatClient.login`, `ChatClient.loginWithAgoraToken`, `ChatClient.createAccount`, and `ChatClient.isLoginBefore`. Auto-login is removed: the `autoLogin` property of `ChatOptions` and the `onUserDidLoginFromOtherDevice` callback are removed; call `loginWithToken` proactively after app startup. Rename `ChatClient.renewAgoraToken` to `ChatClient.renewToken`.
 - Connection events: the server-side disconnection callbacks of `ChatConnectEventListener` are consolidated into a single `onDisconnected(errorCode?, info?)` callback that carries the reason as an error code (see the new `ChatDisconnectErrorCode` enum, whose values match the native `EMError` codes). Remove `onAppActiveNumberReachLimit`, `onUserDidLoginFromOtherDeviceWithInfo`, `onUserDidRemoveFromServer`, `onUserDidForbidByServer`, `onUserDidChangePassword`, `onUserDidLoginTooManyDevice`, `onUserKickedByOtherDevice`, and `onUserAuthenticationFailed`. For `USER_LOGIN_FROM_OTHER_DEVICE` (206), the device name and extension information are carried by the `info` parameter. The error code is passed through unchanged and codes not listed in the enum may also be received: the logout reasons (8, 104, 110, 202, 204, 206, 207, 213, 214, 216, 217, 220, 304, 305) invalidate the login state and require logging in again; the connection reasons (2, 4, 300, 303, 306) and any unlisted code keep the user logged in while the SDK reconnects automatically. A network disconnection carries no code on iOS and `NETWORK_ERROR` (2) on Android. A logout caused by token expiration still only fires `onTokenDidExpire`.
 - Device management APIs now authenticate with a token instead of a password: `ChatClient.getLoggedInDevicesFromServer(userId, token)`, `ChatClient.kickDevice(userId, token, resource)`, and `ChatClient.kickAllDevices(userId, token)`.
+
+### Data Sync
+
 - Data sync: add the `dataSyncType` property in `ChatOptions` and the `ChatDataSyncType` enum to configure automatic sync of conversations, contacts, and joined groups after login. Add the `onDataSyncStart`, `onDataSyncFinish`, and `onDatabaseOpened` callbacks in `ChatConnectEventListener`. Server-side pull APIs are removed accordingly: `ChatManager.fetchAllConversations`, `ChatManager.fetchConversationsFromServerWithPage`, `ChatManager.fetchConversationsFromServerWithCursor`, `ChatManager.fetchPinnedConversationsFromServerWithCursor`, `ChatManager.fetchConversationsByOptions`, `ChatGroupManager.fetchJoinedGroupsFromServer`, `ChatContactManager.getAllContactsFromServer`, `ChatContactManager.fetchAllContacts`, and `ChatContactManager.fetchContacts`; read local data instead after `onDataSyncFinish`. The `onContactSyncStart` and `onContactSyncFinish` callbacks are removed. The `requireAck` and `enableAutoSyncContacts` properties of `ChatOptions` are removed, and the `ChatConversationFetchOptions` class is removed.
+
+### Messages and Read Receipts
+
 - Message read receipts are reworked to batch sending: remove `ChatManager.sendMessageReadAck`, `sendGroupMessageReadAck`, `sendConversationReadAck`, `markAllConversationsAsRead`, `markMessageAsRead`, `markAllMessagesAsRead`, `fetchGroupAcks`, and `groupAckCount`; add `ChatManager.sendMessageReadReceipts` (send read receipts in batches), `clearConversationUnreadMessageCount`, `clearAllConversationUnreadMessageCount` (clearing the unread count no longer sends read receipts), `getGroupMessageReadReceipts`, and `fetchGroupMessageReadReceipts`. Remove the `onMessagesRead`, `onGroupMessageRead`, and `onConversationRead` callbacks and add the unified `onMessageReadReceipts` callback in `ChatMessageEventListener`; replace the `ChatGroupMessageAck` model with `ChatGroupReadReceipt` (the `from` field changes from a user ID string to a `ChatGroupMemberInfo` object, and the `content` field is removed), and add the `ChatMessageReadReceipt` model.
 - Rename message read-state properties in `ChatMessage`: `hasReadAck` -> `isPeerRead`, `hasRead` -> `isRead`, `needGroupAck` -> `isNeedReadReceipt`, and `groupAckCount` -> `groupReadReceiptCount`. `isPeerRead`, `isRead`, and `groupReadReceiptCount` are read-only now; set `isNeedReadReceipt` before sending a message to request a read receipt for it.
-- Group configuration model refactor: remove the `ChatGroupStyle` enum and the `ChatGroupOptions` class; add the `ChatGroupConfigs` class (`isPublic`, `joinApprovalRequired`, `allowInvites`, `maxCount`, `inviteNeedConfirm`, `ext`) and the `ChatGroupConfigsType` enum. The `options` property of `ChatGroup` is replaced by `configs`, `createGroupEx` takes `configs` instead of `options`, the deprecated `createGroup` method is removed, and the `isDisabled` property moves to the top level of `ChatGroup`. Add `ChatGroupManager.updateGroupConfigs` to update group configs by type after group creation. Remove `ChatGroupManager.fetchPublicGroupsFromServer`.
-- Conversation: add the `displayName` and `displayAvatar` properties in `ChatConversation` (both may be empty). The statistical scope of `ChatManager.getUnreadMessageCount` changes: chat room conversations, thread messages, and conversations whose push remind type is `MentionOnly` or `None` are no longer counted. `ChatManager.getMessage` no longer marks the message as read; call `clearConversationUnreadMessageCount` to clear unread counts instead.
-- Chat room: remove `ChatRoomManager.createChatRoom` and `ChatRoomManager.destroyChatRoom`; create and destroy chat rooms through the server-side REST API. Remove `ChatRoomManager.getAllChatRooms` (removed by the native SDKs on both platforms).
 - Remove `ChatManager.reportMessage`; report messages to your app server instead.
+
+### Group
+
+- Group configuration model refactor: remove the `ChatGroupStyle` enum and the `ChatGroupOptions` class; add the `ChatGroupConfigs` class (`isPublic`, `joinApprovalRequired`, `allowInvites`, `maxCount`, `inviteNeedConfirm`, `ext`) and the `ChatGroupConfigsType` enum. The `options` property of `ChatGroup` is replaced by `configs`, `createGroupEx` takes `configs` instead of `options`, the deprecated `createGroup` method is removed, and the `isDisabled` property moves to the top level of `ChatGroup`. Add `ChatGroupManager.updateGroupConfigs` to update group configs by type after group creation. Remove `ChatGroupManager.fetchPublicGroupsFromServer`.
+
+### Conversation
+
+- Conversation: add the `displayName` and `displayAvatar` properties in `ChatConversation` (both may be empty). The statistical scope of `ChatManager.getUnreadMessageCount` changes: chat room conversations, thread messages, and conversations whose push remind type is `MentionOnly` or `None` are no longer counted. `ChatManager.getMessage` no longer marks the message as read; call `clearConversationUnreadMessageCount` to clear unread counts instead.
+
+### Chat Room
+
+- Chat room: remove `ChatRoomManager.createChatRoom` and `ChatRoomManager.destroyChatRoom`; create and destroy chat rooms through the server-side REST API. Remove `ChatRoomManager.getAllChatRooms` (removed by the native SDKs on both platforms).
+
+### Multi-Device Events
+
 - Add the `ConversationUnreadMessageCountCleared`(65) and `AllConversationUnreadMessageCountCleared`(66) multi-device events, which are fired when another device of the current account clears conversation unread counts.
 - Add the `GROUP_UPDATE`(34) multi-device event, which the iOS SDK fires when another device of the current account updates the group information (the Android SDK reports that change with value 52 instead).
+
+### Deprecated API Cleanup
+
 - Remove long-deprecated APIs (use the replacements): `ChatRoomManager.joinChatRoom` (use `joinChatRoomEx`), `ChatGroupManager.fetchGroupInfoFromServer` (use `fetchGroupInfoWithoutMembersFromServer`), `ChatManager.searchMsgFromDB`/`getMessagesWithMsgType`/`getMessages`/`getMessagesWithKeyword`/`getMessageWithTimestamp` and the same four deprecated methods on `ChatConversation` (use `getMsgsWithMsgType`/`getMsgs`/`getMsgsWithKeyword`/`getMsgWithTimestamp`), `ChatManager.modifyMessageBody` (use `modifyMsgBody`), `ChatManager.fetchHistoryMessages` (use `fetchHistoryMessagesByOptions`), `ChatImageMessageBody.thumbnailSecret` (use `secret`), `ChatFetchMessageOptions.from` (use `senders`), `ChatRoom.muteList` (use `muteKVList`), the deprecated group callbacks `onMemberJoined`/`onMemberExited` (use `onMembersJoined`/`onMembersExited`), and the deprecated chat room callback `onMuteListAdded` (use `onMuteListAddedV2`). The public constructor of `ChatOptions` is removed; use `ChatOptions.withAppKey` or `ChatOptions.withAppId`. The deprecated event constants `onMessagesRecalled`, `onMessageReadAck`, `onMessageDeliveryAck`, and `onMessageStatusChanged` are removed.
 
 ## 1.20.0
