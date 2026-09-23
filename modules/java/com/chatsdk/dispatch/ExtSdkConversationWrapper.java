@@ -157,12 +157,8 @@ public class ExtSdkConversationWrapper extends ExtSdkWrapper {
         EMConversation.EMMessageSearchScope scope = InternalConvertHelper.searchScopeFromInt(scopeJson);
         JSONArray sendersJson = params.optJSONArray("senders");
         List<String> senders = new ArrayList<>();
-        if (sendersJson == null) {
-            senders.add(params.optString("sender"));
-        } else {
-            for (int i = 0; i < sendersJson.length(); i++) {
-                senders.add(sendersJson.getString(i));
-            }
+        for (int i = 0; sendersJson != null && i < sendersJson.length(); i++) {
+            senders.add(sendersJson.getString(i));
         }
         conversation.asyncSearchMsgFromDB(keywords, timestamp, count, senders, direction, scope,
                                           new EMValueCallBack<List<EMMessage>>() {

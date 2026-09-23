@@ -78,6 +78,7 @@ export const MTvoiceFileToText = 'voiceFileToText';
 export const MTimportMessages = 'importMessages';
 export const MTloadAllConversations = 'loadAllConversations';
 export const MTdeleteConversation = 'deleteConversation';
+export const MTdeleteConversations = 'deleteConversations';
 export const MTfetchHistoryMessagesByOptions = 'fetchHistoryMessagesByOptions';
 export const MTsearchChatMsgFromDB = 'searchChatMsgFromDB';
 export const MTgetConvsMsgsWithKeyword = 'getConvsMsgsWithKeyword';
@@ -195,8 +196,6 @@ export const MTchatRoomChange = 'onChatRoomChanged';
 /// ChatGroupManager methods
 export const MTgetGroupWithId = 'getGroupWithId';
 export const MTgetJoinedGroups = 'getJoinedGroups';
-export const MTgetGroupsWithoutPushNotification =
-  'getGroupsWithoutPushNotification';
 export const MTcreateGroup = 'createGroup';
 export const MTupdateGroupConfigs = 'updateGroupConfigs';
 export const MTgetGroupSpecificationFromServer =

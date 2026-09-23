@@ -66,6 +66,7 @@ static NSString *_Nonnull const ExtSdkMethodKeyImportMessages = @"importMessages
 static NSString *_Nonnull const ExtSdkMethodKeyLoadAllConversations = @"loadAllConversations";
 
 static NSString *_Nonnull const ExtSdkMethodKeyDeleteConversation = @"deleteConversation";
+static NSString *_Nonnull const ExtSdkMethodKeyDeleteConversations = @"deleteConversations";
 // static NSString * _Nonnull const ExtSdkMethodKeySetVoiceMessageListened = @"setVoiceMessageListened"; // deprecated 2022.05.04
 // static NSString * _Nonnull const ExtSdkMethodKeyUpdateParticipant = @"updateParticipant"; // deprecated 2022.05.04
 static NSString *_Nonnull const ExtSdkMethodKeyUpdateConversationsName = @"updateConversationsName"; // deprecated 2022.05.04
@@ -100,7 +101,6 @@ static NSString *_Nonnull const ExtSdkMethodKeyOnMessagesReceived = @"onMessages
 static NSString *_Nonnull const ExtSdkMethodKeyOnStreamMessagesReceived = @"onStreamMessagesReceived";
 static NSString *_Nonnull const ExtSdkMethodKeyOnCmdMessagesReceived = @"onCmdMessagesReceived";
 static NSString *_Nonnull const ExtSdkMethodKeyOnMessagesDelivered = @"onMessagesDelivered";
-static NSString *_Nonnull const ExtSdkMethodKeyOnMessagesRecalled = @"onMessagesRecalled";
 static NSString *_Nonnull const ExtSdkMethodKeyOnMessagesRecalledInfo = @"onMessagesRecalledInfo";
 static NSString *_Nonnull const ExtSdkMethodKeyOnMessageReadReceipts = @"onMessageReadReceipts";
 
@@ -113,10 +113,6 @@ static NSString *_Nonnull const ExtSdkMethodKeyOnMessageContentChanged = @"onMes
 static NSString *_Nonnull const ExtSdkMethodKeyOnMessageProgressUpdate = @"onMessageProgressUpdate";
 static NSString *_Nonnull const ExtSdkMethodKeyOnMessageSuccess = @"onMessageSuccess";
 static NSString *_Nonnull const ExtSdkMethodKeyOnMessageError = @"onMessageError";
-static NSString *_Nonnull const ExtSdkMethodKeyOnMessageReadAck = @"onMessageReadAck"; // deprecated 2026-08-20 use onMessagesRead instead
-static NSString *_Nonnull const ExtSdkMethodKeyOnMessageDeliveryAck = @"onMessageDeliveryAck"; // deprecated 2026-08-20 use onMessagesDelivered instead
-static NSString *_Nonnull const ExtSdkMethodKeyOnMessageStatusChanged =
-    @"onMessageStatusChanged"; // deprecated 2022.05.04
 
 #pragma mark - EMConversationWrapper
 
@@ -188,7 +184,6 @@ static NSString *_Nonnull const ExtSdkMethodKeyChatroomChanged = @"onChatRoomCha
 
 static NSString *_Nonnull const ExtSdkMethodKeyGetGroupWithId = @"getGroupWithId";
 static NSString *_Nonnull const ExtSdkMethodKeyGetJoinedGroups = @"getJoinedGroups";
-static NSString *_Nonnull const ExtSdkMethodKeyGetGroupsWithoutPushNotification = @"getGroupsWithoutPushNotification";
 static NSString *_Nonnull const ExtSdkMethodKeyCreateGroup = @"createGroup";
 static NSString *_Nonnull const ExtSdkMethodKeyGetGroupSpecificationFromServer = @"getGroupSpecificationFromServer";
 static NSString *_Nonnull const ExtSdkMethodKeyGetGroupMemberListFromServer = @"getGroupMemberListFromServer";
@@ -442,6 +437,7 @@ static const int ExtSdkMethodKeyImportMessagesValue = 512;
 static const int ExtSdkMethodKeyLoadAllConversationsValue = 513;
 
 static const int ExtSdkMethodKeyDeleteConversationValue = 515;
+static const int ExtSdkMethodKeyDeleteConversationsValue = 546;
 // static const int ExtSdkMethodKeySetVoiceMessageListenedValue = 516; // deprecated 2022.05.04
 // static const int ExtSdkMethodKeyUpdateParticipantValue = 517; // deprecated 2022.05.04
 static const int ExtSdkMethodKeyUpdateConversationsNameValue = 518; // deprecated 2022.05.04
@@ -472,7 +468,6 @@ static const int ExtSdkMethodKeyDownloadBigImageValue = 545;
 static const int ExtSdkMethodKeyOnMessagesReceivedValue = 600;
 static const int ExtSdkMethodKeyOnCmdMessagesReceivedValue = 601;
 static const int ExtSdkMethodKeyOnMessagesDeliveredValue = 604;
-static const int ExtSdkMethodKeyOnMessagesRecalledValue = 605;
 static const int ExtSdkMethodKeyOnMessagesRecalledInfoValue = 611;
 static const int ExtSdkMethodKeyOnMessageReadReceiptsValue = 2035;
 
@@ -485,9 +480,6 @@ static const int ExtSdkMethodKeyOnMessageContentChangedValue = 610;
 static const int ExtSdkMethodKeyOnMessageProgressUpdateValue = 1200;
 static const int ExtSdkMethodKeyOnMessageSuccessValue = 1201;
 static const int ExtSdkMethodKeyOnMessageErrorValue = 1202;
-static const int ExtSdkMethodKeyOnMessageReadAckValue = 1203;
-static const int ExtSdkMethodKeyOnMessageDeliveryAckValue = 1204;
-static const int ExtSdkMethodKeyOnMessageStatusChangedValue = 1205;
 
 #pragma mark - EMConversationWrapper value
 
@@ -555,7 +547,6 @@ static const int ExtSdkMethodKeyChatroomChangedValue = 829;
 
 static const int ExtSdkMethodKeyGetGroupWithIdValue = 900;
 static const int ExtSdkMethodKeyGetJoinedGroupsValue = 901;
-static const int ExtSdkMethodKeyGetGroupsWithoutPushNotificationValue = 902;
 static const int ExtSdkMethodKeyCreateGroupValue = 905;
 static const int ExtSdkMethodKeyGetGroupSpecificationFromServerValue = 906;
 static const int ExtSdkMethodKeyGetGroupMemberListFromServerValue = 907;

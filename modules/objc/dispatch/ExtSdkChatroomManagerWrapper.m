@@ -95,38 +95,17 @@
                          result:(nonnull id<ExtSdkCallbackObjc>)result {
     __weak typeof(self) weakSelf = self;
     NSString *chatroomId = param[@"roomId"];
-    BOOL hasFetchMembers = NO;
-    BOOL fetchMembers = NO;
-    if (param[@"fetchMembers"]) {
-        fetchMembers = [param[@"fetchMembers"] boolValue];
-        hasFetchMembers = YES;
-    }
-    if (hasFetchMembers) {
-        [EMClient.sharedClient.roomManager
-            getChatroomSpecificationFromServerWithId:chatroomId
-                                        fetchMembers:fetchMembers
-                                          completion:^(EMChatroom *aChatroom,
-                                                       EMError *aError) {
-                                            [weakSelf onResult:result
-                                                withMethodType:aChannelName
-                                                     withError:aError
-                                                    withParams:
-                                                        [aChatroom
-                                                            toJsonObject]];
-                                          }];
-    } else {
-        [EMClient.sharedClient.roomManager
-            getChatroomSpecificationFromServerWithId:chatroomId
-                                          completion:^(EMChatroom *aChatroom,
-                                                       EMError *aError) {
-                                            [weakSelf onResult:result
-                                                withMethodType:aChannelName
-                                                     withError:aError
-                                                    withParams:
-                                                        [aChatroom
-                                                            toJsonObject]];
-                                          }];
-    }
+    [EMClient.sharedClient.roomManager
+        getChatroomSpecificationFromServerWithId:chatroomId
+                                      completion:^(EMChatroom *aChatroom,
+                                                   EMError *aError) {
+                                        [weakSelf onResult:result
+                                            withMethodType:aChannelName
+                                                 withError:aError
+                                                withParams:
+                                                    [aChatroom
+                                                        toJsonObject]];
+                                      }];
 }
 
 - (void)getChatRoom:(NSDictionary *)param

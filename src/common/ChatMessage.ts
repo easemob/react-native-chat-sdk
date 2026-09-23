@@ -402,7 +402,7 @@ export class ChatMessage {
    * - `true`: Yes.
    * - (Default) `false`: No.
    */
-  isPeerRead: boolean = false;
+  readonly isPeerRead: boolean = false;
   /**
    * Whether read receipts are required for a group message.
    *
@@ -413,14 +413,14 @@ export class ChatMessage {
   /**
    * The number of group members that have read a message. Upon reading a message, members in the group call {@link ChatManager.sendMessageReadReceipts} to send read receipts. To enable the read receipt function for group messages, you need to set {@link isNeedReadReceipt} to `true` when sending a message.
    */
-  groupReadReceiptCount: number = 0;
+  readonly groupReadReceiptCount: number = 0;
   /**
    * Whether the the message is read by the recipient during a one-to-one chat or group chat. This parameter setting has connection with the number of unread messages in a conversation. The recipient can call {@link ChatManager.clearConversationUnreadMessageCount} to clear the unread message count of the conversation.
    *
    * - `true`: Yes.
    * - (Default) `false`: No.
    */
-  isRead: boolean = false;
+  readonly isRead: boolean = false;
   /**
    * The conversation type. See {@link ChatType}.
    */

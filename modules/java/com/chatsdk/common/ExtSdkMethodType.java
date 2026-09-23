@@ -70,6 +70,7 @@ public class ExtSdkMethodType {
     public static final String importMessages = "importMessages";
     public static final String loadAllConversations = "loadAllConversations";
     public static final String deleteConversation = "deleteConversation";
+    public static final String deleteConversations = "deleteConversations";
     public static final String fetchHistoryMessagesByOptions = "fetchHistoryMessagesByOptions";
     public static final String searchChatMsgFromDB = "searchChatMsgFromDB";
     public static final String getMessage = "getMessage";
@@ -96,7 +97,6 @@ public class ExtSdkMethodType {
     public static final String onCmdMessagesReceived = "onCmdMessagesReceived";
     public static final String onMessageReadReceipts = "onMessageReadReceipts";
     public static final String onMessagesDelivered = "onMessagesDelivered";
-    public static final String onMessagesRecalled = "onMessagesRecalled";
     public static final String onMessagesRecalledInfo = "onMessagesRecalledInfo";
 
     public static final String onConversationUpdate = "onConversationUpdate";
@@ -108,9 +108,6 @@ public class ExtSdkMethodType {
     public static final String onMessageProgressUpdate = "onMessageProgressUpdate";
     public static final String onMessageError = "onMessageError";
     public static final String onMessageSuccess = "onMessageSuccess";
-    public static final String onMessageReadAck = "onMessageReadAck"; // deprecated 2026-08-20
-    public static final String onMessageDeliveryAck = "onMessageDeliveryAck"; // deprecated 2026-08-20 use onMessagesDelivered instead
-    public static final String onMessageStatusChanged = "onMessageStatusChanged"; // deprecated 2022.05.04
 
     /// EMConversation
     public static final String getUnreadMsgCount = "getUnreadMsgCount";
@@ -176,7 +173,6 @@ public class ExtSdkMethodType {
     /// EMGroupManager
     public static final String getGroupWithId = "getGroupWithId";
     public static final String getJoinedGroups = "getJoinedGroups";
-    public static final String getGroupsWithoutPushNotification = "getGroupsWithoutPushNotification";
     public static final String createGroup = "createGroup";
     public static final String updateGroupConfigs = "updateGroupConfigs";
     public static final String getGroupSpecificationFromServer = "getGroupSpecificationFromServer";

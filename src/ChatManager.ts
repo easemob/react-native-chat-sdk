@@ -10,6 +10,7 @@ import {
   MTcreateChatThread,
   MTdeleteAllMessageAndConversation,
   MTdeleteConversation,
+  MTdeleteConversations,
   MTdeleteMessagesBeforeTimestamp,
   MTdeleteMessagesWithTs,
   MTdeleteRemoteAndLocalConversationsMark,
@@ -289,6 +290,7 @@ export class ChatManager extends BaseManager {
         recalledBy: param.recalledBy,
         recalledExt: param.recalledExt,
         recalledMessageId: param.recalledMessageId,
+        recalledConvId: param.recalledConvId,
       });
       list.push(m);
     });
@@ -716,7 +718,7 @@ export class ChatManager extends BaseManager {
    *
    * **Note**
    *
-   * Since 5.0.0, this method only queries the message and no longer marks the message as read automatically. To clear the unread count of a conversation, call {@link clearConversationUnreadMessageCount} instead.
+   * This method only queries the message and does not mark it as read. To clear the unread count of a conversation, call {@link clearConversationUnreadMessageCount} instead.
    *
    * @param msgId The message ID.
    * @returns The message.
@@ -1422,6 +1424,32 @@ export class ChatManager extends BaseManager {
   }
 
   /**
+   * Deletes multiple conversations from the local database.
+   *
+   * @param convIds The IDs of the conversations to delete. IDs of conversations that do not exist are ignored.
+   * @param deleteMessages Whether to delete the local historical messages in the conversations.
+   * - (Default) `true`: Yes.
+   * - `false`: No.
+   *
+   * @throws A description of the exception. See {@link ChatError}.
+   */
+  public async deleteConversations(
+    convIds: Array<string>,
+    deleteMessages: boolean = true
+  ): Promise<void> {
+    chatlog.log(
+      `${ChatManager.TAG}: deleteConversations: ${convIds}, ${deleteMessages}`
+    );
+    let r: any = await Native._callMethod(MTdeleteConversations, {
+      [MTdeleteConversations]: {
+        convIds: convIds,
+        deleteMessages: deleteMessages,
+      },
+    });
+    Native.checkErrorFromResult(r);
+  }
+
+  /**
    * Gets the latest message from the conversation.
    *
    * **Note**
@@ -1901,7 +1929,6 @@ export class ChatManager extends BaseManager {
    * - searchScope The message search scope. See {@link ChatMessageSearchScope}.
    *                  If you set this parameter as a negative value, the SDK retrieves messages, starting from the current time, in the descending order of the timestamp included in them.
    * - count The maximum number of messages to retrieve each time. The value range is [1,400].
-   * - sender The user ID of the message sender. If you do not set this parameter, the SDK ignores this parameter when retrieving messages. use `senders` instead. 2025-07-22
    * - senders The user IDs of the message senders. If you do not set this parameter, the SDK ignores this parameter when retrieving messages.
    * - isChatThread Whether the conversation is a thread conversation.
    *
@@ -1916,7 +1943,6 @@ export class ChatManager extends BaseManager {
     direction?: ChatSearchDirection;
     timestamp?: number;
     count?: number;
-    sender?: string;
     senders?: Array<string>;
     searchScope?: ChatMessageSearchScope;
     isChatThread?: boolean;
@@ -1928,7 +1954,6 @@ export class ChatManager extends BaseManager {
       direction = ChatSearchDirection.UP,
       timestamp = -1,
       count = 20,
-      sender,
       senders,
       searchScope = ChatMessageSearchScope.All,
       isChatThread = false,
@@ -1942,7 +1967,6 @@ export class ChatManager extends BaseManager {
       timestamp,
       count,
       searchScope,
-      sender,
       senders,
       isChatThread
     );
@@ -1954,7 +1978,6 @@ export class ChatManager extends BaseManager {
         direction: direction === ChatSearchDirection.UP ? 'up' : 'down',
         timestamp: timestamp,
         count: count,
-        sender: sender,
         senders: senders,
         searchScope: searchScope,
         isChatThread: isChatThread,

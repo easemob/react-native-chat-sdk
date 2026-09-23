@@ -1072,7 +1072,6 @@ class ExtSdkMessageBodyHelper {
         if (!json.optString("secret").isEmpty()) { body.setSecret(json.getString("secret")); }
         if (!json.optString("thumbnailLocalPath").isEmpty()) { body.setThumbnailLocalPath(json.getString("thumbnailLocalPath")); }
         if (!json.optString("thumbnailRemotePath").isEmpty()) { body.setThumbnailUrl(json.getString("thumbnailRemotePath")); }
-        if (!json.optString("thumbnailSecret").isEmpty()) { body.setThumbnailSecret(json.getString("thumbnailSecret")); }
         if (json.has("fileSize")) { body.setFileLength(json.getInt("fileSize")); }
         if (json.has("width") && json.has("height")) { body.setThumbnailSize(json.getInt("width"), json.getInt("height")); }
         if (json.has("sendOriginalImage")) { body.setSendOriginalImage(json.getBoolean("sendOriginalImage")); }
@@ -1091,7 +1090,6 @@ class ExtSdkMessageBodyHelper {
         data.put("fileStatus", InternalConvertHelper.downloadStatusToInt(body.downloadStatus()));
         data.put("thumbnailLocalPath", body.thumbnailLocalPath());
         data.put("thumbnailRemotePath", body.getThumbnailUrl());
-        data.put("thumbnailSecret", body.getThumbnailSecret());
         data.put("height", body.getHeight());
         data.put("width", body.getWidth());
         data.put("sendOriginalImage", body.isOriginalImage());

@@ -48,11 +48,6 @@ public class ExtSdkGroupManagerWrapper extends ExtSdkWrapper {
         onSuccess(result, channelName, groupList);
     }
 
-    public void getGroupsWithoutPushNotification(JSONObject param, String channelName, ExtSdkCallback result)
-        throws JSONException {
-        onSuccess(result, channelName, null);
-    }
-
     public void createGroup(JSONObject param, String channelName, ExtSdkCallback result) throws JSONException {
         String groupName = null;
 

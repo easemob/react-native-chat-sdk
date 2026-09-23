@@ -1,0 +1,15 @@
+{
+  "steps": [
+    {
+      "api": "ChatManager.deleteConversations",
+      "id": "delete-all-missing",
+      "params": {
+        "convIds": ["nonexistent_user_himdel_x", "nonexistent_user_himdel_y"],
+        "deleteMessages": true
+      },
+      "expect": {
+        "success": true
+      }
+    }
+  ]
+}

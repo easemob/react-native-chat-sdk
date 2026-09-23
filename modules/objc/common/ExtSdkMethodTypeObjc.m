@@ -70,6 +70,7 @@
           ExtSdkMethodKeyLoadAllConversations : @(ExtSdkMethodKeyLoadAllConversationsValue),
 
           ExtSdkMethodKeyDeleteConversation : @(ExtSdkMethodKeyDeleteConversationValue),
+          ExtSdkMethodKeyDeleteConversations : @(ExtSdkMethodKeyDeleteConversationsValue),
           // ExtSdkMethodKeySetVoiceMessageListened: @(ExtSdkMethodKeySetVoiceMessageListenedValue), // deprecated
           // ExtSdkMethodKeyUpdateParticipant: @(ExtSdkMethodKeyUpdateParticipantValue), // deprecated
           ExtSdkMethodKeyUpdateConversationsName : @(ExtSdkMethodKeyUpdateConversationsNameValue), // deprecated
@@ -93,7 +94,6 @@
           ExtSdkMethodKeyOnMessagesReceived : @(ExtSdkMethodKeyOnMessagesReceivedValue),
           ExtSdkMethodKeyOnCmdMessagesReceived : @(ExtSdkMethodKeyOnCmdMessagesReceivedValue),
           ExtSdkMethodKeyOnMessagesDelivered : @(ExtSdkMethodKeyOnMessagesDeliveredValue),
-          ExtSdkMethodKeyOnMessagesRecalled : @(ExtSdkMethodKeyOnMessagesRecalledValue),
 
           ExtSdkMethodKeyOnConversationUpdate : @(ExtSdkMethodKeyOnConversationUpdateValue),
 
@@ -103,9 +103,6 @@
           ExtSdkMethodKeyOnMessageProgressUpdate : @(ExtSdkMethodKeyOnMessageProgressUpdateValue),
           ExtSdkMethodKeyOnMessageSuccess : @(ExtSdkMethodKeyOnMessageSuccessValue),
           ExtSdkMethodKeyOnMessageError : @(ExtSdkMethodKeyOnMessageErrorValue),
-          ExtSdkMethodKeyOnMessageReadAck : @(ExtSdkMethodKeyOnMessageReadAckValue),
-          ExtSdkMethodKeyOnMessageDeliveryAck : @(ExtSdkMethodKeyOnMessageDeliveryAckValue),
-          ExtSdkMethodKeyOnMessageStatusChanged : @(ExtSdkMethodKeyOnMessageStatusChangedValue),
 
           /// EMConversationWrapper
 
@@ -171,7 +168,6 @@
 
           ExtSdkMethodKeyGetGroupWithId : @(ExtSdkMethodKeyGetGroupWithIdValue),
           ExtSdkMethodKeyGetJoinedGroups : @(ExtSdkMethodKeyGetJoinedGroupsValue),
-          ExtSdkMethodKeyGetGroupsWithoutPushNotification : @(ExtSdkMethodKeyGetGroupsWithoutPushNotificationValue),
           ExtSdkMethodKeyCreateGroup : @(ExtSdkMethodKeyCreateGroupValue),
           ExtSdkMethodKeyGetGroupSpecificationFromServer : @(ExtSdkMethodKeyGetGroupSpecificationFromServerValue),
           ExtSdkMethodKeyGetGroupMemberListFromServer : @(ExtSdkMethodKeyGetGroupMemberListFromServerValue),
