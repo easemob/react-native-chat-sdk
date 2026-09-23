@@ -11,8 +11,6 @@ const std::string ExtSdkMethodType::init = "init";
 const std::string ExtSdkMethodType::login = "login";
 const std::string ExtSdkMethodType::logout = "logout";
 const std::string ExtSdkMethodType::changeAppKey = "changeAppKey";
-const std::string ExtSdkMethodType::updateCurrentUserNick = "updateCurrentUserNick";
-const std::string ExtSdkMethodType::uploadLog = "uploadLog";
 const std::string ExtSdkMethodType::compressLogs = "compressLogs";
 const std::string ExtSdkMethodType::kickDevice = "kickDevice";
 const std::string ExtSdkMethodType::kickAllDevices = "kickAllDevices";
@@ -81,17 +79,13 @@ const std::string ExtSdkMethodType::onMessageSuccess = "onMessageSuccess";
 /// EMConversation
 const std::string ExtSdkMethodType::getUnreadMsgCount = "getUnreadMsgCount";
 const std::string ExtSdkMethodType::syncConversationExt = "syncConversationExt";
-const std::string ExtSdkMethodType::syncConversationName = "syncConversationName";
 const std::string ExtSdkMethodType::removeMessage = "removeMessage";
 const std::string ExtSdkMethodType::getLatestMessage = "getLatestMessage";
 const std::string ExtSdkMethodType::getLatestMessageFromOthers = "getLatestMessageFromOthers";
 const std::string ExtSdkMethodType::clearAllMessages = "clearAllMessages";
 const std::string ExtSdkMethodType::insertMessage = "insertMessage";
-const std::string ExtSdkMethodType::appendMessage = "appendMessage";
 const std::string ExtSdkMethodType::updateConversationMessage = "updateConversationMessage";
 
-// 根据消息id获取消息
-const std::string ExtSdkMethodType::loadMsgWithId = "loadMsgWithId";
 // 根据起始消息id获取消息
 const std::string ExtSdkMethodType::loadMsgWithStartId = "loadMsgWithStartId";
 // 根据关键字获取消息
@@ -179,29 +173,20 @@ const std::string ExtSdkMethodType::acceptJoinApplication = "acceptJoinApplicati
 const std::string ExtSdkMethodType::declineJoinApplication = "declineJoinApplication";
 const std::string ExtSdkMethodType::acceptInvitationFromGroup = "acceptInvitationFromGroup";
 const std::string ExtSdkMethodType::declineInvitationFromGroup = "declineInvitationFromGroup";
-const std::string ExtSdkMethodType::ignoreGroupPush = "ignoreGroupPush";
 
 /// EMGroupManagerListener
 const std::string ExtSdkMethodType::onGroupChanged = "onGroupChanged";
 
 /// EMPushManager
-const std::string ExtSdkMethodType::getImPushConfig = "getImPushConfig";
 const std::string ExtSdkMethodType::getImPushConfigFromServer = "getImPushConfigFromServer";
 const std::string ExtSdkMethodType::updatePushNickname = "updatePushNickname";
-const std::string ExtSdkMethodType::updateHMSPushToken = "updateHMSPushToken";
-const std::string ExtSdkMethodType::updateFCMPushToken = "updateFCMPushToken";
 
 /// ImPushConfig
-const std::string ExtSdkMethodType::imPushNoDisturb = "imPushNoDisturb";
 const std::string ExtSdkMethodType::updateImPushStyle = "updateImPushStyle";
-const std::string ExtSdkMethodType::updateGroupPushService = "updateGroupPushService";
-const std::string ExtSdkMethodType::getNoDisturbGroups = "getNoDisturbGroups";
 
 
 /// EMUserInfoManager
 const std::string ExtSdkMethodType::updateOwnUserInfo = "updateOwnUserInfo";
-const std::string ExtSdkMethodType::updateOwnUserInfoWithType = "updateOwnUserInfoWithType";
 const std::string ExtSdkMethodType::fetchUserInfoById = "fetchUserInfoById";
-const std::string ExtSdkMethodType::fetchUserInfoByIdWithType = "fetchUserInfoByIdWithType";
 
 EXT_SDK_NAMESPACE_END

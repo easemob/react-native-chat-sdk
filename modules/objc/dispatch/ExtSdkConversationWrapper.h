@@ -38,10 +38,6 @@ NS_ASSUME_NONNULL_BEGIN
     withMethodType:(NSString *)aChannelName
             result:(nonnull id<ExtSdkCallbackObjc>)result;
 
-- (void)appendMsg:(NSDictionary *)param
-    withMethodType:(NSString *)aChannelName
-            result:(nonnull id<ExtSdkCallbackObjc>)result;
-
 - (void)updateConversationMsg:(NSDictionary *)param
                withMethodType:(NSString *)aChannelName
                        result:(nonnull id<ExtSdkCallbackObjc>)result;
@@ -55,10 +51,6 @@ NS_ASSUME_NONNULL_BEGIN
              result:(nonnull id<ExtSdkCallbackObjc>)result;
 
 #pragma mark - load messages
-- (void)loadMsgWithId:(NSDictionary *)param
-       withMethodType:(NSString *)aChannelName
-               result:(nonnull id<ExtSdkCallbackObjc>)result;
-
 - (void)loadMsgWithMsgType:(NSDictionary *)param
             withMethodType:(NSString *)aChannelName
                     result:(nonnull id<ExtSdkCallbackObjc>)result;

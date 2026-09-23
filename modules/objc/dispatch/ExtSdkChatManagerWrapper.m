@@ -933,24 +933,6 @@
                                        }];
 }
 
-- (void)modifyMessage:(NSDictionary *)param
-       withMethodType:(NSString *)aChannelName
-               result:(nonnull id<ExtSdkCallbackObjc>)result {
-    __weak typeof(self) weakSelf = self;
-    NSString *msgId = param[@"msgId"];
-    EMMessageBody *body = [EMTextMessageBody fromJsonObject:param[@"body"]];
-    NSDictionary *ext = param[@"ext"];
-    [EMClient.sharedClient.chatManager modifyMessage:msgId
-                                                body:body
-                                                 ext:ext
-                                          completion:^(EMError *_Nullable error, EMChatMessage *_Nullable message) {
-                                            [weakSelf onResult:result
-                                                withMethodType:aChannelName
-                                                     withError:error
-                                                    withParams:error != nil ? nil : [message toJsonObject]];
-                                          }];
-}
-
 - (void)downloadAndParseCombineMessage:(NSDictionary *)param
                         withMethodType:(NSString *)aChannelName
                                 result:(nonnull id<ExtSdkCallbackObjc>)result {

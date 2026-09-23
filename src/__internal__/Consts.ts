@@ -8,8 +8,6 @@ export const MTlogin = 'login';
 export const MTlogout = 'logout';
 export const MTchangeAppKey = 'changeAppKey';
 export const MTchangeAppId = 'changeAppId';
-export const MTupdateCurrentUserNick = 'updateCurrentUserNick'; // deprecated 2026-05-21
-export const MTuploadLog = 'uploadLog';
 export const MTcompressLogs = 'compressLogs';
 export const MTkickDevice = 'kickDevice';
 export const MTkickAllDevices = 'kickAllDevices';
@@ -130,17 +128,14 @@ export const MTonChatThreadUserRemoved = 'onChatThreadUserRemoved';
 export const MTgetUnreadMsgCount = 'getUnreadMsgCount';
 export const MTgetMsgCount = 'getMsgCount';
 export const MTsyncConversationExt = 'syncConversationExt';
-export const MTsyncConversationName = 'syncConversationName'; // deprecated 2022.05.05
 export const MTremoveMessage = 'removeMessage';
 export const MTgetLatestMessage = 'getLatestMessage';
 export const MTgetLatestMessageFromOthers = 'getLatestMessageFromOthers';
 export const MTclearAllMessages = 'clearAllMessages';
 export const MTdeleteMessagesWithTs = 'deleteMessagesWithTs';
 export const MTinsertMessage = 'insertMessage';
-export const MTappendMessage = 'appendMessage';
 export const MTupdateConversationMessage = 'updateConversationMessage';
 
-export const MTloadMsgWithId = 'loadMsgWithId';
 export const MTloadMsgWithStartId = 'loadMsgWithStartId';
 export const MTloadMsgWithKeywords = 'loadMsgWithKeywords';
 export const MTloadMsgWithMsgType = 'loadMsgWithMsgType';
@@ -186,7 +181,6 @@ export const MTmuteAllChatRoomMembers = 'muteAllChatRoomMembers';
 export const MTunMuteAllChatRoomMembers = 'unMuteAllChatRoomMembers';
 
 export const MTfetchChatRoomAttributes = 'fetchChatRoomAttributes';
-export const MTfetchChatRoomAllAttributes = 'fetchChatRoomAllAttributes';
 export const MTsetChatRoomAttributes = 'setChatRoomAttributes';
 export const MTremoveChatRoomAttributes = 'removeChatRoomAttributes';
 
@@ -253,29 +247,12 @@ export const MTgetGroupNamecard = 'getGroupNamecard';
 export const MTonGroupChanged = 'onGroupChanged';
 
 /// ChatPushManager methods
-export const MTgetImPushConfig = 'getImPushConfig';
 export const MTgetImPushConfigFromServer = 'getImPushConfigFromServer';
 export const MTupdatePushNickname = 'updatePushNickname';
-export const MTenableOfflinePush = 'enableOfflinePush';
-export const MTdisableOfflinePush = 'disableOfflinePush';
-export const MTgetNoPushGroups = 'getNoPushGroups';
-export const MTsetNoDisturbUsers = 'setNoDisturbUsers'; // deprecated 2022.05.04
-export const MTgetNoDisturbUsersFromServer = 'getNoDisturbUsersFromServer'; // deprecated 2022.05.04
-
-export const MTupdateHMSPushToken = 'updateHMSPushToken'; // deprecated 2026-05-21
-export const MTupdateFCMPushToken = 'updateFCMPushToken'; // deprecated 2026-05-21
-export const MTupdateAPNsPushToken = 'updateAPNsPushToken'; // deprecated 2026-05-21
-
-export const MTimPushNoDisturb = 'imPushNoDisturb'; // deprecated 2022.05.04
 export const MTupdateImPushStyle = 'updateImPushStyle';
-export const MTupdateGroupPushService = 'updateGroupPushService';
-export const MTgetNoDisturbGroups = 'getNoDisturbGroups'; // deprecated 2022.05.04
-export const MTupdateUserPushService = 'updateUserPushService';
-export const MTgetNoPushUsers = 'getNoPushUsers';
 
 export const MTupdatePushConfig = 'updatePushConfig';
 
-export const MTreportPushAction = 'reportPushAction';
 export const MTsetConversationSilentMode = 'setConversationSilentMode';
 export const MTremoveConversationSilentMode = 'removeConversationSilentMode';
 export const MTfetchConversationSilentMode = 'fetchConversationSilentMode';
@@ -292,9 +269,7 @@ export const MTgetPushTemplate = 'getPushTemplate';
 
 /// ChatUserInfoManager methods
 export const MTupdateOwnUserInfo = 'updateOwnUserInfo';
-export const MTupdateOwnUserInfoWithType = 'updateOwnUserInfoWithType';
 export const MTfetchUserInfoById = 'fetchUserInfoById';
-export const MTfetchUserInfoByIdWithType = 'fetchUserInfoByIdWithType';
 export const MTgetLocalUserInfoByIds = 'getLocalUserInfoByIds';
 export const MTsubscribeUsersInfo = 'subscribeUsersInfo';
 export const MTunsubscribeUsersInfo = 'unsubscribeUsersInfo';

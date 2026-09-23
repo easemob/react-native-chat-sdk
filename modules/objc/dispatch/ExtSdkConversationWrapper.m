@@ -128,24 +128,6 @@
                         }];
 }
 
-- (void)appendMsg:(NSDictionary *)param
-    withMethodType:(NSString *)aChannelName
-            result:(nonnull id<ExtSdkCallbackObjc>)result {
-    __weak typeof(self) weakSelf = self;
-    [self getConversationWithParam:param
-                        completion:^(EMConversation *conversation) {
-                          NSDictionary *msgDict = param[@"msg"];
-                          EMChatMessage *msg = [EMChatMessage fromJsonObject:msgDict];
-
-                          EMError *error = nil;
-                          [conversation appendMessage:msg error:&error];
-                          [weakSelf onResult:result
-                              withMethodType:ExtSdkMethodKeyAppendMsg
-                                   withError:error
-                                  withParams:nil];
-                        }];
-}
-
 - (void)updateConversationMsg:(NSDictionary *)param
                withMethodType:(NSString *)aChannelName
                        result:(nonnull id<ExtSdkCallbackObjc>)result {
@@ -285,23 +267,6 @@
 }
 
 #pragma mark - load messages
-- (void)loadMsgWithId:(NSDictionary *)param
-       withMethodType:(NSString *)aChannelName
-               result:(nonnull id<ExtSdkCallbackObjc>)result {
-    __weak typeof(self) weakSelf = self;
-    NSString *msgId = param[@"msg_id"];
-    [self getConversationWithParam:param
-                        completion:^(EMConversation *conversation) {
-                          EMError *error = nil;
-                          EMChatMessage *msg = [conversation loadMessageWithId:msgId error:&error];
-
-                          [weakSelf onResult:result
-                              withMethodType:ExtSdkMethodKeyLoadMsgWithId
-                                   withError:error
-                                  withParams:[msg toJsonObject]];
-                        }];
-}
-
 - (void)loadMsgWithMsgType:(NSDictionary *)param
             withMethodType:(NSString *)aChannelName
                     result:(nonnull id<ExtSdkCallbackObjc>)result {

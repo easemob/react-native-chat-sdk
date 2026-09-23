@@ -137,15 +137,6 @@
     [self onResult:result withMethodType:ExtSdkMethodKeyGetCurrentUser withError:nil withParams:username];
 }
 
-- (void)uploadLog:(NSDictionary *)param
-    withMethodType:(NSString *)aChannelName
-            result:(nonnull id<ExtSdkCallbackObjc>)result {
-    __weak typeof(self) weakSelf = self;
-    [EMClient.sharedClient uploadDebugLogToServerWithCompletion:^(EMError *aError) {
-      [weakSelf onResult:result withMethodType:ExtSdkMethodKeyUploadLog withError:aError withParams:nil];
-    }];
-}
-
 - (void)compressLogs:(NSDictionary *)param
       withMethodType:(NSString *)aChannelName
               result:(nonnull id<ExtSdkCallbackObjc>)result {
@@ -254,19 +245,6 @@
                                                                       withError:aError
                                                                      withParams:nil];
                                                            }];
-    //    EMError* error = [EMClient.sharedClient bindDeviceToken:[deviceToken
-    //    dataUsingEncoding:NSUTF8StringEncoding]]; [self onResult:result
-    //    withMethodType:aChannelName withError:error withParams:nil];
-
-    //    [EMClient.sharedClient asyncBindDeviceToken:[deviceToken
-    //    dataUsingEncoding:NSUTF8StringEncoding]] success:^{
-    //        [self onResult:result withMethodType:aChannelName withError:nil
-    //        withParams:nil];
-    //    } failure:^(EMError *aError) {
-    //        [self onResult:result withMethodType:aChannelName withError:aError
-    //        withParams:nil];
-    //    }];
-
     // must be NSString* type for deviceToken
     //    [EMClient.sharedClient
     //        registerForRemoteNotificationsWithDeviceToken:deviceToken

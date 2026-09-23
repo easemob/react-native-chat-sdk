@@ -98,17 +98,6 @@ public class ExtSdkConversationWrapper extends ExtSdkWrapper {
         onSuccess(result, channelName, null);
     }
 
-    public void appendMessage(JSONObject params, String channelName, ExtSdkCallback result) throws JSONException {
-        //        EMConversation conversation = this.getConversation(params);
-        JSONObject msg = params.getJSONObject("msg");
-        EMMessage message = ExtSdkMessageHelper.fromJson(msg);
-        if (message != null) {
-            final EMConversation conversation = this.getConversationFromMessage(message);
-            conversation.appendMessage(message);
-        }
-        onSuccess(result, channelName, null);
-    }
-
     public void updateConversationMessage(JSONObject params, String channelName, ExtSdkCallback result)
         throws JSONException {
         EMConversation conversation = this.getConversation(params);
@@ -121,15 +110,6 @@ public class ExtSdkConversationWrapper extends ExtSdkWrapper {
         this.mergeMessage(message, dbMsg);
         conversation.updateMessage(dbMsg);
         onSuccess(result, channelName, null);
-    }
-
-    public void loadMsgWithId(JSONObject params, String channelName, ExtSdkCallback result) throws JSONException {
-        String msgId = params.getString("msg_id");
-        EMMessage msg = EMClient.getInstance().chatManager().getMessage(msgId);
-        if (ExtSdkWrapper.getMessageParams(msg, channelName, result)) {
-            return;
-        }
-        onSuccess(result, channelName, ExtSdkMessageHelper.toJson(msg));
     }
 
     public void loadMsgWithStartId(JSONObject params, String channelName, ExtSdkCallback result) throws JSONException {

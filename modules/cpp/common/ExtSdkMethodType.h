@@ -17,8 +17,6 @@ public:
     static const std::string login;
     static const std::string logout;
     static const std::string changeAppKey;
-    static const std::string updateCurrentUserNick;
-    static const std::string uploadLog;
     static const std::string compressLogs;
     static const std::string kickDevice;
     static const std::string kickAllDevices;
@@ -87,17 +85,13 @@ public:
     /// EMConversation
     static const std::string getUnreadMsgCount;
     static const std::string syncConversationExt;
-    static const std::string syncConversationName;
     static const std::string removeMessage;
     static const std::string getLatestMessage;
     static const std::string getLatestMessageFromOthers;
     static const std::string clearAllMessages;
     static const std::string insertMessage;
-    static const std::string appendMessage;
     static const std::string updateConversationMessage;
 
-    // 根据消息id获取消息
-    static const std::string loadMsgWithId;
     // 根据起始消息id获取消息
     static const std::string loadMsgWithStartId;
     // 根据关键字获取消息
@@ -185,30 +179,21 @@ public:
     static const std::string declineJoinApplication;
     static const std::string acceptInvitationFromGroup;
     static const std::string declineInvitationFromGroup;
-    static const std::string ignoreGroupPush;
 
     /// EMGroupManagerListener
     static const std::string onGroupChanged;
 
     /// EMPushManager
-    static const std::string getImPushConfig;
     static const std::string getImPushConfigFromServer;
     static const std::string updatePushNickname;
-    static const std::string updateHMSPushToken;
-    static const std::string updateFCMPushToken;
 
     /// ImPushConfig
-    static const std::string imPushNoDisturb;
     static const std::string updateImPushStyle;
-    static const std::string updateGroupPushService;
-    static const std::string getNoDisturbGroups;
 
 
     /// EMUserInfoManager
     static const std::string updateOwnUserInfo;
-    static const std::string updateOwnUserInfoWithType;
     static const std::string fetchUserInfoById;
-    static const std::string fetchUserInfoByIdWithType;
 };
 
 EXT_SDK_NAMESPACE_END

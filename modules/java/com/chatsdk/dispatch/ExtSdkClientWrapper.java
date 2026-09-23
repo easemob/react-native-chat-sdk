@@ -110,19 +110,6 @@ public class ExtSdkClientWrapper extends ExtSdkWrapper {
         onSuccess(result, channelName, EMClient.getInstance().getCurrentUser());
     }
 
-    public void uploadLog(JSONObject param, String channelName, ExtSdkCallback result) {
-        EMClient.getInstance().uploadLog(new EMCallBack() {
-            @Override
-            public void onSuccess() {}
-
-            @Override
-            public void onError(int code, String error) {}
-
-            @Override
-            public void onProgress(int progress, String status) {}
-        });
-    }
-
     public void compressLogs(JSONObject param, String channelName, ExtSdkCallback result) {
         try {
             String path = EMClient.getInstance().compressLogs();

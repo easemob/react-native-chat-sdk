@@ -541,23 +541,6 @@
                      }];
 }
 
-- (void)fetchChatRoomAllAttributes:(NSDictionary *)param
-                    withMethodType:(NSString *)aChannelName
-                            result:(nonnull id<ExtSdkCallbackObjc>)result {
-    NSString *roomId = param[@"roomId"];
-    __weak typeof(self) weakSelf = self;
-    [EMClient.sharedClient.roomManager
-        fetchChatroomAllAttributes:roomId
-                        completion:^(EMError *_Nullable error,
-                                     NSDictionary<NSString *, NSString *>
-                                         *_Nullable properties) {
-                          [weakSelf onResult:result
-                              withMethodType:aChannelName
-                                   withError:error
-                                  withParams:properties];
-                        }];
-}
-
 - (void)setChatRoomAttributes:(NSDictionary *)param
                withMethodType:(NSString *)aChannelName
                        result:(nonnull id<ExtSdkCallbackObjc>)result {

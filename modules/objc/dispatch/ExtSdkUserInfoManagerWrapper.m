@@ -47,27 +47,6 @@
                }];
 }
 
-- (void)updateOwnUserInfoWithType:(NSDictionary *)param
-                   withMethodType:(NSString *)aChannelName
-                           result:(nonnull id<ExtSdkCallbackObjc>)result {
-    __weak typeof(self) weakSelf = self;
-
-    int typeValue = [param[@"userInfoType"] intValue];
-    EMUserInfoType userInfoType = [self userInfoTypeFromInt:typeValue];
-    NSString *userInfoValue = param[@"userInfoValue"];
-
-    [EMClient.sharedClient.userInfoManager
-        updateOwnUserInfo:userInfoValue
-                 withType:userInfoType
-               completion:^(EMUserInfo *aUserInfo, EMError *aError) {
-                 NSDictionary *objDic = [aUserInfo toJsonObject];
-                 [weakSelf onResult:result
-                     withMethodType:aChannelName
-                          withError:aError
-                         withParams:objDic];
-               }];
-}
-
 - (void)fetchUserInfoById:(NSDictionary *)param
            withMethodType:(NSString *)aChannelName
                    result:(nonnull id<ExtSdkCallbackObjc>)result {
@@ -88,31 +67,6 @@
                      withMethodType:aChannelName
                           withError:aError
                          withParams:[dic copy]];
-               }];
-}
-
-- (void)fetchUserInfoByIdWithType:(NSDictionary *)param
-                   withMethodType:(NSString *)aChannelName
-                           result:(nonnull id<ExtSdkCallbackObjc>)result {
-    __weak typeof(self) weakSelf = self;
-    NSArray *userIds = param[@"userIds"];
-    NSArray<NSNumber *> *userInfoTypes = param[@"userInfoTypes"];
-
-    [EMClient.sharedClient.userInfoManager
-        fetchUserInfoById:userIds
-                     type:userInfoTypes
-               completion:^(NSDictionary *aUserDatas, EMError *aError) {
-                 NSMutableDictionary *dic = NSMutableDictionary.new;
-                 [aUserDatas enumerateKeysAndObjectsUsingBlock:^(
-                                 id _Nonnull key, id _Nonnull obj,
-                                 BOOL *_Nonnull stop) {
-                   dic[key] = [(EMUserInfo *)obj toJsonObject];
-                 }];
-
-                 [weakSelf onResult:result
-                     withMethodType:aChannelName
-                          withError:aError
-                         withParams:dic];
                }];
 }
 

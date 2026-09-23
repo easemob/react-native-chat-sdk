@@ -7,8 +7,6 @@ public class ExtSdkMethodType {
     public static final String logout = "logout";
     public static final String changeAppKey = "changeAppKey";
     public static final String changeAppId = "changeAppId";
-    public static final String updateCurrentUserNick = "updateCurrentUserNick"; // deprecated 2026-05-21
-    public static final String uploadLog = "uploadLog";
     public static final String compressLogs = "compressLogs";
     public static final String kickDevice = "kickDevice";
     public static final String kickAllDevices = "kickAllDevices";
@@ -89,7 +87,6 @@ public class ExtSdkMethodType {
     public static final String removeMessagesFromServerWithTs = "removeMessagesFromServerWithTs";
 
     public static final String pinConversation = "pinConversation";
-    public static final String modifyMessage = "modifyMessage";
     public static final String downloadAndParseCombineMessage = "downloadAndParseCombineMessage";
 
     /// EMChatManager listener
@@ -113,17 +110,14 @@ public class ExtSdkMethodType {
     public static final String getUnreadMsgCount = "getUnreadMsgCount";
     public static final String getMsgCount = "getMsgCount";
     public static final String syncConversationExt = "syncConversationExt";
-    public static final String syncConversationName = "syncConversationName"; // deprecated 2022.05.04
     public static final String removeMessage = "removeMessage";
     public static final String getLatestMessage = "getLatestMessage";
     public static final String getLatestMessageFromOthers = "getLatestMessageFromOthers";
     public static final String clearAllMessages = "clearAllMessages";
     public static final String deleteMessagesWithTs = "deleteMessagesWithTs";
     public static final String insertMessage = "insertMessage";
-    public static final String appendMessage = "appendMessage";
     public static final String updateConversationMessage = "updateConversationMessage";
 
-    public static final String loadMsgWithId = "loadMsgWithId";
     public static final String loadMsgWithStartId = "loadMsgWithStartId";
     public static final String loadMsgWithKeywords = "loadMsgWithKeywords";
     public static final String loadMsgWithMsgType = "loadMsgWithMsgType";
@@ -163,7 +157,6 @@ public class ExtSdkMethodType {
     public static final String unMuteAllChatRoomMembers = "unMuteAllChatRoomMembers";
 
     public static final String fetchChatRoomAttributes = "fetchChatRoomAttributes";
-    public static final String fetchChatRoomAllAttributes = "fetchChatRoomAllAttributes";
     public static final String setChatRoomAttributes = "setChatRoomAttributes";
     public static final String removeChatRoomAttributes = "removeChatRoomAttributes";
 
@@ -217,24 +210,14 @@ public class ExtSdkMethodType {
     public static final String setMemberAttributesFromGroup = "setMemberAttributesFromGroup";
     public static final String fetchMemberAttributesFromGroup = "fetchMemberAttributesFromGroup";
     public static final String fetchMembersAttributesFromGroup = "fetchMembersAttributesFromGroup";
-    public static final String ignoreGroupPush = "ignoreGroupPush"; // deprecated 2022.05.25
 
     /// EMGroupManagerListener
     public static final String onGroupChanged = "onGroupChanged";
 
     /// EMPushManager
-    public static final String getImPushConfig = "getImPushConfig";
     public static final String getImPushConfigFromServer = "getImPushConfigFromServer";
     public static final String updatePushNickname = "updatePushNickname";
-    public static final String updateHMSPushToken = "updateHMSPushToken"; // deprecated 2026-05-21
-    public static final String updateFCMPushToken = "updateFCMPushToken"; // deprecated 2026-05-21
-    public static final String enableOfflinePush = "enableOfflinePush";
-    public static final String disableOfflinePush = "disableOfflinePush";
-    public static final String getNoPushGroups = "getNoPushGroups";
-    public static final String setNoDisturbUsers = "setNoDisturbUsers";                     // deprecated 2022.05.04
-    public static final String getNoDisturbUsersFromServer = "getNoDisturbUsersFromServer"; // deprecated 2022.05.04
 
-    public static final String reportPushAction = "reportPushAction";
     public static final String setConversationSilentMode = "setConversationSilentMode";
     public static final String removeConversationSilentMode = "removeConversationSilentMode";
     public static final String fetchConversationSilentMode = "fetchConversationSilentMode";
@@ -247,19 +230,12 @@ public class ExtSdkMethodType {
     public static final String getPushTemplate = "getPushTemplate";
 
     /// ImPushConfig
-    public static final String imPushNoDisturb = "imPushNoDisturb"; // deprecated 2022.05.04
     public static final String updateImPushStyle = "updateImPushStyle";
-    public static final String updateGroupPushService = "updateGroupPushService";
-    public static final String getNoDisturbGroups = "getNoDisturbGroups"; // deprecated 2022.05.04
-    public static final String updateUserPushService = "updateUserPushService";
-    public static final String getNoPushUsers = "getNoPushUsers";
     public static final String updatePushConfig = "updatePushConfig";
 
     /// EMUserInfoManager
     public static final String updateOwnUserInfo = "updateOwnUserInfo";
-    public static final String updateOwnUserInfoWithType = "updateOwnUserInfoWithType";
     public static final String fetchUserInfoById = "fetchUserInfoById";
-    public static final String fetchUserInfoByIdWithType = "fetchUserInfoByIdWithType";
 
     /// EMPresenceManager methods
     public static final String presenceWithDescription = "publishPresenceWithDescription";
