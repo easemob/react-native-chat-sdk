@@ -998,27 +998,6 @@ public class ExtSdkChatManagerWrapper extends ExtSdkWrapper {
         });
     }
 
-    public void modifyMessage(JSONObject param, String channelName, ExtSdkCallback result) throws JSONException {
-        String msgId = param.optString("msgId");
-        JSONObject bodyJson = param.optJSONObject("body");
-        EMMessageBody body = ExtSdkMessageBodyHelper.textBodyFromJson(bodyJson != null ? bodyJson : new JSONObject());
-        JSONObject attributesJson = param.optJSONObject("ext");
-        Map<String, Object> attributes =
-            attributesJson != null ? ExtSdkMessageHelper.attributesFromJson(attributesJson) : null;
-        EMClient.getInstance().chatManager().asyncModifyMessage(
-            msgId, body, attributes, new EMValueCallBack<EMMessage>() {
-                @Override
-                public void onSuccess(EMMessage emMessage) {
-                    ExtSdkWrapper.onSuccess(result, channelName, ExtSdkMessageHelper.toJson(emMessage));
-                }
-
-                @Override
-                public void onError(int i, String s) {
-                    ExtSdkWrapper.onError(result, i, s);
-                }
-            });
-    }
-
     public void downloadAndParseCombineMessage(JSONObject param, String channelName, ExtSdkCallback result)
         throws JSONException {
         EMMessage msg = ExtSdkMessageHelper.fromJson(param.optJSONObject("message"));

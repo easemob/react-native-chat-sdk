@@ -778,6 +778,7 @@ export class ChatManager extends BaseManager {
    *
    * Since 5.0.0, the statistics scope of this method is narrowed:
    * - Chat room conversations are not counted.
+   * - Do-not-disturb enabled conversations are not counted.
    * - Unread messages in chat threads are not counted.
    * - Conversations whose push remind type is `MentionOnly` or `None` are not counted, even if they have unread messages.
    * - Only one-to-one and group conversations whose push remind type is `All` are counted.

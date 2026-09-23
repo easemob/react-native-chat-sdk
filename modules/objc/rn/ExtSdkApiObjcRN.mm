@@ -121,11 +121,9 @@ RCT_EXPORT_METHOD(multiply : (double)a b : (double)b resolve : (RCTPromiseResolv
         ExtSdkMethodKeyLogin,
         ExtSdkMethodKeyLogout,
         ExtSdkMethodKeyChangeAppKey,
-        ExtSdkMethodKeyUploadLog,
         ExtSdkMethodKeyCompressLogs,
         ExtSdkMethodKeyKickDevice,
         ExtSdkMethodKeyKickAllDevices,
-        ExtSdkMethodKeyCurrentUser,
         ExtSdkMethodKeyGetLoggedInDevicesFromServer,
         ExtSdkMethodKeyGetToken,
         ExtSdkMethodKeyGetCurrentUser,
@@ -174,7 +172,6 @@ RCT_EXPORT_METHOD(multiply : (double)a b : (double)b resolve : (RCTPromiseResolv
         ExtSdkMethodKeyDeleteConversation,
         // ExtSdkMethodKeySetVoiceMessageListened,
         // ExtSdkMethodKeyUpdateParticipant,
-        ExtSdkMethodKeyUpdateConversationsName,
         ExtSdkMethodKeySearchChatMsgFromDB,
         ExtSdkMethodKeyGetMessage,
         ExtSdkMethodKeydeleteRemoteConversation,
@@ -213,16 +210,13 @@ RCT_EXPORT_METHOD(multiply : (double)a b : (double)b resolve : (RCTPromiseResolv
 
         ExtSdkMethodKeyGetUnreadMsgCount,
         ExtSdkMethodKeySyncConversationExt,
-        ExtSdkMethodKeySyncConversationName,
         ExtSdkMethodKeyRemoveMsg,
         ExtSdkMethodKeyGetLatestMsg,
         ExtSdkMethodKeyGetLatestMsgFromOthers,
         ExtSdkMethodKeyClearAllMsg,
         ExtSdkMethodKeyInsertMsg,
-        ExtSdkMethodKeyAppendMsg,
         ExtSdkMethodKeyUpdateConversationMsg,
 
-        ExtSdkMethodKeyLoadMsgWithId,
         ExtSdkMethodKeyLoadMsgWithStartId,
         ExtSdkMethodKeyLoadMsgWithKeywords,
         ExtSdkMethodKeyLoadMsgWithMsgType,
@@ -262,7 +256,6 @@ RCT_EXPORT_METHOD(multiply : (double)a b : (double)b resolve : (RCTPromiseResolv
         ExtSdkMethodKeyUnMuteAllChatRoomMembers,
 
         ExtSdkMethodKeyfetchChatRoomAttributes,
-        ExtSdkMethodKeyfetchChatRoomAllAttributes,
         ExtSdkMethodKeysetChatRoomAttributes,
         ExtSdkMethodKeyremoveChatRoomAttributes,
 
@@ -314,30 +307,16 @@ RCT_EXPORT_METHOD(multiply : (double)a b : (double)b resolve : (RCTPromiseResolv
         ExtSdkMethodKeyDeclineInvitationFromGroup,
         ExtSdkMethodKeyUpdateGroupNamecard,
         ExtSdkMethodKeyGetGroupNamecard,
-        ExtSdkMethodKeyIgnoreGroupPush,
 
         ExtSdkMethodKeyOnGroupChanged,
 
         /// EMPushManagerWrapper
-        ExtSdkMethodKeyGetImPushConfig,
         ExtSdkMethodKeyGetImPushConfigFromServer,
         ExtSdkMethodKeyUpdatePushNickname,
 
-        ExtSdkMethodKeyImPushNoDisturb,
         ExtSdkMethodKeyUpdateImPushStyle,
-        ExtSdkMethodKeyUpdateGroupPushService,
-        ExtSdkMethodKeyGetNoDisturbGroups,
-        ExtSdkMethodKeyBindDeviceToken,
-        ExtSdkMethodKeyEnablePush,
-        ExtSdkMethodKeyDisablePush,
-        ExtSdkMethodKeyGetNoPushGroups,
-        ExtSdkMethodKeySetNoDisturbUsers,
-        ExtSdkMethodKeyGetNoDisturbUsersFromServer,
-        ExtSdkMethodKeyUpdateUserPushService,
-        ExtSdkMethodKeyGetNoPushUsers,
         ExtSdkMethodKeyUpdatePushConfig,
 
-        ExtSdkMethodKeyReportPushAction,
         ExtSdkMethodKeySetConversationSilentMode,
         ExtSdkMethodKeyRemoveConversationSilentMode,
         ExtSdkMethodKeyFetchConversationSilentMode,
@@ -349,9 +328,7 @@ RCT_EXPORT_METHOD(multiply : (double)a b : (double)b resolve : (RCTPromiseResolv
 
         /// EMUserInfoManagerWrapper
         ExtSdkMethodKeyUpdateOwnUserInfo,
-        ExtSdkMethodKeyUpdateOwnUserInfoWithType,
         ExtSdkMethodKeyFetchUserInfoById,
-        ExtSdkMethodKeyFetchUserInfoByIdWithType,
         ExtSdkMethodKeyGetLocalUserInfoByIds,
         ExtSdkMethodKeySubscribeUsersInfo,
         ExtSdkMethodKeyUnsubscribeUsersInfo,
@@ -397,7 +374,6 @@ RCT_EXPORT_METHOD(multiply : (double)a b : (double)b resolve : (RCTPromiseResolv
         ExtSdkMethodKeyfetchMembersAttributesFromGroup,
 
         ExtSdkMethodKeyPinConversation,
-        ExtSdkMethodKeyModifyMessage,
         ExtSdkMethodKeyDownloadAndParseCombineMessage,
         ExtSdkMethodKeyVoiceMessageToText,
         ExtSdkMethodKeyVoiceFileToText,

@@ -109,11 +109,19 @@ The surviving lookalikes are **not** deprecated: group `ChatGroupEventListener.o
 
 ## Cleanup recommendation
 
-**Decision (2026-09-21): the method-name contract keys are intentionally retained** in all layers
-(TS `Consts.ts`, Java, ObjC, C++). They are unreachable from the RN side but kept as part of the
-shared TS↔native method contract; only the `sequenceNumber` comment residue (section C) was
-removed. Sections A and B therefore stand as an inventory of known-dead methods, not a deletion
-backlog.
+~~**Decision (2026-09-21): the method-name contract keys are intentionally retained**~~
+**Superseded 2026-09-23: the cleanup was executed.** All section A/B method-name contracts
+were removed across every layer — `src/__internal__/Consts.ts` (23 consts, including
+`MTgetImPushConfig`, which was missed by this audit), `modules/cpp/common/ExtSdkMethodType.h/.cpp`,
+`modules/java` (consts + dispatch cases + wrapper methods), and `modules/objc` (keys, values,
+methodMap, dispatch cases, the RN supported-method list, wrapper methods). The sweep additionally
+removed native-only leftovers not covered by sections A/B: `modifyMessage`, `ignoreGroupPush`,
+and the ObjC-only dead entries `currentUser` (deprecated alias of `getCurrentUser`),
+`updateConversationsName`, and `fetchChatThread`. Verified with `yarn typecheck`, `yarn lint`,
+and `yarn test --no-watchman` (19 suites / 116 tests, contract tests included). Known issue left
+untouched: ObjC `renewToken` has a wrapper implementation and a methodMap entry but no dispatch
+case in `ExtSdkDispatch.m`, so it falls through to "not implement" — a functional gap reported
+separately, not part of this cleanup. The inventory below is kept as historical record.
 
 <details>
 <summary>Original removal plan (superseded by the decision above)</summary>

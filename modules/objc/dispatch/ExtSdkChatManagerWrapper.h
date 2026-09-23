@@ -136,10 +136,6 @@ NS_ASSUME_NONNULL_BEGIN
          withMethodType:(NSString *)aChannelName
                  result:(nonnull id<ExtSdkCallbackObjc>)result;
 
-- (void)modifyMessage:(NSDictionary *)param
-       withMethodType:(NSString *)aChannelName
-               result:(nonnull id<ExtSdkCallbackObjc>)result;
-
 - (void)downloadAndParseCombineMessage:(NSDictionary *)param
                         withMethodType:(NSString *)aChannelName
                                 result:(nonnull id<ExtSdkCallbackObjc>)result;

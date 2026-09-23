@@ -21,11 +21,9 @@
           ExtSdkMethodKeyLogout : @(ExtSdkMethodKeyLogoutValue),
           ExtSdkMethodKeyChangeAppKey : @(ExtSdkMethodKeyChangeAppKeyValue),
           ExtSdkMethodKeyChangeAppId : @(ExtSdkMethodKeyChangeAppIdValue),
-          ExtSdkMethodKeyUploadLog : @(ExtSdkMethodKeyUploadLogValue),
           ExtSdkMethodKeyCompressLogs : @(ExtSdkMethodKeyCompressLogsValue),
           ExtSdkMethodKeyKickDevice : @(ExtSdkMethodKeyKickDeviceValue),
           ExtSdkMethodKeyKickAllDevices : @(ExtSdkMethodKeyKickAllDevicesValue),
-          ExtSdkMethodKeyCurrentUser : @(ExtSdkMethodKeyCurrentUserValue), // deprecated
           ExtSdkMethodKeyGetLoggedInDevicesFromServer : @(ExtSdkMethodKeyGetLoggedInDevicesFromServerValue),
           ExtSdkMethodKeyGetToken : @(ExtSdkMethodKeyGetTokenValue),
           ExtSdkMethodKeyGetCurrentUser : @(ExtSdkMethodKeyGetCurrentUserValue),
@@ -73,7 +71,6 @@
           ExtSdkMethodKeyDeleteConversations : @(ExtSdkMethodKeyDeleteConversationsValue),
           // ExtSdkMethodKeySetVoiceMessageListened: @(ExtSdkMethodKeySetVoiceMessageListenedValue), // deprecated
           // ExtSdkMethodKeyUpdateParticipant: @(ExtSdkMethodKeyUpdateParticipantValue), // deprecated
-          ExtSdkMethodKeyUpdateConversationsName : @(ExtSdkMethodKeyUpdateConversationsNameValue), // deprecated
           ExtSdkMethodKeySearchChatMsgFromDB : @(ExtSdkMethodKeySearchChatMsgFromDBValue),
           ExtSdkMethodKeyGetMessage : @(ExtSdkMethodKeyGetMessageValue),
           ExtSdkMethodKeydeleteRemoteConversation : @(ExtSdkMethodKeydeleteRemoteConversationValue),
@@ -108,16 +105,13 @@
 
           ExtSdkMethodKeyGetUnreadMsgCount : @(ExtSdkMethodKeyGetUnreadMsgCountValue),
           ExtSdkMethodKeySyncConversationExt : @(ExtSdkMethodKeySyncConversationExtValue),
-          ExtSdkMethodKeySyncConversationName : @(ExtSdkMethodKeySyncConversationNameValue),
           ExtSdkMethodKeyRemoveMsg : @(ExtSdkMethodKeyRemoveMsgValue),
           ExtSdkMethodKeyGetLatestMsg : @(ExtSdkMethodKeyGetLatestMsgValue),
           ExtSdkMethodKeyGetLatestMsgFromOthers : @(ExtSdkMethodKeyGetLatestMsgFromOthersValue),
           ExtSdkMethodKeyClearAllMsg : @(ExtSdkMethodKeyClearAllMsgValue),
           ExtSdkMethodKeyInsertMsg : @(ExtSdkMethodKeyInsertMsgValue),
-          ExtSdkMethodKeyAppendMsg : @(ExtSdkMethodKeyAppendMsgValue),
           ExtSdkMethodKeyUpdateConversationMsg : @(ExtSdkMethodKeyUpdateConversationMsgValue),
 
-          ExtSdkMethodKeyLoadMsgWithId : @(ExtSdkMethodKeyLoadMsgWithIdValue),
           ExtSdkMethodKeyLoadMsgWithStartId : @(ExtSdkMethodKeyLoadMsgWithStartIdValue),
           ExtSdkMethodKeyLoadMsgWithKeywords : @(ExtSdkMethodKeyLoadMsgWithKeywordsValue),
           ExtSdkMethodKeyLoadMsgWithMsgType : @(ExtSdkMethodKeyLoadMsgWithMsgTypeValue),
@@ -158,7 +152,6 @@
           ExtSdkMethodKeyUnMuteAllChatRoomMembers : @(ExtSdkMethodKeyUnMuteAllChatRoomMembersValue),
 
           ExtSdkMethodKeyfetchChatRoomAttributes : @(ExtSdkMethodKeyfetchChatRoomAttributesValue),
-          ExtSdkMethodKeyfetchChatRoomAllAttributes : @(ExtSdkMethodKeyfetchChatRoomAllAttributesValue),
           ExtSdkMethodKeysetChatRoomAttributes : @(ExtSdkMethodKeysetChatRoomAttributesValue),
           ExtSdkMethodKeyremoveChatRoomAttributes : @(ExtSdkMethodKeyremoveChatRoomAttributesValue),
 
@@ -208,32 +201,18 @@
           ExtSdkMethodKeyDeclineJoinApplication : @(ExtSdkMethodKeyDeclineJoinApplicationValue),
           ExtSdkMethodKeyAcceptInvitationFromGroup : @(ExtSdkMethodKeyAcceptInvitationFromGroupValue),
           ExtSdkMethodKeyDeclineInvitationFromGroup : @(ExtSdkMethodKeyDeclineInvitationFromGroupValue),
-          ExtSdkMethodKeyIgnoreGroupPush : @(ExtSdkMethodKeyIgnoreGroupPushValue), // deprecated
           ExtSdkMethodKeyUpdateGroupNamecard : @(ExtSdkMethodKeyUpdateGroupNamecardValue),
           ExtSdkMethodKeyGetGroupNamecard : @(ExtSdkMethodKeyGetGroupNamecardValue),
 
           ExtSdkMethodKeyOnGroupChanged : @(ExtSdkMethodKeyOnGroupChangedValue),
 
           /// EMPushManagerWrapper
-          ExtSdkMethodKeyGetImPushConfig : @(ExtSdkMethodKeyGetImPushConfigValue),
           ExtSdkMethodKeyGetImPushConfigFromServer : @(ExtSdkMethodKeyGetImPushConfigFromServerValue),
           ExtSdkMethodKeyUpdatePushNickname : @(ExtSdkMethodKeyUpdatePushNicknameValue),
 
-          ExtSdkMethodKeyImPushNoDisturb : @(ExtSdkMethodKeyImPushNoDisturbValue),
           ExtSdkMethodKeyUpdateImPushStyle : @(ExtSdkMethodKeyUpdateImPushStyleValue),
-          ExtSdkMethodKeyUpdateGroupPushService : @(ExtSdkMethodKeyUpdateGroupPushServiceValue),
-          ExtSdkMethodKeyGetNoDisturbGroups : @(ExtSdkMethodKeyGetNoDisturbGroupsValue),
-          ExtSdkMethodKeyBindDeviceToken : @(ExtSdkMethodKeyBindDeviceTokenValue), // deprecated
-          ExtSdkMethodKeyEnablePush : @(ExtSdkMethodKeyEnablePushValue),
-          ExtSdkMethodKeyDisablePush : @(ExtSdkMethodKeyDisablePushValue),
-          ExtSdkMethodKeyGetNoPushGroups : @(ExtSdkMethodKeyGetNoPushGroupsValue),
-          ExtSdkMethodKeySetNoDisturbUsers : @(ExtSdkMethodKeySetNoDisturbUsersValue),
-          ExtSdkMethodKeyGetNoDisturbUsersFromServer : @(ExtSdkMethodKeyGetNoDisturbUsersFromServerValue),
-          ExtSdkMethodKeyUpdateUserPushService : @(ExtSdkMethodKeyUpdateUserPushServiceValue),
-          ExtSdkMethodKeyGetNoPushUsers : @(ExtSdkMethodKeyGetNoPushUsersValue),
           ExtSdkMethodKeyUpdatePushConfig : @(ExtSdkMethodKeyUpdatePushConfigValue),
 
-          ExtSdkMethodKeyReportPushAction : @(ExtSdkMethodKeyReportPushActionValue),
           ExtSdkMethodKeySetConversationSilentMode : @(ExtSdkMethodKeySetConversationSilentModeValue),
           ExtSdkMethodKeyRemoveConversationSilentMode : @(ExtSdkMethodKeyRemoveConversationSilentModeValue),
           ExtSdkMethodKeyFetchConversationSilentMode : @(ExtSdkMethodKeyFetchConversationSilentModeValue),
@@ -245,9 +224,7 @@
 
           /// EMUserInfoManagerWrapper
           ExtSdkMethodKeyUpdateOwnUserInfo : @(ExtSdkMethodKeyUpdateOwnUserInfoValue),
-          ExtSdkMethodKeyUpdateOwnUserInfoWithType : @(ExtSdkMethodKeyUpdateOwnUserInfoWithTypeValue),
           ExtSdkMethodKeyFetchUserInfoById : @(ExtSdkMethodKeyFetchUserInfoByIdValue),
-          ExtSdkMethodKeyFetchUserInfoByIdWithType : @(ExtSdkMethodKeyFetchUserInfoByIdWithTypeValue),
           ExtSdkMethodKeyGetLocalUserInfoByIds : @(ExtSdkMethodKeyGetLocalUserInfoByIdsValue),
           ExtSdkMethodKeySubscribeUsersInfo : @(ExtSdkMethodKeySubscribeUsersInfoValue),
           ExtSdkMethodKeyUnsubscribeUsersInfo : @(ExtSdkMethodKeyUnsubscribeUsersInfoValue),
@@ -264,7 +241,6 @@
 
           ExtSdkMethodKeyOnPresenceStatusChanged : @(ExtSdkMethodKeyOnPresenceStatusChangedValue),
 
-          ExtSdkMethodKeyChatFetchChatThread : @(ExtSdkMethodKeyChatFetchChatThreadValue), // deprecated
           ExtSdkMethodKeyChatFetchChatThreadDetail : @(ExtSdkMethodKeyChatFetchChatThreadDetailValue),
           ExtSdkMethodKeyChatFetchJoinedChatThreads : @(ExtSdkMethodKeyChatFetchJoinedChatThreadsValue),
           ExtSdkMethodKeyChatFetchChatThreadsWithParentId : @(ExtSdkMethodKeyChatFetchChatThreadsWithParentIdValue),
@@ -295,7 +271,6 @@
           ExtSdkMethodKeyfetchMembersAttributesFromGroup : @(ExtSdkMethodKeyfetchMembersAttributesFromGroupValue),
 
           ExtSdkMethodKeyPinConversation : @(ExtSdkMethodKeyPinConversationValue),
-          ExtSdkMethodKeyModifyMessage : @(ExtSdkMethodKeyModifyMessageValue),
           ExtSdkMethodKeyDownloadAndParseCombineMessage : @(ExtSdkMethodKeyDownloadAndParseCombineMessageValue),
           ExtSdkMethodKeyVoiceMessageToText : @(ExtSdkMethodKeyVoiceMessageToTextValue),
           ExtSdkMethodKeyVoiceFileToText : @(ExtSdkMethodKeyVoiceFileToTextValue),

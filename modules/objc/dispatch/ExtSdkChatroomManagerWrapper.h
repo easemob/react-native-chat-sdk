@@ -123,10 +123,6 @@ NS_ASSUME_NONNULL_BEGIN
                  withMethodType:(NSString *)aChannelName
                          result:(nonnull id<ExtSdkCallbackObjc>)result;
 
-- (void)fetchChatRoomAllAttributes:(NSDictionary *)param
-                    withMethodType:(NSString *)aChannelName
-                            result:(nonnull id<ExtSdkCallbackObjc>)result;
-
 - (void)setChatRoomAttributes:(NSDictionary *)param
                withMethodType:(NSString *)aChannelName
                        result:(nonnull id<ExtSdkCallbackObjc>)result;

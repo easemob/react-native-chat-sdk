@@ -527,23 +527,6 @@ public class ExtSdkChatRoomManagerWrapper extends ExtSdkWrapper {
             });
     }
 
-    public void fetchChatRoomAllAttributes(JSONObject param, String channelName, ExtSdkCallback result)
-        throws JSONException {
-        String roomId = param.getString("roomId");
-        EMClient.getInstance().chatroomManager().asyncFetchChatRoomAllAttributesFromServer(
-            roomId, new EMValueCallBack<Map<String, String>>() {
-                @Override
-                public void onSuccess(Map<String, String> value) {
-                    ExtSdkWrapper.onSuccess(result, channelName, value);
-                }
-
-                @Override
-                public void onError(int error, String errorMsg) {
-                    ExtSdkWrapper.onError(result, error, errorMsg);
-                }
-            });
-    }
-
     public void setChatRoomAttributes(JSONObject param, String channelName, ExtSdkCallback result)
         throws JSONException {
         String roomId = param.getString("roomId");

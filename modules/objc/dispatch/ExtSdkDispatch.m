@@ -73,9 +73,6 @@ static NSString *const TAG = @"ExtSdkDispatch";
     case ExtSdkMethodKeyChangeAppIdValue:
         [[ExtSdkClientWrapper getInstance] changeAppId:ps withMethodType:methodType result:callback];
         break;
-    case ExtSdkMethodKeyUploadLogValue:
-        [[ExtSdkClientWrapper getInstance] uploadLog:ps withMethodType:methodType result:callback];
-        break;
     case ExtSdkMethodKeyCompressLogsValue:
         [[ExtSdkClientWrapper getInstance] compressLogs:ps withMethodType:methodType result:callback];
         break;
@@ -84,9 +81,6 @@ static NSString *const TAG = @"ExtSdkDispatch";
         break;
     case ExtSdkMethodKeyKickAllDevicesValue:
         [[ExtSdkClientWrapper getInstance] kickAllDevices:ps withMethodType:methodType result:callback];
-        break;
-    case ExtSdkMethodKeyCurrentUserValue:
-        [[ExtSdkClientWrapper getInstance] getCurrentUser:ps withMethodType:methodType result:callback];
         break;
     case ExtSdkMethodKeyGetLoggedInDevicesFromServerValue:
         [[ExtSdkClientWrapper getInstance] getLoggedInDevicesFromServer:ps withMethodType:methodType result:callback];
@@ -219,9 +213,6 @@ static NSString *const TAG = @"ExtSdkDispatch";
         //    case ExtSdkMethodKeyUpdateParticipantValue:
         //        [callback onFail:1 withExtension:[NSString
         //        stringWithFormat:@"not implement: %@", methodType]]; break;
-    case ExtSdkMethodKeyUpdateConversationsNameValue:
-        [callback onFail:1 withExtension:[NSString stringWithFormat:@"not implement: %@", methodType]];
-        break;
     case ExtSdkMethodKeySearchChatMsgFromDBValue:
         [[ExtSdkChatManagerWrapper getInstance] searchChatMsgFromDB:ps withMethodType:methodType result:callback];
         break;
@@ -266,9 +257,6 @@ static NSString *const TAG = @"ExtSdkDispatch";
     case ExtSdkMethodKeySyncConversationExtValue:
         [[ExtSdkConversationWrapper getInstance] syncConversationExt:ps withMethodType:methodType result:callback];
         break;
-    case ExtSdkMethodKeySyncConversationNameValue:
-        [callback onFail:1 withExtension:[NSString stringWithFormat:@"not implement: %@", methodType]];
-        break;
     case ExtSdkMethodKeyRemoveMsgValue:
         [[ExtSdkConversationWrapper getInstance] removeMsg:ps withMethodType:methodType result:callback];
         break;
@@ -284,16 +272,10 @@ static NSString *const TAG = @"ExtSdkDispatch";
     case ExtSdkMethodKeyInsertMsgValue:
         [[ExtSdkConversationWrapper getInstance] insertMsg:ps withMethodType:methodType result:callback];
         break;
-    case ExtSdkMethodKeyAppendMsgValue:
-        [[ExtSdkConversationWrapper getInstance] appendMsg:ps withMethodType:methodType result:callback];
-        break;
     case ExtSdkMethodKeyUpdateConversationMsgValue:
         [[ExtSdkConversationWrapper getInstance] updateConversationMsg:ps withMethodType:methodType result:callback];
         break;
 
-    case ExtSdkMethodKeyLoadMsgWithIdValue:
-        [[ExtSdkConversationWrapper getInstance] loadMsgWithId:ps withMethodType:methodType result:callback];
-        break;
     case ExtSdkMethodKeyLoadMsgWithStartIdValue:
         [[ExtSdkConversationWrapper getInstance] loadMsgWithStartId:ps withMethodType:methodType result:callback];
         break;
@@ -573,19 +555,12 @@ static NSString *const TAG = @"ExtSdkDispatch";
                                                              withMethodType:methodType
                                                                      result:callback];
         break;
-    case ExtSdkMethodKeyIgnoreGroupPushValue:
-        [callback onFail:1 withExtension:[NSString stringWithFormat:@"not implement: %@", methodType]];
-        break;
-
     /// #pragma mark - ExtSdkGroupManagerDelegate
     case ExtSdkMethodKeyOnGroupChangedValue:
         [callback onFail:1 withExtension:[NSString stringWithFormat:@"not implement: %@", methodType]];
         break;
 
     /// #pragma mark - EMPushManagerWrapper value
-    case ExtSdkMethodKeyGetImPushConfigValue:
-        [[ExtSdkPushManagerWrapper getInstance] getImPushConfig:ps withMethodType:methodType result:callback];
-        break;
     case ExtSdkMethodKeyGetImPushConfigFromServerValue:
         [[ExtSdkPushManagerWrapper getInstance] getImPushConfigFromServer:ps withMethodType:methodType result:callback];
         break;
@@ -593,59 +568,15 @@ static NSString *const TAG = @"ExtSdkDispatch";
         [[ExtSdkPushManagerWrapper getInstance] updatePushNickname:ps withMethodType:methodType result:callback];
         break;
 
-    case ExtSdkMethodKeyImPushNoDisturbValue:
-        [callback onFail:1 withExtension:[NSString stringWithFormat:@"not implement: %@", methodType]];
-        break;
     case ExtSdkMethodKeyUpdateImPushStyleValue:
         [[ExtSdkPushManagerWrapper getInstance] updateImPushStyle:ps withMethodType:methodType result:callback];
         break;
-    case ExtSdkMethodKeyUpdateGroupPushServiceValue:
-        [callback onFail:1 withExtension:[NSString stringWithFormat:@"%@ is deprecated", methodType]];
-        break;
-    case ExtSdkMethodKeyGetNoDisturbGroupsValue:
-        [callback onFail:1 withExtension:[NSString stringWithFormat:@"not implement: %@", methodType]];
-        break;
-    case ExtSdkMethodKeyBindDeviceTokenValue:
-        [[ExtSdkPushManagerWrapper getInstance] bindDeviceToken:ps withMethodType:methodType result:callback];
-        break;
-    case ExtSdkMethodKeyEnablePushValue:
-        [callback onFail:1 withExtension:[NSString stringWithFormat:@"%@ is deprecated", methodType]];
-        break;
-    case ExtSdkMethodKeyDisablePushValue:
-        [callback onFail:1 withExtension:[NSString stringWithFormat:@"%@ is deprecated", methodType]];
-        break;
-    case ExtSdkMethodKeyGetNoPushGroupsValue:
-        [callback onFail:1 withExtension:[NSString stringWithFormat:@"%@ is deprecated", methodType]];
-        break;
-    case ExtSdkMethodKeySetNoDisturbUsersValue:
-        [callback onFail:1 withExtension:[NSString stringWithFormat:@"not implement: %@", methodType]];
-        break;
-    case ExtSdkMethodKeyGetNoDisturbUsersFromServerValue:
-        [callback onFail:1 withExtension:[NSString stringWithFormat:@"not implement: %@", methodType]];
-        break;
-    case ExtSdkMethodKeyUpdateUserPushServiceValue:
-        [callback onFail:1 withExtension:[NSString stringWithFormat:@"%@ is deprecated", methodType]];
-        break;
-    case ExtSdkMethodKeyGetNoPushUsersValue:
-        [callback onFail:1 withExtension:[NSString stringWithFormat:@"%@ is deprecated", methodType]];
-        break;
-
     /// #pragma mark - EMUserInfoManagerWrapper value
     case ExtSdkMethodKeyUpdateOwnUserInfoValue:
         [[ExtSdkUserInfoManagerWrapper getInstance] updateOwnUserInfo:ps withMethodType:methodType result:callback];
         break;
-    case ExtSdkMethodKeyUpdateOwnUserInfoWithTypeValue:
-        [[ExtSdkUserInfoManagerWrapper getInstance] updateOwnUserInfoWithType:ps
-                                                               withMethodType:methodType
-                                                                       result:callback];
-        break;
     case ExtSdkMethodKeyFetchUserInfoByIdValue:
         [[ExtSdkUserInfoManagerWrapper getInstance] fetchUserInfoById:ps withMethodType:methodType result:callback];
-        break;
-    case ExtSdkMethodKeyFetchUserInfoByIdWithTypeValue:
-        [[ExtSdkUserInfoManagerWrapper getInstance] fetchUserInfoByIdWithType:ps
-                                                               withMethodType:methodType
-                                                                       result:callback];
         break;
     case ExtSdkMethodKeyGetLocalUserInfoByIdsValue:
         [[ExtSdkUserInfoManagerWrapper getInstance] getLocalUserInfoByIds:ps
@@ -794,9 +725,6 @@ static NSString *const TAG = @"ExtSdkDispatch";
         [[ExtSdkChatThreadManagerWrapper getInstance] getChatThread:ps withMethodType:methodType result:callback];
         break;
 
-    case ExtSdkMethodKeyReportPushActionValue:
-        [[ExtSdkPushManagerWrapper getInstance] reportPushAction:ps withMethodType:methodType result:callback];
-        break;
     case ExtSdkMethodKeySetConversationSilentModeValue:
         [[ExtSdkPushManagerWrapper getInstance] setConversationSilentMode:ps withMethodType:methodType result:callback];
         break;
@@ -853,11 +781,6 @@ static NSString *const TAG = @"ExtSdkDispatch";
                                                              withMethodType:methodType
                                                                      result:callback];
         break;
-    case ExtSdkMethodKeyfetchChatRoomAllAttributesValue:
-        [[ExtSdkChatroomManagerWrapper getInstance] fetchChatRoomAllAttributes:ps
-                                                                withMethodType:methodType
-                                                                        result:callback];
-        break;
     case ExtSdkMethodKeysetChatRoomAttributesValue:
         [[ExtSdkChatroomManagerWrapper getInstance] setChatRoomAttributes:ps withMethodType:methodType result:callback];
         break;
@@ -894,9 +817,6 @@ static NSString *const TAG = @"ExtSdkDispatch";
 
     case ExtSdkMethodKeyPinConversationValue:
         [[ExtSdkChatManagerWrapper getInstance] pinConversation:ps withMethodType:methodType result:callback];
-        break;
-    case ExtSdkMethodKeyModifyMessageValue:
-        [[ExtSdkChatManagerWrapper getInstance] modifyMessage:ps withMethodType:methodType result:callback];
         break;
     case ExtSdkMethodKeyDownloadAndParseCombineMessageValue:
         [[ExtSdkChatManagerWrapper getInstance] downloadAndParseCombineMessage:ps
