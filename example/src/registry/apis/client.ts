@@ -64,4 +64,53 @@ export const clientApis: ApiEntry[] = [
       return ChatClient.getInstance().renewToken(String(params.token));
     },
   },
+  {
+    name: 'ChatClient.bindDeviceToken',
+    group: 'ChatClient',
+    description:
+      '绑定设备的推送 token（双端公用，5.0.0 取代 updatePushConfig）。' +
+      'deviceToken：APNs 或厂商推送 SDK 返回的 token；' +
+      'notifierName：Android 必填的厂商推送凭据（如 FCM Sender ID），iOS 忽略该参数。' +
+      'iOS 的 APNs 证书名请在 ChatOptions.apnsCertName 中配置。',
+    paramsTemplate: JSON.stringify(
+      { deviceToken: 'DEVICE_TOKEN', notifierName: 'NOTIFIER_NAME' },
+      null,
+      2
+    ),
+    invoke: async (params) => {
+      return ChatClient.getInstance().bindDeviceToken({
+        deviceToken: String(params.deviceToken),
+        notifierName:
+          params.notifierName === undefined
+            ? undefined
+            : String(params.notifierName),
+      });
+    },
+  },
+  {
+    name: 'ChatClient.bindPushKitToken',
+    group: 'ChatClient',
+    description:
+      '绑定 Apple PushKit token，用于 VoIP 推送（仅 iOS 有效，其他平台直接返回）。' +
+      'deviceToken：PKPushRegistry 回调返回的十六进制 token。' +
+      'PushKit 证书名请在 ChatOptions.pushKitCertName 中配置；' +
+      '未登录时调用会失败但 token 已缓存，下次登录成功后自动绑定。',
+    paramsTemplate: JSON.stringify({ deviceToken: 'HEX_TOKEN' }, null, 2),
+    invoke: async (params) => {
+      return ChatClient.getInstance().bindPushKitToken({
+        deviceToken: String(params.deviceToken),
+      });
+    },
+  },
+  {
+    name: 'ChatClient.unbindPushKitToken',
+    group: 'ChatClient',
+    description:
+      '解绑已绑定的 Apple PushKit token（仅 iOS 有效，其他平台直接返回）。无参数。' +
+      'logout(unbindDeviceToken: true) 已会同时解绑，仅需在保持登录状态下单独解绑时才调用。',
+    paramsTemplate: '{}',
+    invoke: async () => {
+      return ChatClient.getInstance().unbindPushKitToken();
+    },
+  },
 ];

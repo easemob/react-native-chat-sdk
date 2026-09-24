@@ -61,9 +61,13 @@ NS_ASSUME_NONNULL_BEGIN
      withMethodType:(NSString *)aChannelName
              result:(nonnull id<ExtSdkCallbackObjc>)result;
 
-- (void)updatePushConfig:(NSDictionary *)param
-          withMethodType:(NSString *)aChannelName
-                  result:(nonnull id<ExtSdkCallbackObjc>)result;
+- (void)renewToken:(NSDictionary *)param
+    withMethodType:(NSString *)aChannelName
+            result:(nonnull id<ExtSdkCallbackObjc>)result;
+
+- (void)bindDeviceToken:(NSDictionary *)param
+         withMethodType:(NSString *)aChannelName
+                 result:(nonnull id<ExtSdkCallbackObjc>)result;
 
 - (void)getRTCTokenInfoWithChannelName:(NSDictionary *)param
                         withMethodType:(NSString *)aChannelName
@@ -72,6 +76,14 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)getUserIdsWithRTCUids:(NSDictionary *)param
                withMethodType:(NSString *)aChannelName
                        result:(nonnull id<ExtSdkCallbackObjc>)result;
+
+- (void)bindPushKitToken:(NSDictionary *)param
+          withMethodType:(NSString *)aChannelName
+                  result:(nonnull id<ExtSdkCallbackObjc>)result;
+
+- (void)unbindPushKitToken:(NSDictionary *)param
+            withMethodType:(NSString *)aChannelName
+                    result:(nonnull id<ExtSdkCallbackObjc>)result;
 
 @end
 

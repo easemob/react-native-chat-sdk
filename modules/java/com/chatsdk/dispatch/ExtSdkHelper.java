@@ -50,7 +50,6 @@ import com.hyphenate.chat.EMUserInfo;
 import com.hyphenate.chat.EMVideoMessageBody;
 import com.hyphenate.chat.EMVoiceMessageBody;
 import com.hyphenate.exceptions.HyphenateException;
-import com.hyphenate.push.EMPushConfig;
 import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.HashMap;
@@ -317,29 +316,6 @@ class ExtSdkOptionsHelper {
         if (json.has("enableEmptyConversation")) { options.setLoadEmptyConversations(json.getBoolean("enableEmptyConversation")); }
         if (!json.optString("customDeviceName").isEmpty()) { options.setCustomDeviceName(json.getString("customDeviceName")); }
         if (json.has("customOSType")) { options.setCustomOSPlatform(json.getInt("customOSType")); }
-
-        if (json.has("pushConfig")) {
-            JSONObject pushConfig = json.getJSONObject("pushConfig");
-            if (!pushConfig.optString("manufacturer").isEmpty()) {
-                EMPushConfig.Builder builder = new EMPushConfig.Builder(context);
-                String manufacturer = pushConfig.getString("manufacturer");
-                if (manufacturer.equalsIgnoreCase("huawei")) {
-                  builder.enableHWPush();
-                  options.setPushConfig(builder.build());
-                } else {
-                  String deviceId = pushConfig.optString("deviceId");
-                  if (!deviceId.isEmpty()) {
-                    if (manufacturer.equalsIgnoreCase("google")) { builder.enableFCM(deviceId); }
-                    else if (manufacturer.equalsIgnoreCase("meizu")) { builder.enableFCM(deviceId); }
-                    else if (manufacturer.equalsIgnoreCase("xiaomi")) { builder.enableFCM(deviceId); }
-                    else if (manufacturer.equalsIgnoreCase("oppo")) { builder.enableOppoPush(deviceId, ""); }
-                    else if (manufacturer.equalsIgnoreCase("vivo")) { builder.enableFCM(deviceId); }
-                    else { builder.enableFCM(deviceId); }
-                    options.setPushConfig(builder.build());
-                  }
-                }
-            }
-        }
 
         // 2024-04-16 4.5.0
         if (json.has("enableTLS")) { options.setEnableTLSConnection(json.getBoolean("enableTLS")); }

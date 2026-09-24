@@ -227,35 +227,22 @@
                            }];
 }
 
-- (void)updatePushConfig:(NSDictionary *)param
-          withMethodType:(NSString *)aChannelName
-                  result:(nonnull id<ExtSdkCallbackObjc>)result {
-    NSDictionary *dict = param[@"config"];
-    NSString *deviceId = dict[@"deviceId"];
-    NSString *deviceToken = dict[@"deviceToken"];
-    //    NSData *deviceTokenData =
-    //        [deviceToken dataUsingEncoding:NSUTF8StringEncoding];
+- (void)bindDeviceToken:(NSDictionary *)param
+         withMethodType:(NSString *)aChannelName
+                 result:(nonnull id<ExtSdkCallbackObjc>)result {
+    // The APNs certificate name is not taken from the request: it is an initialization option
+    // (ChatOptions.apnsCertName -> EMOptions.apnsCertName) and cannot change at runtime.
+    // The notifierName sent by the caller is the vendor push credential, which only Android uses.
+    NSString *deviceToken = param[@"deviceToken"];
 
     __weak typeof(self) weakSelf = self;
-    [EMClient.sharedClient registerForRemoteNotificationsWithCertName:deviceId
-                                                          deviceToken:deviceToken
-                                                           completion:^(EMError *_Nullable aError) {
-                                                             [weakSelf onResult:result
-                                                                 withMethodType:aChannelName
-                                                                      withError:aError
-                                                                     withParams:nil];
-                                                           }];
-    // must be NSString* type for deviceToken
-    //    [EMClient.sharedClient
-    //        registerForRemoteNotificationsWithDeviceToken:deviceToken
-    //                                           completion:^(
-    //                                               EMError *_Nullable aError)
-    //                                               {
-    //                                             [self onResult:result
-    //                                                 withMethodType:aChannelName
-    //                                                      withError:aError
-    //                                                     withParams:nil];
-    //                                           }];
+    [EMClient.sharedClient bindFCMToken:deviceToken
+                             completion:^(EMError *_Nullable aError) {
+                               [weakSelf onResult:result
+                                   withMethodType:aChannelName
+                                        withError:aError
+                                       withParams:nil];
+                             }];
 }
 
 - (void)getRTCTokenInfoWithChannelName:(NSDictionary *)param
@@ -295,6 +282,34 @@
                 completion:^(NSDictionary<NSNumber *, NSString *> *_Nullable accountInfos, EMError *_Nullable aError) {
                   [weakSelf onResult:result withMethodType:aChannelName withError:aError withParams:accountInfos];
                 }];
+}
+
+- (void)bindPushKitToken:(NSDictionary *)param
+          withMethodType:(NSString *)aChannelName
+                  result:(nonnull id<ExtSdkCallbackObjc>)result {
+    __weak typeof(self) weakSelf = self;
+    // The PushKit certificate name is not taken from the request: it is an initialization option
+    // (ChatOptions.pushKitCertName -> EMOptions.pushKitCertName) and cannot change at runtime.
+    // An empty certificate name makes the native call fail with EMErrorUserIllegalArgument.
+    NSString *deviceToken = param[@"deviceToken"];
+    // The native _extractTokenFromRawData: accepts both NSData and NSString, which is the
+    // same way the APNs route above passes its token through.
+    [EMClient.sharedClient registerPushKitToken:(NSData *)deviceToken
+                                     completion:^(EMError *_Nullable aError) {
+                                       [weakSelf onResult:result
+                                           withMethodType:aChannelName
+                                                withError:aError
+                                               withParams:nil];
+                                     }];
+}
+
+- (void)unbindPushKitToken:(NSDictionary *)param
+            withMethodType:(NSString *)aChannelName
+                    result:(nonnull id<ExtSdkCallbackObjc>)result {
+    __weak typeof(self) weakSelf = self;
+    [EMClient.sharedClient unRegisterPushKitTokenWithCompletion:^(EMError *_Nullable aError) {
+      [weakSelf onResult:result withMethodType:aChannelName withError:aError withParams:nil];
+    }];
 }
 
 #pragma - mark EMClientDelegate

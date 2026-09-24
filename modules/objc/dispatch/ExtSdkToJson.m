@@ -1195,7 +1195,8 @@
     data[@"isChatRoomOwnerLeaveAllowed"] = @(self.canChatroomOwnerLeave);
     data[@"serverTransfer"] = @(self.isAutoTransferMessageAttachments);
     data[@"usingHttpsOnly"] = @(self.usingHttpsOnly);
-    data[@"pushConfig"] = @{@"deviceId" : self.apnsCertName};
+    data[@"apnsCertName"] = self.apnsCertName;
+    data[@"pushKitCertName"] = self.pushKitCertName;
     data[@"enableDNSConfig"] = @(self.enableDnsConfig);
     data[@"imPort"] = @(self.chatPort);
     data[@"imServer"] = self.chatServer;
@@ -1245,7 +1246,10 @@
     if (aJson[@"isChatRoomOwnerLeaveAllowed"]) { options.canChatroomOwnerLeave = [aJson[@"isChatRoomOwnerLeaveAllowed"] boolValue]; }
     if (aJson[@"serverTransfer"]) { options.isAutoTransferMessageAttachments = [aJson[@"serverTransfer"] boolValue]; }
     if (aJson[@"usingHttpsOnly"]) { options.usingHttpsOnly = [aJson[@"usingHttpsOnly"] boolValue]; }
-    (aJson[@"pushConfig"] && aJson[@"pushConfig"][@"deviceId"] && [aJson[@"pushConfig"][@"deviceId"] length] > 0) ? (options.apnsCertName = aJson[@"pushConfig"][@"deviceId"]) : nil;
+    // The certificate names can only be set here, at initialization time: both are read by the
+    // native SDK when a token is bound, and must not be modified while the app is running.
+    (aJson[@"apnsCertName"] && [aJson[@"apnsCertName"] length] > 0) ? (options.apnsCertName = aJson[@"apnsCertName"]) : nil;
+    (aJson[@"pushKitCertName"] && [aJson[@"pushKitCertName"] length] > 0) ? (options.pushKitCertName = aJson[@"pushKitCertName"]) : nil;
     if (aJson[@"enableDNSConfig"]) { options.enableDnsConfig = [aJson[@"enableDNSConfig"] boolValue]; }
     if (aJson[@"imPort"]) { options.chatPort = [aJson[@"imPort"] intValue]; }
     (aJson[@"imServer"] && [aJson[@"imServer"] length] > 0) ? (options.chatServer = aJson[@"imServer"]) : nil;

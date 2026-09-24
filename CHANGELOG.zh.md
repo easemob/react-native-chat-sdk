@@ -39,6 +39,12 @@ _Chinese | [English](./CHANGELOG.md)_
 
 - `ChatManager.getUnreadMessageCount` 统计范围调整：不再统计聊天室会话、Thread 消息以及推送提醒方式为 `MentionOnly` 或 `None` 的会话。
 
+#### 推送配置
+
+- 移除 `ChatOptions.pushConfig` 属性与 `ChatPushConfig` 类：承载厂商推送 appId / appKey / 证书名的配置对象不再由 `ChatOptions` 序列化，桥接层中读取该字段的原生分支（iOS `ExtSdkToJson` 的 `EMOptions` 映射、Android `ExtSdkOptionsHelper` 的 `EMPushConfig` 构建）一并删除。**Android 厂商推送（FCM、华为、小米、魅族、OPPO、vivo）的初始化需改在原生工程侧完成**（推送依赖、manifest 与 `EMPushConfig`），SDK 只负责上报设备 token。
+- iOS 的两个推送证书名改为初始化配置：新增 `ChatOptions.apnsCertName`（APNs）与 `ChatOptions.pushKitCertName`（PushKit），在 `ChatClient.init` 时下发给原生 `EMOptions`，运行时不可修改。原生在绑定 token 时读取该属性，绑定时不再写入证书名。
+- 移除 `ChatClient.updatePushConfig(config)`，改用 `ChatClient.bindDeviceToken({ deviceToken, notifierName? })`：`notifierName` 是 Android 必填的厂商推送凭据（FCM Sender ID、华为/荣耀 App ID、小米/魅族 App ID、OPPO App Key、vivo `appId#appKey`），iOS 忽略该参数，其证书名由 `ChatOptions.apnsCertName` 提供。
+
 ### 新增功能（New Features）
 
 - 数据同步：`ChatOptions` 新增 `dataSyncType` 属性与 `ChatDataSyncType` 枚举，用于配置登录后自动同步会话、好友和已加入群组；`ChatConnectEventListener` 新增 `onDataSyncStart`、`onDataSyncFinish` 和 `onDatabaseOpened` 回调。
@@ -46,6 +52,9 @@ _Chinese | [English](./CHANGELOG.md)_
 - 新增多设备事件 `ConversationUnreadMessageCountCleared`(65) 和 `AllConversationUnreadMessageCountCleared`(66)：当前账号的其他设备清除会话未读数时触发。
 - 新增多设备事件 `GROUP_UPDATE`(34)：当前账号的其他设备修改群组信息。
 - 新增 `ChatManager.deleteConversations`，支持批量删除本地会话，并可选择是否同时删除会话内消息；不存在的会话 ID 会被忽略。
+- 新增 `ChatClient.bindDeviceToken({ deviceToken, notifierName? })`，用于绑定设备推送 token；取代已移除的 `ChatClient.updatePushConfig`（该方法名 4.x 即已存在，本次为改名并调整参数）。
+- `ChatOptions` 新增 `apnsCertName` 和 `pushKitCertName` 属性，用于在初始化时配置 iOS 的 APNs 与 PushKit 推送证书名；两个属性仅对 iOS 生效，其他平台忽略。
+- 新增 iOS 专用的 PushKit（VoIP 推送）接口：`ChatClient.bindPushKitToken({ deviceToken })` 绑定 token、`ChatClient.unbindPushKitToken()` 解绑 token，内部调用原生异步接口 `registerPushKitToken:completion:` 与 `unRegisterPushKitTokenWithCompletion:`；其他平台调用直接返回。未登录时绑定会失败但 token 已缓存，下次登录成功后 SDK 自动完成绑定；`ChatClient.logout` 且 `unbindDeviceToken` 为 `true` 时也会同时解绑 PushKit token。
 
 ### 问题修复（Bug Fixes）
 

@@ -14,6 +14,9 @@ static NSString *_Nonnull const ExtSdkMethodKeyGetToken = @"getToken";
 static NSString *_Nonnull const ExtSdkMethodKeyGetCurrentUser = @"getCurrentUser";
 static NSString *_Nonnull const ExtSdkMethodKeyIsConnected = @"isConnected";
 static NSString *_Nonnull const ExtSdkMethodKeyRenewToken = @"renewToken";
+static NSString *_Nonnull const ExtSdkMethodKeyBindDeviceToken = @"bindDeviceToken";
+static NSString *_Nonnull const ExtSdkMethodKeyBindPushKitToken = @"bindPushKitToken";
+static NSString *_Nonnull const ExtSdkMethodKeyUnbindPushKitToken = @"unbindPushKitToken";
 
 #pragma mark - EMClientDelegate
 static NSString *_Nonnull const ExtSdkMethodKeyOnConnected = @"onConnected";
@@ -231,8 +234,6 @@ static NSString *_Nonnull const ExtSdkMethodKeyUpdatePushNickname = @"updatePush
 
 static NSString *_Nonnull const ExtSdkMethodKeyUpdateImPushStyle = @"updateImPushStyle";
 
-static NSString *_Nonnull const ExtSdkMethodKeyUpdatePushConfig = @"updatePushConfig";
-
 static NSString *_Nonnull const ExtSdkMethodKeySetConversationSilentMode = @"setConversationSilentMode";
 static NSString *_Nonnull const ExtSdkMethodKeyRemoveConversationSilentMode = @"removeConversationSilentMode";
 static NSString *_Nonnull const ExtSdkMethodKeyFetchConversationSilentMode = @"fetchConversationSilentMode";
@@ -360,6 +361,9 @@ static const int ExtSdkMethodKeyGetTokenValue = 112;
 static const int ExtSdkMethodKeyGetCurrentUserValue = 114;
 static const int ExtSdkMethodKeyIsConnectedValue = 115;
 static const int ExtSdkMethodKeyRenewTokenValue = 116;
+static const int ExtSdkMethodKeyBindDeviceTokenValue = 118;
+static const int ExtSdkMethodKeyBindPushKitTokenValue = 119;
+static const int ExtSdkMethodKeyUnbindPushKitTokenValue = 120;
 
 #pragma mark - EMClientDelegate value
 static const int ExtSdkMethodKeyOnConnectedValue = 200;
@@ -566,7 +570,6 @@ static const int ExtSdkMethodKeyGetImPushConfigFromServerValue = 1001;
 static const int ExtSdkMethodKeyUpdatePushNicknameValue = 1002;
 
 static const int ExtSdkMethodKeyUpdateImPushStyleValue = 1004;
-static const int ExtSdkMethodKeyUpdatePushConfigValue = 1015;
 
 static const int ExtSdkMethodKeySetConversationSilentModeValue = 1017;
 static const int ExtSdkMethodKeyRemoveConversationSilentModeValue = 1018;
