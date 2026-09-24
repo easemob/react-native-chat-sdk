@@ -26,6 +26,9 @@ public:
     static const std::string kickAllDevices;
     static const std::string getLoggedInDevicesFromServer;
     static const std::string getCurrentUser;
+    // 2026-09-24 1.21.0
+    static const std::string bindPushKitToken;
+    static const std::string unbindPushKitToken;
 
     static const std::string onConnected;
     static const std::string onDisconnected;
@@ -69,6 +72,7 @@ public:
     static const std::string searchChatMsgFromDB;
     static const std::string getMessage;
     static const std::string asyncFetchGroupAcks;
+    static const std::string getConversationsFromDBWithCursor;
 
     /// EMChatManager listener
     static const std::string onMessagesReceived;

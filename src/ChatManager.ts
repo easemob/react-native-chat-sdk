@@ -39,6 +39,7 @@ import {
   MTfetchSupportLanguages,
   MTgetConvsMsgsWithKeyword,
   MTgetConversation,
+  MTgetConversationsFromDBWithCursor,
   MTgetConversationsFromServer,
   MTgetConversationsFromServerWithCursor,
   MTgetLatestMessage,
@@ -3491,6 +3492,47 @@ export class ChatManager extends BaseManager {
     let ret = new ChatCursorResult<ChatConversation>({
       cursor: r?.[MTgetPinnedConversationsFromServerWithCursor].cursor,
       list: r?.[MTgetPinnedConversationsFromServerWithCursor].list,
+      opt: {
+        map: (param: any) => {
+          return new ChatConversation(param);
+        },
+      },
+    });
+    return ret;
+  }
+
+  /**
+   * 从本地数据库分页获取会话列表。
+   *
+   * 调用该方法前，你需要将 {@link ChatOptions.autoLoadConversations} 设置为 `false`，因为开启自动加载会话后，SDK 会在初始化时把所有会话加载到内存，此时分页加载会话没有意义。
+   *
+   * SDK 按以下顺序获取会话列表：先按置顶时间的倒序返回置顶会话，再按会话最新一条消息的服务器时间戳的倒序返回会话，时间戳相同的会话按会话 ID 的字母倒序（不区分大小写）返回。
+   *
+   * @param cursor 查询数据起始位置。如果为空字符串或者 `undefined`，SDK 从最新的会话开始获取。
+   *
+   * @param pageSize 每页期望返回的会话数量。取值范围为 [1,100]。
+   *
+   * @returns 获取到的会话列表。
+   *
+   * @throws 如果有异常会在此抛出，包括错误码和错误信息。如果传入的 cursor 无效，SDK 会抛出错误码为 `INVALID_PARAM` 的 {@link ChatError}。详见 {@link ChatError}。
+   */
+  public async fetchConversationsFromDB(
+    cursor?: string,
+    pageSize?: number
+  ): Promise<ChatCursorResult<ChatConversation>> {
+    chatlog.log(
+      `${ChatManager.TAG}: fetchConversationsFromDB: ${cursor}, ${pageSize}`
+    );
+    let r: any = await Native._callMethod(MTgetConversationsFromDBWithCursor, {
+      [MTgetConversationsFromDBWithCursor]: {
+        cursor: cursor ?? '',
+        pageSize: pageSize ?? 20,
+      },
+    });
+    Native.checkErrorFromResult(r);
+    let ret = new ChatCursorResult<ChatConversation>({
+      cursor: r?.[MTgetConversationsFromDBWithCursor].cursor,
+      list: r?.[MTgetConversationsFromDBWithCursor].list,
       opt: {
         map: (param: any) => {
           return new ChatConversation(param);

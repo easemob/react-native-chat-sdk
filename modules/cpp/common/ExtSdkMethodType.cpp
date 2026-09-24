@@ -20,6 +20,9 @@ const std::string ExtSdkMethodType::kickDevice = "kickDevice";
 const std::string ExtSdkMethodType::kickAllDevices = "kickAllDevices";
 const std::string ExtSdkMethodType::getLoggedInDevicesFromServer = "getLoggedInDevicesFromServer";
 const std::string ExtSdkMethodType::getCurrentUser = "getCurrentUser";
+// 2026-09-24 1.21.0
+const std::string ExtSdkMethodType::bindPushKitToken = "bindPushKitToken";
+const std::string ExtSdkMethodType::unbindPushKitToken = "unbindPushKitToken";
 
 const std::string ExtSdkMethodType::onConnected = "onConnected";
 const std::string ExtSdkMethodType::onDisconnected = "onDisconnected";
@@ -63,6 +66,7 @@ const std::string ExtSdkMethodType::fetchHistoryMessages = "fetchHistoryMessages
 const std::string ExtSdkMethodType::searchChatMsgFromDB = "searchChatMsgFromDB";
 const std::string ExtSdkMethodType::getMessage = "getMessage";
 const std::string ExtSdkMethodType::asyncFetchGroupAcks = "asyncFetchGroupAcks";
+const std::string ExtSdkMethodType::getConversationsFromDBWithCursor = "getConversationsFromDBWithCursor";
 
 /// EMChatManager listener
 const std::string ExtSdkMethodType::onMessagesReceived = "onMessagesReceived";

@@ -1,4 +1,8 @@
-import { type EventSubscription, NativeEventEmitter } from 'react-native';
+import {
+  type EventSubscription,
+  NativeEventEmitter,
+  Platform,
+} from 'react-native';
 import { Factory } from './__internal__/Factory';
 
 import { BaseManager } from './__internal__/Base';
@@ -43,6 +47,8 @@ import {
   MTonUserDidRemoveFromServer,
   MTonUserKickedByOtherDevice,
   MTrenewToken,
+  MTbindPushKitToken,
+  MTunbindPushKitToken,
   MTupdatePushConfig,
 } from './__internal__/Consts';
 import { ExceptionHandler } from './__internal__/ErrorHandler';
@@ -948,6 +954,53 @@ export class ChatClient extends BaseManager {
       },
     });
     ChatPushManager.checkErrorFromResult(r);
+  }
+
+  /**
+   * 绑定 Apple PushKit token，用于 VoIP 推送通知。
+   *
+   * **注意** 该方法仅在 iOS 平台可用，在其他平台调用不会有任何效果。
+   *
+   * @param params
+   * - deviceToken: `PKPushRegistry` 上报的 PushKit token，为十六进制字符串。
+   *
+   * **注意** 初始化 SDK 时必须通过 {@link ChatOptions.pushKitCertName} 设置 PushKit 证书名称，因为证书名称在 App 运行期间不可更改。
+   *
+   * **注意** native SDK 会在绑定前缓存该 token：如果当前用户尚未登录，本次调用会抛出 {@link ChatError} 失败，但 token 仍会被缓存，并在下次登录成功后自动绑定。{@link ChatClient.logout} 的 `unbindDeviceToken` 设为 `true` 时也会解绑 PushKit token。
+   *
+   * @throws 如果有异常会在这里抛出，包含错误码和错误描述，详见 {@link ChatError}。
+   */
+  public async bindPushKitToken(params: {
+    deviceToken: string;
+  }): Promise<void> {
+    chatlog.log(`${ChatClient.TAG}: ${this.bindPushKitToken.name}`);
+    if (Platform.OS !== 'ios') {
+      return;
+    }
+    let r: any = await Native._callMethod(MTbindPushKitToken, {
+      [MTbindPushKitToken]: {
+        deviceToken: params.deviceToken,
+      },
+    });
+    ChatClient.checkErrorFromResult(r);
+  }
+
+  /**
+   * 解绑通过 {@link ChatClient.bindPushKitToken} 绑定的 Apple PushKit token。
+   *
+   * **注意** 该方法仅在 iOS 平台可用，在其他平台调用不会有任何效果。
+   *
+   * {@link ChatClient.logout} 的 `unbindDeviceToken` 设为 `true` 时已经会解绑 PushKit token，因此只有在需要保持当前用户登录状态的同时解绑 token 时，才调用该方法。
+   *
+   * @throws 如果有异常会在这里抛出，包含错误码和错误描述，详见 {@link ChatError}。
+   */
+  public async unbindPushKitToken(): Promise<void> {
+    chatlog.log(`${ChatClient.TAG}: ${this.unbindPushKitToken.name}`);
+    if (Platform.OS !== 'ios') {
+      return;
+    }
+    let r: any = await Native._callMethod(MTunbindPushKitToken);
+    ChatClient.checkErrorFromResult(r);
   }
 
   /**

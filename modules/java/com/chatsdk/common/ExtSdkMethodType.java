@@ -20,6 +20,9 @@ public class ExtSdkMethodType {
     public static final String loginWithAgoraToken = "loginWithAgoraToken";
     public static final String isConnected = "isConnected";
     public static final String renewToken = "renewToken";
+    // 2026-09-24 1.21.0
+    public static final String bindPushKitToken = "bindPushKitToken";
+    public static final String unbindPushKitToken = "unbindPushKitToken";
 
     public static final String onConnected = "onConnected";
     public static final String onDisconnected = "onDisconnected";
@@ -104,6 +107,7 @@ public class ExtSdkMethodType {
     public static final String getConversationsFromServerWithCursor = "getConversationsFromServerWithCursor";
     public static final String getPinnedConversationsFromServerWithCursor =
         "getPinnedConversationsFromServerWithCursor";
+    public static final String getConversationsFromDBWithCursor = "getConversationsFromDBWithCursor";
     public static final String pinConversation = "pinConversation";
     public static final String modifyMessage = "modifyMessage";
     public static final String downloadAndParseCombineMessage = "downloadAndParseCombineMessage";

@@ -19,6 +19,9 @@ static NSString *_Nonnull const ExtSdkMethodKeyLoginWithAgoraToken = @"loginWith
 static NSString *_Nonnull const ExtSdkMethodKeyGetCurrentUser = @"getCurrentUser";
 static NSString *_Nonnull const ExtSdkMethodKeyIsConnected = @"isConnected";
 static NSString *_Nonnull const ExtSdkMethodKeyRenewToken = @"renewToken";
+// 2026-09-24 1.21.0
+static NSString *_Nonnull const ExtSdkMethodKeyBindPushKitToken = @"bindPushKitToken";
+static NSString *_Nonnull const ExtSdkMethodKeyUnbindPushKitToken = @"unbindPushKitToken";
 
 #pragma mark - EMClientDelegate
 static NSString *_Nonnull const ExtSdkMethodKeyOnConnected = @"onConnected";
@@ -113,6 +116,7 @@ static NSString *_Nonnull const ExtSdkMethodKeyGetConversationsFromServerWithCur
     @"getConversationsFromServerWithCursor";
 static NSString *_Nonnull const ExtSdkMethodKeyGetPinnedConversationsFromServerWithCursor =
     @"getPinnedConversationsFromServerWithCursor";
+static NSString *_Nonnull const ExtSdkMethodKeyGetConversationsFromDBWithCursor = @"getConversationsFromDBWithCursor";
 static NSString *_Nonnull const ExtSdkMethodKeyPinConversation = @"pinConversation";
 static NSString *_Nonnull const ExtSdkMethodKeyModifyMessage = @"modifyMessage";
 static NSString *_Nonnull const ExtSdkMethodKeyDownloadAndParseCombineMessage = @"downloadAndParseCombineMessage";
@@ -513,6 +517,7 @@ static const int ExtSdkMethodKeyRemoveMessagesFromServerWithTsValue = 534;
 static const int ExtSdkMethodKeyfetchHistoryMessagesByOptionsValue = 535;
 static const int ExtSdkMethodKeyGetConversationsFromServerWithCursorValue = 536;
 static const int ExtSdkMethodKeyGetPinnedConversationsFromServerWithCursorValue = 537;
+static const int ExtSdkMethodKeyGetConversationsFromDBWithCursorValue = 546;
 static const int ExtSdkMethodKeyPinConversationValue = 538;
 static const int ExtSdkMethodKeyModifyMessageValue = 539;
 static const int ExtSdkMethodKeyDownloadAndParseCombineMessageValue = 540;
@@ -698,6 +703,10 @@ static const int ExtSdkMethodKeySetPreferredNotificationLanguageValue = 1023;
 static const int ExtSdkMethodKeyFetchPreferredNotificationLanguageValue = 1024;
 static const int ExtSdkMethodKeySetPushTemplateValue = 1025;
 static const int ExtSdkMethodKeyGetPushTemplateValue = 1026;
+
+// 2026-09-24 1.21.0
+static const int ExtSdkMethodKeyBindPushKitTokenValue = 1027;
+static const int ExtSdkMethodKeyUnbindPushKitTokenValue = 1028;
 
 #pragma mark - EMUserInfoManagerWrapper value
 static const int ExtSdkMethodKeyUpdateOwnUserInfoValue = 1100;

@@ -31,6 +31,10 @@ const OBJC_M_PATH = path.join(
   REPO_ROOT,
   'modules/objc/common/ExtSdkMethodTypeObjc.m'
 );
+const OBJC_DISPATCH_PATH = path.join(
+  REPO_ROOT,
+  'modules/objc/dispatch/ExtSdkDispatch.m'
+);
 const OBJC_RN_MM_PATH = path.join(
   REPO_ROOT,
   'modules/objc/rn/ExtSdkApiObjcRN.mm'
@@ -108,6 +112,23 @@ export function parseObjcMethodMap(): MethodMapEntry[] {
     out.push({ key, valueSymbol: m[2]! });
   }
   return out;
+}
+
+/**
+ * Returns the value symbols the ObjC dispatch switch handles, i.e. the
+ * `case ExtSdkMethodKeyXValue:` labels of ExtSdkDispatch.m. A method that the
+ * TS layer can call must appear here, otherwise the bridge falls through to
+ * the default branch and fails with "not implement".
+ */
+export function parseObjcDispatchCases(): string[] {
+  const src = readFile(OBJC_DISPATCH_PATH);
+  const re = /case\s+(ExtSdkMethodKey\w+Value)\s*:/g;
+  const out = new Set<string>();
+  let m: RegExpExecArray | null;
+  while ((m = re.exec(src)) !== null) {
+    out.add(m[1]!);
+  }
+  return [...out];
 }
 
 export function resolveRnSupportedEventValues(): string[] {

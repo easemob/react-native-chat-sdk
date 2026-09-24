@@ -195,6 +195,10 @@ const CHAT_OPTIONS_KEYS = [
   'dohVendor',
   'enableUserInfo',
   'enableAutoSyncContacts',
+  'enableChatroomConversation',
+  'autoLoadConversations',
+  'apnsCertName',
+  'pushKitCertName',
 ];
 
 function deriveInitParams(

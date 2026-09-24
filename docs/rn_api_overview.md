@@ -190,6 +190,7 @@ ChatSDK is a highly reliable global communication platform where your users can 
 | {@link ChatManager.getMessagePinInfo getMessagePinInfo} | Gets the pinning information of a message. |
 | {@link ChatManager.searchMessages searchMessages} | Searches for messages. |
 | {@link ChatManager.searchMessagesInConversation searchMessagesInConversation} | Searches for messages in a conversation. |
+| {@link ChatManager.searchMessagesFromServer searchMessagesFromServer} | Searches for messages from the server. |
 | {@link ChatManager.removeMessagesWithTimestamp removeMessagesWithTimestamp} | Delete the local and server messages of the current user. The server messages of other users in the single chat or group chat with the user will not be affected and can be obtained through roaming. |
 | {@link ChatManager.getMessageCountWithTimestamp getMessageCountWithTimestamp} | Gets the count of messages in the conversation. |
 | {@link ChatManager.getMessageCount getMessageCount} | Gets the count of messages in the local database. |
@@ -449,6 +450,7 @@ ChatSDK is a highly reliable global communication platform where your users can 
 | Method | Description |
 | :----- | :---------- |
 | {@link ChatMessage.constructor constructor} | Constructs a message. |
+| {@link ChatMessage.getBody getBody} | Constructs a message. |
 | {@link ChatMessage.createSendMessage createSendMessage} | Constructs a message. |
 | {@link ChatMessage.createTextMessage createTextMessage} | Creates a text message for sending. |
 | {@link ChatMessage.createFileMessage createFileMessage} | Creates a message with a file attachment for sending. |

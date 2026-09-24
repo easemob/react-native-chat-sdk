@@ -15,7 +15,7 @@ export enum ChatPushDisplayStyle {
 }
 
 /**
- * The push configuration class.
+ * 推送配置类。
  *
  * 谷歌的 Firebase 云信息传递 (FCM) 服务，详见 {@url https://firebase.google.com/docs/cloud-messaging/concept-options}。
  * 苹果的推送通知服务（APNs），详见 {@url https://developer.apple.com/documentation/usernotifications}。

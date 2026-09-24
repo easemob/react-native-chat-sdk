@@ -134,15 +134,21 @@ jobs:
 
       - name: Install pods
         working-directory: example
-        run: bundle exec pod install --project-directory=ios
+        # --repo-update is required: the cached ~/.cocoapods may hold a spec repo that
+        # predates the version pinned in the podspec (the Pods cache is keyed by the
+        # Podfile.lock hash, so any dependency change restores an older cache). Without
+        # it the resolver fails with "none of your spec sources contain a spec".
+        run: bundle exec pod install --repo-update --project-directory=ios
 
       - name: Build iOS example
         run: |
           mkdir -p build/reports
           # tee captures the full build output as the raw log for the deprecation
-          # scan below. GH Actions runs bash with pipefail, so tee does not mask
-          # a build failure.
-          yarn example build:ios 2>&1 | tee build/reports/deprecated-ios-raw.log
+          # scan below. --verbose is required: without it the RN CLI swallows
+          # xcodebuild output and only prints a progress spinner, so the raw log
+          # would contain no warning lines at all. GH Actions runs bash with
+          # pipefail, so tee does not mask a build failure.
+          yarn example build:ios --verbose 2>&1 | tee build/reports/deprecated-ios-raw.log
 
       - name: Scan deprecated iOS APIs
         if: always()

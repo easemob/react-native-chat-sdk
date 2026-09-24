@@ -28,14 +28,22 @@ if [ ! -s "$RAW_LOG" ]; then
 fi
 
 TEMP_JSON=$(mktemp)
-trap 'rm -f "$TEMP_JSON"' EXIT
+NORMALIZED_LOG=$(mktemp)
+trap 'rm -f "$TEMP_JSON" "$NORMALIZED_LOG"' EXIT
+
+# `react-native build-ios --verbose` (used by CI to capture this log) prefixes
+# whole xcodebuild output chunks with "debug ", so arbitrary warning lines can
+# start with "debug /..." depending on chunk boundaries. Strip that prefix
+# (only when followed by a path root) before parsing; a no-op for plain
+# xcodebuild logs.
+sed 's|^debug /|/|' "$RAW_LOG" > "$NORMALIZED_LOG"
 
 # Export a filtered copy containing only the deprecation warning lines (deduplicated).
 # Anchored to ^/ so only real "file:line: warning:" entries are kept; xcodebuild also
 # re-prints warnings inside indented note trees ("    | `- warning: ...").
 # Third-party warnings (Pods/, node_modules) are dropped: they are not actionable
 # from this repo.
-grep -E "^/.*warning: '.*' is deprecated" "$RAW_LOG" | grep -v -e "/Pods/" -e "/node_modules/" | sort -u > "$WARNINGS_LOG" || true
+grep -E "^/.*warning: '.*' is deprecated" "$NORMALIZED_LOG" | grep -v -e "/Pods/" -e "/node_modules/" | sort -u > "$WARNINGS_LOG" || true
 echo "Warnings only: $WARNINGS_LOG ($(wc -l < "$WARNINGS_LOG" | tr -d ' ') lines)" >&2
 
 # Parse warnings and filter for project code
@@ -55,7 +63,7 @@ while IFS= read -r line; do
         fi
         jq -n --arg "file" "$file" --argjson "line" "$line_num" --arg "api" "$api" --arg "message" "$message" '{"file": $file, "line": $line, "api": $api, "message": $message}' >> "$TEMP_JSON"
     fi
-done < "$RAW_LOG"
+done < "$NORMALIZED_LOG"
 
 if [ ! -s "$TEMP_JSON" ]; then
     echo "[]"

@@ -21,6 +21,8 @@ export const MTgetToken = 'getToken';
 export const MTloginWithAgoraToken = 'loginWithAgoraToken';
 export const MTisConnected = 'isConnected';
 export const MTrenewToken = 'renewToken';
+export const MTbindPushKitToken = 'bindPushKitToken';
+export const MTunbindPushKitToken = 'unbindPushKitToken';
 
 /// ChatClient listener
 export const MTonConnected = 'onConnected';
@@ -117,6 +119,8 @@ export const MTgetConversationsFromServerWithCursor =
   'getConversationsFromServerWithCursor';
 export const MTgetPinnedConversationsFromServerWithCursor =
   'getPinnedConversationsFromServerWithCursor';
+export const MTgetConversationsFromDBWithCursor =
+  'getConversationsFromDBWithCursor';
 export const MTpinConversation = 'pinConversation';
 export const MTmodifyMessage = 'modifyMessage';
 export const MTmodifyMsgBody = 'modifyMsgBody';

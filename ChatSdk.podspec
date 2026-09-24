@@ -50,11 +50,11 @@ Pod::Spec.new do |s|
     spm_dependency(
       s,
       url: 'https://github.com/easemob/HyphenateChat_iOS.git',
-      requirement: { kind: 'upToNextMinorVersion', minimumVersion: '4.24.1' },
+      requirement: { kind: 'upToNextMinorVersion', minimumVersion: '4.25.0' },
       products: ['HyphenateChat']
     )
   else
-    s.dependency 'HyphenateChat', '~> 4.24.1'
+    s.dependency 'HyphenateChat', '~> 4.25.0'
   end
 
   install_modules_dependencies(s)

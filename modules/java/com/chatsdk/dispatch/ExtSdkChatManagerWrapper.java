@@ -1072,6 +1072,25 @@ public class ExtSdkChatManagerWrapper extends ExtSdkWrapper {
             });
     }
 
+    public void getConversationsFromDBWithCursor(JSONObject param, String channelName, ExtSdkCallback result)
+        throws JSONException {
+        String cursor = param.optString("cursor");
+        int pageSize = param.optInt("pageSize");
+        EMClient.getInstance().chatManager().asyncGetConversationsFromDB(
+            cursor, pageSize, new EMValueCallBack<EMCursorResult<EMConversation>>() {
+                @Override
+                public void onSuccess(EMCursorResult<EMConversation> emConversationEMCursorResult) {
+                    ExtSdkWrapper.onSuccess(result, channelName,
+                                            ExtSdkCursorResultHelper.toJson(emConversationEMCursorResult));
+                }
+
+                @Override
+                public void onError(int i, String s) {
+                    ExtSdkWrapper.onError(result, i, s);
+                }
+            });
+    }
+
     public void pinConversation(JSONObject param, String channelName, ExtSdkCallback result) throws JSONException {
         String convId = param.optString("convId");
         Boolean isPinned = param.optBoolean("isPinned", false);

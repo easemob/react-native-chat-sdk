@@ -38,6 +38,8 @@ ChatSDK 是一个高度可靠的全球交流平台，您的用户可以在其中
 | {@link ChatClient.kickDevice kickDevice} | 将特定账号登录的指定设备下线。 |
 | {@link ChatClient.kickAllDevices kickAllDevices} | 将指定账号登录的所有设备都踢下线。 |
 | {@link ChatClient.updatePushConfig updatePushConfig} | 更新推送设置。 |
+| {@link ChatClient.bindPushKitToken bindPushKitToken} | 绑定 Apple PushKit token，用于 VoIP 推送通知。 |
+| {@link ChatClient.unbindPushKitToken unbindPushKitToken} | 解绑通过 {@link ChatClient.bindPushKitToken} 绑定的 Apple PushKit token。 |
 | {@link ChatClient.getRTCTokenInfoWithChannelName getRTCTokenInfoWithChannelName} | 根据频道名称（channelName）获取与 Agora Chat 用户 ID 匹配的声网 RTC token、token 过期时间和 RTC UID。 |
 | {@link ChatClient.getUserIdsWithRTCUids getUserIdsWithRTCUids} | 获取与声网 RTC UID 匹配的 Agora Chat 用户 ID。 |
 | {@link ChatClient.addConnectionListener addConnectionListener} | 添加连接状态监听器。 |
@@ -175,6 +177,7 @@ ChatSDK 是一个高度可靠的全球交流平台，您的用户可以在其中
 | {@link ChatManager.removeMessagesFromServerWithTimestamp removeMessagesFromServerWithTimestamp} | 从会话中删除消息（从本地存储和服务器）。 |
 | {@link ChatManager.fetchConversationsFromServerWithCursor fetchConversationsFromServerWithCursor} | 分页从服务器获取会话列表。 |
 | {@link ChatManager.fetchPinnedConversationsFromServerWithCursor fetchPinnedConversationsFromServerWithCursor} | 分页从服务器获取置顶会话。 |
+| {@link ChatManager.fetchConversationsFromDB fetchConversationsFromDB} | 从本地数据库分页获取会话列表。 |
 | {@link ChatManager.pinConversation pinConversation} | 设置会话是否置顶。 |
 | {@link ChatManager.modifyMessageBody modifyMessageBody} | 修改文本消息。 |
 | {@link ChatManager.modifyMsgBody modifyMsgBody} | 更新消息内容。本地和服务器都更新。 |

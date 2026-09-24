@@ -107,6 +107,18 @@ export class ChatOptions {
    */
   isAutoDownload: boolean;
   /**
+   * APNs 证书名称，用于离线推送通知。
+   *
+   * **注意** 该属性仅用于 iOS 平台。设置为在环信控制台配置的 APNs 证书名称。只能在调用 {@link ChatClient.init} 时设置，App 运行期间不可更改。
+   */
+  apnsCertName?: string;
+  /**
+   * PushKit 证书名称，用于 VoIP 推送通知。
+   *
+   * **注意** 该属性仅用于 iOS 平台。设置为在环信控制台配置的 PushKit 证书名称，并通过 {@link ChatClient.bindPushKitToken} 绑定 `PKPushRegistry` 上报的 token。只能在调用 {@link ChatClient.init} 时设置，App 运行期间不可更改。
+   */
+  pushKitCertName?: string;
+  /**
    * 推送设置。
    */
   pushConfig?: ChatPushConfig;
@@ -259,6 +271,24 @@ export class ChatOptions {
   enableAutoSyncContacts: boolean;
 
   /**
+   * 是否为聊天室消息创建会话。
+   *
+   * - `true`：是。发送或接收聊天室消息时会创建会话。
+   * - （默认）`false`：否。
+   */
+  enableChatroomConversation: boolean;
+
+  /**
+   * 是否在 SDK 初始化时自动将所有会话加载到内存。
+   *
+   * - （默认）`true`：是。
+   * - `false`：否。你需要调用 {@link ChatManager.fetchConversationsFromDB} 分页加载会话。
+   *
+   * 开启自动加载会话后，分页加载会话没有意义。
+   */
+  autoLoadConversations: boolean;
+
+  /**
    * 自定义 NTP 服务器地址列表。
    *
    * 每个地址的格式为 `host` 或 `host:port`。如果未指定端口，则使用默认端口 123。
@@ -288,6 +318,8 @@ export class ChatOptions {
     usingHttpsOnly?: boolean;
     serverTransfer?: boolean;
     isAutoDownload?: boolean;
+    apnsCertName?: string;
+    pushKitCertName?: string;
     pushConfig?: ChatPushConfig;
     areaCode?: ChatAreaCode;
     logTag?: string;
@@ -312,6 +344,8 @@ export class ChatOptions {
     dohVendor?: number;
     enableUserInfo?: boolean;
     enableAutoSyncContacts?: boolean;
+    enableChatroomConversation?: boolean;
+    autoLoadConversations?: boolean;
     ntpServers?: string[];
   }) {
     if (!params.appKey && !params.appId) {
@@ -337,6 +371,8 @@ export class ChatOptions {
     this.usingHttpsOnly = params.usingHttpsOnly ?? true;
     this.serverTransfer = params.serverTransfer ?? true;
     this.isAutoDownload = params.isAutoDownload ?? true;
+    this.apnsCertName = params.apnsCertName;
+    this.pushKitCertName = params.pushKitCertName;
     this.pushConfig = params.pushConfig;
     this.enableDNSConfig =
       params.enableDNSConfig !== undefined ? params.enableDNSConfig : true;
@@ -365,6 +401,9 @@ export class ChatOptions {
     this.dohVendor = params.dohVendor ?? 1; // agora is 2.
     this.enableUserInfo = params.enableUserInfo ?? false;
     this.enableAutoSyncContacts = params.enableAutoSyncContacts ?? false;
+    this.enableChatroomConversation =
+      params.enableChatroomConversation ?? false;
+    this.autoLoadConversations = params.autoLoadConversations ?? true;
     this.ntpServers = params.ntpServers;
   }
 
@@ -383,6 +422,8 @@ export class ChatOptions {
     usingHttpsOnly?: boolean;
     serverTransfer?: boolean;
     isAutoDownload?: boolean;
+    apnsCertName?: string;
+    pushKitCertName?: string;
     pushConfig?: ChatPushConfig;
     areaCode?: ChatAreaCode;
     logTag?: string;
@@ -407,6 +448,8 @@ export class ChatOptions {
     dohVendor?: number;
     enableUserInfo?: boolean;
     enableAutoSyncContacts?: boolean;
+    enableChatroomConversation?: boolean;
+    autoLoadConversations?: boolean;
     ntpServers?: string[];
   }) {
     return new ChatOptions({
@@ -430,6 +473,8 @@ export class ChatOptions {
     usingHttpsOnly?: boolean;
     serverTransfer?: boolean;
     isAutoDownload?: boolean;
+    apnsCertName?: string;
+    pushKitCertName?: string;
     pushConfig?: ChatPushConfig;
     areaCode?: ChatAreaCode;
     logTag?: string;
@@ -454,6 +499,8 @@ export class ChatOptions {
     dohVendor?: number;
     enableUserInfo?: boolean;
     enableAutoSyncContacts?: boolean;
+    enableChatroomConversation?: boolean;
+    autoLoadConversations?: boolean;
     ntpServers?: string[];
   }) {
     return new ChatOptions({
