@@ -16,6 +16,9 @@ export const MTgetCurrentUser = 'getCurrentUser';
 export const MTgetToken = 'getToken';
 export const MTisConnected = 'isConnected';
 export const MTrenewToken = 'renewToken';
+export const MTbindDeviceToken = 'bindDeviceToken';
+export const MTbindPushKitToken = 'bindPushKitToken';
+export const MTunbindPushKitToken = 'unbindPushKitToken';
 
 /// ChatClient listener
 export const MTonConnected = 'onConnected';
@@ -250,8 +253,6 @@ export const MTonGroupChanged = 'onGroupChanged';
 export const MTgetImPushConfigFromServer = 'getImPushConfigFromServer';
 export const MTupdatePushNickname = 'updatePushNickname';
 export const MTupdateImPushStyle = 'updateImPushStyle';
-
-export const MTupdatePushConfig = 'updatePushConfig';
 
 export const MTsetConversationSilentMode = 'setConversationSilentMode';
 export const MTremoveConversationSilentMode = 'removeConversationSilentMode';

@@ -128,6 +128,10 @@ RCT_EXPORT_METHOD(multiply : (double)a b : (double)b resolve : (RCTPromiseResolv
         ExtSdkMethodKeyGetToken,
         ExtSdkMethodKeyGetCurrentUser,
         ExtSdkMethodKeyIsConnected,
+        ExtSdkMethodKeyRenewToken,
+        ExtSdkMethodKeyBindDeviceToken,
+        ExtSdkMethodKeyBindPushKitToken,
+        ExtSdkMethodKeyUnbindPushKitToken,
 
         /// EMClientDelegate
         ExtSdkMethodKeyOnConnected,
@@ -315,7 +319,6 @@ RCT_EXPORT_METHOD(multiply : (double)a b : (double)b resolve : (RCTPromiseResolv
         ExtSdkMethodKeyUpdatePushNickname,
 
         ExtSdkMethodKeyUpdateImPushStyle,
-        ExtSdkMethodKeyUpdatePushConfig,
 
         ExtSdkMethodKeySetConversationSilentMode,
         ExtSdkMethodKeyRemoveConversationSilentMode,

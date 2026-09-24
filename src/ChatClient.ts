@@ -1,8 +1,14 @@
-import { type EventSubscription, NativeEventEmitter } from 'react-native';
+import {
+  type EventSubscription,
+  NativeEventEmitter,
+  Platform,
+} from 'react-native';
 import { Factory } from './__internal__/Factory';
 
 import { BaseManager } from './__internal__/Base';
 import {
+  MTbindDeviceToken,
+  MTbindPushKitToken,
   MTchangeAppId,
   MTchangeAppKey,
   MTcompressLogs,
@@ -34,7 +40,7 @@ import {
   MTonTokenDidExpire,
   MTonTokenWillExpire,
   MTrenewToken,
-  MTupdatePushConfig,
+  MTunbindPushKitToken,
 } from './__internal__/Consts';
 import { ExceptionHandler } from './__internal__/ErrorHandler';
 import { ChatContactManager } from './ChatContactManager';
@@ -54,7 +60,6 @@ import { ChatUserInfoManager } from './ChatUserInfoManager';
 import { chatlog } from './common/ChatConst';
 import { ChatDeviceInfo } from './common/ChatDeviceInfo';
 import { ChatOptions, type ChatDataSyncType } from './common/ChatOptions';
-import { ChatPushConfig } from './common/ChatPushConfig';
 import { eventEmitter } from './__specs__';
 import { Native } from './__internal__/Native';
 import { ChatError } from './common/ChatError';
@@ -691,37 +696,80 @@ export class ChatClient extends BaseManager {
   }
 
   /**
-   * Update push configurations.
+   * Binds the push token of the device.
    *
-   * **Note**
-   * For the iOS platform, you need to pass the device ID during initialization. Otherwise, the push function cannot be used properly. See {@link ChatClient.init}
-   *
-   * @param config The push config, See {@link ChatPushConfig}
+   * @param params
+   * - deviceToken: The push token reported by the push service of the platform.
+   * - notifierName: The push credential of the platform. This parameter is required on Android and is ignored on iOS.
+   *   - Android: The vendor push credential, for example the FCM Sender ID, the HUAWEI/Honor app ID, the Xiaomi/Meizu app ID, the OPPO app key, or the vivo `appId#appKey`. It must not be empty, otherwise the native SDK returns an invalid-parameter error.
+   *   - iOS: Not used. Set the APNs certificate name with {@link ChatOptions.apnsCertName} when the SDK is initialized, because the certificate name cannot be changed during the app runtime.
    *
    * @throws A description of the exception. See {@link ChatError}.
    */
-  public async updatePushConfig(config: ChatPushConfig): Promise<void> {
+  public async bindDeviceToken(params: {
+    deviceToken: string;
+    notifierName?: string;
+  }): Promise<void> {
     chatlog.log(
-      `${ChatClient.TAG}: updatePushConfig: ${JSON.stringify(config)}`
+      `${ChatClient.TAG}: ${this.bindDeviceToken.name}: `,
+      params.notifierName
     );
-    if (this._options) {
-      const newPushConfig = new ChatPushConfig(this._options.pushConfig); // deep copy
-      if (config.deviceId) {
-        newPushConfig.deviceId = config.deviceId;
-      }
-      if (config.deviceToken) {
-        newPushConfig.deviceToken = config.deviceToken;
-      }
-      const newOptions = { ...this._options };
-      newOptions.pushConfig = { ...newPushConfig };
-      this._options = newOptions;
-    }
-    let r: any = await Native._callMethod(MTupdatePushConfig, {
-      [MTupdatePushConfig]: {
-        config: config,
+    let r: any = await Native._callMethod(MTbindDeviceToken, {
+      [MTbindDeviceToken]: {
+        // Keep the key on every platform: iOS ignores it, and Android reports the
+        // native invalid-parameter error instead of a missing-key error when it is empty.
+        notifierName: params.notifierName ?? '',
+        deviceToken: params.deviceToken,
       },
     });
-    ChatPushManager.checkErrorFromResult(r);
+    ChatClient.checkErrorFromResult(r);
+  }
+
+  /**
+   * Binds the Apple PushKit token, which is used for VoIP push notifications.
+   *
+   * **Note** This method is available only on the iOS platform; calling it on other platforms does nothing.
+   *
+   * @param params
+   * - deviceToken: The PushKit token reported by `PKPushRegistry`, in hexadecimal.
+   *
+   * **Note** The PushKit certificate name must be set with {@link ChatOptions.pushKitCertName} when the SDK is initialized, because the certificate name cannot be changed during the app runtime.
+   *
+   * **Note** The native SDK caches the token before binding it: if the current user has not logged in, this call fails with {@link ChatError}, but the token stays cached and is bound automatically after the next successful login. {@link ChatClient.logout} with `unbindDeviceToken` set to `true` unbinds the PushKit token as well.
+   *
+   * @throws A description of the exception. See {@link ChatError}.
+   */
+  public async bindPushKitToken(params: {
+    deviceToken: string;
+  }): Promise<void> {
+    chatlog.log(`${ChatClient.TAG}: ${this.bindPushKitToken.name}`);
+    if (Platform.OS !== 'ios') {
+      return;
+    }
+    let r: any = await Native._callMethod(MTbindPushKitToken, {
+      [MTbindPushKitToken]: {
+        deviceToken: params.deviceToken,
+      },
+    });
+    ChatClient.checkErrorFromResult(r);
+  }
+
+  /**
+   * Unbinds the Apple PushKit token bound by {@link ChatClient.bindPushKitToken}.
+   *
+   * **Note** This method is available only on the iOS platform; calling it on other platforms does nothing.
+   *
+   * {@link ChatClient.logout} with `unbindDeviceToken` set to `true` already unbinds the PushKit token, so call this method only when you need to unbind it while the current user stays logged in.
+   *
+   * @throws A description of the exception. See {@link ChatError}.
+   */
+  public async unbindPushKitToken(): Promise<void> {
+    chatlog.log(`${ChatClient.TAG}: ${this.unbindPushKitToken.name}`);
+    if (Platform.OS !== 'ios') {
+      return;
+    }
+    let r: any = await Native._callMethod(MTunbindPushKitToken);
+    ChatClient.checkErrorFromResult(r);
   }
 
   /**

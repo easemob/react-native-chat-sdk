@@ -16,6 +16,9 @@ const std::string ExtSdkMethodType::kickDevice = "kickDevice";
 const std::string ExtSdkMethodType::kickAllDevices = "kickAllDevices";
 const std::string ExtSdkMethodType::getLoggedInDevicesFromServer = "getLoggedInDevicesFromServer";
 const std::string ExtSdkMethodType::getCurrentUser = "getCurrentUser";
+const std::string ExtSdkMethodType::bindDeviceToken = "bindDeviceToken";
+const std::string ExtSdkMethodType::bindPushKitToken = "bindPushKitToken";
+const std::string ExtSdkMethodType::unbindPushKitToken = "unbindPushKitToken";
 
 const std::string ExtSdkMethodType::onConnected = "onConnected";
 const std::string ExtSdkMethodType::onDisconnected = "onDisconnected";

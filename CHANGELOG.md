@@ -39,6 +39,12 @@ This is a major release with breaking changes. Starting from this version, the R
 
 - The statistical scope of `ChatManager.getUnreadMessageCount` changes: chat room conversations, thread messages, and conversations whose push remind type is `MentionOnly` or `None` are no longer counted.
 
+#### Push Credentials
+
+- Remove the `pushConfig` property of `ChatOptions` and the `ChatPushConfig` class: the configuration object that carried the vendor push appId / appKey / certificate name is no longer serialized by `ChatOptions`, and the native branches that read it are removed as well (the `EMOptions` mapping in the iOS `ExtSdkToJson`, and the `EMPushConfig` building in the Android `ExtSdkOptionsHelper`). **Initializing the Android vendor pushes (FCM, HUAWEI, Xiaomi, Meizu, OPPO, vivo) moves to the native project** (push dependencies, manifest, and `EMPushConfig`); the SDK only binds the device token.
+- The two iOS certificate names became initialization options: add `ChatOptions.apnsCertName` (APNs) and `ChatOptions.pushKitCertName` (PushKit), which are passed to the native `EMOptions` by `ChatClient.init` and cannot change at runtime. The native SDK reads them when a token is bound instead of being written while binding.
+- Remove `ChatClient.updatePushConfig(config)` in favor of `ChatClient.bindDeviceToken({ deviceToken, notifierName? })`: `notifierName` is the vendor push credential required on Android (FCM Sender ID, HUAWEI/Honor app ID, Xiaomi/Meizu app ID, OPPO app key, or the vivo `appId#appKey`) and is ignored on iOS, where the certificate name comes from `ChatOptions.apnsCertName`.
+
 ### New Features
 
 - Data sync: add the `dataSyncType` property in `ChatOptions` and the `ChatDataSyncType` enum to configure automatic sync of conversations, contacts, and joined groups after login. Add the `onDataSyncStart`, `onDataSyncFinish`, and `onDatabaseOpened` callbacks in `ChatConnectEventListener`.
@@ -46,6 +52,9 @@ This is a major release with breaking changes. Starting from this version, the R
 - Add the `ConversationUnreadMessageCountCleared`(65) and `AllConversationUnreadMessageCountCleared`(66) multi-device events, which are fired when another device of the current account clears conversation unread counts.
 - Add the `GROUP_UPDATE`(34) multi-device event, when another device of the current account updates the group information.
 - Add `ChatManager.deleteConversations` to delete multiple local conversations at once, with an option to also delete the messages in them. IDs of conversations that do not exist are ignored.
+- Add `ChatClient.bindDeviceToken({ deviceToken, notifierName? })` to bind the push token of the device, replacing the removed `ChatClient.updatePushConfig` (the method existed in 4.x; it is renamed here and its parameters are adjusted).
+- Add the `apnsCertName` and `pushKitCertName` properties in `ChatOptions` to configure the iOS APNs and PushKit certificate names at initialization; both are available on iOS only and are ignored on other platforms.
+- Add the iOS-only PushKit (VoIP push) APIs: `ChatClient.bindPushKitToken({ deviceToken })` binds a token and `ChatClient.unbindPushKitToken()` unbinds it, calling the native asynchronous `registerPushKitToken:completion:` and `unRegisterPushKitTokenWithCompletion:`; on other platforms both do nothing. Binding before login fails but caches the token, which the SDK binds automatically after the next successful login; `ChatClient.logout` with `unbindDeviceToken` set to `true` unbinds the PushKit token as well.
 
 ### Bug Fixes
 

@@ -1,5 +1,6 @@
 import {
   parseJavaConsts,
+  parseObjcDispatchCases,
   parseObjcHeaderKeys,
   parseObjcHeaderValues,
   parseObjcMethodMap,
@@ -13,6 +14,7 @@ describe('contract: method-name parity (TS ↔ Java ↔ ObjC)', () => {
   const objcKeys = parseObjcHeaderKeys();
   const objcValues = parseObjcHeaderValues();
   const objcMap = parseObjcMethodMap();
+  const objcDispatchCases = parseObjcDispatchCases();
   const rnEventValues = resolveRnSupportedEventValues();
 
   test('sanity floor — each parser returns > 100 entries', () => {
@@ -91,6 +93,31 @@ describe('contract: method-name parity (TS ↔ Java ↔ ObjC)', () => {
         .join('\n');
       throw new Error(
         `methodMap value-symbols missing from header static const int (${missing.length} of ${objcMap.length}):\n${lines}`
+      );
+    }
+  });
+
+  test('every non-event ObjC methodMap entry has a dispatch case', () => {
+    // Keys whose value starts with `on` are events emitted by native code:
+    // they travel through onReceive: and are never invoked from TS, so they
+    // need no dispatch case. Everything else is a method TS can call and must
+    // be wired, or the bridge fails with "not implement: <method>".
+    const handled = new Set(objcDispatchCases);
+    const valueByKey = new Map(objcKeys.map((k) => [k.symbol, k.value]));
+    const missing: { key: string; value: string; valueSymbol: string }[] = [];
+    for (const e of objcMap) {
+      const value = valueByKey.get(e.key);
+      if (value === undefined || value.startsWith('on')) continue;
+      if (!handled.has(e.valueSymbol)) {
+        missing.push({ key: e.key, value, valueSymbol: e.valueSymbol });
+      }
+    }
+    if (missing.length > 0) {
+      const lines = missing
+        .map((m) => `  ${m.key} ('${m.value}') -> ${m.valueSymbol}`)
+        .join('\n');
+      throw new Error(
+        `ObjC methodMap entries missing a dispatch case in ExtSdkDispatch.m (${missing.length} of ${objcMap.length}):\n${lines}`
       );
     }
   });

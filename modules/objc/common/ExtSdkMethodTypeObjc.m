@@ -29,6 +29,9 @@
           ExtSdkMethodKeyGetCurrentUser : @(ExtSdkMethodKeyGetCurrentUserValue),
           ExtSdkMethodKeyIsConnected : @(ExtSdkMethodKeyIsConnectedValue),
           ExtSdkMethodKeyRenewToken : @(ExtSdkMethodKeyRenewTokenValue),
+          ExtSdkMethodKeyBindDeviceToken : @(ExtSdkMethodKeyBindDeviceTokenValue),
+          ExtSdkMethodKeyBindPushKitToken : @(ExtSdkMethodKeyBindPushKitTokenValue),
+          ExtSdkMethodKeyUnbindPushKitToken : @(ExtSdkMethodKeyUnbindPushKitTokenValue),
 
           /// EMClientDelegate
           ExtSdkMethodKeyOnConnected : @(ExtSdkMethodKeyOnConnectedValue),
@@ -211,7 +214,6 @@
           ExtSdkMethodKeyUpdatePushNickname : @(ExtSdkMethodKeyUpdatePushNicknameValue),
 
           ExtSdkMethodKeyUpdateImPushStyle : @(ExtSdkMethodKeyUpdateImPushStyleValue),
-          ExtSdkMethodKeyUpdatePushConfig : @(ExtSdkMethodKeyUpdatePushConfigValue),
 
           ExtSdkMethodKeySetConversationSilentMode : @(ExtSdkMethodKeySetConversationSilentModeValue),
           ExtSdkMethodKeyRemoveConversationSilentMode : @(ExtSdkMethodKeyRemoveConversationSilentModeValue),

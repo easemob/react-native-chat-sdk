@@ -1,5 +1,4 @@
 import { ChatError } from './ChatError';
-import type { ChatPushConfig } from './ChatPushConfig';
 
 export enum ChatAreaCode {
   GLOB = -1,
@@ -140,9 +139,17 @@ export class ChatOptions {
    */
   isAutoDownload: boolean;
   /**
-   * The push configuration.
+   * The name of the APNs certificate, which is used for the offline push notifications.
+   *
+   * **Note** This attribute is used only for the iOS platform. Set the APNs certificate name that you configured in the console. It can be set only when you call {@link ChatClient.init} and cannot be changed during the app runtime.
    */
-  pushConfig?: ChatPushConfig;
+  apnsCertName?: string;
+  /**
+   * The name of the PushKit certificate, which is used for the VoIP push notifications.
+   *
+   * **Note** This attribute is used only for the iOS platform. Set the PushKit certificate name that you configured in the console, and bind the token reported by `PKPushRegistry` with {@link ChatClient.bindPushKitToken}. It can be set only when you call {@link ChatClient.init} and cannot be changed during the app runtime.
+   */
+  pushKitCertName?: string;
   /**
    * Whether to disable DNS.
    *
@@ -322,7 +329,8 @@ export class ChatOptions {
     usingHttpsOnly?: boolean;
     serverTransfer?: boolean;
     isAutoDownload?: boolean;
-    pushConfig?: ChatPushConfig;
+    apnsCertName?: string;
+    pushKitCertName?: string;
     areaCode?: ChatAreaCode;
     logTag?: string;
     logTimestamp?: boolean;
@@ -369,7 +377,8 @@ export class ChatOptions {
     this.usingHttpsOnly = params.usingHttpsOnly ?? true;
     this.serverTransfer = params.serverTransfer ?? true;
     this.isAutoDownload = params.isAutoDownload ?? true;
-    this.pushConfig = params.pushConfig;
+    this.apnsCertName = params.apnsCertName;
+    this.pushKitCertName = params.pushKitCertName;
     this.enableDNSConfig =
       params.enableDNSConfig !== undefined ? params.enableDNSConfig : true;
     this.dnsUrl = params.dnsUrl ?? '';
@@ -413,7 +422,8 @@ export class ChatOptions {
     usingHttpsOnly?: boolean;
     serverTransfer?: boolean;
     isAutoDownload?: boolean;
-    pushConfig?: ChatPushConfig;
+    apnsCertName?: string;
+    pushKitCertName?: string;
     areaCode?: ChatAreaCode;
     logTag?: string;
     logTimestamp?: boolean;
@@ -458,7 +468,8 @@ export class ChatOptions {
     usingHttpsOnly?: boolean;
     serverTransfer?: boolean;
     isAutoDownload?: boolean;
-    pushConfig?: ChatPushConfig;
+    apnsCertName?: string;
+    pushKitCertName?: string;
     areaCode?: ChatAreaCode;
     logTag?: string;
     logTimestamp?: boolean;
