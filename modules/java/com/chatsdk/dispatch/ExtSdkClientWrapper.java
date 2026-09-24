@@ -13,6 +13,7 @@ import com.chatsdk.common.ExtSdkMethodType;
 import com.chatsdk.common.ExtSdkThreadUtil;
 import com.hyphenate.EMCallBack;
 import com.hyphenate.EMConnectionListener;
+import com.hyphenate.EMError;
 import com.hyphenate.EMMultiDeviceListener;
 import com.hyphenate.EMValueCallBack;
 import com.hyphenate.chat.EMClient;
@@ -316,6 +317,19 @@ public class ExtSdkClientWrapper extends ExtSdkWrapper {
                 ExtSdkWrapper.onError(result, code, error);
             }
         });
+    }
+
+    // 2026-09-24 1.21.0
+    // PushKit is an iOS-only capability: the Android SDK has no PushKit API. These routes stay
+    // registered to keep the cross-platform method key contract aligned, and answer with an
+    // explicit error instead of a silent success if they are ever invoked directly. The
+    // TypeScript API is guarded by Platform.OS, so it never dispatches them in practice.
+    public void bindPushKitToken(JSONObject param, String channelName, ExtSdkCallback result) {
+        ExtSdkWrapper.onError(result, EMError.OPERATION_UNSUPPORTED, "PushKit is only supported on iOS");
+    }
+
+    public void unbindPushKitToken(JSONObject param, String channelName, ExtSdkCallback result) {
+        ExtSdkWrapper.onError(result, EMError.OPERATION_UNSUPPORTED, "PushKit is only supported on iOS");
     }
 
     public void getRTCTokenInfoWithChannelName(JSONObject param, String channelName, ExtSdkCallback result)

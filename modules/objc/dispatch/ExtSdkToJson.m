@@ -1248,6 +1248,9 @@
     data[@"serverTransfer"] = @(self.isAutoTransferMessageAttachments);
     data[@"usingHttpsOnly"] = @(self.usingHttpsOnly);
     data[@"pushConfig"] = @{@"deviceId" : self.apnsCertName};
+    // 2026-09-24 1.21.0
+    data[@"apnsCertName"] = self.apnsCertName;
+    data[@"pushKitCertName"] = self.pushKitCertName;
     data[@"enableDNSConfig"] = @(self.enableDnsConfig);
     data[@"imPort"] = @(self.chatPort);
     data[@"imServer"] = self.chatServer;
@@ -1303,6 +1306,11 @@
     if (aJson[@"serverTransfer"]) { options.isAutoTransferMessageAttachments = [aJson[@"serverTransfer"] boolValue]; }
     if (aJson[@"usingHttpsOnly"]) { options.usingHttpsOnly = [aJson[@"usingHttpsOnly"] boolValue]; }
     (aJson[@"pushConfig"] && aJson[@"pushConfig"][@"deviceId"] && [aJson[@"pushConfig"][@"deviceId"] length] > 0) ? (options.apnsCertName = aJson[@"pushConfig"][@"deviceId"]) : nil;
+    // 2026-09-24 1.21.0
+    (aJson[@"apnsCertName"] && [aJson[@"apnsCertName"] length] > 0) ? (options.apnsCertName = aJson[@"apnsCertName"]) : nil;
+    // The PushKit certificate name is iOS only and must be set at initialization: the native SDK
+    // reads EMOptions.pushKitCertName while binding a PushKit token and rejects an empty value.
+    (aJson[@"pushKitCertName"] && [aJson[@"pushKitCertName"] length] > 0) ? (options.pushKitCertName = aJson[@"pushKitCertName"]) : nil;
     if (aJson[@"enableDNSConfig"]) { options.enableDnsConfig = [aJson[@"enableDNSConfig"] boolValue]; }
     if (aJson[@"imPort"]) { options.chatPort = [aJson[@"imPort"] intValue]; }
     (aJson[@"imServer"] && [aJson[@"imServer"] length] > 0) ? (options.chatServer = aJson[@"imServer"]) : nil;

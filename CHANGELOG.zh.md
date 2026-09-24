@@ -7,6 +7,8 @@ _Chinese | [English](./CHANGELOG.md)_
 - 依赖的原生 SDK 升级到版本（`iOS` 4.25.0 和`Android` 4.25.0）。
 - 新增 `ChatManager.fetchConversationsFromDB` 方法，用于分页从本地数据库获取会话列表。调用该方法前，需将 `ChatOptions.autoLoadConversations` 设置为 `false`。
 - 在 `ChatOptions` 中新增 `enableChatroomConversation` 和 `autoLoadConversations` 属性。
+- 在 `ChatOptions` 中新增 `apnsCertName` 和 `pushKitCertName` 属性，用于在 SDK 初始化时设置 iOS 的 APNs 和 PushKit 证书名称。
+- 新增 `ChatClient.bindPushKitToken` 和 `ChatClient.unbindPushKitToken` 方法，用于绑定和解绑苹果 PushKit token，以实现 VoIP 推送。两个方法仅在 iOS 平台有效。
 
 ## 1.20.0
 

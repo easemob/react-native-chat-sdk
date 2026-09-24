@@ -7,6 +7,8 @@ _English | [Chinese](./CHANGELOG.zh.md)_
 - Dependent native SDKs are upgraded to versions (iOS 4.25.0 and Android 4.25.0).
 - Add `ChatManager.fetchConversationsFromDB` method to get the list of conversations from the local database with pagination. Before calling this method, you need to set `ChatOptions.autoLoadConversations` to `false`.
 - Add the `enableChatroomConversation` and `autoLoadConversations` properties in `ChatOptions`.
+- Add the `apnsCertName` and `pushKitCertName` properties in `ChatOptions` to set the iOS APNs and PushKit certificate names when the SDK is initialized.
+- Add `ChatClient.bindPushKitToken` and `ChatClient.unbindPushKitToken` methods to bind and unbind the Apple PushKit token for VoIP push notifications. Both methods are available on the iOS platform only.
 
 ## 1.20.0
 

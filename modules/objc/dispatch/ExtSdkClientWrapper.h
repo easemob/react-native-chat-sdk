@@ -77,9 +77,25 @@ NS_ASSUME_NONNULL_BEGIN
      withMethodType:(NSString *)aChannelName
              result:(nonnull id<ExtSdkCallbackObjc>)result;
 
+// 2026-09-24 1.21.0: the implementation existed in the .m file but was never
+// declared here, so ExtSdkDispatch.m could not call it and renewToken fell
+// through to the default "not implement" branch on iOS.
+- (void)renewToken:(NSDictionary *)param
+    withMethodType:(NSString *)aChannelName
+            result:(nonnull id<ExtSdkCallbackObjc>)result;
+
 - (void)updatePushConfig:(NSDictionary *)param
           withMethodType:(NSString *)aChannelName
                   result:(nonnull id<ExtSdkCallbackObjc>)result;
+
+// 2026-09-24 1.21.0
+- (void)bindPushKitToken:(NSDictionary *)param
+          withMethodType:(NSString *)aChannelName
+                  result:(nonnull id<ExtSdkCallbackObjc>)result;
+
+- (void)unbindPushKitToken:(NSDictionary *)param
+            withMethodType:(NSString *)aChannelName
+                    result:(nonnull id<ExtSdkCallbackObjc>)result;
 
 - (void)getRTCTokenInfoWithChannelName:(NSDictionary *)param
                         withMethodType:(NSString *)aChannelName

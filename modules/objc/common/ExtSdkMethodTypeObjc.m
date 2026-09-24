@@ -34,6 +34,9 @@
           ExtSdkMethodKeyGetCurrentUser : @(ExtSdkMethodKeyGetCurrentUserValue),
           ExtSdkMethodKeyIsConnected : @(ExtSdkMethodKeyIsConnectedValue),
           ExtSdkMethodKeyRenewToken : @(ExtSdkMethodKeyRenewTokenValue),
+          // 2026-09-24 1.21.0
+          ExtSdkMethodKeyBindPushKitToken : @(ExtSdkMethodKeyBindPushKitTokenValue),
+          ExtSdkMethodKeyUnbindPushKitToken : @(ExtSdkMethodKeyUnbindPushKitTokenValue),
 
           /// EMClientDelegate
           ExtSdkMethodKeyOnConnected : @(ExtSdkMethodKeyOnConnectedValue),

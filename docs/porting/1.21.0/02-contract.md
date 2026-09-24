@@ -109,3 +109,88 @@
 
 - UM-3：Android `asyncGetConversationsFromDB` 过滤 chatThread 会话，iOS 公开头文件未见对应说明；RN 照双端各自语义透传，不抹平，交用户确认。
 - gate 脚本对 deprecated key 的误报（6 个存量 key），属脚本与契约测试口径差异，建议后续修正脚本（非本次范围）。
+
+---
+
+# 补录（2026-09-24）：iOS PushKit 回移的跨端契约
+
+对应 `06-pushkit-backport.md`。**只加不删**：`pushConfig` / `ChatPushConfig` / `updatePushConfig` 原样保留，`bindDeviceToken` 不引入。
+
+## 阶段二门禁
+
+### 基线核查（开工前）
+
+- 分支 `1.21.0`，基线 commit `7acbd07`；`git status` 干净（仅本文件为新增未跟踪）。
+- native 依赖已就位，无需 bump，各处互核一致：`ChatSdk.podspec:53` SPM `minimumVersion: '4.25.0'`、`:57` CocoaPods `~> 4.25.0`、`android/build.gradle:91` `io.hyphenate:hyphenate-chat:4.25.1`。
+- 基线测试：`yarn test --no-watchman` → **19 suites / 121 tests 全通过**（本 worktree 首次安装依赖 `yarn install`，exit 0）。
+
+### gate 输出（无 hooks 能力 harness，流程强制替代机器强制）
+
+命令：`echo '{}' | bash /Users/asterisk/Codes/zuoyu_rn/.agents/skills/platform-sdk-porting-v2/hooks/porting_guard.sh gate react-native /Users/asterisk/Codes/zuoyu_rn/react-native-chat-sdk/.worktree/1.21.0`
+
+输出：**（无输出，空）** = 门禁通过，无 block 项。
+
+> 与 `02-contract.md` 原有记录中「6 个 deprecated key 误报」的差异说明：本次 gate 无输出。原记录中的 block 项来自阶段二实施前的旧基线（当时脚本口径不同，且 `RenewToken` 等 key 尚未补齐），现基线已无该现象，gate 干净。
+
+## C6 iOS PushKit 回移要素（逐项定死）
+
+### C6.1 初始化选项：`ChatOptions.apnsCertName` / `ChatOptions.pushKitCertName`
+
+- TS 字段：`apnsCertName?: string`、`pushKitCertName?: string`，**可选、无默认值**（与 native `NSString *` 可为 nil 对齐；与 5.0.0 逐字一致）
+- 放置位置：`src/common/ChatOptions.ts` 中 `isAutoDownload` 与 `pushConfig` 之间（5.0.0 同一位置）
+- 5 处同步（本仓库既有规矩）：字段声明、构造 params、构造赋值、`withAppId` params、`withAppKey` params
+- JSON key：**`apnsCertName`**、**`pushKitCertName`**（顶层，与 5.0.0 及 Flutter 一致）
+- iOS：`ExtSdkToJson.m` 的 `EMOptions (Json)` `fromJson` 增加
+  `if (aJson[@"apnsCertName"]) { options.apnsCertName = aJson[@"apnsCertName"]; }`、
+  `if (aJson[@"pushKitCertName"]) { options.pushKitCertName = aJson[@"pushKitCertName"]; }`；
+  `toJson` 增加 `data[@"apnsCertName"] = self.apnsCertName;`、`data[@"pushKitCertName"] = self.pushKitCertName;`（对称完整性）
+- Android：**不做映射**（native Android 无该能力）。`ExtSdkHelper.java` 不动。
+- 版本分组注释：iOS 的 `fromJson`/`toJson` 加 `// 2026-09-24 1.21.0` 风格注释（沿用文件现有分组注释习惯）
+- 注释语义（英文 TypeDoc）：仅 iOS 生效；仅在 `ChatClient.init` 时设置，运行时不修改
+
+### C6.2 方法：`bindPushKitToken` / `unbindPushKitToken`
+
+| 要素 | 取值 |
+|---|---|
+| TS 公开签名 | `bindPushKitToken(params: { deviceToken: string }): Promise<void>`；`unbindPushKitToken(): Promise<void>` |
+| 方法名 key | `bindPushKitToken` / `unbindPushKitToken`（逐字，五处同步：`Consts.ts`、`ExtSdkMethodType.java`、`ExtSdkMethodTypeObjc.h`、`ExtSdkMethodTypeObjc.m`、`ExtSdkMethodType.{h,cpp}`） |
+| 请求参数 key | `deviceToken`（string） |
+| TS 请求包装 | `Native._callMethod(MTbindPushKitToken, { [MTbindPushKitToken]: { deviceToken } })`；解绑 `Native._callMethod(MTunbindPushKitToken)` 无内层参数 |
+| 返回结构 | `onResult` 包装 `{bindPushKitToken: nil}`，TS `ChatClient.checkErrorFromResult(r)` |
+| 非 iOS 行为 | TS `Platform.OS !== 'ios'` → 直接 `return`（静默 no-op）；`ChatClient.ts` 需从 `react-native` 引入 `Platform`（现为 `import { type EventSubscription, NativeEventEmitter }`） |
+| 位置 | `src/ChatClient.ts`，紧跟 `updatePushConfig` 之后 |
+
+### C6.3 iOS 侧
+
+| 层 | 动作 |
+|---|---|
+| `ExtSdkMethodTypeObjc.h` | 在 `ExtSdkMethodKeyUpdatePushConfig` 附近加两个 key 常量；enum 加 `BindPushKitTokenValue = 1027`、`UnbindPushKitTokenValue = 1028`（1.21.0 现有 max = `ExtSdkMethodKeyGetPushTemplateValue = 1026`，不冲突） |
+| `ExtSdkMethodTypeObjc.m` | methodMap 加两条映射 |
+| `ExtSdkDispatch.m` | `updatePushConfig` case 后加两个 case |
+| `ExtSdkClientWrapper.h` | `updatePushConfig` 声明后加两个方法声明 |
+| `ExtSdkClientWrapper.m` | 实现：`deviceToken` 十六进制字符串 → `NSData`（与 5.0.0 同法）→ `[EMClient.sharedClient registerPushKitToken:...completion:]` / `unRegisterPushKitTokenWithCompletion:`，completion 里 `onResult:withMethodType:aChannelName withError:aError withParams:nil` |
+
+### C6.4 Android 侧（仅注册路由，不实现能力）
+
+| 层 | 动作 |
+|---|---|
+| `ExtSdkMethodType.java` | 加两个常量 |
+| `ExtSdkDispatch.java` | `updatePushConfig` case 后加两个 case |
+| `ExtSdkClientWrapper.java` | 两个方法返回 `ExtSdkWrapper.onError(result, EMError.OPERATION_UNSUPPORTED, "PushKit is only supported on iOS")`（`EMError.OPERATION_UNSUPPORTED = 111`，已核实 native 4.25.1 `hyphenatechatsdk/src/com/hyphenate/EMError.java:220`） |
+| `ExtSdkHelper.java` | 不动 |
+
+理由：契约测试强制「TS `MT*` 值 ⊆ Java 常量值」；Android 注册同名 key 才能在两端保持方法名契约一致。实际调用被 TS 的 `Platform.OS` 守卫拦住。
+
+### C6.5 明确不做
+
+- **不删除** `ChatOptions.pushConfig` / `src/common/ChatPushConfig.ts` / `ChatClient.updatePushConfig`（兼容性硬要求）。
+- **不新增** `ChatClient.bindDeviceToken`（属 5.0.0 的 break 动作，不回移）。
+- **不引入** 证书名优先级逻辑：`updatePushConfig` 的 iOS 旧路径（运行时写 `apnsCertName`）原样保留。
+- **不移植** native 同步变体 `bindPushKitToken:` / `unBindPushKitToken`（语义重复且阻塞线程）。
+- **不修** iOS `renewToken` dispatch 缺失（D-2，待用户裁决）。
+
+### C6.6 收尾项（主 agent 负责）
+
+- example：`example/src/auto/auto_mode.ts` 的 `CHAT_OPTIONS_KEYS` 加 `'apnsCertName'`、`'pushKitCertName'`；新建 `example/src/registry/apis/client.ts` 注册 `ChatClient.bindPushKitToken`、`ChatClient.unbindPushKitToken`，并在 `example/src/registry/index.ts` 接入 `clientApis`。
+- CHANGELOG 双语：`## 1.21.0` 段落追加两条（两个 `ChatOptions` 属性 + 两个 `ChatClient` 方法），中文版同步。
+- 版本号：`package.json` 已是 `1.21.0`，example 三处已是 1.21.0 —— **不动**（本次是补充项，非新版本发布）。

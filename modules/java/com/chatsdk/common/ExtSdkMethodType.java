@@ -20,6 +20,9 @@ public class ExtSdkMethodType {
     public static final String loginWithAgoraToken = "loginWithAgoraToken";
     public static final String isConnected = "isConnected";
     public static final String renewToken = "renewToken";
+    // 2026-09-24 1.21.0
+    public static final String bindPushKitToken = "bindPushKitToken";
+    public static final String unbindPushKitToken = "unbindPushKitToken";
 
     public static final String onConnected = "onConnected";
     public static final String onDisconnected = "onDisconnected";

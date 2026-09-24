@@ -118,6 +118,16 @@ public class ExtSdkDispatch implements ExtSdkApi {
             case ExtSdkMethodType.updatePushConfig:
                 ExtSdkClientWrapper.getInstance().updatePushConfig(jsonParams, methodType, callback);
                 break;
+            // 2026-09-24 1.21.0
+            // PushKit is an iOS-only capability: the Android SDK has no PushKit API. These routes
+            // exist to keep the cross-platform method key contract aligned, and the TypeScript API
+            // is guarded by Platform.OS so they are not reached in practice.
+            case ExtSdkMethodType.bindPushKitToken:
+                ExtSdkClientWrapper.getInstance().bindPushKitToken(jsonParams, methodType, callback);
+                break;
+            case ExtSdkMethodType.unbindPushKitToken:
+                ExtSdkClientWrapper.getInstance().unbindPushKitToken(jsonParams, methodType, callback);
+                break;
 
             case ExtSdkMethodType.onConnected:
                 callback.fail(1, "no implement: " + methodType);

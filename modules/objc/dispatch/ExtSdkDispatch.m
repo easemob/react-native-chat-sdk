@@ -109,8 +109,18 @@ static NSString *const TAG = @"ExtSdkDispatch";
     case ExtSdkMethodKeyGetCurrentUserValue:
         [[ExtSdkClientWrapper getInstance] getCurrentUser:ps withMethodType:methodType result:callback];
         break;
+    case ExtSdkMethodKeyRenewTokenValue:
+        [[ExtSdkClientWrapper getInstance] renewToken:ps withMethodType:methodType result:callback];
+        break;
     case ExtSdkMethodKeyUpdatePushConfigValue:
         [[ExtSdkClientWrapper getInstance] updatePushConfig:ps withMethodType:methodType result:callback];
+        break;
+    // 2026-09-24 1.21.0
+    case ExtSdkMethodKeyBindPushKitTokenValue:
+        [[ExtSdkClientWrapper getInstance] bindPushKitToken:ps withMethodType:methodType result:callback];
+        break;
+    case ExtSdkMethodKeyUnbindPushKitTokenValue:
+        [[ExtSdkClientWrapper getInstance] unbindPushKitToken:ps withMethodType:methodType result:callback];
         break;
 
     /// #pragma mark - EMClientDelegate value

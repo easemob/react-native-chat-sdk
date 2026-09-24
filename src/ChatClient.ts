@@ -1,4 +1,8 @@
-import { type EventSubscription, NativeEventEmitter } from 'react-native';
+import {
+  type EventSubscription,
+  NativeEventEmitter,
+  Platform,
+} from 'react-native';
 import { Factory } from './__internal__/Factory';
 
 import { BaseManager } from './__internal__/Base';
@@ -43,6 +47,8 @@ import {
   MTonUserDidRemoveFromServer,
   MTonUserKickedByOtherDevice,
   MTrenewToken,
+  MTbindPushKitToken,
+  MTunbindPushKitToken,
   MTupdatePushConfig,
 } from './__internal__/Consts';
 import { ExceptionHandler } from './__internal__/ErrorHandler';
@@ -929,6 +935,8 @@ export class ChatClient extends BaseManager {
    * **Note**
    * For the iOS platform, you need to pass the device ID during initialization. Otherwise, the push function cannot be used properly. See {@link ChatClient.init}
    *
+   * **Note** This method is kept for backward compatibility. On the iOS platform, `ChatPushConfig.deviceId` is the APNs certificate name written at runtime, so it overwrites the certificate name set with {@link ChatOptions.apnsCertName} at initialization. Configure the certificate name in only one of the two places.
+   *
    * @param config The push config, See {@link ChatPushConfig}
    *
    * @throws A description of the exception. See {@link ChatError}.
@@ -955,6 +963,53 @@ export class ChatClient extends BaseManager {
       },
     });
     ChatPushManager.checkErrorFromResult(r);
+  }
+
+  /**
+   * Binds the Apple PushKit token, which is used for VoIP push notifications.
+   *
+   * **Note** This method is available only on the iOS platform; calling it on other platforms does nothing.
+   *
+   * @param params
+   * - deviceToken: The PushKit token reported by `PKPushRegistry`, in hexadecimal.
+   *
+   * **Note** The PushKit certificate name must be set with {@link ChatOptions.pushKitCertName} when the SDK is initialized, because the certificate name cannot be changed during the app runtime.
+   *
+   * **Note** The native SDK caches the token before binding it: if the current user has not logged in, this call fails with {@link ChatError}, but the token stays cached and is bound automatically after the next successful login. {@link ChatClient.logout} with `unbindDeviceToken` set to `true` unbinds the PushKit token as well.
+   *
+   * @throws A description of the exception. See {@link ChatError}.
+   */
+  public async bindPushKitToken(params: {
+    deviceToken: string;
+  }): Promise<void> {
+    chatlog.log(`${ChatClient.TAG}: ${this.bindPushKitToken.name}`);
+    if (Platform.OS !== 'ios') {
+      return;
+    }
+    let r: any = await Native._callMethod(MTbindPushKitToken, {
+      [MTbindPushKitToken]: {
+        deviceToken: params.deviceToken,
+      },
+    });
+    ChatClient.checkErrorFromResult(r);
+  }
+
+  /**
+   * Unbinds the Apple PushKit token bound by {@link ChatClient.bindPushKitToken}.
+   *
+   * **Note** This method is available only on the iOS platform; calling it on other platforms does nothing.
+   *
+   * {@link ChatClient.logout} with `unbindDeviceToken` set to `true` already unbinds the PushKit token, so call this method only when you need to unbind it while the current user stays logged in.
+   *
+   * @throws A description of the exception. See {@link ChatError}.
+   */
+  public async unbindPushKitToken(): Promise<void> {
+    chatlog.log(`${ChatClient.TAG}: ${this.unbindPushKitToken.name}`);
+    if (Platform.OS !== 'ios') {
+      return;
+    }
+    let r: any = await Native._callMethod(MTunbindPushKitToken);
+    ChatClient.checkErrorFromResult(r);
   }
 
   /**

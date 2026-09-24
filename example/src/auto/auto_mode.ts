@@ -197,6 +197,8 @@ const CHAT_OPTIONS_KEYS = [
   'enableAutoSyncContacts',
   'enableChatroomConversation',
   'autoLoadConversations',
+  'apnsCertName',
+  'pushKitCertName',
 ];
 
 function deriveInitParams(
