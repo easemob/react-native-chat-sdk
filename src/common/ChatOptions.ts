@@ -290,10 +290,10 @@ export class ChatOptions {
   enableAutoSyncContacts: boolean;
 
   /**
-   * Whether to create conversations for chat room messages.
+   * Whether to include chatroom conversations in the local conversation list.
    *
-   * - `true`: Yes. A conversation is created when a chat room message is sent or received.
-   * - (Default) `false`: No.
+   * - `true`: Yes. Includes chatroom conversations.
+   * - (Default) `false`: No. Excludes chatroom conversations.
    */
   enableChatroomConversation: boolean;
 
