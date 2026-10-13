@@ -72,7 +72,7 @@
 - 返回包装（双端一致）：`{getConversationsFromDBWithCursor: {cursor: string, list: [...]}}`
 - 无新事件。
 
-### C2 新配置：`ChatOptions.enableChatroomConversation`（聊天室消息建会话）
+### C2 新配置：`ChatOptions.enableChatroomConversation`（获取本地会话列表时是否包含聊天室会话）
 
 - TS 字段 `enableChatroomConversation: boolean`，默认 `false`；5 处同步（声明/构造 params/构造赋值/withAppId params/withAppKey params）
 - JSON key：**`enableChatroomConversation`**
