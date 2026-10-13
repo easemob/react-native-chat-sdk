@@ -271,10 +271,12 @@ export class ChatOptions {
   enableAutoSyncContacts: boolean;
 
   /**
-   * 是否为聊天室消息创建会话。
+   * 获取本地会话列表时是否包含聊天室会话。
    *
-   * - `true`：是。发送或接收聊天室消息时会创建会话。
-   * - （默认）`false`：否。
+   * - `true`：是。本地会话列表中包含聊天室会话。
+   * - （默认）`false`：否。本地会话列表中不包含聊天室会话。
+   * 
+   * 该配置不控制聊天室会话的创建或存储，也不影响聊天室消息的正常收发。
    */
   enableChatroomConversation: boolean;
 
