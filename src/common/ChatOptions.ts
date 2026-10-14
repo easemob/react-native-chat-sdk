@@ -275,7 +275,7 @@ export class ChatOptions {
    *
    * - `true`：是。本地会话列表中包含聊天室会话。
    * - （默认）`false`：否。本地会话列表中不包含聊天室会话。
-   * 
+   *
    * 该配置不控制聊天室会话的创建或存储，也不影响聊天室消息的正常收发。
    */
   enableChatroomConversation: boolean;
