@@ -38,6 +38,8 @@ ChatSDK is a highly reliable global communication platform where your users can 
 | {@link ChatClient.kickDevice kickDevice} | Logs out from a specified account on a device. |
 | {@link ChatClient.kickAllDevices kickAllDevices} | Logs out from a specified account on all devices. |
 | {@link ChatClient.updatePushConfig updatePushConfig} | Update push configurations. |
+| {@link ChatClient.bindPushKitToken bindPushKitToken} | Binds the Apple PushKit token, which is used for VoIP push notifications. |
+| {@link ChatClient.unbindPushKitToken unbindPushKitToken} | Unbinds the Apple PushKit token bound by {@link ChatClient.bindPushKitToken}. |
 | {@link ChatClient.getRTCTokenInfoWithChannelName getRTCTokenInfoWithChannelName} | Gets the Agora RTC token, token expiration time, and RTC UID matching the Agora Chat user ID according to the channel name (channelName). |
 | {@link ChatClient.getUserIdsWithRTCUids getUserIdsWithRTCUids} | Gets the Agora Chat user IDs matching the Agora RTC UIDs. |
 | {@link ChatClient.addConnectionListener addConnectionListener} | Adds the connection status listener. |
@@ -175,6 +177,7 @@ ChatSDK is a highly reliable global communication platform where your users can 
 | {@link ChatManager.removeMessagesFromServerWithTimestamp removeMessagesFromServerWithTimestamp} | Deletes messages from the conversation (from both local storage and server). |
 | {@link ChatManager.fetchConversationsFromServerWithCursor fetchConversationsFromServerWithCursor} | Gets the list of conversations from the server with pagination. |
 | {@link ChatManager.fetchPinnedConversationsFromServerWithCursor fetchPinnedConversationsFromServerWithCursor} | Get the list of pinned conversations from the server with pagination. |
+| {@link ChatManager.fetchConversationsFromDB fetchConversationsFromDB} | Gets the list of conversations from the local database with pagination. |
 | {@link ChatManager.pinConversation pinConversation} | Sets whether to pin a conversation. |
 | {@link ChatManager.modifyMessageBody modifyMessageBody} | Modifies a message. |
 | {@link ChatManager.modifyMsgBody modifyMsgBody} | Modifies a message both in the local storage and server. |
