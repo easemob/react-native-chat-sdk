@@ -57,11 +57,9 @@ See [iOS integration: CocoaPods and Swift Package Manager](docs/spm.md) for deta
         appKey !== undefined
           ? ChatOptions.withAppKey({
               appKey: appKey,
-              autoLogin: false,
             })
           : ChatOptions.withAppId({
               appId: appId,
-              autoLogin: false,
             })
       )
       .then(() => {

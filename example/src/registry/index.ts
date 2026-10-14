@@ -1,6 +1,6 @@
 import type { ApiEntry } from './api_entry';
-import { chatApis } from './apis/chat';
 import { clientApis } from './apis/client';
+import { chatApis } from './apis/chat';
 import { groupApis } from './apis/group';
 import { contactApis } from './apis/contact';
 import { userInfoApis } from './apis/userinfo';
@@ -13,8 +13,8 @@ import { pushApis } from './apis/push';
  * 注意：ChatClient.init / login / logout 为页面专用，不在此注册。
  */
 export const ALL_APIS: ApiEntry[] = [
-  ...chatApis,
   ...clientApis,
+  ...chatApis,
   ...groupApis,
   ...contactApis,
   ...userInfoApis,

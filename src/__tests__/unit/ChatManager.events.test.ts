@@ -9,10 +9,11 @@ import { eventEmitter } from '../../__specs__';
 import { ChatManager } from '../../ChatManager';
 import type { ChatMessageEventListener } from '../../ChatEvents';
 import { ChatMessage, ChatTextMessageBody } from '../../common/ChatMessage';
+import { ChatMessageReadReceipt } from '../../common/ChatMessageReadReceipt';
 import type { NativeEventEmitter } from 'react-native';
 import {
-  MTonConversationHasRead,
-  MTonMessagesRead,
+  MTonMessageReadReceipts,
+  MTonMessagesDelivered,
   MTonMessagesReceived,
   MTonMessagesRecalledInfo,
 } from '../../__internal__/Consts';
@@ -83,25 +84,42 @@ describe('ChatManager event dispatch', () => {
 
   test('a removed message listener is no longer notified', () => {
     const listener: ChatMessageEventListener = {
-      onMessagesRead: jest.fn(),
+      onMessagesDelivered: jest.fn(),
     };
     manager.addMessageListener(listener);
     manager.removeMessageListener(listener);
 
-    emitNativeEvent(MTonMessagesRead, [NATIVE_TEXT_MESSAGE]);
+    emitNativeEvent(MTonMessagesDelivered, [NATIVE_TEXT_MESSAGE]);
 
-    expect(listener.onMessagesRead).not.toHaveBeenCalled();
+    expect(listener.onMessagesDelivered).not.toHaveBeenCalled();
   });
 
-  test('onConversationHasRead forwards from and to to onConversationRead', () => {
+  test('onMessageReadReceipts decodes receipts and fans out ChatMessageReadReceipt models', () => {
     const listener: ChatMessageEventListener = {
-      onConversationRead: jest.fn(),
+      onMessageReadReceipts: jest.fn(),
     };
     manager.addMessageListener(listener);
 
-    emitNativeEvent(MTonConversationHasRead, { from: 'peer1', to: 'me' });
+    emitNativeEvent(MTonMessageReadReceipts, {
+      receipts: [
+        {
+          msg_id: 'm1',
+          conv_id: 'peer1',
+          isPeerReceipt: true,
+          readCount: 3,
+        },
+      ],
+    });
 
-    expect(listener.onConversationRead).toHaveBeenCalledWith('peer1', 'me');
+    expect(listener.onMessageReadReceipts).toHaveBeenCalledTimes(1);
+    const list = (listener.onMessageReadReceipts as jest.Mock).mock
+      .calls[0]![0] as ChatMessageReadReceipt[];
+    expect(list).toHaveLength(1);
+    expect(list[0]).toBeInstanceOf(ChatMessageReadReceipt);
+    expect(list[0]!.msgId).toBe('m1');
+    expect(list[0]!.convId).toBe('peer1');
+    expect(list[0]!.isPeerReceipt).toBe(true);
+    expect(list[0]!.readCount).toBe(3);
   });
 
   test('onMessagesRecalledInfo decodes recalled info entries', () => {

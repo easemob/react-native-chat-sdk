@@ -104,50 +104,6 @@
     return ret;
 }
 
-+ (EMGroupStyle)groupStyleFromInt:(int)style {
-    EMGroupStyle ret = EMGroupStylePrivateOnlyOwnerInvite;
-    switch (style) {
-    case 0: {
-        ret = EMGroupStylePrivateOnlyOwnerInvite;
-    } break;
-    case 1: {
-        ret = EMGroupStylePrivateMemberCanInvite;
-    } break;
-    case 2: {
-        ret = EMGroupStylePublicJoinNeedApproval;
-    } break;
-    case 3: {
-        ret = EMGroupStylePublicOpenJoin;
-    } break;
-    default:
-        break;
-    }
-
-    return ret;
-}
-
-+ (int)groupStyleToInt:(EMGroupStyle)style {
-    int ret = 0;
-    switch (style) {
-    case EMGroupStylePrivateOnlyOwnerInvite: {
-        ret = 0;
-    } break;
-    case EMGroupStylePrivateMemberCanInvite: {
-        ret = 1;
-    } break;
-    case EMGroupStylePublicJoinNeedApproval: {
-        ret = 2;
-    } break;
-    case EMGroupStylePublicOpenJoin: {
-        ret = 3;
-    } break;
-    default:
-        break;
-    }
-
-    return ret;
-}
-
 + (EMChatType)chatTypeFromInt:(int)aType {
     EMChatType type = EMChatTypeChat;
     switch (aType) {
@@ -550,7 +506,7 @@
     ret[@"memberList"] = self.memberList;
     ret[@"blockList"] = self.blacklist;
     // !!! It has been marked as invalid in the typescript language.
-    ret[@"muteList"] = self.muteList;
+    ret[@"muteList"] = self.muteMembers.allKeys;
     ret[@"muteKVList"] = self.muteMembers;
     ret[@"isAllMemberMuted"] = @(self.isMuteAllMembers);
     ret[@"announcement"] = self.announcement;
@@ -575,6 +531,10 @@
     ret[@"ext"] = self.ext;
     ret[@"marks"] = self.marks;
     ret[@"remindType"] = @(self.disturbType);
+    NSString *name = [self conversationName];
+    if (name) { ret[@"name"] = name; }
+    NSString *avatar = [self conversationAvatar];
+    if (avatar) { ret[@"avatar"] = avatar; }
     return ret;
 }
 
@@ -634,59 +594,44 @@
     ret[@"adminList"] = self.adminList;
     ret[@"blockList"] = self.blacklist;
     ret[@"muteList"] = self.muteList;
-    ret[@"noticeEnable"] = @(self.isPushNotificationEnabled);
     ret[@"messageBlocked"] = @(self.isBlocked);
     ret[@"isAllMemberMuted"] = @(self.isMuteAllMembers);
     ret[@"permissionType"] = @([ExtSdkConvertHelper groupPremissionTypeToInt:self.permissionType]);
+    ret[@"isDisabled"] = @(self.isDisabled);
 
     if (self.settings != nil) {
-        NSMutableDictionary *opt = [NSMutableDictionary dictionary];
-        opt[@"maxCount"] = @(self.settings.maxUsers);
-        opt[@"style"] = @(self.settings.style);
-        opt[@"inviteNeedConfirm"] = @([self isMemberAllowToInvite]);
-        opt[@"ext"] = self.settings.ext;
-        opt[@"isDisabled"] = @(self.isDisabled);
-        opt[@"isMemberOnly"] = @([self isMemberOnly]);
-        ret[@"options"] = opt;
+        ret[@"configs"] = [self.settings toJsonObject];
     }
 
     return ret;
-}
-
-- (BOOL)isMemberOnly {
-
-    if (self.settings.style == EMGroupStylePrivateOnlyOwnerInvite ||
-        self.settings.style == EMGroupStylePrivateMemberCanInvite ||
-        self.settings.style == EMGroupStylePublicJoinNeedApproval) {
-        return YES;
-    }
-
-    return NO;
-}
-
-- (BOOL)isMemberAllowToInvite {
-    return self.settings.style == EMGroupStylePrivateMemberCanInvite;
 }
 
 @end
 
-@implementation EMGroupOptions (Json)
+@implementation EMGroupConfigs (Json)
 - (NSDictionary *)toJsonObject {
     NSMutableDictionary *ret = [NSMutableDictionary dictionary];
     ret[@"maxCount"] = @(self.maxUsers);
-    ret[@"ext"] = self.ext;
-    ret[@"style"] = @([ExtSdkConvertHelper groupStyleToInt:self.style]);
     ret[@"inviteNeedConfirm"] = @(self.IsInviteNeedConfirm);
+    ret[@"ext"] = self.ext;
+    ret[@"isPublic"] = @(self.isPublic);
+    ret[@"joinApprovalRequired"] = @(self.joinApprovalRequired);
+    ret[@"allowInvites"] = @(self.allowInvites);
     return ret;
 }
 
-+ (EMGroupOptions *)fromJsonObject:(NSDictionary *)dict {
-    EMGroupOptions *options = [[EMGroupOptions alloc] init];
-    if (dict[@"maxCount"]) { options.maxUsers = [dict[@"maxCount"] intValue]; }
-    (dict[@"ext"] && [dict[@"ext"] length] > 0) ? (options.ext = dict[@"ext"]) : nil;
-    if (dict[@"inviteNeedConfirm"]) { options.IsInviteNeedConfirm = [dict[@"inviteNeedConfirm"] boolValue]; }
-    if (dict[@"style"]) { options.style = [ExtSdkConvertHelper groupStyleFromInt:[dict[@"style"] intValue]]; }
-    return options;
++ (EMGroupConfigs *)fromJsonObject:(NSDictionary *)dict {
+    EMGroupConfigs *configs = [[EMGroupConfigs alloc] init];
+    if (dict == nil) {
+        return configs;
+    }
+    if (dict[@"maxCount"]) { configs.maxUsers = [dict[@"maxCount"] integerValue]; }
+    (dict[@"ext"] && [dict[@"ext"] length] > 0) ? (configs.ext = dict[@"ext"]) : nil;
+    if (dict[@"inviteNeedConfirm"]) { configs.IsInviteNeedConfirm = [dict[@"inviteNeedConfirm"] boolValue]; }
+    if (dict[@"isPublic"]) { configs.isPublic = [dict[@"isPublic"] boolValue]; }
+    if (dict[@"joinApprovalRequired"]) { configs.joinApprovalRequired = [dict[@"joinApprovalRequired"] boolValue]; }
+    if (dict[@"allowInvites"]) { configs.allowInvites = [dict[@"allowInvites"] boolValue]; }
+    return configs;
 }
 
 @end
@@ -704,15 +649,25 @@
 
 @end
 
-@implementation EMGroupMessageAck (Json)
+@implementation EMGroupReadReceipt (Json)
 - (NSDictionary *)toJsonObject {
     NSMutableDictionary *data = [NSMutableDictionary dictionary];
     data[@"msg_id"] = self.messageId;
-    data[@"ack_id"] = self.readAckId;
-    data[@"from"] = self.from;
-    data[@"content"] = self.content;
+    data[@"ack_id"] = self.readReceiptId;
+    if (self.from) { data[@"from"] = [self.from toJsonObject]; }
     data[@"count"] = @(self.readCount);
     data[@"timestamp"] = @(self.timestamp);
+    return data;
+}
+@end
+
+@implementation EMMessageReadReceipt (Json)
+- (NSDictionary *)toJsonObject {
+    NSMutableDictionary *data = [NSMutableDictionary dictionary];
+    data[@"msg_id"] = self.messageId;
+    data[@"conv_id"] = self.conversationId;
+    data[@"isPeerReceipt"] = @(self.isPeerReceipt);
+    data[@"readCount"] = @(self.readCount);
     return data;
 }
 @end
@@ -773,12 +728,9 @@
     if (aJson[@"status"]) { msg.status = [ExtSdkConvertHelper messageStatusFromInt:[aJson[@"status"] intValue]]; }
     if (aJson[@"localTime"]) { msg.localTime = [aJson[@"localTime"] longLongValue]; }
     if (aJson[@"serverTime"]) { msg.timestamp = [aJson[@"serverTime"] longLongValue]; }
-    if (aJson[@"hasReadAck"]) { msg.isReadAcked = [aJson[@"hasReadAck"] boolValue]; }
     if (aJson[@"hasDeliverAck"]) { msg.isDeliverAcked = [aJson[@"hasDeliverAck"] boolValue]; }
-    if (aJson[@"hasRead"]) { msg.isRead = [aJson[@"hasRead"] boolValue]; }
-    if (aJson[@"needGroupAck"]) { msg.isNeedGroupAck = [aJson[@"needGroupAck"] boolValue]; }
-    // read only
-    // msg.groupAckCount = [aJson[@"groupAckCount"] intValue]
+    if (aJson[@"isNeedReadReceipt"]) { msg.isNeedReadReceipt = [aJson[@"isNeedReadReceipt"] boolValue]; }
+    // read only since 5.0.0: isPeerRead / isRead / groupReadReceiptCount
     // msg.isContentReplaced = [aJson[@"isContentReplaced"] boolValue];
     if (aJson[@"isChatThread"]) { msg.isChatThreadMessage = [aJson[@"isChatThread"] boolValue]; }
     if (aJson[@"attributes"]) { msg.ext = aJson[@"attributes"]; }
@@ -796,12 +748,12 @@
     ret[@"msgId"] = self.messageId;
     ret[@"to"] = self.to;
     ret[@"conversationId"] = self.conversationId;
-    ret[@"hasRead"] = @(self.isRead);
+    ret[@"isRead"] = @(self.isRead);
     ret[@"hasDeliverAck"] = @(self.isDeliverAcked);
-    ret[@"hasReadAck"] = @(self.isReadAcked);
-    ret[@"needGroupAck"] = @(self.isNeedGroupAck);
+    ret[@"isPeerRead"] = @(self.isPeerRead);
+    ret[@"isNeedReadReceipt"] = @(self.isNeedReadReceipt);
     ret[@"serverTime"] = @(self.timestamp);
-    ret[@"groupAckCount"] = @(self.groupAckCount);
+    ret[@"groupReadReceiptCount"] = @(self.groupReadReceiptCount);
     ret[@"attributes"] = self.ext ?: @{};
     ret[@"localTime"] = @(self.localTime);
     ret[@"status"] = @([ExtSdkConvertHelper messageStatusToInt:self.status]);
@@ -1119,7 +1071,6 @@
     if (aJson[@"fileStatus"]) { ret.downloadStatus = [ExtSdkConvertHelper downloadStatusFromInt:[aJson[@"fileStatus"] intValue]]; }
     (aJson[@"thumbnailLocalPath"] && [aJson[@"thumbnailLocalPath"] length] > 0) ? (ret.thumbnailLocalPath = aJson[@"thumbnailLocalPath"]) : nil;
     (aJson[@"thumbnailRemotePath"] && [aJson[@"thumbnailRemotePath"] length] > 0) ? (ret.thumbnailRemotePath = aJson[@"thumbnailRemotePath"]) : nil;
-    (aJson[@"thumbnailSecret"] && [aJson[@"thumbnailSecret"] length] > 0) ? (ret.thumbnailSecretKey = aJson[@"thumbnailSecret"]) : nil;
     if (aJson[@"width"] && aJson[@"height"]) { ret.size = CGSizeMake([aJson[@"width"] floatValue], [aJson[@"height"] floatValue]); }
     if (aJson[@"thumbnailStatus"]) { ret.thumbnailDownloadStatus = [ExtSdkConvertHelper downloadStatusFromInt:[aJson[@"thumbnailStatus"] intValue]]; }
     if (aJson[@"sendOriginalImage"]) { ret.compressionRatio = [aJson[@"sendOriginalImage"] boolValue] ? 1.0 : 0.6; }
@@ -1130,7 +1081,6 @@
     NSMutableDictionary *ret = [[super toJsonObject] mutableCopy];
     ret[@"thumbnailLocalPath"] = self.thumbnailLocalPath;
     ret[@"thumbnailRemotePath"] = self.thumbnailRemotePath;
-    ret[@"thumbnailSecret"] = self.thumbnailSecretKey;
     ret[@"thumbnailStatus"] = @([ExtSdkConvertHelper downloadStatusToInt:self.thumbnailDownloadStatus]);
     ret[@"fileStatus"] = @([ExtSdkConvertHelper downloadStatusToInt:self.downloadStatus]);
     ret[@"width"] = @(self.size.width);
@@ -1234,9 +1184,7 @@
 - (NSDictionary *)toJsonObject {
     NSMutableDictionary *data = [NSMutableDictionary dictionary];
     data[@"appKey"] = self.appkey;
-    data[@"autoLogin"] = @(self.isAutoLogin);
     data[@"debugModel"] = @(self.enableConsoleLog);
-    data[@"requireAck"] = @(self.enableRequireReadAck);
     data[@"requireDeliveryAck"] = @(self.enableDeliveryAck);
     data[@"sortMessageByServerTime"] = @(self.sortMessageByServerTime);
     data[@"acceptInvitationAlways"] = @(self.autoAcceptFriendInvitation);
@@ -1247,8 +1195,6 @@
     data[@"isChatRoomOwnerLeaveAllowed"] = @(self.canChatroomOwnerLeave);
     data[@"serverTransfer"] = @(self.isAutoTransferMessageAttachments);
     data[@"usingHttpsOnly"] = @(self.usingHttpsOnly);
-    data[@"pushConfig"] = @{@"deviceId" : self.apnsCertName};
-    // 2026-09-24 1.21.0
     data[@"apnsCertName"] = self.apnsCertName;
     data[@"pushKitCertName"] = self.pushKitCertName;
     data[@"enableDNSConfig"] = @(self.enableDnsConfig);
@@ -1271,12 +1217,9 @@
     data[@"webSocketPort"] = @(self.webSocketPort);
     data[@"dohVendor"] = @(self.dohVendor);
     data[@"enableUserInfo"] = @(self.enableUserInfo);
-    data[@"enableAutoSyncContacts"] = @(self.enableAutoSyncContacts);
+    data[@"dataSyncType"] = @(self.dataSyncType);
     // 2026-08-25 4.24.1
     data[@"ntpServers"] = self.ntpServers;
-    // 2026-09-10 4.25.0
-    data[@"enableChatroomConversation"] = @(self.enableChatroomConversation);
-    data[@"autoLoadConversations"] = @(self.autoLoadConversations);
 
     return data;
 }
@@ -1292,9 +1235,7 @@
         NSLog(@"EMOptions: fromJsonObject: appKey and appId is empty");
     }
 
-    if (aJson[@"autoLogin"]) { options.isAutoLogin = [aJson[@"autoLogin"] boolValue]; }
     if (aJson[@"debugModel"]) { options.enableConsoleLog = [aJson[@"debugModel"] boolValue]; }
-    if (aJson[@"requireAck"]) { options.enableRequireReadAck = [aJson[@"requireAck"] boolValue]; }
     if (aJson[@"requireDeliveryAck"]) { options.enableDeliveryAck = [aJson[@"requireDeliveryAck"] boolValue]; }
     if (aJson[@"sortMessageByServerTime"]) { options.sortMessageByServerTime = [aJson[@"sortMessageByServerTime"] boolValue]; }
     if (aJson[@"acceptInvitationAlways"]) { options.autoAcceptFriendInvitation = [aJson[@"acceptInvitationAlways"] boolValue]; }
@@ -1305,11 +1246,9 @@
     if (aJson[@"isChatRoomOwnerLeaveAllowed"]) { options.canChatroomOwnerLeave = [aJson[@"isChatRoomOwnerLeaveAllowed"] boolValue]; }
     if (aJson[@"serverTransfer"]) { options.isAutoTransferMessageAttachments = [aJson[@"serverTransfer"] boolValue]; }
     if (aJson[@"usingHttpsOnly"]) { options.usingHttpsOnly = [aJson[@"usingHttpsOnly"] boolValue]; }
-    (aJson[@"pushConfig"] && aJson[@"pushConfig"][@"deviceId"] && [aJson[@"pushConfig"][@"deviceId"] length] > 0) ? (options.apnsCertName = aJson[@"pushConfig"][@"deviceId"]) : nil;
-    // 2026-09-24 1.21.0
+    // The certificate names can only be set here, at initialization time: both are read by the
+    // native SDK when a token is bound, and must not be modified while the app is running.
     (aJson[@"apnsCertName"] && [aJson[@"apnsCertName"] length] > 0) ? (options.apnsCertName = aJson[@"apnsCertName"]) : nil;
-    // The PushKit certificate name is iOS only and must be set at initialization: the native SDK
-    // reads EMOptions.pushKitCertName while binding a PushKit token and rejects an empty value.
     (aJson[@"pushKitCertName"] && [aJson[@"pushKitCertName"] length] > 0) ? (options.pushKitCertName = aJson[@"pushKitCertName"]) : nil;
     if (aJson[@"enableDNSConfig"]) { options.enableDnsConfig = [aJson[@"enableDNSConfig"] boolValue]; }
     if (aJson[@"imPort"]) { options.chatPort = [aJson[@"imPort"] intValue]; }
@@ -1337,13 +1276,10 @@
     if (aJson[@"dohVendor"]) { options.dohVendor = [aJson[@"dohVendor"] intValue]; }
 
     if (aJson[@"enableUserInfo"]) { options.enableUserInfo = [aJson[@"enableUserInfo"] boolValue]; }
-    if (aJson[@"enableAutoSyncContacts"]) { options.enableAutoSyncContacts = [aJson[@"enableAutoSyncContacts"] boolValue]; }
+    if (aJson[@"dataSyncType"]) { options.dataSyncType = (EMDataSyncType)[aJson[@"dataSyncType"] integerValue]; }
 
     // 2026-08-25 4.24.1
     if (aJson[@"ntpServers"]) { options.ntpServers = aJson[@"ntpServers"]; }
-    // 2026-09-10 4.25.0
-    if (aJson[@"enableChatroomConversation"]) { options.enableChatroomConversation = [aJson[@"enableChatroomConversation"] boolValue]; }
-    if (aJson[@"autoLoadConversations"]) { options.autoLoadConversations = [aJson[@"autoLoadConversations"] boolValue]; }
 
     return options;
 }
@@ -1580,8 +1516,6 @@
     if (dict[@"direction"]) { options.direction = [dict[@"direction"] isEqual:@(0)] ? EMMessageSearchDirectionUp : EMMessageSearchDirectionDown; }
     if (dict[@"startTs"]) { options.startTime = [dict[@"startTs"] longLongValue]; }
     if (dict[@"endTs"]) { options.endTime = [dict[@"endTs"] longLongValue]; }
-    // !!! It has been marked as invalid in the typescript language.
-    (dict[@"from"] && [dict[@"from"] length] > 0) ? (options.from = dict[@"from"]) : nil;
     (dict[@"senders"] && [dict[@"senders"] count] > 0) ? (options.fromIds = dict[@"senders"]) : nil;
     if (dict[@"needSave"]) { options.isSave = [dict[@"needSave"] boolValue]; }
     NSArray *types = dict[@"msgTypes"];
@@ -1640,33 +1574,6 @@
     NSUInteger createAt = dict[@"addTimestamp"] ? [dict[@"addTimestamp"] unsignedLongLongValue] : 0;
     EMContact *contact = [[EMContact alloc] initWithUserId:userId remark:remark createAt:createAt];
     return contact;
-}
-
-@end
-
-@implementation EMConversationFilter (Json)
-
-+ (EMConversationFilter *)fromJsonObject:(NSDictionary *)dict {
-    EMConversationFilter *filter = [[EMConversationFilter alloc] init];
-    if (dict[@"mark"]) { filter.mark = (EMMarkType)[dict[@"mark"] integerValue]; }
-    if (dict[@"pageSize"]) { filter.pageSize = [dict[@"pageSize"] intValue]; }
-    return filter;
-}
-
-+ (NSString *)getCursor:(NSDictionary *)dict {
-    return dict[@"cursor"];
-}
-
-+ (BOOL)getPinned:(NSDictionary *)dict {
-    return [dict[@"pinned"] boolValue];
-}
-
-+ (BOOL)hasMark:(NSDictionary *)dict {
-    return dict[@"mark"] != nil;
-}
-
-+ (NSInteger)pageSize:(NSDictionary *)dict {
-    return [dict[@"pageSize"] intValue];
 }
 
 @end

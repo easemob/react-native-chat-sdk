@@ -7,11 +7,8 @@ import {
   MTaddUserToBlockList,
   MTdeclineInvitation,
   MTdeleteContact,
-  MTfetchAllContacts,
-  MTfetchContacts,
   MTgetAllContacts,
   MTgetAllContactsFromDB,
-  MTgetAllContactsFromServer,
   MTgetBlockListFromDB,
   MTgetBlockListFromServer,
   MTgetContact,
@@ -25,8 +22,7 @@ import { Native } from './__internal__/Native';
 import type { ChatContactEventListener } from './ChatEvents';
 import { chatlog } from './common/ChatConst';
 import { ChatContact } from './common/ChatContact';
-import { ChatCursorResult } from './common/ChatCursorResult';
-import { ChatError, ChatException } from './common/ChatError';
+import { ChatException } from './common/ChatError';
 
 /**
  * 联系人管理类，用于添加、查询和删除联系人。
@@ -74,14 +70,6 @@ export class ChatContactManager extends BaseManager {
           break;
         case 'onFriendRequestDeclined':
           listener.onFriendRequestDeclined?.(params.username);
-          break;
-        case 'onContactSyncStart':
-          listener.onContactSyncStart?.();
-          break;
-        case 'onContactSyncFinish':
-          listener.onContactSyncFinish?.(
-            params.error ? new ChatError(params.error) : undefined
-          );
           break;
         case 'onContactInfoUpdate':
           listener.onContactInfoUpdate?.(new ChatContact(params.contact));
@@ -168,21 +156,6 @@ export class ChatContactManager extends BaseManager {
       },
     });
     ChatContactManager.checkErrorFromResult(r);
-  }
-
-  /**
-   * 从服务器获取联系人列表。
-   *
-   * @returns 联系人列表。
-   *
-   * @throws 如果有方法调用的异常会在这里抛出，可以看到具体错误原因。参见 {@link ChatError}。
-   */
-  public async getAllContactsFromServer(): Promise<Array<string>> {
-    chatlog.log(`${ChatContactManager.TAG}: getAllContactsFromServer: `);
-    let r: any = await Native._callMethod(MTgetAllContactsFromServer);
-    ChatContactManager.checkErrorFromResult(r);
-    const ret: string[] = r?.[MTgetAllContactsFromServer];
-    return ret;
   }
 
   /**
@@ -351,60 +324,6 @@ export class ChatContactManager extends BaseManager {
       return new ChatContact(g);
     }
     return undefined;
-  }
-
-  /**
-   * 从服务器获取所有联系人。
-   *
-   * @returns 联系人列表。
-   *
-   * @throws 如果有方法调用的异常会在这里抛出，可以看到具体错误原因。参见 {@link ChatError}。
-   */
-  public async fetchAllContacts(): Promise<ChatContact[]> {
-    chatlog.log(`${ChatContactManager.TAG}: fetchAllContacts: `);
-    let r: any = await Native._callMethod(MTfetchAllContacts);
-    ChatContactManager.checkErrorFromResult(r);
-    const list: any[] = r?.[MTfetchAllContacts];
-    const ret: ChatContact[] = [];
-    for (const i of list) {
-      ret.push(new ChatContact(i));
-    }
-    return ret;
-  }
-
-  /**
-   * 从服务器分页获取联系人
-   * @params params -
-   * - cursor: 分页游标，默认为空，可以请求第一页。
-   * - pageSize: 每页最大数目。默认20。 [1-50]
-   * @returns 联系人列表。
-   *
-   * @throws 如果有方法调用的异常会在这里抛出，可以看到具体错误原因。参见 {@link ChatError}。
-   */
-  public async fetchContacts(params: {
-    cursor?: string;
-    pageSize?: number;
-  }): Promise<ChatCursorResult<ChatContact>> {
-    chatlog.log(
-      `${ChatContactManager.TAG}: fetchContacts: ${params.cursor}, ${params.pageSize}`
-    );
-    let r: any = await Native._callMethod(MTfetchContacts, {
-      [MTfetchContacts]: {
-        cursor: params.cursor,
-        pageSize: params.pageSize ?? 20,
-      },
-    });
-    ChatContactManager.checkErrorFromResult(r);
-    let ret = new ChatCursorResult<ChatContact>({
-      cursor: r?.[MTfetchContacts].cursor,
-      list: r?.[MTfetchContacts].list,
-      opt: {
-        map: (param: any) => {
-          return new ChatContact(param);
-        },
-      },
-    });
-    return ret;
   }
 
   /**

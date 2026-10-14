@@ -26,11 +26,6 @@ public class ExtSdkPushManagerWrapper extends ExtSdkWrapper {
 
     public static ExtSdkPushManagerWrapper getInstance() { return ExtSdkPushManagerWrapper.SingleHolder.instance; }
 
-    public void getImPushConfig(JSONObject params, String channelName, ExtSdkCallback result) throws JSONException {
-        EMPushConfigs configs = EMClient.getInstance().pushManager().getPushConfigs();
-        onSuccess(result, channelName, ExtSdkPushConfigsHelper.toJson(configs));
-    }
-
     public void getImPushConfigFromServer(JSONObject params, String channelName, ExtSdkCallback result)
         throws JSONException {
         EMClient.getInstance().pushManager().asyncGetPushConfigsFromServer(new EMValueCallBack<EMPushConfigs>() {
@@ -61,22 +56,6 @@ public class ExtSdkPushManagerWrapper extends ExtSdkWrapper {
         });
     }
 
-    public void enableOfflinePush(JSONObject params, String channelName, ExtSdkCallback result) throws JSONException {
-        onSuccess(result, channelName, null);
-    }
-
-    public void disableOfflinePush(JSONObject params, String channelName, ExtSdkCallback result) throws JSONException {
-        onSuccess(result, channelName, null);
-    }
-
-    public void getNoPushGroups(JSONObject params, String channelName, ExtSdkCallback result) throws JSONException {
-        onSuccess(result, channelName, null);
-    }
-
-    public void getNoPushUsers(JSONObject params, String channelName, ExtSdkCallback result) throws JSONException {
-        onSuccess(result, channelName, null);
-    }
-
     public void updateImPushStyle(JSONObject params, String channelName, ExtSdkCallback result) throws JSONException {
         EMPushManager.DisplayStyle style = params.getInt("pushStyle") == 0 ? EMPushManager.DisplayStyle.SimpleBanner
                                                                            : EMPushManager.DisplayStyle.MessageSummary;
@@ -91,32 +70,6 @@ public class ExtSdkPushManagerWrapper extends ExtSdkWrapper {
                 ExtSdkWrapper.onError(result, code, error);
             }
         });
-    }
-
-    public void updateGroupPushService(JSONObject params, String channelName, ExtSdkCallback result)
-        throws JSONException {
-        onSuccess(result, channelName, null);
-    }
-
-    public void updateUserPushService(JSONObject params, String channelName, ExtSdkCallback result)
-        throws JSONException {
-        onSuccess(result, channelName, null);
-    }
-
-    public void updateHMSPushToken(JSONObject params, String channelName, ExtSdkCallback result) throws JSONException {
-        String token = params.getString("token");
-        EMClient.getInstance().sendHMSPushTokenToServer(token);
-        onSuccess(result, channelName, token);
-    }
-
-    public void updateFCMPushToken(JSONObject params, String channelName, ExtSdkCallback result) throws JSONException {
-        String token = params.getString("token");
-        EMClient.getInstance().sendFCMTokenToServer(token);
-        onSuccess(result, channelName, token);
-    }
-
-    public void reportPushAction(JSONObject params, String channelName, ExtSdkCallback result) throws JSONException {
-        // TODO:
     }
 
     public void setConversationSilentMode(JSONObject params, String channelName, ExtSdkCallback result)

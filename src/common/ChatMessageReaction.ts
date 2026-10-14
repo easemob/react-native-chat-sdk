@@ -1,5 +1,5 @@
 /**
- * Operation type of reaction.
+ * Reaction 操作类型。
  */
 export enum ChatReactionOperate {
   Remove,

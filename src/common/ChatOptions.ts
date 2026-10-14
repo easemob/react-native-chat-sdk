@@ -1,9 +1,44 @@
-import { ChatAreaCode } from './ChatAreaCode';
 import { ChatError } from './ChatError';
-import type { ChatPushConfig } from './ChatPushConfig';
+
+export enum ChatAreaCode {
+  GLOB = -1,
+  CN = 1,
+  NA = 2,
+  EU = 4,
+  AS = 8,
+  JP = 16,
+  IN = 32,
+}
 
 /**
- * 聊天设置类，用于定义 SDK 的各种参数和选项，例如，是否发送前加密信息、是否自动接受加好友邀请等。
+ * 数据同步类型。
+ *
+ * 该类型为位掩码。可以使用按位或运算符合并多个类型，
+ * 例如 `ChatDataSyncType.Conversations | ChatDataSyncType.Contacts`。
+ *
+ * 详见 {@link ChatOptions.dataSyncType}。
+ */
+export enum ChatDataSyncType {
+  /**
+   * 不同步任何数据。
+   */
+  None = 0,
+  /**
+   * 同步会话数据。
+   */
+  Conversations = 1, // 1 << 0
+  /**
+   * 同步联系人数据。
+   */
+  Contacts = 2, // 1 << 1
+  /**
+   * 同步已加入群组的数据。
+   */
+  JoinedGroups = 4, // 1 << 2
+}
+
+/**
+ * 聊天设置类，用于定义 SDK 的各种参数和选项，例如是否在发送消息前加密，以及是否自动接受好友邀请。
  */
 export class ChatOptions {
   /**
@@ -14,12 +49,6 @@ export class ChatOptions {
    * 创建 App 时在 console 后台上注册的 App 唯一识别符，即 App ID。
    */
   appId: string;
-  /**
-   * 是否开启自动登录。
-   * -（默认） `true`：开启；
-   * - `false`：关闭。
-   */
-  autoLogin: boolean;
   /**
    * 是否输出调试信息。
    * - `true`: SDK 会在日志里输出调试信息。
@@ -38,7 +67,7 @@ export class ChatOptions {
    * 是否自动接受好友邀请。
    *
    * - `true`: 是.
-   * - (Default) `false`: 否.
+   * - （默认）`false`: 否.
    */
   acceptInvitationAlways: boolean;
   /**
@@ -47,15 +76,6 @@ export class ChatOptions {
    * - `false`：否。
    */
   autoAcceptGroupInvitation: boolean;
-  /**
-   * 是否需要接收方阅读消息后发送已读回执。
-   * - （默认） `true`：是；
-   * - `false`：否。
-   *
-   * 该设置对于 {@link ChatManager.sendConversationReadAck} 无效。
-   *
-   */
-  requireAck: boolean;
   /**
    * 是否需要接收方发送送达回执。
    * -（默认）`true`：是；
@@ -118,10 +138,6 @@ export class ChatOptions {
    * **注意** 该属性仅用于 iOS 平台。设置为在环信控制台配置的 PushKit 证书名称，并通过 {@link ChatClient.bindPushKitToken} 绑定 `PKPushRegistry` 上报的 token。只能在调用 {@link ChatClient.init} 时设置，App 运行期间不可更改。
    */
   pushKitCertName?: string;
-  /**
-   * 推送设置。
-   */
-  pushConfig?: ChatPushConfig;
   /**
    * 设置是否开启 DNS。
    * - （默认） `true`：开启。
@@ -217,7 +233,7 @@ export class ChatOptions {
   /**
    * 工作目录下的内容是否可以拷贝
    *
-   * **Note** 仅ios平台生效。
+   * **注意** 仅 iOS 平台生效。
    *
    * 默认是 `false`
    */
@@ -226,7 +242,7 @@ export class ChatOptions {
   /**
    * UIKit 版本。
    *
-   * - (Default) undefined.
+   * - （默认）`undefined`。
    *
    */
   uikitVersion?: string;
@@ -263,32 +279,13 @@ export class ChatOptions {
   enableUserInfo: boolean;
 
   /**
-   * 是否在登录后自动同步联系人列表。
+   * 登录后从服务器同步的数据类型，详见 {@link ChatDataSyncType}。
    *
-   * - `true`：是。
-   * - （默认）`false`：否。
+   * 该值为位掩码，例如 `ChatDataSyncType.Conversations | ChatDataSyncType.Contacts`。
+   *
+   * 如果未设置该属性，则使用原生 SDK 的默认值。
    */
-  enableAutoSyncContacts: boolean;
-
-  /**
-   * 获取本地会话列表时是否包含聊天室会话。
-   *
-   * - `true`：是。本地会话列表中包含聊天室会话。
-   * - （默认）`false`：否。本地会话列表中不包含聊天室会话。
-   *
-   * 该配置不控制聊天室会话的创建或存储，也不影响聊天室消息的正常收发。
-   */
-  enableChatroomConversation: boolean;
-
-  /**
-   * 是否在 SDK 初始化时自动将所有会话加载到内存。
-   *
-   * - （默认）`true`：是。
-   * - `false`：否。你需要调用 {@link ChatManager.fetchConversationsFromDB} 分页加载会话。
-   *
-   * 开启自动加载会话后，分页加载会话没有意义。
-   */
-  autoLoadConversations: boolean;
+  dataSyncType?: ChatDataSyncType;
 
   /**
    * 自定义 NTP 服务器地址列表。
@@ -301,17 +298,12 @@ export class ChatOptions {
    */
   ntpServers?: string[];
 
-  /**
-   * @deprecated 请使用 {@link withAppId} 和 {@link withAppKey} 替代.
-   */
-  constructor(params: {
+  private constructor(params: {
     appKey: string;
     appId: string;
-    autoLogin?: boolean;
     debugModel?: boolean;
     acceptInvitationAlways?: boolean;
     autoAcceptGroupInvitation?: boolean;
-    requireAck?: boolean;
     requireDeliveryAck?: boolean;
     deleteMessagesAsExitGroup?: boolean;
     deleteMessagesAsExitChatRoom?: boolean;
@@ -322,7 +314,6 @@ export class ChatOptions {
     isAutoDownload?: boolean;
     apnsCertName?: string;
     pushKitCertName?: string;
-    pushConfig?: ChatPushConfig;
     areaCode?: ChatAreaCode;
     logTag?: string;
     logTimestamp?: boolean;
@@ -345,9 +336,7 @@ export class ChatOptions {
     webSocketPort?: number;
     dohVendor?: number;
     enableUserInfo?: boolean;
-    enableAutoSyncContacts?: boolean;
-    enableChatroomConversation?: boolean;
-    autoLoadConversations?: boolean;
+    dataSyncType?: ChatDataSyncType;
     ntpServers?: string[];
   }) {
     if (!params.appKey && !params.appId) {
@@ -358,11 +347,9 @@ export class ChatOptions {
     }
     this.appId = params.appId;
     this.appKey = params.appKey;
-    this.autoLogin = params.autoLogin ?? true;
     this.debugModel = params.debugModel ?? false;
     this.acceptInvitationAlways = params.acceptInvitationAlways ?? false;
     this.autoAcceptGroupInvitation = params.autoAcceptGroupInvitation ?? false;
-    this.requireAck = params.requireAck ?? true;
     this.requireDeliveryAck = params.requireDeliveryAck ?? false;
     this.deleteMessagesAsExitGroup = params.deleteMessagesAsExitGroup ?? true;
     this.deleteMessagesAsExitChatRoom =
@@ -375,7 +362,6 @@ export class ChatOptions {
     this.isAutoDownload = params.isAutoDownload ?? true;
     this.apnsCertName = params.apnsCertName;
     this.pushKitCertName = params.pushKitCertName;
-    this.pushConfig = params.pushConfig;
     this.enableDNSConfig =
       params.enableDNSConfig !== undefined ? params.enableDNSConfig : true;
     this.dnsUrl = params.dnsUrl ?? '';
@@ -402,20 +388,15 @@ export class ChatOptions {
     this.webSocketPort = params.webSocketPort ?? 0;
     this.dohVendor = params.dohVendor ?? 1; // agora is 2.
     this.enableUserInfo = params.enableUserInfo ?? false;
-    this.enableAutoSyncContacts = params.enableAutoSyncContacts ?? false;
-    this.enableChatroomConversation =
-      params.enableChatroomConversation ?? false;
-    this.autoLoadConversations = params.autoLoadConversations ?? true;
+    this.dataSyncType = params.dataSyncType;
     this.ntpServers = params.ntpServers;
   }
 
   static withAppId(params: {
     appId: string;
-    autoLogin?: boolean;
     debugModel?: boolean;
     acceptInvitationAlways?: boolean;
     autoAcceptGroupInvitation?: boolean;
-    requireAck?: boolean;
     requireDeliveryAck?: boolean;
     deleteMessagesAsExitGroup?: boolean;
     deleteMessagesAsExitChatRoom?: boolean;
@@ -426,7 +407,6 @@ export class ChatOptions {
     isAutoDownload?: boolean;
     apnsCertName?: string;
     pushKitCertName?: string;
-    pushConfig?: ChatPushConfig;
     areaCode?: ChatAreaCode;
     logTag?: string;
     logTimestamp?: boolean;
@@ -449,9 +429,7 @@ export class ChatOptions {
     webSocketPort?: number;
     dohVendor?: number;
     enableUserInfo?: boolean;
-    enableAutoSyncContacts?: boolean;
-    enableChatroomConversation?: boolean;
-    autoLoadConversations?: boolean;
+    dataSyncType?: ChatDataSyncType;
     ntpServers?: string[];
   }) {
     return new ChatOptions({
@@ -462,11 +440,9 @@ export class ChatOptions {
   }
   static withAppKey(params: {
     appKey: string;
-    autoLogin?: boolean;
     debugModel?: boolean;
     acceptInvitationAlways?: boolean;
     autoAcceptGroupInvitation?: boolean;
-    requireAck?: boolean;
     requireDeliveryAck?: boolean;
     deleteMessagesAsExitGroup?: boolean;
     deleteMessagesAsExitChatRoom?: boolean;
@@ -477,7 +453,6 @@ export class ChatOptions {
     isAutoDownload?: boolean;
     apnsCertName?: string;
     pushKitCertName?: string;
-    pushConfig?: ChatPushConfig;
     areaCode?: ChatAreaCode;
     logTag?: string;
     logTimestamp?: boolean;
@@ -500,9 +475,7 @@ export class ChatOptions {
     webSocketPort?: number;
     dohVendor?: number;
     enableUserInfo?: boolean;
-    enableAutoSyncContacts?: boolean;
-    enableChatroomConversation?: boolean;
-    autoLoadConversations?: boolean;
+    dataSyncType?: ChatDataSyncType;
     ntpServers?: string[];
   }) {
     return new ChatOptions({

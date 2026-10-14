@@ -2,7 +2,7 @@ name: Device Smoke
 
 on:
   schedule:
-    - cron: '43 18 * * *'
+    - cron: '37 19 * * *'
   workflow_dispatch:
 
 permissions:
@@ -153,11 +153,7 @@ jobs:
 
       - name: Install pods
         working-directory: example
-        # --repo-update is required: the cached ~/.cocoapods may hold a spec repo that
-        # predates the version pinned in the podspec (the Pods cache is keyed by the
-        # Podfile.lock hash, so any dependency change restores an older cache). Without
-        # it the resolver fails with "none of your spec sources contain a spec".
-        run: bundle exec pod install --repo-update --project-directory=ios
+        run: bundle exec pod install --project-directory=ios
 
       - name: Build iOS smoke app
         working-directory: example

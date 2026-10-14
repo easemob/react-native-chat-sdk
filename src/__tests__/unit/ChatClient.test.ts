@@ -29,7 +29,6 @@ describe('ChatClient call contracts', () => {
 
       const options = ChatOptions.withAppKey({
         appKey: 'easemob#demo',
-        autoLogin: false,
         debugModel: true,
       });
 
@@ -51,33 +50,21 @@ describe('ChatClient call contracts', () => {
     });
   });
 
-  describe('login', () => {
-    test('calls MTlogin with { [MTlogin]: { username, pwdOrToken, isPassword } }', async () => {
+  describe('loginWithToken', () => {
+    test('calls MTlogin with { [MTlogin]: { username, pwdOrToken, isPassword: false } }', async () => {
       mockCallMethodOnce({});
 
-      await client.login('alice', 'secret', true);
+      await client.loginWithToken('alice', 'token-1');
 
       const last = getLastCall();
       expect(last?.method).toBe(MTlogin);
       expect(last?.args).toEqual({
         [MTlogin]: {
           username: 'alice',
-          pwdOrToken: 'secret',
-          isPassword: true,
+          pwdOrToken: 'token-1',
+          isPassword: false,
         },
       });
-    });
-
-    test('defaults isPassword to true when omitted', async () => {
-      mockCallMethodOnce({});
-
-      await client.login('bob', 'pw');
-
-      const last = getLastCall();
-      const inner = (last?.args as Record<string, any>)[MTlogin];
-      expect(inner.isPassword).toBe(true);
-      expect(inner.username).toBe('bob');
-      expect(inner.pwdOrToken).toBe('pw');
     });
   });
 

@@ -1,5 +1,5 @@
 /**
- * The ChatRTCTokenInfo class is used to store RTC Token information, including the user's Agora uid, the Token string, and the expiration timestamp.
+ * RTC Token 信息类，用于存储用户的声网 UID、Token 字符串和过期时间戳。
  */
 export class ChatRTCTokenInfo {
   rtcToken: string;
@@ -7,10 +7,9 @@ export class ChatRTCTokenInfo {
   uid: number;
 
   /**
-   *
-   * @param rtcToken The rtc token.
-   * @param expireTimeStamp The expire time.
-   * @param uid The rtc uid
+   * @param rtcToken RTC Token。
+   * @param expireTimeStamp 过期时间戳。
+   * @param uid RTC UID。
    */
   constructor(params: {
     rtcToken: string;

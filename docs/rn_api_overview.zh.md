@@ -23,13 +23,9 @@ ChatSDK 是一个高度可靠的全球交流平台，您的用户可以在其中
 | {@link ChatClient.init init} | 初始化 SDK。 |
 | {@link ChatClient.isConnected isConnected} | 检查 SDK 是否连接到 Chat 服务器。 |
 | {@link ChatClient.getCurrentUsername getCurrentUsername} | 从服务器获取当前登录用户的用户 ID。 |
-| {@link ChatClient.isLoginBefore isLoginBefore} | 检查当前用户是否登录。 |
 | {@link ChatClient.getAccessToken getAccessToken} | 获取登录 token。 |
-| {@link ChatClient.createAccount createAccount} | 注册新用户（开放注册）。 |
-| {@link ChatClient.login login} | 通过密码或环信 token 登录 Chat 服务器。 |
 | {@link ChatClient.loginWithToken loginWithToken} | 通过用户ID和token登录。 |
-| {@link ChatClient.loginWithAgoraToken loginWithAgoraToken} | 通过用户ID和token登录。 |
-| {@link ChatClient.renewAgoraToken renewAgoraToken} | 更新声网 token。 |
+| {@link ChatClient.renewToken renewToken} | 更新 token。 |
 | {@link ChatClient.logout logout} | 退出登录。 |
 | {@link ChatClient.changeAppKey changeAppKey} | 修改 App Key。 |
 | {@link ChatClient.changeAppId changeAppId} | 更新 app iD。 |
@@ -37,7 +33,7 @@ ChatSDK 是一个高度可靠的全球交流平台，您的用户可以在其中
 | {@link ChatClient.getLoggedInDevicesFromServer getLoggedInDevicesFromServer} | 获取指定账号下登录的在线设备列表。 |
 | {@link ChatClient.kickDevice kickDevice} | 将特定账号登录的指定设备下线。 |
 | {@link ChatClient.kickAllDevices kickAllDevices} | 将指定账号登录的所有设备都踢下线。 |
-| {@link ChatClient.updatePushConfig updatePushConfig} | 更新推送设置。 |
+| {@link ChatClient.bindDeviceToken bindDeviceToken} | 绑定设备的推送 token。 |
 | {@link ChatClient.bindPushKitToken bindPushKitToken} | 绑定 Apple PushKit token，用于 VoIP 推送通知。 |
 | {@link ChatClient.unbindPushKitToken unbindPushKitToken} | 解绑通过 {@link ChatClient.bindPushKitToken} 绑定的 Apple PushKit token。 |
 | {@link ChatClient.getRTCTokenInfoWithChannelName getRTCTokenInfoWithChannelName} | 根据频道名称（channelName）获取与 Agora Chat 用户 ID 匹配的声网 RTC token、token 过期时间和 RTC UID。 |
@@ -65,20 +61,14 @@ ChatSDK 是一个高度可靠的全球交流平台，您的用户可以在其中
 | Event | Description |
 | :----- | :---------- |
 | {@link ChatConnectEventListener.onConnected onConnected} | 成功连接到 chat 服务器时触发的回调。 |
-| {@link ChatConnectEventListener.onDisconnected onDisconnected} | 和 chat 服务器断开连接时触发的回调。 |
+| {@link ChatConnectEventListener.onDisconnected onDisconnected} | SDK 与 chat 服务器断开连接时触发。 |
 | {@link ChatConnectEventListener.onTokenWillExpire onTokenWillExpire} | Agora token 即将过期时触发。 |
 | {@link ChatConnectEventListener.onTokenDidExpire onTokenDidExpire} | Agora token 已过期时触发。 |
-| {@link ChatConnectEventListener.onAppActiveNumberReachLimit onAppActiveNumberReachLimit} | 应用程序的日活跃用户数量（DAU）或月活跃用户数量（MAU）达到上限时回调。 |
 | {@link ChatConnectEventListener.onOfflineMessageSyncStart onOfflineMessageSyncStart} | 开始接收离线消息的时候触发。 |
 | {@link ChatConnectEventListener.onOfflineMessageSyncFinish onOfflineMessageSyncFinish} | 结束接收离线消息的时候触发。 |
-| {@link ChatConnectEventListener.onUserDidLoginFromOtherDevice onUserDidLoginFromOtherDevice} | 其他设备登录通知。 |
-| {@link ChatConnectEventListener.onUserDidLoginFromOtherDeviceWithInfo onUserDidLoginFromOtherDeviceWithInfo} | 用户在其它设备登录。 |
-| {@link ChatConnectEventListener.onUserDidRemoveFromServer onUserDidRemoveFromServer} | 用户被移除通知。 |
-| {@link ChatConnectEventListener.onUserDidForbidByServer onUserDidForbidByServer} | 被服务器禁止连接通知。 |
-| {@link ChatConnectEventListener.onUserDidChangePassword onUserDidChangePassword} | 用户密码变更通知。 |
-| {@link ChatConnectEventListener.onUserDidLoginTooManyDevice onUserDidLoginTooManyDevice} | 登录设备数量超限通知。 |
-| {@link ChatConnectEventListener.onUserKickedByOtherDevice onUserKickedByOtherDevice} | 被其他设备踢掉通知。 |
-| {@link ChatConnectEventListener.onUserAuthenticationFailed onUserAuthenticationFailed} | 鉴权失败通知。 典型触发通知场景：token 过期、token 验证失败。 |
+| {@link ChatConnectEventListener.onDataSyncStart onDataSyncStart} | SDK 开始从服务器同步指定类型的数据时触发。 |
+| {@link ChatConnectEventListener.onDataSyncFinish onDataSyncFinish} | SDK 完成从服务器同步指定类型的数据时触发。 |
+| {@link ChatConnectEventListener.onDatabaseOpened onDatabaseOpened} | 本地数据库打开时触发。 |
 
 | Event | Description |
 | :----- | :---------- |
@@ -100,13 +90,12 @@ ChatSDK 是一个高度可靠的全球交流平台，您的用户可以在其中
 | {@link ChatManager.removeAllMessageListener removeAllMessageListener} | 移除所有消息监听器。 |
 | {@link ChatManager.sendMessage sendMessage} | 发送一条消息。 |
 | {@link ChatManager.resendMessage resendMessage} | 重发消息。 |
-| {@link ChatManager.sendMessageReadAck sendMessageReadAck} | 发送消息的已读回执。 |
-| {@link ChatManager.sendGroupMessageReadAck sendGroupMessageReadAck} | 发送群消息已读回执。 |
-| {@link ChatManager.sendConversationReadAck sendConversationReadAck} | 发送会话的已读回执。 |
+| {@link ChatManager.sendMessageReadReceipts sendMessageReadReceipts} | 向服务器发送消息已读回执。 |
+| {@link ChatManager.clearConversationUnreadMessageCount clearConversationUnreadMessageCount} | 清除指定会话的未读消息数。 |
+| {@link ChatManager.clearAllConversationUnreadMessageCount clearAllConversationUnreadMessageCount} | 清除所有会话的未读消息数。 |
 | {@link ChatManager.recallMessage recallMessage} | 撤回发送成功的消息。 |
 | {@link ChatManager.getMessage getMessage} | 从本地数据库获取指定 ID 的消息对象。 |
 | {@link ChatManager.getMessagesWithIds getMessagesWithIds} | 通过消息 ID 列表获取本地数据库中的消息。 |
-| {@link ChatManager.markAllConversationsAsRead markAllConversationsAsRead} | 将所有的会话都设成已读。 |
 | {@link ChatManager.getUnreadCount getUnreadCount} | 获取未读消息数。 |
 | {@link ChatManager.insertMessage insertMessage} | 在本地会话中插入一条消息。 |
 | {@link ChatManager.updateMessage updateMessage} | 更新本地消息。 |
@@ -118,35 +107,28 @@ ChatSDK 是一个高度可靠的全球交流平台，您的用户可以在其中
 | {@link ChatManager.downloadBigImage downloadBigImage} | 下载图片消息的大图。 |
 | {@link ChatManager.voiceMessageToText voiceMessageToText} | 将语音消息中的语音转换为文本。 |
 | {@link ChatManager.voiceFileToText voiceFileToText} | 将语音文件转换为文本。 |
-| {@link ChatManager.fetchHistoryMessages fetchHistoryMessages} | 分页获取指定会话的历史消息。 |
 | {@link ChatManager.fetchHistoryMessagesByOptions fetchHistoryMessagesByOptions} | 根据消息拉取参数配置从服务器分页获取指定会话的历史消息。 |
-| {@link ChatManager.searchMsgFromDB searchMsgFromDB} | 从本地数据库获取指定会话中包含特定关键字的消息。 |
 | {@link ChatManager.getMsgsWithKeyword getMsgsWithKeyword} | 获取所有会话在一定时间内的会话中发送的消息。 |
 | {@link ChatManager.getConvsMsgsWithKeyword getConvsMsgsWithKeyword} | 通过关键字搜索本地消息。 |
-| {@link ChatManager.fetchGroupAcks fetchGroupAcks} | Uses the pagination to get read receipts for group messages from the server. |
+| {@link ChatManager.getGroupMessageReadReceipts getGroupMessageReadReceipts} | 从本地数据库获取群组消息的已读回执。 |
+| {@link ChatManager.fetchGroupMessageReadReceipts fetchGroupMessageReadReceipts} | 分页从服务端获取群组消息的已读回执。 |
 | {@link ChatManager.removeConversationFromServer removeConversationFromServer} | 删除服务端的指定会话及其历史消息。 |
 | {@link ChatManager.getConversation getConversation} | 根据会话ID和会话类型获取会话。 |
 | {@link ChatManager.getAllConversations getAllConversations} | 获取本地数据库中所有会话。 |
-| {@link ChatManager.fetchAllConversations fetchAllConversations} | 从服务器获取会话列表。 |
 | {@link ChatManager.deleteConversation deleteConversation} | 删除指定会话及其本地历史消息。 |
-| {@link ChatManager.getLatestMessage getLatestMessage} | 从会话中获取最新消息。 |
+| {@link ChatManager.deleteConversations deleteConversations} | 从本地数据库批量删除会话。 |
+| {@link ChatManager.getLatestMessage getLatestMessage} | 获取会话中的最新消息。 |
 | {@link ChatManager.getLatestReceivedMessage getLatestReceivedMessage} | 获取最新收到的会话消息。 |
 | {@link ChatManager.getConversationUnreadCount getConversationUnreadCount} | 获取会话未读消息数。 |
 | {@link ChatManager.getConversationMessageCount getConversationMessageCount} | 获取会话的消息数。 |
-| {@link ChatManager.markMessageAsRead markMessageAsRead} | 将消息标记为已读。 |
-| {@link ChatManager.markAllMessagesAsRead markAllMessagesAsRead} | 将所有消息标记为已读。 |
 | {@link ChatManager.updateConversationMessage updateConversationMessage} | 更新本地数据库中的消息。 |
 | {@link ChatManager.deleteMessage deleteMessage} | 从本地数据库中删除一条消息。 |
 | {@link ChatManager.deleteMessagesWithTimestamp deleteMessagesWithTimestamp} | 从本地数据库中删除一段时间内发送或接收的消息。 |
 | {@link ChatManager.deleteConversationAllMessages deleteConversationAllMessages} | 从内存和本地数据库中删除会话中的所有消息。 |
 | {@link ChatManager.deleteMessagesBeforeTimestamp deleteMessagesBeforeTimestamp} | 删除指定时间戳之前的所有本地消息。 |
-| {@link ChatManager.getMessagesWithMsgType getMessagesWithMsgType} | 从本地数据库中检索会话中某种类型的消息。 |
 | {@link ChatManager.getMsgsWithMsgType getMsgsWithMsgType} | 从本地数据库中检索会话中某种类型的消息。 |
-| {@link ChatManager.getMessages getMessages} | 从本地数据库中检索会话中指定数量的消息。 |
 | {@link ChatManager.getMsgs getMsgs} | 从本地数据库中检索会话中指定数量的消息。 |
-| {@link ChatManager.getMessagesWithKeyword getMessagesWithKeyword} | 获取指定用户在一定时间内的会话中发送的消息。 |
 | {@link ChatManager.getConvMsgsWithKeyword getConvMsgsWithKeyword} | 获取指定用户在一定时间内的会话中发送的消息。 |
-| {@link ChatManager.getMessageWithTimestamp getMessageWithTimestamp} | 检索本地数据库中某个会话在一定时间内发送和接收的消息。 |
 | {@link ChatManager.getMsgWithTimestamp getMsgWithTimestamp} | 检索本地数据库中某个会话在一定时间内发送和接收的消息。 |
 | {@link ChatManager.translateMessage translateMessage} | 翻译消息。 |
 | {@link ChatManager.fetchSupportedLanguages fetchSupportedLanguages} | 查询翻译服务支持的语言。 |
@@ -155,9 +137,7 @@ ChatSDK 是一个高度可靠的全球交流平台，您的用户可以在其中
 | {@link ChatManager.removeReaction removeReaction} | 删除 Reaction。 |
 | {@link ChatManager.fetchReactionList fetchReactionList} | 获取 Reaction 列表。 |
 | {@link ChatManager.fetchReactionDetail fetchReactionDetail} | 获取 Reaction 详情。 |
-| {@link ChatManager.reportMessage reportMessage} | 举报消息。 |
 | {@link ChatManager.getReactionList getReactionList} | 获取指定消息的 Reaction 列表。 |
-| {@link ChatManager.groupAckCount groupAckCount} | 获取群组消息的已读人数。 |
 | {@link ChatManager.createChatThread createChatThread} | 创建子区。 |
 | {@link ChatManager.joinChatThread joinChatThread} | 加入子区。 |
 | {@link ChatManager.leaveChatThread leaveChatThread} | 退出子区。 |
@@ -172,19 +152,13 @@ ChatSDK 是一个高度可靠的全球交流平台，您的用户可以在其中
 | {@link ChatManager.fetchChatThreadFromServer fetchChatThreadFromServer} | 从服务器获取子区详情。 |
 | {@link ChatManager.getMessageThread getMessageThread} | 获取本地子区详情。 |
 | {@link ChatManager.getThreadConversation getThreadConversation} | 根据指定会话 ID 获取本地子区会话对象。 |
-| {@link ChatManager.fetchConversationsFromServerWithPage fetchConversationsFromServerWithPage} | 从服务器分页获取会话列表。 |
 | {@link ChatManager.removeMessagesFromServerWithMsgIds removeMessagesFromServerWithMsgIds} | 从会话中删除消息（从本地存储和服务器）。 |
 | {@link ChatManager.removeMessagesFromServerWithTimestamp removeMessagesFromServerWithTimestamp} | 从会话中删除消息（从本地存储和服务器）。 |
-| {@link ChatManager.fetchConversationsFromServerWithCursor fetchConversationsFromServerWithCursor} | 分页从服务器获取会话列表。 |
-| {@link ChatManager.fetchPinnedConversationsFromServerWithCursor fetchPinnedConversationsFromServerWithCursor} | 分页从服务器获取置顶会话。 |
-| {@link ChatManager.fetchConversationsFromDB fetchConversationsFromDB} | 从本地数据库分页获取会话列表。 |
 | {@link ChatManager.pinConversation pinConversation} | 设置会话是否置顶。 |
-| {@link ChatManager.modifyMessageBody modifyMessageBody} | 修改文本消息。 |
 | {@link ChatManager.modifyMsgBody modifyMsgBody} | 更新消息内容。本地和服务器都更新。 |
 | {@link ChatManager.fetchCombineMessageDetail fetchCombineMessageDetail} | 获取合并类型消息中的原始消息列表。 |
 | {@link ChatManager.addRemoteAndLocalConversationsMark addRemoteAndLocalConversationsMark} | 标记会话。 |
 | {@link ChatManager.deleteRemoteAndLocalConversationsMark deleteRemoteAndLocalConversationsMark} | 取消标记会话。 |
-| {@link ChatManager.fetchConversationsByOptions fetchConversationsByOptions} | 按会话过滤选项从服务端获取会话。 |
 | {@link ChatManager.deleteAllMessageAndConversation deleteAllMessageAndConversation} | 清空所有会话及其消息。 |
 | {@link ChatManager.pinMessage pinMessage} | 置顶消息。 |
 | {@link ChatManager.unpinMessage unpinMessage} | 取消置顶消息。 |
@@ -203,12 +177,10 @@ ChatSDK 是一个高度可靠的全球交流平台，您的用户可以在其中
 | {@link ChatMessageEventListener.onMessagesReceived onMessagesReceived} | 收到消息回调。 |
 | {@link ChatMessageEventListener.onStreamMessagesReceived onStreamMessagesReceived} | 收到流式消息回调。 |
 | {@link ChatMessageEventListener.onCmdMessagesReceived onCmdMessagesReceived} | 收到命令消息回调。 |
-| {@link ChatMessageEventListener.onMessagesRead onMessagesRead} | 收到单聊消息已读回执的回调。 |
-| {@link ChatMessageEventListener.onGroupMessageRead onGroupMessageRead} | 收到群组消息的已读回执的回调。 |
+| {@link ChatMessageEventListener.onMessageReadReceipts onMessageReadReceipts} | 收到消息已读回执时触发。 |
 | {@link ChatMessageEventListener.onMessagesDelivered onMessagesDelivered} | 收到消息已送达回执的回调。 |
 | {@link ChatMessageEventListener.onMessagesRecalledInfo onMessagesRecalledInfo} | 收到消息撤销通知的回调。 |
-| {@link ChatMessageEventListener.onConversationsUpdate onConversationsUpdate} | 会话更新事件回调。 |
-| {@link ChatMessageEventListener.onConversationRead onConversationRead} | 收到会话已读回执的回调。 |
+| {@link ChatMessageEventListener.onConversationsUpdate onConversationsUpdate} | 会话更新时触发。 |
 | {@link ChatMessageEventListener.onMessageReactionDidChange onMessageReactionDidChange} | 消息表情回复（Reaction）变化监听器。 |
 | {@link ChatMessageEventListener.onChatMessageThreadCreated onChatMessageThreadCreated} | 子区创建回调。 |
 | {@link ChatMessageEventListener.onChatMessageThreadUpdated onChatMessageThreadUpdated} | 子区更新回调。 |
@@ -225,7 +197,6 @@ ChatSDK 是一个高度可靠的全球交流平台，您的用户可以在其中
 | {@link ChatContactManager.removeAllContactListener removeAllContactListener} | 移除所有联系人监听器。 |
 | {@link ChatContactManager.addContact addContact} | 添加好友。 |
 | {@link ChatContactManager.deleteContact deleteContact} | 删除联系人及其相关的会话。 |
-| {@link ChatContactManager.getAllContactsFromServer getAllContactsFromServer} | 从服务器获取联系人列表。 |
 | {@link ChatContactManager.getAllContactsFromDB getAllContactsFromDB} | 从本地数据库获取联系人列表。 |
 | {@link ChatContactManager.addUserToBlockList addUserToBlockList} | 将指定用户加入黑名单。 |
 | {@link ChatContactManager.removeUserFromBlockList removeUserFromBlockList} | 将指定用户移除黑名单。 |
@@ -236,8 +207,6 @@ ChatSDK 是一个高度可靠的全球交流平台，您的用户可以在其中
 | {@link ChatContactManager.getSelfIdsOnOtherPlatform getSelfIdsOnOtherPlatform} | 获取登录用户在其他登录设备上唯一 ID，该 ID 由 user ID + "/" + resource 组成。 |
 | {@link ChatContactManager.getAllContacts getAllContacts} | 从本地数据库获取所有所有联系人。 |
 | {@link ChatContactManager.getContact getContact} | 从本地数据库获取指定联系人备注信息。 |
-| {@link ChatContactManager.fetchAllContacts fetchAllContacts} | 从服务器获取所有联系人。 |
-| {@link ChatContactManager.fetchContacts fetchContacts} | 从服务器分页获取联系人 |
 | {@link ChatContactManager.setContactRemark setContactRemark} | 设置联系人备注。 |
 
 | Event | Description |
@@ -247,8 +216,6 @@ ChatSDK 是一个高度可靠的全球交流平台，您的用户可以在其中
 | {@link ChatContactEventListener.onContactInvited onContactInvited} | 当前用户收到好友请求的回调。 |
 | {@link ChatContactEventListener.onFriendRequestAccepted onFriendRequestAccepted} | 当前用户同意好友请求的回调。 |
 | {@link ChatContactEventListener.onFriendRequestDeclined onFriendRequestDeclined} | 拒绝好友请求的回调。 |
-| {@link ChatContactEventListener.onContactSyncStart onContactSyncStart} | 开始从服务器同步联系人列表时触发。 |
-| {@link ChatContactEventListener.onContactSyncFinish onContactSyncFinish} | 从服务器同步联系人列表完成时触发。 |
 | {@link ChatContactEventListener.onContactInfoUpdate onContactInfoUpdate} | 联系人信息更新时触发。 |
 ## ChatGroupManager
 | Method | Description |
@@ -256,11 +223,8 @@ ChatSDK 是一个高度可靠的全球交流平台，您的用户可以在其中
 | {@link ChatGroupManager.setNativeListener setNativeListener} | 群组管理类，用于管理群组的创建，删除及成员管理等操作。 |
 | {@link ChatGroupManager.getGroupWithId getGroupWithId} | 根据群组 ID，从内存中获取群组对象。 |
 | {@link ChatGroupManager.getJoinedGroups getJoinedGroups} | 从本地数据库获取当前用户已加入的群组。 |
-| {@link ChatGroupManager.fetchJoinedGroupsFromServer fetchJoinedGroupsFromServer} | 以分页方式从服务器获取当前用户已加入的群组。 |
-| {@link ChatGroupManager.fetchPublicGroupsFromServer fetchPublicGroupsFromServer} | 分页从服务器获取公开群组。 |
-| {@link ChatGroupManager.createGroup createGroup} | 创建群组。 |
 | {@link ChatGroupManager.createGroupEx createGroupEx} | 创建群组对象。支持设置头像。 |
-| {@link ChatGroupManager.fetchGroupInfoFromServer fetchGroupInfoFromServer} | 从服务器获取群组详情。 |
+| {@link ChatGroupManager.updateGroupConfigs updateGroupConfigs} | 更新群组配置。 |
 | {@link ChatGroupManager.fetchGroupInfoWithoutMembersFromServer fetchGroupInfoWithoutMembersFromServer} | 获取群组信息，但不包含群组成员信息。 |
 | {@link ChatGroupManager.fetchMemberListFromServer fetchMemberListFromServer} | 从服务器分页获取群组成员。 |
 | {@link ChatGroupManager.fetchMemberInfoListFromServer fetchMemberInfoListFromServer} | 从服务器分页获取群组成员信息列表。 |
@@ -328,9 +292,7 @@ ChatSDK 是一个高度可靠的全球交流平台，您的用户可以在其中
 | {@link ChatGroupEventListener.onAdminAdded onAdminAdded} | 成员设置为管理员的回调。 |
 | {@link ChatGroupEventListener.onAdminRemoved onAdminRemoved} | 取消成员的管理员权限的回调。 |
 | {@link ChatGroupEventListener.onOwnerChanged onOwnerChanged} | 转移群主权限的回调。 |
-| {@link ChatGroupEventListener.onMemberJoined onMemberJoined} | 新成员加入群组的回调。 |
 | {@link ChatGroupEventListener.onMembersJoined onMembersJoined} | 多个群成员加入群组的回调。 |
-| {@link ChatGroupEventListener.onMemberExited onMemberExited} | 群组成员主动退出回调。 |
 | {@link ChatGroupEventListener.onMembersExited onMembersExited} | 多个群组成员主动退出回调。 |
 | {@link ChatGroupEventListener.onAnnouncementChanged onAnnouncementChanged} | 群公告更新回调。 |
 | {@link ChatGroupEventListener.onSharedFileAdded onSharedFileAdded} | 群组添加共享文件回调。 |
@@ -349,14 +311,11 @@ ChatSDK 是一个高度可靠的全球交流平台，您的用户可以在其中
 | {@link ChatRoomManager.addRoomListener addRoomListener} | 注册聊天室监听器。 |
 | {@link ChatRoomManager.removeRoomListener removeRoomListener} | 移除聊天室监听器。 |
 | {@link ChatRoomManager.removeAllRoomListener removeAllRoomListener} | 移除所有聊天室监听器。 |
-| {@link ChatRoomManager.joinChatRoom joinChatRoom} | 加入聊天室。 |
 | {@link ChatRoomManager.joinChatRoomEx joinChatRoomEx} | 加入聊天室。 |
 | {@link ChatRoomManager.leaveChatRoom leaveChatRoom} | 退出聊天室。 |
 | {@link ChatRoomManager.fetchPublicChatRoomsFromServer fetchPublicChatRoomsFromServer} | 从服务器分页获取公开聊天室。 |
 | {@link ChatRoomManager.fetchChatRoomInfoFromServer fetchChatRoomInfoFromServer} | 从服务器获取聊天室详情。 |
 | {@link ChatRoomManager.getChatRoomWithId getChatRoomWithId} | 根据聊天室 ID 从本地数据库获取聊天室。 |
-| {@link ChatRoomManager.createChatRoom createChatRoom} | 创建聊天室。 |
-| {@link ChatRoomManager.destroyChatRoom destroyChatRoom} | 解散聊天室。 |
 | {@link ChatRoomManager.changeChatRoomSubject changeChatRoomSubject} | 修改聊天室名称。 |
 | {@link ChatRoomManager.changeChatRoomDescription changeChatRoomDescription} | 修改聊天室描述信息。 |
 | {@link ChatRoomManager.fetchChatRoomMembers fetchChatRoomMembers} | 获取聊天室成员用户 ID 列表。 |
@@ -389,7 +348,6 @@ ChatSDK 是一个高度可靠的全球交流平台，您的用户可以在其中
 | {@link ChatRoomEventListener.onMemberJoined onMemberJoined} | 聊天室加入新成员回调。 |
 | {@link ChatRoomEventListener.onMemberExited onMemberExited} | 聊天室成员主动退出回调。 |
 | {@link ChatRoomEventListener.onMemberRemoved onMemberRemoved} | 聊天室成员被移除回调。 |
-| {@link ChatRoomEventListener.onMuteListAdded onMuteListAdded} | 有成员被禁言回调。 |
 | {@link ChatRoomEventListener.onMuteListAddedV2 onMuteListAddedV2} | 增加禁言成员时候回调。 |
 | {@link ChatRoomEventListener.onMuteListRemoved onMuteListRemoved} | 有成员从禁言列表中移除回调。 |
 | {@link ChatRoomEventListener.onAdminAdded onAdminAdded} | 有成员设置为聊天室管理员的回调。 |
@@ -466,7 +424,6 @@ ChatSDK 是一个高度可靠的全球交流平台，您的用户可以在其中
 | {@link ChatMessage.createCustomMessage createCustomMessage} | 创建一条待发送的自定义类型消息。 |
 | {@link ChatMessage.createReceiveMessage createReceiveMessage} | 创建一条接收消息。 |
 | {@link ChatMessage.reactionList reactionList} | 获取 Reaction 列表。 |
-| {@link ChatMessage.groupReadCount groupReadCount} | 获取群组消息的已读人数。 |
 | {@link ChatMessage.threadInfo threadInfo} | 获取指定子区的详情。 |
 | {@link ChatMessage.getPinInfo getPinInfo} | 获取消息的置顶信息。 |
 | {@link ChatMessage.messagePriority messagePriority} | 设置消息优先级。仅仅聊天室生效。 |
@@ -480,20 +437,14 @@ ChatSDK 是一个高度可靠的全球交流平台，您的用户可以在其中
 | {@link ChatConversation.getLatestMessage getLatestMessage} | 获取指定会话的最新消息。 |
 | {@link ChatConversation.getLatestReceivedMessage getLatestReceivedMessage} | 获取指定会话中最近接收到的消息。 |
 | {@link ChatConversation.setConversationExtension setConversationExtension} | 设置指定会话的自定义扩展信息。 |
-| {@link ChatConversation.markMessageAsRead markMessageAsRead} | 标记指定消息为已读。 |
-| {@link ChatConversation.markAllMessagesAsRead markAllMessagesAsRead} | 标记所有消息为已读。 |
 | {@link ChatConversation.updateMessage updateMessage} | 更新本地数据库的指定消息。 |
 | {@link ChatConversation.deleteMessage deleteMessage} | 删除本地数据库中的指定消息。 |
 | {@link ChatConversation.deleteMessagesWithTimestamp deleteMessagesWithTimestamp} | 删除消息。 |
 | {@link ChatConversation.deleteAllMessages deleteAllMessages} | 删除会话的所有消息。 |
-| {@link ChatConversation.getMessagesWithMsgType getMessagesWithMsgType} | 从本地数据库获取会话中的指定用户发送的某些类型的消息。 |
 | {@link ChatConversation.getMsgsWithMsgType getMsgsWithMsgType} | 从本地数据库中检索会话中某种类型的消息。 |
-| {@link ChatConversation.getMessages getMessages} | 从本地数据库中检索会话中一定数量的消息。 |
 | {@link ChatConversation.getMsgs getMsgs} | 从本地数据库中检索会话中指定数量的消息。 |
 | {@link ChatConversation.getMessagesWithIds getMessagesWithIds} | 从本地获取会话中指定 ID 的消息。 |
-| {@link ChatConversation.getMessagesWithKeyword getMessagesWithKeyword} | 检索本地数据库中会话中带有关键字的消息。 |
 | {@link ChatConversation.getMsgsWithKeyword getMsgsWithKeyword} | 获取指定用户在一定时间段内在会话中发送的消息。 |
-| {@link ChatConversation.getMessageWithTimestamp getMessageWithTimestamp} | 获取本地数据库中某个会话在一定时间内发送和接收的消息。 |
 | {@link ChatConversation.getMsgWithTimestamp getMsgWithTimestamp} | 检索本地数据库中某个会话在一定时间内发送和接收的消息。 |
 | {@link ChatConversation.removeMessagesFromServerWithMsgIds removeMessagesFromServerWithMsgIds} | 从会话中删除消息（从本地存储和服务器）。 |
 | {@link ChatConversation.removeMessagesFromServerWithTimestamp removeMessagesFromServerWithTimestamp} | 从会话中删除消息（从本地存储和服务器）。 |

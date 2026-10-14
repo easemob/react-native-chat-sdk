@@ -37,20 +37,6 @@ public class ExtSdkConversationWrapper extends ExtSdkWrapper {
         onSuccess(result, channelName, conversation.getAllMsgCount());
     }
 
-    public void markAllMessagesAsRead(JSONObject params, String channelName, ExtSdkCallback result)
-        throws JSONException {
-        EMConversation conversation = this.getConversation(params);
-        conversation.markAllMessagesAsRead();
-        onSuccess(result, channelName, null);
-    }
-
-    public void markMessageAsRead(JSONObject params, String channelName, ExtSdkCallback result) throws JSONException {
-        EMConversation conversation = this.getConversation(params);
-        String msg_id = params.getString("msg_id");
-        conversation.markMessageAsRead(msg_id);
-        onSuccess(result, channelName, null);
-    }
-
     public void syncConversationExt(JSONObject params, String channelName, ExtSdkCallback result) throws JSONException {
         EMConversation conversation = this.getConversation(params);
         JSONObject ext = params.getJSONObject("ext");
@@ -112,17 +98,6 @@ public class ExtSdkConversationWrapper extends ExtSdkWrapper {
         onSuccess(result, channelName, null);
     }
 
-    public void appendMessage(JSONObject params, String channelName, ExtSdkCallback result) throws JSONException {
-        //        EMConversation conversation = this.getConversation(params);
-        JSONObject msg = params.getJSONObject("msg");
-        EMMessage message = ExtSdkMessageHelper.fromJson(msg);
-        if (message != null) {
-            final EMConversation conversation = this.getConversationFromMessage(message);
-            conversation.appendMessage(message);
-        }
-        onSuccess(result, channelName, null);
-    }
-
     public void updateConversationMessage(JSONObject params, String channelName, ExtSdkCallback result)
         throws JSONException {
         EMConversation conversation = this.getConversation(params);
@@ -135,15 +110,6 @@ public class ExtSdkConversationWrapper extends ExtSdkWrapper {
         this.mergeMessage(message, dbMsg);
         conversation.updateMessage(dbMsg);
         onSuccess(result, channelName, null);
-    }
-
-    public void loadMsgWithId(JSONObject params, String channelName, ExtSdkCallback result) throws JSONException {
-        String msgId = params.getString("msg_id");
-        EMMessage msg = EMClient.getInstance().chatManager().getMessage(msgId);
-        if (ExtSdkWrapper.getMessageParams(msg, channelName, result)) {
-            return;
-        }
-        onSuccess(result, channelName, ExtSdkMessageHelper.toJson(msg));
     }
 
     public void loadMsgWithStartId(JSONObject params, String channelName, ExtSdkCallback result) throws JSONException {
@@ -170,38 +136,26 @@ public class ExtSdkConversationWrapper extends ExtSdkWrapper {
         int scopeJson = params.optInt("searchScope", EMConversation.EMMessageSearchScope.ALL.ordinal());
         EMConversation.EMMessageSearchScope scope = InternalConvertHelper.searchScopeFromInt(scopeJson);
         JSONArray sendersJson = params.optJSONArray("senders");
-        String sender;
-        if (sendersJson == null) {
-            sender = params.optString("sender");
-            List<EMMessage> msgList =
-                conversation.searchMsgFromDB(keywords, timestamp, count, sender, direction, scope);
-            List<Map> messages = new ArrayList<>();
-            for (EMMessage msg : msgList) {
-                messages.add(ExtSdkMessageHelper.toJson(msg));
-            }
-            onSuccess(result, channelName, messages);
-        } else {
-            List<String> senders = new ArrayList<>();
-            for (int i = 0; i < sendersJson.length(); i++) {
-                senders.add(sendersJson.getString(i));
-            }
-            conversation.asyncSearchMsgFromDB(keywords, timestamp, count, senders, direction, scope,
-                                              new EMValueCallBack<List<EMMessage>>() {
-                                                  @Override
-                                                  public void onSuccess(List<EMMessage> emMessages) {
-                                                      List<Map> messages = new ArrayList<>();
-                                                      for (EMMessage msg : emMessages) {
-                                                          messages.add(ExtSdkMessageHelper.toJson(msg));
-                                                      }
-                                                      ExtSdkWrapper.onSuccess(result, channelName, messages);
-                                                  }
-
-                                                  @Override
-                                                  public void onError(int i, String s) {
-                                                      ExtSdkWrapper.onError(result, i, s);
-                                                  }
-                                              });
+        List<String> senders = new ArrayList<>();
+        for (int i = 0; sendersJson != null && i < sendersJson.length(); i++) {
+            senders.add(sendersJson.getString(i));
         }
+        conversation.asyncSearchMsgFromDB(keywords, timestamp, count, senders, direction, scope,
+                                          new EMValueCallBack<List<EMMessage>>() {
+                                              @Override
+                                              public void onSuccess(List<EMMessage> emMessages) {
+                                                  List<Map> messages = new ArrayList<>();
+                                                  for (EMMessage msg : emMessages) {
+                                                      messages.add(ExtSdkMessageHelper.toJson(msg));
+                                                  }
+                                                  ExtSdkWrapper.onSuccess(result, channelName, messages);
+                                              }
+
+                                              @Override
+                                              public void onError(int i, String s) {
+                                                  ExtSdkWrapper.onError(result, i, s);
+                                              }
+                                          });
     }
 
     public void loadMsgWithMsgType(JSONObject params, String channelName, ExtSdkCallback result) throws JSONException {

@@ -4,23 +4,19 @@
 
 /// ChatClient methods
 export const MTinit = 'init';
-export const MTcreateAccount = 'createAccount';
 export const MTlogin = 'login';
 export const MTlogout = 'logout';
 export const MTchangeAppKey = 'changeAppKey';
 export const MTchangeAppId = 'changeAppId';
-export const MTisLoggedInBefore = 'isLoggedInBefore';
-export const MTupdateCurrentUserNick = 'updateCurrentUserNick'; // deprecated 2026-05-21
-export const MTuploadLog = 'uploadLog';
 export const MTcompressLogs = 'compressLogs';
 export const MTkickDevice = 'kickDevice';
 export const MTkickAllDevices = 'kickAllDevices';
 export const MTgetLoggedInDevicesFromServer = 'getLoggedInDevicesFromServer';
 export const MTgetCurrentUser = 'getCurrentUser';
 export const MTgetToken = 'getToken';
-export const MTloginWithAgoraToken = 'loginWithAgoraToken';
 export const MTisConnected = 'isConnected';
 export const MTrenewToken = 'renewToken';
+export const MTbindDeviceToken = 'bindDeviceToken';
 export const MTbindPushKitToken = 'bindPushKitToken';
 export const MTunbindPushKitToken = 'unbindPushKitToken';
 
@@ -40,21 +36,13 @@ export const MTonMultiDeviceEventRemoveMessage =
 export const MTonMultiDeviceEventConversation =
   'onMultiDeviceEventConversation';
 
-export const MTonUserDidLoginFromOtherDevice = 'onUserDidLoginFromOtherDevice'; // deprecated 2024-08-15 use onUserDidLoginFromOtherDeviceWithInfo instead
-export const MTonUserDidLoginFromOtherDeviceWithInfo =
-  'onUserDidLoginFromOtherDeviceWithInfo';
-export const MTonUserDidRemoveFromServer = 'onUserDidRemoveFromServer';
-export const MTonUserDidForbidByServer = 'onUserDidForbidByServer';
-export const MTonUserDidChangePassword = 'onUserDidChangePassword';
-export const MTonUserDidLoginTooManyDevice = 'onUserDidLoginTooManyDevice';
-export const MTonUserKickedByOtherDevice = 'onUserKickedByOtherDevice';
-export const MTonUserAuthenticationFailed = 'onUserAuthenticationFailed';
-export const MTonAppActiveNumberReachLimit = 'onAppActiveNumberReachLimit';
+export const MTonDataSyncStart = 'onDataSyncStart';
+export const MTonDataSyncFinish = 'onDataSyncFinish';
+export const MTonDatabaseOpened = 'onDatabaseOpened';
 
 /// ChatContactManager methods
 export const MTaddContact = 'addContact';
 export const MTdeleteContact = 'deleteContact';
-export const MTgetAllContactsFromServer = 'getAllContactsFromServer';
 export const MTgetAllContactsFromDB = 'getAllContactsFromDB';
 export const MTaddUserToBlockList = 'addUserToBlockList';
 export const MTremoveUserFromBlockList = 'removeUserFromBlockList';
@@ -70,12 +58,15 @@ export const MTonContactChanged = 'onContactChanged';
 /// ChatManager methods
 export const MTsendMessage = 'sendMessage';
 export const MTresendMessage = 'resendMessage';
-export const MTackMessageRead = 'ackMessageRead';
-export const MTackGroupMessageRead = 'ackGroupMessageRead';
-export const MTackConversationRead = 'ackConversationRead';
+export const MTsendMessageReadReceipts = 'sendMessageReadReceipts';
+export const MTclearConversationUnreadMessageCount =
+  'clearConversationUnreadMessageCount';
+export const MTclearAllConversationUnreadMessageCount =
+  'clearAllConversationUnreadMessageCount';
+export const MTgetGroupMessageReadReceipts = 'getGroupMessageReadReceipts';
+export const MTfetchGroupMessageReadReceipts = 'fetchGroupMessageReadReceipts';
 export const MTrecallMessage = 'recallMessage';
 export const MTgetConversation = 'getConversation';
-export const MTmarkAllChatMsgAsRead = 'markAllChatMsgAsRead';
 export const MTgetUnreadMessageCount = 'getUnreadMessageCount';
 export const MTupdateChatMessage = 'updateChatMessage';
 export const MTdownloadAttachmentInCombine = 'downloadAttachmentInCombine';
@@ -87,15 +78,13 @@ export const MTvoiceMessageToText = 'voiceMessageToText';
 export const MTvoiceFileToText = 'voiceFileToText';
 export const MTimportMessages = 'importMessages';
 export const MTloadAllConversations = 'loadAllConversations';
-export const MTgetConversationsFromServer = 'getConversationsFromServer'; // deprecated. 2023-07-24
 export const MTdeleteConversation = 'deleteConversation';
-export const MTfetchHistoryMessages = 'fetchHistoryMessages';
+export const MTdeleteConversations = 'deleteConversations';
 export const MTfetchHistoryMessagesByOptions = 'fetchHistoryMessagesByOptions';
 export const MTsearchChatMsgFromDB = 'searchChatMsgFromDB';
 export const MTgetConvsMsgsWithKeyword = 'getConvsMsgsWithKeyword';
 export const MTgetMessage = 'getMessage';
 export const MTgetMessagesWithIds = 'getMessagesWithIds';
-export const MTasyncFetchGroupAcks = 'asyncFetchGroupAcks';
 export const MTdeleteRemoteConversation = 'deleteRemoteConversation';
 export const MTdeleteMessagesBeforeTimestamp = 'deleteMessagesBeforeTimestamp';
 
@@ -106,23 +95,13 @@ export const MTaddReaction = 'addReaction';
 export const MTremoveReaction = 'removeReaction';
 export const MTfetchReactionList = 'fetchReactionList';
 export const MTfetchReactionDetail = 'fetchReactionDetail';
-export const MTreportMessage = 'reportMessage';
 
-export const MTfetchConversationsFromServerWithPage =
-  'fetchConversationsFromServerWithPage';
 export const MTremoveMessagesFromServerWithMsgIds =
   'removeMessagesFromServerWithMsgIds';
 export const MTremoveMessagesFromServerWithTs =
   'removeMessagesFromServerWithTs';
 
-export const MTgetConversationsFromServerWithCursor =
-  'getConversationsFromServerWithCursor';
-export const MTgetPinnedConversationsFromServerWithCursor =
-  'getPinnedConversationsFromServerWithCursor';
-export const MTgetConversationsFromDBWithCursor =
-  'getConversationsFromDBWithCursor';
 export const MTpinConversation = 'pinConversation';
-export const MTmodifyMessage = 'modifyMessage';
 export const MTmodifyMsgBody = 'modifyMsgBody';
 export const MTdownloadAndParseCombineMessage =
   'downloadAndParseCombineMessage';
@@ -130,26 +109,18 @@ export const MTdownloadAndParseCombineMessage =
 /// ChatManager listener
 export const MTonMessagesReceived = 'onMessagesReceived';
 export const MTonCmdMessagesReceived = 'onCmdMessagesReceived';
-export const MTonMessagesRead = 'onMessagesRead';
-export const MTonGroupMessageRead = 'onGroupMessageRead';
+export const MTonMessageReadReceipts = 'onMessageReadReceipts';
 export const MTonMessagesDelivered = 'onMessagesDelivered';
-export const MTonMessagesRecalled = 'onMessagesRecalled'; // deprecated 2024-05-23
 export const MTonMessagesRecalledInfo = 'onMessagesRecalledInfo';
 
 export const MTonConversationUpdate = 'onConversationUpdate';
-export const MTonConversationHasRead = 'onConversationHasRead';
 
-export const MTonReadAckForGroupMessageUpdated =
-  'onReadAckForGroupMessageUpdated';
 export const MTmessageReactionDidChange = 'messageReactionDidChange';
 export const MTonMessageContentChanged = 'onMessageContentChanged';
 
 export const MTonMessageProgressUpdate = 'onMessageProgressUpdate';
 export const MTonMessageError = 'onMessageError';
 export const MTonMessageSuccess = 'onMessageSuccess';
-export const MTonMessageReadAck = 'onMessageReadAck'; // deprecated 2026-08-20 use onMessagesRead instead
-export const MTonMessageDeliveryAck = 'onMessageDeliveryAck'; // deprecated 2026-08-20 use onMessagesDelivered instead
-export const MTonMessageStatusChanged = 'onMessageStatusChanged'; // deprecated 2022.05.05
 
 export const MTonChatThreadCreated = 'onChatThreadCreated';
 export const MTonChatThreadUpdated = 'onChatThreadUpdated';
@@ -159,20 +130,15 @@ export const MTonChatThreadUserRemoved = 'onChatThreadUserRemoved';
 /// ChatConversionManager methods
 export const MTgetUnreadMsgCount = 'getUnreadMsgCount';
 export const MTgetMsgCount = 'getMsgCount';
-export const MTmarkAllMessagesAsRead = 'markAllMessagesAsRead';
-export const MTmarkMessageAsRead = 'markMessageAsRead';
 export const MTsyncConversationExt = 'syncConversationExt';
-export const MTsyncConversationName = 'syncConversationName'; // deprecated 2022.05.05
 export const MTremoveMessage = 'removeMessage';
 export const MTgetLatestMessage = 'getLatestMessage';
 export const MTgetLatestMessageFromOthers = 'getLatestMessageFromOthers';
 export const MTclearAllMessages = 'clearAllMessages';
 export const MTdeleteMessagesWithTs = 'deleteMessagesWithTs';
 export const MTinsertMessage = 'insertMessage';
-export const MTappendMessage = 'appendMessage';
 export const MTupdateConversationMessage = 'updateConversationMessage';
 
-export const MTloadMsgWithId = 'loadMsgWithId';
 export const MTloadMsgWithStartId = 'loadMsgWithStartId';
 export const MTloadMsgWithKeywords = 'loadMsgWithKeywords';
 export const MTloadMsgWithMsgType = 'loadMsgWithMsgType';
@@ -180,7 +146,6 @@ export const MTloadMsgWithTime = 'loadMsgWithTime';
 
 // ChatMessage methods
 export const MTgetReactionList = 'getReactionList';
-export const MTgroupAckCount = 'groupAckCount';
 
 // ChatRoomManager methods
 export const MTjoinChatRoom = 'joinChatRoom';
@@ -189,9 +154,6 @@ export const MTfetchPublicChatRoomsFromServer =
   'fetchPublicChatRoomsFromServer';
 export const MTfetchChatRoomInfoFromServer = 'fetchChatRoomInfoFromServer';
 export const MTgetChatRoom = 'getChatRoom';
-export const MTgetAllChatRooms = 'getAllChatRooms';
-export const MTcreateChatRoom = 'createChatRoom';
-export const MTdestroyChatRoom = 'destroyChatRoom';
 export const MTchangeChatRoomSubject = 'changeChatRoomSubject';
 export const MTchangeChatRoomDescription = 'changeChatRoomDescription';
 export const MTfetchChatRoomMembers = 'fetchChatRoomMembers';
@@ -222,7 +184,6 @@ export const MTmuteAllChatRoomMembers = 'muteAllChatRoomMembers';
 export const MTunMuteAllChatRoomMembers = 'unMuteAllChatRoomMembers';
 
 export const MTfetchChatRoomAttributes = 'fetchChatRoomAttributes';
-export const MTfetchChatRoomAllAttributes = 'fetchChatRoomAllAttributes';
 export const MTsetChatRoomAttributes = 'setChatRoomAttributes';
 export const MTremoveChatRoomAttributes = 'removeChatRoomAttributes';
 
@@ -232,11 +193,8 @@ export const MTchatRoomChange = 'onChatRoomChanged';
 /// ChatGroupManager methods
 export const MTgetGroupWithId = 'getGroupWithId';
 export const MTgetJoinedGroups = 'getJoinedGroups';
-export const MTgetGroupsWithoutPushNotification =
-  'getGroupsWithoutPushNotification';
-export const MTgetJoinedGroupsFromServer = 'getJoinedGroupsFromServer';
-export const MTgetPublicGroupsFromServer = 'getPublicGroupsFromServer';
 export const MTcreateGroup = 'createGroup';
+export const MTupdateGroupConfigs = 'updateGroupConfigs';
 export const MTgetGroupSpecificationFromServer =
   'getGroupSpecificationFromServer';
 export const MTgetGroupMemberListFromServer = 'getGroupMemberListFromServer';
@@ -292,29 +250,10 @@ export const MTgetGroupNamecard = 'getGroupNamecard';
 export const MTonGroupChanged = 'onGroupChanged';
 
 /// ChatPushManager methods
-export const MTgetImPushConfig = 'getImPushConfig';
 export const MTgetImPushConfigFromServer = 'getImPushConfigFromServer';
 export const MTupdatePushNickname = 'updatePushNickname';
-export const MTenableOfflinePush = 'enableOfflinePush';
-export const MTdisableOfflinePush = 'disableOfflinePush';
-export const MTgetNoPushGroups = 'getNoPushGroups';
-export const MTsetNoDisturbUsers = 'setNoDisturbUsers'; // deprecated 2022.05.04
-export const MTgetNoDisturbUsersFromServer = 'getNoDisturbUsersFromServer'; // deprecated 2022.05.04
-
-export const MTupdateHMSPushToken = 'updateHMSPushToken'; // deprecated 2026-05-21
-export const MTupdateFCMPushToken = 'updateFCMPushToken'; // deprecated 2026-05-21
-export const MTupdateAPNsPushToken = 'updateAPNsPushToken'; // deprecated 2026-05-21
-
-export const MTimPushNoDisturb = 'imPushNoDisturb'; // deprecated 2022.05.04
 export const MTupdateImPushStyle = 'updateImPushStyle';
-export const MTupdateGroupPushService = 'updateGroupPushService';
-export const MTgetNoDisturbGroups = 'getNoDisturbGroups'; // deprecated 2022.05.04
-export const MTupdateUserPushService = 'updateUserPushService';
-export const MTgetNoPushUsers = 'getNoPushUsers';
 
-export const MTupdatePushConfig = 'updatePushConfig';
-
-export const MTreportPushAction = 'reportPushAction';
 export const MTsetConversationSilentMode = 'setConversationSilentMode';
 export const MTremoveConversationSilentMode = 'removeConversationSilentMode';
 export const MTfetchConversationSilentMode = 'fetchConversationSilentMode';
@@ -331,9 +270,7 @@ export const MTgetPushTemplate = 'getPushTemplate';
 
 /// ChatUserInfoManager methods
 export const MTupdateOwnUserInfo = 'updateOwnUserInfo';
-export const MTupdateOwnUserInfoWithType = 'updateOwnUserInfoWithType';
 export const MTfetchUserInfoById = 'fetchUserInfoById';
-export const MTfetchUserInfoByIdWithType = 'fetchUserInfoByIdWithType';
 export const MTgetLocalUserInfoByIds = 'getLocalUserInfoByIds';
 export const MTsubscribeUsersInfo = 'subscribeUsersInfo';
 export const MTunsubscribeUsersInfo = 'unsubscribeUsersInfo';
@@ -375,8 +312,6 @@ export const MTgetThreadConversation = 'getThreadConversation';
 export const MTgetAllContacts = 'getAllContacts';
 export const MTsetContactRemark = 'setContactRemark';
 export const MTgetContact = 'getContact';
-export const MTfetchAllContacts = 'fetchAllContacts';
-export const MTfetchContacts = 'fetchContacts';
 export const MTfetchJoinedGroupCount = 'fetchJoinedGroupCount';
 
 // 2024-04-17 added
@@ -387,7 +322,6 @@ export const MTaddRemoteAndLocalConversationsMark =
   'addRemoteAndLocalConversationsMark';
 export const MTdeleteRemoteAndLocalConversationsMark =
   'deleteRemoteAndLocalConversationsMark';
-export const MTfetchConversationsByOptions = 'fetchConversationsByOptions';
 export const MTdeleteAllMessageAndConversation =
   'deleteAllMessageAndConversation';
 export const MTpinMessage = 'pinMessage';

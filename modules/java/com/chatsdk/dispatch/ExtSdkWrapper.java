@@ -78,7 +78,7 @@ public class ExtSdkWrapper {
             dbimage.setSecret(image.getSecret());
             dbimage.setFileLength(image.getFileSize());
             dbimage.setDownloadStatus(image.downloadStatus());
-            dbimage.setSendOriginalImage(image.isSendOriginalImage());
+            dbimage.setSendOriginalImage(image.isOriginalImage());
             dbimage.setThumbnailLocalPath(image.thumbnailLocalPath());
             dbimage.setThumbnailDownloadStatus(image.thumbnailDownloadStatus());
             dbimage.setThumbnailUrl(image.getThumbnailUrl());
@@ -135,11 +135,9 @@ public class ExtSdkWrapper {
         dbMsg.setMsgTime(msg.getMsgTime());
         dbMsg.setLocalTime(msg.localTime());
         dbMsg.setStatus(msg.status());
-        dbMsg.setAcked(msg.isAcked());
         dbMsg.setIsChatThreadMessage(msg.isChatThreadMessage());
-        dbMsg.setIsNeedGroupAck(msg.isNeedGroupAck());
+        dbMsg.setIsNeedReadReceipt(msg.isNeedReadReceipt());
         dbMsg.setDeliverAcked(msg.isDelivered());
-        dbMsg.setUnread(msg.isUnread());
         dbMsg.setListened(msg.isListened());
         dbMsg.setReceiverList(msg.receiverList());
         // dbMsg.setPriority(msg.setPriority());

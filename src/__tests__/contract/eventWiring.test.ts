@@ -19,10 +19,9 @@ import {
 /**
  * Events that are intentionally defined as consts but not wired in TS.
  * Currently empty: the legacy ack events `MTonMessageReadAck` /
- * `MTonMessageDeliveryAck` used to live here and were marked deprecated on
- * 2026-08-20 in all three languages (TS / Java / ObjC), which excludes them
- * from this check. Prefer deprecating an event over allowlisting it; extend
- * this list only with a documented reason.
+ * `MTonMessageDeliveryAck` used to live here and were removed in 5.0.0
+ * together with the other deprecated event consts. Prefer deprecating an
+ * event over allowlisting it; extend this list only with a documented reason.
  */
 const UNWIRED_EVENT_ALLOWLIST = new Set<string>([]);
 

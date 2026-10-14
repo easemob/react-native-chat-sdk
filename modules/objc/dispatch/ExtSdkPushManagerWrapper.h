@@ -15,10 +15,6 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (void)initSDK;
 
-- (void)getImPushConfig:(NSDictionary *)param
-         withMethodType:(NSString *)aChannelName
-                 result:(nonnull id<ExtSdkCallbackObjc>)result;
-
 - (void)getImPushConfigFromServer:(NSDictionary *)param
                    withMethodType:(NSString *)aChannelName
                            result:(nonnull id<ExtSdkCallbackObjc>)result;
@@ -30,38 +26,6 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)updateImPushStyle:(NSDictionary *)param
            withMethodType:(NSString *)aChannelName
                    result:(nonnull id<ExtSdkCallbackObjc>)result;
-
-- (void)updateGroupPushService:(NSDictionary *)param
-                withMethodType:(NSString *)aChannelName
-                        result:(nonnull id<ExtSdkCallbackObjc>)result;
-
-- (void)bindDeviceToken:(NSDictionary *)param
-         withMethodType:(NSString *)aChannelName
-                 result:(nonnull id<ExtSdkCallbackObjc>)result;
-
-- (void)enablePush:(NSDictionary *)param
-    withMethodType:(NSString *)aChannelName
-            result:(nonnull id<ExtSdkCallbackObjc>)result;
-
-- (void)disablePush:(NSDictionary *)param
-     withMethodType:(NSString *)aChannelName
-             result:(nonnull id<ExtSdkCallbackObjc>)result;
-
-- (void)getNoPushGroups:(NSDictionary *)param
-         withMethodType:(NSString *)aChannelName
-                 result:(nonnull id<ExtSdkCallbackObjc>)result;
-
-- (void)updateUserPushService:(NSDictionary *)param
-               withMethodType:(NSString *)aChannelName
-                       result:(nonnull id<ExtSdkCallbackObjc>)result;
-
-- (void)getNoPushUsers:(NSDictionary *)param
-        withMethodType:(NSString *)aChannelName
-                result:(nonnull id<ExtSdkCallbackObjc>)result;
-
-- (void)reportPushAction:(NSDictionary *)param
-          withMethodType:(NSString *)aChannelName
-                  result:(nonnull id<ExtSdkCallbackObjc>)result;
 
 - (void)setConversationSilentMode:(NSDictionary *)param
                    withMethodType:(NSString *)aChannelName
