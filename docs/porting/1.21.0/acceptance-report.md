@@ -10,7 +10,7 @@
 | 变更项 | iOS 源 | Android 源 | TypeScript | Android Wrapper | iOS Wrapper | 状态 |
 |---|---|---|---|---|---|---|
 | `fetchConversationsFromDB`（本地会话分页加载） | `getConversationsFromDBWithCursor:pageSize:completion:` | `asyncGetConversationsFromDB(cursor, pageSize, callback)` | 已实现（`ChatManager.fetchConversationsFromDB`） | 已实现 | 已实现 | ✅ |
-| `enableChatroomConversation`（聊天室消息建会话） | `EMOptions.enableChatroomConversation` | `set/isEnableChatroomConversation` | 已实现（默认 false） | 已实现 | 已实现 | ✅ |
+| `enableChatroomConversation`（设置获取本地会话列表时是否包含聊天室会话） | `EMOptions.enableChatroomConversation` | `set/isEnableChatroomConversation` | 已实现（默认 false） | 已实现 | 已实现 | ✅ |
 | `autoLoadConversations`（衍生新增，UM-2） | `EMOptions.autoLoadConversations`（4.24.1 已有） | `set/isAutoLoadAllConversations`（4.24.1 已有） | 已实现（默认 true，文档强调分页前须关闭及原因） | 已实现 | 已实现 | ✅（沿用 Flutter 评审结论） |
 | ~~`useAgoraChatDomain`~~ | 裸 `BOOL` 无文档 | `Boolean` 三态 + `@hide` | **不移植**（KI-107 对内品牌开关） | 不移植 | 不移植 | ✅ 已闭环，grep 零残留 |
 | `syncDataWSHost/Port`、`SyncDataWebSocketServer/Port` 移除 | 已删 | 已删 | 从未暴露，无操作 | - | - | ✅ skip（全仓 grep 实证无引用） |
