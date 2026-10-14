@@ -18,14 +18,15 @@ import { navigateReplace } from '../navigation';
  * 中的自定义 babel 插件在打包时内联（@react-native/babel-preset 0.83 不再内置
  * inline-environment-variables）。未传时内联为 `undefined`，即人工模式。
  *
- * 数据源：默认取打包进来的 `src/env.ts`（scripts/generate-env.js 生成，
+ * 数据源：默认取打包进来的 `src/env.ts`（占位模板由 scripts/generate-env.js 生成，
+ * 真实凭据由 scripts/env-gettoken.js 按 config.local.json 直接生成 env.ts；
  * 与人工模式同一份数据）；打包期传入 `API_CONFIG=<json 路径>` 可整体覆盖。
  *
  * 脚本格式：
  * ```json
  * {
  *   "init":  { "appKey": "..." },                  // 可选，缺省由 env.ts 推导
- *   "login": { "userId": "...", "password": "..." }, // 可选，缺省由 env.ts 推导
+ *   "login": { "userId": "...", "token": "..." }, // 可选，缺省由 env.ts 推导；显式 false 表示跳过登录（保持未登录态）
  *   "steps": [
  *     { "api": "ChatManager.sendMessage", "id": "m1",
  *       "params": { "targetId": "$config.accounts.0.id", "content": "$prev.body.content" },
@@ -53,7 +54,7 @@ interface ScriptStep {
 
 interface Script {
   init?: Record<string, unknown>;
-  login?: { userId?: string; password?: string; token?: string };
+  login?: { userId?: string; token?: string } | false;
   steps?: ScriptStep[];
 }
 
@@ -158,11 +159,9 @@ function resolveValue(value: unknown, ctx: RefContext): unknown {
 const CHAT_OPTIONS_KEYS = [
   'appKey',
   'appId',
-  'autoLogin',
   'debugModel',
   'acceptInvitationAlways',
   'autoAcceptGroupInvitation',
-  'requireAck',
   'requireDeliveryAck',
   'deleteMessagesAsExitGroup',
   'deleteMessagesAsExitChatRoom',
@@ -171,7 +170,8 @@ const CHAT_OPTIONS_KEYS = [
   'usingHttpsOnly',
   'serverTransfer',
   'isAutoDownload',
-  'pushConfig',
+  'apnsCertName',
+  'pushKitCertName',
   'areaCode',
   'logTag',
   'logTimestamp',
@@ -194,11 +194,7 @@ const CHAT_OPTIONS_KEYS = [
   'webSocketPort',
   'dohVendor',
   'enableUserInfo',
-  'enableAutoSyncContacts',
-  'enableChatroomConversation',
-  'autoLoadConversations',
-  'apnsCertName',
-  'pushKitCertName',
+  'dataSyncType',
 ];
 
 function deriveInitParams(
@@ -223,21 +219,23 @@ function deriveInitParams(
       delete picked[key];
     }
   }
-  // auto-mode 一律关闭 autoLogin（ChatOptions 默认 true）：
-  // 避免设备上残留的持久化会话被自动登录——login 步骤必须真实走凭据登录，
+  // native 5.0 已无自动登录：login 步骤必须真实走凭据登录，
   // no-login 冒烟也必须保持未登录态
-  picked.autoLogin = false;
   return picked.appKey != null || picked.appId != null ? picked : null;
 }
 
 function deriveLoginParams(
   script: Script,
   config: Record<string, unknown>
-): { userId: string; password?: string; token?: string } | null {
+): { userId: string; token?: string } | null {
+  // 显式 "login": false：脚本要求保持未登录态（如 no-login 冒烟），
+  // 不做 env.ts 账号回退，否则本地 env.ts 有账号时会误登录
+  if (script.login === false) {
+    return null;
+  }
   if (script.login != null && script.login.userId != null) {
     return {
       userId: String(script.login.userId),
-      password: script.login.password,
       token: script.login.token,
     };
   }
@@ -246,14 +244,10 @@ function deriveLoginParams(
   if (typeof userId !== 'string' || userId.length === 0) {
     return null;
   }
-  const password = config.loginPassword ?? account?.mm;
-  const token = config.loginToken;
+  // 5.0 起无密码登录：账号的 mm 字段与 loginToken 均为 token
+  const token = config.loginToken ?? account?.mm;
   return {
     userId,
-    password:
-      typeof password === 'string' && password.length > 0
-        ? password
-        : undefined,
     token: typeof token === 'string' && token.length > 0 ? token : undefined,
   };
 }
@@ -263,9 +257,9 @@ async function runInit(
   hooks: AutoModeHooks
 ): Promise<void> {
   const optionsJson = JSON.stringify(initParams, null, 2);
-  const options = new ChatOptions(
-    initParams as { appKey: string; appId: string }
-  );
+  const options = initParams.appKey
+    ? ChatOptions.withAppKey(initParams as unknown as { appKey: string })
+    : ChatOptions.withAppId(initParams as unknown as { appId: string });
   await ChatClient.getInstance().init(options);
   addLog('api.ChatClient.init', okResult());
   registerAllListeners();
@@ -274,24 +268,19 @@ async function runInit(
 }
 
 async function runLogin(
-  loginParams: { userId: string; password?: string; token?: string },
+  loginParams: { userId: string; token?: string },
   hooks: AutoModeHooks
 ): Promise<void> {
   // login 失败自动重试至多 5 次（间隔 1s）：native init 返回后 SDK 内部可能尚未就绪
   let lastError: unknown = null;
   for (let attempt = 1; attempt <= LOGIN_MAX_ATTEMPTS; attempt++) {
     try {
-      const isPassword = loginParams.password != null;
-      const pwdOrToken = isPassword
-        ? String(loginParams.password)
-        : String(loginParams.token ?? '');
-      await ChatClient.getInstance().login(
+      await ChatClient.getInstance().loginWithToken(
         loginParams.userId,
-        pwdOrToken,
-        isPassword
+        String(loginParams.token ?? '')
       );
       addLog(
-        'api.ChatClient.login',
+        'api.ChatClient.loginWithToken',
         okResult({ userId: loginParams.userId, attempt })
       );
       hooks.markLoggedIn(loginParams.userId);
@@ -299,7 +288,7 @@ async function runLogin(
       return;
     } catch (e) {
       lastError = e;
-      addLog('api.ChatClient.login', {
+      addLog('api.ChatClient.loginWithToken', {
         ...errResult(e),
         attempt,
         maxAttempts: LOGIN_MAX_ATTEMPTS,

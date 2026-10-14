@@ -40,23 +40,6 @@
             withParams:list];
 }
 
-- (void)getGroupAckCount:(NSDictionary *)param
-          withMethodType:(NSString *)aChannelName
-                  result:(nonnull id<ExtSdkCallbackObjc>)result {
-    NSString *msgId = param[@"msgId"];
-    EMChatMessage *msg =
-        [EMClient.sharedClient.chatManager getMessageWithMessageId:msgId];
-    if ([self getMessageParams:result
-                withMethodType:aChannelName
-                   withMessage:msg]) {
-        return;
-    }
-    [self onResult:result
-        withMethodType:aChannelName
-             withError:nil
-            withParams:@(msg.groupAckCount ?: 0)];
-}
-
 - (void)getMessagePinInfo:(NSDictionary *)param
            withMethodType:(NSString *)aChannelName
                    result:(nonnull id<ExtSdkCallbackObjc>)result {

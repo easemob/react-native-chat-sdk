@@ -14,19 +14,15 @@ class ExtSdkMethodType {
 public:
     /// EMClient methods
     static const std::string init;
-    static const std::string createAccount;
     static const std::string login;
     static const std::string logout;
     static const std::string changeAppKey;
-    static const std::string isLoggedInBefore;
-    static const std::string updateCurrentUserNick;
-    static const std::string uploadLog;
     static const std::string compressLogs;
     static const std::string kickDevice;
     static const std::string kickAllDevices;
     static const std::string getLoggedInDevicesFromServer;
     static const std::string getCurrentUser;
-    // 2026-09-24 1.21.0
+    static const std::string bindDeviceToken;
     static const std::string bindPushKitToken;
     static const std::string unbindPushKitToken;
 
@@ -34,11 +30,13 @@ public:
     static const std::string onDisconnected;
     static const std::string onMultiDeviceEvent;
     static const std::string onSendDataToFlutter;
+    static const std::string onDataSyncStart;
+    static const std::string onDataSyncFinish;
+    static const std::string onDatabaseOpened;
 
     /// EMContactManager methods
     static const std::string addContact;
     static const std::string deleteContact;
-    static const std::string getAllContactsFromServer;
     static const std::string getAllContactsFromDB;
     static const std::string addUserToBlockList;
     static const std::string removeUserFromBlockList;
@@ -54,61 +52,49 @@ public:
     /// EMChatManager methods
     static const std::string sendMessage;
     static const std::string resendMessage;
-    static const std::string ackMessageRead;
-    static const std::string ackGroupMessageRead;
-    static const std::string ackConversationRead;
+    static const std::string sendMessageReadReceipts;
+    static const std::string clearConversationUnreadMessageCount;
+    static const std::string clearAllConversationUnreadMessageCount;
+    static const std::string getGroupMessageReadReceipts;
+    static const std::string fetchGroupMessageReadReceipts;
     static const std::string recallMessage;
     static const std::string getConversation;
-    static const std::string markAllChatMsgAsRead;
     static const std::string getUnreadMessageCount;
     static const std::string updateChatMessage;
     static const std::string downloadAttachment;
     static const std::string downloadThumbnail;
     static const std::string importMessages;
     static const std::string loadAllConversations;
-    static const std::string getConversationsFromServer;
     static const std::string deleteConversation;
-    static const std::string fetchHistoryMessages;
+    static const std::string deleteConversations;
     static const std::string searchChatMsgFromDB;
     static const std::string getMessage;
-    static const std::string asyncFetchGroupAcks;
-    static const std::string getConversationsFromDBWithCursor;
 
     /// EMChatManager listener
     static const std::string onMessagesReceived;
     static const std::string onCmdMessagesReceived;
-    static const std::string onMessagesRead;
-    static const std::string onGroupMessageRead;
+    static const std::string onMessageReadReceipts;
     static const std::string onMessagesDelivered;
-    static const std::string onMessagesRecalled;
+    static const std::string onMessagesRecalledInfo;
+    static const std::string onStreamMessagesReceived;
 
     static const std::string onConversationUpdate;
-    static const std::string onConversationHasRead;
 
     /// EMMessage listener
     static const std::string onMessageProgressUpdate;
     static const std::string onMessageError;
     static const std::string onMessageSuccess;
-    static const std::string onMessageReadAck;
-    static const std::string onMessageDeliveryAck;
-    static const std::string onMessageStatusChanged;
 
     /// EMConversation
     static const std::string getUnreadMsgCount;
-    static const std::string markAllMessagesAsRead;
-    static const std::string markMessageAsRead;
     static const std::string syncConversationExt;
-    static const std::string syncConversationName;
     static const std::string removeMessage;
     static const std::string getLatestMessage;
     static const std::string getLatestMessageFromOthers;
     static const std::string clearAllMessages;
     static const std::string insertMessage;
-    static const std::string appendMessage;
     static const std::string updateConversationMessage;
 
-    // 根据消息id获取消息
-    static const std::string loadMsgWithId;
     // 根据起始消息id获取消息
     static const std::string loadMsgWithStartId;
     // 根据关键字获取消息
@@ -124,9 +110,6 @@ public:
     static const std::string fetchPublicChatRoomsFromServer;
     static const std::string fetchChatRoomInfoFromServer;
     static const std::string getChatRoom;
-    static const std::string getAllChatRooms;
-    static const std::string createChatRoom;
-    static const std::string destroyChatRoom;
     static const std::string changeChatRoomSubject;
     static const std::string changeChatRoomDescription;
     static const std::string fetchChatRoomMembers;
@@ -158,10 +141,8 @@ public:
     /// EMGroupManager
     static const std::string getGroupWithId;
     static const std::string getJoinedGroups;
-    static const std::string getGroupsWithoutPushNotification;
-    static const std::string getJoinedGroupsFromServer;
-    static const std::string getPublicGroupsFromServer;
     static const std::string createGroup;
+    static const std::string updateGroupConfigs;
     static const std::string getGroupSpecificationFromServer;
     static const std::string getGroupMemberListFromServer;
     static const std::string getGroupBlockListFromServer;
@@ -201,30 +182,21 @@ public:
     static const std::string declineJoinApplication;
     static const std::string acceptInvitationFromGroup;
     static const std::string declineInvitationFromGroup;
-    static const std::string ignoreGroupPush;
 
     /// EMGroupManagerListener
     static const std::string onGroupChanged;
 
     /// EMPushManager
-    static const std::string getImPushConfig;
     static const std::string getImPushConfigFromServer;
     static const std::string updatePushNickname;
-    static const std::string updateHMSPushToken;
-    static const std::string updateFCMPushToken;
 
     /// ImPushConfig
-    static const std::string imPushNoDisturb;
     static const std::string updateImPushStyle;
-    static const std::string updateGroupPushService;
-    static const std::string getNoDisturbGroups;
 
 
     /// EMUserInfoManager
     static const std::string updateOwnUserInfo;
-    static const std::string updateOwnUserInfoWithType;
     static const std::string fetchUserInfoById;
-    static const std::string fetchUserInfoByIdWithType;
 };
 
 EXT_SDK_NAMESPACE_END

@@ -23,17 +23,6 @@ NS_ASSUME_NONNULL_BEGIN
        withMethodType:(NSString *)aChannelName
                result:(nonnull id<ExtSdkCallbackObjc>)result;
 
-- (void)ackMessageRead:(NSDictionary *)param
-        withMethodType:(NSString *)aChannelName
-                result:(nonnull id<ExtSdkCallbackObjc>)result;
-
-- (void)ackGroupMessageRead:(NSDictionary *)param
-             withMethodType:(NSString *)aChannelName
-                     result:(nonnull id<ExtSdkCallbackObjc>)result;
-- (void)ackConversationRead:(NSDictionary *)param
-             withMethodType:(NSString *)aChannelName
-                     result:(nonnull id<ExtSdkCallbackObjc>)result;
-
 - (void)recallMessage:(NSDictionary *)param
        withMethodType:(NSString *)aChannelName
                result:(nonnull id<ExtSdkCallbackObjc>)result;
@@ -45,10 +34,6 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)getConversationApi:(NSDictionary *)param
             withMethodType:(NSString *)aChannelName
                     result:(nonnull id<ExtSdkCallbackObjc>)result;
-
-- (void)markAllMessagesAsRead:(NSDictionary *)param
-               withMethodType:(NSString *)aChannelName
-                       result:(nonnull id<ExtSdkCallbackObjc>)result;
 
 - (void)getUnreadMessageCount:(NSDictionary *)param
                withMethodType:(NSString *)aChannelName
@@ -91,21 +76,13 @@ NS_ASSUME_NONNULL_BEGIN
               withMethodType:(NSString *)aChannelName
                       result:(nonnull id<ExtSdkCallbackObjc>)result;
 
-- (void)getConversationsFromServer:(NSDictionary *)param
-                    withMethodType:(NSString *)aChannelName
-                            result:(nonnull id<ExtSdkCallbackObjc>)result;
-
 - (void)deleteConversation:(NSDictionary *)param
             withMethodType:(NSString *)aChannelName
                     result:(nonnull id<ExtSdkCallbackObjc>)result;
 
-- (void)fetchHistoryMessages:(NSDictionary *)param
-              withMethodType:(NSString *)aChannelName
-                      result:(nonnull id<ExtSdkCallbackObjc>)result;
-
-- (void)fetchGroupReadAck:(NSDictionary *)param
-           withMethodType:(NSString *)aChannelName
-                   result:(nonnull id<ExtSdkCallbackObjc>)result;
+- (void)deleteConversations:(NSDictionary *)param
+             withMethodType:(NSString *)aChannelName
+                     result:(nonnull id<ExtSdkCallbackObjc>)result;
 
 - (void)searchChatMsgFromDB:(NSDictionary *)param
              withMethodType:(NSString *)aChannelName
@@ -139,17 +116,9 @@ NS_ASSUME_NONNULL_BEGIN
              withMethodType:(NSString *)aChannelName
                      result:(nonnull id<ExtSdkCallbackObjc>)result;
 
-- (void)reportMessage:(NSDictionary *)param
-       withMethodType:(NSString *)aChannelName
-               result:(nonnull id<ExtSdkCallbackObjc>)result;
-
 - (void)deleteMessagesBeforeTimestamp:(NSDictionary *)param
                        withMethodType:(NSString *)aChannelName
                                result:(nonnull id<ExtSdkCallbackObjc>)result;
-
-- (void)fetchConversationsFromServerWithPage:(NSDictionary *)param
-                              withMethodType:(NSString *)aChannelName
-                                      result:(nonnull id<ExtSdkCallbackObjc>)result;
 
 - (void)removeMessagesFromServerWithMsgIds:(NSDictionary *)param
                             withMethodType:(NSString *)aChannelName
@@ -163,25 +132,9 @@ NS_ASSUME_NONNULL_BEGIN
                        withMethodType:(NSString *)aChannelName
                                result:(nonnull id<ExtSdkCallbackObjc>)result;
 
-- (void)getConversationsFromServerWithCursor:(NSDictionary *)param
-                              withMethodType:(NSString *)aChannelName
-                                      result:(nonnull id<ExtSdkCallbackObjc>)result;
-
-- (void)getPinnedConversationsFromServerWithCursor:(NSDictionary *)param
-                                    withMethodType:(NSString *)aChannelName
-                                            result:(nonnull id<ExtSdkCallbackObjc>)result;
-
-- (void)getConversationsFromDBWithCursor:(NSDictionary *)param
-                          withMethodType:(NSString *)aChannelName
-                                  result:(nonnull id<ExtSdkCallbackObjc>)result;
-
 - (void)pinConversation:(NSDictionary *)param
          withMethodType:(NSString *)aChannelName
                  result:(nonnull id<ExtSdkCallbackObjc>)result;
-
-- (void)modifyMessage:(NSDictionary *)param
-       withMethodType:(NSString *)aChannelName
-               result:(nonnull id<ExtSdkCallbackObjc>)result;
 
 - (void)downloadAndParseCombineMessage:(NSDictionary *)param
                         withMethodType:(NSString *)aChannelName
@@ -194,10 +147,6 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)deleteRemoteAndLocalConversationsMark:(NSDictionary *)param
                                withMethodType:(NSString *)aChannelName
                                        result:(nonnull id<ExtSdkCallbackObjc>)result;
-
-- (void)fetchConversationsByOptions:(NSDictionary *)param
-                     withMethodType:(NSString *)aChannelName
-                             result:(nonnull id<ExtSdkCallbackObjc>)result;
 
 - (void)deleteAllMessageAndConversation:(NSDictionary *)param
                          withMethodType:(NSString *)aChannelName
@@ -242,6 +191,26 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)modifyMsgBody:(NSDictionary *)param
        withMethodType:(NSString *)aChannelName
                result:(nonnull id<ExtSdkCallbackObjc>)result;
+
+- (void)sendMessageReadReceipts:(NSDictionary *)param
+                 withMethodType:(NSString *)aChannelName
+                        result:(nonnull id<ExtSdkCallbackObjc>)result;
+
+- (void)clearConversationUnreadMessageCount:(NSDictionary *)param
+                             withMethodType:(NSString *)aChannelName
+                                     result:(nonnull id<ExtSdkCallbackObjc>)result;
+
+- (void)clearAllConversationUnreadMessageCount:(NSDictionary *)param
+                                withMethodType:(NSString *)aChannelName
+                                        result:(nonnull id<ExtSdkCallbackObjc>)result;
+
+- (void)getGroupMessageReadReceipts:(NSDictionary *)param
+                     withMethodType:(NSString *)aChannelName
+                             result:(nonnull id<ExtSdkCallbackObjc>)result;
+
+- (void)fetchGroupMessageReadReceipts:(NSDictionary *)param
+                       withMethodType:(NSString *)aChannelName
+                               result:(nonnull id<ExtSdkCallbackObjc>)result;
 
 @end
 

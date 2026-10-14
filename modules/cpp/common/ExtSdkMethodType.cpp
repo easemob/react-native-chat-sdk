@@ -8,19 +8,15 @@ EXT_SDK_NAMESPACE_BEGIN
 
 /// EMClient methods
 const std::string ExtSdkMethodType::init = "init";
-const std::string ExtSdkMethodType::createAccount = "createAccount";
 const std::string ExtSdkMethodType::login = "login";
 const std::string ExtSdkMethodType::logout = "logout";
 const std::string ExtSdkMethodType::changeAppKey = "changeAppKey";
-const std::string ExtSdkMethodType::isLoggedInBefore = "isLoggedInBefore";
-const std::string ExtSdkMethodType::updateCurrentUserNick = "updateCurrentUserNick";
-const std::string ExtSdkMethodType::uploadLog = "uploadLog";
 const std::string ExtSdkMethodType::compressLogs = "compressLogs";
 const std::string ExtSdkMethodType::kickDevice = "kickDevice";
 const std::string ExtSdkMethodType::kickAllDevices = "kickAllDevices";
 const std::string ExtSdkMethodType::getLoggedInDevicesFromServer = "getLoggedInDevicesFromServer";
 const std::string ExtSdkMethodType::getCurrentUser = "getCurrentUser";
-// 2026-09-24 1.21.0
+const std::string ExtSdkMethodType::bindDeviceToken = "bindDeviceToken";
 const std::string ExtSdkMethodType::bindPushKitToken = "bindPushKitToken";
 const std::string ExtSdkMethodType::unbindPushKitToken = "unbindPushKitToken";
 
@@ -28,11 +24,13 @@ const std::string ExtSdkMethodType::onConnected = "onConnected";
 const std::string ExtSdkMethodType::onDisconnected = "onDisconnected";
 const std::string ExtSdkMethodType::onMultiDeviceEvent = "onMultiDeviceEvent";
 const std::string ExtSdkMethodType::onSendDataToFlutter = "onSendDataToFlutter";
+const std::string ExtSdkMethodType::onDataSyncStart = "onDataSyncStart";
+const std::string ExtSdkMethodType::onDataSyncFinish = "onDataSyncFinish";
+const std::string ExtSdkMethodType::onDatabaseOpened = "onDatabaseOpened";
 
 /// EMContactManager methods
 const std::string ExtSdkMethodType::addContact = "addContact";
 const std::string ExtSdkMethodType::deleteContact = "deleteContact";
-const std::string ExtSdkMethodType::getAllContactsFromServer = "getAllContactsFromServer";
 const std::string ExtSdkMethodType::getAllContactsFromDB = "getAllContactsFromDB";
 const std::string ExtSdkMethodType::addUserToBlockList = "addUserToBlockList";
 const std::string ExtSdkMethodType::removeUserFromBlockList = "removeUserFromBlockList";
@@ -48,61 +46,49 @@ const std::string ExtSdkMethodType::onContactChanged = "onContactChanged";
 /// EMChatManager methods
 const std::string ExtSdkMethodType::sendMessage = "sendMessage";
 const std::string ExtSdkMethodType::resendMessage = "resendMessage";
-const std::string ExtSdkMethodType::ackMessageRead = "ackMessageRead";
-const std::string ExtSdkMethodType::ackGroupMessageRead = "ackGroupMessageRead";
-const std::string ExtSdkMethodType::ackConversationRead = "ackConversationRead";
+const std::string ExtSdkMethodType::sendMessageReadReceipts = "sendMessageReadReceipts";
+const std::string ExtSdkMethodType::clearConversationUnreadMessageCount = "clearConversationUnreadMessageCount";
+const std::string ExtSdkMethodType::clearAllConversationUnreadMessageCount = "clearAllConversationUnreadMessageCount";
+const std::string ExtSdkMethodType::getGroupMessageReadReceipts = "getGroupMessageReadReceipts";
+const std::string ExtSdkMethodType::fetchGroupMessageReadReceipts = "fetchGroupMessageReadReceipts";
 const std::string ExtSdkMethodType::recallMessage = "recallMessage";
 const std::string ExtSdkMethodType::getConversation = "getConversation";
-const std::string ExtSdkMethodType::markAllChatMsgAsRead = "markAllChatMsgAsRead";
 const std::string ExtSdkMethodType::getUnreadMessageCount = "getUnreadMessageCount";
 const std::string ExtSdkMethodType::updateChatMessage = "updateChatMessage";
 const std::string ExtSdkMethodType::downloadAttachment = "downloadAttachment";
 const std::string ExtSdkMethodType::downloadThumbnail = "downloadThumbnail";
 const std::string ExtSdkMethodType::importMessages = "importMessages";
 const std::string ExtSdkMethodType::loadAllConversations = "loadAllConversations";
-const std::string ExtSdkMethodType::getConversationsFromServer = "getConversationsFromServer";
 const std::string ExtSdkMethodType::deleteConversation = "deleteConversation";
-const std::string ExtSdkMethodType::fetchHistoryMessages = "fetchHistoryMessages";
+const std::string ExtSdkMethodType::deleteConversations = "deleteConversations";
 const std::string ExtSdkMethodType::searchChatMsgFromDB = "searchChatMsgFromDB";
 const std::string ExtSdkMethodType::getMessage = "getMessage";
-const std::string ExtSdkMethodType::asyncFetchGroupAcks = "asyncFetchGroupAcks";
-const std::string ExtSdkMethodType::getConversationsFromDBWithCursor = "getConversationsFromDBWithCursor";
 
 /// EMChatManager listener
 const std::string ExtSdkMethodType::onMessagesReceived = "onMessagesReceived";
 const std::string ExtSdkMethodType::onCmdMessagesReceived = "onCmdMessagesReceived";
-const std::string ExtSdkMethodType::onMessagesRead = "onMessagesRead";
-const std::string ExtSdkMethodType::onGroupMessageRead = "onGroupMessageRead";
+const std::string ExtSdkMethodType::onMessageReadReceipts = "onMessageReadReceipts";
 const std::string ExtSdkMethodType::onMessagesDelivered = "onMessagesDelivered";
-const std::string ExtSdkMethodType::onMessagesRecalled = "onMessagesRecalled";
+const std::string ExtSdkMethodType::onMessagesRecalledInfo = "onMessagesRecalledInfo";
+const std::string ExtSdkMethodType::onStreamMessagesReceived = "onStreamMessagesReceived";
 
 const std::string ExtSdkMethodType::onConversationUpdate = "onConversationUpdate";
-const std::string ExtSdkMethodType::onConversationHasRead = "onConversationHasRead";
 
 /// EMMessage listener
 const std::string ExtSdkMethodType::onMessageProgressUpdate = "onMessageProgressUpdate";
 const std::string ExtSdkMethodType::onMessageError = "onMessageError";
 const std::string ExtSdkMethodType::onMessageSuccess = "onMessageSuccess";
-const std::string ExtSdkMethodType::onMessageReadAck = "onMessageReadAck";
-const std::string ExtSdkMethodType::onMessageDeliveryAck = "onMessageDeliveryAck";
-const std::string ExtSdkMethodType::onMessageStatusChanged = "onMessageStatusChanged";
 
 /// EMConversation
 const std::string ExtSdkMethodType::getUnreadMsgCount = "getUnreadMsgCount";
-const std::string ExtSdkMethodType::markAllMessagesAsRead = "markAllMessagesAsRead";
-const std::string ExtSdkMethodType::markMessageAsRead = "markMessageAsRead";
 const std::string ExtSdkMethodType::syncConversationExt = "syncConversationExt";
-const std::string ExtSdkMethodType::syncConversationName = "syncConversationName";
 const std::string ExtSdkMethodType::removeMessage = "removeMessage";
 const std::string ExtSdkMethodType::getLatestMessage = "getLatestMessage";
 const std::string ExtSdkMethodType::getLatestMessageFromOthers = "getLatestMessageFromOthers";
 const std::string ExtSdkMethodType::clearAllMessages = "clearAllMessages";
 const std::string ExtSdkMethodType::insertMessage = "insertMessage";
-const std::string ExtSdkMethodType::appendMessage = "appendMessage";
 const std::string ExtSdkMethodType::updateConversationMessage = "updateConversationMessage";
 
-// 根据消息id获取消息
-const std::string ExtSdkMethodType::loadMsgWithId = "loadMsgWithId";
 // 根据起始消息id获取消息
 const std::string ExtSdkMethodType::loadMsgWithStartId = "loadMsgWithStartId";
 // 根据关键字获取消息
@@ -118,9 +104,6 @@ const std::string ExtSdkMethodType::leaveChatRoom = "leaveChatRoom";
 const std::string ExtSdkMethodType::fetchPublicChatRoomsFromServer = "fetchPublicChatRoomsFromServer";
 const std::string ExtSdkMethodType::fetchChatRoomInfoFromServer = "fetchChatRoomInfoFromServer";
 const std::string ExtSdkMethodType::getChatRoom = "getChatRoom";
-const std::string ExtSdkMethodType::getAllChatRooms = "getAllChatRooms";
-const std::string ExtSdkMethodType::createChatRoom = "createChatRoom";
-const std::string ExtSdkMethodType::destroyChatRoom = "destroyChatRoom";
 const std::string ExtSdkMethodType::changeChatRoomSubject = "changeChatRoomSubject";
 const std::string ExtSdkMethodType::changeChatRoomDescription = "changeChatRoomDescription";
 const std::string ExtSdkMethodType::fetchChatRoomMembers = "fetchChatRoomMembers";
@@ -152,10 +135,8 @@ const std::string ExtSdkMethodType::chatRoomChange = "onChatRoomChanged";
 /// EMGroupManager
 const std::string ExtSdkMethodType::getGroupWithId = "getGroupWithId";
 const std::string ExtSdkMethodType::getJoinedGroups = "getJoinedGroups";
-const std::string ExtSdkMethodType::getGroupsWithoutPushNotification = "getGroupsWithoutPushNotification";
-const std::string ExtSdkMethodType::getJoinedGroupsFromServer = "getJoinedGroupsFromServer";
-const std::string ExtSdkMethodType::getPublicGroupsFromServer = "getPublicGroupsFromServer";
 const std::string ExtSdkMethodType::createGroup = "createGroup";
+const std::string ExtSdkMethodType::updateGroupConfigs = "updateGroupConfigs";
 const std::string ExtSdkMethodType::getGroupSpecificationFromServer = "getGroupSpecificationFromServer";
 const std::string ExtSdkMethodType::getGroupMemberListFromServer = "getGroupMemberListFromServer";
 const std::string ExtSdkMethodType::getGroupBlockListFromServer = "getGroupBlockListFromServer";
@@ -195,29 +176,20 @@ const std::string ExtSdkMethodType::acceptJoinApplication = "acceptJoinApplicati
 const std::string ExtSdkMethodType::declineJoinApplication = "declineJoinApplication";
 const std::string ExtSdkMethodType::acceptInvitationFromGroup = "acceptInvitationFromGroup";
 const std::string ExtSdkMethodType::declineInvitationFromGroup = "declineInvitationFromGroup";
-const std::string ExtSdkMethodType::ignoreGroupPush = "ignoreGroupPush";
 
 /// EMGroupManagerListener
 const std::string ExtSdkMethodType::onGroupChanged = "onGroupChanged";
 
 /// EMPushManager
-const std::string ExtSdkMethodType::getImPushConfig = "getImPushConfig";
 const std::string ExtSdkMethodType::getImPushConfigFromServer = "getImPushConfigFromServer";
 const std::string ExtSdkMethodType::updatePushNickname = "updatePushNickname";
-const std::string ExtSdkMethodType::updateHMSPushToken = "updateHMSPushToken";
-const std::string ExtSdkMethodType::updateFCMPushToken = "updateFCMPushToken";
 
 /// ImPushConfig
-const std::string ExtSdkMethodType::imPushNoDisturb = "imPushNoDisturb";
 const std::string ExtSdkMethodType::updateImPushStyle = "updateImPushStyle";
-const std::string ExtSdkMethodType::updateGroupPushService = "updateGroupPushService";
-const std::string ExtSdkMethodType::getNoDisturbGroups = "getNoDisturbGroups";
 
 
 /// EMUserInfoManager
 const std::string ExtSdkMethodType::updateOwnUserInfo = "updateOwnUserInfo";
-const std::string ExtSdkMethodType::updateOwnUserInfoWithType = "updateOwnUserInfoWithType";
 const std::string ExtSdkMethodType::fetchUserInfoById = "fetchUserInfoById";
-const std::string ExtSdkMethodType::fetchUserInfoByIdWithType = "fetchUserInfoByIdWithType";
 
 EXT_SDK_NAMESPACE_END

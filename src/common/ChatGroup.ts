@@ -1,26 +1,5 @@
 import type { ChatError } from './ChatError';
-
-/**
- * 群组类型枚举。
- */
-export enum ChatGroupStyle {
-  /**
-   * 私有群组，创建完成后，只允许群主邀请用户加入。
-   */
-  PrivateOnlyOwnerInvite = 0,
-  /**
-   * 私有群组，创建完成后，只允许群主和群成员邀请用户加入。
-   */
-  PrivateMemberCanInvite = 1,
-  /**
-   * 公开群组，创建完成后，只允许群主邀请用户加入；非群成员用户需发送入群申请，群主同意后才能入群。
-   */
-  PublicJoinNeedApproval = 2,
-  /**
-   * 公开群组，创建完成后，允许非群组成员加入，无需群主同意。
-   */
-  PublicOpenJoin = 3,
-}
+import { ChatGroupMemberInfo } from './ChatGroupMemberInfo';
 
 /**
  * 群组角色类型枚举。
@@ -42,37 +21,6 @@ export enum ChatGroupPermissionType {
    * 群主。
    */
   Owner = 2,
-}
-
-/**
- * 将群组类型由整型转换为枚举类型。
- *
- * @param params 整型的群组类型。
- * @returns 枚举类型的群组类型。
- */
-export function ChatGroupStyleFromNumber(params: number): ChatGroupStyle {
-  switch (params) {
-    case 0:
-      return ChatGroupStyle.PrivateOnlyOwnerInvite;
-    case 1:
-      return ChatGroupStyle.PrivateMemberCanInvite;
-    case 2:
-      return ChatGroupStyle.PublicJoinNeedApproval;
-    case 3:
-      return ChatGroupStyle.PublicOpenJoin;
-    default:
-      return params;
-  }
-}
-
-/**
- * 群组类型由枚举转换为字符串类型。
- *
- * @param params 枚举类型的群组类型。
- * @returns 字符串类型的群组类型。
- */
-export function ChatGroupStyleToString(params: ChatGroupStyle): string {
-  return ChatGroupStyle[params]!;
 }
 
 /**
@@ -113,19 +61,19 @@ export function ChatGroupPermissionTypeToString(
 /**
  * 群组消息已读回执类。
  */
-export class ChatGroupMessageAck {
+export class ChatGroupReadReceipt {
   /**
    * 群组消息 ID。
    */
-  msg_id: string;
+  msgId: string;
   /**
    * 群组消息已读回执的 ID。
    */
-  ack_id: string;
+  ackId: string;
   /**
    * 发送已读回执的用户 ID。
    */
-  from: string;
+  from: ChatGroupMemberInfo;
   /**
    * 群组消息已读回执数量。
    */
@@ -134,33 +82,25 @@ export class ChatGroupMessageAck {
    * 群组消息已读回执发送的 Unix 时间戳。单位为毫秒。
    */
   timestamp: number;
-  /**
-   * 已读回执的扩展信息。
-   */
-  content?: string;
   constructor(params: {
     msg_id: string;
     ack_id: string;
-    from: string;
+    from: any;
     count: number;
     timestamp: number;
-    ext?: { content: string };
   }) {
-    this.msg_id = params.msg_id;
-    this.ack_id = params.ack_id;
-    this.from = params.from;
+    this.msgId = params.msg_id;
+    this.ackId = params.ack_id;
+    this.from = new ChatGroupMemberInfo(params.from);
     this.count = params.count;
     this.timestamp = params.timestamp;
-    if (params.ext) {
-      this.content = params.ext.content;
-    }
   }
 }
 
 /**
  * 群组信息类，包含群组相关的信息。
  *
- * 可调用 {@link ChatGroupManager.fetchGroupInfoFromServer} 方法获取群组相关信息。
+ * 可调用 {@link ChatGroupManager.fetchGroupInfoWithoutMembersFromServer} 方法获取群组相关信息。
  */
 export class ChatGroup {
   /**
@@ -224,14 +164,20 @@ export class ChatGroup {
    */
   permissionType: ChatGroupPermissionType;
   /**
-   * 群组选项。
+   * 群组配置，详见 {@link ChatGroupConfigs}。
    */
-  options?: ChatGroupOptions;
+  configs?: ChatGroupConfigs;
+  /**
+   * 群组是否被禁用：
+   * - `true`：是。
+   * - `false`：否。
+   */
+  isDisabled: boolean;
   /**
    * 获取群组最大成员数量。该参数在创建群组时设定。
    */
   get maxCount(): number {
-    return this.options?.maxCount ?? 0;
+    return this.configs?.maxCount ?? 0;
   }
 
   constructor(params: {
@@ -249,7 +195,8 @@ export class ChatGroup {
     messageBlocked?: boolean;
     isAllMemberMuted?: boolean;
     permissionType: number;
-    options?: any;
+    configs?: any;
+    isDisabled?: boolean;
   }) {
     this.groupId = params.groupId;
     this.groupName = params.groupName ?? '';
@@ -267,33 +214,65 @@ export class ChatGroup {
     this.permissionType = ChatGroupPermissionTypeFromNumber(
       params.permissionType
     );
-    if (params.options) {
-      this.options = new ChatGroupOptions(params.options);
+    if (params.configs) {
+      this.configs = new ChatGroupConfigs(params.configs);
     }
+    this.isDisabled = params.isDisabled ?? false;
   }
 }
 
 /**
- * 群组选项类，包含群组创建时设置的选项。
+ * 群组配置类型，用于指定要更新的群组配置。
+ *
+ * 该类型为位掩码。可以使用按位或运算符合并多个类型，
+ * 例如 `ChatGroupConfigsType.MaxUsers | ChatGroupConfigsType.Ext`。
+ *
+ * 详见 {@link ChatGroupManager.updateGroupConfigs}。
  */
-export class ChatGroupOptions {
+export enum ChatGroupConfigsType {
   /**
-   * 群组类型。
+   * 是否允许群组成员邀请其他用户加入群组。
    */
-  style: ChatGroupStyle;
+  AllowInvites = 1, // 1 << 0
   /**
-   * 群组最大成员数量。
+   * 群组允许的最大成员数。
+   */
+  MaxUsers = 2, // 1 << 1
+  /**
+   * 邀请用户加入群组时是否需要征得对方同意。
+   */
+  InviteNeedConfirm = 4, // 1 << 2
+  /**
+   * 加入群组是否需要群主或管理员批准。
+   */
+  JoinApprovalRequired = 8, // 1 << 3
+  /**
+   * 群组是否为公开群。
+   */
+  IsPublic = 16, // 1 << 4
+  /**
+   * 群组扩展信息。
+   */
+  Ext = 32, // 1 << 5
+}
+
+/**
+ * 创建或更新群组时要设置的群组配置。
+ */
+export class ChatGroupConfigs {
+  /**
+   * 群组允许的最大成员数。默认值为 200。
    */
   maxCount: number;
   /**
    * 邀请用户进群是否需要对方同意。
    *
-   * 收到邀请是否自动入群取决于两个设置：创建群组时设置 {@link GroupOptions#inviteNeedConfirm} 以及通过 {@link ChatOptions#autoAcceptGroupInvitation} 确定是否自动接受加群邀请。
+   * 收到邀请是否自动入群取决于两个设置：创建群组时设置 {@link ChatGroupConfigs.inviteNeedConfirm}，以及通过 {@link ChatOptions.autoAcceptGroupInvitation} 确定是否自动接受加群邀请。
    *
    * （1）如果 `inviteNeedConfirm` 设置为 `false`，在服务端直接加受邀人进群，与受邀人对 {@link ChatOptions.autoAcceptGroupInvitation} 的设置无关。
    *  (2) 如果 `inviteNeedConfirm` 设置为 `true`，是否自动入群取决于受邀请人对 {@link ChatOptions.autoAcceptGroupInvitation} 的设置。
    *
-   * {@link ChatOptions#autoAcceptGroupInvitation} 为 SDK 级别操作，设置为 `true` 时，受邀人收到入群邀请后，SDK 在内部调用同意入群的 API，自动接受邀请入群；
+   * {@link ChatOptions.autoAcceptGroupInvitation} 为 SDK 级别操作，设置为 `true` 时，受邀人收到入群邀请后，SDK 在内部调用同意入群的 API，自动接受邀请入群；
    *  若设置为 `false`，即非自动同意其邀请，用户可以选择接受邀请进群，也可选择拒绝邀请。
    */
   inviteNeedConfirm: boolean;
@@ -302,28 +281,40 @@ export class ChatGroupOptions {
    */
   ext?: string;
   /**
-   * 是否禁用群组
-   * - `true`: 是.
-   * - `false`: 否.
+   * 群组是否为公开群：
+   * - `true`：是。
+   * - （默认）`false`：否。
    */
-  isDisabled: boolean;
+  isPublic: boolean;
   /**
-   * 构造一个对象。
+   * 加入群组是否需要群主或管理员批准：
+   * - `true`：是。
+   * - （默认）`false`：否。
+   */
+  joinApprovalRequired: boolean;
+  /**
+   * 是否允许群组成员邀请其他用户加入群组：
+   * - `true`：是。
+   * - （默认）`false`：否。
+   */
+  allowInvites: boolean;
+  /**
+   * 构造一个群组配置对象。
    */
   constructor(params: {
-    style?: number;
     maxCount?: number;
     inviteNeedConfirm?: boolean;
     ext?: string;
-    isDisabled?: boolean;
+    isPublic?: boolean;
+    joinApprovalRequired?: boolean;
+    allowInvites?: boolean;
   }) {
-    this.style = params.style
-      ? ChatGroupStyleFromNumber(params.style)
-      : ChatGroupStyle.PublicJoinNeedApproval;
     this.maxCount = params.maxCount ?? 200;
     this.inviteNeedConfirm = params.inviteNeedConfirm ?? false;
     this.ext = params.ext;
-    this.isDisabled = params.isDisabled ?? false;
+    this.isPublic = params.isPublic ?? false;
+    this.joinApprovalRequired = params.joinApprovalRequired ?? false;
+    this.allowInvites = params.allowInvites ?? false;
   }
 }
 

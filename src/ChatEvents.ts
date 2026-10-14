@@ -1,14 +1,16 @@
 import { ExceptionHandler } from './__internal__/ErrorHandler';
 import type { ChatContact } from './common/ChatContact';
 import type { ChatConversationType } from './common/ChatConversation';
-import { ChatError, ChatException } from './common/ChatError';
-import type { ChatGroup, ChatGroupMessageAck } from './common/ChatGroup';
+import { ChatException } from './common/ChatError';
+import type { ChatDataSyncType } from './common/ChatOptions';
+import type { ChatGroup } from './common/ChatGroup';
 import type {
   ChatMessage,
   ChatMessagePinInfo,
   ChatRecalledMessageInfo,
 } from './common/ChatMessage';
 import type { ChatMessageReactionEvent } from './common/ChatMessageReaction';
+import type { ChatMessageReadReceipt } from './common/ChatMessageReadReceipt';
 import type { ChatMessageThreadEvent } from './common/ChatMessageThread';
 import type { ChatPresence } from './common/ChatPresence';
 import type { ChatRoom } from './common/ChatRoom';
@@ -138,7 +140,14 @@ export enum ChatMultiDeviceEvent {
    */
   GROUP_REMOVE_ALL_BAN,
   /**
-   * 用户 A 在设备 A1 上创建了子区，则设备 A2 上会收到该事件。
+   * 用户 A 在设备 A1 上更新群组信息时，设备 A2 上会触发该事件。
+   *
+   * 仅 iOS SDK 会上报该事件（原生值为 34，即 `EMMultiDevicesEventGroupUpdate`）；Android SDK
+   * 使用原生值 52 上报群组元数据变更。
+   */
+  GROUP_UPDATE,
+  /**
+   * 用户 A 在设备 A1 上创建子区时，设备 A2 上会触发该事件。
    */
   THREAD_CREATE = 40,
   /**
@@ -187,6 +196,18 @@ export enum ChatMultiDeviceEvent {
    * 系统内部会更新会话的推送提醒方式。如果需要则需要手动更新会话列表。
    */
   CONVERSATION_MUTE_CHANGED = 64,
+  /**
+   * 用户 A 在设备 A1 上清除某个会话的未读消息数时，设备 A2 上会触发该事件。
+   *
+   * 详见 {@link ChatManager.clearConversationUnreadMessageCount}。
+   */
+  CONVERSATION_UNREAD_MESSAGE_COUNT_CLEARED = 65,
+  /**
+   * 用户 A 在设备 A1 上清除所有会话的未读消息数时，设备 A2 上会触发该事件。
+   *
+   * 详见 {@link ChatManager.clearAllConversationUnreadMessageCount}。
+   */
+  ALL_CONVERSATION_UNREAD_MESSAGE_COUNT_CLEARED = 66,
 }
 
 /**
@@ -258,6 +279,8 @@ export function ChatMultiDeviceEventFromNumber(
       return ChatMultiDeviceEvent.GROUP_ALL_BAN;
     case 33:
       return ChatMultiDeviceEvent.GROUP_REMOVE_ALL_BAN;
+    case 34:
+      return ChatMultiDeviceEvent.GROUP_UPDATE;
 
     case 40:
       return ChatMultiDeviceEvent.THREAD_CREATE;
@@ -285,6 +308,10 @@ export function ChatMultiDeviceEventFromNumber(
       return ChatMultiDeviceEvent.CONVERSATION_UPDATE_MARK;
     case 64:
       return ChatMultiDeviceEvent.CONVERSATION_MUTE_CHANGED;
+    case 65:
+      return ChatMultiDeviceEvent.CONVERSATION_UNREAD_MESSAGE_COUNT_CLEARED;
+    case 66:
+      return ChatMultiDeviceEvent.ALL_CONVERSATION_UNREAD_MESSAGE_COUNT_CLEARED;
 
     default:
       const ret = params as ChatMultiDeviceEvent;
@@ -300,17 +327,142 @@ export function ChatMultiDeviceEventFromNumber(
 }
 
 /**
- * 网络连接状态监听器。
+ * {@link ChatConnectEventListener.onDisconnected} 携带的断开连接原因码。
  *
- * 在不稳定的网络环境断网时，SDK 可以接收到已断开连接的回调。
+ * 这些数值与底层原生 SDK 的 `EMError` 错误码一致。SDK 会原样传递这些错误码且不进行过滤，
+ * 因此仍可能收到此处未列出的错误码（包括未来原生 SDK 版本新增的错误码）；该枚举仅用于提高可读性和便于比较。
  *
- * SDK 会自动尝试重连，不需要你手动操作。
+ * 断开连接原因分为两类：
+ * - 登出原因：本地登录状态不再有效，用户必须重新登录。
+ * - 连接原因：用户仍保持登录状态，但连接已断开，SDK 会自动重连。
  *
- * 以下为两种连接状态回调：
- * - `onConnected`: 当网络连接成功时提示已连接。
- * - `onDisconnected`: 当网络连接断开时提示已断开连接。
+ * 除非原生 SDK 文档另有说明，否则应将收到的未列出错误码视为连接原因。
  *
- * Adds a connection event listener:
+ * 注意：token 过期不会触发 `onDisconnected`，而是通过 {@link ChatConnectEventListener.onTokenDidExpire} 上报。
+ */
+export enum ChatDisconnectErrorCode {
+  // 登出原因：本地登录状态无效，用户必须重新登录。
+
+  /**
+   * 应用的日活跃用户数（DAU）或月活跃用户数（MAU）已达到上限。
+   */
+  APP_ACTIVE_NUMBER_REACH_LIMIT = 8,
+
+  /**
+   * token 与登录信息不匹配。
+   */
+  INVALID_TOKEN = 104,
+
+  /**
+   * 用于建立连接的参数无效。
+   */
+  INVALID_PARAM = 110,
+
+  /**
+   * 用户鉴权失败。
+   *
+   * 仅使用 token 登录时，鉴权失败通常由登录调用上报；如果 SDK 在重连期间刷新 token 失败，仍可能出现此错误码。
+   */
+  USER_AUTHENTICATION_FAILED = 202,
+
+  /**
+   * 用户不存在。
+   */
+  USER_NOT_FOUND = 204,
+
+  /**
+   * 用户已从其他设备登录。
+   *
+   * 回调的 `info` 参数携带该设备的名称和扩展信息。
+   */
+  USER_LOGIN_FROM_OTHER_DEVICE = 206,
+
+  /**
+   * 用户已从服务器移除。
+   */
+  USER_REMOVED_FROM_SERVER = 207,
+
+  /**
+   * 用户已绑定其他设备，无法在当前设备上保持登录状态。
+   */
+  USER_BIND_ANOTHER_DEVICE = 213,
+
+  /**
+   * 用户登录的设备数量过多。
+   */
+  USER_LOGIN_TOO_MANY_DEVICES = 214,
+
+  /**
+   * 用户已修改密码。
+   */
+  USER_KICKED_BY_CHANGE_PASSWORD = 216,
+
+  /**
+   * 用户被其他设备踢下线。
+   */
+  USER_KICKED_BY_OTHER_DEVICE = 217,
+
+  /**
+   * 本次登录设备与上次登录设备不同，用户需要重新登录。
+   *
+   * 仅当服务器启用“不将其他设备踢下线”选项时，该原因才会生效。
+   */
+  USER_DEVICE_CHANGED = 220,
+
+  /**
+   * 无法获取可用的服务器地址。
+   */
+  SERVER_GET_DNSLIST_FAILED = 304,
+
+  /**
+   * 应用被服务器禁用。
+   */
+  SERVER_SERVICE_RESTRICTED = 305,
+
+  // 连接原因：用户保持登录状态，SDK 会自动重连。
+
+  /**
+   * 发生网络错误。
+   *
+   * 该错误码仅由 Android 上报；在 iOS 上，网络断开时不会上报错误码。
+   */
+  NETWORK_ERROR = 2,
+
+  /**
+   * 应用的用户数量或服务配额超过限制。
+   */
+  EXCEED_SERVICE_LIMIT = 4,
+
+  /**
+   * 无法连接服务器，例如连接超时、DNS 解析失败或连接被拒绝。
+   *
+   * 这是网络不稳定时最常见的原因。
+   */
+  SERVER_NOT_REACHABLE = 300,
+
+  /**
+   * 发生未知服务器错误，例如 IO 错误或连接流意外关闭。
+   */
+  SERVER_UNKNOWN_ERROR = 303,
+
+  /**
+   * 传输数据解密失败。
+   */
+  SERVER_DECRYPTION_FAILED = 306,
+}
+
+/**
+ * 连接事件监听器。
+ *
+ * 在不稳定的网络环境中断开连接时，使用该 SDK 的应用会收到 `onDisconnected` 回调。
+ *
+ * 无需手动重连，Chat SDK 会自动处理重连。
+ *
+ * 包含以下两个连接相关回调：
+ * - `onConnected`：连接建立时触发。
+ * - `onDisconnected`：连接断开时触发，并携带表示断开原因的错误码，详见 {@link ChatDisconnectErrorCode}。
+ *
+ * 添加连接事件监听器：
  *
  *  ```typescript
  *  let listener = new (class s implements ChatConnectEventListener {
@@ -323,14 +475,14 @@ export function ChatMultiDeviceEventFromNumber(
  *    onConnected(): void {
  *      chatlog.log('ConnectScreen.onConnected');
  *    }
- *    onDisconnected(errorCode?: number): void {
- *      chatlog.log('ConnectScreen.onDisconnected', errorCode);
+ *    onDisconnected(errorCode?: number, info?: { deviceName?: string; ext?: string }): void {
+ *      chatlog.log('ConnectScreen.onDisconnected', errorCode, info);
  *    }
  *  })();
  *  ChatClient.getInstance().addConnectionListener(listener);
  *  ```
  *
- *  移除连接事件监听器：
+ * 移除连接事件监听器：
  *
  *  ```typescript
  *  ChatClient.getInstance().removeConnectionListener(listener);
@@ -343,13 +495,27 @@ export interface ChatConnectEventListener {
   onConnected?(): void;
 
   /**
-   * 和 chat 服务器断开连接时触发的回调。
+   * SDK 与 chat 服务器断开连接时触发。
    *
-   * 断开连接时底层不一定会登出。
+   * `errorCode` 由原生 SDK 原样传递，分为两类（详见 {@link ChatDisconnectErrorCode}）：
+   * - 登出原因（例如 `USER_LOGIN_FROM_OTHER_DEVICE`）：本地登录状态不再有效，应返回登录页面并重新登录。
+   * - 连接原因（例如 `NETWORK_ERROR`、`SERVER_NOT_REACHABLE`）：用户仍保持登录状态，但连接已断开，SDK 会自动重连；收到这些错误码时不要返回登录页面。
    *
-   * @param errorCode 错误码，详见 {@link ChatError}。
+   * 未在 {@link ChatDisconnectErrorCode} 中列出的错误码（包括未来原生 SDK 版本新增的错误码）也会原样传递；
+   * 除非原生 SDK 文档另有说明，否则应将其视为连接原因。
+   *
+   * 如果没有 `errorCode`，表示平台未提供断开原因（例如 iOS 上的网络断开）；也应将其视为连接事件。
+   *
+   * 注意：token 过期导致的登出不会触发该回调，详见 {@link ChatConnectEventListener.onTokenDidExpire}。
+   * 需要同时处理这两个回调，才能覆盖所有登出场景。
+   *
+   * @param errorCode 断开连接的原因，详见 {@link ChatDisconnectErrorCode}。
+   * @param info 仅当 `errorCode` 为 {@link ChatDisconnectErrorCode.USER_LOGIN_FROM_OTHER_DEVICE} 时存在：`deviceName` 为发起登录的设备名称，`ext` 为该设备的扩展信息。详见 {@link ChatOptions.loginExtraInfo}。
    */
-  onDisconnected?(): void;
+  onDisconnected?(
+    errorCode?: number,
+    info?: { deviceName?: string; ext?: string }
+  ): void;
 
   /**
    * Agora token 即将过期时触发。
@@ -362,13 +528,6 @@ export interface ChatConnectEventListener {
   onTokenDidExpire?(): void;
 
   /**
-   * 应用程序的日活跃用户数量（DAU）或月活跃用户数量（MAU）达到上限时回调。
-   *
-   * 服务器主动断开连接。
-   */
-  onAppActiveNumberReachLimit?(): void;
-
-  /**
    * 开始接收离线消息的时候触发。
    */
   onOfflineMessageSyncStart?(): void;
@@ -379,70 +538,29 @@ export interface ChatConnectEventListener {
   onOfflineMessageSyncFinish?(): void;
 
   /**
-   * 其他设备登录通知。
+   * SDK 开始从服务器同步指定类型的数据时触发。
    *
-   * 服务器主动断开连接。
-   *
-   * @deprecated 2024-08-15 请使用 {@link onUserDidLoginFromOtherDeviceWithInfo} 替换
+   * @param type 要同步的数据类型，是 {@link ChatDataSyncType} 的位掩码。
    */
-  onUserDidLoginFromOtherDevice?(deviceName?: string): void;
+  onDataSyncStart?(type: ChatDataSyncType): void;
 
   /**
-   * 用户在其它设备登录。
+   * SDK 完成从服务器同步指定类型的数据时触发。
    *
-   * 当前用户被服务器断开。
-   *
-   * @params -
-   * - Param [deviceName] 设备名称。
-   * - Param [ext] 设备扩展信息。 详见 {@link ChatOptions.loginExtraInfo}.
-   *
+   * @param type 已同步的数据类型，是 {@link ChatDataSyncType} 的位掩码。
+   * @param errorCode 同步结果的错误码。`0` 表示成功。
    */
-  onUserDidLoginFromOtherDeviceWithInfo?(params: {
-    deviceName: string;
-    ext?: string;
-  }): void;
+  onDataSyncFinish?(type: ChatDataSyncType, errorCode: number): void;
 
   /**
-   * 用户被移除通知。
+   * 本地数据库打开时触发。
    *
-   * 服务器主动断开连接。
-   */
-  onUserDidRemoveFromServer?(): void;
-
-  /**
-   * 被服务器禁止连接通知。
+   * 数据库的打开过程独立于登录流程。依赖本地数据库的 SDK 方法只能在该回调触发后调用。
    *
-   * 服务器主动断开连接。
+   * @param username 已打开数据库所绑定的用户 ID。
+   * @param errorCode 数据库打开结果的错误码。`0` 表示成功。
    */
-  onUserDidForbidByServer?(): void;
-
-  /**
-   * 用户密码变更通知。
-   *
-   * 服务器主动断开连接。
-   */
-  onUserDidChangePassword?(): void;
-
-  /**
-   * 登录设备数量超限通知。
-   *
-   * 服务器主动断开连接。
-   */
-  onUserDidLoginTooManyDevice?(): void;
-
-  /**
-   * 被其他设备踢掉通知。
-   *
-   * 服务器主动断开连接。
-   */
-  onUserKickedByOtherDevice?(): void;
-
-  /**
-   * 鉴权失败通知。 典型触发通知场景：token 过期、token 验证失败。
-   *
-   * 服务器主动断开连接。
-   */
-  onUserAuthenticationFailed?(): void;
+  onDatabaseOpened?(username: string, errorCode: number): void;
 }
 
 /**
@@ -526,7 +644,7 @@ export interface ChatCustomEventListener {
  *
  * - 消息成功发送到对方后，发送方会收到送达回执（需开启送达回执功能，详见 {@link ChatOptions#requireDeliveryAck(boolean)}）。
  *
- * - 对方阅读了这条消息，发送方会收到已读回执（需开启已读回执功能，详见 {@link ChatOptions#requireAck(boolean)}）。
+ * - 对方阅读了这条消息，发送方会收到已读回执（发送消息时需将 {@link ChatMessage.isNeedReadReceipt} 设置为 `true`）。
  *
  * 发送消息过程中，消息 ID 会从最初本地生成的 uuid 变更为服务器端生成的全局唯一 ID，该 ID 在使用 SDK 的所有设备上均唯一。
  *
@@ -595,18 +713,16 @@ export interface ChatMessageEventListener {
   onCmdMessagesReceived?(messages: Array<ChatMessage>): void;
 
   /**
-   * 收到单聊消息已读回执的回调。
+   * 收到消息已读回执时触发。
    *
-   * @param messages 消息的已读回执。
-   */
-  onMessagesRead?(messages: Array<ChatMessage>): void;
-
-  /**
-   * 收到群组消息的已读回执的回调。
+   * 以下任一场景会触发该回调：
    *
-   * @param groupMessageAcks 群组消息已读回执。
+   * - 接收方阅读消息并发送已读回执，详见 {@link ChatManager.sendMessageReadReceipts}。
+   * - 多端多设备登录场景下，当前用户在其他设备上阅读消息或清除会话未读消息数。
+   *
+   * @param receipts 消息已读回执，详见 {@link ChatMessageReadReceipt}。
    */
-  onGroupMessageRead?(groupMessageAcks: Array<ChatGroupMessageAck>): void;
+  onMessageReadReceipts?(receipts: Array<ChatMessageReadReceipt>): void;
 
   /**
    * 收到消息已送达回执的回调。
@@ -623,23 +739,11 @@ export interface ChatMessageEventListener {
   onMessagesRecalledInfo?(info: Array<ChatRecalledMessageInfo>): void;
 
   /**
-   * 会话更新事件回调。
+   * 会话更新时触发。
+   *
+   * 仅在添加或删除会话时触发该回调。
    */
   onConversationsUpdate?(): void;
-
-  /**
-   * 收到会话已读回执的回调。
-   *
-   * 回调此方法的场景：
-   * （1）消息被接收方阅读，即接收方发送了会话已读回执。
-   * SDK 在接收到此事件时，会将本地数据库中该会话中消息的 `isAcked` 属性置为 `true`。
-   * （2）多端多设备登录场景下，一端发送会话已读回执，服务器端会将会话的未读消息数置为 0，
-   * 同时其他端会回调此方法，并将本地数据库中该会话中消息的 `isRead` 属性置为 `true`。
-   *
-   * @param from 发送已读回执的用户 ID。
-   * @param to 收到已读回执的用户 ID。
-   */
-  onConversationRead?(from: string, to?: string): void;
 
   /**
    * 消息表情回复（Reaction）变化监听器。
@@ -662,16 +766,12 @@ export interface ChatMessageEventListener {
    * 子区所属群组的所有成员均可调用该方法。
    *
    * @param event 子区更新事件。
-   *
-   * @param event The message thread update event.
    */
   onChatMessageThreadUpdated?(event: ChatMessageThreadEvent): void;
   /**
    * 子区移除回调。
    *
    * @param event 子区移除事件。
-   *
-   * @param event The message thread destruction event.
    */
   onChatMessageThreadDestroyed?(event: ChatMessageThreadEvent): void;
   /**
@@ -900,14 +1000,6 @@ export interface ChatGroupEventListener {
     oldOwner: string;
   }): void;
   /**
-   * 新成员加入群组的回调。
-   *
-   * @params 参数组。
-   * - Param [groupId] 群组 ID。
-   * - Param [member] 新成员的用户 ID。
-   */
-  onMemberJoined?(params: { groupId: string; member: string }): void;
-  /**
    * 多个群成员加入群组的回调。
    *
    * 例如，用户 A 在设备 A1 上将用户 B 和用户 C 加入群组，则设备 A2 上会收到该事件。 可能收到一次或多次。一次可能是多个成员聚合通知，多次可能是单个成员分别通知。
@@ -917,14 +1009,6 @@ export interface ChatGroupEventListener {
    * - Param [members] 新成员的用户 ID 数组。
    */
   onMembersJoined?(params: { groupId: string; members: Array<string> }): void;
-  /**
-   * 群组成员主动退出回调。
-   *
-   * @params 参数组。
-   * - Param [groupId] 群组 ID。
-   * - Param [member] 退群的成员的用户 ID。
-   */
-  onMemberExited?(params: { groupId: string; member: string }): void;
   /**
    * 多个群组成员主动退出回调。
    *
@@ -1090,16 +1174,6 @@ export interface ChatContactEventListener {
    */
   onFriendRequestDeclined?(userName: string): void;
   /**
-   * 开始从服务器同步联系人列表时触发。
-   */
-  onContactSyncStart?(): void;
-  /**
-   * 从服务器同步联系人列表完成时触发。
-   *
-   * @param error 同步失败时的错误信息。详见 {@link ChatError}。
-   */
-  onContactSyncFinish?(error?: ChatError): void;
-  /**
    * 联系人信息更新时触发。
    *
    * @param contact 信息发生更新的联系人。详见 {@link ChatContact}。
@@ -1178,20 +1252,6 @@ export interface ChatRoomEventListener {
     roomName?: string;
     reason?: string;
   }): void;
-  /**
-   * 有成员被禁言回调。
-   *
-   * @params 参数组。
-   * - Param [roomId] 聊天室 ID。
-   * - Param [mutes] 被禁言成员的用户 ID。
-   * - Param [expireTime] 预留参数，禁言过期时间戳。
-   */
-  onMuteListAdded?(params: {
-    roomId: string;
-    mutes: Array<string>;
-    expireTime?: string;
-  }): void;
-
   /**
    * 增加禁言成员时候回调。
    *

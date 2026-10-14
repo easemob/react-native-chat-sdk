@@ -8,8 +8,6 @@ import {
   MTchangeChatRoomOwner,
   MTchangeChatRoomSubject,
   MTchatRoomChange,
-  MTcreateChatRoom,
-  MTdestroyChatRoom,
   MTfetchChatRoomAllowListFromServer,
   MTfetchChatRoomAnnouncement,
   MTfetchChatRoomAttributes,
@@ -105,21 +103,10 @@ export class ChatRoomManager extends Native {
           });
           break;
         case 'onMuteListAdded':
-          {
-            const hasKV = params.muteKVs;
-            if (hasKV) {
-              listener.onMuteListAddedV2?.({
-                roomId: params.roomId,
-                mutes: params.muteKVs,
-              });
-            } else {
-              listener.onMuteListAdded?.({
-                roomId: params.roomId,
-                mutes: params.mutes,
-                expireTime: params.expireTime,
-              });
-            }
-          }
+          listener.onMuteListAddedV2?.({
+            roomId: params.roomId,
+            mutes: params.muteKVs,
+          });
           break;
         case 'onMuteListRemoved':
           listener.onMuteListRemoved?.({
@@ -167,7 +154,7 @@ export class ChatRoomManager extends Native {
         case 'onAllMemberMuteStateChanged':
           listener.onAllChatRoomMemberMuteStateChanged?.({
             roomId: params.roomId,
-            isAllMuted: params.isAllMuted,
+            isAllMuted: params.isMuted,
           });
           break;
         case 'onSpecificationChanged':
@@ -230,25 +217,6 @@ export class ChatRoomManager extends Native {
   public removeAllRoomListener(): void {
     chatlog.log(`${ChatRoomManager.TAG}: removeAllRoomListener: `);
     this._roomListeners.clear();
-  }
-
-  /**
-   * 加入聊天室。
-   *
-   * 退出聊天室见： {@link leaveChatRoom}。
-   *
-   * @param roomId 要加入的聊天室的 ID。
-   *
-   * @throws 如果有异常会在这里抛出，包含错误码和错误描述，详见 {@link ChatError}。
-   */
-  public async joinChatRoom(roomId: string): Promise<void> {
-    chatlog.log(`${ChatRoomManager.TAG}: joinChatRoom: ${roomId}`);
-    let r: any = await Native._callMethod(MTjoinChatRoom, {
-      [MTjoinChatRoom]: {
-        roomId: roomId,
-      },
-    });
-    ChatRoomManager.checkErrorFromResult(r);
   }
 
   /**
@@ -383,66 +351,6 @@ export class ChatRoomManager extends Native {
       return new ChatRoom(rr);
     }
     return undefined;
-  }
-
-  /**
-   * 创建聊天室。
-   *
-   * @param subject 聊天室名称。
-   * @param description 聊天室描述。
-   * @param welcome 新成员加入时的欢迎消息。
-   * @param members 被邀请加入的成员用户 ID 列表。
-   * @param maxCount 聊天室最大人数。
-   * @returns 聊天室实例。
-   *
-   * @throws 如果有异常会在这里抛出，包含错误码和错误描述，详见 {@link ChatError}。
-   */
-  public async createChatRoom(
-    subject: string,
-    description?: string,
-    welcome?: string,
-    members?: Array<string>,
-    maxCount: number = 300
-  ): Promise<ChatRoom> {
-    chatlog.log(
-      `${ChatRoomManager.TAG}: createChatRoom: `,
-      subject,
-      description,
-      welcome,
-      members,
-      maxCount
-    );
-    let r: any = await Native._callMethod(MTcreateChatRoom, {
-      [MTcreateChatRoom]: {
-        subject: subject,
-        desc: description,
-        welcomeMsg: welcome,
-        members: members,
-        maxUserCount: maxCount,
-      },
-    });
-    ChatRoomManager.checkErrorFromResult(r);
-    let ret: ChatRoom = new ChatRoom(r?.[MTcreateChatRoom]);
-    return ret;
-  }
-
-  /**
-   * 解散聊天室。
-   *
-   * 仅聊天室所有者有权限调用该方法。
-   *
-   * @param roomId 聊天室 ID。
-   *
-   * @throws 如果有异常会在这里抛出，包含错误码和错误描述，详见 {@link ChatError}。
-   */
-  public async destroyChatRoom(roomId: string): Promise<void> {
-    chatlog.log(`${ChatRoomManager.TAG}: destroyChatRoom: `, roomId);
-    let r: any = await Native._callMethod(MTdestroyChatRoom, {
-      [MTdestroyChatRoom]: {
-        roomId,
-      },
-    });
-    ChatRoomManager.checkErrorFromResult(r);
   }
 
   /**
@@ -1090,11 +998,11 @@ export class ChatRoomManager extends Native {
    * - 10 个数字 0-9；
    * - “_”, “-”, “.”。
    * - deleteWhenLeft: 当前成员退出聊天室是否自动删除该自定义属性。
-   *   - (Default)`true`：是
+   *   - （默认）`true`：是
    *   - `false`：否
    * - overwrite: 是否覆盖其他成员设置的属性 key 相同的属性。
    *   - `true`：是
-   *   - (Default)`false`：否
+   *   - （默认）`false`：否
    *
    * @returns 若某些属性设置失败，SDK 返回键值对（key-value）结构的属性集合，在每个键值对中 key 为属性 key，value 为失败原因。
    *

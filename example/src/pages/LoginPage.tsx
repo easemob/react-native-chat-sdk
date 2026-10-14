@@ -2,7 +2,6 @@ import { useState } from 'react';
 import {
   ScrollView,
   StyleSheet,
-  Switch,
   Text,
   TextInput,
   TouchableOpacity,
@@ -21,25 +20,24 @@ type Props = NativeStackScreenProps<RootStackParamList, 'Login'>;
 
 export function LoginPage({ navigation }: Props) {
   const sdk = useSdkState();
-  const [isPassword, setIsPassword] = useState(true);
   // 预填自 env.ts（scripts/generate-env.js 生成），可手改
   const [userId, setUserId] = useState(accounts[0]?.id ?? '');
-  const [pwdOrToken, setPwdOrToken] = useState(accounts[0]?.mm ?? '');
+  const [token, setToken] = useState(accounts[0]?.mm ?? '');
   const [resultText, setResultText] = useState<string | null>(null);
   const [running, setRunning] = useState(false);
 
   const onLogin = async () => {
     setRunning(true);
     try {
-      await ChatClient.getInstance().login(userId, pwdOrToken, isPassword);
+      await ChatClient.getInstance().loginWithToken(userId, token);
       const result = okResult({ userId });
-      addLog('api.ChatClient.login', result);
+      addLog('api.ChatClient.loginWithToken', result);
       setResultText(JSON.stringify(result, null, 2));
       sdk.markLoggedIn(userId);
       navigation.push('Search');
     } catch (e) {
       const result = errResult(e);
-      addLog('api.ChatClient.login', result);
+      addLog('api.ChatClient.loginWithToken', result);
       setResultText(JSON.stringify(result, null, 2));
     } finally {
       setRunning(false);
@@ -79,13 +77,6 @@ export function LoginPage({ navigation }: Props) {
         {sdk.loggedIn ? `已登录：${sdk.currentUser ?? ''}` : '未登录'}
       </Text>
 
-      <View style={styles.switchRow}>
-        <Text style={styles.switchLabel}>
-          {isPassword ? '密码登录' : 'token 登录'}
-        </Text>
-        <Switch value={isPassword} onValueChange={setIsPassword} />
-      </View>
-
       <TextInput
         style={styles.input}
         value={userId}
@@ -96,9 +87,9 @@ export function LoginPage({ navigation }: Props) {
       />
       <TextInput
         style={styles.input}
-        value={pwdOrToken}
-        onChangeText={setPwdOrToken}
-        placeholder={isPassword ? 'password' : 'token'}
+        value={token}
+        onChangeText={setToken}
+        placeholder="token"
         autoCapitalize="none"
         autoCorrect={false}
       />

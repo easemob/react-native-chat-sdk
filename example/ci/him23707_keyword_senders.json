@@ -1,0 +1,97 @@
+{
+  "steps": [
+    {
+      "api": "ChatManager.sendMessage",
+      "id": "send",
+      "params": {
+        "targetId": "$config.accounts.1.id",
+        "content": "him23707kwretest20260922b",
+        "chatType": 0
+      },
+      "expect": {
+        "success": true
+      },
+      "delayAfterMs": 5000
+    },
+    {
+      "api": "ChatManager.getMsgs",
+      "id": "dump-conv",
+      "params": {
+        "convId": "$config.accounts.1.id",
+        "convType": 0,
+        "startMsgId": "",
+        "loadCount": 20,
+        "direction": 0
+      },
+      "expect": {
+        "success": true
+      }
+    },
+    {
+      "api": "ChatManager.getConvMsgsWithKeyword",
+      "id": "search-omit-senders",
+      "params": {
+        "convId": "$config.accounts.1.id",
+        "convType": 0,
+        "keywords": "him23707kwretest20260922b",
+        "timestamp": 9999999999999,
+        "count": 50,
+        "direction": 0,
+        "searchScope": 2
+      },
+      "expect": {
+        "success": true
+      }
+    },
+    {
+      "api": "ChatManager.getConvMsgsWithKeyword",
+      "id": "search-omit-senders-scope0",
+      "params": {
+        "convId": "$config.accounts.1.id",
+        "convType": 0,
+        "keywords": "him23707kwretest20260922b",
+        "timestamp": 9999999999999,
+        "count": 50,
+        "direction": 0,
+        "searchScope": 0
+      },
+      "expect": {
+        "success": true
+      }
+    },
+    {
+      "api": "ChatManager.getConvMsgsWithKeyword",
+      "id": "search-matching-senders",
+      "params": {
+        "convId": "$config.accounts.1.id",
+        "convType": 0,
+        "keywords": "him23707kwretest20260922b",
+        "timestamp": 9999999999999,
+        "count": 50,
+        "direction": 0,
+        "searchScope": 2,
+        "senders": ["$config.accounts.0.id"]
+      },
+      "expect": {
+        "success": true
+      }
+    },
+    {
+      "api": "ChatManager.getConvMsgsWithKeyword",
+      "id": "search-other-senders",
+      "params": {
+        "convId": "$config.accounts.1.id",
+        "convType": 0,
+        "keywords": "him23707kwretest20260922b",
+        "timestamp": 9999999999999,
+        "count": 50,
+        "direction": 0,
+        "searchScope": 2,
+        "senders": ["$config.accounts.1.id"]
+      },
+      "expect": {
+        "success": true
+      }
+    }
+  ]
+}

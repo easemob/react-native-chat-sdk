@@ -21,6 +21,10 @@
 #import <UserNotifications/UserNotifications.h>
 
 @interface ExtSdkClientWrapper () <EMClientDelegate, EMMultiDevicesDelegate>
+// Set when a forced-logout delegate fires; the SDK then tears down the
+// connection and connectionStateDidChange:(EMConnectionDisconnected) would
+// duplicate the coded onDisconnected event, so it is swallowed once.
+@property(nonatomic, assign) BOOL forcedLogoutPending;
 @end
 
 @implementation ExtSdkClientWrapper
@@ -75,51 +79,22 @@
             withParams:EMClient.sharedClient.accessUserToken];
 }
 
-- (void)createAccount:(NSDictionary *)param
-       withMethodType:(NSString *)aChannelName
-               result:(nonnull id<ExtSdkCallbackObjc>)result {
-    __weak typeof(self) weakSelf = self;
-    NSString *username = param[@"username"];
-    NSString *password = param[@"password"];
-    [EMClient.sharedClient registerWithUsername:username
-                                       password:password
-                                     completion:^(NSString *aUsername, EMError *aError) {
-                                       [weakSelf onResult:result
-                                           withMethodType:ExtSdkMethodKeyCreateAccount
-                                                withError:aError
-                                               withParams:aUsername];
-                                     }];
-}
-
 - (void)login:(NSDictionary *)param
     withMethodType:(NSString *)aChannelName
             result:(nonnull id<ExtSdkCallbackObjc>)result {
     __weak typeof(self) weakSelf = self;
     NSString *username = param[@"username"];
-    NSString *pwdOrToken = param[@"pwdOrToken"];
-    BOOL isPwd = [param[@"isPassword"] boolValue];
+    NSString *token = param[@"pwdOrToken"];
 
-    if (isPwd) {
-        [EMClient.sharedClient
-            loginWithUsername:username
-                     password:pwdOrToken
-                   completion:^(NSString *aUsername, EMError *aError) {
-                     [weakSelf onResult:result
-                         withMethodType:ExtSdkMethodKeyLogin
-                              withError:aError
-                             withParams:@{@"username" : aUsername, @"token" : EMClient.sharedClient.accessUserToken}];
-                   }];
-    } else {
-        [EMClient.sharedClient
-            loginWithUsername:username
-                        token:pwdOrToken
-                   completion:^(NSString *aUsername, EMError *aError) {
-                     [weakSelf onResult:result
-                         withMethodType:ExtSdkMethodKeyLogin
-                              withError:aError
-                             withParams:@{@"username" : aUsername, @"token" : EMClient.sharedClient.accessUserToken}];
-                   }];
-    }
+    [EMClient.sharedClient
+        loginWithUsername:username
+                    token:token
+               completion:^(NSString *aUsername, EMError *aError) {
+                 [weakSelf onResult:result
+                     withMethodType:ExtSdkMethodKeyLogin
+                          withError:aError
+                         withParams:@{@"username" : aUsername, @"token" : EMClient.sharedClient.accessUserToken}];
+               }];
 }
 
 - (void)logout:(NSDictionary *)param
@@ -162,15 +137,6 @@
     [self onResult:result withMethodType:ExtSdkMethodKeyGetCurrentUser withError:nil withParams:username];
 }
 
-- (void)uploadLog:(NSDictionary *)param
-    withMethodType:(NSString *)aChannelName
-            result:(nonnull id<ExtSdkCallbackObjc>)result {
-    __weak typeof(self) weakSelf = self;
-    [EMClient.sharedClient uploadDebugLogToServerWithCompletion:^(EMError *aError) {
-      [weakSelf onResult:result withMethodType:ExtSdkMethodKeyUploadLog withError:aError withParams:nil];
-    }];
-}
-
 - (void)compressLogs:(NSDictionary *)param
       withMethodType:(NSString *)aChannelName
               result:(nonnull id<ExtSdkCallbackObjc>)result {
@@ -185,31 +151,18 @@
             result:(nonnull id<ExtSdkCallbackObjc>)result {
     __weak typeof(self) weakSelf = self;
     NSString *username = param[@"username"];
-    NSString *password = param[@"password"];
+    NSString *token = param[@"token"];
     NSString *resource = param[@"resource"];
-    Boolean isPassword = [param[@"isPassword"] boolValue];
 
-    if (isPassword) {
-        [EMClient.sharedClient kickDeviceWithUsername:username
-                                             password:password
-                                             resource:resource
-                                           completion:^(EMError *aError) {
-                                             [weakSelf onResult:result
-                                                 withMethodType:ExtSdkMethodKeyKickDevice
-                                                      withError:aError
-                                                     withParams:nil];
-                                           }];
-    } else {
-        [EMClient.sharedClient kickDeviceWithUserId:username
-                                              token:password
-                                           resource:resource
-                                         completion:^(EMError *_Nullable aError) {
-                                           [weakSelf onResult:result
-                                               withMethodType:aChannelName
-                                                    withError:aError
-                                                   withParams:nil];
-                                         }];
-    }
+    [EMClient.sharedClient kickDeviceWithUserId:username
+                                          token:token
+                                       resource:resource
+                                     completion:^(EMError *_Nullable aError) {
+                                       [weakSelf onResult:result
+                                           withMethodType:aChannelName
+                                                withError:aError
+                                               withParams:nil];
+                                     }];
 }
 
 - (void)kickAllDevices:(NSDictionary *)param
@@ -217,37 +170,16 @@
                 result:(nonnull id<ExtSdkCallbackObjc>)result {
     __weak typeof(self) weakSelf = self;
     NSString *username = param[@"username"];
-    NSString *password = param[@"password"];
-    Boolean isPassword = [param[@"isPassword"] boolValue];
+    NSString *token = param[@"token"];
 
-    if (isPassword) {
-        [EMClient.sharedClient kickAllDevicesWithUsername:username
-                                                 password:password
-                                               completion:^(EMError *aError) {
-                                                 [weakSelf onResult:result
-                                                     withMethodType:ExtSdkMethodKeyKickAllDevices
-                                                          withError:aError
-                                                         withParams:nil];
-                                               }];
-    } else {
-        [EMClient.sharedClient kickAllDevicesWithUserId:username
-                                                  token:password
-                                             completion:^(EMError *_Nullable aError) {
-                                               [weakSelf onResult:result
-                                                   withMethodType:aChannelName
-                                                        withError:aError
-                                                       withParams:nil];
-                                             }];
-    }
-}
-
-- (void)isLoggedInBefore:(NSDictionary *)param
-          withMethodType:(NSString *)aChannelName
-                  result:(nonnull id<ExtSdkCallbackObjc>)result {
-    [self onResult:result
-        withMethodType:ExtSdkMethodKeyIsLoggedInBefore
-             withError:nil
-            withParams:@(EMClient.sharedClient.isLoggedIn)];
+    [EMClient.sharedClient kickAllDevicesWithUserId:username
+                                              token:token
+                                         completion:^(EMError *_Nullable aError) {
+                                           [weakSelf onResult:result
+                                               withMethodType:aChannelName
+                                                    withError:aError
+                                                   withParams:nil];
+                                         }];
 }
 
 - (void)getLoggedInDevicesFromServer:(NSDictionary *)param
@@ -255,57 +187,21 @@
                               result:(nonnull id<ExtSdkCallbackObjc>)result {
     __weak typeof(self) weakSelf = self;
     NSString *username = param[@"username"];
-    NSString *password = param[@"password"];
-    Boolean isPassword = [param[@"isPassword"] boolValue];
+    NSString *token = param[@"token"];
 
-    if (isPassword) {
-        [EMClient.sharedClient
-            getLoggedInDevicesFromServerWithUsername:username
-                                            password:password
-                                          completion:^(NSArray *aList, EMError *aError) {
-                                            NSMutableArray *list = [NSMutableArray array];
-                                            for (EMDeviceConfig *deviceInfo in aList) {
-                                                [list addObject:[deviceInfo toJsonObject]];
-                                            }
-
-                                            [weakSelf onResult:result
-                                                withMethodType:ExtSdkMethodKeyGetLoggedInDevicesFromServer
-                                                     withError:aError
-                                                    withParams:aError ? nil : list];
-                                          }];
-    } else {
-        [EMClient.sharedClient getLoggedInDevicesFromServerWithUserId:username
-                                                                token:password
-                                                           completion:^(NSArray<EMDeviceConfig *> *_Nullable aList,
-                                                                        EMError *_Nullable aError) {
-                                                             NSMutableArray *list = [NSMutableArray array];
-                                                             for (EMDeviceConfig *deviceInfo in aList) {
-                                                                 [list addObject:[deviceInfo toJsonObject]];
-                                                             }
-                                                             [weakSelf onResult:result
-                                                                 withMethodType:aChannelName
-                                                                      withError:aError
-                                                                     withParams:aError ? nil : list];
-                                                           }];
-    }
-}
-
-- (void)loginWithAgoraToken:(NSDictionary *)param
-             withMethodType:(NSString *)aChannelName
-                     result:(nonnull id<ExtSdkCallbackObjc>)result {
-    // !!! It has been marked as invalid in the typescript language.
-    __weak typeof(self) weakSelf = self;
-    NSString *username = param[@"username"];
-    NSString *agoraToken = param[@"agoratoken"];
-    [EMClient.sharedClient
-        loginWithUsername:username
-               agoraToken:agoraToken
-               completion:^(NSString *aUsername, EMError *aError) {
-                 [weakSelf onResult:result
-                     withMethodType:ExtSdkMethodKeyLoginWithAgoraToken
-                          withError:aError
-                         withParams:@{@"username" : aUsername, @"token" : EMClient.sharedClient.accessUserToken}];
-               }];
+    [EMClient.sharedClient getLoggedInDevicesFromServerWithUserId:username
+                                                            token:token
+                                                       completion:^(NSArray<EMDeviceConfig *> *_Nullable aList,
+                                                                    EMError *_Nullable aError) {
+                                                         NSMutableArray *list = [NSMutableArray array];
+                                                         for (EMDeviceConfig *deviceInfo in aList) {
+                                                             [list addObject:[deviceInfo toJsonObject]];
+                                                         }
+                                                         [weakSelf onResult:result
+                                                             withMethodType:aChannelName
+                                                                  withError:aError
+                                                                 withParams:aError ? nil : list];
+                                                       }];
 }
 
 - (void)isConnected:(NSDictionary *)param
@@ -320,9 +216,9 @@
 - (void)renewToken:(NSDictionary *)param
     withMethodType:(NSString *)aChannelName
             result:(nonnull id<ExtSdkCallbackObjc>)result {
-    NSString *newAgoraToken = param[@"agora_token"];
+    NSString *token = param[@"token"];
     __weak typeof(self) weakSelf = self;
-    [EMClient.sharedClient renewToken:newAgoraToken
+    [EMClient.sharedClient renewToken:token
                            completion:^(EMError *_Nullable aError) {
                              [weakSelf onResult:result
                                  withMethodType:ExtSdkMethodKeyRenewToken
@@ -331,77 +227,22 @@
                            }];
 }
 
-- (void)updatePushConfig:(NSDictionary *)param
-          withMethodType:(NSString *)aChannelName
-                  result:(nonnull id<ExtSdkCallbackObjc>)result {
-    NSDictionary *dict = param[@"config"];
-    NSString *deviceId = dict[@"deviceId"];
-    NSString *deviceToken = dict[@"deviceToken"];
-    //    NSData *deviceTokenData =
-    //        [deviceToken dataUsingEncoding:NSUTF8StringEncoding];
-
-    __weak typeof(self) weakSelf = self;
-    [EMClient.sharedClient registerForRemoteNotificationsWithCertName:deviceId
-                                                          deviceToken:deviceToken
-                                                           completion:^(EMError *_Nullable aError) {
-                                                             [weakSelf onResult:result
-                                                                 withMethodType:aChannelName
-                                                                      withError:aError
-                                                                     withParams:nil];
-                                                           }];
-    //    EMError* error = [EMClient.sharedClient bindDeviceToken:[deviceToken
-    //    dataUsingEncoding:NSUTF8StringEncoding]]; [self onResult:result
-    //    withMethodType:aChannelName withError:error withParams:nil];
-
-    //    [EMClient.sharedClient asyncBindDeviceToken:[deviceToken
-    //    dataUsingEncoding:NSUTF8StringEncoding]] success:^{
-    //        [self onResult:result withMethodType:aChannelName withError:nil
-    //        withParams:nil];
-    //    } failure:^(EMError *aError) {
-    //        [self onResult:result withMethodType:aChannelName withError:aError
-    //        withParams:nil];
-    //    }];
-
-    // must be NSString* type for deviceToken
-    //    [EMClient.sharedClient
-    //        registerForRemoteNotificationsWithDeviceToken:deviceToken
-    //                                           completion:^(
-    //                                               EMError *_Nullable aError)
-    //                                               {
-    //                                             [self onResult:result
-    //                                                 withMethodType:aChannelName
-    //                                                      withError:aError
-    //                                                     withParams:nil];
-    //                                           }];
-}
-
-// 2026-09-24 1.21.0
-- (void)bindPushKitToken:(NSDictionary *)param
-          withMethodType:(NSString *)aChannelName
-                  result:(nonnull id<ExtSdkCallbackObjc>)result {
-    // The PushKit certificate name is not taken from the request: it is an initialization option
-    // (ChatOptions.pushKitCertName -> EMOptions.pushKitCertName) and cannot change at runtime.
-    // An empty certificate name makes the native call fail with EMErrorUserIllegalArgument.
+- (void)bindDeviceToken:(NSDictionary *)param
+         withMethodType:(NSString *)aChannelName
+                 result:(nonnull id<ExtSdkCallbackObjc>)result {
+    // The APNs certificate name is not taken from the request: it is an initialization option
+    // (ChatOptions.apnsCertName -> EMOptions.apnsCertName) and cannot change at runtime.
+    // The notifierName sent by the caller is the vendor push credential, which only Android uses.
     NSString *deviceToken = param[@"deviceToken"];
-    // The native _extractTokenFromRawData: accepts both NSData and NSString, which is the
-    // same way the APNs route above passes its token through.
-    __weak typeof(self) weakSelf = self;
-    [EMClient.sharedClient registerPushKitToken:(NSData *)deviceToken
-                                     completion:^(EMError *_Nullable aError) {
-                                       [weakSelf onResult:result
-                                           withMethodType:aChannelName
-                                                withError:aError
-                                               withParams:nil];
-                                     }];
-}
 
-- (void)unbindPushKitToken:(NSDictionary *)param
-            withMethodType:(NSString *)aChannelName
-                    result:(nonnull id<ExtSdkCallbackObjc>)result {
     __weak typeof(self) weakSelf = self;
-    [EMClient.sharedClient unRegisterPushKitTokenWithCompletion:^(EMError *_Nullable aError) {
-      [weakSelf onResult:result withMethodType:aChannelName withError:aError withParams:nil];
-    }];
+    [EMClient.sharedClient bindFCMToken:deviceToken
+                             completion:^(EMError *_Nullable aError) {
+                               [weakSelf onResult:result
+                                   withMethodType:aChannelName
+                                        withError:aError
+                                       withParams:nil];
+                             }];
 }
 
 - (void)getRTCTokenInfoWithChannelName:(NSDictionary *)param
@@ -427,7 +268,7 @@
                  withError:aError
                 withParams:nil];
       }
-                                         
+
                                        }];
 }
 
@@ -443,8 +284,32 @@
                 }];
 }
 
-- (void)activeNumbersReachLimitation {
-    [self onReceive:ExtSdkMethodKeyOnAppActiveNumberReachLimit withParams:nil];
+- (void)bindPushKitToken:(NSDictionary *)param
+          withMethodType:(NSString *)aChannelName
+                  result:(nonnull id<ExtSdkCallbackObjc>)result {
+    __weak typeof(self) weakSelf = self;
+    // The PushKit certificate name is not taken from the request: it is an initialization option
+    // (ChatOptions.pushKitCertName -> EMOptions.pushKitCertName) and cannot change at runtime.
+    // An empty certificate name makes the native call fail with EMErrorUserIllegalArgument.
+    NSString *deviceToken = param[@"deviceToken"];
+    // The native _extractTokenFromRawData: accepts both NSData and NSString, which is the
+    // same way the APNs route above passes its token through.
+    [EMClient.sharedClient registerPushKitToken:(NSData *)deviceToken
+                                     completion:^(EMError *_Nullable aError) {
+                                       [weakSelf onResult:result
+                                           withMethodType:aChannelName
+                                                withError:aError
+                                               withParams:nil];
+                                     }];
+}
+
+- (void)unbindPushKitToken:(NSDictionary *)param
+            withMethodType:(NSString *)aChannelName
+                    result:(nonnull id<ExtSdkCallbackObjc>)result {
+    __weak typeof(self) weakSelf = self;
+    [EMClient.sharedClient unRegisterPushKitTokenWithCompletion:^(EMError *_Nullable aError) {
+      [weakSelf onResult:result withMethodType:aChannelName withError:aError withParams:nil];
+    }];
 }
 
 #pragma - mark EMClientDelegate
@@ -452,18 +317,25 @@
 - (void)connectionStateDidChange:(EMConnectionState)aConnectionState {
     BOOL isConnected = aConnectionState == EMConnectionConnected;
     if (isConnected) {
+        self.forcedLogoutPending = NO;
         [self onReceive:ExtSdkMethodKeyOnConnected withParams:nil];
     } else {
+        if (self.forcedLogoutPending) {
+            self.forcedLogoutPending = NO;
+            return;
+        }
         [self onReceive:ExtSdkMethodKeyOnDisconnected withParams:nil];
     }
 }
 
-- (void)autoLoginDidCompleteWithError:(EMError *)aError {
-    if (aError.code == EMErrorServerServingForbidden) {
-        [self userDidForbidByServer];
-    } else if (aError.code == EMErrorAppActiveNumbersReachLimitation) {
-        [self activeNumbersReachLimitation];
+- (void)emitDisconnectedWithCode:(EMErrorCode)code params:(NSDictionary *_Nullable)extra {
+    NSMutableDictionary *data = [NSMutableDictionary dictionary];
+    data[@"errorCode"] = @(code);
+    if (extra) {
+        [data addEntriesFromDictionary:extra];
     }
+    self.forcedLogoutPending = YES;
+    [self onReceive:ExtSdkMethodKeyOnDisconnected withParams:data];
 }
 
 - (void)tokenWillExpire:(EMErrorCode)aErrorCode {
@@ -482,34 +354,44 @@
     [self onReceive:ExtSdkMethodKeyOnOfflineMessageSyncFinish withParams:nil];
 }
 
-- (void)userAccountDidLoginFromOtherDevice:(NSString *_Nullable)aDeviceName {
-    // !!! It has been marked as invalid in the typescript language.
-    [self onReceive:ExtSdkMethodKeyOnUserDidLoginFromOtherDevice withParams:@{@"deviceName" : aDeviceName}];
+- (void)syncDataStartWithType:(EMDataSyncType)type {
+    [self onReceive:ExtSdkMethodKeyOnDataSyncStart withParams:@{@"type" : @(type)}];
+}
+
+- (void)syncDataFinished:(EMError *_Nullable)error type:(EMDataSyncType)type {
+    [self onReceive:ExtSdkMethodKeyOnDataSyncFinish
+         withParams:@{@"type" : @(type), @"errorCode" : @(error ? error.code : 0)}];
+}
+
+- (void)onDatabaseOpened:(EMError *_Nullable)error username:(NSString *_Nonnull)username {
+    [self onReceive:ExtSdkMethodKeyOnDatabaseOpened
+         withParams:@{@"username" : username, @"errorCode" : @(error ? error.code : 0)}];
 }
 
 - (void)userAccountDidLoginFromOtherDeviceWithInfo:(EMLoginExtensionInfo *_Nullable)info {
-    [self onReceive:ExtSdkMethodKeyOnUserDidLoginFromOtherDeviceWithInfo
-         withParams:@{@"deviceName" : info.deviceName, @"ext" : info.extensionInfo}];
+    NSMutableDictionary *extra = [NSMutableDictionary dictionary];
+    if (info.deviceName) {
+        extra[@"deviceName"] = info.deviceName;
+    }
+    if (info.extensionInfo) {
+        extra[@"ext"] = info.extensionInfo;
+    }
+    [self emitDisconnectedWithCode:EMErrorUserLoginOnAnotherDevice params:extra];
 }
 
 - (void)userAccountDidRemoveFromServer {
-    [self onReceive:ExtSdkMethodKeyOnUserDidRemoveFromServer withParams:nil];
+    [self emitDisconnectedWithCode:EMErrorUserRemoved params:nil];
 }
 
 - (void)userDidForbidByServer {
-    [self onReceive:ExtSdkMethodKeyOnUserDidForbidByServer withParams:nil];
+    [self emitDisconnectedWithCode:EMErrorServerServingForbidden params:nil];
 }
 
 - (void)userAccountDidForcedToLogout:(EMError *)aError {
-    if (aError.code == EMErrorUserKickedByChangePassword) {
-        [self onReceive:ExtSdkMethodKeyOnUserDidChangePassword withParams:nil];
-    } else if (aError.code == EMErrorUserLoginTooManyDevices) {
-        [self onReceive:ExtSdkMethodKeyOnUserDidLoginTooManyDevice withParams:nil];
-    } else if (aError.code == EMErrorUserKickedByOtherDevice) {
-        [self onReceive:ExtSdkMethodKeyOnUserKickedByOtherDevice withParams:nil];
-    } else if (aError.code == EMErrorUserAuthenticationFailed) {
-        [self onReceive:ExtSdkMethodKeyOnUserAuthenticationFailed withParams:nil];
+    if (!aError) {
+        return;
     }
+    [self emitDisconnectedWithCode:aError.code params:nil];
 }
 
 #pragma mark - EMMultiDevicesDelegate

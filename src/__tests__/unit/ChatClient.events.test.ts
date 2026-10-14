@@ -73,6 +73,49 @@ describe('ChatClient event dispatch', () => {
     expect(listener.onDisconnected).not.toHaveBeenCalled();
   });
 
+  test('onDisconnected passes the error code through to the listeners', () => {
+    const listener: ChatConnectEventListener = { onDisconnected: jest.fn() };
+    client.addConnectionListener(listener);
+
+    emitNativeEvent(MTonDisconnected, { errorCode: 217 });
+
+    expect(listener.onDisconnected).toHaveBeenCalledWith(217, undefined);
+  });
+
+  test('onDisconnected delivers codes that are not listed in ChatDisconnectErrorCode unchanged', () => {
+    const listener: ChatConnectEventListener = { onDisconnected: jest.fn() };
+    client.addConnectionListener(listener);
+
+    emitNativeEvent(MTonDisconnected, { errorCode: 999 });
+
+    expect(listener.onDisconnected).toHaveBeenCalledWith(999, undefined);
+  });
+
+  test('onDisconnected wraps the device info only when present', () => {
+    const listener: ChatConnectEventListener = { onDisconnected: jest.fn() };
+    client.addConnectionListener(listener);
+
+    emitNativeEvent(MTonDisconnected, {
+      errorCode: 206,
+      deviceName: 'Pixel 8',
+      ext: '{"from":"other"}',
+    });
+
+    expect(listener.onDisconnected).toHaveBeenCalledWith(206, {
+      deviceName: 'Pixel 8',
+      ext: '{"from":"other"}',
+    });
+  });
+
+  test('a network disconnection arrives without an error code', () => {
+    const listener: ChatConnectEventListener = { onDisconnected: jest.fn() };
+    client.addConnectionListener(listener);
+
+    emitNativeEvent(MTonDisconnected);
+
+    expect(listener.onDisconnected).toHaveBeenCalledWith(undefined, undefined);
+  });
+
   test('removeAllConnectionListener clears every connection listener', () => {
     const l1: ChatConnectEventListener = { onTokenWillExpire: jest.fn() };
     const l2: ChatConnectEventListener = { onTokenWillExpire: jest.fn() };
@@ -138,6 +181,41 @@ describe('ChatClient event dispatch', () => {
       'g1',
       ''
     );
+  });
+
+  test('multi-device group update event routes to onGroupEvent', () => {
+    const listener: ChatMultiDeviceEventListener = {
+      onGroupEvent: jest.fn(),
+    };
+    client.addMultiDeviceListener(listener);
+
+    // 34 is iOS-only (`EMMultiDevicesEventGroupUpdate`).
+    emitNativeEvent(MTonMultiDeviceEvent, {
+      type: MTonMultiDeviceEventGroup,
+      event: 34,
+      target: 'g1',
+      ext: '',
+    });
+
+    expect(listener.onGroupEvent).toHaveBeenCalledWith(
+      ChatMultiDeviceEvent.GROUP_UPDATE,
+      'g1',
+      ''
+    );
+  });
+
+  test('multi-device group event values match the native enumerations', () => {
+    // The enum numbers its members implicitly, so inserting or reordering a
+    // member would silently shift the values the native bridge sends.
+    expect(ChatMultiDeviceEvent.GROUP_ADD_USER_ALLOW_LIST).toBe(30);
+    expect(ChatMultiDeviceEvent.GROUP_REMOVE_USER_ALLOW_LIST).toBe(31);
+    expect(ChatMultiDeviceEvent.GROUP_ALL_BAN).toBe(32);
+    expect(ChatMultiDeviceEvent.GROUP_REMOVE_ALL_BAN).toBe(33);
+    expect(ChatMultiDeviceEvent.GROUP_UPDATE).toBe(34);
+    expect(ChatMultiDeviceEvent.THREAD_CREATE).toBe(40);
+    expect(ChatMultiDeviceEvent.THREAD_UPDATE).toBe(44);
+    expect(ChatMultiDeviceEvent.THREAD_KICK).toBe(45);
+    expect(ChatMultiDeviceEvent.GROUP_METADATA_CHANGED).toBe(52);
   });
 
   test('multi-device conversation event routes to onConversationEvent', () => {

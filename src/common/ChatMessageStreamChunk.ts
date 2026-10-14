@@ -48,6 +48,4 @@ export interface ChatStreamChunk {
    * 流分片的自定义类型。
    */
   customType?: string;
-
-  // sequenceNumber: number; // deprecated
 }

@@ -105,10 +105,6 @@ export class ChatRoom {
   blockList?: Array<string>;
   /**
    * 聊天室禁言列表。
-   */
-  muteList?: Array<string>;
-  /**
-   * 聊天室禁言列表。
    *
    * key: 用户ID。
    * value: 过期时间戳。
@@ -162,7 +158,6 @@ export class ChatRoom {
     adminList?: Array<string>;
     memberList?: Array<string>;
     blockList?: Array<string>;
-    muteList?: Array<string>;
     muteKVList?: Record<string, number>;
     isAllMemberMuted?: boolean;
     permissionType: number;
@@ -180,7 +175,6 @@ export class ChatRoom {
     this.adminList = params.adminList;
     this.memberList = params.memberList;
     this.blockList = params.blockList;
-    this.muteList = params.muteList;
     this.muteKVList = params.muteKVList;
     this.isAllMemberMuted = params.isAllMemberMuted;
     this.permissionType = ChatRoomPermissionTypeFromNumber(

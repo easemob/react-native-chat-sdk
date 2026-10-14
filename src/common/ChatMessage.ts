@@ -396,30 +396,30 @@ export class ChatMessage {
    */
   hasDeliverAck: boolean = false;
   /**
-   * 单聊时，发送方是否收到了接收方的已读回执。接收方阅读消息后会调用 {@link ChatManager.sendMessageReadAck} 或者 {@link ChatManager.sendConversationReadAck} 发送已读回执。若需要已读回执，SDK 初始化时需设置 {@link ChatOptions.requireAck} 为 `true`。
+   * 单聊时，发送方是否收到了接收方的消息已读回执。接收方阅读消息后，会调用 {@link ChatManager.sendMessageReadReceipts} 向发送方发送已读回执。
    *
    * - `true`：是。
    * - （默认）`false`：否。
    */
-  hasReadAck: boolean = false;
+  readonly isPeerRead: boolean = false;
   /**
    * 群聊时，是否需要消息已读回执。
    *
    * - `true`：是。
    * - （默认）`false`：否。
    */
-  needGroupAck: boolean = false;
+  isNeedReadReceipt: boolean = false;
   /**
-   * 群聊时，已阅读消息的群成员数量。群成员已读消息后调用 {@link ChatManager.sendGroupMessageReadAck} 或者 {@link ChatManager.sendConversationReadAck} 发送已读回执。若需要开启已读回执功能，初始化时需设置 {@link ChatOptions.requireAck} 为 `true`， 并且发送消息时设置 {@link isNeedGroupAck} 为 `true`。
+   * 群聊时，已阅读消息的群成员数量。群成员阅读消息后，会调用 {@link ChatManager.sendMessageReadReceipts} 发送已读回执。若要为群消息启用已读回执功能，需要在发送消息时将 {@link isNeedReadReceipt} 设置为 `true`。
    */
-  groupAckCount: number = 0;
+  readonly groupReadReceiptCount: number = 0;
   /**
-   * 单聊或群聊时，接收方是否已读了消息。该参数的值影响会话的未读消息数。阅读消息后，接收方可以调用 {@link ChatManager.markMessageAsRead} 或者 {@link ChatManager.markAllMessagesAsRead} 将消息设置为已读。
+   * 单聊或群聊时，接收方是否已读消息。该参数的值与会话的未读消息数相关。接收方可以调用 {@link ChatManager.clearConversationUnreadMessageCount} 清除会话的未读消息数。
    *
    * - `true`：是。
    * - （默认）`false`：否。
    */
-  hasRead: boolean = false;
+  readonly isRead: boolean = false;
   /**
    * 消息的聊天类型，详见 {@link ChatMessageChatType}。
    */
@@ -463,7 +463,7 @@ export class ChatMessage {
 
   /**
    * 聊天室消息的优先级。
-   * **Note** 该属性仅适用于聊天室会话。
+   * **注意** 该属性仅适用于聊天室会话。
    */
   // @ts-expect-error
   private priority?: ChatRoomMessagePriority;
@@ -527,10 +527,10 @@ export class ChatMessage {
     localTime?: number;
     serverTime?: number;
     hasDeliverAck?: boolean;
-    hasReadAck?: boolean;
-    needGroupAck?: boolean;
-    groupAckCount?: number;
-    hasRead?: boolean;
+    isPeerRead?: boolean;
+    isNeedReadReceipt?: boolean;
+    groupReadReceiptCount?: number;
+    isRead?: boolean;
     chatType?: number;
     direction?: string;
     status?: number;
@@ -553,10 +553,10 @@ export class ChatMessage {
     this.localTime = params.localTime ?? getNowTimestamp();
     this.serverTime = params.serverTime ?? getNowTimestamp();
     this.hasDeliverAck = params.hasDeliverAck ?? false;
-    this.hasReadAck = params.hasReadAck ?? false;
-    this.needGroupAck = params.needGroupAck ?? false;
-    this.groupAckCount = params.groupAckCount ?? 0;
-    this.hasRead = params.hasRead ?? false;
+    this.isPeerRead = params.isPeerRead ?? false;
+    this.isNeedReadReceipt = params.isNeedReadReceipt ?? false;
+    this.groupReadReceiptCount = params.groupReadReceiptCount ?? 0;
+    this.isRead = params.isRead ?? false;
     this.chatType = ChatMessageChatTypeFromNumber(params.chatType ?? 0);
     this.direction = ChatMessageDirectionFromString(params.direction ?? 'send');
     this.status = ChatMessageStatusFromNumber(params.status ?? 0);
@@ -659,7 +659,7 @@ export class ChatMessage {
       body: params.body,
       direction: 'send',
       to: params.targetId,
-      hasRead: true,
+      isRead: true,
       chatType: params.chatType,
       isChatThread: params.isChatThread,
       conversationId: params.targetId,
@@ -678,7 +678,7 @@ export class ChatMessage {
    * - 群聊时是群组 ID。
    * - 聊天室则是聊天室 ID。
    * @param content 文本消息内容。
-   * @param chatType 会话类型。详见 {@link ChatType}。
+   * @param chatType 会话类型。详见 {@link ChatMessageChatType}。
    * @params opt 消息扩展参数。
    *  - isChatThread: 是否是子区消息。默认不是子区消息。
    *  - isOnline: 是否为在线时收到的消息。
@@ -720,12 +720,14 @@ export class ChatMessage {
    * - 群聊时为群组 ID。
    * - 聊天室则为聊天室 ID。
    * @param filePath 文件路径。
-   * @param chatType 会话类型。详见 {@link ChatType}。
-   * @param displayName 文件名称。
+   * @param chatType 会话类型。详见 {@link ChatMessageChatType}。
    * @params opt 消息扩展参数。
+   *  - displayName: 文件名称。
    *  - isChatThread: 是否是子区消息。默认不是子区消息。
    *  - isOnline: 是否为在线时收到的消息。
    *  - deliverOnlineOnly: 消息是否只投递给在线用户。
+   *  - fileSize: 文件大小。
+   *  - receiverList: 定向消息的接收方列表。
    *
    * @returns 消息实例。
    */
@@ -936,7 +938,7 @@ export class ChatMessage {
    * - 群聊时是群组 ID。
    * - 聊天室则是聊天室 ID。
    * @param messageIdList 合并的消息列表 ID。
-   * @param chatType 会话类型。 详见 {@link ChatType}.
+   * @param chatType 会话类型。详见 {@link ChatMessageChatType}。
    * @params opt 消息扩展参数。
    *  - isChatThread: 是否是子区消息。
    *    - `true`：是；
@@ -952,7 +954,7 @@ export class ChatMessage {
    *  - compatibleText: 合并消息的兼容信息。该字段用于需要兼容不支持合并转发消息的版本。
    *  - receiverList: 消息接收人列表。
    *
-   * @returns The message instance.
+   * @returns 消息实例。
    */
   public static createCombineMessage(
     targetId: string,
@@ -1133,14 +1135,6 @@ export class ChatMessage {
    */
   public get reactionList(): Promise<Array<ChatMessageReaction>> {
     return Factory.getChatClient().chatManager.getReactionList(this.msgId);
-  }
-
-  /**
-   * 获取群组消息的已读人数。
-   *
-   */
-  public get groupReadCount(): Promise<number | undefined> {
-    return Factory.getChatClient().chatManager.groupAckCount(this.msgId);
   }
 
   /**
@@ -1382,10 +1376,6 @@ export class ChatImageMessageBody extends _ChatFileMessageBody {
    */
   thumbnailRemotePath: string;
   /**
-   * 下载缩略图需要的 token。
-   */
-  thumbnailSecret: string;
-  /**
    * 缩略图下载状态，详见 {@link ChatDownloadStatus}。
    */
   thumbnailStatus: ChatDownloadStatus;
@@ -1429,7 +1419,6 @@ export class ChatImageMessageBody extends _ChatFileMessageBody {
     sendOriginalImage?: boolean;
     thumbnailLocalPath?: string;
     thumbnailRemotePath?: string;
-    thumbnailSecret?: string;
     thumbnailStatus?: number;
     width?: number;
     height?: number;
@@ -1457,7 +1446,6 @@ export class ChatImageMessageBody extends _ChatFileMessageBody {
     this.sendOriginalImage = params.sendOriginalImage ?? false;
     this.thumbnailLocalPath = params.thumbnailLocalPath ?? '';
     this.thumbnailRemotePath = params.thumbnailRemotePath ?? '';
-    this.thumbnailSecret = params.thumbnailSecret ?? '';
     this.thumbnailStatus = ChatDownloadStatusFromNumber(
       params.thumbnailStatus ?? -1
     );
@@ -1722,10 +1710,6 @@ export class ChatMessagePinInfo {
  */
 export class ChatFetchMessageOptions {
   /**
-   * 消息发送方。
-   */
-  from?: string;
-  /**
    * 群组会话中消息发送者的用户 ID 数组。
    */
   senders?: Array<string>;
@@ -1748,11 +1732,10 @@ export class ChatFetchMessageOptions {
   /**
    * 获取的消息是否保存到本地数据库。
    * - `true`: 保存到数据库；
-   * - `false`(Default)：不保存。
+   * - （默认）`false`：不保存。
    */
   needSave: boolean;
   constructor(params: {
-    from?: string;
     senders?: Array<string>;
     msgTypes?: ChatMessageType[];
     startTs: number;
@@ -1760,7 +1743,6 @@ export class ChatFetchMessageOptions {
     direction: ChatSearchDirection;
     needSave: boolean;
   }) {
-    this.from = params.from;
     this.senders = params.senders;
     this.startTs = params.startTs;
     this.endTs = params.endTs;

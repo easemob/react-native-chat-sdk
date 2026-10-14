@@ -57,11 +57,9 @@ iOS 端的 `HyphenateChat` 原生依赖支持两种集成方式：
        appKey !== undefined
          ? ChatOptions.withAppKey({
              appKey: appKey,
-             autoLogin: false,
            })
          : ChatOptions.withAppId({
              appId: appId,
-             autoLogin: false,
            })
      )
      .then(() => {

@@ -7,10 +7,11 @@ import { Factory } from './__internal__/Factory';
 
 import { BaseManager } from './__internal__/Base';
 import {
+  MTbindDeviceToken,
+  MTbindPushKitToken,
   MTchangeAppId,
   MTchangeAppKey,
   MTcompressLogs,
-  MTcreateAccount,
   MTgetCurrentUser,
   MTgetLoggedInDevicesFromServer,
   MTgetRTCTokenInfoWithChannelName,
@@ -18,15 +19,15 @@ import {
   MTgetUserIdsWithRTCUids,
   MTinit,
   MTisConnected,
-  MTisLoggedInBefore,
   MTkickAllDevices,
   MTkickDevice,
   MTlogin,
-  MTloginWithAgoraToken,
   MTlogout,
-  MTonAppActiveNumberReachLimit,
   MTonConnected,
   MTonCustomEvent,
+  MTonDatabaseOpened,
+  MTonDataSyncFinish,
+  MTonDataSyncStart,
   MTonDisconnected,
   MTonMultiDeviceEvent,
   MTonMultiDeviceEventContact,
@@ -38,18 +39,8 @@ import {
   MTonOfflineMessageSyncStart,
   MTonTokenDidExpire,
   MTonTokenWillExpire,
-  MTonUserAuthenticationFailed,
-  MTonUserDidChangePassword,
-  MTonUserDidForbidByServer,
-  MTonUserDidLoginFromOtherDevice,
-  MTonUserDidLoginFromOtherDeviceWithInfo,
-  MTonUserDidLoginTooManyDevice,
-  MTonUserDidRemoveFromServer,
-  MTonUserKickedByOtherDevice,
   MTrenewToken,
-  MTbindPushKitToken,
   MTunbindPushKitToken,
-  MTupdatePushConfig,
 } from './__internal__/Consts';
 import { ExceptionHandler } from './__internal__/ErrorHandler';
 import { ChatContactManager } from './ChatContactManager';
@@ -68,8 +59,7 @@ import { ChatRoomManager } from './ChatRoomManager';
 import { ChatUserInfoManager } from './ChatUserInfoManager';
 import { chatlog } from './common/ChatConst';
 import { ChatDeviceInfo } from './common/ChatDeviceInfo';
-import { ChatOptions } from './common/ChatOptions';
-import { ChatPushConfig } from './common/ChatPushConfig';
+import { ChatOptions, type ChatDataSyncType } from './common/ChatOptions';
 import { eventEmitter } from './__specs__';
 import { Native } from './__internal__/Native';
 import { ChatError } from './common/ChatError';
@@ -196,69 +186,6 @@ export class ChatClient extends BaseManager {
     );
 
     this._connectionSubscriptions.set(
-      MTonUserDidLoginFromOtherDevice,
-      event.addListener(
-        MTonUserDidLoginFromOtherDevice,
-        this.onUserDidLoginFromOtherDevice.bind(this)
-      )
-    );
-    this._connectionSubscriptions.set(
-      MTonUserDidLoginFromOtherDeviceWithInfo,
-      event.addListener(
-        MTonUserDidLoginFromOtherDeviceWithInfo,
-        this.onUserDidLoginFromOtherDeviceWithInfo.bind(this)
-      )
-    );
-    this._connectionSubscriptions.set(
-      MTonUserDidRemoveFromServer,
-      event.addListener(
-        MTonUserDidRemoveFromServer,
-        this.onUserDidRemoveFromServer.bind(this)
-      )
-    );
-    this._connectionSubscriptions.set(
-      MTonUserDidForbidByServer,
-      event.addListener(
-        MTonUserDidForbidByServer,
-        this.onUserDidForbidByServer.bind(this)
-      )
-    );
-    this._connectionSubscriptions.set(
-      MTonUserDidChangePassword,
-      event.addListener(
-        MTonUserDidChangePassword,
-        this.onUserDidChangePassword.bind(this)
-      )
-    );
-    this._connectionSubscriptions.set(
-      MTonUserDidLoginTooManyDevice,
-      event.addListener(
-        MTonUserDidLoginTooManyDevice,
-        this.onUserDidLoginTooManyDevice.bind(this)
-      )
-    );
-    this._connectionSubscriptions.set(
-      MTonUserKickedByOtherDevice,
-      event.addListener(
-        MTonUserKickedByOtherDevice,
-        this.onUserKickedByOtherDevice.bind(this)
-      )
-    );
-    this._connectionSubscriptions.set(
-      MTonUserAuthenticationFailed,
-      event.addListener(
-        MTonUserAuthenticationFailed,
-        this.onUserAuthenticationFailed.bind(this)
-      )
-    );
-    this._connectionSubscriptions.set(
-      MTonAppActiveNumberReachLimit,
-      event.addListener(
-        MTonAppActiveNumberReachLimit,
-        this.onAppActiveNumberReachLimit.bind(this)
-      )
-    );
-    this._connectionSubscriptions.set(
       MTonOfflineMessageSyncStart,
       event.addListener(
         MTonOfflineMessageSyncStart,
@@ -271,6 +198,18 @@ export class ChatClient extends BaseManager {
         MTonOfflineMessageSyncFinish,
         this.onOfflineMessageSyncFinish.bind(this)
       )
+    );
+    this._connectionSubscriptions.set(
+      MTonDataSyncStart,
+      event.addListener(MTonDataSyncStart, this.onDataSyncStart.bind(this))
+    );
+    this._connectionSubscriptions.set(
+      MTonDataSyncFinish,
+      event.addListener(MTonDataSyncFinish, this.onDataSyncFinish.bind(this))
+    );
+    this._connectionSubscriptions.set(
+      MTonDatabaseOpened,
+      event.addListener(MTonDatabaseOpened, this.onDatabaseOpened.bind(this))
     );
   }
 
@@ -289,9 +228,16 @@ export class ChatClient extends BaseManager {
   }
   private onDisconnected(params?: any): void {
     chatlog.log(`${ChatClient.TAG}: onDisconnected: `, params);
+    const errorCode = params?.errorCode as number | undefined;
+    const info =
+      params?.deviceName !== undefined || params?.ext !== undefined
+        ? {
+            deviceName: params?.deviceName as string | undefined,
+            ext: params?.ext as string | undefined,
+          }
+        : undefined;
     this._connectionListeners.forEach((element) => {
-      // let ec = params?.errorCode as number;
-      element.onDisconnected?.();
+      element.onDisconnected?.(errorCode, info);
     });
   }
   private onTokenWillExpire(params?: any): void {
@@ -354,61 +300,6 @@ export class ChatClient extends BaseManager {
       element.onDataReceived(params);
     });
   }
-  private onUserDidLoginFromOtherDevice(params: any): void {
-    chatlog.log(`${ChatClient.TAG}: onUserDidLoginFromOtherDevice: `);
-    this._connectionListeners.forEach((element) => {
-      const deviceName = params.deviceName as string | undefined;
-      element.onUserDidLoginFromOtherDevice?.(deviceName);
-    });
-  }
-  private onUserDidLoginFromOtherDeviceWithInfo(params: any): void {
-    chatlog.log(`${ChatClient.TAG}: onUserDidLoginFromOtherDeviceWithInfo: `);
-    this._connectionListeners.forEach((element) => {
-      element.onUserDidLoginFromOtherDeviceWithInfo?.(params);
-    });
-  }
-  private onUserDidRemoveFromServer(): void {
-    chatlog.log(`${ChatClient.TAG}: onUserDidRemoveFromServer: `);
-    this._connectionListeners.forEach((element) => {
-      element.onUserDidRemoveFromServer?.();
-    });
-  }
-  private onUserDidForbidByServer(): void {
-    chatlog.log(`${ChatClient.TAG}: onUserDidForbidByServer: `);
-    this._connectionListeners.forEach((element) => {
-      element.onUserDidForbidByServer?.();
-    });
-  }
-  private onUserDidChangePassword(): void {
-    chatlog.log(`${ChatClient.TAG}: onUserDidChangePassword: `);
-    this._connectionListeners.forEach((element) => {
-      element.onUserDidChangePassword?.();
-    });
-  }
-  private onUserDidLoginTooManyDevice(): void {
-    chatlog.log(`${ChatClient.TAG}: onUserDidLoginTooManyDevice: `);
-    this._connectionListeners.forEach((element) => {
-      element.onUserDidLoginTooManyDevice?.();
-    });
-  }
-  private onUserKickedByOtherDevice(): void {
-    chatlog.log(`${ChatClient.TAG}: onUserKickedByOtherDevice: `);
-    this._connectionListeners.forEach((element) => {
-      element.onUserKickedByOtherDevice?.();
-    });
-  }
-  private onUserAuthenticationFailed(): void {
-    chatlog.log(`${ChatClient.TAG}: onUserAuthenticationFailed: `);
-    this._connectionListeners.forEach((element) => {
-      element.onUserAuthenticationFailed?.();
-    });
-  }
-  private onAppActiveNumberReachLimit(): void {
-    chatlog.log(`${ChatClient.TAG}: onAppActiveNumberReachLimit: `);
-    this._connectionListeners.forEach((element) => {
-      element.onAppActiveNumberReachLimit?.();
-    });
-  }
   private onOfflineMessageSyncStart(): void {
     chatlog.log(`${ChatClient.TAG}: onOfflineMessageSyncStart: `);
     this._connectionListeners.forEach((element) => {
@@ -419,6 +310,30 @@ export class ChatClient extends BaseManager {
     chatlog.log(`${ChatClient.TAG}: onOfflineMessageSyncFinish: `);
     this._connectionListeners.forEach((element) => {
       element.onOfflineMessageSyncFinish?.();
+    });
+  }
+  private onDataSyncStart(params: any): void {
+    chatlog.log(`${ChatClient.TAG}: onDataSyncStart: `, params);
+    this._connectionListeners.forEach((element) => {
+      element.onDataSyncStart?.(params.type as ChatDataSyncType);
+    });
+  }
+  private onDataSyncFinish(params: any): void {
+    chatlog.log(`${ChatClient.TAG}: onDataSyncFinish: `, params);
+    this._connectionListeners.forEach((element) => {
+      element.onDataSyncFinish?.(
+        params.type as ChatDataSyncType,
+        params.errorCode as number
+      );
+    });
+  }
+  private onDatabaseOpened(params: any): void {
+    chatlog.log(`${ChatClient.TAG}: onDatabaseOpened: `, params);
+    this._connectionListeners.forEach((element) => {
+      element.onDatabaseOpened?.(
+        params.username as string,
+        params.errorCode as number
+      );
     });
   }
 
@@ -537,27 +452,6 @@ export class ChatClient extends BaseManager {
   }
 
   /**
-   * 检查当前用户是否登录。
-   *
-   * **注意**
-   *
-   * 在初始化之后和登录之前调用该方法。
-   *
-   * @returns 当前用户是否登录。
-   *         - `true`：已登录。自动登录时，成功登录前返回 `true`，其他情况下返回 `false`。
-   *         - `false`：未登录。非自动登录时，返回 `false`。
-   *
-   * @throws 如果有异常会在这里抛出，包含错误码和错误描述，详见 {@link ChatError}。
-   */
-  public async isLoginBefore(): Promise<boolean> {
-    chatlog.log(`${ChatClient.TAG}: isLoginBefore: `);
-    let r: any = await Native._callMethod(MTisLoggedInBefore);
-    ChatClient.checkErrorFromResult(r);
-    let _isLoginBefore = r?.[MTisLoggedInBefore] as boolean;
-    return _isLoginBefore;
-  }
-
-  /**
    * 获取登录 token。
    *
    * @returns 登录 token。
@@ -573,88 +467,6 @@ export class ChatClient extends BaseManager {
   }
 
   /**
-   * 注册新用户（开放注册）。
-   *
-   * **注意**
-   *
-   * 注册新用户有两种方式：
-   *
-   * - 开放注册：客户端直接注册新用户，不建议在正式环境使用。
-   *   如调用失败可联系商务申请使用该接口。
-   *
-   * - 授权注册：可调用 REST API 注册新用户，然后保存到服务器或者发送到客户端使用。
-   *
-   * @param userId 用户 ID。
-   *                 该参数必填。用户 ID 不能超过 64 个字符，支持以下类型的字符：
-   *                 - 26 个小写英文字母 a-z
-   *                 - 26 个大写英文字母 A-Z
-   *                 - 10 个数字 0-9
-   *                 - "_", "-", "."
-   *
-   *                 用户 ID 不区分大小写，大写字母会自动转换为小写字母。
-   *
-   *                 用户的电子邮件地址和 UUID 不能作为用户 ID。
-   *
-   *                 可通过以下格式的正则表达式设置用户 ID：^[a-zA-Z0-9_-]+$。
-   *
-   * @param password 密码，长度不超过 64 个字符。该参数必填。
-   *
-   * @throws 如果有异常会在这里抛出，包含错误码和错误描述，详见 {@link ChatError}。
-   */
-  public async createAccount(userId: string, password: string): Promise<void> {
-    chatlog.log(`${ChatClient.TAG}: createAccount: `, userId, '******');
-    let r: any = await Native._callMethod(MTcreateAccount, {
-      [MTcreateAccount]: {
-        username: userId,
-        password: password,
-      },
-    });
-    ChatClient.checkErrorFromResult(r);
-  }
-
-  /**
-   * 通过密码或环信 token 登录 Chat 服务器。
-   *
-   * **注意**
-   *
-   * 如果利用环信 token 登录，可通过以下方式获取 token：
-   * - SDK 接口：详见 {@link createAccount} 或 {@link getAccessToken}。
-   * - 环信 console 后台：{@url https://console.easemob.com/app/applicationOverview/userManagement}。
-   *
-   *  Token 过期提醒通过 {@link ChatConnectEventListener.onTokenWillExpire} 和 {@link ChatConnectEventListener.onTokenDidExpire} 通知。
-   *
-   * @param userId    用户 ID。详见 {@link createAccount}。
-   * @param pwdOrToken  密码或环信 token，详见 {@link createAccount} 或者 {@link getAccessToken}。
-   * @param isPassword  是否通过 密码 登录。
-   *                    - （默认）`true`: 通过 密码 登录。
-   *                    - `false`: 通过 token 登录。
-   *
-   * @throws 如果有异常会在这里抛出，包含错误码和错误描述，详见 {@link ChatError}。
-   *
-   * @deprecated 请用 {@link loginWithToken} 替代.
-   */
-  public async login(
-    userId: string,
-    pwdOrToken: string,
-    isPassword: boolean = true
-  ): Promise<void> {
-    chatlog.log(`${ChatClient.TAG}: login: `, userId, '******', isPassword);
-    let r: any = await Native._callMethod(MTlogin, {
-      [MTlogin]: {
-        username: userId,
-        pwdOrToken: pwdOrToken,
-        isPassword: isPassword,
-      },
-    });
-    ChatClient.checkErrorFromResult(r);
-    const rr = r?.[MTlogin];
-    if (rr && rr.username) {
-      this._currentUsername = rr.username;
-      chatlog.log(`${ChatClient.TAG}: login: ${rr?.username}, ${rr?.token}`);
-    }
-  }
-
-  /**
    * 通过用户ID和token登录。
    *
    *
@@ -663,7 +475,7 @@ export class ChatClient extends BaseManager {
    * @param userId  用户ID.
    * @param token  用户token.
    *
-   * @throws A description of the exception. See {@link ChatError}.
+   * @throws 如果有异常会在这里抛出，包含错误码和错误描述，详见 {@link ChatError}。
    */
   public async loginWithToken(userId: string, token: string): Promise<void> {
     chatlog.log(`${ChatClient.TAG}: loginWithToken: `, userId, '******', false);
@@ -681,55 +493,23 @@ export class ChatClient extends BaseManager {
       chatlog.log(`${ChatClient.TAG}: login: ${rr?.username}, ${rr?.token}`);
     }
   }
-  /*
-   * @deprecated 2023-11-17 使用 {@link login} 代替。
-   *
-   * 使用用户 ID 和声网 token 登录。
-   *
-   * **注意**
-   *
-   * 该方法支持自动登录。
-   *
-   * @param userId 用户 ID，详见 {@link createAccount}。
-   * @param agoraToken 声网 token。
-   *
-   * @throws 如果有异常会在这里抛出，包含错误码和错误描述，详见 {@link ChatError}。
-   */
-  public async loginWithAgoraToken(
-    userId: string,
-    agoraToken: string
-  ): Promise<void> {
-    chatlog.log(`${ChatClient.TAG}: loginWithAgoraToken: `, userId, '******');
-    let r: any = await Native._callMethod(MTloginWithAgoraToken, {
-      [MTloginWithAgoraToken]: {
-        username: userId,
-        agoratoken: agoraToken,
-      },
-    });
-    ChatClient.checkErrorFromResult(r);
-    const rr = r?.[MTloginWithAgoraToken];
-    if (rr && rr.username) {
-      this._currentUsername = rr.username;
-      chatlog.log(`${ChatClient.TAG}: loginA: ${rr?.username}, ${rr?.token}`);
-    }
-  }
 
   /**
-   * 更新声网 token。
+   * 更新 token。
    *
    * **注意**
    *
-   * 当用户利用声网 token 登录的情况下在 {@link ChatConnectEventListener} 实现类中收到 token 即将过期事件的回调通知时，可以调用该方法更新 token，避免因 token 失效产生的未知问题。
+   * 使用 token 登录时，如果通过 {@link ChatConnectEventListener} 回调收到 token 即将过期的通知，可以调用该方法更新 token，避免 token 失效导致异常。
    *
-   * @param agoraToken 新的声网 token。
+   * @param token 新 token。
    *
    * @throws 如果有异常会在这里抛出，包含错误码和错误描述，详见 {@link ChatError}。
    */
-  public async renewAgoraToken(agoraToken: string): Promise<void> {
-    chatlog.log(`${ChatClient.TAG}: renewAgoraToken: `, '******');
+  public async renewToken(token: string): Promise<void> {
+    chatlog.log(`${ChatClient.TAG}: renewToken: `, '******');
     let r: any = await Native._callMethod(MTrenewToken, {
       [MTrenewToken]: {
-        agora_token: agoraToken,
+        token: token,
       },
     });
     ChatClient.checkErrorFromResult(r);
@@ -790,11 +570,11 @@ export class ChatClient extends BaseManager {
   /**
    * 更新 app iD。
    *
-   * **Note**
+   * **注意**
    *
    * - 需要不登录的状态下使用，如果登录请使用 {@link logout} 退出.
    *
-   * @param 新的 app ID。
+   * @param newAppId 新的 App ID。
    *
    * @throws 如果有异常会在这里抛出，包含错误码和错误描述，详见 {@link ChatError}。
    */
@@ -833,15 +613,14 @@ export class ChatClient extends BaseManager {
    * 获取指定账号下登录的在线设备列表。
    *
    * @param userId 用户 ID。
-   * @param password 密码。
+   * @param token 用户 token，详见 {@link getAccessToken}。
    * @returns 登录的在线设备列表。
    *
    * @throws 如果有异常会在这里抛出，包含错误码和错误描述，详见 {@link ChatError}。
    */
   public async getLoggedInDevicesFromServer(
     userId: string,
-    pwdOrToken: string,
-    isPassword?: boolean
+    token: string
   ): Promise<Array<ChatDeviceInfo>> {
     chatlog.log(
       `${ChatClient.TAG}: getLoggedInDevicesFromServer: `,
@@ -851,8 +630,7 @@ export class ChatClient extends BaseManager {
     let r: any = await Native._callMethod(MTgetLoggedInDevicesFromServer, {
       [MTgetLoggedInDevicesFromServer]: {
         username: userId,
-        password: pwdOrToken,
-        isPassword: isPassword ?? true,
+        token: token,
       },
     });
     ChatClient.checkErrorFromResult(r);
@@ -872,27 +650,22 @@ export class ChatClient extends BaseManager {
    * 关于如何获取设备 ID，详见 {@link ChatDeviceInfo#resource}。
    *
    * @param userId 用户 ID。
-   * @param pwdOrToken 密码或 token。
+   * @param token 用户 token，详见 {@link getAccessToken}。
    * @param resource 设备 ID，详见 {@link ChatDeviceInfo#resource}。
-   * @param isPassword 是否使用密码登录设备：
-   * - （默认）`true`：使用密码；
-   * - `false`：使用用户 token。
    *
    * @throws 如果有异常会在这里抛出，包含错误码和错误描述，详见 {@link ChatError}。
    */
   public async kickDevice(
     userId: string,
-    pwdOrToken: string,
-    resource: string,
-    isPassword?: boolean
+    token: string,
+    resource: string
   ): Promise<void> {
     chatlog.log(`${ChatClient.TAG}: kickDevice: `, userId, '******', resource);
     let r: any = await Native._callMethod(MTkickDevice, {
       [MTkickDevice]: {
         username: userId,
-        password: pwdOrToken,
+        token: token,
         resource: resource,
-        isPassword: isPassword ?? true,
       },
     });
     ChatClient.checkErrorFromResult(r);
@@ -902,58 +675,49 @@ export class ChatClient extends BaseManager {
    * 将指定账号登录的所有设备都踢下线。
    *
    * @param userId 用户 ID。
-   * @param password 密码。
+   * @param token 用户 token，详见 {@link getAccessToken}。
    *
    * @throws 如果有异常会在这里抛出，包含错误码和错误描述，详见 {@link ChatError}。
    */
-  public async kickAllDevices(
-    userId: string,
-    pwdOrToken: string,
-    isPassword?: boolean
-  ): Promise<void> {
+  public async kickAllDevices(userId: string, token: string): Promise<void> {
     chatlog.log(`${ChatClient.TAG}: kickAllDevices: `, userId, '******');
     let r: any = await Native._callMethod(MTkickAllDevices, {
       [MTkickAllDevices]: {
         username: userId,
-        password: pwdOrToken,
-        isPassword: isPassword ?? true,
+        token: token,
       },
     });
     ChatClient.checkErrorFromResult(r);
   }
 
   /**
-   * 更新推送设置。
+   * 绑定设备的推送 token。
    *
-   * **注意**
-   * 对于 iOS 设备需在初始化 SDK 时录入设备 ID，否则设置不会成功，详见 {@link ChatClient#init}。
-   *
-   * @param config 推送设置，详见 {@link ChatPushConfig}。
+   * @param params 参数。
+   * - `deviceToken`：平台推送服务上报的推送 token。
+   * - `notifierName`：平台的推送证书名称。Android 平台必填，iOS 平台忽略该参数。
+   *   - Android：厂商推送证书名称，例如 FCM Sender ID、华为/荣耀 App ID、小米/魅族 App ID、OPPO App Key 或 vivo `appId#appKey`。该参数不能为空，否则原生 SDK 会返回参数无效错误。
+   *   - iOS：不使用该参数。请在 SDK 初始化时通过 {@link ChatOptions.apnsCertName} 设置 APNs 证书名称，因为 App 运行期间无法修改该证书名称。
    *
    * @throws 如果有异常会在这里抛出，包含错误码和错误描述，详见 {@link ChatError}。
    */
-  public async updatePushConfig(config: ChatPushConfig): Promise<void> {
+  public async bindDeviceToken(params: {
+    deviceToken: string;
+    notifierName?: string;
+  }): Promise<void> {
     chatlog.log(
-      `${ChatClient.TAG}: updatePushConfig: ${JSON.stringify(config)}`
+      `${ChatClient.TAG}: ${this.bindDeviceToken.name}: `,
+      params.notifierName
     );
-    if (this._options) {
-      const newPushConfig = new ChatPushConfig(this._options.pushConfig); // deep copy
-      if (config.deviceId) {
-        newPushConfig.deviceId = config.deviceId;
-      }
-      if (config.deviceToken) {
-        newPushConfig.deviceToken = config.deviceToken;
-      }
-      const newOptions = { ...this._options };
-      newOptions.pushConfig = { ...newPushConfig };
-      this._options = newOptions;
-    }
-    let r: any = await Native._callMethod(MTupdatePushConfig, {
-      [MTupdatePushConfig]: {
-        config: config,
+    let r: any = await Native._callMethod(MTbindDeviceToken, {
+      [MTbindDeviceToken]: {
+        // Keep the key on every platform: iOS ignores it, and Android reports the
+        // native invalid-parameter error instead of a missing-key error when it is empty.
+        notifierName: params.notifierName ?? '',
+        deviceToken: params.deviceToken,
       },
     });
-    ChatPushManager.checkErrorFromResult(r);
+    ChatClient.checkErrorFromResult(r);
   }
 
   /**

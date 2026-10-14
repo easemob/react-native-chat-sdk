@@ -1,17 +1,14 @@
 import {
   ChatConversation,
-  ChatConversationFetchOptions,
   ChatConversationMarkType,
   ChatConversationType,
   ChatConversationTypeFromNumber,
 } from '../../common/ChatConversation';
 import {
   ChatGroup,
-  ChatGroupOptions,
+  ChatGroupConfigs,
   ChatGroupPermissionType,
   ChatGroupPermissionTypeFromNumber,
-  ChatGroupStyle,
-  ChatGroupStyleFromNumber,
 } from '../../common/ChatGroup';
 import {
   ChatRoom,
@@ -81,33 +78,6 @@ describe('ChatConversation constructor', () => {
   });
 });
 
-describe('ChatConversationFetchOptions factories', () => {
-  test('default() fetches 20 unpinned conversations', () => {
-    const opt = ChatConversationFetchOptions.default();
-
-    expect(opt.pageSize).toBe(20);
-    expect(opt.pinned).toBe(false);
-    expect(opt.cursor).toBeUndefined();
-    expect(opt.mark).toBeUndefined();
-  });
-
-  test('pinned() fetches 20 pinned conversations', () => {
-    const opt = ChatConversationFetchOptions.pinned();
-
-    expect(opt.pageSize).toBe(20);
-    expect(opt.pinned).toBe(true);
-  });
-
-  test('withMark() sets the mark filter', () => {
-    const opt = ChatConversationFetchOptions.withMark(
-      ChatConversationMarkType.Type5
-    );
-
-    expect(opt.pageSize).toBe(20);
-    expect(opt.mark).toBe(ChatConversationMarkType.Type5);
-  });
-});
-
 describe('ChatRoomPermissionTypeFromNumber', () => {
   test.each([
     [-1, ChatRoomPermissionType.None],
@@ -166,21 +136,6 @@ describe('ChatRoom constructor', () => {
   });
 });
 
-describe('ChatGroupStyleFromNumber', () => {
-  test.each([
-    [0, ChatGroupStyle.PrivateOnlyOwnerInvite],
-    [1, ChatGroupStyle.PrivateMemberCanInvite],
-    [2, ChatGroupStyle.PublicJoinNeedApproval],
-    [3, ChatGroupStyle.PublicOpenJoin],
-  ])('maps native int %i to %s', (input, expected) => {
-    expect(ChatGroupStyleFromNumber(input)).toBe(expected);
-  });
-
-  test('passes unknown values through unchanged', () => {
-    expect(ChatGroupStyleFromNumber(7)).toBe(7);
-  });
-});
-
 describe('ChatGroupPermissionTypeFromNumber', () => {
   test.each([
     [-1, ChatGroupPermissionType.None],
@@ -217,49 +172,48 @@ describe('ChatGroup constructor', () => {
     expect(group.messageBlocked).toBe(false);
     expect(group.isAllMemberMuted).toBe(false);
     expect(group.permissionType).toBe(ChatGroupPermissionType.Owner);
-    expect(group.options).toBeUndefined();
+    expect(group.configs).toBeUndefined();
+    expect(group.isDisabled).toBe(false);
   });
 
-  test('builds nested ChatGroupOptions only when options are present', () => {
+  test('builds nested ChatGroupConfigs only when configs are present', () => {
     const group = new ChatGroup({
       groupId: 'g1',
       owner: 'user1',
       permissionType: 0,
-      options: { style: 3, maxCount: 500, inviteNeedConfirm: true },
+      isDisabled: true,
+      configs: {
+        maxCount: 500,
+        inviteNeedConfirm: true,
+        isPublic: true,
+        joinApprovalRequired: true,
+        allowInvites: true,
+        ext: 'ext-content',
+      },
     });
 
     expect(group.permissionType).toBe(ChatGroupPermissionType.Member);
-    expect(group.options).toBeInstanceOf(ChatGroupOptions);
-    expect(group.options?.style).toBe(ChatGroupStyle.PublicOpenJoin);
-    expect(group.options?.maxCount).toBe(500);
-    expect(group.options?.inviteNeedConfirm).toBe(true);
+    expect(group.isDisabled).toBe(true);
+    expect(group.configs).toBeInstanceOf(ChatGroupConfigs);
+    expect(group.configs?.maxCount).toBe(500);
+    expect(group.configs?.inviteNeedConfirm).toBe(true);
+    expect(group.configs?.isPublic).toBe(true);
+    expect(group.configs?.joinApprovalRequired).toBe(true);
+    expect(group.configs?.allowInvites).toBe(true);
+    expect(group.configs?.ext).toBe('ext-content');
   });
 });
 
-describe('ChatGroupOptions constructor', () => {
+describe('ChatGroupConfigs constructor', () => {
   test('applies defaults when fields are missing', () => {
-    const opt = new ChatGroupOptions({});
+    const configs = new ChatGroupConfigs({});
 
-    expect(opt.style).toBe(ChatGroupStyle.PublicJoinNeedApproval);
-    expect(opt.maxCount).toBe(200);
-    expect(opt.inviteNeedConfirm).toBe(false);
-    expect(opt.isDisabled).toBe(false);
-    expect(opt.ext).toBeUndefined();
-  });
-
-  test('converts style from native int', () => {
-    const opt = new ChatGroupOptions({ style: 1 });
-
-    expect(opt.style).toBe(ChatGroupStyle.PrivateMemberCanInvite);
-  });
-
-  // Pins current behavior: the constructor checks `params.style` for
-  // truthiness, so a native style of 0 (PrivateOnlyOwnerInvite) falls back
-  // to the default instead of being converted.
-  test('style 0 currently falls back to the default style', () => {
-    const opt = new ChatGroupOptions({ style: 0 });
-
-    expect(opt.style).toBe(ChatGroupStyle.PublicJoinNeedApproval);
+    expect(configs.maxCount).toBe(200);
+    expect(configs.inviteNeedConfirm).toBe(false);
+    expect(configs.isPublic).toBe(false);
+    expect(configs.joinApprovalRequired).toBe(false);
+    expect(configs.allowInvites).toBe(false);
+    expect(configs.ext).toBeUndefined();
   });
 });
 

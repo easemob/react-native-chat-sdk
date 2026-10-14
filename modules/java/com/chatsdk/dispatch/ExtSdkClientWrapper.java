@@ -43,63 +43,29 @@ public class ExtSdkClientWrapper extends ExtSdkWrapper {
         onSuccess(result, channelName, EMClient.getInstance().getAccessToken());
     }
 
-    public void createAccount(JSONObject param, String channelName, ExtSdkCallback result) throws JSONException {
-        String username = param.getString("username");
-        String password = param.getString("password");
-        try {
-            EMClient.getInstance().createAccount(username, password);
-            onSuccess(result, channelName, username);
-        } catch (HyphenateException e) {
-            onError(result, e, null);
-        }
-    }
-
     public void login(JSONObject param, String channelName, ExtSdkCallback result) throws JSONException {
-        boolean isPwd = param.getBoolean("isPassword");
         String username = param.getString("username");
-        String pwdOrToken = param.getString("pwdOrToken");
+        String token = param.getString("pwdOrToken");
 
-        if (isPwd) {
-            EMClient.getInstance().login(username, pwdOrToken, new EMCallBack() {
-                @Override
-                public void onSuccess() {
-                    Map<String, String> param = new HashMap<>();
-                    param.put("username", EMClient.getInstance().getCurrentUser());
-                    param.put("token", EMClient.getInstance().getAccessToken());
-                    ExtSdkWrapper.onSuccess(result, channelName, param);
-                }
+        EMClient.getInstance().loginWithToken(username, token, new EMCallBack() {
+            @Override
+            public void onSuccess() {
+                Map<String, String> param = new HashMap<>();
+                param.put("username", EMClient.getInstance().getCurrentUser());
+                param.put("token", EMClient.getInstance().getAccessToken());
+                ExtSdkWrapper.onSuccess(result, channelName, param);
+            }
 
-                @Override
-                public void onError(int code, String error) {
-                    ExtSdkWrapper.onError(result, code, error);
-                }
+            @Override
+            public void onError(int code, String error) {
+                ExtSdkWrapper.onError(result, code, error);
+            }
 
-                @Override
-                public void onProgress(int progress, String status) {
-                    // todo: 原来就没有写
-                }
-            });
-        } else {
-            EMClient.getInstance().loginWithToken(username, pwdOrToken, new EMCallBack() {
-                @Override
-                public void onSuccess() {
-                    Map<String, String> param = new HashMap<>();
-                    param.put("username", EMClient.getInstance().getCurrentUser());
-                    param.put("token", EMClient.getInstance().getAccessToken());
-                    ExtSdkWrapper.onSuccess(result, channelName, param);
-                }
-
-                @Override
-                public void onError(int code, String error) {
-                    ExtSdkWrapper.onError(result, code, error);
-                }
-
-                @Override
-                public void onProgress(int progress, String status) {
-                    // todo: 原来就没有写
-                }
-            });
-        }
+            @Override
+            public void onProgress(int progress, String status) {
+                // todo: 原来就没有写
+            }
+        });
     }
 
     public void logout(JSONObject param, String channelName, ExtSdkCallback result) throws JSONException {
@@ -144,19 +110,6 @@ public class ExtSdkClientWrapper extends ExtSdkWrapper {
         onSuccess(result, channelName, EMClient.getInstance().getCurrentUser());
     }
 
-    public void uploadLog(JSONObject param, String channelName, ExtSdkCallback result) {
-        EMClient.getInstance().uploadLog(new EMCallBack() {
-            @Override
-            public void onSuccess() {}
-
-            @Override
-            public void onError(int code, String error) {}
-
-            @Override
-            public void onProgress(int progress, String status) {}
-        });
-    }
-
     public void compressLogs(JSONObject param, String channelName, ExtSdkCallback result) {
         try {
             String path = EMClient.getInstance().compressLogs();
@@ -169,17 +122,11 @@ public class ExtSdkClientWrapper extends ExtSdkWrapper {
     public void kickDevice(JSONObject param, String channelName, ExtSdkCallback result) throws JSONException {
 
         String username = param.getString("username");
-        String password = param.getString("password");
+        String token = param.getString("token");
         String resource = param.getString("resource");
-        boolean isPassword = param.getBoolean("isPassword");
 
         try {
-            if (isPassword) {
-                EMClient.getInstance().kickDevice(username, password, resource);
-            } else {
-                EMClient.getInstance().kickDeviceWithToken(username, password, resource);
-            }
-
+            EMClient.getInstance().kickDeviceWithToken(username, token, resource);
             onSuccess(result, channelName, true);
         } catch (HyphenateException e) {
             onError(result, e, null);
@@ -188,51 +135,37 @@ public class ExtSdkClientWrapper extends ExtSdkWrapper {
 
     public void kickAllDevices(JSONObject param, String channelName, ExtSdkCallback result) throws JSONException {
         String username = param.getString("username");
-        String password = param.getString("password");
-        boolean isPassword = param.getBoolean("isPassword");
+        String token = param.getString("token");
 
         try {
-            if (isPassword) {
-                EMClient.getInstance().kickAllDevices(username, password);
-            } else {
-                EMClient.getInstance().kickAllDevicesWithToken(username, password);
-            }
-
+            EMClient.getInstance().kickAllDevicesWithToken(username, token);
             onSuccess(result, channelName, true);
         } catch (HyphenateException e) {
             onError(result, e, null);
         }
     }
 
-    public void isLoggedInBefore(JSONObject param, String channelName, ExtSdkCallback result) {
-        onSuccess(result, channelName, EMClient.getInstance().isLoggedInBefore());
-    }
-
     public void getLoggedInDevicesFromServer(JSONObject param, String channelName, ExtSdkCallback result)
         throws JSONException {
         String username = param.getString("username");
-        String password = param.getString("password");
-        boolean isPassword = param.getBoolean("isPassword");
+        String token = param.getString("token");
 
-        try {
-            List<Map> jsonList = new ArrayList<>();
-            if (isPassword) {
-                List<EMDeviceInfo> devices = EMClient.getInstance().getLoggedInDevicesFromServer(username, password);
-                for (EMDeviceInfo info : devices) {
-                    jsonList.add(ExtSdkDeviceInfoHelper.toJson(info));
+        EMClient.getInstance().fetchLoggedInDevicesFromServerWithToken(
+            username, token, new EMValueCallBack<List<EMDeviceInfo>>() {
+                @Override
+                public void onSuccess(List<EMDeviceInfo> value) {
+                    List<Map> jsonList = new ArrayList<>();
+                    for (EMDeviceInfo info : value) {
+                        jsonList.add(ExtSdkDeviceInfoHelper.toJson(info));
+                    }
+                    ExtSdkWrapper.onSuccess(result, channelName, jsonList);
                 }
-            } else {
-                List<EMDeviceInfo> devices =
-                    EMClient.getInstance().getLoggedInDevicesFromServerWithToken(username, password);
-                for (EMDeviceInfo info : devices) {
-                    jsonList.add(ExtSdkDeviceInfoHelper.toJson(info));
-                }
-            }
 
-            onSuccess(result, channelName, jsonList);
-        } catch (HyphenateException e) {
-            onError(result, e, null);
-        }
+                @Override
+                public void onError(int error, String errorMsg) {
+                    ExtSdkWrapper.onError(result, error, errorMsg);
+                }
+            });
     }
 
     public void init(JSONObject param, String channelName, ExtSdkCallback result) throws JSONException {
@@ -260,36 +193,13 @@ public class ExtSdkClientWrapper extends ExtSdkWrapper {
         });
     }
 
-    public void loginWithAgoraToken(JSONObject param, String channelName, ExtSdkCallback result) throws JSONException {
-        String username = param.getString("username");
-        String agoratoken = param.getString("agoratoken");
-
-        EMClient.getInstance().loginWithAgoraToken(username, agoratoken, new EMCallBack() {
-            @Override
-            public void onSuccess() {
-                Map<String, String> param = new HashMap<>();
-                param.put("username", EMClient.getInstance().getCurrentUser());
-                param.put("token", EMClient.getInstance().getAccessToken());
-                ExtSdkWrapper.onSuccess(result, channelName, param);
-            }
-
-            @Override
-            public void onError(int code, String error) {
-                ExtSdkWrapper.onError(result, code, error);
-            }
-
-            @Override
-            public void onProgress(int progress, String status) {}
-        });
-    }
-
     public void isConnected(JSONObject param, String channelName, ExtSdkCallback result) throws JSONException {
         onSuccess(result, channelName, EMClient.getInstance().isConnected());
     }
 
     public void renewToken(JSONObject param, String channelName, ExtSdkCallback result) throws JSONException {
-        String agoraToken = param.getString("agora_token");
-        EMClient.getInstance().renewToken(agoraToken, new EMCallBack() {
+        String token = param.getString("token");
+        EMClient.getInstance().renewToken(token, new EMCallBack() {
             @Override
             public void onSuccess() {
                 ExtSdkWrapper.onSuccess(result, channelName, null);
@@ -302,11 +212,10 @@ public class ExtSdkClientWrapper extends ExtSdkWrapper {
         });
     }
 
-    public void updatePushConfig(JSONObject param, String channelName, ExtSdkCallback result) throws JSONException {
-        JSONObject config = param.getJSONObject("config");
-        String deviceId = config.getString("deviceId");
-        String deviceToken = config.getString("deviceToken");
-        EMClient.getInstance().pushManager().bindDeviceToken(deviceId, deviceToken, new EMCallBack() {
+    public void bindDeviceToken(JSONObject param, String channelName, ExtSdkCallback result) throws JSONException {
+        String notifierName = param.optString("notifierName");
+        String deviceToken = param.getString("deviceToken");
+        EMClient.getInstance().pushManager().bindDeviceToken(notifierName, deviceToken, new EMCallBack() {
             @Override
             public void onSuccess() {
                 ExtSdkWrapper.onSuccess(result, channelName, null);
@@ -319,7 +228,6 @@ public class ExtSdkClientWrapper extends ExtSdkWrapper {
         });
     }
 
-    // 2026-09-24 1.21.0
     // PushKit is an iOS-only capability: the Android SDK has no PushKit API. These routes stay
     // registered to keep the cross-platform method key contract aligned, and answer with an
     // explicit error instead of a silent success if they are ever invoked directly. The
@@ -449,26 +357,13 @@ public class ExtSdkClientWrapper extends ExtSdkWrapper {
 
             @Override
             public void onDisconnected(int errorCode) {
-                if (errorCode == 206) {
-                    // move to onLogout
-                    //                    onReceive(ExtSdkMethodType.onUserDidLoginFromOtherDevice, null);
-                } else if (errorCode == 207) {
-                    onReceive(ExtSdkMethodType.onUserDidRemoveFromServer, null);
-                } else if (errorCode == 305) {
-                    onReceive(ExtSdkMethodType.onUserDidForbidByServer, null);
-                } else if (errorCode == 216) {
-                    onReceive(ExtSdkMethodType.onUserDidChangePassword, null);
-                } else if (errorCode == 214) {
-                    onReceive(ExtSdkMethodType.onUserDidLoginTooManyDevice, null);
-                } else if (errorCode == 217) {
-                    onReceive(ExtSdkMethodType.onUserKickedByOtherDevice, null);
-                } else if (errorCode == 202) {
-                    onReceive(ExtSdkMethodType.onUserAuthenticationFailed, null);
-                } else if (errorCode == 8) {
-                    onReceive(ExtSdkMethodType.onAppActiveNumberReachLimit, null);
-                } else {
-                    onReceive(ExtSdkMethodType.onDisconnected, null);
+                if (errorCode == EMError.USER_LOGIN_ANOTHER_DEVICE) {
+                    // 206 is emitted by onLogout(int, EMLoginExtensionInfo) below, which carries the device info.
+                    return;
                 }
+                Map<String, Object> data = new HashMap<>();
+                data.put("errorCode", Integer.valueOf(errorCode));
+                onReceive(ExtSdkMethodType.onDisconnected, data);
             }
 
             @Override
@@ -482,21 +377,40 @@ public class ExtSdkClientWrapper extends ExtSdkWrapper {
             }
 
             @Override
-            public void onLogout(int errorCode, String info) {
-                if (errorCode == 206) {
-                    Map<String, String> attributes = new HashMap<>();
-                    attributes.put("deviceName", info);
-                    onReceive(ExtSdkMethodType.onUserDidLoginFromOtherDevice, attributes);
+            public void onLogout(int errorCode, EMLoginExtensionInfo info) {
+                EMConnectionListener.super.onLogout(errorCode, info);
+                // onLogout fires for every forced logout, but onDisconnected(int) has already
+                // delivered the error code; only 206 carries extra device info worth emitting.
+                if (errorCode == EMError.USER_LOGIN_ANOTHER_DEVICE) {
+                    Map<String, Object> data = new HashMap<>();
+                    data.put("errorCode", Integer.valueOf(errorCode));
+                    data.put("deviceName", info.getDeviceInfo());
+                    data.put("ext", info.getDeviceExt());
+                    onReceive(ExtSdkMethodType.onDisconnected, data);
                 }
             }
 
             @Override
-            public void onLogout(int errorCode, EMLoginExtensionInfo info) {
-                EMConnectionListener.super.onLogout(errorCode, info);
-                Map<String, String> attributes = new HashMap<>();
-                attributes.put("deviceName", info.getDeviceInfo());
-                attributes.put("ext", info.getDeviceExt());
-                onReceive(ExtSdkMethodType.onUserDidLoginFromOtherDeviceWithInfo, attributes);
+            public void onDataSyncStart(EMOptions.EMDataSyncType type) {
+                Map<String, Object> data = new HashMap<>();
+                data.put("type", type.getValue());
+                onReceive(ExtSdkMethodType.onDataSyncStart, data);
+            }
+
+            @Override
+            public void onDataSyncFinish(EMOptions.EMDataSyncType type, int errorCode) {
+                Map<String, Object> data = new HashMap<>();
+                data.put("type", type.getValue());
+                data.put("errorCode", errorCode);
+                onReceive(ExtSdkMethodType.onDataSyncFinish, data);
+            }
+
+            @Override
+            public void onDatabaseOpened(String username) {
+                Map<String, Object> data = new HashMap<>();
+                data.put("username", username);
+                data.put("errorCode", 0);
+                onReceive(ExtSdkMethodType.onDatabaseOpened, data);
             }
 
             @Override

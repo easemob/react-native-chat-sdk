@@ -28,8 +28,6 @@ import {
   MTgetGroupSpecificationFromServer,
   MTgetGroupWithId,
   MTgetJoinedGroups,
-  MTgetJoinedGroupsFromServer,
-  MTgetPublicGroupsFromServer,
   MTinviterUser,
   MTisMemberInAllowListFromServer,
   MTjoinPublicGroup,
@@ -50,6 +48,7 @@ import {
   MTupdateDescription,
   MTupdateGroupAnnouncement,
   MTupdateGroupAvatar,
+  MTupdateGroupConfigs,
   MTupdateGroupExt,
   MTupdateGroupNamecard,
   MTupdateGroupOwner,
@@ -64,10 +63,10 @@ import { ChatCursorResult } from './common/ChatCursorResult';
 import { ChatException } from './common/ChatError';
 import {
   ChatGroup,
+  type ChatGroupConfigs,
+  type ChatGroupConfigsType,
   type ChatGroupFileStatusCallback,
-  ChatGroupInfo,
   ChatGroupMember,
-  ChatGroupOptions,
   ChatGroupSharedFile,
 } from './common/ChatGroup';
 
@@ -186,13 +185,13 @@ export class ChatGroupManager extends BaseManager {
         case 'onAdminAdded':
           listener.onAdminAdded?.({
             groupId: params.groupId,
-            admin: params.admin,
+            admin: params.administrator,
           });
           break;
         case 'onAdminRemoved':
           listener.onAdminRemoved?.({
             groupId: params.groupId,
-            admin: params.admin,
+            admin: params.administrator,
           });
           break;
         case 'onOwnerChanged':
@@ -202,22 +201,10 @@ export class ChatGroupManager extends BaseManager {
             oldOwner: params.oldOwner,
           });
           break;
-        case 'onMemberJoined':
-          listener.onMemberJoined?.({
-            groupId: params.groupId,
-            member: params.member,
-          });
-          break;
         case 'onMembersJoined':
           listener.onMembersJoined?.({
             groupId: params.groupId,
             members: params.members,
-          });
-          break;
-        case 'onMemberExited':
-          listener.onMemberExited?.({
-            groupId: params.groupId,
-            member: params.member,
           });
           break;
         case 'onMembersExited':
@@ -259,7 +246,7 @@ export class ChatGroupManager extends BaseManager {
         case 'onAllMemberMuteStateChanged':
           listener.onAllGroupMemberMuteStateChanged?.({
             groupId: params.groupId,
-            isAllMuted: params.isAllMuted,
+            isAllMuted: params.isMuted,
           });
           break;
         case 'onStateChanged':
@@ -367,130 +354,20 @@ export class ChatGroupManager extends BaseManager {
   }
 
   /**
-   * 以分页方式从服务器获取当前用户已加入的群组。
-   *
-   * 此操作只返回群组列表，不包含群组的所有成员信息。如果要更新某个群组包括成员的全部信息，需要再调用 {@link #fetchMemberListFromServer}。
-   *
-   * @param pageSize 每页期望返回的群组数。[1, 20]
-   * @param pageNum 当前页码，从 0 开始。
-   * @returns 当前用户已加入的群组列表
-   *
-   * @throws 如果有异常会在这里抛出，包含错误码和错误描述，详见 {@link ChatError}。
-   */
-  public async fetchJoinedGroupsFromServer(
-    pageSize: number,
-    pageNum: number
-  ): Promise<Array<ChatGroup>> {
-    chatlog.log(
-      `${ChatGroupManager.TAG}: fetchJoinedGroupsFromServer: `,
-      pageSize,
-      pageNum
-    );
-    let r: any = await Native._callMethod(MTgetJoinedGroupsFromServer, {
-      [MTgetJoinedGroupsFromServer]: {
-        pageSize,
-        pageNum,
-        needRole: true,
-        needMemberCount: true,
-      },
-    });
-    ChatGroupManager.checkErrorFromResult(r);
-    const ret: ChatGroup[] = [];
-    Object.entries(r?.[MTgetJoinedGroupsFromServer]).forEach(
-      (value: [string, any]) => {
-        ret.push(new ChatGroup(value[1]));
-      }
-    );
-    return ret;
-  }
-
-  /**
-   * 分页从服务器获取公开群组。
-   *
-   * @param pageSize 每页期望返回的群组数。
-   * @param cursor 开始取数据的游标位置。首次调用时传 `null`，按群组创建时间的倒序获取。
-   * @returns 群组列表以及用于下次查询的 cursor。
-   *
-   * @throws 如果有异常会在这里抛出，包含错误码和错误描述，详见 {@link ChatError}。
-   */
-  public async fetchPublicGroupsFromServer(
-    pageSize: number,
-    cursor?: string
-  ): Promise<ChatCursorResult<ChatGroupInfo>> {
-    chatlog.log(
-      `${ChatGroupManager.TAG}: fetchPublicGroupsFromServer: `,
-      pageSize,
-      cursor
-    );
-    let r: any = await Native._callMethod(MTgetPublicGroupsFromServer, {
-      [MTgetPublicGroupsFromServer]: {
-        pageSize,
-        cursor,
-      },
-    });
-    ChatGroupManager.checkErrorFromResult(r);
-    let ret = new ChatCursorResult<ChatGroupInfo>({
-      cursor: r?.[MTgetPublicGroupsFromServer].cursor,
-      list: r?.[MTgetPublicGroupsFromServer].list,
-      opt: {
-        map: (param: any) => {
-          return new ChatGroupInfo(param);
-        },
-      },
-    });
-    return ret;
-  }
-
-  /**
-   * 创建群组。
-   *
-   * 群组创建成功后，会更新内存及数据库中的数据，多端多设备会收到相应的通知事件，然后将群组更新到内存及数据库中。
-   *
-   * 可通过设置 {@link ChatGroupEventListener} 监听相关事件。
-   *
-   * @param options 群组创建时需设置的选项。该参数可选，不可为 `null`。详见 {@link ChatGroupOptions}.
-   * 群组的其他选项如下：
-   *                      - 群组最大成员数，默认值为 200；
-   *                      - 群组类型，详见 {@link ChatGroupStyle}。默认值为 {@link ChatGroupStyle.PrivateOnlyOwnerInvite}，即私有群，仅群主可邀请用户入群；
-   *                      - 邀请入群是否需要对方同意，默认为 `false`，即邀请后直接入群；
-   *                      - 群详情扩展。
-   * @param groupName 群组名称。该参数可选，不设置传 `null`。
-   * @param desc 群组描述。该参数可选，不设置传 `null`。
-   * @param inviteMembers 群成员列表。可选参数。该参数不可为 `null`。
-   * @param inviteReason 成员入群的邀请信息。该参数可选，不设置传 `null`。
-   * @returns 创建成功的群组实例。
-   *
-   * @throws 如果有异常会在这里抛出，包含错误码和错误描述，详见 {@link ChatError}。
-   */
-  public async createGroup(
-    options: ChatGroupOptions,
-    groupName: string,
-    desc?: string,
-    inviteMembers?: Array<string>,
-    inviteReason?: string
-  ): Promise<ChatGroup> {
-    return this.createGroupEx({
-      options,
-      groupName,
-      desc,
-      inviteMembers,
-      inviteReason,
-    });
-  }
-
-  /**
    * 创建群组对象。支持设置头像。
    *
    * 群组创建成功后，会更新内存及数据库中的数据，多端多设备会收到相应的通知事件，然后将群组更新到内存及数据库中。
    *
    * 可通过设置 {@link ChatGroupEventListener} 监听相关事件。
    *
-   * @param options 群组创建时需设置的选项。该参数可选，不可为 `null`。详见 {@link ChatGroupOptions}.
-   * 群组的其他选项如下：
-   *                      - 群组最大成员数，默认值为 200；
-   *                      - 群组类型，详见 {@link ChatGroupStyle}。默认值为 {@link ChatGroupStyle.PrivateOnlyOwnerInvite}，即私有群，仅群主可邀请用户入群；
-   *                      - 邀请入群是否需要对方同意，默认为 `false`，即邀请后直接入群；
-   *                      - 群详情扩展。
+   * @param configs 创建群组时使用的配置，详见 {@link ChatGroupConfigs}。
+   * 配置项如下：
+   * - 群组允许的最大成员数，默认值为 200。
+   * - 群组是否为公开群，默认值为 `false`。
+   * - 加入群组是否需要群主或管理员批准，默认值为 `false`。
+   * - 是否允许群成员邀请其他用户加入群组，默认值为 `false`。
+   * - 邀请用户加入群组时是否需要征得对方同意，默认值为 `false`，表示无需对方同意即可自动入群。
+   * - 群详情扩展信息。
    * @param groupName 群组名称。
    * @param groupAvatar 群组头像。
    * @param desc 群组描述。
@@ -501,7 +378,7 @@ export class ChatGroupManager extends BaseManager {
    * @throws 如果有异常会在这里抛出，包含错误码和错误描述，详见 {@link ChatError}。
    */
   public async createGroupEx(params: {
-    options: ChatGroupOptions;
+    configs: ChatGroupConfigs;
     groupName: string;
     groupAvatar?: string;
     desc?: string;
@@ -509,7 +386,7 @@ export class ChatGroupManager extends BaseManager {
     inviteReason?: string;
   }): Promise<ChatGroup> {
     const {
-      options,
+      configs,
       groupName,
       groupAvatar,
       desc,
@@ -518,7 +395,7 @@ export class ChatGroupManager extends BaseManager {
     } = params;
     chatlog.log(
       `${ChatGroupManager.TAG}: createGroupEx: `,
-      options,
+      configs,
       groupName,
       groupAvatar,
       desc,
@@ -532,7 +409,7 @@ export class ChatGroupManager extends BaseManager {
         desc,
         inviteMembers,
         inviteReason,
-        options,
+        configs,
       },
     });
     ChatGroupManager.checkErrorFromResult(r);
@@ -540,37 +417,37 @@ export class ChatGroupManager extends BaseManager {
   }
 
   /**
-   * 从服务器获取群组详情。
+   * 更新群组配置。
+   *
+   * 仅群主和群管理员可以调用该方法。
    *
    * @param groupId 群组 ID。
-   * @param isFetchMembers 是否获取群组成员信息：
-   *                       - `true`：是；该方法最多可获取 200 个成员的信息。如需获取所有群组成员的信息，可调用 {@link fetchMemberListFromServer}。
-   *                       - `false`：否。
-   * @returns 群组实例。如果群组不存在，返回 `undefined`。
+   * @param types 要更新的配置类型，是 {@link ChatGroupConfigsType} 的位掩码。仅更新该参数指定的配置。
+   * @param configs 新的群组配置，详见 {@link ChatGroupConfigs}。
+   * @returns 更新后的群组实例。
    *
    * @throws 如果有异常会在这里抛出，包含错误码和错误描述，详见 {@link ChatError}。
    */
-  public async fetchGroupInfoFromServer(
+  public async updateGroupConfigs(
     groupId: string,
-    isFetchMembers: boolean = false
-  ): Promise<ChatGroup | undefined> {
+    types: ChatGroupConfigsType,
+    configs: ChatGroupConfigs
+  ): Promise<ChatGroup> {
     chatlog.log(
-      `${ChatGroupManager.TAG}: fetchGroupInfoFromServer: `,
+      `${ChatGroupManager.TAG}: updateGroupConfigs: `,
       groupId,
-      isFetchMembers
+      types,
+      configs
     );
-    let r: any = await Native._callMethod(MTgetGroupSpecificationFromServer, {
-      [MTgetGroupSpecificationFromServer]: {
-        groupId: groupId,
-        fetchMembers: isFetchMembers,
+    let r: any = await Native._callMethod(MTupdateGroupConfigs, {
+      [MTupdateGroupConfigs]: {
+        group_id: groupId,
+        types: types,
+        configs: configs,
       },
     });
     ChatGroupManager.checkErrorFromResult(r);
-    const g = r?.[MTgetGroupSpecificationFromServer];
-    if (g) {
-      return new ChatGroup(g);
-    }
-    return undefined;
+    return new ChatGroup(r?.[MTupdateGroupConfigs]);
   }
 
   /**
@@ -1581,7 +1458,7 @@ export class ChatGroupManager extends BaseManager {
    *
    * 若群组无需群主或管理员验证，可直接加入。
    *
-   * 若群组需要群主或管理员验证，用户需等待请求批准后才能加入。群组类型详见 {@link ChatGroupStyle}。
+   * 若群组需要群主或管理员验证，用户需等待请求批准后才能加入，详见 {@link ChatGroupConfigs.joinApprovalRequired}。
    *
    * @param groupId 群组 ID。
    *
@@ -1600,7 +1477,7 @@ export class ChatGroupManager extends BaseManager {
   /**
    * 申请加入群组。
    *
-   * 该方法仅适用于群组类型为 {@link ChatGroupStyle.PublicJoinNeedApproval} 的公开群组。
+   * 该方法仅适用于将 {@link ChatGroupConfigs.joinApprovalRequired} 设置为 `true` 的公开群组。
    *
    * @param groupId 群组 ID。
    * @param reason 申请加入的理由。
@@ -1631,7 +1508,7 @@ export class ChatGroupManager extends BaseManager {
    * 仅群主和管理员可调用此方法。
    *
    * @param groupId 群组 ID。
-   * @param username 申请入群的用户 ID。
+   * @param userId 申请入群的用户 ID。
    *
    * @throws 如果有异常会在这里抛出，包含错误码和错误描述，详见 {@link ChatError}。
    */

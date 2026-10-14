@@ -19,17 +19,9 @@ NS_ASSUME_NONNULL_BEGIN
            withMethodType:(NSString *)aChannelName
                    result:(nonnull id<ExtSdkCallbackObjc>)result;
 
-- (void)updateOwnUserInfoWithType:(NSDictionary *)param
-                   withMethodType:(NSString *)aChannelName
-                           result:(nonnull id<ExtSdkCallbackObjc>)result;
-
 - (void)fetchUserInfoById:(NSDictionary *)param
            withMethodType:(NSString *)aChannelName
                    result:(nonnull id<ExtSdkCallbackObjc>)result;
-
-- (void)fetchUserInfoByIdWithType:(NSDictionary *)param
-                   withMethodType:(NSString *)aChannelName
-                           result:(nonnull id<ExtSdkCallbackObjc>)result;
 
 - (void)getLocalUserInfoByIds:(NSDictionary *)param
                withMethodType:(NSString *)aChannelName

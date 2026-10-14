@@ -95,23 +95,6 @@
                         }];
 }
 
-- (void)markMsgAsRead:(NSDictionary *)param
-       withMethodType:(NSString *)aChannelName
-               result:(nonnull id<ExtSdkCallbackObjc>)result {
-    __weak typeof(self) weakSelf = self;
-    [self getConversationWithParam:param
-                        completion:^(EMConversation *conversation) {
-                          NSString *msgId = param[@"msg_id"];
-                          EMError *error = nil;
-                          [conversation markMessageAsReadWithId:msgId error:&error];
-
-                          [weakSelf onResult:result
-                              withMethodType:ExtSdkMethodKeyMarkMsgAsRead
-                                   withError:error
-                                  withParams:nil];
-                        }];
-}
-
 - (void)syncConversationExt:(NSDictionary *)param
              withMethodType:(NSString *)aChannelName
                      result:(nonnull id<ExtSdkCallbackObjc>)result {
@@ -123,21 +106,6 @@
                           [weakSelf onResult:result
                               withMethodType:ExtSdkMethodKeySyncConversationExt
                                    withError:nil
-                                  withParams:nil];
-                        }];
-}
-
-- (void)markAllMsgsAsRead:(NSDictionary *)param
-           withMethodType:(NSString *)aChannelName
-                   result:(nonnull id<ExtSdkCallbackObjc>)result {
-    __weak typeof(self) weakSelf = self;
-    [self getConversationWithParam:param
-                        completion:^(EMConversation *conversation) {
-                          EMError *error = nil;
-                          [conversation markAllMessagesAsRead:&error];
-                          [weakSelf onResult:result
-                              withMethodType:ExtSdkMethodKeyMarkAllMsgsAsRead
-                                   withError:error
                                   withParams:nil];
                         }];
 }
@@ -155,24 +123,6 @@
                           [conversation insertMessage:msg error:&error];
                           [weakSelf onResult:result
                               withMethodType:ExtSdkMethodKeyInsertMsg
-                                   withError:error
-                                  withParams:nil];
-                        }];
-}
-
-- (void)appendMsg:(NSDictionary *)param
-    withMethodType:(NSString *)aChannelName
-            result:(nonnull id<ExtSdkCallbackObjc>)result {
-    __weak typeof(self) weakSelf = self;
-    [self getConversationWithParam:param
-                        completion:^(EMConversation *conversation) {
-                          NSDictionary *msgDict = param[@"msg"];
-                          EMChatMessage *msg = [EMChatMessage fromJsonObject:msgDict];
-
-                          EMError *error = nil;
-                          [conversation appendMessage:msg error:&error];
-                          [weakSelf onResult:result
-                              withMethodType:ExtSdkMethodKeyAppendMsg
                                    withError:error
                                   withParams:nil];
                         }];
@@ -317,23 +267,6 @@
 }
 
 #pragma mark - load messages
-- (void)loadMsgWithId:(NSDictionary *)param
-       withMethodType:(NSString *)aChannelName
-               result:(nonnull id<ExtSdkCallbackObjc>)result {
-    __weak typeof(self) weakSelf = self;
-    NSString *msgId = param[@"msg_id"];
-    [self getConversationWithParam:param
-                        completion:^(EMConversation *conversation) {
-                          EMError *error = nil;
-                          EMChatMessage *msg = [conversation loadMessageWithId:msgId error:&error];
-
-                          [weakSelf onResult:result
-                              withMethodType:ExtSdkMethodKeyLoadMsgWithId
-                                   withError:error
-                                  withParams:[msg toJsonObject]];
-                        }];
-}
-
 - (void)loadMsgWithMsgType:(NSDictionary *)param
             withMethodType:(NSString *)aChannelName
                     result:(nonnull id<ExtSdkCallbackObjc>)result {
@@ -402,50 +335,26 @@
     EMMessageSearchDirection direction = [ExtSdkConvertHelper searchDirectionFromString:param[@"direction"]];
     EMMessageSearchScope scope = [ExtSdkConvertHelper searchScopeFromInt:[param[@"searchScope"] integerValue]];
     NSArray *senders = param[@"senders"];
-    if (senders == nil) {
-        NSString *sender = param[@"sender"];
-        // !!! It has been marked as invalid in the typescript language.
-        [self getConversationWithParam:param
-                            completion:^(EMConversation *conversation) {
-                              [conversation loadMessagesWithKeyword:keywords
-                                                          timestamp:timestamp
-                                                              count:count
-                                                           fromUser:sender
-                                                    searchDirection:direction
-                                                              scope:scope
-                                                         completion:^(NSArray *aMessages, EMError *aError) {
-                                                           NSMutableArray *msgJsonAry = [NSMutableArray array];
-                                                           for (EMChatMessage *msg in aMessages) {
-                                                               [msgJsonAry addObject:[msg toJsonObject]];
-                                                           }
-                                                           [weakSelf onResult:result
-                                                               withMethodType:aChannelName
-                                                                    withError:aError
-                                                                   withParams:msgJsonAry];
-                                                         }];
-                            }];
-    } else {
-        [self getConversationWithParam:param
-                            completion:^(EMConversation *conversation) {
-                              [conversation loadMessagesWithKeyword:keywords
-                                                          timestamp:timestamp
-                                                              count:count
-                                                          fromUsers:senders
-                                                    searchDirection:direction
-                                                              scope:scope
-                                                         completion:^(NSArray<EMChatMessage *> *_Nullable aMessages,
-                                                                      EMError *_Nullable aError) {
-                                                           NSMutableArray *msgJsonAry = [NSMutableArray array];
-                                                           for (EMChatMessage *msg in aMessages) {
-                                                               [msgJsonAry addObject:[msg toJsonObject]];
-                                                           }
-                                                           [weakSelf onResult:result
-                                                               withMethodType:aChannelName
-                                                                    withError:aError
-                                                                   withParams:msgJsonAry];
-                                                         }];
-                            }];
-    }
+    [self getConversationWithParam:param
+                        completion:^(EMConversation *conversation) {
+                          [conversation loadMessagesWithKeyword:keywords
+                                                      timestamp:timestamp
+                                                          count:count
+                                                      fromUsers:senders
+                                                searchDirection:direction
+                                                          scope:scope
+                                                     completion:^(NSArray<EMChatMessage *> *_Nullable aMessages,
+                                                                  EMError *_Nullable aError) {
+                                                       NSMutableArray *msgJsonAry = [NSMutableArray array];
+                                                       for (EMChatMessage *msg in aMessages) {
+                                                           [msgJsonAry addObject:[msg toJsonObject]];
+                                                       }
+                                                       [weakSelf onResult:result
+                                                           withMethodType:aChannelName
+                                                                withError:aError
+                                                               withParams:msgJsonAry];
+                                                     }];
+                        }];
 }
 
 - (void)loadMsgWithTime:(NSDictionary *)param

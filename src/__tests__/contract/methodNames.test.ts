@@ -97,25 +97,6 @@ describe('contract: method-name parity (TS ↔ Java ↔ ObjC)', () => {
     }
   });
 
-  test('every TS MTon* event value appears in RN supportedEvents resolved list', () => {
-    const eventSet = new Set(rnEventValues);
-    const tsEvents = tsConsts.filter((c) => c.symbol.startsWith('on'));
-    const missing: { symbol: string; value: string }[] = [];
-    for (const c of tsEvents) {
-      if (!eventSet.has(c.value)) {
-        missing.push({ symbol: c.symbol, value: c.value });
-      }
-    }
-    if (missing.length > 0) {
-      const lines = missing
-        .map((m) => `  MT${m.symbol} = '${m.value}'`)
-        .join('\n');
-      throw new Error(
-        `TS MTon* events missing from RN supportedEvents (${missing.length} of ${tsEvents.length}):\n${lines}`
-      );
-    }
-  });
-
   test('every non-event ObjC methodMap entry has a dispatch case', () => {
     // Keys whose value starts with `on` are events emitted by native code:
     // they travel through onReceive: and are never invoked from TS, so they
@@ -137,6 +118,25 @@ describe('contract: method-name parity (TS ↔ Java ↔ ObjC)', () => {
         .join('\n');
       throw new Error(
         `ObjC methodMap entries missing a dispatch case in ExtSdkDispatch.m (${missing.length} of ${objcMap.length}):\n${lines}`
+      );
+    }
+  });
+
+  test('every TS MTon* event value appears in RN supportedEvents resolved list', () => {
+    const eventSet = new Set(rnEventValues);
+    const tsEvents = tsConsts.filter((c) => c.symbol.startsWith('on'));
+    const missing: { symbol: string; value: string }[] = [];
+    for (const c of tsEvents) {
+      if (!eventSet.has(c.value)) {
+        missing.push({ symbol: c.symbol, value: c.value });
+      }
+    }
+    if (missing.length > 0) {
+      const lines = missing
+        .map((m) => `  MT${m.symbol} = '${m.value}'`)
+        .join('\n');
+      throw new Error(
+        `TS MTon* events missing from RN supportedEvents (${missing.length} of ${tsEvents.length}):\n${lines}`
       );
     }
   });

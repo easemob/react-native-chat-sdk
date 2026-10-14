@@ -41,15 +41,6 @@ public class ExtSdkChatMessageWrapper {
         ExtSdkWrapper.onSuccess(result, channelName, list);
     }
 
-    public void groupAckCount(JSONObject param, String channelName, ExtSdkCallback result) throws JSONException {
-        String msgId = param.getString("msgId");
-        EMMessage msg = EMClient.getInstance().chatManager().getMessage(msgId);
-        if (ExtSdkWrapper.getMessageParams(msg, channelName, result)) {
-            return;
-        }
-        ExtSdkWrapper.onSuccess(result, channelName, msg.groupAckCount());
-    }
-
     public void getPinInfo(JSONObject params, String channelName, ExtSdkCallback result) throws JSONException {
         String msgId = params.getString("msgId");
         EMMessage msg = EMClient.getInstance().chatManager().getMessage(msgId);

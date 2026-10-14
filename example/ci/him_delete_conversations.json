@@ -1,0 +1,61 @@
+{
+  "steps": [
+    {
+      "api": "ChatManager.sendMessage",
+      "id": "send-peer",
+      "params": {
+        "targetId": "$config.accounts.1.id",
+        "content": "himdelconv20260922a",
+        "chatType": 0
+      },
+      "expect": {
+        "success": true
+      },
+      "delayAfterMs": 3000
+    },
+    {
+      "api": "ChatManager.sendMessage",
+      "id": "send-group",
+      "params": {
+        "targetId": "$config.groups.0.id",
+        "content": "himdelconv20260922b",
+        "chatType": 1
+      },
+      "expect": {
+        "success": true
+      },
+      "delayAfterMs": 3000
+    },
+    {
+      "api": "ChatManager.getAllConversations",
+      "id": "before-delete",
+      "params": {},
+      "expect": {
+        "success": true
+      }
+    },
+    {
+      "api": "ChatManager.deleteConversations",
+      "id": "delete-conversations",
+      "params": {
+        "convIds": [
+          "$config.accounts.1.id",
+          "$config.groups.0.id",
+          "nonexistent_user_himdel"
+        ],
+        "deleteMessages": true
+      },
+      "expect": {
+        "success": true
+      }
+    },
+    {
+      "api": "ChatManager.getAllConversations",
+      "id": "after-delete",
+      "params": {},
+      "expect": {
+        "success": true
+      }
+    }
+  ]
+}
