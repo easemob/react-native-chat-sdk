@@ -1006,6 +1006,24 @@
                                         }];
 }
 
+- (void)getConversationsFromDBWithCursor:(NSDictionary *)param
+                          withMethodType:(NSString *)aChannelName
+                                  result:(nonnull id<ExtSdkCallbackObjc>)result {
+    __weak typeof(self) weakSelf = self;
+    NSString *cursor = param[@"cursor"];
+    NSInteger pageSize = [param[@"pageSize"] integerValue];
+    [EMClient.sharedClient.chatManager
+        getConversationsFromDBWithCursor:cursor
+                                pageSize:pageSize
+                              completion:^(EMCursorResult<EMConversation *> *_Nullable ret,
+                                           EMError *_Nullable error) {
+                                [weakSelf onResult:result
+                                    withMethodType:aChannelName
+                                         withError:error
+                                        withParams:[ret toJsonObject]];
+                              }];
+}
+
 - (void)pinConversation:(NSDictionary *)param
          withMethodType:(NSString *)aChannelName
                  result:(nonnull id<ExtSdkCallbackObjc>)result {

@@ -375,6 +375,35 @@
     //                                           }];
 }
 
+// 2026-09-24 1.21.0
+- (void)bindPushKitToken:(NSDictionary *)param
+          withMethodType:(NSString *)aChannelName
+                  result:(nonnull id<ExtSdkCallbackObjc>)result {
+    // The PushKit certificate name is not taken from the request: it is an initialization option
+    // (ChatOptions.pushKitCertName -> EMOptions.pushKitCertName) and cannot change at runtime.
+    // An empty certificate name makes the native call fail with EMErrorUserIllegalArgument.
+    NSString *deviceToken = param[@"deviceToken"];
+    // The native _extractTokenFromRawData: accepts both NSData and NSString, which is the
+    // same way the APNs route above passes its token through.
+    __weak typeof(self) weakSelf = self;
+    [EMClient.sharedClient registerPushKitToken:(NSData *)deviceToken
+                                     completion:^(EMError *_Nullable aError) {
+                                       [weakSelf onResult:result
+                                           withMethodType:aChannelName
+                                                withError:aError
+                                               withParams:nil];
+                                     }];
+}
+
+- (void)unbindPushKitToken:(NSDictionary *)param
+            withMethodType:(NSString *)aChannelName
+                    result:(nonnull id<ExtSdkCallbackObjc>)result {
+    __weak typeof(self) weakSelf = self;
+    [EMClient.sharedClient unRegisterPushKitTokenWithCompletion:^(EMError *_Nullable aError) {
+      [weakSelf onResult:result withMethodType:aChannelName withError:aError withParams:nil];
+    }];
+}
+
 - (void)getRTCTokenInfoWithChannelName:(NSDictionary *)param
                         withMethodType:(NSString *)aChannelName
                                 result:(nonnull id<ExtSdkCallbackObjc>)result {

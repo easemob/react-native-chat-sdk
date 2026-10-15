@@ -1,5 +1,6 @@
 import type { ApiEntry } from './api_entry';
 import { chatApis } from './apis/chat';
+import { clientApis } from './apis/client';
 import { groupApis } from './apis/group';
 import { contactApis } from './apis/contact';
 import { userInfoApis } from './apis/userinfo';
@@ -13,6 +14,7 @@ import { pushApis } from './apis/push';
  */
 export const ALL_APIS: ApiEntry[] = [
   ...chatApis,
+  ...clientApis,
   ...groupApis,
   ...contactApis,
   ...userInfoApis,

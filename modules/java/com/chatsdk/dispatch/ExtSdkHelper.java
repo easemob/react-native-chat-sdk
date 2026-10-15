@@ -370,6 +370,10 @@ class ExtSdkOptionsHelper {
             }
         }
 
+        // 2026-09-10 4.25.0
+        if (json.has("enableChatroomConversation")) { options.setEnableChatroomConversation(json.getBoolean("enableChatroomConversation")); }
+        if (json.has("autoLoadConversations")) { options.setAutoLoadAllConversations(json.getBoolean("autoLoadConversations")); }
+
         return options;
     }
 
@@ -415,6 +419,8 @@ class ExtSdkOptionsHelper {
         data.put("enableUserInfo", options.isEnableUserInfo());
         data.put("enableAutoSyncContacts", options.isEnableAutoSyncContacts());
         data.put("ntpServers", options.getNtpServers());
+        data.put("enableChatroomConversation", options.isEnableChatroomConversation());
+        data.put("autoLoadConversations", options.isAutoLoadAllConversations());
         return data;
     }
 }
