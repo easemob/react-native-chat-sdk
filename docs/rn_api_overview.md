@@ -33,7 +33,9 @@ ChatSDK is a highly reliable global communication platform where your users can 
 | {@link ChatClient.getLoggedInDevicesFromServer getLoggedInDevicesFromServer} | Gets the list of online devices to which you have logged in with a specified account. |
 | {@link ChatClient.kickDevice kickDevice} | Logs out from a specified account on a device. |
 | {@link ChatClient.kickAllDevices kickAllDevices} | Logs out from a specified account on all devices. |
-| {@link ChatClient.updatePushConfig updatePushConfig} | Update push configurations. |
+| {@link ChatClient.bindDeviceToken bindDeviceToken} | Binds the push token of the device. |
+| {@link ChatClient.bindPushKitToken bindPushKitToken} | Binds the Apple PushKit token, which is used for VoIP push notifications. |
+| {@link ChatClient.unbindPushKitToken unbindPushKitToken} | Unbinds the Apple PushKit token bound by {@link ChatClient.bindPushKitToken}. |
 | {@link ChatClient.getRTCTokenInfoWithChannelName getRTCTokenInfoWithChannelName} | Gets the Agora RTC token, token expiration time, and RTC UID matching the Agora Chat user ID according to the channel name (channelName). |
 | {@link ChatClient.getUserIdsWithRTCUids getUserIdsWithRTCUids} | Gets the Agora Chat user IDs matching the Agora RTC UIDs. |
 | {@link ChatClient.addConnectionListener addConnectionListener} | Adds the connection status listener. |
@@ -114,6 +116,7 @@ ChatSDK is a highly reliable global communication platform where your users can 
 | {@link ChatManager.getConversation getConversation} | Gets the conversation by conversation ID and conversation type. |
 | {@link ChatManager.getAllConversations getAllConversations} | Gets all conversations from the local database. |
 | {@link ChatManager.deleteConversation deleteConversation} | Deletes a conversation and its local messages from the local database. |
+| {@link ChatManager.deleteConversations deleteConversations} | Deletes multiple conversations from the local database. |
 | {@link ChatManager.getLatestMessage getLatestMessage} | Gets the latest message from the conversation. |
 | {@link ChatManager.getLatestReceivedMessage getLatestReceivedMessage} | Gets the latest received message from the conversation. |
 | {@link ChatManager.getConversationUnreadCount getConversationUnreadCount} | Gets the unread message count of the conversation. |
