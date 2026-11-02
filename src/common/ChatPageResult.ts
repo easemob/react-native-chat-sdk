@@ -1,7 +1,7 @@
 /**
  * The pagination class.
  *
- * This class contains the cursor for the next query and the number of records on the page.
+ * This class contains the page data and the count value returned by the query. It does not contain a pagination cursor.
  *
  * The class instance is returned when you make a paginated query.
  */

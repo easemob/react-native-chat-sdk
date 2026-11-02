@@ -961,7 +961,7 @@ export class ChatRoomManager extends Native {
    * Gets custom chat room attributes from the server.
    *
    * @param roomId The chat room ID.
-   * @param keys The key list of custom attributes to get. If you set it as `null` or leave it empty, this method retrieves all custom attributes.
+   * @param keys The custom attribute keys to retrieve. Pass an empty array `[]` to retrieve all custom attributes. In SDK 5.0.0, explicitly pass an array on both platforms; do not omit this parameter or pass `null`, because the Android bridge requires an array.
    *
    * @returns Custom chat room attributes in key-value format.
    *

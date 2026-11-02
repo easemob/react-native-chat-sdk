@@ -72,9 +72,10 @@ export class ChatPushManager extends Native {
   }
 
   /**
-   * Clears the offline push settings of the conversation.
+   * Clears the conversation's independently configured push notification types.
    *
-   * After clearing, the conversation uses the offline push settings of the app. See {@link EMPushManager.setSilentModeForAll}.
+   * After clearing, the conversation inherits the current user's global push notification type. See {@link ChatPushManager.setSilentModeForAll}.
+   * This method does not clear all do-not-disturb rules or cancel the do-not-disturb duration.
    *
    * @params params
    * - convId: The conversation ID.

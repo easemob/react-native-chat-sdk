@@ -111,12 +111,14 @@ export class ChatUserInfoManager extends Native {
    * - [mail] The email address of the user.
    * - [phone] The phone number of the user.
    * - [gender] The gender of the user. The value can only be `0`, `1`, or `2`. Other values are invalid.
-   *    - `0`: (Default) Unknown;
+   *    - `0`: Unknown;
    *    - `1`: Male;
    *    - `2`: Female.
    * - [sign] The signature of the user.
    * - [birth] The birthday of the user.
    * - [ext] The custom extension information of the user. You can set it to an empty string or type custom information and encapsulate them as a JSON string.
+   *
+   * Fields omitted from `params`, including `gender`, retain their values from the existing user information. Omitting `gender` does not reset it to `0`.
    *
    * @throws A description of the exception. See {@link ChatError}.
    */
