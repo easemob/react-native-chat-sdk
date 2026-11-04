@@ -1,6 +1,6 @@
 # iOS 集成方式：Swift Package Manager 与 CocoaPods
 
-自 ChatSdk 5.0.0（HyphenateChat iOS 5.0.0）起，**iOS 推荐使用 Swift Package Manager（SPM）集成，CocoaPods 继续支持**。SPM 路径需要宿主环境提供 `spm_dependency`，并使用 `USE_FRAMEWORKS=dynamic pod install`；默认 `pod install` 和静态链接继续使用 CocoaPods。`ChatSdk.podspec` 按以下条件选择：
+自 ChatSdk 5.0.0（HyphenateChat iOS 5.0.0）起，**iOS 默认推荐 Swift Package Manager（SPM）集成，CocoaPods 继续支持**。ChatSdk 的 iOS 端同时支持两种 `HyphenateChat` 依赖集成方式，由 `ChatSdk.podspec` 自动选择：
 
 | 条件 | 集成方式 |
 | --- | --- |
