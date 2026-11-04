@@ -4,10 +4,10 @@
 
 | 条件 | 集成方式 |
 | --- | --- |
-| 宿主环境提供 `spm_dependency`（React Native >= 0.75）且使用 `USE_FRAMEWORKS=dynamic pod install` | Swift Package Manager（满足条件时启用，推荐） |
-| 其他情况（React Native < 0.75、静态链接、默认 `pod install`） | CocoaPods（默认及回退方式，继续支持） |
+| React Native >= 0.75 且 `USE_FRAMEWORKS=dynamic pod install` | Swift Package Manager（`spm_dependency`）——**推荐/默认** |
+| 其他情况（RN < 0.75、静态链接、默认 `pod install`） | CocoaPods（`HyphenateChat` pod）——继续支持 |
 
-## Swift Package Manager（推荐，需满足启用条件）
+## Swift Package Manager（默认推荐）
 
 要求：
 
@@ -56,4 +56,4 @@ else
 end
 ```
 
-即：宿主 App 使用动态链接且 React Native 版本提供所需帮助方法时走 SPM（推荐路径），其余保持 CocoaPods 行为，对现有使用者无破坏性变更。
+即：宿主 App 使用动态链接且 RN 版本支持时走 SPM（推荐路径），其余保持 CocoaPods 行为，对现有使用者无破坏性变更。
