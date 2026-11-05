@@ -366,7 +366,7 @@ export class ChatClient extends BaseManager {
    *
    * The user ID for successful login is valid.
    *
-   * The user ID is obtained from the memory and updated in the case of login, logout, and reconnection upon disconnection. You can call {@link getCurrentUsername} to get the latest data from the server.
+   * The user ID is read from the JavaScript cache and updated on login, logout, and reconnection. You can call {@link getCurrentUsername} to refresh the cached ID from the native SDK.
    *
    * @returns The current logged-in user ID.
    */
@@ -424,11 +424,11 @@ export class ChatClient extends BaseManager {
   }
 
   /**
-   * Gets the current logged-in user ID from the server.
+   * Reads the current logged-in user ID from the native SDK.
    *
    * **Note**
    *
-   * To get the current logged-in user ID from the memory, see {@link currentUserName}.
+   * A non-empty user ID returned by the native SDK updates the JavaScript cache. To read the cached ID directly, see {@link currentUserName}.
    *
    * @returns The logged-in user ID.
    *
@@ -735,7 +735,9 @@ export class ChatClient extends BaseManager {
    *
    * **Note** The PushKit certificate name must be set with {@link ChatOptions.pushKitCertName} when the SDK is initialized, because the certificate name cannot be changed during the app runtime.
    *
-   * **Note** The native SDK caches the token before binding it: if the current user has not logged in, this call fails with {@link ChatError}, but the token stays cached and is bound automatically after the next successful login. {@link ChatClient.logout} with `unbindDeviceToken` set to `true` unbinds the PushKit token as well.
+   * **Note** The native SDK caches the token before binding it: if the current user has not logged in, this call fails with {@link ChatError}, but the token stays cached and is bound automatically after the next successful login.
+   *
+   * {@link ChatClient.logout} requests token unbinding when `unbindDeviceToken` is `true` and {@link ChatOptions.apnsCertName} is configured. If `apnsCertName` is not configured, the iOS bridge skips token unbinding on logout. To unbind PushKit in that case, call {@link unbindPushKitToken} and wait for it to succeed before logging out.
    *
    * @throws A description of the exception. See {@link ChatError}.
    */
@@ -759,7 +761,7 @@ export class ChatClient extends BaseManager {
    *
    * **Note** This method is available only on the iOS platform; calling it on other platforms does nothing.
    *
-   * {@link ChatClient.logout} with `unbindDeviceToken` set to `true` already unbinds the PushKit token, so call this method only when you need to unbind it while the current user stays logged in.
+   * Use this method to unbind PushKit while the current user stays logged in. Also call it before logout if PushKit must be unbound and {@link ChatOptions.apnsCertName} is not configured: in that case, the iOS bridge skips token unbinding even when `true` is passed for `unbindDeviceToken` to {@link ChatClient.logout}. Wait for this method to succeed before logging out.
    *
    * @throws A description of the exception. See {@link ChatError}.
    */

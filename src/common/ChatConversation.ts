@@ -647,7 +647,7 @@ export class ChatConversation {
    * - msgTypes: The message types to search for. See {@link ChatMessageType}.
    * - timestamp: The timestamp of the message to search for.
    * - count: The number of messages to search for. The value range is [1,100]. The default value is 20.
-   * - from: The message ID to start searching from.
+   * - from: The message sender's user ID to filter by.
    * - direction: The search direction. See {@link ChatSearchDirection}.
    *
    * @returns The list of messages that meet the search criteria.

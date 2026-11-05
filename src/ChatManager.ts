@@ -1113,8 +1113,8 @@ export class ChatManager extends BaseManager {
    * @param maxCount The maximum number of messages to retrieve each time. The value range is [1,400].
    * @param from The user ID of the message sender. If you do not set this parameter, the SDK ignores this parameter when retrieving messages.
    * @param direction The message search direction. See {@link ChatSearchDirection}.
-   *                  - (Default) `ChatSearchDirection.Up`: Messages are retrieved in the descending order of the Unix timestamp included in them.
-   *                  - `ChatSearchDirection.Down`: Messages are retrieved in the ascending order of the Unix timestamp included in them.
+   *                  - (Default) `ChatSearchDirection.UP`: Messages are retrieved in the descending order of the Unix timestamp included in them.
+   *                  - `ChatSearchDirection.DOWN`: Messages are retrieved in the ascending order of the Unix timestamp included in them.
    * @returns The list of retrieved messages (excluding the one with the starting timestamp). If no message is obtained, an empty list is returned.
    *
    * @throws A description of the exception. See {@link ChatError}.
@@ -1161,7 +1161,7 @@ export class ChatManager extends BaseManager {
 
   /**
    *  Loads messages with the specified keyword from the local database, returning a dictionary containing conversation IDs and message ID arrays.
-   *  The SDK returns messages in chronological order.
+   *  Use `direction` to specify the message search direction.
    *
    * @params -
    *  @param keywords        The keyword for message search. If you set this parameter as `undefined`, the SDK ignores this parameter when retrieving messages.
@@ -1207,7 +1207,9 @@ export class ChatManager extends BaseManager {
   }
 
   /**
-   * Gets read receipts of group messages from the local database.
+   * Gets read receipt summaries for group messages.
+   *
+   * The native query uses locally stored message objects. Message IDs not found locally are skipped.
    *
    * **Note**
    *
@@ -1343,7 +1345,7 @@ export class ChatManager extends BaseManager {
    * - (Default) `false`: No.
    * - `true`: Yes.
    *
-   * @returns The retrieved conversation object. The SDK returns `null` if the conversation is not found.
+   * @returns The retrieved conversation object, or `undefined` if the conversation is not found.
    *
    * @throws A description of the exception. See {@link ChatError}.
    */
@@ -2192,7 +2194,7 @@ export class ChatManager extends BaseManager {
    * Gets the list of Reactions.
    *
    * @param msgIds The message ID list.
-   * @param groupId The group ID, which is invalid only when the chat type is group chat.
+   * @param groupId The group ID for a group chat.
    * @param chatType The chat type.
    * @returns If success, the Reaction list is returned; otherwise, an exception is thrown.
    *
@@ -2233,10 +2235,9 @@ export class ChatManager extends BaseManager {
    *
    * @param msgId The message ID.
    * @param reaction The Reaction content.
-   * @param cursor The cursor position from which to start getting Reactions.
-   * @param pageSize The number of Reactions you expect to get on each page.
-   * @returns If success, the SDK returns the Reaction details and the cursor for the next query. The SDK returns `null` if all the data is fetched.
-   *          If a failure occurs, an exception is thrown.
+   * @param cursor The cursor returned by the previous Reaction details query.
+   * @param pageSize The requested page size for the specified Reaction's user details.
+   * @returns A pagination result containing the Reaction details and the cursor for the next query. A successful query returns a result object, not `null`. If the query fails, an exception is thrown.
    *
    * @throws A description of the exception. See {@link ChatError}.
    */
@@ -2748,7 +2749,7 @@ export class ChatManager extends BaseManager {
    * - (Default) `true`: Yes.
    * - `false`: No.
    *
-   * @returns The retrieved conversation object. The SDK returns `null` if the conversation is not found.
+   * @returns The retrieved conversation object, or `undefined` if the conversation is not found.
    *
    * @throws A description of the exception. See {@link ChatError}.
    */
@@ -3209,7 +3210,7 @@ export class ChatManager extends BaseManager {
    * - msgTypes: The message types to search for. See {@link ChatMessageType}.
    * - timestamp: The timestamp of the message to search for.
    * - count: The number of messages to search for. The value range is [1,100]. The default value is 20.
-   * - from: The message ID to start searching from.
+   * - from: The message sender's user ID to filter by.
    * - direction: The search direction. See {@link ChatSearchDirection}.
    * - isChatThread: Whether the conversation is a thread conversation.
    *
@@ -3257,7 +3258,7 @@ export class ChatManager extends BaseManager {
    * - msgTypes: The message types to search for. See {@link ChatMessageType}.
    * - timestamp: The timestamp of the message to search for.
    * - count: The number of messages to search for. The value range is [1,100]. The default value is 20.
-   * - from: The message ID to start searching from.
+   * - from: The message sender's user ID to filter by.
    * - direction: The search direction. See {@link ChatSearchDirection}.
    * - isChatThread: Whether the conversation is a thread conversation.
    *
