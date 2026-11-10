@@ -219,6 +219,30 @@ export class ChatOptions {
   enableEmptyConversation: boolean;
 
   /**
+   * Whether to automatically load all conversations into memory upon a successful login:
+   *
+   * - (Default) `true`: Yes. All conversations are automatically loaded.
+   * - `false`: No. Conversations are not automatically loaded.
+   *
+   * Set this to `false` before initialization to use {@link ChatManager.getConversationsFromDB}.
+   *
+   * @since 5.1.0
+   */
+  autoLoadConversations: boolean;
+
+  /**
+   * Whether to create a conversation when sending or receiving chatroom messages:
+   *
+   * - `true`: Yes. A chatroom conversation is created.
+   * - (Default) `false`: No. No chatroom conversation is created.
+   *
+   * Set this option before initializing the SDK.
+   *
+   * @since 5.1.0
+   */
+  enableChatroomConversation: boolean;
+
+  /**
    * Custom device name.
    *
    * This attribute does not take effect when `customOSType` is set to `-1`.
@@ -301,6 +325,7 @@ export class ChatOptions {
    * The value is a bitmask, for example, `ChatDataSyncType.Conversations | ChatDataSyncType.Contacts`.
    *
    * If this attribute is not set, the native SDK default is used.
+   * Since native SDK 5.1.0, both platforms default to `ChatDataSyncType.Conversations`.
    */
   dataSyncType?: ChatDataSyncType;
 
@@ -335,6 +360,8 @@ export class ChatOptions {
     logTag?: string;
     logTimestamp?: boolean;
     enableEmptyConversation?: boolean;
+    autoLoadConversations?: boolean;
+    enableChatroomConversation?: boolean;
     customDeviceName?: string;
     customOSType?: number;
     enableDNSConfig?: boolean;
@@ -389,6 +416,9 @@ export class ChatOptions {
     this.logTag = params.logTag;
     this.logTimestamp = params.logTimestamp;
     this.enableEmptyConversation = params.enableEmptyConversation ?? false;
+    this.autoLoadConversations = params.autoLoadConversations ?? true;
+    this.enableChatroomConversation =
+      params.enableChatroomConversation ?? false;
     this.customDeviceName = params.customDeviceName;
     this.customOSType = params.customOSType;
     this.enableTLS = params.enableTLS ?? false;
@@ -428,6 +458,8 @@ export class ChatOptions {
     logTag?: string;
     logTimestamp?: boolean;
     enableEmptyConversation?: boolean;
+    autoLoadConversations?: boolean;
+    enableChatroomConversation?: boolean;
     customDeviceName?: string;
     customOSType?: number;
     enableDNSConfig?: boolean;
@@ -474,6 +506,8 @@ export class ChatOptions {
     logTag?: string;
     logTimestamp?: boolean;
     enableEmptyConversation?: boolean;
+    autoLoadConversations?: boolean;
+    enableChatroomConversation?: boolean;
     customDeviceName?: string;
     customOSType?: number;
     enableDNSConfig?: boolean;

@@ -114,6 +114,7 @@ ChatSDK is a highly reliable global communication platform where your users can 
 | {@link ChatManager.fetchGroupMessageReadReceipts fetchGroupMessageReadReceipts} | Uses the pagination to get read receipts for a group message from the server. |
 | {@link ChatManager.removeConversationFromServer removeConversationFromServer} | Deletes the specified conversation and its historical messages from the server. |
 | {@link ChatManager.getConversation getConversation} | Gets the conversation by conversation ID and conversation type. |
+| {@link ChatManager.getConversationsFromDB getConversationsFromDB} | Gets conversations from the local database with pagination. |
 | {@link ChatManager.getAllConversations getAllConversations} | Gets all conversations from the local database. |
 | {@link ChatManager.deleteConversation deleteConversation} | Deletes a conversation and its local messages from the local database. |
 | {@link ChatManager.deleteConversations deleteConversations} | Deletes multiple conversations from the local database. |

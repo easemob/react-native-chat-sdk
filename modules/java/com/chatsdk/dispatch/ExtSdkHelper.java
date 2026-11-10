@@ -313,6 +313,8 @@ class ExtSdkOptionsHelper {
         if (json.has("dataSyncType")) {
             options.setDataSyncType(EMOptions.EMDataSyncType.fromNativeMask(json.getInt("dataSyncType")));
         }
+        if (json.has("autoLoadConversations")) { options.setAutoLoadAllConversations(json.getBoolean("autoLoadConversations")); }
+        if (json.has("enableChatroomConversation")) { options.setEnableChatroomConversation(json.getBoolean("enableChatroomConversation")); }
         if (json.has("enableEmptyConversation")) { options.setLoadEmptyConversations(json.getBoolean("enableEmptyConversation")); }
         if (!json.optString("customDeviceName").isEmpty()) { options.setCustomDeviceName(json.getString("customDeviceName")); }
         if (json.has("customOSType")) { options.setCustomOSPlatform(json.getInt("customOSType")); }
@@ -379,6 +381,8 @@ class ExtSdkOptionsHelper {
         data.put("areaCode", options.getAreaCode());
         data.put("dataSyncType", EMOptions.EMDataSyncType.toNativeMask(options.getDataSyncType()));
         data.put("enableEmptyConversation", options.isLoadEmptyConversations());
+        data.put("autoLoadConversations", options.isAutoLoadAllConversations());
+        data.put("enableChatroomConversation", options.isEnableChatroomConversation());
         data.put("customDeviceName", options.getCustomDeviceName());
         data.put("customOSType", options.getCustomOSPlatform());
         data.put("useReplacedMessageContents", options.isUseReplacedMessageContents());
@@ -426,6 +430,7 @@ class ExtSdkGroupHelper {
         configs.put("isPublic", group.isPublic());
         configs.put("joinApprovalRequired", group.isJoinApprovalRequired());
         configs.put("allowInvites", group.isMemberAllowToInvite());
+        configs.put("inviteNeedConfirm", group.isInviteNeedConfirm());
         data.put("configs", configs);
 
         return data;

@@ -2,6 +2,51 @@ _English | [Chinese](./CHANGELOG.zh.md)_
 
 # Update Log
 
+## 5.1.0
+
+- Upgrade the underlying native SDKs to iOS 5.1.0 and Android 5.1.0.
+
+### Breaking Changes
+
+- Android now synchronizes conversations automatically after login: the native default for `ChatOptions.dataSyncType` changes from `ChatDataSyncType.None` to `ChatDataSyncType.Conversations`, matching iOS. Omitting this option uses the native default.
+- Local conversation lists exclude chatroom conversations by default. Add `ChatOptions.enableChatroomConversation`, which defaults to `false`. Set it to `true` before initializing the SDK to create conversations when sending or receiving chatroom messages.
+
+### New Features
+
+- Add `ChatManager.getConversationsFromDB` to paginate local conversations. Add the corresponding `ChatOptions.autoLoadConversations` option (default: `true`); set it to `false` when initializing the SDK before using pagination.
+- Android now exposes the group invitation confirmation setting through `ChatGroup.configs.inviteNeedConfirm`.
+- Android adds the `GROUP_UPDATE` multi-device event (34) for group information changes. This event is now supported on both platforms.
+
+### Improvements
+
+The native SDK upgrade includes the following improvements:
+
+- Enable WAL mode for the local database to improve concurrent reads and writes. Android also improves read connection pooling, lazy loading of contact remarks, and database migration.
+- Use NTP-adjusted time to check token expiration, reducing incorrect results caused by device clock differences. NTP time synchronization must be enabled on iOS.
+- Android increases the TCP/WebSocket connection timeout from 5 to 20 seconds, the non-attachment HTTP request timeout from 10 to 20 seconds, and the overall login timeout from 30 to 70 seconds. Internal reconnection waits during message sending and DNS list requests now use a 20-second timeout.
+- Android rebuilds `libcipherdb.so` with NDK 29 and enables certificate validation for chunked uploads over DoH.
+
+### Bug Fixes
+
+The native SDK upgrade includes the following fixes:
+
+- Fix incorrect ordering of group message and group event callbacks, and failures to apply repeated server address changes in private deployments.
+- Fix failures to reconnect after network errors. Android also fixes reconnection hangs and occasional deadlocks.
+- (Android) Fix crashes when push token uploads overlap with logout, and stale upload tasks incorrectly updating local token state.
+- (Android) Fix conversation last messages not being updated after fetching message history from the server.
+- (Android) Fix crashes caused by empty message IDs and database errors caused by empty message bodies. Messages with empty bodies are no longer stored or delivered through callbacks.
+- (Android) Fix crashes when calling `ChatManager.deleteAllMessageAndConversation` before login.
+- (Android) Fix missing send callbacks for invalid attachment remote paths, and incorrect unit conversion for attachment upload HTTP timeouts.
+- (Android) Fix crashes when updating user attributes and JNI local reference leaks in user attribute callbacks.
+- (Android) Fix timing-related crashes between local cleanup and callback threads when leaving or destroying groups, and crashes when resetting connection address lists.
+- (Android) Fix uninitialized Presence timestamps and missing page size validation.
+- (iOS) Fix potential crashes when iterating over DNS configuration.
+- (iOS) Fix `ChatUserInfoManager.fetchSubscribedUsers` returning an empty array after subscribing to user information.
+- (iOS) Fix missing send callbacks when automatic attachment upload is disabled and the attachment remote path is empty.
+- (iOS) Fix incorrect conversation do-not-disturb information caused by parsing errors during multi-device synchronization.
+
+For native release details, see [Android 5.1.0](https://doc.easemob.com/document/android/releasenote.html#v5-1-0-dev-2026-9-24) and [iOS 5.1.0](https://doc.easemob.com/document/ios/releasenote.html#v5-1-0-dev-2026-9-24).
+
 ## 5.0.0
 
 This is a major release with breaking changes. Starting from this version, the React Native SDK version number is kept in sync with the underlying native SDK versions.

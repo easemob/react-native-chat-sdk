@@ -2,6 +2,51 @@ _Chinese | [English](./CHANGELOG.md)_
 
 # Update Log
 
+## 5.1.0
+
+- 依赖的原生 SDK 升级至 iOS 5.1.0 和 Android 5.1.0。
+
+### 重大变更（Breaking Changes）
+
+- Android 登录后默认自动同步会话列表：`ChatOptions.dataSyncType` 的原生默认值由 `ChatDataSyncType.None` 调整为 `ChatDataSyncType.Conversations`，与 iOS 保持一致。不传该属性时使用原生默认值。
+- 本地会话列表默认不包含聊天室会话。新增 `ChatOptions.enableChatroomConversation`，默认 `false`；如需在收发聊天室消息时创建对应会话，请在初始化 SDK 前设为 `true`。
+
+### 新增功能（New Features）
+
+- 新增 `ChatManager.getConversationsFromDB`，支持分页获取本地会话列表。配套新增 `ChatOptions.autoLoadConversations`（默认 `true`）；使用分页接口前需在初始化 SDK 时将其设为 `false`。
+- Android 支持通过 `ChatGroup.configs.inviteNeedConfirm` 获取群组邀请是否需要被邀请人确认的配置。
+- Android 新增多设备群组信息更新事件 `GROUP_UPDATE`（34），该事件现在双端均支持。
+
+### 优化（Improvements）
+
+以下优化随原生 SDK 升级引入：
+
+- 本地数据库启用 WAL 模式，提升并发读写性能；Android 同时优化读连接池、好友备注懒加载及数据库迁移流程。
+- 使用 NTP 校准时间判断 Token 是否过期，减少设备本地时间偏差造成的误判；iOS 需开启 NTP 对时。
+- Android 调整网络超时：TCP/WebSocket 单次连接超时由 5 秒延长至 20 秒，非附件 HTTP 请求超时由 10 秒延长至 20 秒，整体登录超时由 30 秒延长至 70 秒；发送消息时的内部重连等待及 DNS 列表获取超时统一为 20 秒。
+- Android 的 `libcipherdb.so` 使用 NDK 29 重新编译，DoH 分片上传启用证书校验。
+
+### 问题修复（Bug Fixes）
+
+以下修复随原生 SDK 升级引入：
+
+- 修复群组消息与群组事件回调顺序异常，以及私有部署场景下重复设置服务地址不生效的问题。
+- 修复网络异常时可能无法重连的问题；Android 同时修复重连卡死及偶发死锁。
+- （Android）修复推送 Token 上传与登出并发时的崩溃，以及过期上传任务污染本地 Token 状态的问题。
+- （Android）修复拉取漫游消息后未更新会话最后一条消息的问题。
+- （Android）修复收到空消息 ID 时的崩溃，以及空消息内容引发的数据库读写异常；空内容消息不再入库或回调上层。
+- （Android）修复未登录时调用 `ChatManager.deleteAllMessageAndConversation` 导致的崩溃。
+- （Android）修复附件远端路径非法时发送消息没有回调，以及附件上传 HTTP 超时单位换算错误的问题。
+- （Android）修复更新用户属性时的崩溃及用户属性回调中的 JNI 局部引用泄漏。
+- （Android）修复退群或群被销毁时本地清理与回调线程的时序崩溃，以及连接地址列表重置时的崩溃。
+- （Android）修复 Presence 时间戳未初始化及分页大小未校验的问题。
+- （iOS）修复遍历 DNS 配置时可能发生的崩溃。
+- （iOS）修复订阅用户信息后调用 `ChatUserInfoManager.fetchSubscribedUsers` 返回空数组的问题。
+- （iOS）修复关闭附件自动上传后，附件远端路径为空时发送消息没有回调的问题。
+- （iOS）修复多设备设置免打扰后，同步解析错误导致会话免打扰信息不准确的问题。
+
+原生版本更新详情：[Android 5.1.0](https://doc.easemob.com/document/android/releasenote.html#v5-1-0-dev-2026-9-24)、[iOS 5.1.0](https://doc.easemob.com/document/ios/releasenote.html#v5-1-0-dev-2026-9-24)。
+
 ## 5.0.0
 
 本次为大版本升级，包含不兼容变更。自本版本起，React Native SDK 版本号与依赖的原生 SDK 版本号保持同步。

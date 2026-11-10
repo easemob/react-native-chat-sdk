@@ -226,6 +226,9 @@ public class ExtSdkDispatch implements ExtSdkApi {
             case ExtSdkMethodType.importMessages:
                 ExtSdkChatManagerWrapper.getInstance().importMessages(jsonParams, methodType, callback);
                 break;
+            case ExtSdkMethodType.getConversationsFromDB:
+                ExtSdkChatManagerWrapper.getInstance().getConversationsFromDB(jsonParams, methodType, callback);
+                break;
             case ExtSdkMethodType.loadAllConversations:
                 ExtSdkChatManagerWrapper.getInstance().loadAllConversations(jsonParams, methodType, callback);
                 break;

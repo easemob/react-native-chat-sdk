@@ -79,6 +79,20 @@ function sendMessageAndWait(message: ChatMessage): Promise<ChatMessage> {
 
 export const chatApis: ApiEntry[] = [
   {
+    name: 'ChatManager.getConversationsFromDB',
+    group: 'ChatManager',
+    description:
+      '分页获取本地会话。初始化时需设置 autoLoadConversations=false。' +
+      'cursor：上一页游标，空字符串表示第一页；pageSize：1–100，默认 20。返回空游标表示最后一页。',
+    paramsTemplate: JSON.stringify({ cursor: '', pageSize: 20 }, null, 2),
+    invoke: async (params) => {
+      return ChatClient.getInstance().chatManager.getConversationsFromDB({
+        cursor: params.cursor as string | undefined,
+        pageSize: params.pageSize as number | undefined,
+      });
+    },
+  },
+  {
     name: 'ChatManager.getAllConversations',
     group: 'ChatManager',
     description:

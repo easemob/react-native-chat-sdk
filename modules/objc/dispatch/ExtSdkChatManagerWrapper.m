@@ -503,6 +503,20 @@
                                             }];
 }
 
+- (void)getConversationsFromDB:(NSDictionary *)param
+               withMethodType:(NSString *)aChannelName
+                       result:(nonnull id<ExtSdkCallbackObjc>)result {
+    __weak typeof(self) weakSelf = self;
+    [EMClient.sharedClient.chatManager getConversationsFromDBWithCursor:param[@"cursor"]
+                                                              pageSize:[param[@"pageSize"] integerValue]
+                                                            completion:^(EMCursorResult<EMConversation *> *cursorResult, EMError *error) {
+                                                              [weakSelf onResult:result
+                                                                  withMethodType:aChannelName
+                                                                       withError:error
+                                                                      withParams:[cursorResult toJsonObject]];
+                                                            }];
+}
+
 - (void)loadAllConversations:(NSDictionary *)param
               withMethodType:(NSString *)aChannelName
                       result:(nonnull id<ExtSdkCallbackObjc>)result {

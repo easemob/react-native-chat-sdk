@@ -176,6 +176,8 @@ const CHAT_OPTIONS_KEYS = [
   'logTag',
   'logTimestamp',
   'enableEmptyConversation',
+  'autoLoadConversations',
+  'enableChatroomConversation',
   'customDeviceName',
   'customOSType',
   'enableDNSConfig',

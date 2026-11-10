@@ -641,6 +641,23 @@ public class ExtSdkChatManagerWrapper extends ExtSdkWrapper {
         });
     }
 
+    public void getConversationsFromDB(JSONObject param, String channelName, ExtSdkCallback result) throws JSONException {
+        String cursor = param.getString("cursor");
+        int pageSize = param.getInt("pageSize");
+        EMClient.getInstance().chatManager().asyncGetConversationsFromDB(
+            cursor, pageSize, new EMValueCallBack<EMCursorResult<EMConversation>>() {
+                @Override
+                public void onSuccess(EMCursorResult<EMConversation> value) {
+                    ExtSdkWrapper.onSuccess(result, channelName, ExtSdkCursorResultHelper.toJson(value));
+                }
+
+                @Override
+                public void onError(int code, String error) {
+                    ExtSdkWrapper.onError(result, code, error);
+                }
+            });
+    }
+
     public void loadAllConversations(JSONObject param, String channelName, ExtSdkCallback result) throws JSONException {
 
         List<EMConversation> list = EMClient.getInstance().chatManager().getAllConversationsBySort();

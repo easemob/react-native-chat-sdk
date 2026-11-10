@@ -35,6 +35,7 @@ import {
   MTfetchReactionList,
   MTfetchSupportLanguages,
   MTgetConversation,
+  MTgetConversationsFromDB,
   MTgetConvsMsgsWithKeyword,
   MTgetGroupMessageReadReceipts,
   MTgetLatestMessage,
@@ -1370,6 +1371,42 @@ export class ChatManager extends BaseManager {
       return new ChatConversation(rr);
     }
     return undefined;
+  }
+
+  /**
+   * Gets conversations from the local database with pagination.
+   *
+   * Set {@link ChatOptions.autoLoadConversations} to `false` before initializing the SDK.
+   * Conversations are ordered by pinned state, the latest message's server timestamp,
+   * and conversation ID (case-insensitive), all in descending order.
+   *
+   * @param params The pagination options.
+   * - `cursor`: The cursor from the previous result. Omit it or pass an empty string for the first page.
+   * - `pageSize`: The page size, from 1 to 100. The default is 20.
+   * @returns The conversations and the next cursor. An empty cursor means the last page.
+   * @throws A description of the exception. See {@link ChatError}. An invalid cursor produces native error 110.
+   *
+   * @since 5.1.0
+   */
+  public async getConversationsFromDB(params: {
+    cursor?: string;
+    pageSize?: number;
+  }): Promise<ChatCursorResult<ChatConversation>> {
+    chatlog.log(`${ChatManager.TAG}: getConversationsFromDB: `, params);
+    const r: any = await Native._callMethod(MTgetConversationsFromDB, {
+      [MTgetConversationsFromDB]: {
+        cursor: params.cursor ?? '',
+        pageSize: params.pageSize ?? 20,
+      },
+    });
+    Native.checkErrorFromResult(r);
+    const result = r[MTgetConversationsFromDB];
+    return new ChatCursorResult<ChatConversation>({
+      cursor: result.cursor,
+      list: result.list,
+      totalCount: result.totalCount,
+      opt: { map: (conversation: any) => new ChatConversation(conversation) },
+    });
   }
 
   /**

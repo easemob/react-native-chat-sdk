@@ -24,7 +24,7 @@ USE_FRAMEWORKS=dynamic pod install
 
 - 包地址：<https://github.com/easemob/HyphenateChat_iOS.git>
 - product：`HyphenateChat`
-- 版本约束：`upToNextMinorVersion`，最低 `5.0.0`
+- 版本约束：`upToNextMinorVersion`，最低 `5.1.0`
 - `ShengwangInfra_iOS` 由该 SPM 包自动带入
 
 注意事项：
@@ -42,7 +42,7 @@ USE_FRAMEWORKS=dynamic pod install
 cd ios && pod install
 ```
 
-SDK 依赖 `HyphenateChat ~> 5.0.0` pod。注意：CocoaPods trunk 将于 2026-12-02 进入只读状态，已发布的版本仍可 `pod install`，但无法再从 trunk 获取新版本——这也是 5.0.0 起推荐 SPM 的原因之一。
+SDK 依赖 `HyphenateChat ~> 5.1.0` pod。注意：CocoaPods trunk 将于 2026-12-02 进入只读状态，已发布的版本仍可 `pod install`，但无法再从 trunk 获取新版本——这也是 5.0.0 起推荐 SPM 的原因之一。
 
 ## 选择逻辑
 
@@ -52,7 +52,7 @@ SDK 依赖 `HyphenateChat ~> 5.0.0` pod。注意：CocoaPods trunk 将于 2026-1
 if defined?(:spm_dependency) && ENV['USE_FRAMEWORKS'] == 'dynamic'
   spm_dependency(s, ...)
 else
-  s.dependency 'HyphenateChat', '~> 5.0.0'
+  s.dependency 'HyphenateChat', '~> 5.1.0'
 end
 ```
 

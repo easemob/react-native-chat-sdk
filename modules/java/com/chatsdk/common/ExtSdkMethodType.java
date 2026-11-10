@@ -70,6 +70,7 @@ public class ExtSdkMethodType {
     public static final String downloadThumbnail = "downloadThumbnail";
     public static final String importMessages = "importMessages";
     public static final String loadAllConversations = "loadAllConversations";
+    public static final String getConversationsFromDB = "getConversationsFromDB";
     public static final String deleteConversation = "deleteConversation";
     public static final String deleteConversations = "deleteConversations";
     public static final String fetchHistoryMessagesByOptions = "fetchHistoryMessagesByOptions";

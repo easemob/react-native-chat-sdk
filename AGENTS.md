@@ -17,7 +17,7 @@
 - Lefthook for git hooks (pre-commit, commit-msg, post-commit)
 - Commitlint enforcing conventional commits
 - Gitleaks for secret scanning (post-commit hook)
-- HyphenateChat 5.0.0 (underlying native IM SDK for iOS and Android)
+- HyphenateChat 5.1.0 (underlying native IM SDK for iOS and Android)
 
 ## Project Structure
 
@@ -106,7 +106,7 @@ TypeScript Manager → Native._callMethod(methodName, args) → NativeModule.cal
                                         HyphenateChat SDK            HyphenateChat SDK
 ```
 
-- **TurboModule** (new arch) with `NativeModules` fallback (old arch)
+- **TurboModule** (new architecture only)
 - Single native method: `callMethod(method: string, args?: Object)` dispatches to the correct wrapper
 - Events flow back via `NativeEventEmitter` → listener callbacks
 

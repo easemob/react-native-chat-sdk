@@ -206,6 +206,9 @@ static NSString *const TAG = @"ExtSdkDispatch";
     case ExtSdkMethodKeyImportMessagesValue:
         [[ExtSdkChatManagerWrapper getInstance] importMessages:ps withMethodType:methodType result:callback];
         break;
+    case ExtSdkMethodKeyGetConversationsFromDBValue:
+        [[ExtSdkChatManagerWrapper getInstance] getConversationsFromDB:ps withMethodType:methodType result:callback];
+        break;
     case ExtSdkMethodKeyLoadAllConversationsValue:
         [[ExtSdkChatManagerWrapper getInstance] loadAllConversations:ps withMethodType:methodType result:callback];
         break;

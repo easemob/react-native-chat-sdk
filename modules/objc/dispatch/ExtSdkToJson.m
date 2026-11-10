@@ -1218,6 +1218,8 @@
     data[@"dohVendor"] = @(self.dohVendor);
     data[@"enableUserInfo"] = @(self.enableUserInfo);
     data[@"dataSyncType"] = @(self.dataSyncType);
+    data[@"autoLoadConversations"] = @(self.autoLoadConversations);
+    data[@"enableChatroomConversation"] = @(self.enableChatroomConversation);
     // 2026-08-25 4.24.1
     data[@"ntpServers"] = self.ntpServers;
 
@@ -1276,6 +1278,8 @@
     if (aJson[@"dohVendor"]) { options.dohVendor = [aJson[@"dohVendor"] intValue]; }
 
     if (aJson[@"enableUserInfo"]) { options.enableUserInfo = [aJson[@"enableUserInfo"] boolValue]; }
+    if (aJson[@"autoLoadConversations"]) { options.autoLoadConversations = [aJson[@"autoLoadConversations"] boolValue]; }
+    if (aJson[@"enableChatroomConversation"]) { options.enableChatroomConversation = [aJson[@"enableChatroomConversation"] boolValue]; }
     if (aJson[@"dataSyncType"]) { options.dataSyncType = (EMDataSyncType)[aJson[@"dataSyncType"] integerValue]; }
 
     // 2026-08-25 4.24.1

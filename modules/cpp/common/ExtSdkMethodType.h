@@ -65,6 +65,7 @@ public:
     static const std::string downloadThumbnail;
     static const std::string importMessages;
     static const std::string loadAllConversations;
+    static const std::string getConversationsFromDB;
     static const std::string deleteConversation;
     static const std::string deleteConversations;
     static const std::string searchChatMsgFromDB;

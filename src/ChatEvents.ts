@@ -145,7 +145,8 @@ export enum ChatMultiDeviceEvent {
   /**
    * If user A updates the chat group information on Device A1, this event is triggered on Device A2.
    *
-   * Only the iOS SDK reports this event (native value 34, `EMMultiDevicesEventGroupUpdate`); the Android SDK reports group metadata changes with native value 52 instead.
+   * Supported on both platforms since native SDK 5.1.0 (native value 34).
+   * Group member custom attribute updates use {@link GROUP_METADATA_CHANGED} (52).
    */
   GROUP_UPDATE,
   /**
