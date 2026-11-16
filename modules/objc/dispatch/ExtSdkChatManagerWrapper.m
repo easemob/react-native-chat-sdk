@@ -520,17 +520,11 @@
 - (void)loadAllConversations:(NSDictionary *)param
               withMethodType:(NSString *)aChannelName
                       result:(nonnull id<ExtSdkCallbackObjc>)result {
-    NSArray *conversations = [EMClient.sharedClient.chatManager getAllConversations];
-    NSArray *sortedList =
-        [conversations sortedArrayUsingComparator:^NSComparisonResult(id _Nonnull obj1, id _Nonnull obj2) {
-          if (((EMConversation *)obj1).latestMessage.timestamp > ((EMConversation *)obj2).latestMessage.timestamp) {
-              return NSOrderedAscending;
-          } else {
-              return NSOrderedDescending;
-          }
-        }];
+    // 5.1.0
+    BOOL isSort = param[@"isSort"] ? [param[@"isSort"] boolValue] : YES;
+    NSArray *conversations = [EMClient.sharedClient.chatManager getAllConversations:isSort];
     NSMutableArray *conList = [NSMutableArray array];
-    for (EMConversation *conversation in sortedList) {
+    for (EMConversation *conversation in conversations) {
         [conList addObject:[conversation toJsonObject]];
     }
 

@@ -1414,13 +1414,22 @@ export class ChatManager extends BaseManager {
    *
    * Conversations will be first retrieved from the memory. If no conversation is found, the SDK retrieves from the local database.
    *
+   * @param isSort Whether to sort the conversations:
+   * - (Default) `true`: Yes. Pinned conversations come first, followed by unpinned conversations, in descending order of the latest message timestamp.
+   * - `false`: No. The order is unspecified.
    * @returns The retrieved conversations.
    *
    * @throws A description of the exception. See {@link ChatError}.
    */
-  public async getAllConversations(): Promise<Array<ChatConversation>> {
-    chatlog.log(`${ChatManager.TAG}: getAllConversations:`);
-    let r: any = await Native._callMethod(MTloadAllConversations);
+  public async getAllConversations(
+    isSort: boolean = true
+  ): Promise<Array<ChatConversation>> {
+    chatlog.log(`${ChatManager.TAG}: getAllConversations: ${isSort}`);
+    let r: any = await Native._callMethod(MTloadAllConversations, {
+      [MTloadAllConversations]: {
+        isSort: isSort,
+      },
+    });
     Native.checkErrorFromResult(r);
     let ret = new Array<ChatConversation>(0);
     const rr: Array<any> = r?.[MTloadAllConversations];

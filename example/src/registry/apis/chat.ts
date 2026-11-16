@@ -96,10 +96,13 @@ export const chatApis: ApiEntry[] = [
     name: 'ChatManager.getAllConversations',
     group: 'ChatManager',
     description:
-      '获取全部会话列表（本地数据，服务端拉取接口已在 5.0 移除）。无参数。',
-    paramsTemplate: '{}',
-    invoke: async () => {
-      return ChatClient.getInstance().chatManager.getAllConversations();
+      '获取全部会话列表（本地数据，服务端拉取接口已在 5.0 移除）。' +
+      'isSort：是否排序，默认 true（置顶在前，按最新消息时间戳倒序）；false 不保证顺序。',
+    paramsTemplate: JSON.stringify({ isSort: true }, null, 2),
+    invoke: async (params) => {
+      return ChatClient.getInstance().chatManager.getAllConversations(
+        params.isSort ?? true
+      );
     },
   },
   {

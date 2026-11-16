@@ -660,7 +660,11 @@ public class ExtSdkChatManagerWrapper extends ExtSdkWrapper {
 
     public void loadAllConversations(JSONObject param, String channelName, ExtSdkCallback result) throws JSONException {
 
-        List<EMConversation> list = EMClient.getInstance().chatManager().getAllConversationsBySort();
+        // 5.1.0
+        boolean isSort = param == null || param.optBoolean("isSort", true);
+        List<EMConversation> list = isSort
+                ? EMClient.getInstance().chatManager().getAllConversationsBySort()
+                : new ArrayList<>(EMClient.getInstance().chatManager().getAllConversations().values());
         List<Map> conversations = new ArrayList<>();
         for (EMConversation conversation : list) {
             conversations.add(ExtSdkConversationHelper.toJson(conversation));
