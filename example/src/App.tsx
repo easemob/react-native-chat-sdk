@@ -16,6 +16,7 @@ import { FloatingLog } from './log/floating_log';
 import { FloatingAttachment } from './tools/floating_attachment';
 import { addLog, LOG_FILE_PATH } from './log/log_store';
 import { isAutoMode, runAutoMode, type AutoModeHooks } from './auto/auto_mode';
+import { isCiMode, runCiMode } from './ci/ci_mode';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -46,11 +47,25 @@ function FloatingAttachmentHost() {
   return sdk.initialized ? <FloatingAttachment /> : null;
 }
 
+function CiModeRunner() {
+  useEffect(() => {
+    if (isCiMode()) {
+      runCiMode();
+    }
+  }, []);
+  return null;
+}
+
 function AutoModeRunner() {
   const sdk = useSdkState();
   useEffect(() => {
     // 启动即打印日志文件绝对路径（真机/模拟器脱离控制台后追溯用）
     addLog('log.path', { path: LOG_FILE_PATH });
+    // CI_RUN 内联时 auto 模式必须让位：两者同时内联是构建配置错误，
+    // 由 runCiMode 报错并发 script.done（failed=1）fail-fast，互不静默优先
+    if (isCiMode()) {
+      return;
+    }
     if (isAutoMode()) {
       const hooks: AutoModeHooks = {
         markInitialized: sdk.markInitialized,
@@ -77,6 +92,7 @@ function AppBody() {
   const insets = useSafeAreaInsets();
   return (
     <View style={[styles.root, { paddingTop: insets.top }]}>
+      <CiModeRunner />
       <AutoModeRunner />
       <StatusBar />
       <NavigationContainer ref={navigationRef}>

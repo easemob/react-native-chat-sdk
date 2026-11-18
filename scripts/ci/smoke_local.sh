@@ -1,8 +1,10 @@
 #!/usr/bin/env bash
-# One-command local verification of the device smoke test. Mirrors the build
-# steps of .github/workflows/device-smoke.yml (JS bundle embedded, API_SCRIPT
-# inlined) and then runs the platform driver script, so a local run exercises
-# exactly what CI runs.
+# One-command local build+run of an auto-mode script on a device: builds the
+# example app with the JS bundle embedded and API_SCRIPT inlined, then runs
+# the platform driver script. This is the entry point of the porting runner
+# (yarn report:api -> scripts/ci/auto_report.js spawns this script with
+# SCRIPT_JSON/OUT_LOG overrides). The CI device regression harness uses
+# ci_test_local.sh instead (CI mode, CI_RUN inlined).
 #
 # Usage:
 #   bash scripts/ci/smoke_local.sh android   # needs a booted emulator/device
@@ -27,10 +29,10 @@ cd "$REPO_ROOT"
 [ -d node_modules ] || yarn install
 yarn gen:version_file && yarn gen:cmake_file && yarn gen:env_file
 
-# API_SCRIPT / API_CONFIG reach the bundler via environment variables, which
-# neither gradle's up-to-date checks nor metro's transform cache track (their
-# keys are file contents + transformer options only). Without these clears,
-# alternating smoke/nightly runs silently reuse the previously inlined paths.
+# API_SCRIPT reaches the bundler via an environment variable, which neither
+# gradle's up-to-date checks nor metro's transform cache track (their keys
+# are file contents + transformer options only). Without this clear, a
+# previous auto-mode/CI-mode build's inlined paths would be reused silently.
 rm -rf "${TMPDIR:-/tmp}/metro-cache"
 
 if [ "$PLATFORM" = "android" ]; then
@@ -41,10 +43,10 @@ if [ "$PLATFORM" = "android" ]; then
   # Build for the ABI of the attached device (arm64 on Apple Silicon,
   # x86_64 on CI), not a hardcoded one.
   ABI="$(adb shell getprop ro.product.cpu.abi | tr -d '\r')"
-  echo ">> build smoke APK (ABI=$ABI, bundle embedded, API_SCRIPT inlined)"
+  echo ">> build auto-mode APK (ABI=$ABI, bundle embedded, API_SCRIPT inlined)"
   (
     cd example/android
-    API_SCRIPT=/data/local/tmp/rn_smoke_no_login.json \
+    API_SCRIPT=/data/local/tmp/rn_auto_script.json \
       ./gradlew app:cleanCreateBundleDebugJsAndAssets app:assembleDebug \
       --no-daemon --console=plain \
       "-PreactNativeArchitectures=$ABI" -PbundleInDebug=true
@@ -69,7 +71,7 @@ if ! xcrun simctl list devices booted | grep -q Booted; then
   export DEVICE_UDID
 fi
 
-echo ">> build smoke app (bundle embedded, API_SCRIPT inlined)"
+echo ">> build auto-mode app (bundle embedded, API_SCRIPT inlined)"
 (
   cd example
   xcodebuild -workspace ios/ChatSdkExample.xcworkspace \
@@ -78,7 +80,7 @@ echo ">> build smoke app (bundle embedded, API_SCRIPT inlined)"
     -sdk iphonesimulator \
     -derivedDataPath ios/build \
     FORCE_BUNDLING=1 \
-    API_SCRIPT=/tmp/rn_smoke_no_login.json \
+    API_SCRIPT=/tmp/rn_auto_script.json \
     build
 )
 exec bash scripts/ci/run_device_ios.sh

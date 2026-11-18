@@ -36,4 +36,7 @@ yarn test:contract --no-watchman
 echo "==> Circular dependency check"
 yarn check:circular:dpdm
 
+echo "==> CI case mapping check"
+node scripts/ci/check_case_mapping.js
+
 echo "==> All quality gates passed"

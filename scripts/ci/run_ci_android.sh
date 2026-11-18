@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 # CI wrapper around run_device_android.sh, called from the android-emulator-runner
-# `script:` input of the device-smoke and single-account-nightly workflows.
+# `script:` input of the ci-device workflow (via ci_test_local.sh, which
+# invokes it once per entry).
 # That action does not pass multi-line scripts to the shell reliably (observed:
 # only the first line reached `sh -c`, which broke `\` continuations and
 # `|| { }` blocks), so the workflows invoke this one-liner instead of inlining
@@ -11,9 +12,9 @@
 #   LOGCAT_LOG           where to dump logcat when the driver fails
 #                        (default: build/reports/android-logcat.log)
 #   DEVICE_CLEANUP_PATHS space-separated device paths to delete after the run
-#                        (single-account nightly: the on-device script/config
-#                        copies hold credentials and must be removed inside the
-#                        emulator session, as must the logcat dump)
+#                        (ci_test_local.sh: the on-device ci_run.json holds
+#                        credentials and must be removed inside the emulator
+#                        session, as must the logcat dump)
 
 # No `set -e`: cleanup and the logcat dump must run even when the driver fails.
 REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"

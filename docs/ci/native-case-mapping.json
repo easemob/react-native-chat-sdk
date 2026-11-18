@@ -1,0 +1,125 @@
+{
+  "schemaVersion": 1,
+  "nativeBaseline": "HyphenateChat 5.1.0",
+  "cases": [
+    {
+      "caseId": "RN-APP-001",
+      "entry": "logged_out",
+      "module": "app",
+      "platforms": ["android", "ios"],
+      "nativeRef": "ChatClient.init options echo; no persisted login state"
+    },
+    {
+      "caseId": "RN-AUTH-001",
+      "entry": "logged_in_base",
+      "module": "auth",
+      "platforms": ["android", "ios"],
+      "nativeRef": "loginWithToken session readiness (current user, connected)"
+    },
+    {
+      "caseId": "RN-CONV-001",
+      "entry": "logged_in_base",
+      "module": "conversation",
+      "platforms": ["android", "ios"],
+      "nativeRef": "ChatManager.getAllConversations local DB read"
+    },
+    {
+      "caseId": "RN-CONV-002",
+      "entry": "logged_in_base",
+      "module": "conversation",
+      "platforms": ["android", "ios"],
+      "nativeRef": "ChatPushManager.fetchSilentModeForAll read-only fetch"
+    },
+    {
+      "caseId": "RN-CONV-003",
+      "entry": "logged_out",
+      "module": "conversation",
+      "platforms": ["android", "ios"],
+      "nativeRef": "ChatPushManager.fetchSilentModeForAll while logged out throws 201"
+    },
+    {
+      "caseId": "RN-MSG-001",
+      "entry": "logged_out",
+      "module": "message",
+      "platforms": ["android", "ios"],
+      "nativeRef": "ChatManager.searchMessagesFromServer while logged out throws 201"
+    },
+    {
+      "caseId": "RN-GROUP-001",
+      "entry": "logged_in_group",
+      "module": "group",
+      "platforms": ["android", "ios"],
+      "nativeRef": "group fetch-by-id and JoinedGroups sync after REST create/delete"
+    },
+    {
+      "caseId": "RN-GROUP-002",
+      "entry": "logged_out",
+      "module": "group",
+      "platforms": ["android", "ios"],
+      "nativeRef": "ChatGroupManager.getJoinedGroups local DB read without login"
+    },
+    {
+      "caseId": "RN-CONTACT-001",
+      "entry": "logged_in_contact",
+      "module": "contact",
+      "platforms": ["android", "ios"],
+      "nativeRef": "contact list sync after REST friendship change, snapshot restore"
+    },
+    {
+      "caseId": "RN-CONTACT-002",
+      "entry": "logged_out",
+      "module": "contact",
+      "platforms": ["android", "ios"],
+      "nativeRef": "ChatContactManager.addContact while logged out throws 201"
+    },
+    {
+      "caseId": "RN-PRESENCE-001",
+      "entry": "logged_in_base",
+      "module": "presence",
+      "platforms": ["android", "ios"],
+      "nativeRef": "ChatPresenceManager.fetchPresenceStatus read-only fetch"
+    },
+    {
+      "caseId": "RN-PRESENCE-002",
+      "entry": "logged_out",
+      "module": "presence",
+      "platforms": ["android", "ios"],
+      "nativeRef": "ChatPresenceManager.publishPresence while logged out throws 201"
+    },
+    {
+      "caseId": "RN-ROOM-001",
+      "entry": "logged_in_base",
+      "module": "room",
+      "platforms": ["android", "ios"],
+      "nativeRef": "ChatRoomManager.fetchPublicChatRoomsFromServer page fetch"
+    },
+    {
+      "caseId": "RN-ROOM-002",
+      "entry": "logged_out",
+      "module": "room",
+      "platforms": ["android", "ios"],
+      "nativeRef": "ChatRoomManager.fetchPublicChatRoomsFromServer while logged out throws 201"
+    },
+    {
+      "caseId": "RN-USERINFO-001",
+      "entry": "logged_in_user_info",
+      "module": "user_info",
+      "platforms": ["android", "ios"],
+      "nativeRef": "ChatUserInfoManager.fetchOwnInfo with enableUserInfo"
+    },
+    {
+      "caseId": "RN-USERINFO-002",
+      "entry": "logged_in_user_info",
+      "module": "user_info",
+      "platforms": ["android", "ios"],
+      "nativeRef": "ChatUserInfoManager.fetchSubscribedUsers read-only fetch"
+    },
+    {
+      "caseId": "RN-USERINFO-003",
+      "entry": "logged_out",
+      "module": "user_info",
+      "platforms": ["android", "ios"],
+      "nativeRef": "ChatUserInfoManager.fetchSubscribedUsers while logged out throws 201"
+    }
+  ]
+}

@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 # CI wrapper around run_device_ios.sh, called from the iOS test jobs of the
-# device-smoke and single-account-nightly workflows. Boots a simulator (unless
-# DEVICE_UDID is preset) and hands off to the driver. Symmetric counterpart of
-# run_ci_android.sh; all other configuration arrives via the driver's own
-# environment variables.
+# ci-device workflow (via ci_test_local.sh, which invokes it once per entry).
+# Boots a simulator (unless DEVICE_UDID is preset) and hands off to the
+# driver. Symmetric counterpart of run_ci_android.sh; all other configuration
+# arrives via the driver's own environment variables.
 set -euo pipefail
 
 REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
