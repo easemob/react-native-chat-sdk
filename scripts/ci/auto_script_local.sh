@@ -7,8 +7,8 @@
 # ci_test_local.sh instead (CI mode, CI_RUN inlined).
 #
 # Usage:
-#   bash scripts/ci/smoke_local.sh android   # needs a booted emulator/device
-#   bash scripts/ci/smoke_local.sh ios       # boots a simulator if none is booted
+#   bash scripts/ci/auto_script_local.sh android   # needs a booted emulator/device
+#   bash scripts/ci/auto_script_local.sh ios       # boots a simulator if none is booted
 #
 # Re-running is incremental: dependencies, pods and native objects are reused,
 # only the JS bundle is regenerated.
@@ -19,7 +19,7 @@ PLATFORM="${1:-}"
 case "$PLATFORM" in
   android|ios) ;;
   *)
-    echo "usage: bash scripts/ci/smoke_local.sh <android|ios>" >&2
+    echo "usage: bash scripts/ci/auto_script_local.sh <android|ios>" >&2
     exit 2
     ;;
 esac

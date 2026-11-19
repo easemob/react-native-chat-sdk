@@ -39,5 +39,5 @@ export function registerAuthCases(ctx: CiCaseContext): void {
 
 /** No-login authentication negative cases (`logged_out` entry). */
 export function registerAuthLoggedOutCases(_ctx: CiCaseContext): void {
-  // No cases registered yet: no_login_smoke.json covers no auth API.
+  // No cases registered yet: no auth API has a no-login expectation to pin.
 }

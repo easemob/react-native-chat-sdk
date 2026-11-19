@@ -1,5 +1,6 @@
 /**
- * Entry `logged_out`: no-login precondition (smoke lane; needs no account).
+ * Entry `logged_out`: no-login precondition (unauthenticated lane; needs no
+ * account).
  *
  * Loading contract: `ci_mode.ts` calls the exported `registerEntry(ctx)`
  * once per cold start after `ci_run.json` selects this entry; the function

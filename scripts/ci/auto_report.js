@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 /**
  * Run an example auto-mode script and archive traceable, local-only evidence.
- * It reuses smoke_local.sh and the platform drivers instead of duplicating
+ * It reuses auto_script_local.sh and the platform drivers instead of duplicating
  * React Native build/install logic.
  */
 
@@ -144,7 +144,7 @@ function resolveIosDevice(requested) {
       }
     }
   } catch {
-    // Let smoke_local.sh report simulator discovery failures.
+    // Let auto_script_local.sh report simulator discovery failures.
   }
   return 'auto';
 }
@@ -690,7 +690,7 @@ function runMain(options) {
     }
   } else {
     clearAndroidLogcat(platform, env);
-    const result = spawnSync('bash', ['scripts/ci/smoke_local.sh', platform], {
+    const result = spawnSync('bash', ['scripts/ci/auto_script_local.sh', platform], {
       cwd: REPO_ROOT,
       env,
       stdio: 'inherit',

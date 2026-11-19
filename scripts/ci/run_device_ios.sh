@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Auto-mode device driver for iOS. Shared by the porting runner
-# (yarn report:api -> smoke_local.sh) and by ci_test_local.sh (which drives
+# (yarn report:api -> auto_script_local.sh) and by ci_test_local.sh (which drives
 # the example app's CI mode through run_ci_ios.sh), locally and in CI.
 #
 # Preconditions:
@@ -23,9 +23,8 @@
 #   HOST_SCRIPT_PATH   where the app reads the script, must match the inlined API_SCRIPT
 #                                                       (default: /tmp/rn_auto_script.json)
 #   OUT_DIR            where the copied log lands      (default: build/reports)
-#   OUT_LOG            full path of the copied log      (default: $OUT_DIR/smoke-ios-api_test.log)
-#   SCRIPT_TIMEOUT_S   max seconds to wait for script.done (default: 180;
-#                      SMOKE_TIMEOUT_S is still accepted for compatibility)
+#   OUT_LOG            full path of the copied log      (default: $OUT_DIR/auto-ios-api_test.log)
+#   SCRIPT_TIMEOUT_S   max seconds to wait for script.done (default: 180)
 #   ASSERT_SCRIPT      assertion script invoked as `node $ASSERT_SCRIPT
 #                      "$SCRIPT_JSON" "$OUT_LOG"`      (default: assert_script.js;
 #                      the CI harness runners pass assert_ci_run.js)
@@ -39,8 +38,8 @@ APP_PATH="${APP_PATH:-$REPO_ROOT/example/ios/build/Build/Products/Debug-iphonesi
 SCRIPT_JSON="${SCRIPT_JSON:-$REPO_ROOT/example/ci/port_5_0_0_positive.json}"
 HOST_SCRIPT_PATH="${HOST_SCRIPT_PATH:-/tmp/rn_auto_script.json}"
 OUT_DIR="${OUT_DIR:-$REPO_ROOT/build/reports}"
-OUT_LOG="${OUT_LOG:-$OUT_DIR/smoke-ios-api_test.log}"
-TIMEOUT_S="${SCRIPT_TIMEOUT_S:-${SMOKE_TIMEOUT_S:-180}}"
+OUT_LOG="${OUT_LOG:-$OUT_DIR/auto-ios-api_test.log}"
+TIMEOUT_S="${SCRIPT_TIMEOUT_S:-180}"
 
 mkdir -p "$OUT_DIR"
 

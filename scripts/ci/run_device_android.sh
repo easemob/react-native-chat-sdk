@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Auto-mode device driver for Android. Shared by the porting runner
-# (yarn report:api -> smoke_local.sh) and by ci_test_local.sh (which drives
+# (yarn report:api -> auto_script_local.sh) and by ci_test_local.sh (which drives
 # the example app's CI mode through run_ci_android.sh), locally and in CI.
 #
 # Preconditions:
@@ -24,9 +24,8 @@
 #                       unusable while /data/local/tmp keeps working).
 #                                                        (default: /data/local/tmp/rn_auto_script.json)
 #   OUT_DIR             where the pulled log lands       (default: build/reports)
-#   OUT_LOG             full path of the pulled log      (default: $OUT_DIR/smoke-android-api_test.log)
-#   SCRIPT_TIMEOUT_S    max seconds to wait for script.done (default: 180;
-#                       SMOKE_TIMEOUT_S is still accepted for compatibility)
+#   OUT_LOG             full path of the pulled log      (default: $OUT_DIR/auto-android-api_test.log)
+#   SCRIPT_TIMEOUT_S    max seconds to wait for script.done (default: 180)
 #   ASSERT_SCRIPT       assertion script invoked as `node $ASSERT_SCRIPT
 #                       "$SCRIPT_JSON" "$OUT_LOG"`     (default: assert_script.js;
 #                       the CI harness runners pass assert_ci_run.js)
@@ -40,8 +39,8 @@ APK_PATH="${APK_PATH:-$REPO_ROOT/example/android/app/build/outputs/apk/debug/app
 SCRIPT_JSON="${SCRIPT_JSON:-$REPO_ROOT/example/ci/port_5_0_0_positive.json}"
 DEVICE_SCRIPT_PATH="${DEVICE_SCRIPT_PATH:-/data/local/tmp/rn_auto_script.json}"
 OUT_DIR="${OUT_DIR:-$REPO_ROOT/build/reports}"
-OUT_LOG="${OUT_LOG:-$OUT_DIR/smoke-android-api_test.log}"
-TIMEOUT_S="${SCRIPT_TIMEOUT_S:-${SMOKE_TIMEOUT_S:-180}}"
+OUT_LOG="${OUT_LOG:-$OUT_DIR/auto-android-api_test.log}"
+TIMEOUT_S="${SCRIPT_TIMEOUT_S:-180}"
 
 mkdir -p "$OUT_DIR"
 

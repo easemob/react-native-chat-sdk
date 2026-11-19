@@ -48,8 +48,8 @@ export function registerPresenceCases(ctx: CiCaseContext): void {
 
 /** No-login presence negative cases (`logged_out` entry). */
 export function registerPresenceLoggedOutCases(ctx: CiCaseContext): void {
-  // Mirrors no_login_smoke.json presence.publishPresence (description
-  // "rn-ci"; errorCode 201).
+  // Unauthenticated publishPresence (description "rn-ci") must throw
+  // errorCode 201.
   ciTest(
     'RN-PRESENCE-002',
     'publishPresence while logged out throws 201',

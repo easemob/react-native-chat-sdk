@@ -60,7 +60,7 @@ export function registerConversationCases(ctx: CiCaseContext): void {
 
 /** No-login conversation negative cases (`logged_out` entry). */
 export function registerConversationLoggedOutCases(ctx: CiCaseContext): void {
-  // Mirrors no_login_smoke.json push.fetchSilentModeForAll (errorCode 201);
+  // Unauthenticated push.fetchSilentModeForAll must throw errorCode 201;
   // hosted here for the reason documented in the file header.
   ciTest(
     'RN-CONV-003',

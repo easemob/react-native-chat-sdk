@@ -85,8 +85,8 @@ export function registerGroupCases(ctx: CiCaseContext): void {
 
 /** No-login group negative cases (`logged_out` entry). */
 export function registerGroupLoggedOutCases(ctx: CiCaseContext): void {
-  // Mirrors no_login_smoke.json group.getJoinedGroups, which expects
-  // success (the local-database read works without a login), not error 201.
+  // Unauthenticated getJoinedGroups is expected to succeed (the local
+  // database read works without a login), not throw error 201.
   ciTest(
     'RN-GROUP-002',
     'getJoinedGroups while logged out resolves with a list',

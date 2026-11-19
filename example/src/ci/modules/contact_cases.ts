@@ -81,8 +81,8 @@ export function registerContactCases(ctx: CiCaseContext): void {
 
 /** No-login contact negative cases (`logged_out` entry). */
 export function registerContactLoggedOutCases(ctx: CiCaseContext): void {
-  // Mirrors no_login_smoke.json contact.addContact (userId
-  // "rn-ci-nonexistent-user", reason "rn-ci"; errorCode 201).
+  // Unauthenticated addContact (userId "rn-ci-nonexistent-user",
+  // reason "rn-ci") must throw errorCode 201.
   ciTest(
     'RN-CONTACT-002',
     'addContact while logged out throws 201',

@@ -4,7 +4,7 @@
 # call this script, so both exercise exactly the same build and run path.
 #
 # Flow: ONE package build with CI_RUN=<device path> inlined (same
-# bundle-inline build settings as smoke_local.sh, so local == CI) -> loop
+# bundle-inline build settings as auto_script_local.sh, so local == CI) -> loop
 # over the five stable entries (logged_out first; RN-APP-001 asserts an
 # empty login state, so app data is cleared before it) -> per entry: generate
 # a temp ci_run.json (0600, trap-deleted) -> invoke run_ci_android.sh /
@@ -41,7 +41,7 @@
 #
 # Tunables:
 #   CI_ENTRY_TIMEOUT_S   per-entry script.done watchdog (default: 600; the
-#                        drivers' 180s default covers the smoke lane only —
+#                        drivers' 180s default covers the logged-out lane only —
 #                        logged-in entries do init + login + data sync + REST
 #                        round-trips)
 #   CI_SKIP_BUILD        when "1", skip the dependency/gen/build phase and

@@ -41,8 +41,8 @@ export function registerRoomCases(ctx: CiCaseContext): void {
 
 /** No-login chat room negative cases (`logged_out` entry). */
 export function registerRoomLoggedOutCases(ctx: CiCaseContext): void {
-  // Mirrors no_login_smoke.json room.fetchPublicChatRoomsFromServer
-  // (pageNum 1, pageSize 20; errorCode 201).
+  // Unauthenticated fetchPublicChatRoomsFromServer (pageNum 1, pageSize 20)
+  // must throw errorCode 201.
   ciTest(
     'RN-ROOM-002',
     'fetchPublicChatRoomsFromServer while logged out throws 201',

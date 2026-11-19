@@ -63,8 +63,7 @@ export function registerUserInfoCases(ctx: CiCaseContext): void {
 
 /** No-login user info negative cases (`logged_out` entry). */
 export function registerUserInfoLoggedOutCases(ctx: CiCaseContext): void {
-  // Mirrors no_login_smoke.json userInfo.fetchSubscribedUsers (errorCode
-  // 201).
+  // Unauthenticated fetchSubscribedUsers must throw errorCode 201.
   ciTest(
     'RN-USERINFO-003',
     'fetchSubscribedUsers while logged out throws 201',

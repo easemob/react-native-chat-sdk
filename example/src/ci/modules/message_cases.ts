@@ -20,8 +20,8 @@ export function registerMessageCases(_ctx: CiCaseContext): void {
 
 /** No-login message negative cases (`logged_out` entry). */
 export function registerMessageLoggedOutCases(ctx: CiCaseContext): void {
-  // Mirrors no_login_smoke.json chat.searchMessagesFromServer (keywordList
-  // ["rn-ci"], pageSize 10, pageNum 1; errorCode 201).
+  // Unauthenticated searchMessagesFromServer (keywordList ["rn-ci"],
+  // pageSize 10, pageNum 1) must throw errorCode 201.
   ciTest(
     'RN-MSG-001',
     'searchMessagesFromServer while logged out throws 201',

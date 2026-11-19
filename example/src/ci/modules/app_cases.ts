@@ -41,5 +41,6 @@ export function registerAppCases(ctx: CiCaseContext): void {
 
 /** Client-level no-login negative cases (`logged_out` entry). */
 export function registerAppLoggedOutCases(_ctx: CiCaseContext): void {
-  // No cases registered yet: no_login_smoke.json covers no client-level API.
+  // No cases registered yet: no client-level API has a no-login expectation
+  // to pin.
 }
