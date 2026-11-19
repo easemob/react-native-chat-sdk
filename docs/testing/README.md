@@ -75,3 +75,4 @@ yarn prepare             # 生成 version/CMake/env，并构建 lib/
 - CI 回归：[CI 设备回归](2026-11-19-ci.md)；规范与新增用例流程见 [`docs/ci/README.md`](../ci/README.md)；设计背景见 [`docs/superpowers/specs/2026-11-18-ci-device-test-architecture-design.md`](../superpowers/specs/2026-11-18-ci-device-test-architecture-design.md)。
 - 单设备脚本：[单设备 API 脚本](2026-11-19-single-device.md)。
 - 多设备协同：[多设备协同](2026-11-19-multi-device.md)；用例目录说明见 [`example/multi_cases/README.md`](../../example/multi_cases/README.md)；编排、账号和报告格式见 im-test-orchestrator 仓的 `multi/README.md`。
+- 与 Flutter CI 的对齐记录：[CI 用例对齐 Flutter 记录](2026-11-20-ci-case-port.md)。

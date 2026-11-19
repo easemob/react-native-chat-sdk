@@ -120,6 +120,559 @@
       "module": "user_info",
       "platforms": ["android", "ios"],
       "nativeRef": "ChatUserInfoManager.fetchSubscribedUsers while logged out throws 201"
+    },
+    {
+      "caseId": "RN-AUTH-003",
+      "entry": "logged_in_base",
+      "module": "auth",
+      "platforms": ["android", "ios"],
+      "nativeRef": "logout clears the current user and relogin restores the session"
+    },
+    {
+      "caseId": "RN-AUTH-006",
+      "entry": "logged_in_base",
+      "module": "auth",
+      "platforms": ["android", "ios"],
+      "nativeRef": "loginWithToken for the already logged-in user throws 200 and keeps the session"
+    },
+    {
+      "caseId": "RN-AUTH-007",
+      "entry": "logged_in_base",
+      "module": "auth",
+      "platforms": ["android", "ios"],
+      "nativeRef": "explicit conversation sync starts and finishes with the conversation mask"
+    },
+    {
+      "caseId": "RN-AUTH-004",
+      "entry": "logged_out",
+      "module": "auth",
+      "platforms": ["android", "ios"],
+      "nativeRef": "loginWithToken with an empty user while logged out throws the platform code"
+    },
+    {
+      "caseId": "RN-AUTH-005",
+      "entry": "logged_out",
+      "module": "auth",
+      "platforms": ["android", "ios"],
+      "nativeRef": "loginWithToken with an empty token while logged out throws the platform code"
+    },
+    {
+      "caseId": "RN-CONTACT-003",
+      "entry": "logged_in_contact",
+      "module": "contact",
+      "platforms": ["android", "ios"],
+      "nativeRef": "deleteContact with keepConversation=true succeeds"
+    },
+    {
+      "caseId": "RN-CONTACT-004",
+      "entry": "logged_in_contact",
+      "module": "contact",
+      "platforms": ["android", "ios"],
+      "nativeRef": "deleteContact with keepConversation=false succeeds"
+    },
+    {
+      "caseId": "RN-CONTACT-005",
+      "entry": "logged_in_contact",
+      "module": "contact",
+      "platforms": ["android", "ios"],
+      "nativeRef": "blocklist add, query, and remove preserve unrelated entries"
+    },
+    {
+      "caseId": "RN-CONTACT-011",
+      "entry": "logged_in_contact",
+      "module": "contact",
+      "platforms": ["android", "ios"],
+      "nativeRef": "a missing contact ID is absent from every local contact view"
+    },
+    {
+      "caseId": "RN-CONTACT-012",
+      "entry": "logged_in_contact",
+      "module": "contact",
+      "platforms": ["android", "ios"],
+      "nativeRef": "contact remark is written and read back from detail and list"
+    },
+    {
+      "caseId": "RN-CONTACT-006",
+      "entry": "logged_out",
+      "module": "contact",
+      "platforms": ["android", "ios"],
+      "nativeRef": "deleteContact with keepConversation=true while logged out throws 201"
+    },
+    {
+      "caseId": "RN-CONTACT-007",
+      "entry": "logged_out",
+      "module": "contact",
+      "platforms": ["android", "ios"],
+      "nativeRef": "deleteContact with keepConversation=false while logged out throws 201"
+    },
+    {
+      "caseId": "RN-CONTACT-008",
+      "entry": "logged_out",
+      "module": "contact",
+      "platforms": ["android", "ios"],
+      "nativeRef": "addUserToBlockList while logged out throws 201"
+    },
+    {
+      "caseId": "RN-CONTACT-009",
+      "entry": "logged_out",
+      "module": "contact",
+      "platforms": ["android", "ios"],
+      "nativeRef": "removeUserFromBlockList while logged out throws 201"
+    },
+    {
+      "caseId": "RN-CONTACT-010",
+      "entry": "logged_out",
+      "module": "contact",
+      "platforms": ["android", "ios"],
+      "nativeRef": "getBlockListFromServer while logged out throws 201"
+    },
+    {
+      "caseId": "RN-CONV-004",
+      "entry": "logged_in_base",
+      "module": "conversation",
+      "platforms": ["android", "ios"],
+      "nativeRef": "setConversationExtension replaces ext and deletion removes history"
+    },
+    {
+      "caseId": "RN-CONV-005",
+      "entry": "logged_in_base",
+      "module": "conversation",
+      "platforms": ["android", "ios"],
+      "nativeRef": "latest messages and unread state reflect stored messages"
+    },
+    {
+      "caseId": "RN-CONV-006",
+      "entry": "logged_in_base",
+      "module": "conversation",
+      "platforms": ["android", "ios"],
+      "nativeRef": "updateMessage persists body and attributes, deleteMessage keeps others"
+    },
+    {
+      "caseId": "RN-CONV-007",
+      "entry": "logged_in_base",
+      "module": "conversation",
+      "platforms": ["android", "ios"],
+      "nativeRef": "getMsgs pages around a cursor and reaches both ends"
+    },
+    {
+      "caseId": "RN-CONV-008",
+      "entry": "logged_in_base",
+      "module": "conversation",
+      "platforms": ["android", "ios"],
+      "nativeRef": "message search filters by keyword, type, sender and time"
+    },
+    {
+      "caseId": "RN-CONV-009",
+      "entry": "logged_in_base",
+      "module": "conversation",
+      "platforms": ["android", "ios"],
+      "nativeRef": "deleteMessage, deleteMessagesWithTimestamp and deleteAllMessages"
+    },
+    {
+      "caseId": "RN-CONV-010",
+      "entry": "logged_in_base",
+      "module": "conversation",
+      "platforms": ["android", "ios"],
+      "nativeRef": "deleteConversation without messages retains local history"
+    },
+    {
+      "caseId": "RN-CONV-011",
+      "entry": "logged_in_base",
+      "module": "conversation",
+      "platforms": ["android", "ios"],
+      "nativeRef": "deleteConversations removes only the listed conversations"
+    },
+    {
+      "caseId": "RN-CONV-012",
+      "entry": "logged_in_base",
+      "module": "conversation",
+      "platforms": ["android", "ios"],
+      "nativeRef": "updating an absent message throws 500 and leaves storage unchanged"
+    },
+    {
+      "caseId": "RN-CONV-013",
+      "entry": "logged_in_base",
+      "module": "conversation",
+      "platforms": ["android", "ios"],
+      "nativeRef": "getAllConversations sort flag changes order, not membership"
+    },
+    {
+      "caseId": "RN-CONV-017",
+      "entry": "logged_in_base",
+      "module": "conversation",
+      "platforms": ["android", "ios"],
+      "nativeRef": "pinConversation toggles isPinned without changing messages"
+    },
+    {
+      "caseId": "RN-CONV-019",
+      "entry": "logged_in_base",
+      "module": "conversation",
+      "platforms": ["android", "ios"],
+      "nativeRef": "incoming messages increase and clearing resets unread counts"
+    },
+    {
+      "caseId": "RN-CONV-020",
+      "entry": "logged_in_base",
+      "module": "conversation",
+      "platforms": ["android", "ios"],
+      "nativeRef": "removeMessagesFromServerWithMsgIds clears local and server copies"
+    },
+    {
+      "caseId": "RN-CONV-021",
+      "entry": "logged_in_base",
+      "module": "conversation",
+      "platforms": ["android", "ios"],
+      "nativeRef": "conversation marks are added to and removed from the peer conversation"
+    },
+    {
+      "caseId": "RN-GROUP-006",
+      "entry": "logged_in_group",
+      "module": "group",
+      "platforms": ["android", "ios"],
+      "nativeRef": "fetching group info with an empty group id fails with error 600"
+    },
+    {
+      "caseId": "RN-GROUP-007",
+      "entry": "logged_in_group",
+      "module": "group",
+      "platforms": ["android", "ios"],
+      "nativeRef": "destroying a group with an empty group id fails with error 600"
+    },
+    {
+      "caseId": "RN-GROUP-008",
+      "entry": "logged_in_group",
+      "module": "group",
+      "platforms": ["android", "ios"],
+      "nativeRef": "inviteNeedConfirm is persisted and fetched for both flag values"
+    },
+    {
+      "caseId": "RN-GROUP-009",
+      "entry": "logged_in_group",
+      "module": "group",
+      "platforms": ["android", "ios"],
+      "nativeRef": "group name update changes the name and keeps the other fields"
+    },
+    {
+      "caseId": "RN-GROUP-010",
+      "entry": "logged_in_group",
+      "module": "group",
+      "platforms": ["android", "ios"],
+      "nativeRef": "group description update changes the description and keeps the name"
+    },
+    {
+      "caseId": "RN-GROUP-011",
+      "entry": "logged_in_group",
+      "module": "group",
+      "platforms": ["android", "ios"],
+      "nativeRef": "group extension update is stored on the server"
+    },
+    {
+      "caseId": "RN-GROUP-012",
+      "entry": "logged_in_group",
+      "module": "group",
+      "platforms": ["android", "ios"],
+      "nativeRef": "group announcement updates are readable through the server fetch"
+    },
+    {
+      "caseId": "RN-GROUP-013",
+      "entry": "logged_in_group",
+      "module": "group",
+      "platforms": ["android", "ios"],
+      "nativeRef": "group avatar update is reflected in the server group detail"
+    },
+    {
+      "caseId": "RN-GROUP-014",
+      "entry": "logged_in_group",
+      "module": "group",
+      "platforms": ["android", "ios"],
+      "nativeRef": "group namecard can be set and cleared again"
+    },
+    {
+      "caseId": "RN-GROUP-015",
+      "entry": "logged_in_group",
+      "module": "group",
+      "platforms": ["android", "ios"],
+      "nativeRef": "typed config update only changes the allowInvites flag"
+    },
+    {
+      "caseId": "RN-GROUP-016",
+      "entry": "logged_in_group",
+      "module": "group",
+      "platforms": ["android", "ios"],
+      "nativeRef": "members can be added and removed from a group"
+    },
+    {
+      "caseId": "RN-GROUP-017",
+      "entry": "logged_in_group",
+      "module": "group",
+      "platforms": ["android", "ios"],
+      "nativeRef": "group admins can be added and removed"
+    },
+    {
+      "caseId": "RN-GROUP-018",
+      "entry": "logged_in_group",
+      "module": "group",
+      "platforms": ["android", "ios"],
+      "nativeRef": "group member info list returns the peer as a member"
+    },
+    {
+      "caseId": "RN-GROUP-019",
+      "entry": "logged_in_group",
+      "module": "group",
+      "platforms": ["android", "ios"],
+      "nativeRef": "group member attributes can be written, read, and deleted"
+    },
+    {
+      "caseId": "RN-GROUP-020",
+      "entry": "logged_in_group",
+      "module": "group",
+      "platforms": ["android", "ios"],
+      "nativeRef": "blocking and unblocking a group member updates the block list"
+    },
+    {
+      "caseId": "RN-GROUP-021",
+      "entry": "logged_in_group",
+      "module": "group",
+      "platforms": ["android", "ios"],
+      "nativeRef": "muting and unmuting a group member updates the mute list"
+    },
+    {
+      "caseId": "RN-GROUP-022",
+      "entry": "logged_in_group",
+      "module": "group",
+      "platforms": ["android", "ios"],
+      "nativeRef": "adding and removing a member from the allow list works"
+    },
+    {
+      "caseId": "RN-GROUP-023",
+      "entry": "logged_in_group",
+      "module": "group",
+      "platforms": ["android", "ios"],
+      "nativeRef": "invitation pending confirmation does not add the member yet"
+    },
+    {
+      "caseId": "RN-GROUP-024",
+      "entry": "logged_in_group",
+      "module": "group",
+      "platforms": ["android", "ios"],
+      "nativeRef": "muting and unmuting all group members toggles the flag"
+    },
+    {
+      "caseId": "RN-GROUP-025",
+      "entry": "logged_in_group",
+      "module": "group",
+      "platforms": ["android", "ios"],
+      "nativeRef": "ownership transfer changes the owner and keeps both members"
+    },
+    {
+      "caseId": "RN-GROUP-026",
+      "entry": "logged_in_group",
+      "module": "group",
+      "platforms": ["android", "ios"],
+      "nativeRef": "a member can leave a group created through REST"
+    },
+    {
+      "caseId": "RN-GROUP-027",
+      "entry": "logged_in_group",
+      "module": "group",
+      "platforms": ["android", "ios"],
+      "nativeRef": "a public group can be joined and left"
+    },
+    {
+      "caseId": "RN-GROUP-028",
+      "entry": "logged_in_group",
+      "module": "group",
+      "platforms": ["android", "ios"],
+      "nativeRef": "group shared file can be uploaded, downloaded, and removed"
+    },
+    {
+      "caseId": "RN-GROUP-003",
+      "entry": "logged_out",
+      "module": "group",
+      "platforms": ["android", "ios"],
+      "nativeRef": "createGroup while logged out fails with error 201"
+    },
+    {
+      "caseId": "RN-GROUP-004",
+      "entry": "logged_out",
+      "module": "group",
+      "platforms": ["android", "ios"],
+      "nativeRef": "fetching group info while logged out fails with error 201"
+    },
+    {
+      "caseId": "RN-GROUP-005",
+      "entry": "logged_out",
+      "module": "group",
+      "platforms": ["android", "ios"],
+      "nativeRef": "destroying a group while logged out fails with error 201"
+    },
+    {
+      "caseId": "RN-MSG-002",
+      "entry": "logged_in_base",
+      "module": "message",
+      "platforms": ["android", "ios"],
+      "nativeRef": "send text and receive the final server confirmation callback"
+    },
+    {
+      "caseId": "RN-MSG-003",
+      "entry": "logged_in_base",
+      "module": "message",
+      "platforms": ["android", "ios"],
+      "nativeRef": "import, read, and update owned local messages"
+    },
+    {
+      "caseId": "RN-MSG-004",
+      "entry": "logged_in_base",
+      "module": "message",
+      "platforms": ["android", "ios"],
+      "nativeRef": "keyword search filters by sender and timestamp direction"
+    },
+    {
+      "caseId": "RN-MSG-005",
+      "entry": "logged_in_base",
+      "module": "message",
+      "platforms": ["android", "ios"],
+      "nativeRef": "options search filters message type, sender, and timestamp"
+    },
+    {
+      "caseId": "RN-MSG-006",
+      "entry": "logged_in_base",
+      "module": "message",
+      "platforms": ["android", "ios"],
+      "nativeRef": "aggregated keyword search maps conversation IDs to message IDs"
+    },
+    {
+      "caseId": "RN-MSG-008",
+      "entry": "logged_in_base",
+      "module": "message",
+      "platforms": ["android", "ios"],
+      "nativeRef": "send text to an empty recipient reports 500 through the final callback"
+    },
+    {
+      "caseId": "RN-MSG-009",
+      "entry": "logged_in_base",
+      "module": "message",
+      "platforms": ["android", "ios"],
+      "nativeRef": "missing message IDs never return unrelated messages"
+    },
+    {
+      "caseId": "RN-MSG-010",
+      "entry": "logged_in_base",
+      "module": "message",
+      "platforms": ["android", "ios"],
+      "nativeRef": "updating a missing message reports 500 without inserting it"
+    },
+    {
+      "caseId": "RN-MSG-012",
+      "entry": "logged_in_base",
+      "module": "message",
+      "platforms": ["android", "ios"],
+      "nativeRef": "file and image uploads expose server attachment fields"
+    },
+    {
+      "caseId": "RN-MSG-014",
+      "entry": "logged_in_base",
+      "module": "message",
+      "platforms": ["android", "ios"],
+      "nativeRef": "server history pagination is complete and ordered"
+    },
+    {
+      "caseId": "RN-MSG-015",
+      "entry": "logged_in_base",
+      "module": "message",
+      "platforms": ["android", "ios"],
+      "nativeRef": "pin and unpin a server message"
+    },
+    {
+      "caseId": "RN-MSG-016",
+      "entry": "logged_in_base",
+      "module": "message",
+      "platforms": ["android", "ios"],
+      "nativeRef": "add and remove a message Reaction"
+    },
+    {
+      "caseId": "RN-MSG-007",
+      "entry": "logged_out",
+      "module": "message",
+      "platforms": ["android", "ios"],
+      "nativeRef": "send text while logged out reports 201 through the final callback"
+    },
+    {
+      "caseId": "RN-PRESENCE-007",
+      "entry": "logged_in_base",
+      "module": "presence",
+      "platforms": ["android", "ios"],
+      "nativeRef": "published own description is returned by the presence status fetch"
+    },
+    {
+      "caseId": "RN-PRESENCE-008",
+      "entry": "logged_in_base",
+      "module": "presence",
+      "platforms": ["android", "ios"],
+      "nativeRef": "subscription list includes and removes the configured offline peer"
+    },
+    {
+      "caseId": "RN-PRESENCE-003",
+      "entry": "logged_out",
+      "module": "presence",
+      "platforms": ["android", "ios"],
+      "nativeRef": "fetchPresenceStatus while logged out throws 201"
+    },
+    {
+      "caseId": "RN-PRESENCE-004",
+      "entry": "logged_out",
+      "module": "presence",
+      "platforms": ["android", "ios"],
+      "nativeRef": "subscribe while logged out throws 201"
+    },
+    {
+      "caseId": "RN-PRESENCE-005",
+      "entry": "logged_out",
+      "module": "presence",
+      "platforms": ["android", "ios"],
+      "nativeRef": "unsubscribe while logged out throws 201"
+    },
+    {
+      "caseId": "RN-PRESENCE-006",
+      "entry": "logged_out",
+      "module": "presence",
+      "platforms": ["android", "ios"],
+      "nativeRef": "fetchSubscribedMembers while logged out throws 201"
+    },
+    {
+      "caseId": "RN-ROOM-003",
+      "entry": "logged_in_base",
+      "module": "room",
+      "platforms": ["android", "ios"],
+      "nativeRef": "join a room, read its detail and members, then rejoin"
+    },
+    {
+      "caseId": "RN-ROOM-004",
+      "entry": "logged_in_base",
+      "module": "room",
+      "platforms": ["android", "ios"],
+      "nativeRef": "update and fetch the room announcement"
+    },
+    {
+      "caseId": "RN-ROOM-005",
+      "entry": "logged_in_base",
+      "module": "room",
+      "platforms": ["android", "ios"],
+      "nativeRef": "remove a member and manage the room blocklist"
+    },
+    {
+      "caseId": "RN-ROOM-006",
+      "entry": "logged_in_base",
+      "module": "room",
+      "platforms": ["android", "ios"],
+      "nativeRef": "mute a member and all room members"
+    },
+    {
+      "caseId": "RN-ROOM-007",
+      "entry": "logged_in_base",
+      "module": "room",
+      "platforms": ["android", "ios"],
+      "nativeRef": "promote and demote a room admin"
     }
   ]
 }
