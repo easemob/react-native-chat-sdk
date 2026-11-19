@@ -22,7 +22,7 @@ app:
   # launch 时 push {"port","token"} 到该路径）。设备路径两机同值（每设备文件系统独立）。
   controlFlag: EASEMOB_AGENT=/data/local/tmp/rn_agent_control.json
 build:
-  # 自 appDir（example/）逐字执行；等价于 CI（.github/workflows/device-smoke.yml）在
+  # 自 appDir（example/）逐字执行；等价于 CI（.github/workflows/ci-device.yml）在
   # example/android 下的 ./gradlew app:assembleDebug。-PbundleInDebug=true 内嵌 JS bundle
   # （headless 设备无法连 Metro）。ABI：本地多设备编排面向 Apple Silicon 模拟器（arm64 镜像），
   # 用 arm64-v8a；GitHub CI（x86 runner）自行改回 x86_64。

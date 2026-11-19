@@ -12,6 +12,20 @@
 # assert via assert_ci_run.js) -> aggregate exit code. A failing entry does
 # NOT abort the loop.
 #
+# Output: one artifacts/ci/<UTC timestamp>/ directory per invocation. The
+# run-level runner.log and summary.md live under <platform>/, next to the
+# suite directories, so Android and iOS invocations that share CI_RUN_ID do
+# not overwrite each other:
+#   <platform>/runner.log
+#   <platform>/summary.md
+#   <platform>/run.json
+#   <platform>/report.json
+#   <platform>/<suite>/api_test.log
+#   <platform>/<suite>/(logcat|simulator).log
+#   <platform>/<suite>/summary.md
+# Suite names shorten the five entries: base/group/contact/user_info, while
+# logged_out keeps its name.
+#
 # Usage:
 #   bash scripts/ci/ci_test_local.sh <android|ios> [entries] [testNameRegex]
 #     entries       space/comma-separated subset of: logged_out logged_in_base
@@ -45,11 +59,21 @@
 #                        logged-in entries do init + login + data sync + REST
 #                        round-trips)
 #   CI_SKIP_BUILD        when "1", skip the dependency/gen/build phase and
-#                        only run the entries; the caller provides a package
-#                        built with the same CI_RUN path inlined via the
-#                        drivers' APK_PATH / APP_PATH variables (the CI
-#                        workflow's test jobs use this with the build job's
-#                        artifact, so each platform is built exactly once)
+#                        only run the entries; the package must have the same
+#                        CI_RUN path inlined. The drivers default to the
+#                        normal build output; set APK_PATH / APP_PATH only
+#                        when the package lives elsewhere (the CI workflow's
+#                        test jobs pass the build job's artifact this way).
+#   SKIP_POD_INSTALL     when "1", skip the iOS Pods refresh that normally
+#                        runs before every iOS build (local builds default to
+#                        refreshing; CI test jobs skip the build step entirely)
+#   CI_RUN_ID            optional fixed run id (default: UTC timestamp at start)
+#                        (the run directory is artifacts/ci/<CI_RUN_ID>)
+#
+# Device selection: Android goes through select_android_device.sh (requires
+# ANDROID_SERIAL when several devices are online); iOS goes through
+# select_ios_simulator.sh (validates/boots DEVICE_UDID, rejects several
+# booted simulators when DEVICE_UDID is unset).
 set -euo pipefail
 
 REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
@@ -103,15 +127,63 @@ else
 fi
 
 CI_ENTRY_TIMEOUT_S="${CI_ENTRY_TIMEOUT_S:-600}"
-REPORT_DIR="$REPO_ROOT/build/reports/ci"
+REPORT_DIR="$REPO_ROOT/artifacts/ci"
+RUN_ID="${CI_RUN_ID:-$(date -u +%Y%m%d%H%M%S)}"
+RUN_DIR="$REPORT_DIR/$RUN_ID"
+PLATFORM_DIR="$RUN_DIR/$PLATFORM"
+RUN_STARTED_AT="$(date -u +%Y-%m-%dT%H:%M:%SZ)"
 CI_RUN_JSON=""
-mkdir -p "$REPORT_DIR"
+mkdir -p "$PLATFORM_DIR"
+
+# Keep the complete terminal output (including gradle/xcodebuild) next to the
+# machine-readable artifacts. It is platform-scoped so a later iOS run with the
+# same CI_RUN_ID cannot overwrite the Android runner log.
+exec > >(tee "$PLATFORM_DIR/runner.log") 2>&1
 
 # Helper node scripts live in a 0700 temp work dir (heredoc bodies inside
 # command substitution confuse the macOS bash 3.2 parser, so they are
 # written as files first).
 WORK_DIR="$(mktemp -d "${TMPDIR:-/tmp}/rn_ci_local.XXXXXX")"
 chmod 700 "$WORK_DIR"
+
+cat > "$WORK_DIR/write_run_json.js" <<'NODE'
+const fs = require('fs');
+const path = require('path');
+const entries = (process.env.CI_ENTRY_ROWS || '')
+  .split('\n')
+  .filter(Boolean)
+  .map((row) => {
+    const [entry, status, suite] = row.split('|');
+    return { entry, status, suite, report: `${suite}/summary.md` };
+  });
+const common = {
+  schemaVersion: 1,
+  runId: process.env.CI_RUN_ID,
+  platform: process.env.CI_PLATFORM,
+  result: process.env.CI_RESULT,
+  startedAt: process.env.CI_STARTED_AT,
+  finishedAt: process.env.CI_FINISHED_AT,
+  entries,
+};
+const run = {
+  ...common,
+  command: process.env.CI_COMMAND,
+  device: process.env.CI_DEVICE,
+  gitCommit: process.env.CI_GIT_COMMIT,
+  entries: entries.map(({ entry, status, suite }) => ({ entry, status, suite })),
+};
+const report = {
+  ...common,
+  counts: {
+    pass: entries.filter((row) => row.status === 'PASS').length,
+    fail: entries.filter((row) => row.status !== 'PASS').length,
+    total: entries.length,
+  },
+};
+const dir = process.env.CI_PLATFORM_DIR;
+fs.writeFileSync(path.join(dir, 'run.json'), `${JSON.stringify(run, null, 2)}\n`);
+fs.writeFileSync(path.join(dir, 'report.json'), `${JSON.stringify(report, null, 2)}\n`);
+NODE
 
 cleanup() {
   [ -n "$CI_RUN_JSON" ] && rm -f "$CI_RUN_JSON"
@@ -226,6 +298,19 @@ if [ "$NEED_TOKENS" = "1" ]; then
   node scripts/ci/fetch_e2e_user_token.js --user-id "$PEER_ID" >/dev/null
 fi
 
+# --- device selection --------------------------------------------------------
+# Resolve once before building or clearing app data. This makes every later
+# adb/simctl command explicit, including the CI_SKIP_BUILD path where no build
+# step would otherwise have selected a device.
+
+if [ "$PLATFORM" = "android" ]; then
+  ANDROID_SERIAL="$(bash scripts/ci/select_android_device.sh)"
+  export ANDROID_SERIAL
+else
+  DEVICE_UDID="$(bash scripts/ci/select_ios_simulator.sh)"
+  export DEVICE_UDID
+fi
+
 # --- one build for all entries ----------------------------------------------
 
 # CI test jobs set CI_SKIP_BUILD=1 and point the drivers at the build job's
@@ -245,10 +330,6 @@ rm -rf "${TMPDIR:-/tmp}/metro-cache"
 # CI mode and auto mode are mutually exclusive (ci_mode.ts fails fast when
 # both are inlined); make sure no API_SCRIPT/API_CONFIG leaks into the build.
 if [ "$PLATFORM" = "android" ]; then
-  adb get-state >/dev/null 2>&1 || {
-    echo "error: no booted Android emulator/device reachable via adb" >&2
-    exit 2
-  }
   # Build for the ABI of the attached device (arm64 on Apple Silicon,
   # x86_64 on CI), not a hardcoded one.
   ABI="$(adb shell getprop ro.product.cpu.abi | tr -d '\r')"
@@ -261,19 +342,16 @@ if [ "$PLATFORM" = "android" ]; then
       "-PreactNativeArchitectures=$ABI" -PbundleInDebug=true
   )
 else
-  if [ ! -d example/ios/Pods ]; then
-    echo ">> first run: install CocoaPods dependencies"
+  if [ "${SKIP_POD_INSTALL:-0}" != "1" ]; then
+    echo ">> refresh CocoaPods dependencies (SKIP_POD_INSTALL=1 to skip)"
     (
       cd example
-      bundle config set --local path vendor/bundle
-      bundle install
+      bundle check >/dev/null 2>&1 || {
+        bundle config set --local path vendor/bundle
+        bundle install
+      }
       bundle exec pod install --project-directory=ios
     )
-  fi
-  if ! xcrun simctl list devices booted | grep -q Booted; then
-    echo ">> no booted simulator, booting one"
-    DEVICE_UDID="$(bash scripts/ci/boot_ios_simulator.sh)"
-    export DEVICE_UDID
   fi
   echo ">> build CI test app (bundle embedded, CI_RUN inlined)"
   (
@@ -318,8 +396,20 @@ write_ci_run_json() {
   chmod 600 "$out"
 }
 
+entry_dir_name() {
+  case "$1" in
+    logged_in_base) echo base ;;
+    logged_in_group) echo group ;;
+    logged_in_contact) echo contact ;;
+    logged_in_user_info) echo user_info ;;
+    *) echo "$1" ;;
+  esac
+}
+
 run_entry() {
   local entry="$1"
+  local entry_dir="$RUN_DIR/$PLATFORM/$(entry_dir_name "$entry")"
+  mkdir -p "$entry_dir"
   # macOS mktemp only substitutes X's at the END of the template.
   CI_RUN_JSON="$(mktemp "${TMPDIR:-/tmp}/rn_ci_run.XXXXXX")"
   chmod 600 "$CI_RUN_JSON"
@@ -344,7 +434,10 @@ run_entry() {
       SCRIPT_JSON="$CI_RUN_JSON" \
       DEVICE_SCRIPT_PATH="$DEVICE_CI_RUN_PATH" \
       DEVICE_CLEANUP_PATHS="$DEVICE_CI_RUN_PATH" \
-      OUT_LOG="$REPORT_DIR/android-${entry}-api_test.log" \
+      OUT_DIR="$entry_dir" \
+      OUT_LOG="$entry_dir/api_test.log" \
+      CI_ENTRY_DIR="$entry_dir" \
+      CI_REPORT_DIR="$entry_dir" \
       ASSERT_SCRIPT="$REPO_ROOT/scripts/ci/assert_ci_run.js" \
       SCRIPT_TIMEOUT_S="$CI_ENTRY_TIMEOUT_S" \
       bash scripts/ci/run_ci_android.sh || rc=$?
@@ -353,7 +446,10 @@ run_entry() {
       CI_PLATFORM=ios \
       SCRIPT_JSON="$CI_RUN_JSON" \
       HOST_SCRIPT_PATH="$DEVICE_CI_RUN_PATH" \
-      OUT_LOG="$REPORT_DIR/ios-${entry}-api_test.log" \
+      OUT_DIR="$entry_dir" \
+      OUT_LOG="$entry_dir/api_test.log" \
+      CI_ENTRY_DIR="$entry_dir" \
+      CI_REPORT_DIR="$entry_dir" \
       ASSERT_SCRIPT="$REPO_ROOT/scripts/ci/assert_ci_run.js" \
       SCRIPT_TIMEOUT_S="$CI_ENTRY_TIMEOUT_S" \
       bash scripts/ci/run_ci_ios.sh || rc=$?
@@ -387,7 +483,73 @@ for entry in "${ENTRIES[@]}"; do
     echo "  PASS  $entry"
   fi
 done
-echo "reports: $REPORT_DIR"
+
+# Run-level index. Per-entry summaries stay next to their logs; this file
+# points at them and records the command/device used for this invocation.
+write_run_summary() {
+  local result="PASS"
+  local device=""
+  local command="bash scripts/ci/ci_test_local.sh $PLATFORM"
+  local entry status
+  [ "${#FAILED_ENTRIES[@]}" -gt 0 ] && result="FAIL"
+  if [ "$PLATFORM" = "android" ]; then
+    device="$ANDROID_SERIAL"
+  else
+    device="$DEVICE_UDID"
+  fi
+  [ -n "${ENTRY_ARG:-}" ] && command="$command $ENTRY_ARG"
+  [ -n "${REGEX_ARG:-}" ] && command="$command '$REGEX_ARG'"
+
+  {
+    printf '# CI device regression run %s (%s)\n\n' "$RUN_ID" "$PLATFORM"
+    printf -- '- Result: **%s**\n' "$result"
+    printf -- '- Platform: `%s`\n' "$PLATFORM"
+    printf -- '- Device: `%s`\n' "$device"
+    printf -- '- Command: `%s`\n' "$command"
+    printf -- '- Git commit: `%s`\n' "$(git rev-parse --short HEAD 2>/dev/null || true)"
+    printf '\n| Entry | Result | Report |\n| --- | --- | --- |\n'
+    for entry in "${ENTRIES[@]}"; do
+      if printf '%s\n' "${FAILED_ENTRIES[@]:-}" | grep -qx "$entry"; then
+        status="FAIL"
+      else
+        status="PASS"
+      fi
+      printf '| `%s` | %s | `%s/summary.md` |\n' \
+        "$entry" "$status" "$(entry_dir_name "$entry")"
+    done
+    printf '\n## Artifacts\n\n'
+    printf -- '- Per-suite app log: `<suite>/api_test.log`\n'
+    printf -- '- Per-suite native log: `<suite>/%s`\n' \
+      "$( [ "$PLATFORM" = "android" ] && echo logcat.log || echo simulator.log )"
+    printf -- '- Per-suite report: `<suite>/summary.md`\n'
+    printf -- '- Full terminal output: `runner.log`\n'
+  } > "$PLATFORM_DIR/summary.md"
+}
+
+ENTRY_ROWS=""
+for entry in "${ENTRIES[@]}"; do
+  if printf '%s\n' "${FAILED_ENTRIES[@]:-}" | grep -qx "$entry"; then
+    status="FAIL"
+  else
+    status="PASS"
+  fi
+  ENTRY_ROWS="${ENTRY_ROWS}${entry}|${status}|$(entry_dir_name "$entry")"$'\n'
+done
+export CI_RUN_ID CI_PLATFORM="$PLATFORM" CI_STARTED_AT="$RUN_STARTED_AT" \
+  CI_FINISHED_AT="$(date -u +%Y-%m-%dT%H:%M:%SZ)" CI_PLATFORM_DIR="$PLATFORM_DIR" \
+  CI_ENTRY_ROWS="$ENTRY_ROWS"
+CI_COMMAND="bash scripts/ci/ci_test_local.sh $PLATFORM"
+[ -n "${ENTRY_ARG:-}" ] && CI_COMMAND="$CI_COMMAND $ENTRY_ARG"
+[ -n "${REGEX_ARG:-}" ] && CI_COMMAND="$CI_COMMAND '$REGEX_ARG'"
+export CI_COMMAND
+export CI_DEVICE="$([ "$PLATFORM" = "android" ] && echo "$ANDROID_SERIAL" || echo "$DEVICE_UDID")"
+export CI_GIT_COMMIT="$(git rev-parse --short HEAD 2>/dev/null || true)"
+CI_RESULT="PASS"; [ "${#FAILED_ENTRIES[@]}" -gt 0 ] && CI_RESULT="FAIL"
+export CI_RESULT
+node "$WORK_DIR/write_run_json.js"
+
+write_run_summary
+echo "reports: $PLATFORM_DIR"
 
 if [ "${#FAILED_ENTRIES[@]}" -gt 0 ]; then
   echo "error: ${#FAILED_ENTRIES[@]} entry run(s) failed: ${FAILED_ENTRIES[*]}" >&2

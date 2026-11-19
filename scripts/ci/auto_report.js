@@ -27,7 +27,9 @@ function usage() {
 
 The default script is example/ci/port_5_0_0_positive.json. Run the negative
 path with --script example/ci/port_5_0_0_negative.json. Per-run evidence is
-written under build/reports/<version>/<run-id>/ and remains Git-ignored.
+written under artifacts/single/<timestamp>/<platform>/ and remains
+Git-ignored; the directory name is only the UTC timestamp, and each platform
+gets its own subdirectory so Android and iOS runs cannot overwrite each other.
 `;
 }
 
@@ -302,7 +304,7 @@ function collectIssues(scriptPath, platform, script, evaluation, crashText) {
         key: `${source.split('.').at(-1)}-unobserved`,
         status: 'needs-review',
         summary: `Required 5.0.0 event ${source} was not observed`,
-        evidence: 'events.jsonl',
+        evidence: 'events.sanitized.jsonl',
       });
     }
   }
@@ -448,7 +450,7 @@ function writeSummary(reportDir, metadata, evaluation, issues) {
       lines.push(`- \`${issue.key}\` — ${issue.status}: ${issue.summary}`);
     }
   }
-  fs.writeFileSync(path.join(reportDir, 'summary.md'), `${lines.join('\n')}\n`);
+  fs.writeFileSync(path.join(reportDir, 'report.md'), `${lines.join('\n')}\n`);
 }
 
 function writeIssues(reportDir, metadata, issues) {
@@ -515,6 +517,27 @@ function writeReport({
   fs.writeFileSync(
     path.join(reportDir, 'run.json'),
     `${JSON.stringify(metadata, null, 2)}\n`
+  );
+  fs.writeFileSync(
+    path.join(reportDir, 'report.json'),
+    `${JSON.stringify(
+      {
+        schemaVersion: 1,
+        runId: metadata.runId,
+        platform: metadata.platform,
+        device: metadata.device,
+        sdkVersion: metadata.sdkVersion,
+        nativeVersions: metadata.nativeVersions,
+        commit: metadata.commit,
+        startedAt: metadata.startedAt,
+        finishedAt: metadata.finishedAt,
+        counts: evaluation.counts,
+        failures: evaluation.failures.length,
+        done: evaluation.doneEntry?.payload ?? null,
+      },
+      null,
+      2
+    )}\n`
   );
   writeSummary(reportDir, metadata, evaluation, issues);
   writeIssues(reportDir, metadata, issues);
@@ -631,10 +654,7 @@ function compareReports(androidPath, iosPath, outputRoot) {
       } | ${status} |`
     );
   }
-  const output = path.join(
-    outputRoot,
-    `comparison-${timestamp(new Date())}.md`
-  );
+  const output = path.join(outputRoot, 'comparison.md');
   fs.mkdirSync(outputRoot, { recursive: true });
   fs.writeFileSync(output, `${lines.join('\n')}\n`);
   return { output, mismatches };
@@ -657,13 +677,14 @@ function runMain(options) {
   const version = options.version ?? readPackageVersion();
   const startedAt = new Date();
   let device = resolveDevice(platform, options.device);
-  const runId = `${timestamp(startedAt)}-${platform}-${safeName(device)}`;
+  const runStamp = timestamp(startedAt);
+  const runId = `${runStamp}-${platform}-${safeName(device)}`;
   const outputRoot = path.resolve(
-    options['output-root'] ?? path.join(REPO_ROOT, 'build/reports', version)
+    options['output-root'] ?? path.join(REPO_ROOT, 'artifacts/single')
   );
-  const reportDir = path.join(outputRoot, runId);
+  const reportDir = path.join(outputRoot, runStamp, platform);
   fs.mkdirSync(reportDir, { recursive: true });
-  const eventsFile = path.join(reportDir, 'events.jsonl');
+  const eventsFile = path.join(reportDir, 'events.sanitized.jsonl');
   const env = {
     ...process.env,
     SCRIPT_JSON: scriptPath,
@@ -750,12 +771,12 @@ function main() {
       }
       const version = options.version ?? readPackageVersion();
       const outputRoot = path.resolve(
-        options['output-root'] ?? path.join(REPO_ROOT, 'build/reports', version)
+        options['output-root'] ?? path.join(REPO_ROOT, 'artifacts/single')
       );
       const comparison = compareReports(
         options['android-report'],
         options['ios-report'],
-        outputRoot
+        path.join(outputRoot, timestamp(new Date()))
       );
       console.log(`Comparison report: ${comparison.output}`);
       if (comparison.mismatches > 0) process.exitCode = 1;

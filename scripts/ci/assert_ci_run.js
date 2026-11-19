@@ -11,8 +11,11 @@
  *   CI_PLATFORM     (required) device platform that produced the log;
  *                   drives the mapping reconciliation via the per-case
  *                   `platforms` array.
+ *   CI_REPORT_DIR   (optional) exact output directory for summary.md; takes
+ *                   precedence over CI_REPORT_ROOT. ci_test_local.sh sets it
+ *                   so all artifacts stay in one timestamped run directory.
  *   CI_REPORT_ROOT  (optional) report output root; defaults to
- *                   <repo>/build/reports/ci. Tests point it at a temp dir.
+ *                   <repo>/artifacts/ci. Tests point it at a temp dir.
  *
  * Exit code 0 when the run is green, 1 on any assertion failure, 2 on
  * usage/IO errors. A run fails when any of the following holds:
@@ -30,6 +33,7 @@
  *     status instead).
  *
  * A human-readable report is always written to
+ * <CI_REPORT_DIR>/summary.md when set, else
  * <CI_REPORT_ROOT>/<run-id>/summary.md (run-id is timestamp-based);
  * credential-shaped values are redacted before anything is written.
  */
@@ -41,7 +45,7 @@ const { sanitize } = require('./auto_report');
 
 const REPO_ROOT = path.resolve(__dirname, '../..');
 const MAPPING_PATH = path.join(REPO_ROOT, 'docs/ci/native-case-mapping.json');
-const DEFAULT_REPORT_ROOT = path.join(REPO_ROOT, 'build/reports/ci');
+const DEFAULT_REPORT_ROOT = path.join(REPO_ROOT, 'artifacts/ci');
 const PLATFORMS = ['android', 'ios'];
 const ENTRIES = [
   'logged_out',
@@ -313,7 +317,7 @@ function main() {
   const evaluation = evaluateCiRun(entries, mapping, platform, entry);
   const reportRoot = process.env.CI_REPORT_ROOT ?? DEFAULT_REPORT_ROOT;
   const runId = `${timestamp(new Date())}-${platform}-${entry}`;
-  const reportDir = path.join(reportRoot, runId);
+  const reportDir = process.env.CI_REPORT_DIR ?? path.join(reportRoot, runId);
   fs.mkdirSync(reportDir, { recursive: true });
   const report = buildReport(evaluation, { runId, ciRunPath, logPath });
   const reportPath = path.join(reportDir, 'summary.md');

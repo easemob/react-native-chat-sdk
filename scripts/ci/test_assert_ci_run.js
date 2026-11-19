@@ -93,6 +93,9 @@ function runAssert(logText, options = {}) {
     CI_PLATFORM: options.platform ?? 'android',
     CI_REPORT_ROOT: path.join(dir, 'reports'),
   };
+  if (options.reportDir != null) {
+    env.CI_REPORT_DIR = options.reportDir;
+  }
   if (options.platform === null) {
     delete env.CI_PLATFORM;
   }
@@ -107,6 +110,19 @@ function runAssert(logText, options = {}) {
   }
   return { ...result, report };
 }
+
+test('CI_REPORT_DIR writes summary.md into the exact run directory', () => {
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'assert-ci-run-'));
+  const reportDir = path.join(dir, '20260101000000', 'android', 'logged_out');
+  const result = runAssert(buildLog(), { reportDir });
+  assert.equal(result.status, 0, result.stderr);
+  assert.ok(
+    fs.existsSync(path.join(reportDir, 'summary.md')),
+    'summary.md must be written under CI_REPORT_DIR'
+  );
+  assert.ok(result.report != null);
+  assert.match(result.report, /Result: \*\*PASS\*\*/);
+});
 
 test('a green run exits 0 and writes a PASS report', () => {
   const result = runAssert(buildLog());

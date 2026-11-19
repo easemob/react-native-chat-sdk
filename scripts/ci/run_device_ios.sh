@@ -22,7 +22,7 @@
 #   SCRIPT_JSON        auto-mode script on the host     (default: example/ci/port_5_0_0_positive.json)
 #   HOST_SCRIPT_PATH   where the app reads the script, must match the inlined API_SCRIPT
 #                                                       (default: /tmp/rn_auto_script.json)
-#   OUT_DIR            where the copied log lands      (default: build/reports)
+#   OUT_DIR            where the copied log lands      (default: artifacts/single)
 #   OUT_LOG            full path of the copied log      (default: $OUT_DIR/auto-ios-api_test.log)
 #   SCRIPT_TIMEOUT_S   max seconds to wait for script.done (default: 180)
 #   ASSERT_SCRIPT      assertion script invoked as `node $ASSERT_SCRIPT
@@ -37,7 +37,7 @@ DEVICE_UDID="${DEVICE_UDID:-booted}"
 APP_PATH="${APP_PATH:-$REPO_ROOT/example/ios/build/Build/Products/Debug-iphonesimulator/ChatSdkExample.app}"
 SCRIPT_JSON="${SCRIPT_JSON:-$REPO_ROOT/example/ci/port_5_0_0_positive.json}"
 HOST_SCRIPT_PATH="${HOST_SCRIPT_PATH:-/tmp/rn_auto_script.json}"
-OUT_DIR="${OUT_DIR:-$REPO_ROOT/build/reports}"
+OUT_DIR="${OUT_DIR:-$REPO_ROOT/artifacts/single}"
 OUT_LOG="${OUT_LOG:-$OUT_DIR/auto-ios-api_test.log}"
 TIMEOUT_S="${SCRIPT_TIMEOUT_S:-180}"
 

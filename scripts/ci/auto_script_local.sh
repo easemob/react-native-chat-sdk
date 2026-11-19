@@ -7,11 +7,17 @@
 # ci_test_local.sh instead (CI mode, CI_RUN inlined).
 #
 # Usage:
-#   bash scripts/ci/auto_script_local.sh android   # needs a booted emulator/device
-#   bash scripts/ci/auto_script_local.sh ios       # boots a simulator if none is booted
+#   bash scripts/ci/auto_script_local.sh android   # needs one online emulator/device
+#   bash scripts/ci/auto_script_local.sh ios       # uses DEVICE_UDID/one booted sim
 #
-# Re-running is incremental: dependencies, pods and native objects are reused,
-# only the JS bundle is regenerated.
+# Android device selection goes through select_android_device.sh (set
+# ANDROID_SERIAL when several devices are online). iOS goes through
+# select_ios_simulator.sh: it validates/boots DEVICE_UDID, and refuses to guess
+# when several simulators are booted. Set SKIP_POD_INSTALL=1 to skip the Pods
+# refresh that otherwise runs before every iOS build.
+#
+# Re-running is incremental for dependencies and native objects; the JS bundle
+# is regenerated, and iOS Pods are refreshed unless SKIP_POD_INSTALL=1.
 set -euo pipefail
 
 REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
@@ -26,6 +32,16 @@ esac
 
 cd "$REPO_ROOT"
 
+# Direct invocation (without auto_report.js) still gets a timestamped artifact
+# directory. auto_report.js always overrides OUT_LOG with its own run dir.
+if [ -z "${OUT_LOG:-}" ]; then
+  AUTO_RUN_STAMP="$(date -u +%Y%m%d%H%M%S)"
+  OUT_DIR="$REPO_ROOT/artifacts/single/$AUTO_RUN_STAMP/$PLATFORM"
+  OUT_LOG="$OUT_DIR/api_test.log"
+  mkdir -p "$OUT_DIR"
+  export OUT_DIR OUT_LOG
+fi
+
 [ -d node_modules ] || yarn install
 yarn gen:version_file && yarn gen:cmake_file && yarn gen:env_file
 
@@ -36,10 +52,8 @@ yarn gen:version_file && yarn gen:cmake_file && yarn gen:env_file
 rm -rf "${TMPDIR:-/tmp}/metro-cache"
 
 if [ "$PLATFORM" = "android" ]; then
-  adb get-state >/dev/null 2>&1 || {
-    echo "error: no booted Android emulator/device reachable via adb" >&2
-    exit 2
-  }
+  ANDROID_SERIAL="$(bash scripts/ci/select_android_device.sh)"
+  export ANDROID_SERIAL
   # Build for the ABI of the attached device (arm64 on Apple Silicon,
   # x86_64 on CI), not a hardcoded one.
   ABI="$(adb shell getprop ro.product.cpu.abi | tr -d '\r')"
@@ -55,20 +69,19 @@ if [ "$PLATFORM" = "android" ]; then
 fi
 
 # ios
-if [ ! -d example/ios/Pods ]; then
-  echo ">> first run: install CocoaPods dependencies"
+DEVICE_UDID="$(bash scripts/ci/select_ios_simulator.sh)"
+export DEVICE_UDID
+
+if [ "${SKIP_POD_INSTALL:-0}" != "1" ]; then
+  echo ">> refresh CocoaPods dependencies (SKIP_POD_INSTALL=1 to skip)"
   (
     cd example
-    bundle config set --local path vendor/bundle
-    bundle install
+    bundle check >/dev/null 2>&1 || {
+      bundle config set --local path vendor/bundle
+      bundle install
+    }
     bundle exec pod install --project-directory=ios
   )
-fi
-
-if ! xcrun simctl list devices booted | grep -q Booted; then
-  echo ">> no booted simulator, booting one"
-  DEVICE_UDID="$(bash scripts/ci/boot_ios_simulator.sh)"
-  export DEVICE_UDID
 fi
 
 echo ">> build auto-mode app (bundle embedded, API_SCRIPT inlined)"

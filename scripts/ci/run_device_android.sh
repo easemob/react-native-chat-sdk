@@ -23,7 +23,7 @@
 #                       the emulated SD card (a broken FUSE mount makes /sdcard
 #                       unusable while /data/local/tmp keeps working).
 #                                                        (default: /data/local/tmp/rn_auto_script.json)
-#   OUT_DIR             where the pulled log lands       (default: build/reports)
+#   OUT_DIR             where the pulled log lands       (default: artifacts/single)
 #   OUT_LOG             full path of the pulled log      (default: $OUT_DIR/auto-android-api_test.log)
 #   SCRIPT_TIMEOUT_S    max seconds to wait for script.done (default: 180)
 #   ASSERT_SCRIPT       assertion script invoked as `node $ASSERT_SCRIPT
@@ -38,7 +38,7 @@ ADB="${ADB:-adb}"
 APK_PATH="${APK_PATH:-$REPO_ROOT/example/android/app/build/outputs/apk/debug/app-debug.apk}"
 SCRIPT_JSON="${SCRIPT_JSON:-$REPO_ROOT/example/ci/port_5_0_0_positive.json}"
 DEVICE_SCRIPT_PATH="${DEVICE_SCRIPT_PATH:-/data/local/tmp/rn_auto_script.json}"
-OUT_DIR="${OUT_DIR:-$REPO_ROOT/build/reports}"
+OUT_DIR="${OUT_DIR:-$REPO_ROOT/artifacts/single}"
 OUT_LOG="${OUT_LOG:-$OUT_DIR/auto-android-api_test.log}"
 TIMEOUT_S="${SCRIPT_TIMEOUT_S:-180}"
 

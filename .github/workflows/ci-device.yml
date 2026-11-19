@@ -103,8 +103,8 @@ jobs:
           disable-animations: true
           # The action mangles multi-line scripts (only the first line reaches
           # the shell), so this stays a single line; ci_test_local.sh calls
-          # run_ci_android.sh per entry. The logcat dump must happen inside
-          # the emulator session; the emulator is gone once this step ends.
+          # run_ci_android.sh per entry. run_ci_android.sh captures that entry's
+          # logcat inside the emulator session, before the emulator goes away.
           script: bash scripts/ci/ci_test_local.sh android logged_out
         env:
           # No secrets in this lane: init targets the public demo app key
@@ -112,14 +112,13 @@ jobs:
           E2E_APP_KEY: 'easemob-demo#zuoyu'
           CI_SKIP_BUILD: 1
           APK_PATH: artifacts/app-debug.apk
-          LOGCAT_LOG: build/reports/ci/android-logged-out-logcat.log
 
       - name: Upload Android logged-out evidence
         if: always()
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: rn-ci-device-android-logged-out-${{ github.run_id }}
-          path: build/reports/ci/
+          path: artifacts/ci/
           if-no-files-found: warn
           retention-days: 7
 
@@ -176,14 +175,13 @@ jobs:
           E2E_CLIENT_SECRET: ${{ secrets.E2E_CLIENT_SECRET }}
           CI_SKIP_BUILD: 1
           APK_PATH: artifacts/app-debug.apk
-          LOGCAT_LOG: build/reports/ci/android-logged-in-logcat.log
 
       - name: Upload Android logged-in evidence
         if: always()
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: rn-ci-device-android-logged-in-${{ github.run_id }}
-          path: build/reports/ci/
+          path: artifacts/ci/
           if-no-files-found: warn
           retention-days: 7
 
@@ -307,8 +305,8 @@ jobs:
         # pauses on an interactive "Press ENTER" prompt unless stdin is fed.
         # The archive is written as <path>.tar.gz next to the given path.
         run: |
-          mkdir -p build/reports
-          echo | xcrun simctl diagnose -b --output=build/reports/diagnose || true
+          mkdir -p artifacts
+          echo | xcrun simctl diagnose -b --output=artifacts/diagnose || true
 
       - name: Upload iOS logged-out evidence
         if: always()
@@ -316,8 +314,8 @@ jobs:
         with:
           name: rn-ci-device-ios-logged-out-${{ github.run_id }}
           path: |
-            build/reports/ci/
-            build/reports/*diagnose*.tar.gz
+            artifacts/ci/
+            artifacts/*diagnose*.tar.gz
           if-no-files-found: warn
           retention-days: 7
 
@@ -370,8 +368,8 @@ jobs:
         # pauses on an interactive "Press ENTER" prompt unless stdin is fed.
         # The archive is written as <path>.tar.gz next to the given path.
         run: |
-          mkdir -p build/reports
-          echo | xcrun simctl diagnose -b --output=build/reports/diagnose || true
+          mkdir -p artifacts
+          echo | xcrun simctl diagnose -b --output=artifacts/diagnose || true
 
       - name: Upload iOS logged-in evidence
         if: always()
@@ -379,7 +377,7 @@ jobs:
         with:
           name: rn-ci-device-ios-logged-in-${{ github.run_id }}
           path: |
-            build/reports/ci/
-            build/reports/*diagnose*.tar.gz
+            artifacts/ci/
+            artifacts/*diagnose*.tar.gz
           if-no-files-found: warn
           retention-days: 7

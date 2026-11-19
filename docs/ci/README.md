@@ -6,6 +6,10 @@ This guide is for anyone adding cases to the CI device regression layer
 and the run assertion (`scripts/ci/assert_ci_run.js`) both enforce parts of
 it, and the rest is enforced by review.
 
+Other device-test layers (single-device API scripts and multi-device
+orchestration) are compared in
+[`docs/testing/README.md`](../testing/README.md).
+
 ## Architecture in one paragraph
 
 The example app carries a minimal in-app test runner (`harness.ts`) that is
@@ -29,13 +33,13 @@ init configuration — SDK defaults are never relied upon. All entries set
 `autoLoadConversations: true` and `enableChatroomConversation: false`;
 they differ in `dataSyncType` and `enableUserInfo`:
 
-| Entry | `dataSyncType` | `enableUserInfo` | Scope |
-|---|---|---|---|
-| `logged_out` | `Conversations` | `false` | init, no-login negatives (no account needed) |
-| `logged_in_base` | `Conversations` | `false` | auth, messages, conversations, chat rooms, presence, local DB |
-| `logged_in_group` | `Conversations \| JoinedGroups` | `false` | group APIs |
-| `logged_in_contact` | `Conversations \| Contacts` | `false` | contact APIs |
-| `logged_in_user_info` | `Conversations` | `true` | user-info APIs |
+| Entry                 | `dataSyncType`                  | `enableUserInfo` | Scope                                                         |
+| --------------------- | ------------------------------- | ---------------- | ------------------------------------------------------------- |
+| `logged_out`          | `Conversations`                 | `false`          | init, no-login negatives (no account needed)                  |
+| `logged_in_base`      | `Conversations`                 | `false`          | auth, messages, conversations, chat rooms, presence, local DB |
+| `logged_in_group`     | `Conversations \| JoinedGroups` | `false`          | group APIs                                                    |
+| `logged_in_contact`   | `Conversations \| Contacts`     | `false`          | contact APIs                                                  |
+| `logged_in_user_info` | `Conversations`                 | `true`           | user-info APIs                                                |
 
 **Entry files must not be modified to add cases.** Do not add, rename, or
 remove entries, change the shared init configuration, or touch the
@@ -67,12 +71,16 @@ module file; only cross-module helpers are promoted to `support/`.
 A minimal case:
 
 ```ts
-ciTest('RN-PRESENCE-002', 'publishPresence while logged out throws 201', async () => {
-  await expectCiError(
-    () => ctx.client.presenceManager.publishPresence('away'),
-    201
-  );
-});
+ciTest(
+  'RN-PRESENCE-002',
+  'publishPresence while logged out throws 201',
+  async () => {
+    await expectCiError(
+      () => ctx.client.presenceManager.publishPresence('away'),
+      201
+    );
+  }
+);
 ```
 
 Available context (`CiCaseContext`): `ctx.client` (the `ChatClient`
@@ -176,11 +184,16 @@ your `testNameRegex` actually matches at least one case — a run with
 
 - The script prints a per-entry PASS/FAIL summary and exits non-zero if any
   entry failed (a failing entry does not abort the remaining ones).
-- Per-entry device logs: `build/reports/ci/<platform>-<entry>-api_test.log`.
-- Per-entry reports: `build/reports/ci/<run-id>/summary.md` (run-id is
-  `<timestamp>-<platform>-<entry>`), with each case classified as
-  pass/fail/blocked/missing/unregistered. `blocked` means the case never ran
+- Each invocation writes one timestamped run directory:
+  `artifacts/ci/<UTC timestamp>/`. The run summary and console log are
+  scoped to the platform: `<platform>/summary.md`, `<platform>/report.json`, `<platform>/run.json` and `<platform>/runner.log`.
+- Per-entry artifacts live under `<platform>/<suite>/`: `api_test.log` (the app's
+  structured log), `logcat.log` on Android or `simulator.log` on iOS (the raw
+  native log), and `summary.md` (each case classified as
+  pass/fail/blocked/missing/unregistered). `blocked` means the case never ran
   because preparation or infrastructure failed (e.g. `beforeAll` failed) and
   counts as failure; `missing` means the mapping expected a result the run
   never produced.
-- Everything under `build/reports/` is Git-ignored and sanitized.
+- Everything under `artifacts/` is Git-ignored. The assertion reports are
+  sanitized; `api_test.log`, `logcat.log`, and `simulator.log` are raw logs, so
+  review them before sharing.

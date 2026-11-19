@@ -14,10 +14,17 @@
 #   scripts/ci/multi.sh prepare|devices|build|launch|run|report|clean|all ...
 #       Runs bin/cli.dart; defaults --app-dir to example/.
 # Example:
-#   scripts/ci/multi.sh all --cases example/multi/config/cases.json
-#   scripts/ci/multi.sh prepare example/multi_cases/5.0.0-multi-presence-positive.yaml \
-#       --cases example/multi/config/cases.json
+#   scripts/ci/multi.sh all --cases /path/to/im-test-orchestrator/multi/config/cases.json
+# `generate` writes cases.json under <IMTO>/multi/config/, not under this
+# repository; pass that absolute path to --cases.
 # Relative path arguments are resolved against this repository root.
+#
+# all/run/report additionally collect their generated artifacts into
+# artifacts/multi/<UTC timestamp>/<platform>/:
+#   <reports/<runId>>/*   summary, statistics, process, flow reports, device logs
+#   tmp/                  orchestrator run.log, issue notes and raw evidence
+# The orchestrator APK/build cache (build/<runId>/, often >100 MB) is not
+# copied; it remains in the orchestrator checkout and is regenerable.
 set -euo pipefail
 
 REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
@@ -94,6 +101,92 @@ fi
 # Only commands whose CLI accepts --app-dir get the default (build/all).
 if [[ "$command" == "build" || "$command" == "all" ]] && [[ $has_app_dir -eq 0 ]]; then
   args+=(--app-dir "$REPO_ROOT/example")
+fi
+
+RUN_STAMP="${MULTI_RUN_STAMP:-$(date -u +%Y%m%d%H%M%S)}"
+
+# Print the platform recorded in the run's process.json. A run normally uses
+# one platform; mixed-platform runs are archived under "mixed".
+run_platform() {
+  local report_dir="$1"
+  python3 - "$report_dir/process.json" <<'PY'
+import json, sys
+try:
+    data = json.load(open(sys.argv[1], encoding='utf-8'))
+except Exception:
+    print('android'); raise SystemExit
+platforms = set()
+def walk(value):
+    if isinstance(value, dict):
+        platform = value.get('platform')
+        if isinstance(platform, str) and platform:
+            platforms.add(platform)
+        for child in value.values():
+            walk(child)
+    elif isinstance(value, list):
+        for child in value:
+            walk(child)
+walk(data.get('selection'))
+if len(platforms) == 1:
+    print(next(iter(platforms)))
+elif len(platforms) > 1:
+    print('mixed')
+else:
+    print('android')
+PY
+}
+
+# Copy one finished run into the RN repository. Collection failures are
+# warnings: they must not turn a passing test run into a failure.
+collect_run() {
+  local run_id="$1"
+  local console_log="$2"
+  [[ -n "$run_id" ]] || return 0
+  local source_reports="$MULTI/reports/$run_id"
+  [[ -d "$source_reports" ]] || {
+    echo "multi collect: no reports for run $run_id" >&2
+    return 0
+  }
+  local platform
+  platform="$(run_platform "$source_reports")"
+  local dest="$REPO_ROOT/artifacts/multi/$RUN_STAMP/$platform"
+  mkdir -p "$dest/tmp"
+  cp -R "$source_reports/." "$dest/"
+  if [[ -d "$MULTI/tmp/$run_id" ]]; then
+    cp -R "$MULTI/tmp/$run_id/." "$dest/tmp/"
+  fi
+  if [[ -n "$console_log" && -f "$console_log" ]]; then
+    cp "$console_log" "$dest/console.log"
+  fi
+  printf '{"runId":"%s","platform":"%s","sourceReports":"%s","sourceTmp":"%s","collectedAt":"%s"}\n' \
+    "$run_id" "$platform" "$source_reports" "$MULTI/tmp/$run_id" "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
+    > "$dest/run-meta.json"
+  echo "multi reports: $dest" >&2
+}
+
+run_and_collect() {
+  local console_log status run_id=""
+  console_log="$(mktemp "${TMPDIR:-/tmp}/rn-multi-console.XXXXXX")"
+  set +e
+  ( cd "$MULTI" && dart run "$entry" "${args[@]}" ) 2>&1 | tee "$console_log"
+  status=${PIPESTATUS[0]}
+  set -e
+  run_id="$(sed -n 's/^runId=//p' "$console_log" | tail -1)"
+  if [[ -z "$run_id" ]]; then
+    for ((index = 0; index < ${#args[@]}; index++)); do
+      if [[ "${args[$index]}" == "--run-id" && $((index + 1)) -lt ${#args[@]} ]]; then
+        run_id="${args[$((index + 1))]}"
+      fi
+    done
+  fi
+  collect_run "$run_id" "$console_log"
+  rm -f "$console_log"
+  return "$status"
+}
+
+if [[ "$command" == "all" || "$command" == "run" || "$command" == "report" ]]; then
+  run_and_collect
+  exit $?
 fi
 
 cd "$MULTI"
