@@ -1,0 +1,65 @@
+# React Native example（react-native-chat-sdk/example）目标登记
+# —— im-test-orchestrator 多设备编排的 target 信息，经 --target example/target-rn.yaml 传入。
+#
+# 生效字段（orchestrator 当前消费）：appDir / transport / iosProcessName / logcatTags /
+# casesDir / app.* / build.* / launch.*（reverse 模式下 build/launch 字段被消费）。
+name: react-native-chat-sdk-example
+platform: android
+appDir: .
+transport: reverse
+iosProcessName: ChatSdkExample
+logcatTags:
+  - ReactNativeJS:I   # RN console.log 的 logcat tag（agent 的 [AGENT_CONTROL] 配对行经此输出）
+  - testing_v2:I      # 宿主就绪探针 marker（契约 §9）
+  - '*:S'
+casesDir: multi_cases
+app:
+  applicationId: chatsdk.example   # example/android/app/build.gradle applicationId
+  # agent 入口的打包期内联开关（NAME=设备绝对路径），机制同
+  # example/babel-plugin-inline-api-env.js 内联 API_SCRIPT / API_CONFIG；非空即开启 reverse
+  # agent（example/src/agent/），默认关闭、仅 Debug 生效，与 auto 模式（API_SCRIPT）互斥。
+  # host 端规则：reverse 模式要求 controlFlag 为 NAME=/绝对路径（构建时作 env 注入，
+  # launch 时 push {"port","token"} 到该路径）。设备路径两机同值（每设备文件系统独立）。
+  controlFlag: EASEMOB_AGENT=/data/local/tmp/rn_agent_control.json
+build:
+  # 自 appDir（example/）逐字执行；等价于 CI（.github/workflows/device-smoke.yml）在
+  # example/android 下的 ./gradlew app:assembleDebug。-PbundleInDebug=true 内嵌 JS bundle
+  # （headless 设备无法连 Metro）。ABI：本地多设备编排面向 Apple Silicon 模拟器（arm64 镜像），
+  # 用 arm64-v8a；GitHub CI（x86 runner）自行改回 x86_64。
+  # 前置：仓库根已执行 yarn install + yarn gen:version_file + yarn gen:cmake_file + yarn gen:env_file。
+  command:
+    - ./android/gradlew
+    - -p
+    - android
+    - app:assembleDebug
+    - --no-daemon
+    - --console=plain
+    - -PreactNativeArchitectures=arm64-v8a
+    - -PbundleInDebug=true
+  artifacts:
+    - path: android/app/build/outputs/apk/debug/app-debug.apk
+launch:
+  # -W：am start 等待窗口显示再返回，保证后续 pidof 能取到进程（RN 冷启动到进程出现
+  # 有数百毫秒窗口，不加 -W 会竞态失败）。
+  start:
+    - adb
+    - shell
+    - am
+    - start
+    - -W
+    - -n
+    - <pkg>/.MainActivity
+  stop:
+    - adb
+    - shell
+    - am
+    - force-stop
+    - <pkg>
+  logStream:
+    - adb
+    - logcat
+    - -v
+    - threadtime
+    - ReactNativeJS:I
+    - testing_v2:I
+    - '*:S'

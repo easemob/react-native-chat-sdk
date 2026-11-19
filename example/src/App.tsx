@@ -17,6 +17,7 @@ import { FloatingAttachment } from './tools/floating_attachment';
 import { addLog, LOG_FILE_PATH } from './log/log_store';
 import { isAutoMode, runAutoMode, type AutoModeHooks } from './auto/auto_mode';
 import { isCiMode, runCiMode } from './ci/ci_mode';
+import { isAgentMode, runAgentMode } from './agent/agent_mode';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -51,6 +52,17 @@ function CiModeRunner() {
   useEffect(() => {
     if (isCiMode()) {
       runCiMode();
+    }
+  }, []);
+  return null;
+}
+
+// 第三种自动化模式（编排 agent，reverse 通道）：EASEMOB_AGENT 内联且 Debug
+// 构建时运行；与 CI_RUN / API_SCRIPT 互斥，冲突由 runAgentMode 报错并拒绝启动
+function AgentModeRunner() {
+  useEffect(() => {
+    if (isAgentMode()) {
+      runAgentMode();
     }
   }, []);
   return null;
@@ -93,6 +105,7 @@ function AppBody() {
   return (
     <View style={[styles.root, { paddingTop: insets.top }]}>
       <CiModeRunner />
+      <AgentModeRunner />
       <AutoModeRunner />
       <StatusBar />
       <NavigationContainer ref={navigationRef}>
