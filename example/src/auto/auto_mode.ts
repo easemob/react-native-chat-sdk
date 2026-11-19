@@ -203,9 +203,6 @@ function deriveInitParams(
   script: Script,
   config: Record<string, unknown>
 ): Record<string, unknown> | null {
-  if (script.init != null) {
-    return script.init;
-  }
   const picked: Record<string, unknown> = {};
   for (const key of CHAT_OPTIONS_KEYS) {
     if (config[key] !== undefined) {
@@ -220,6 +217,11 @@ function deriveInitParams(
     } else {
       delete picked[key];
     }
+  }
+  // 脚本 init 覆盖 env 推导值（与 Flutter example 语义一致：
+  // config 为基座，script init 覆盖），避免脚本为加单个选项而重复 appKey
+  if (script.init != null) {
+    Object.assign(picked, script.init);
   }
   // native 5.0 已无自动登录：login 步骤必须真实走凭据登录，
   // no-login 冒烟也必须保持未登录态

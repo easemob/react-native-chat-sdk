@@ -1,4 +1,7 @@
 {
+  "init": {
+    "debugModel": true
+  },
   "_comment": "5.0.0 平版新增/修改 API 正向路径（auto 模式）。数据源为 env.ts（yarn env:gettoken 生成）。辅助步骤 sendMessage/destroyGroup 仅用于准备与清理，不计入被测 API。modifyMsgBody 按公开契约期待成功；未开通消息编辑服务的集群会返回 305，并由报告如实标记为环境限制。kickDevice 使用 getLoggedInDevicesFromServer 返回的真实 resource，会踢掉当前设备，因此与 kickAllDevices 固定放在最后。单账号只验证回执 API 的成功调用；非空回执、onMessageReadReceipts 与 ChatGroupMemberInfo 暂不覆盖。",
   "steps": [
     {
