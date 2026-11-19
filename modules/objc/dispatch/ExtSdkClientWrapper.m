@@ -13,6 +13,7 @@
 #import "ExtSdkConversationWrapper.h"
 #import "ExtSdkGroupManagerWrapper.h"
 #import "ExtSdkMethodTypeObjc.h"
+#import "ExtSdkOSLogForwarder.h"
 #import "ExtSdkPresenceManagerWrapper.h"
 #import "ExtSdkPushManagerWrapper.h"
 #import "ExtSdkThreadUtilObjc.h"
@@ -44,6 +45,10 @@
          withMethodType:(NSString *)aChannelName
                  result:(nonnull id<ExtSdkCallbackObjc>)result {
 
+    // The TS-side `debugModel` option gates the os_log forwarder (default
+    // off). Core's own console output stays disabled regardless
+    // (EMOptions.enableConsoleLog is forced to NO in fromJsonObject).
+    [ExtSdkOSLogForwarder setEnabled:[param[@"debugModel"] boolValue]];
     EMOptions *options = [EMOptions fromJsonObject:param];
     options.platform = EMSDKPlatformReactNative;
     if (nil == options) {
@@ -51,7 +56,6 @@
         [self onResult:result withMethodType:ExtSdkMethodKeyInit withError:e withParams:nil];
         return;
     }
-    options.enableConsoleLog = options.enableConsoleLog;
     [EMClient.sharedClient initializeSDKWithOptions:options];
     [EMClient.sharedClient removeDelegate:self];
     [EMClient.sharedClient addDelegate:self delegateQueue:nil];

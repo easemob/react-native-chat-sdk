@@ -1237,7 +1237,12 @@
         NSLog(@"EMOptions: fromJsonObject: appKey and appId is empty");
     }
 
-    if (aJson[@"debugModel"]) { options.enableConsoleLog = [aJson[@"debugModel"] boolValue]; }
+    // Core console output (cout) is permanently disabled: it only reaches the
+    // Xcode console and duplicates the ExtSdkOSLogForwarder output there.
+    // Console observability is provided by the forwarder (unified log), gated
+    // by the TS-side `debugModel` option. The log file is written by core
+    // regardless of this switch.
+    options.enableConsoleLog = NO;
     if (aJson[@"requireDeliveryAck"]) { options.enableDeliveryAck = [aJson[@"requireDeliveryAck"] boolValue]; }
     if (aJson[@"sortMessageByServerTime"]) { options.sortMessageByServerTime = [aJson[@"sortMessageByServerTime"] boolValue]; }
     if (aJson[@"acceptInvitationAlways"]) { options.autoAcceptFriendInvitation = [aJson[@"acceptInvitationAlways"] boolValue]; }

@@ -122,10 +122,21 @@ export function createInitHandler(
           ? (params.overrides as Json)
           : {};
       const merged: Json = { ...config, ...overrides };
+      // Canonical case config follows the Flutter naming (`debugMode`); RN
+      // ChatOptions exposes it as `debugModel`. Map it here so the forwarder
+      // gate (native console logs) follows the shared cases.
+      const rnMerged: Json = { ...merged };
+      if (
+        rnMerged.debugModel === undefined &&
+        rnMerged.debugMode !== undefined
+      ) {
+        rnMerged.debugModel = rnMerged.debugMode;
+        delete rnMerged.debugMode;
+      }
       const options =
-        typeof merged.appKey === 'string' && merged.appKey !== ''
-          ? deps.optionsWithAppKey(merged)
-          : deps.optionsWithAppId(merged);
+        typeof rnMerged.appKey === 'string' && rnMerged.appKey !== ''
+          ? deps.optionsWithAppKey(rnMerged)
+          : deps.optionsWithAppId(rnMerged);
       await deps.client.init(options);
       registerListeners();
       return { success: true };

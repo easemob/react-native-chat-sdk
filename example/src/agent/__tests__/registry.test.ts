@@ -488,6 +488,20 @@ describe('init handler (contract §10 ChatClient.init)', () => {
     expect(r).toEqual({ success: true });
   });
 
+  it('maps canonical debugMode to RN debugModel when debugModel is absent', async () => {
+    const { deps, calls } = makeDeps();
+    const handler = createInitHandler(deps, jest.fn());
+    const r = await handler({
+      config: { appKey: 'org#app', debugMode: true },
+      overrides: {},
+    });
+    expect(calls.withAppKey).toHaveBeenCalledWith({
+      appKey: 'org#app',
+      debugModel: true,
+    });
+    expect(r).toEqual({ success: true });
+  });
+
   it('uses withAppId when appKey is absent', async () => {
     const { deps, calls } = makeDeps();
     const handler = createInitHandler(deps, jest.fn());
