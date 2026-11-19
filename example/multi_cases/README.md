@@ -2,7 +2,7 @@
 
 本目录保存多设备多账号测试用例：每个场景一个 YAML（流程与角色定义）配一个同名 JSON（命令、数据与断言），文件名格式 `<引入版本>-multi-<场景>-positive`。
 
-本目录与 Flutter 仓 `im_flutter_sdk/testing/multi-cases/` 的同名 yaml/json 文件**逐字节一致**（D6：跨端共享 canonical 用例集），唯一已声明的例外是 message-delivery 场景（`5.0.0-multi-message-delivery-positive.yaml/.json`）：RN SDK 5.1.0 native 层未实现 delivered 事件（Android/iOS 均无 `onMessagesDelivered` 下发），RN 副本做了两处最小差异——yaml 中 delivery 分支由 `delivery_ack_supported: false` 显式关闭，json 的 `requiredBindings` 移除 `global.biz.event.delivered`（该断言物理上无法满足，保留会使判否恒成立）；其余内容与 Flutter 副本一致。对账命令（在 im-test-orchestrator 仓 `multi/` 目录下执行）：
+本目录与 Flutter 仓 `im_flutter_sdk/testing/multi-cases/` 的同名 yaml/json 文件**逐字节一致**（D6：跨端共享 canonical 用例集），唯一已声明的例外是 message-delivery 场景（`5.0.0-multi-message-delivery-positive.yaml/.json`）：RN SDK 5.1.0 钉定的 native 版本（Android hyphenate-chat 5.1.0 / iOS HyphenateChat 5.1.0）存在 delivered 回执已知问题（RN wrapper 层两端链路完整，非 RN 代码缺陷），RN 副本做了两处最小差异——yaml 中 delivery 分支由 `delivery_ack_supported: false` 显式关闭，json 的 `requiredBindings` 移除 `global.biz.event.delivered`（该断言在当前 native 版本下物理上无法满足，保留会使判否恒成立）；其余内容与 Flutter 副本一致。**验证时机**：待 RN 分支升级 native 至含修复的版本（5.2.x）后，将 `delivery_ack_supported` 翻回 `true` 并恢复 requiredBindings，重跑本场景即完成验证。对账命令（在 im-test-orchestrator 仓 `multi/` 目录下执行）：
 
 ```bash
 dart run bin/cli.dart cases diff <Flutter仓>/testing/multi-cases <本目录>
