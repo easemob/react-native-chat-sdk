@@ -20,7 +20,7 @@
 # Relative path arguments are resolved against this repository root.
 #
 # all/run/report additionally collect their generated artifacts into
-# artifacts/multi/<UTC timestamp>/<platform>/:
+# artifacts/multi/<local timestamp>/<platform>/:
 #   <reports/<runId>>/*   summary, statistics, process, flow reports, device logs
 #   tmp/                  orchestrator run.log, issue notes and raw evidence
 # The orchestrator APK/build cache (build/<runId>/, often >100 MB) is not
@@ -103,7 +103,7 @@ if [[ "$command" == "build" || "$command" == "all" ]] && [[ $has_app_dir -eq 0 ]
   args+=(--app-dir "$REPO_ROOT/example")
 fi
 
-RUN_STAMP="${MULTI_RUN_STAMP:-$(date -u +%Y%m%d%H%M%S)}"
+RUN_STAMP="${MULTI_RUN_STAMP:-$(date +%Y%m%d%H%M%S)}"
 
 # Print the platform recorded in the run's process.json. A run normally uses
 # one platform; mixed-platform runs are archived under "mixed".

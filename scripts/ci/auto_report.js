@@ -28,7 +28,7 @@ function usage() {
 The default script is example/ci/port_5_0_0_positive.json. Run the negative
 path with --script example/ci/port_5_0_0_negative.json. Per-run evidence is
 written under artifacts/single/<timestamp>/<platform>/ and remains
-Git-ignored; the directory name is only the UTC timestamp, and each platform
+Git-ignored; the directory name is only the local timestamp, and each platform
 gets its own subdirectory so Android and iOS runs cannot overwrite each other.
 `;
 }
@@ -58,10 +58,16 @@ function safeName(value) {
 }
 
 function timestamp(date) {
-  return date
-    .toISOString()
-    .replace(/[^0-9]/g, '')
-    .slice(0, 14);
+  return [
+    String(date.getFullYear()).padStart(4, '0'),
+    ...[
+      date.getMonth() + 1,
+      date.getDate(),
+      date.getHours(),
+      date.getMinutes(),
+      date.getSeconds(),
+    ].map((part) => String(part).padStart(2, '0')),
+  ].join('');
 }
 
 function sha256(filePath) {
