@@ -1,0 +1,70 @@
+{
+  "init": {
+    "debugModel": true
+  },
+  "_comment": "5.0.0 平版新增/修改 API 反向路径（auto 模式）。只使用单账号可稳定构造的非法参数、缺失资源和无效 token；无参数本地查询没有可控错误输入，不强造反例。目标 1.21.0 没有群回执、群配置更新和清理会话 API，因此不迁移这些源负例。",
+  "steps": [
+    {
+      "api": "ChatGroupManager.createGroupEx",
+      "id": "create_group_invalid_member",
+      "params": {
+        "groupName": "rn-port-500-negative",
+        "desc": "invalid member must reject group creation",
+        "inviteMembers": ["rn-ci-nonexistent-user"],
+        "configs": {
+          "maxCount": 200,
+          "inviteNeedConfirm": false,
+          "ext": "negative",
+          "isPublic": false,
+          "joinApprovalRequired": false,
+          "allowInvites": true
+        }
+      },
+      "expect": { "errorCode": 600 }
+    },
+    {
+      "api": "ChatManager.modifyMsgBody",
+      "id": "modify_message_missing",
+      "params": {
+        "msgId": "not-exist-msg-id-500",
+        "content": "must not be applied",
+        "ext": { "port": "5.0.0", "path": "negative" }
+      },
+      "expect": { "errorCode": 500 }
+    },
+    {
+      "api": "ChatClient.getLoggedInDevicesFromServer",
+      "id": "devices_invalid_token",
+      "params": {
+        "userId": "$config.accounts.0.id",
+        "token": "rn-ci-invalid-token"
+      },
+      "expect": { "errorCode": 303 }
+    },
+    {
+      "api": "ChatClient.renewAgoraToken",
+      "id": "renew_invalid_token",
+      "params": { "token": "" },
+      "expect": { "errorCode": 104 }
+    },
+    {
+      "api": "ChatClient.kickDevice",
+      "id": "kick_device_invalid_token",
+      "params": {
+        "userId": "$config.accounts.0.id",
+        "token": "rn-ci-invalid-token",
+        "resource": "rn-ci-nonexistent-resource"
+      },
+      "expect": { "errorCode": 303 }
+    },
+    {
+      "api": "ChatClient.kickAllDevices",
+      "id": "kick_all_invalid_token",
+      "params": {
+        "userId": "$config.accounts.0.id",
+        "token": "rn-ci-invalid-token"
+      },
+      "expect": { "errorCode": 303 }
+    }
+  ]
+}

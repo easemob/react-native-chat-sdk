@@ -4,6 +4,7 @@ import {
   ChatMessage,
   ChatMessageChatType,
   ChatMessageSearchOption,
+  ChatTextMessageBody,
   ChatVoiceParam,
 } from 'react-native-chat-sdk';
 import type { ApiEntry } from '../api_entry';
@@ -31,30 +32,73 @@ function sendCallbacks(tag: string) {
   };
 }
 
+/** 等服务端发送回调后再返回，确保后续步骤拿到可从本地库查回的消息 ID。 */
+function sendMessageAndWait(message: ChatMessage): Promise<ChatMessage> {
+  return new Promise((resolve, reject) => {
+    let settled = false;
+    ChatClient.getInstance()
+      .chatManager.sendMessage(message, {
+        onProgress: (localMsgId: string, progress: number) => {
+          addLog('ChatManager.sendMessage.onProgress', {
+            localMsgId,
+            progress,
+          });
+        },
+        onError: (
+          localMsgId: string,
+          error: { code: number; description: string }
+        ) => {
+          addLog('ChatManager.sendMessage.onError', {
+            localMsgId,
+            code: error.code,
+            description: error.description,
+          });
+          if (!settled) {
+            settled = true;
+            reject(error);
+          }
+        },
+        onSuccess: (sentMessage: ChatMessage) => {
+          addLog('ChatManager.sendMessage.onSuccess', {
+            msgId: sentMessage.msgId,
+          });
+          if (!settled) {
+            settled = true;
+            resolve(sentMessage);
+          }
+        },
+      })
+      .catch((error) => {
+        if (!settled) {
+          settled = true;
+          reject(error);
+        }
+      });
+  });
+}
+
 export const chatApis: ApiEntry[] = [
   {
-    name: 'ChatManager.fetchConversationsFromServerWithCursor',
+    name: 'ChatManager.getConversationsFromDB',
     group: 'ChatManager',
-    description: '从服务器分页获取会话列表。cursor/pageSize 均可选。',
-    paramsTemplate: JSON.stringify({ pageSize: 20 }, null, 2),
+    description:
+      '分页获取本地会话。初始化时需设置 autoLoadConversations=false。' +
+      'cursor：上一页游标，空字符串表示第一页；pageSize：1–100，默认 20。返回空游标表示最后一页。',
+    paramsTemplate: JSON.stringify({ cursor: '', pageSize: 20 }, null, 2),
     invoke: async (params) => {
-      return ChatClient.getInstance().chatManager.fetchConversationsFromServerWithCursor(
-        params.cursor === undefined ? undefined : String(params.cursor),
-        params.pageSize === undefined ? undefined : Number(params.pageSize)
+      return ChatClient.getInstance().chatManager.fetchConversationsFromDB(
+        params.cursor as string | undefined,
+        params.pageSize as number | undefined
       );
     },
   },
   {
-    name: 'ChatManager.fetchConversationsFromDB',
+    name: 'ChatManager.getAllConversations',
     group: 'ChatManager',
-    description:
-      '从本地数据库分页获取会话列表。cursor/pageSize 均可选。需先将 ChatOptions.autoLoadConversations 设为 false。',
-    paramsTemplate: JSON.stringify({ pageSize: 20 }, null, 2),
-    invoke: async (params) => {
-      return ChatClient.getInstance().chatManager.fetchConversationsFromDB(
-        params.cursor === undefined ? undefined : String(params.cursor),
-        params.pageSize === undefined ? undefined : Number(params.pageSize)
-      );
+    description: '获取全部会话列表（本地数据）。',
+    paramsTemplate: '{}',
+    invoke: async () => {
+      return ChatClient.getInstance().chatManager.getAllConversations();
     },
   },
   {
@@ -62,6 +106,7 @@ export const chatApis: ApiEntry[] = [
     group: 'ChatManager',
     description:
       '发送文本消息。chatType：0 单聊 / 1 群聊 / 2 聊天室。' +
+      'isNeedReadReceipt 可选：群消息已读回执开关。' +
       '返回已发送消息 JSON（含 msgId、localTime），发送进度/成败回调见悬浮日志。' +
       'round-trip：返回的消息 JSON 可作为后续消息类 API 的输入。',
     paramsTemplate: JSON.stringify(
@@ -70,6 +115,7 @@ export const chatApis: ApiEntry[] = [
         content: 'hello',
         chatType: 0,
         webhookEnv: '',
+        isNeedReadReceipt: false,
       },
       null,
       2
@@ -83,11 +129,109 @@ export const chatApis: ApiEntry[] = [
       if (params.webhookEnv !== undefined && params.webhookEnv !== '') {
         msg.webhookEnv = String(params.webhookEnv);
       }
-      await ChatClient.getInstance().chatManager.sendMessage(
-        msg,
-        sendCallbacks('ChatManager.sendMessage')
-      );
-      return msg;
+      if (params.isNeedReadReceipt === true) {
+        msg.needGroupAck = true;
+      }
+      return sendMessageAndWait(msg);
+    },
+  },
+  {
+    name: 'ChatManager.getConvMsgsWithKeyword',
+    group: 'ChatManager',
+    description:
+      '按关键字从本地库查询指定会话的消息（ChatConversation.getMsgsWithKeyword 的底层入口）。' +
+      'convId：会话 ID；convType：0 单聊 / 1 群聊 / 2 聊天室；' +
+      'senders 可选：发送者 ID 列表，省略则不过滤发送者。',
+    paramsTemplate: JSON.stringify(
+      {
+        convId: 'ID',
+        convType: 0,
+        keywords: 'hello',
+        timestamp: -1,
+        count: 50,
+        direction: 0,
+        searchScope: 2,
+        senders: ['ID'],
+      },
+      null,
+      2
+    ),
+    invoke: async (params) => {
+      const ret =
+        await ChatClient.getInstance().chatManager.getConvMsgsWithKeyword({
+          convId: String(params.convId),
+          convType: (params.convType ??
+            ChatConversationType.PeerChat) as ChatConversationType,
+          keywords: String(params.keywords),
+          timestamp: params.timestamp as number | undefined,
+          count: params.count as number | undefined,
+          direction: params.direction as number | undefined,
+          senders: params.senders as string[] | undefined,
+          searchScope: params.searchScope as number | undefined,
+        });
+      return ret.map((msg) => ({ msgId: msg.msgId, from: msg.from }));
+    },
+  },
+  {
+    name: 'ChatManager.getMsgs',
+    group: 'ChatManager',
+    description:
+      '从本地库加载指定会话的消息（无关键字过滤，用于对照验证）。' +
+      'convId：会话 ID；convType：0 单聊 / 1 群聊 / 2 聊天室；startMsgId 传空串则从最新开始。',
+    paramsTemplate: JSON.stringify(
+      {
+        convId: 'ID',
+        convType: 0,
+        startMsgId: '',
+        loadCount: 20,
+        direction: 0,
+      },
+      null,
+      2
+    ),
+    invoke: async (params) => {
+      const ret = await ChatClient.getInstance().chatManager.getMsgs({
+        convId: String(params.convId),
+        convType: (params.convType ??
+          ChatConversationType.PeerChat) as ChatConversationType,
+        startMsgId: String(params.startMsgId ?? ''),
+        loadCount: params.loadCount as number | undefined,
+        direction: params.direction as number | undefined,
+      });
+      return ret.map((msg) => ({ msgId: msg.msgId, from: msg.from }));
+    },
+  },
+  {
+    name: 'ChatManager.modifyMsgBody',
+    group: 'ChatManager',
+    description:
+      '修改消息（5.0.0 起支持同时修改 ext 扩展）。msgId：消息 ID；' +
+      'content 可选：新的文本内容（仅文本/自定义消息可改 body）；' +
+      'ext 可选：新的扩展（整体覆盖）。返回修改后的消息 JSON。',
+    paramsTemplate: JSON.stringify(
+      { msgId: 'ID', content: 'modified', ext: { k: 'v' } },
+      null,
+      2
+    ),
+    invoke: async (params) => {
+      return ChatClient.getInstance().chatManager.modifyMsgBody({
+        msgId: String(params.msgId),
+        body:
+          params.content === undefined
+            ? undefined
+            : new ChatTextMessageBody({ content: String(params.content) }),
+        ext: params.ext,
+      });
+    },
+  },
+  {
+    name: 'ChatManager.getUnreadCount',
+    group: 'ChatManager',
+    description:
+      '获取所有会话未读数总和（5.0.0 起不再统计聊天室与免打扰会话）。无参数。返回数字。',
+    paramsTemplate: '{}',
+    invoke: async () => {
+      return ChatClient.getInstance().chatManager.getUnreadCount();
     },
   },
   {

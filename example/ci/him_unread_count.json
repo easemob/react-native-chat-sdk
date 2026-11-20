@@ -1,0 +1,12 @@
+{
+  "steps": [
+    {
+      "api": "ChatManager.getUnreadCount",
+      "id": "unread-count",
+      "params": {},
+      "expect": {
+        "success": true
+      }
+    }
+  ]
+}

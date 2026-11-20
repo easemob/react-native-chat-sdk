@@ -49,11 +49,14 @@
     "test": "jest",
     "test:unit": "jest src/__tests__/unit",
     "test:contract": "jest src/__tests__/contract",
+    "test:ci-scripts": "node --test scripts/ci/test_script_results.js scripts/ci/test_assert_ci_run.js scripts/ci/test_check_case_mapping.js scripts/ci/test_e2e_accounts.js",
     "test:coverage": "jest --coverage",
+    "report:api": "node scripts/ci/auto_report.js",
     "scan:deprecated": "bash scripts/scan-deprecated.sh",
     "scan:deprecated:android": "bash scripts/scan-deprecated-android.sh",
     "scan:deprecated:ios": "bash scripts/scan-deprecated-ios.sh",
     "gen:env_file": "cd scripts && node generate-env.js",
+    "env:gettoken": "node scripts/env-gettoken.js",
     "gen:version_file": "cd scripts && node generate-version.js",
     "gen:cmake_file": "cd scripts && node generate-cmake.js",
     "check:circular:dpdm": "dpdm --circular --transform --include ts src/",
@@ -124,7 +127,7 @@
   ],
   "packageManager": "yarn@4.14.1",
   "engines": {
-    "node": ">=24"
+    "node": ">=20"
   },
   "react-native-builder-bob": {
     "source": "src",

@@ -1,12 +1,11 @@
 name: CI Device Regression
 
-# Placeholder on the default branch. GitHub only lists a workflow in the
-# Actions UI (and allows manual dispatch) when the file exists on the default
-# branch; the real device regression workflow lives on the release branch
-# (currently 5.1.0). To run it: Actions -> CI Device Regression -> Run
-# workflow -> select the release branch. A dispatched run executes the
-# workflow file from the selected ref, so this notice job only runs if the
-# workflow is dispatched against dev itself.
+# Replaces the old device-smoke and single-account-nightly workflows: the
+# example app's CI mode (example/src/ci/) covers both the no-login smoke
+# (logged_out entry) and the single-account logged-in regression (the four
+# logged_in_* entries). Local runs match CI exactly — both go through
+# scripts/ci/ci_test_local.sh; this workflow only orchestrates
+# build/upload/boot/call-script.
 
 on:
   workflow_dispatch:
@@ -14,8 +13,370 @@ on:
 permissions:
   contents: read
 
+concurrency:
+  # Do not cancel mid-run: a lane that already logged in would leave the
+  # emulator session half-cleaned, and the daily schedule rarely overlaps.
+  group: rn-ci-device-${{ github.ref }}
+  cancel-in-progress: false
+
 jobs:
-  notice:
+  android-build:
+    name: Android CI build
     runs-on: ubuntu-24.04
+    timeout-minutes: 45
     steps:
-      - run: echo "Placeholder only. Re-run this workflow with the release branch (e.g. 5.1.0) selected as the ref."
+      - name: Check out source
+        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+
+      - name: Setup Node.js and dependencies
+        uses: ./.github/actions/setup
+
+      - name: Set up Java
+        uses: actions/setup-java@b6effb05e454b25005698d916606bdc6ffcbf961 # v5.7.0
+        with:
+          distribution: temurin
+          java-version: '17'
+          cache: gradle
+
+      - name: Generate build files
+        run: yarn gen:version_file && yarn gen:cmake_file && yarn gen:env_file
+
+      - name: Build Android CI APK
+        working-directory: example/android
+        env:
+          # Inlined into the JS bundle by example/babel-plugin-inline-api-env.js;
+          # must match DEVICE_CI_RUN_PATH in scripts/ci/ci_test_local.sh.
+          CI_RUN: /data/local/tmp/rn_ci_run.json
+        # Same invocation as ci_test_local.sh, pinned to x86_64 for the CI
+        # emulator (the base CI builds arm64-v8a). -PbundleInDebug=true embeds
+        # the JS bundle; debug builds normally load JS from Metro, which a
+        # headless emulator cannot reach. API_SCRIPT/API_CONFIG are unset so
+        # no auto-mode path leaks into the build (CI mode and auto mode are
+        # mutually exclusive at app start).
+        run: env -u API_SCRIPT -u API_CONFIG ./gradlew app:cleanCreateBundleDebugJsAndAssets app:assembleDebug --no-daemon --console=plain -PreactNativeArchitectures=x86_64 -PbundleInDebug=true
+
+      - name: Upload CI APK
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: rn-ci-android-apk-${{ github.run_id }}
+          path: example/android/app/build/outputs/apk/debug/app-debug.apk
+          retention-days: 1
+
+  android-test-logged-out:
+    name: Android logged-out lane
+    needs: android-build
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    steps:
+      - name: Check out source
+        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version-file: .nvmrc
+
+      - name: Download CI APK
+        uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7
+        with:
+          name: rn-ci-android-apk-${{ github.run_id }}
+          path: artifacts
+
+      - name: Enable KVM group perms
+        # The ubuntu-24.04 runner image has /dev/kvm but the runner user is
+        # not in the kvm group (actions/runner-images#8542). Without this
+        # udev rule the emulator silently falls back to ~10x slower software
+        # emulation and the test watchdog times out before the app starts.
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
+
+      - name: Run logged_out entry on Android emulator
+        uses: reactivecircus/android-emulator-runner@a421e43855164a8197daf9d8d40fe71c6996bb0d # v2.38.0
+        with:
+          api-level: 35
+          arch: x86_64
+          profile: pixel_6
+          disable-animations: true
+          # The action mangles multi-line scripts (only the first line reaches
+          # the shell), so this stays a single line; ci_test_local.sh calls
+          # run_ci_android.sh per entry. run_ci_android.sh captures that entry's
+          # logcat inside the emulator session, before the emulator goes away.
+          script: bash scripts/ci/ci_test_local.sh android logged_out
+        env:
+          # No secrets in this lane: init targets the public demo app key
+          # (same key the old no-login smoke used; also in example/src/env.ts).
+          E2E_APP_KEY: 'easemob-demo#zuoyu'
+          CI_SKIP_BUILD: 1
+          APK_PATH: artifacts/app-debug.apk
+
+      - name: Upload Android logged-out evidence
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: rn-ci-device-android-logged-out-${{ github.run_id }}
+          path: artifacts/ci/
+          if-no-files-found: warn
+          retention-days: 7
+
+  android-test-logged-in:
+    name: Android logged-in lane
+    needs: android-build
+    runs-on: ubuntu-24.04
+    timeout-minutes: 60
+    environment: rn-single-account
+    steps:
+      - name: Check out source
+        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version-file: .nvmrc
+
+      - name: Download CI APK
+        uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7
+        with:
+          name: rn-ci-android-apk-${{ github.run_id }}
+          path: artifacts
+
+      - name: Enable KVM group perms
+        # The ubuntu-24.04 runner image has /dev/kvm but the runner user is
+        # not in the kvm group (actions/runner-images#8542). Without this
+        # udev rule the emulator silently falls back to ~10x slower software
+        # emulation and the test watchdog times out before the app starts.
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
+
+      - name: Run logged-in entries on Android emulator
+        uses: reactivecircus/android-emulator-runner@a421e43855164a8197daf9d8d40fe71c6996bb0d # v2.38.0
+        with:
+          api-level: 35
+          arch: x86_64
+          profile: pixel_6
+          disable-animations: true
+          # Single-line script (see the logged-out lane). ci_test_local.sh
+          # fetches fresh app/user tokens host-side from the E2E_* secrets
+          # (user tokens expire in ~24h and cannot be stored) and provisions
+          # the contact peer, then loops the four logged-in entries. The
+          # on-device ci_run.json holds credentials; run_ci_android.sh deletes
+          # it via DEVICE_CLEANUP_PATHS inside the emulator session.
+          script: bash scripts/ci/ci_test_local.sh android logged_in_base,logged_in_group,logged_in_contact,logged_in_user_info
+        env:
+          E2E_APP_KEY: ${{ secrets.E2E_APP_KEY }}
+          E2E_USER_ID: ${{ secrets.E2E_USER_ID }}
+          E2E_USER_SUFFIX: _rn_android
+          E2E_REST_API: ${{ secrets.E2E_REST_API }}
+          E2E_CLIENT_ID: ${{ secrets.E2E_CLIENT_ID }}
+          E2E_CLIENT_SECRET: ${{ secrets.E2E_CLIENT_SECRET }}
+          CI_SKIP_BUILD: 1
+          APK_PATH: artifacts/app-debug.apk
+
+      - name: Upload Android logged-in evidence
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: rn-ci-device-android-logged-in-${{ github.run_id }}
+          path: artifacts/ci/
+          if-no-files-found: warn
+          retention-days: 7
+
+  ios-build:
+    name: iOS CI build
+    runs-on: macos-26
+    timeout-minutes: 45
+    env:
+      DEVELOPER_DIR: /Applications/Xcode_26.3.app/Contents/Developer
+      RCT_USE_RN_DEP: 1
+      RCT_USE_PREBUILT_RNCORE: 1
+    steps:
+      - name: Check out source
+        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+
+      - name: Setup Node.js and dependencies
+        uses: ./.github/actions/setup
+
+      - name: Cache bundler
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: example/vendor/bundle
+          key: ${{ runner.os }}-bundler-${{ hashFiles('example/Gemfile.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-bundler-
+
+      - name: Install CocoaPods via bundler
+        working-directory: example
+        run: |
+          bundle config set --local path vendor/bundle
+          bundle install
+
+      - name: Cache Pods
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: |
+            example/ios/Pods
+            ~/.cocoapods
+          key: ${{ runner.os }}-pods-${{ hashFiles('example/ios/Podfile.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-pods-
+
+      - name: Generate build files
+        run: yarn gen:version_file && yarn gen:cmake_file && yarn gen:env_file
+
+      - name: Install pods
+        working-directory: example
+        run: bundle exec pod install --project-directory=ios
+
+      - name: Build iOS CI app
+        working-directory: example
+        # CI_RUN is passed as a user-defined build setting so the RN bundle
+        # phase sees it (script phases only inherit build settings, not process
+        # env). FORCE_BUNDLING=1 makes the Debug build embed the JS bundle;
+        # Debug simulator builds normally skip bundling and load from Metro.
+        # The simulator shares the host file system, so the value must match
+        # DEVICE_CI_RUN_PATH in scripts/ci/ci_test_local.sh. Do NOT pass
+        # CODE_SIGNING_ALLOWED=NO: the embedded HyphenateChat.framework must be
+        # ad-hoc signed or dyld refuses to load it on Apple Silicon simulators.
+        run: |
+          env -u API_SCRIPT -u API_CONFIG \
+            xcodebuild -workspace ios/ChatSdkExample.xcworkspace \
+            -scheme ChatSdkExample \
+            -configuration Debug \
+            -sdk iphonesimulator \
+            -derivedDataPath ios/build \
+            FORCE_BUNDLING=1 \
+            CI_RUN=/tmp/rn_ci_run.json \
+            build
+
+      - name: Package CI app
+        working-directory: example
+        # upload-artifact stores only the *contents* of a directory path, which
+        # would strip the ChatSdkExample.app wrapper; artifact download also
+        # drops the executable bit. Zip first so the bundle round-trips intact.
+        run: ditto -c -k --keepParent ios/build/Build/Products/Debug-iphonesimulator/ChatSdkExample.app ios/build/ChatSdkExample.app.zip
+
+      - name: Upload CI app
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: rn-ci-ios-app-${{ github.run_id }}
+          path: example/ios/build/ChatSdkExample.app.zip
+          retention-days: 1
+
+  ios-test-logged-out:
+    name: iOS logged-out lane
+    needs: ios-build
+    runs-on: macos-26
+    timeout-minutes: 45
+    env:
+      DEVELOPER_DIR: /Applications/Xcode_26.3.app/Contents/Developer
+    steps:
+      - name: Check out source
+        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version-file: .nvmrc
+
+      - name: Download CI app
+        uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7
+        with:
+          name: rn-ci-ios-app-${{ github.run_id }}
+          path: artifacts
+
+      - name: Run logged_out entry on iOS simulator
+        run: |
+          ditto -x -k artifacts/ChatSdkExample.app.zip artifacts
+          bash scripts/ci/ci_test_local.sh ios logged_out
+        env:
+          # No secrets in this lane: init targets the public demo app key
+          # (same key the old no-login smoke used; also in example/src/env.ts).
+          E2E_APP_KEY: 'easemob-demo#zuoyu'
+          CI_SKIP_BUILD: 1
+          APP_PATH: artifacts/ChatSdkExample.app
+
+      - name: Collect iOS diagnostics after failure
+        if: failure()
+        # Xcode 26 simctl only accepts --output=<path> (equals form) and
+        # pauses on an interactive "Press ENTER" prompt unless stdin is fed.
+        # The archive is written as <path>.tar.gz next to the given path.
+        run: |
+          mkdir -p artifacts
+          echo | xcrun simctl diagnose -b --output=artifacts/diagnose || true
+
+      - name: Upload iOS logged-out evidence
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: rn-ci-device-ios-logged-out-${{ github.run_id }}
+          path: |
+            artifacts/ci/
+            artifacts/*diagnose*.tar.gz
+          if-no-files-found: warn
+          retention-days: 7
+
+  ios-test-logged-in:
+    name: iOS logged-in lane
+    needs: ios-build
+    runs-on: macos-26
+    timeout-minutes: 60
+    env:
+      DEVELOPER_DIR: /Applications/Xcode_26.3.app/Contents/Developer
+    environment: rn-single-account
+    steps:
+      - name: Check out source
+        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version-file: .nvmrc
+
+      - name: Download CI app
+        uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7
+        with:
+          name: rn-ci-ios-app-${{ github.run_id }}
+          path: artifacts
+
+      - name: Run logged-in entries on iOS simulator
+        # ci_test_local.sh fetches fresh app/user tokens host-side from the
+        # E2E_* secrets (user tokens expire in ~24h and cannot be stored) and
+        # provisions the contact peer, then loops the four logged-in entries.
+        # The staged ci_run.json on the host holds credentials; the script
+        # deletes it after every entry and on exit. Stable platform suffixes
+        # isolate each lane's login user and peer while both run in parallel.
+        run: |
+          ditto -x -k artifacts/ChatSdkExample.app.zip artifacts
+          bash scripts/ci/ci_test_local.sh ios logged_in_base,logged_in_group,logged_in_contact,logged_in_user_info
+        env:
+          E2E_APP_KEY: ${{ secrets.E2E_APP_KEY }}
+          E2E_USER_ID: ${{ secrets.E2E_USER_ID }}
+          E2E_USER_SUFFIX: _rn_ios
+          E2E_REST_API: ${{ secrets.E2E_REST_API }}
+          E2E_CLIENT_ID: ${{ secrets.E2E_CLIENT_ID }}
+          E2E_CLIENT_SECRET: ${{ secrets.E2E_CLIENT_SECRET }}
+          CI_SKIP_BUILD: 1
+          APP_PATH: artifacts/ChatSdkExample.app
+
+      - name: Collect iOS diagnostics after failure
+        if: failure()
+        # Xcode 26 simctl only accepts --output=<path> (equals form) and
+        # pauses on an interactive "Press ENTER" prompt unless stdin is fed.
+        # The archive is written as <path>.tar.gz next to the given path.
+        run: |
+          mkdir -p artifacts
+          echo | xcrun simctl diagnose -b --output=artifacts/diagnose || true
+
+      - name: Upload iOS logged-in evidence
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: rn-ci-device-ios-logged-in-${{ github.run_id }}
+          path: |
+            artifacts/ci/
+            artifacts/*diagnose*.tar.gz
+          if-no-files-found: warn
+          retention-days: 7
