@@ -40,13 +40,25 @@ stop_logcat() {
     LOGCAT_PID=""
   fi
 }
-trap stop_logcat EXIT
-
 # Capture the full device log for the whole entry, including install/launch.
 # The app's structured api_test.log is pulled separately by the driver.
 adb logcat -c >/dev/null 2>&1 || true
 adb logcat -v threadtime > "$LOGCAT_LOG" 2>&1 &
 LOGCAT_PID=$!
+
+# Live-render the [APITEST] records from the growing logcat (✅/❌ per case).
+# Pure view layer: assert_ci_run.js stays the only judge. The renderer exits
+# by itself on script.done; the EXIT trap covers early driver exits.
+node "$REPO_ROOT/scripts/ci/render_ci_log.js" "$LOGCAT_LOG" &
+RENDERER_PID=$!
+stop_renderer() {
+  if [ -n "$RENDERER_PID" ]; then
+    kill "$RENDERER_PID" 2>/dev/null || true
+    wait "$RENDERER_PID" 2>/dev/null || true
+    RENDERER_PID=""
+  fi
+}
+trap 'stop_renderer; stop_logcat' EXIT
 
 rc=0
 bash "$REPO_ROOT/scripts/ci/run_device_android.sh" || rc=$?
