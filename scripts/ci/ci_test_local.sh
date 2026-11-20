@@ -46,8 +46,11 @@
 #       supplies the same five values (restApi/appKey/clientId/clientSecret
 #       and accounts[0].id as the user id) and tokens are fetched the same
 #       way (user tokens expire in ~24h, so stored tokens are never reused).
-#   The contact peer is E2E_PEER_ID when set, else "<userId>_ci_peer"; it is
-#   provisioned server-side through the token endpoint (autoCreateUser).
+#   Optional E2E_USER_SUFFIX is appended to the resolved base user id; the
+#   default is empty (existing local behavior). CI uses _rn_android/_rn_ios.
+#   The contact peer is E2E_PEER_ID when set, else "<effectiveUserId>_ci_peer";
+#   an explicit peer id is used unchanged. Both accounts are provisioned
+#   server-side through the token endpoint (autoCreateUser).
 #   A logged_out-only run needs no tokens and triggers no token fetch; it
 #   only needs E2E_APP_KEY (init target — a public demo key is fine, so the
 #   CI logged-out lane runs with no secrets). Without E2E_APP_KEY it falls
@@ -224,7 +227,7 @@ const entry = process.env.CI_ENTRY;
 const config = { appKey: process.env.E2E_APP_KEY };
 if (entry !== 'logged_out') {
   config.accounts = [
-    { id: process.env.E2E_USER_ID, token: process.env.CI_USER_TOKEN },
+    { id: process.env.CI_USER_ID, token: process.env.CI_USER_TOKEN },
   ];
   config.loginToken = process.env.CI_USER_TOKEN;
   config.peerId = process.env.CI_PEER_ID;
@@ -286,13 +289,17 @@ elif [ -z "${E2E_APP_KEY:-}" ]; then
 fi
 
 APP_TOKEN=""
+USER_ID=""
 USER_TOKEN=""
 PEER_ID=""
 if [ "$NEED_TOKENS" = "1" ]; then
+  # Resolve once, after the local-config fallback, and pass complete ids to
+  # the token helper so neither the login user nor the peer is suffixed twice.
+  USER_ID="${E2E_USER_ID}${E2E_USER_SUFFIX:-}"
+  PEER_ID="${E2E_PEER_ID:-${USER_ID}_ci_peer}"
   echo ">> credentials: fetching fresh app/user tokens (host-side only)"
   APP_TOKEN="$(node scripts/ci/fetch_e2e_user_token.js --app)"
-  USER_TOKEN="$(node scripts/ci/fetch_e2e_user_token.js)"
-  PEER_ID="${E2E_PEER_ID:-${E2E_USER_ID}_ci_peer}"
+  USER_TOKEN="$(node scripts/ci/fetch_e2e_user_token.js --user-id "$USER_ID")"
   # Provision the contact peer server-side (autoCreateUser on the token
   # endpoint); the returned peer token is not needed and discarded.
   node scripts/ci/fetch_e2e_user_token.js --user-id "$PEER_ID" >/dev/null
@@ -391,7 +398,8 @@ clear_app_data() {
 write_ci_run_json() {
   local entry="$1" out="$2"
   CI_ENTRY="$entry" CI_REGEX="$REGEX_ARG" CI_OUT="$out" \
-  CI_APP_TOKEN="$APP_TOKEN" CI_USER_TOKEN="$USER_TOKEN" CI_PEER_ID="$PEER_ID" \
+  CI_APP_TOKEN="$APP_TOKEN" CI_USER_ID="$USER_ID" \
+  CI_USER_TOKEN="$USER_TOKEN" CI_PEER_ID="$PEER_ID" \
     node "$WORK_DIR/write_ci_run.js"
   chmod 600 "$out"
 }

@@ -39,4 +39,7 @@ yarn check:circular:dpdm
 echo "==> CI case mapping check"
 node scripts/ci/check_case_mapping.js
 
+echo "==> CI script regression tests"
+yarn test:ci-scripts
+
 echo "==> All quality gates passed"

@@ -14,6 +14,9 @@
 //   E2E_CLIENT_SECRET app client secret
 //   E2E_USER_ID       account user id to fetch a token for (user-token mode
 //                     only, or pass --user-id)
+// Optional environment:
+//   E2E_USER_SUFFIX   appended to E2E_USER_ID in default user-token mode;
+//                     --user-id always supplies the complete id unchanged
 //
 // Output contract: the token is the ONLY stdout line (callers capture it
 // with $(...)); diagnostics go to stderr. Exit code is non-zero on failure.
@@ -28,8 +31,8 @@
 //               (autoCreateUser=true, so the account is created on first use)
 //   --app       app (admin) token only, via grant_type=client_credentials;
 //               the CI REST fixture needs one for server-side preparation
-//   --user-id   fetch a user token for this id instead of E2E_USER_ID (e.g.
-//               to provision a contact peer, which autoCreateUser creates)
+//   --user-id   fetch a user token for this complete id instead of deriving
+//               E2E_USER_ID + E2E_USER_SUFFIX (e.g. to provision a peer)
 
 const MAX_ATTEMPTS = 3;
 const RETRY_INTERVAL_MS = 1000;
@@ -54,7 +57,7 @@ function parseAppKey(appKey) {
 async function postJson(url, body, bearerToken) {
   const headers = {
     'Content-Type': 'application/json',
-    Accept: 'application/json',
+    'Accept': 'application/json',
   };
   if (bearerToken != null) {
     headers.Authorization = `Bearer ${bearerToken}`;
@@ -140,7 +143,10 @@ async function main() {
     E2E_CLIENT_SECRET: requireEnv('E2E_CLIENT_SECRET'),
   };
   const userId =
-    options.userId ?? (options.app ? null : requireEnv('E2E_USER_ID'));
+    options.userId ??
+    (options.app
+      ? null
+      : requireEnv('E2E_USER_ID') + (process.env.E2E_USER_SUFFIX ?? ''));
   let lastError;
   for (let attempt = 1; attempt <= MAX_ATTEMPTS; attempt++) {
     try {
