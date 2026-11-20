@@ -345,7 +345,9 @@ export async function runCiSuites(
     results.push(result);
     log('ci.case.result', {
       entry,
+      suite: result.suite,
       caseId: result.caseId,
+      description: result.description,
       status: result.status,
       durationMs: result.durationMs,
       ...(result.error != null ? { error: result.error } : {}),
