@@ -28,8 +28,6 @@ stop_sim_log() {
     SIM_LOG_PID=""
   fi
 }
-trap stop_sim_log EXIT
-
 # Capture the app process's os_log output for the whole entry. The app's
 # structured api_test.log is copied separately by the driver.
 xcrun simctl spawn "$DEVICE_UDID" log stream --style compact --level debug \
@@ -40,5 +38,19 @@ if ! kill -0 "$SIM_LOG_PID" 2>/dev/null; then
   echo "warning: could not start simulator log stream; see $SIM_LOG" >&2
   SIM_LOG_PID=""
 fi
+
+# Live-render the [APITEST] records from the growing simulator log (✅/❌ per
+# case). Pure view layer: assert_ci_run.js stays the only judge. The renderer
+# exits by itself on script.done; the EXIT trap covers early driver exits.
+node "$REPO_ROOT/scripts/ci/render_ci_log.js" "$SIM_LOG" &
+RENDERER_PID=$!
+stop_renderer() {
+  if [ -n "$RENDERER_PID" ]; then
+    kill "$RENDERER_PID" 2>/dev/null || true
+    wait "$RENDERER_PID" 2>/dev/null || true
+    RENDERER_PID=""
+  fi
+}
+trap 'stop_renderer; stop_sim_log' EXIT
 
 bash "$REPO_ROOT/scripts/ci/run_device_ios.sh"

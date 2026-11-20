@@ -182,6 +182,17 @@ your `testNameRegex` actually matches at least one case — a run with
 
 ## Reading results
 
+- While an entry runs, `scripts/ci/render_ci_log.js` (started by
+  `run_ci_android.sh` / `run_ci_ios.sh` next to the log capture) live-renders
+  the `[APITEST]` records from the growing `logcat.log` / `simulator.log` to
+  stdout: one `✅` / `❌` / `🚫` (blocked) line per finished case plus a final
+  count line. It is a pure view layer — `assert_ci_run.js` remains the only
+  judge. Two reporters: `compact` (the per-case verdict lines above) and
+  `expanded` (every `[APITEST]` line passed through unchanged); resolution is
+  `CI_LOG_REPORTER` > default, where the default is `compact` on GitHub
+  Actions and `expanded` locally (mirroring the Flutter repo's
+  `tool/ci/run_*_test.sh`). To re-render an existing log afterwards:
+  `node scripts/ci/render_ci_log.js --reporter compact <logcat.log|simulator.log>`.
 - The script prints a per-entry PASS/FAIL summary and exits non-zero if any
   entry failed (a failing entry does not abort the remaining ones).
 - Each invocation writes one timestamped run directory:
