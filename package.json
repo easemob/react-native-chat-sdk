@@ -49,7 +49,7 @@
     "test": "jest",
     "test:unit": "jest src/__tests__/unit",
     "test:contract": "jest src/__tests__/contract",
-    "test:ci-scripts": "node --test scripts/ci/test_script_results.js scripts/ci/test_assert_ci_run.js scripts/ci/test_check_case_mapping.js",
+    "test:ci-scripts": "node --test scripts/ci/test_script_results.js scripts/ci/test_assert_ci_run.js scripts/ci/test_check_case_mapping.js scripts/ci/test_e2e_accounts.js",
     "test:coverage": "jest --coverage",
     "report:api": "node scripts/ci/auto_report.js",
     "scan:deprecated": "bash scripts/scan-deprecated.sh",

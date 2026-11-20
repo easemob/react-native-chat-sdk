@@ -168,6 +168,7 @@ jobs:
         env:
           E2E_APP_KEY: ${{ secrets.E2E_APP_KEY }}
           E2E_USER_ID: ${{ secrets.E2E_USER_ID }}
+          E2E_USER_SUFFIX: _rn_android
           E2E_REST_API: ${{ secrets.E2E_REST_API }}
           E2E_CLIENT_ID: ${{ secrets.E2E_CLIENT_ID }}
           E2E_CLIENT_SECRET: ${{ secrets.E2E_CLIENT_SECRET }}
@@ -345,15 +346,15 @@ jobs:
         # E2E_* secrets (user tokens expire in ~24h and cannot be stored) and
         # provisions the contact peer, then loops the four logged-in entries.
         # The staged ci_run.json on the host holds credentials; the script
-        # deletes it after every entry and on exit. The console has
-        # multi-device login enabled, so the Android lane may log in at the
-        # same time.
+        # deletes it after every entry and on exit. Stable platform suffixes
+        # isolate each lane's login user and peer while both run in parallel.
         run: |
           ditto -x -k artifacts/ChatSdkExample.app.zip artifacts
           bash scripts/ci/ci_test_local.sh ios logged_in_base,logged_in_group,logged_in_contact,logged_in_user_info
         env:
           E2E_APP_KEY: ${{ secrets.E2E_APP_KEY }}
           E2E_USER_ID: ${{ secrets.E2E_USER_ID }}
+          E2E_USER_SUFFIX: _rn_ios
           E2E_REST_API: ${{ secrets.E2E_REST_API }}
           E2E_CLIENT_ID: ${{ secrets.E2E_CLIENT_ID }}
           E2E_CLIENT_SECRET: ${{ secrets.E2E_CLIENT_SECRET }}
