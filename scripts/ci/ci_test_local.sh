@@ -46,6 +46,10 @@
 #       supplies the same five values (restApi/appKey/clientId/clientSecret
 #       and accounts[0].id as the user id) and tokens are fetched the same
 #       way (user tokens expire in ~24h, so stored tokens are never reused).
+#   After either source is resolved, the REST base is normalized to HTTPS
+#   for both host token requests and device fixtures. The same host/path is
+#   retained; the service must support HTTPS. Never fall back to plaintext
+#   or weaken iOS ATS to work around an HTTP-only environment.
 #   Optional E2E_USER_SUFFIX is appended to the resolved base user id; the
 #   default is empty (existing local behavior). CI uses _rn_android/_rn_ios.
 #   The contact peer is E2E_PEER_ID when set, else "<effectiveUserId>_ci_peer";
@@ -293,6 +297,25 @@ USER_ID=""
 USER_TOKEN=""
 PEER_ID=""
 if [ "$NEED_TOKENS" = "1" ]; then
+  # Node on the host accepts HTTP, but device-side iOS fetch rejects it with
+  # ATS -1022. Resolve one secure base before fetching any credentials so
+  # host requests and every generated ci_run.json cannot diverge.
+  E2E_REST_API="$(node -e '
+let url;
+try {
+  url = new URL(process.env.E2E_REST_API);
+} catch {
+  console.error("error: E2E_REST_API must be an HTTP(S) base URL");
+  process.exit(2);
+}
+if (!["http:", "https:"].includes(url.protocol) || url.username || url.password || url.search || url.hash) {
+  console.error("error: E2E_REST_API must be an HTTP(S) base URL without credentials, query or fragment");
+  process.exit(2);
+}
+url.protocol = "https:";
+process.stdout.write(url.toString().replace(/\/+$/, ""));
+')"
+  export E2E_REST_API
   USER_ID="${E2E_USER_ID}${E2E_USER_SUFFIX:-}"
   PEER_ID="${E2E_PEER_ID:-${USER_ID}_ci_peer}"
   echo ">> credentials: fetching fresh app/user tokens (host-side only)"

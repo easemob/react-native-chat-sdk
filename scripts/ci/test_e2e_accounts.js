@@ -183,7 +183,11 @@ function runEntry(t, options = {}) {
     fs.mkdirSync(path.join(dir, 'example'));
     fs.writeFileSync(
       path.join(dir, 'example/config.local.json'),
-      JSON.stringify(LOCAL_CONFIG)
+      JSON.stringify(
+        typeof options.localConfig === 'object'
+          ? options.localConfig
+          : LOCAL_CONFIG
+      )
     );
     delete env.E2E_CLIENT_SECRET;
   }
@@ -197,10 +201,15 @@ function runEntry(t, options = {}) {
     { cwd: dir, env, encoding: 'utf8', timeout: 30000 }
   );
   assert.equal(result.error, undefined);
-  assert.equal(result.status, 0, result.stdout + result.stderr);
+  assert.equal(
+    result.status,
+    options.expectedStatus ?? 0,
+    result.stdout + result.stderr
+  );
   return {
     requests: readJsonLines(env.ACCOUNT_TEST_REQUESTS),
     runs: readJsonLines(env.ACCOUNT_TEST_RUNS),
+    output: result.stdout + result.stderr,
   };
 }
 
@@ -276,4 +285,74 @@ test('logged_out entry fetches no tokens even when a suffix is present', (t) => 
   });
   assert.deepEqual(requests, []);
   assert.deepEqual(runs[0].config, { appKey: CREDENTIALS.E2E_APP_KEY });
+});
+
+for (const platform of ['android', 'ios']) {
+  test(`${platform} upgrades the resolved REST base before all token and fixture requests`, (t) => {
+    const { requests, runs } = runEntry(t, {
+      platform,
+      entries:
+        'logged_in_base,logged_in_group,logged_in_contact,logged_in_user_info',
+      env: { E2E_REST_API: 'http://unused.invalid/rest///' },
+    });
+    assert.ok(requests.length > 0);
+    for (const request of requests) {
+      assert.equal(
+        request.url,
+        'https://unused.invalid/rest/test-org/test-app/token'
+      );
+    }
+    assert.equal(runs.length, 4);
+    for (const run of runs) {
+      assert.equal(run.config.restApi, 'https://unused.invalid/rest');
+    }
+  });
+}
+
+test('REST HTTPS normalization applies after complete local credential fallback', (t) => {
+  const { requests, runs } = runEntry(t, {
+    platform: 'ios',
+    localConfig: { ...LOCAL_CONFIG, restApi: 'http://local.invalid/' },
+    env: { E2E_REST_API: 'https://unused.invalid/ignored' },
+  });
+  for (const request of requests) {
+    assert.equal(
+      request.url,
+      'https://local.invalid/local-org/local-app/token'
+    );
+  }
+  assert.equal(runs[0].config.restApi, 'https://local.invalid');
+});
+
+test('REST HTTPS normalization preserves an existing secure base and custom port', (t) => {
+  const { requests, runs } = runEntry(t, {
+    platform: 'ios',
+    env: { E2E_REST_API: 'https://unused.invalid:8443/rest/' },
+  });
+  assert.equal(runs[0].config.restApi, 'https://unused.invalid:8443/rest');
+  for (const request of requests) {
+    assert.equal(
+      request.url,
+      'https://unused.invalid:8443/rest/test-org/test-app/token'
+    );
+  }
+});
+
+test('invalid or credential-bearing REST bases fail before token fetch or device execution', (t) => {
+  for (const restApi of [
+    'not-a-url',
+    'ftp://unused.invalid',
+    'https://fixture-client:fixture-secret@unused.invalid',
+    'https://unused.invalid?token=fixture-secret',
+    'https://unused.invalid#fixture-secret',
+  ]) {
+    const { requests, runs, output } = runEntry(t, {
+      env: { E2E_REST_API: restApi },
+      expectedStatus: 2,
+    });
+    assert.deepEqual(requests, []);
+    assert.deepEqual(runs, []);
+    assert.match(output, /E2E_REST_API must be an HTTP\(S\) base URL/);
+    assert.doesNotMatch(output, /fixture-client|fixture-secret/);
+  }
 });

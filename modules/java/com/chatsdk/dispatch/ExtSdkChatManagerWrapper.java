@@ -1,5 +1,7 @@
 package com.chatsdk.dispatch;
 
+import static com.hyphenate.EMError.MESSAGE_INVALID;
+
 import android.util.Log;
 import com.chatsdk.common.ExtSdkCallback;
 import com.chatsdk.common.ExtSdkMethodType;
@@ -238,7 +240,8 @@ public class ExtSdkChatManagerWrapper extends ExtSdkWrapper {
         EMMessage msg = ExtSdkMessageHelper.fromJson(param.getJSONObject("message"));
         EMMessage dbMsg =
             EMClient.getInstance().chatManager().getMessage(param.getJSONObject("message").getString("msgId"));
-        if (ExtSdkWrapper.checkMessageParams(dbMsg, channelName, result)) {
+        if (dbMsg == null) {
+            onError(result, MESSAGE_INVALID, "The message does not exist.");
             return;
         }
         if (msg != null) {
