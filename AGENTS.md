@@ -144,6 +144,7 @@ The `modules/` directory contains native code shared between React Native and Fl
 - After completing a task, making an important decision, or receiving a correction from the user, append an entry to `dailylog/YYYY-MM-DD.md` using the local date. Create the file if it does not exist.
 - Append only; do not modify existing content. Format each entry as: `- HH:MM <what was done or decided>, reason: <...>`.
 - The log may record progress and process.
+- Pure read-only sessions (only querying, reading, or analyzing, with no repository files modified) are not logged; if a read-only analysis produces an adopted conclusion or decision (such as failure attribution or an approach trade-off), record one decision entry without logging the lookup process.
 - Work logs under `dailylog/` are tracked by Git and must not be added to `.gitignore`. When performing a user-authorized Git commit, include the current task's log changes in the same commit. Writing a log entry does not by itself authorize or trigger a commit or push.
 
 ## Testing Discipline
