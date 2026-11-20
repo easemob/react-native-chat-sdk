@@ -3,15 +3,75 @@ import type { ApiEntry } from '../api_entry';
 
 export const groupApis: ApiEntry[] = [
   {
-    name: 'ChatGroupManager.fetchJoinedGroupsFromServer',
+    name: 'ChatGroupManager.fetchGroupInfoWithoutMembersFromServer',
     group: 'ChatGroupManager',
-    description: '从服务器分页获取当前用户加入的群组列表。',
-    paramsTemplate: JSON.stringify({ pageSize: 20, pageNum: 0 }, null, 2),
+    description: '从服务端获取群详情（不含成员列表）。groupId：群 ID。',
+    paramsTemplate: JSON.stringify({ groupId: 'ID' }, null, 2),
     invoke: async (params) => {
-      return ChatClient.getInstance().groupManager.fetchJoinedGroupsFromServer(
-        Number(params.pageSize),
-        Number(params.pageNum)
+      return ChatClient.getInstance().groupManager.fetchGroupInfoWithoutMembersFromServer(
+        String(params.groupId)
       );
+    },
+  },
+  {
+    name: 'ChatGroupManager.createGroupEx',
+    group: 'ChatGroupManager',
+    description:
+      '创建群组。options：{maxCount, inviteNeedConfirm, ext, isDisabled}；' +
+      'groupAvatar/desc/inviteMembers/inviteReason 可选。返回群 JSON（含 groupId）。',
+    paramsTemplate: JSON.stringify(
+      {
+        groupName: 'my group',
+        groupAvatar: '',
+        desc: 'group description',
+        inviteMembers: ['ID'],
+        inviteReason: 'welcome',
+        options: {
+          maxCount: 200,
+          inviteNeedConfirm: false,
+          ext: '',
+          isDisabled: false,
+        },
+      },
+      null,
+      2
+    ),
+    invoke: async (params) => {
+      return ChatClient.getInstance().groupManager.createGroupEx({
+        groupName: String(params.groupName),
+        groupAvatar:
+          params.groupAvatar === undefined || params.groupAvatar === ''
+            ? undefined
+            : String(params.groupAvatar),
+        desc: params.desc === undefined ? undefined : String(params.desc),
+        inviteMembers: (params.inviteMembers ?? []).map(String),
+        inviteReason:
+          params.inviteReason === undefined
+            ? undefined
+            : String(params.inviteReason),
+        options: params.options ?? {},
+      });
+    },
+  },
+  {
+    name: 'ChatGroupManager.destroyGroup',
+    group: 'ChatGroupManager',
+    description:
+      '解散群组（仅群主）。groupId：群 ID。用于 createGroupEx 验证后的清理。',
+    paramsTemplate: JSON.stringify({ groupId: 'ID' }, null, 2),
+    invoke: async (params) => {
+      return ChatClient.getInstance().groupManager.destroyGroup(
+        String(params.groupId)
+      );
+    },
+  },
+  {
+    name: 'ChatGroupManager.getJoinedGroups',
+    group: 'ChatGroupManager',
+    description: '获取当前用户加入的群组列表（本地数据）。无参数。',
+    paramsTemplate: '{}',
+    invoke: async () => {
+      return ChatClient.getInstance().groupManager.getJoinedGroups();
     },
   },
   {

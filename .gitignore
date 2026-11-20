@@ -12,6 +12,7 @@ jsconfig.json
 # Xcode
 #
 build/
+artifacts/
 *.pbxuser
 !default.pbxuser
 *.mode1v3
@@ -395,6 +396,8 @@ $RECYCLE.BIN/
 
 # End of https://www.toptal.com/developers/gitignore/api/windows,macos,linux,reactnative
 example/src/env.ts
+example/config.local.json
+example/config.*.json
 src/version.ts
 *.tgz
 .workbuddy/

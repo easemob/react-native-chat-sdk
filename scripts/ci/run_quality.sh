@@ -30,10 +30,19 @@ yarn lint
 echo "==> Unit tests (with coverage)"
 yarn test:unit --coverage --no-watchman
 
+echo "==> Example CI and agent tests"
+yarn test example/src --no-watchman --runInBand
+
+echo "==> CI script tests"
+yarn test:ci-scripts
+
 echo "==> Contract tests (TS <-> native method names)"
 yarn test:contract --no-watchman
 
 echo "==> Circular dependency check"
 yarn check:circular:dpdm
+
+echo "==> CI case mapping check"
+node scripts/ci/check_case_mapping.js
 
 echo "==> All quality gates passed"
