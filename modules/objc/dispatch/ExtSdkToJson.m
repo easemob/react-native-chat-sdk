@@ -643,7 +643,7 @@
         NSMutableDictionary *opt = [NSMutableDictionary dictionary];
         opt[@"maxCount"] = @(self.settings.maxUsers);
         opt[@"style"] = @(self.settings.style);
-        opt[@"inviteNeedConfirm"] = @([self isMemberAllowToInvite]);
+        opt[@"inviteNeedConfirm"] = @(self.settings.IsInviteNeedConfirm);
         opt[@"ext"] = self.settings.ext;
         opt[@"isDisabled"] = @(self.isDisabled);
         opt[@"isMemberOnly"] = @([self isMemberOnly]);

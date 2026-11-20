@@ -246,7 +246,11 @@
     if ([self checkMessageParams:result withMethodType:aChannelName withMessage:msg]) {
         return;
     }
-    if ([self checkMessageParams:result withMethodType:aChannelName withMessage:dbMsg]) {
+    if (dbMsg == nil) {
+        [self onResult:result
+            withMethodType:aChannelName
+                 withError:[EMError errorWithDescription:@"The message does not exist." code:EMErrorMessageInvalid]
+                withParams:nil];
         return;
     }
 
