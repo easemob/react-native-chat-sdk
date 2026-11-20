@@ -185,7 +185,8 @@ your `testNameRegex` actually matches at least one case — a run with
 - The script prints a per-entry PASS/FAIL summary and exits non-zero if any
   entry failed (a failing entry does not abort the remaining ones).
 - Each invocation writes one timestamped run directory:
-  `artifacts/ci/<UTC timestamp>/`. The run summary and console log are
+  `artifacts/ci/<local timestamp>/` (`YYYYMMDDHHMMSS`, host timezone).
+  Recorded ISO timestamps remain UTC. The run summary and console log are
   scoped to the platform: `<platform>/summary.md`, `<platform>/report.json`, `<platform>/run.json` and `<platform>/runner.log`.
 - Per-entry artifacts live under `<platform>/<suite>/`: `api_test.log` (the app's
   structured log), `logcat.log` on Android or `simulator.log` on iOS (the raw

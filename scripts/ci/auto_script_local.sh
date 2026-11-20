@@ -35,7 +35,7 @@ cd "$REPO_ROOT"
 # Direct invocation (without auto_report.js) still gets a timestamped artifact
 # directory. auto_report.js always overrides OUT_LOG with its own run dir.
 if [ -z "${OUT_LOG:-}" ]; then
-  AUTO_RUN_STAMP="$(date -u +%Y%m%d%H%M%S)"
+  AUTO_RUN_STAMP="$(date +%Y%m%d%H%M%S)"
   OUT_DIR="$REPO_ROOT/artifacts/single/$AUTO_RUN_STAMP/$PLATFORM"
   OUT_LOG="$OUT_DIR/api_test.log"
   mkdir -p "$OUT_DIR"

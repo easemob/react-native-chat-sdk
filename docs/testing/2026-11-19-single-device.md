@@ -126,7 +126,7 @@ yarn report:api \
 
 ## 报告
 
-报告目录为 `artifacts/single/<UTC timestamp>/<platform>/`：目录名只有时间戳，平台是下一级子目录；Android 和 iOS 即使同时运行也不会互相覆盖。SDK 版本记录在 `run.json`/`report.json` 的 `sdkVersion` 字段，不再作为目录层级；当前 SDK 版本不等于脚本文件名里的版本。设备、脚本和 commit 也记录在 `run.json` 里。
+报告目录为 `artifacts/single/<local timestamp>/<platform>/`：目录名使用运行机器本地时间，格式为 `YYYYMMDDHHMMSS`，报告中的 ISO 时间字段仍保留 UTC。平台是下一级子目录；Android 和 iOS 即使同时运行也不会互相覆盖。SDK 版本记录在 `run.json`/`report.json` 的 `sdkVersion` 字段，不再作为目录层级；当前 SDK 版本不等于脚本文件名里的版本。设备、脚本和 commit 也记录在 `run.json` 里。
 
 | 文件                     | 内容                                                                   |
 | ------------------------ | ---------------------------------------------------------------------- |
@@ -138,7 +138,7 @@ yarn report:api \
 | `issues.md`              | 从失败/崩溃中提取的问题候选，便于转工单。                              |
 | `crash.log`              | 采集到的崩溃证据（如有）。                                             |
 
-对比模式输出 `artifacts/single/<UTC timestamp>/comparison.md`，整个对比也只占一个时间戳目录；按步骤 id 对齐两端的 status、参数语义和返回结构，并统计不匹配项。报告在 `artifacts/` 下，默认不进 Git；对外分享前仍要确认脱敏结果不含账号、token 或设备 ID。
+对比模式输出 `artifacts/single/<local timestamp>/comparison.md`，整个对比也只占一个时间戳目录；按步骤 id 对齐两端的 status、参数语义和返回结构，并统计不匹配项。报告在 `artifacts/` 下，默认不进 Git；对外分享前仍要确认脱敏结果不含账号、token 或设备 ID。
 
 ## 已知限制
 

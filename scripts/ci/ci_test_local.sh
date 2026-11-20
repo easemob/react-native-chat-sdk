@@ -12,7 +12,7 @@
 # assert via assert_ci_run.js) -> aggregate exit code. A failing entry does
 # NOT abort the loop.
 #
-# Output: one artifacts/ci/<UTC timestamp>/ directory per invocation. The
+# Output: one artifacts/ci/<local timestamp>/ directory per invocation. The
 # run-level runner.log and summary.md live under <platform>/, next to the
 # suite directories, so Android and iOS invocations that share CI_RUN_ID do
 # not overwrite each other:
@@ -70,7 +70,7 @@
 #   SKIP_POD_INSTALL     when "1", skip the iOS Pods refresh that normally
 #                        runs before every iOS build (local builds default to
 #                        refreshing; CI test jobs skip the build step entirely)
-#   CI_RUN_ID            optional fixed run id (default: UTC timestamp at start)
+#   CI_RUN_ID            optional fixed run id (default: local timestamp at start)
 #                        (the run directory is artifacts/ci/<CI_RUN_ID>)
 #
 # Device selection: Android goes through select_android_device.sh (requires
@@ -131,7 +131,7 @@ fi
 
 CI_ENTRY_TIMEOUT_S="${CI_ENTRY_TIMEOUT_S:-600}"
 REPORT_DIR="$REPO_ROOT/artifacts/ci"
-RUN_ID="${CI_RUN_ID:-$(date -u +%Y%m%d%H%M%S)}"
+RUN_ID="${CI_RUN_ID:-$(date +%Y%m%d%H%M%S)}"
 RUN_DIR="$REPORT_DIR/$RUN_ID"
 PLATFORM_DIR="$RUN_DIR/$PLATFORM"
 RUN_STARTED_AT="$(date -u +%Y-%m-%dT%H:%M:%SZ)"

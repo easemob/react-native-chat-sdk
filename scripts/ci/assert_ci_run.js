@@ -185,10 +185,16 @@ function evaluateCiRun(entries, mapping, platform, entry) {
 }
 
 function timestamp(date) {
-  return date
-    .toISOString()
-    .replace(/[^0-9]/g, '')
-    .slice(0, 14);
+  return [
+    String(date.getFullYear()).padStart(4, '0'),
+    ...[
+      date.getMonth() + 1,
+      date.getDate(),
+      date.getHours(),
+      date.getMinutes(),
+      date.getSeconds(),
+    ].map((part) => String(part).padStart(2, '0')),
+  ].join('');
 }
 
 function resultLine(item) {
