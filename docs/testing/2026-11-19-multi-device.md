@@ -185,7 +185,7 @@ dart run bin/cli.dart report --run-id <runId>
 `scripts/ci/multi.sh` 的 `all`/`run`/`report` 会在命令结束后把本轮产物收集到 RN 仓：
 
 ```text
-artifacts/multi/<UTC timestamp>/<platform>/
+artifacts/multi/<local timestamp>/<platform>/
   console.log                 # 本次调用的终端输出
   run-meta.json               # runId、平台、源目录
   upgrade-report.md / .json
@@ -197,7 +197,7 @@ artifacts/multi/<UTC timestamp>/<platform>/
   tmp/                        # orchestrator 的 run.log、issue-*.md、原始证据
 ```
 
-目录名只有 UTC 时间戳，平台是下一级子目录，因此 Android/iOS 不会互相覆盖。源产物仍在 `<IMTO>/multi/reports/<runId>/`；`build/<runId>/`（APK 和构建缓存，常见上百 MB）**不会**复制，需要时到 orchestrator checkout 取。以下文件描述源目录：
+目录名使用运行机器本地时间，格式为 `YYYYMMDDHHMMSS`，报告中的 ISO 时间字段仍保留 UTC。平台是下一级子目录，因此 Android/iOS 不会互相覆盖。源产物仍在 `<IMTO>/multi/reports/<runId>/`；`build/<runId>/`（APK 和构建缓存，常见上百 MB）**不会**复制，需要时到 orchestrator checkout 取。以下文件描述源目录：
 
 - `upgrade-report.md`：先看这份，含跨端结论与不匹配摘要；
 - `upgrade-report.json`、`summary.md`、`statistics.csv`、`process.json`；

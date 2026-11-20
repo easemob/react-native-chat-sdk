@@ -4,6 +4,7 @@ const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const path = require('node:path');
 const test = require('node:test');
+const { execFileSync } = require('node:child_process');
 const {
   collectStepReferences,
   evaluateScript,
@@ -19,6 +20,102 @@ const {
 } = require('./auto_report');
 
 const REPO_ROOT = path.resolve(__dirname, '../..');
+
+function localTimestamp(date, timeZone) {
+  const parts = Object.fromEntries(
+    new Intl.DateTimeFormat('en-GB', {
+      timeZone,
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit',
+      hourCycle: 'h23',
+    })
+      .formatToParts(date)
+      .map(({ type, value }) => [type, value])
+  );
+  return ['year', 'month', 'day', 'hour', 'minute', 'second']
+    .map((part) => parts[part])
+    .join('');
+}
+
+for (const [script, variable, override] of [
+  ['ci_test_local.sh', 'RUN_ID', 'CI_RUN_ID'],
+  ['auto_script_local.sh', 'AUTO_RUN_STAMP', null],
+  ['multi.sh', 'RUN_STAMP', 'MULTI_RUN_STAMP'],
+]) {
+  const source = fs.readFileSync(path.join(__dirname, script), 'utf8');
+  const assignment = source.match(new RegExp(`^\\s*${variable}=.*$`, 'm'))?.[0];
+
+  test(`${script} uses host local time for artifact directory names`, () => {
+    assert.ok(assignment, `Missing ${variable} assignment`);
+    for (const timeZone of ['UTC', 'Asia/Shanghai', 'America/Los_Angeles']) {
+      const before = localTimestamp(new Date(), timeZone);
+      const actual = execFileSync(
+        'bash',
+        ['-c', `${assignment}\nprintf '%s' "$${variable}"`],
+        {
+          encoding: 'utf8',
+          env: {
+            ...process.env,
+            TZ: timeZone,
+            CI_RUN_ID: '',
+            MULTI_RUN_STAMP: '',
+          },
+        }
+      );
+      const after = localTimestamp(new Date(), timeZone);
+      assert.match(actual, /^\d{14}$/);
+      assert.ok(
+        actual >= before && actual <= after,
+        `${script} in ${timeZone}: ${actual} is outside ${before}..${after}`
+      );
+    }
+  });
+
+  if (override) {
+    test(`${script} preserves an explicit run id`, () => {
+      assert.equal(
+        execFileSync(
+          'bash',
+          ['-c', `${assignment}\nprintf '%s' "$${variable}"`],
+          {
+            encoding: 'utf8',
+            env: { ...process.env, [override]: 'custom-run-id' },
+          }
+        ),
+        'custom-run-id'
+      );
+    });
+  }
+}
+
+for (const script of ['auto_report.js', 'assert_ci_run.js']) {
+  test(`${script} formats artifact timestamps in host local time`, () => {
+    const source = fs.readFileSync(path.join(__dirname, script), 'utf8');
+    const formatter = source.match(
+      /function timestamp\(date\) \{[\s\S]*?\n\}/
+    )?.[0];
+    assert.ok(formatter, 'Missing timestamp formatter');
+    for (const [timeZone, expected] of [
+      ['UTC', '20261120000533'],
+      ['Asia/Shanghai', '20261120080533'],
+      ['America/Los_Angeles', '20261119160533'],
+    ]) {
+      const actual = execFileSync(
+        process.execPath,
+        [
+          '-e',
+          `${formatter}\nprocess.stdout.write(timestamp(new Date('2026-11-20T00:05:33Z')));`,
+        ],
+        { encoding: 'utf8', env: { ...process.env, TZ: timeZone } }
+      );
+      assert.equal(actual, expected, `${script} in ${timeZone}`);
+    }
+  });
+}
 
 function readScript(name) {
   return JSON.parse(
