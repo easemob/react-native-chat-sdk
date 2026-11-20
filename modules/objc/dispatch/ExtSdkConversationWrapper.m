@@ -141,7 +141,12 @@
                           if ([weakSelf checkMessageParams:result withMethodType:aChannelName withMessage:msg]) {
                               return;
                           }
-                          if ([weakSelf checkMessageParams:result withMethodType:aChannelName withMessage:dbMsg]) {
+                          if (dbMsg == nil) {
+                              // Match the Flutter SDK contract for updating an absent message.
+                              [weakSelf onResult:result
+                                  withMethodType:aChannelName
+                                       withError:[EMError errorWithDescription:@"The message does not exist." code:500]
+                                      withParams:nil];
                               return;
                           }
                           [self mergeMessage:msg withDBMessage:dbMsg];

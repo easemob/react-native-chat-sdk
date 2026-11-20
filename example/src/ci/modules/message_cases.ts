@@ -418,12 +418,6 @@ export function registerMessageCases(ctx: CiCaseContext): void {
         await ctx.rest.contactIds(peerId),
         'peer contacts after ensuring friendship'
       );
-      await waitForCi(
-        'local contacts include the peer',
-        () => ctx.client.contactManager.getAllContactsFromDB(),
-        (ids) => ids.includes(peerId)
-      );
-
       const run = uniqueCiName('msg', 'send');
       const message = ChatMessage.createTextMessage(peerId, run);
       message.attributes = { ciCase: 'RN-MSG-002', run };
@@ -954,7 +948,7 @@ export function registerMessageCases(ctx: CiCaseContext): void {
   // and the stored message keeps its original ID and content.
   ciTest(
     'RN-MSG-010',
-    'updating a missing message reports 1 without inserting it',
+    'updating a missing message reports 500 without inserting it',
     async () => {
       const { userId } = requireMessageLogin(ctx);
       const { conversationId, stored, absent } = await prepareStoredMessage(
@@ -963,8 +957,7 @@ export function registerMessageCases(ctx: CiCaseContext): void {
         'update_missing'
       );
       assertNull(await manager.getMessage(absent.msgId));
-      // Flutter reports 500; RN 5.1.0 maps this condition to 1.
-      await expectCiError(() => manager.updateMessage(absent), 1);
+      await expectCiError(() => manager.updateMessage(absent), 500);
       assertNull(
         await manager.getMessage(absent.msgId),
         'the failed update inserted the missing message'

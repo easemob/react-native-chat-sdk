@@ -287,7 +287,9 @@ public class ExtSdkChatManagerWrapper extends ExtSdkWrapper {
         EMMessage msg = ExtSdkMessageHelper.fromJson(param.getJSONObject("message"));
         EMMessage dbMsg =
             EMClient.getInstance().chatManager().getMessage(param.getJSONObject("message").getString("msgId"));
-        if (ExtSdkWrapper.checkMessageParams(dbMsg, channelName, result)) {
+        if (dbMsg == null) {
+            // Match the Flutter SDK contract for updating an absent message.
+            ExtSdkWrapper.onError(result, 500, "The message does not exist.");
             return;
         }
         if (msg != null) {

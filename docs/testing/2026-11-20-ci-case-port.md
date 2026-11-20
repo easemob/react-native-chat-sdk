@@ -81,3 +81,11 @@ Flutter SDK 的 CI 用例位于 `im_flutter_sdk/example/integration_test/`，共
   - `logged_in_user_info`：2/2 通过，run `20261119233229`。
 
 本轮没有修改 harness、entry、构建脚本或 native，也没有提交代码；iOS 未做设备回归。
+
+## 后续修正（未提交）
+
+- 2026-11-20：`updateMessage` 更新不存在的消息时，Android/iOS native wrapper 统一返回 `500`，与 Flutter SDK 契约一致；`RN-CONV-012`、`RN-MSG-010` 的断言从 `1` 改回 `500`。
+  - Android：`ExtSdkChatManagerWrapper.java`、`ExtSdkConversationWrapper.java` 对 `dbMsg == null` 直接返回 `500`。
+  - iOS：`ExtSdkChatManagerWrapper.m`、`ExtSdkConversationWrapper.m` 对 `dbMsg == nil` 直接返回 `500`。
+  - 验证：Android `logged_in_base` 41/41（run `20261120000533`）；iOS `logged_in_base` 41/41（run `20261120000532`）。
+- `RN-MSG-002` 原先等待“本地联系人包含 peer”，但 `logged_in_base` 的 `dataSyncType` 只有 Conversations，iOS 冷启动本地库没有该联系人；Android 只是被历史数据掩盖。已移除该本地联系人前置，保留 REST 好友关系准备和消息发送回调断言。

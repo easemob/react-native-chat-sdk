@@ -826,12 +826,11 @@ export function registerConversationCases(ctx: CiCaseContext): void {
     }
   );
 
-  // Port of FL-CONV-009: updating a message that was never stored fails and
-  // does not change the stored message set. Flutter reports 500; the RN 5.1.0
-  // native layer maps the same condition to 1 ("The message does not exist").
+  // Port of FL-CONV-009: updating a message that was never stored fails with
+  // 500 and does not change the stored message set.
   ciTest(
     'RN-CONV-012',
-    'updating an absent message throws 1 and leaves storage unchanged',
+    'updating an absent message throws 500 and leaves storage unchanged',
     async () => {
       const manager = ctx.client.chatManager;
       const fixture = await prepareConversation(ctx, 'absent_update');
@@ -842,7 +841,10 @@ export function registerConversationCases(ctx: CiCaseContext): void {
 
       assertEqual(await fixture.conversation.getMessageCount(), 1);
       assertNull(await manager.getMessage(absent.msgId));
-      await expectCiError(() => fixture.conversation.updateMessage(absent), 1);
+      await expectCiError(
+        () => fixture.conversation.updateMessage(absent),
+        500
+      );
       assertNull(await manager.getMessage(absent.msgId));
       assertEqual(await fixture.conversation.getMessageCount(), 1);
 
