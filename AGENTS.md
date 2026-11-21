@@ -68,7 +68,7 @@ yarn example ios        # run on iOS
 
 ## CI
 
-- GitHub Actions workflow: `.github/workflows/ci.yml`, triggered by pull requests (any base branch) and manual dispatch — not by push.
+- GitHub Actions workflow: `.github/workflows/ci.yml`, triggered by pull requests (any base branch), by pushes to the long-term lines (`dev`/`1.x`/`5.x`, docs-only paths ignored — merge-forward lands without a PR and lefthook skips merge commits, so this is the only automated gate on merged trees), and manual dispatch. Pushes to version branches (1.21.0, 5.1.0) do not trigger it.
 - Jobs: `quality` (runs `scripts/ci/run_quality.sh`, uploads coverage), `android-build` (JDK 17 + Gradle cache + deprecated API scan), `ios-build` (bundler-managed CocoaPods + Pods cache + deprecated API scan).
 - Keep CI logic in scripts rather than inline YAML so local runs match CI (`scripts/ci/run_quality.sh`).
 - Toolchain versions are pinned by the repo itself: Node via `.nvmrc`, Yarn via `.yarnrc.yml` `yarnPath`, CocoaPods via `example/Gemfile.lock` (always `bundle exec`).
