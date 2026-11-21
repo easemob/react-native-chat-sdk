@@ -49,7 +49,7 @@ static NSString *const TAG = @"ExtSdkApiFlutter";
     NSLog(@"%@: handleMethodCall:", TAG);
     id<NSObject> params = call.arguments;
     id<ExtSdkCallbackObjc> callback = [[ExtSdkCallbackObjcFlutter alloc] init:result];
-    __weak typeof(self) weakself = self; // TODO: 后续解决 mm文件无法使用typeof关键字: 使用分类方式解决
+    __weak typeof(self) weakself = self; // TODO: fix later — the typeof keyword is unavailable in .mm files; resolve it with a category
     [ExtSdkThreadUtilObjc asyncExecute:^{      
       [weakself callSdkApi:call.method withParams:params withCallback:callback];
     }];

@@ -853,7 +853,7 @@
 + (EMMessageBody *)fromJsonObject:(NSDictionary *)aJson {
     EMTextMessageBody *body = [[EMTextMessageBody alloc] initWithText:aJson[@"content"]];
     (aJson[@"targetLanguageCodes"] && [aJson[@"targetLanguageCodes"] count] > 0) ? (body.targetLanguages = aJson[@"targetLanguageCodes"]) : nil;
-    // 给底层的时候不需要设置
+    // No need to set it when passing to the native layer
     return body;
 }
 

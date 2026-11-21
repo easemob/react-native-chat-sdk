@@ -2,7 +2,7 @@
 //  ExtSdkPresenceManagerWrapper.h
 //  im_flutter_sdk
 //
-//  Created by 佐玉 on 2022/5/4.
+//  Created by Zuo Yu on 2022/5/4.
 //
 
 #import "ExtSdkWrapper.h"

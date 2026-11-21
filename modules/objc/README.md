@@ -1,2 +1,2 @@
-# 说明
-这里主要放置oc语言的代码。  
+# Overview
+This directory mainly contains Objective-C code.  

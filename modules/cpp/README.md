@@ -1,32 +1,32 @@
-# 简要说明
-C/C++语言代码。  
-源码是项目的组成部分之一。  
+# Overview
+C/C++ source code.  
+The sources are a part of the project.  
 
-# 使用说明
-请在使用之前运行 `generate.sh` 脚本。
+# Usage
+Run the `generate.sh` script before use.
 
-# 目录介绍
+# Directory Layout
 
-## 按照平台
+## By platform
 ### android
-    存放android平台特有的C++代码。例如：android下的日志打印功能，使用标准C++是无法完成的。
+    Android-specific C++ code. For example, log printing on Android cannot be done with standard C++.
 ### ios
-    存放ios平台特有的C++代码。
+    iOS-specific C++ code.
 ### win
-    存放win平台特有的C++代码。
+    Windows-specific C++ code.
 ### mac
-    存放mac平台特有的C++代码。
+    macOS-specific C++ code.
 
-## 按照语言
+## By language
 ### cpp
-    存放对接标准C++代码的部分。
+    The part that interfaces with standard C++ code.
 ### java
-    存放对接jni相关的C++代码部分。
+    The part that interfaces with JNI-related C++ code.
 ### objc
-    存放对接objc相关C++混编代码部分。
+    The part that interfaces with Objective-C mixed C++ code.
 
-## 通用部分
+## Common
 ### common
-    存放通用代码部分。定义对象、接口定义、监听器定义等。
+    Common code: object definitions, interface definitions, listener definitions, etc.
 ### core
-    存放扩展sdk的主要内容的代码。
+    The main code of the extension SDK.

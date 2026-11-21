@@ -90,13 +90,13 @@ const std::string ExtSdkMethodType::clearAllMessages = "clearAllMessages";
 const std::string ExtSdkMethodType::insertMessage = "insertMessage";
 const std::string ExtSdkMethodType::updateConversationMessage = "updateConversationMessage";
 
-// 根据起始消息id获取消息
+// Fetch messages starting from the specified message id
 const std::string ExtSdkMethodType::loadMsgWithStartId = "loadMsgWithStartId";
-// 根据关键字获取消息
+// Fetch messages by keyword
 const std::string ExtSdkMethodType::loadMsgWithKeywords = "loadMsgWithKeywords";
-// 根据消息类型获取消息
+// Fetch messages by message type
 const std::string ExtSdkMethodType::loadMsgWithMsgType = "loadMsgWithMsgType";
-// 通过时间获取消息
+// Fetch messages by timestamp
 const std::string ExtSdkMethodType::loadMsgWithTime = "loadMsgWithTime";
 
 // EMChatRoomManager

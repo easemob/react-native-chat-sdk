@@ -37,8 +37,8 @@
 }
 
 - (id)copyWithZone:(nullable NSZone *)zone {
-    // _result 浅拷贝
-    // ExtSdkCallbackObjcFlutter 深拷贝
+    // _result is shallow-copied
+    // ExtSdkCallbackObjcFlutter is deep-copied
     ExtSdkCallbackObjcFlutter *clone = [[ExtSdkCallbackObjcFlutter alloc] init:_result];
     return clone;
 }

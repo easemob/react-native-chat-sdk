@@ -2,7 +2,7 @@
 //  ExtSdkChatManagerWrapper.m
 //
 //
-//  Created by 杜洁鹏 on 2019/10/8.
+//  Created by Du Jiepeng on 2019/10/8.
 //
 
 #import "ExtSdkChatManagerWrapper.h"
@@ -1275,7 +1275,7 @@
 - (void)messageStatusDidChange:(EMChatMessage *)aMessage withError:(EMError *)aError {
 }
 
-// TODO: 安卓未找到对应回调
+// TODO: no corresponding callback found on Android
 - (void)messageAttachmentStatusDidChange:(EMChatMessage *)aMessage withError:(EMError *)aError {
 }
 

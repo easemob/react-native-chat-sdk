@@ -11,7 +11,7 @@
 
 EXT_SDK_NAMESPACE_BEGIN
 
-/// 分发接口
+/// Dispatch interface
 class ExtSdkApi {
 public:
     virtual ~ExtSdkApi() {}

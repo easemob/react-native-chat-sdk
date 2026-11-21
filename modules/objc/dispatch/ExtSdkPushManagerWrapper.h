@@ -2,7 +2,7 @@
 //  ExtSdkPushManagerWrapper.h
 //  im_flutter_sdk
 //
-//  Created by 东海 on 2020/5/7.
+//  Created by Dong Hai on 2020/5/7.
 //
 
 #import "ExtSdkWrapper.h"

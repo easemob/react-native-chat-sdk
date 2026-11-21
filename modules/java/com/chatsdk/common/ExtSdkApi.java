@@ -5,38 +5,38 @@ import androidx.annotation.Nullable;
 
 public interface ExtSdkApi {
     /**
-     * 初始化SDK
-     * @param config 配置信息，必填
+     * Initializes the SDK.
+     * @param config The configuration. Required.
      */
     void init(@NonNull Object config);
 
     /**
-     * 反初始化SDK
-     * @param params 选填
+     * Uninitializes the SDK.
+     * @param params Optional.
      */
     void unInit(@Nullable Object params);
 
     /**
-     * 添加监听器
+     * Adds a listener.
      * @param listener
      */
     void addListener(@NonNull ExtSdkListener listener);
 
     /**
-     * 删除监听器
+     * Removes a listener.
      * @param listener
      */
     void delListener(@NonNull ExtSdkListener listener);
 
     /**
-     * 调用者: 适配层接口
-     * 被调用者: C++接口
-     * 不同框架(flutter, react-native, unity etc.)参数和回调可能都不相同。
-     * 向服务器请求类型的调用请使用此api
+     * Caller: the adapter-layer interface.
+     * Callee: the C++ interface.
+     * Parameters and callbacks may differ across frameworks (flutter, react-native, unity etc.).
+     * Use this api for calls that send requests to the server.
      *
-     * @param methodType 必填，具体方法类型名称
-     * @param params     选填，后续确定。可以是空，map，json, pb字符串等。
-     * @param callback   选填，不关注结果可以为空
+     * @param methodType Required. The concrete method type name.
+     * @param params     Optional, to be defined. Can be empty, a map, json, a pb string, etc.
+     * @param callback   Optional; can be null if the result is not needed.
      */
     void callSdkApi(@NonNull String methodType, @Nullable Object params, @NonNull ExtSdkCallback callback);
 }

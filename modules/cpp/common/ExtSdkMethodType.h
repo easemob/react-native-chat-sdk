@@ -96,13 +96,13 @@ public:
     static const std::string insertMessage;
     static const std::string updateConversationMessage;
 
-    // 根据起始消息id获取消息
+    // Fetch messages starting from the specified message id
     static const std::string loadMsgWithStartId;
-    // 根据关键字获取消息
+    // Fetch messages by keyword
     static const std::string loadMsgWithKeywords;
-    // 根据消息类型获取消息
+    // Fetch messages by message type
     static const std::string loadMsgWithMsgType;
-    // 通过时间获取消息
+    // Fetch messages by timestamp
     static const std::string loadMsgWithTime;
 
     // EMChatRoomManager

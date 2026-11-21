@@ -813,7 +813,7 @@
 
 #pragma mark - EMChatroom Pack Method
 
-// 聊天室成员获取结果转字典
+// Convert the chatroom member fetch result to a dictionary
 - (NSDictionary *)dictionaryWithCursorResult:(EMCursorResult *)cursorResult {
     NSDictionary *resultDict =
         @{@"data" : cursorResult.list, @"cursor" : cursorResult.cursor};
