@@ -73,12 +73,35 @@ yarn example ios        # run on iOS
 - Keep CI logic in scripts rather than inline YAML so local runs match CI (`scripts/ci/run_quality.sh`).
 - Toolchain versions are pinned by the repo itself: Node via `.nvmrc`, Yarn via `.yarnrc.yml` `yarnPath`, CocoaPods via `example/Gemfile.lock` (always `bundle exec`).
 - CI does not use corepack (it ignores `yarnPath` and downloads Yarn from repo.yarnpkg.com, a network failure point); `.github/actions/setup` puts a shim for the checked-in `.yarn/releases/yarn-*.cjs` on PATH instead.
-- Device regression workflow: `.github/workflows/ci-device.yml`, manual dispatch only. It builds the CI bundle once per platform, then runs the fixed `logged_out` and logged-in entries through `scripts/ci/ci_test_local.sh`; it does not add a default-branch schedule.
+- Device regression workflow: `.github/workflows/ci-device.yml`, triggered by a daily schedule (19:37 UTC; the cron lives in the shared workflow file but fires only from the default branch `dev`, covering the 1 line — the 5.x line's daily run is dispatched by the dev-only `.github/workflows/ci-dispatch.yml`, see "Git Branch Management (Iron Rules)" rule 8) and by manual dispatch. It builds the CI bundle once per platform, then runs the fixed `logged_out` and logged-in entries through `scripts/ci/ci_test_local.sh`.
 - Logged-in device lanes set `E2E_USER_SUFFIX` to `_rn_android` / `_rn_ios`, deriving separate login users and default peers (`<effectiveUserId>_ci_peer`) to isolate server-side state while running in parallel. Locally the suffix defaults to empty and applies after credential fallback; explicit `E2E_PEER_ID` and token-helper `--user-id` values are complete ids used unchanged.
 - Device cases live in `example/src/ci/modules/` and are checked against `docs/ci/native-case-mapping.json`. Local runs match CI: `bash scripts/ci/ci_test_local.sh <android|ios> [entries]`. The old `device-smoke.yml` and `single-account-nightly.yml` workflows and their replacement scripts were removed during the 1.21.0 backport.
 - CI test jobs do not call the drivers directly: they go through `scripts/ci/run_ci_android.sh` / `run_ci_ios.sh` (thin wrappers around the drivers; the Android one exists because android-emulator-runner's `script:` input mangles multi-line scripts — only the first line reaches the shell — and it also handles on-device cleanup plus the logcat dump). Both wrappers also start `scripts/ci/render_ci_log.js` next to the log capture: it live-renders the `[APITEST]` records to stdout as ✅/❌/🚫 per-case lines (`compact` reporter, the CI default) or passes every `[APITEST]` line through (`expanded`, the local default; override with `CI_LOG_REPORTER`). It is a pure view layer — assertions stay with `assert_ci_run.js`. The iOS build jobs zip the `.app` with `ditto` before upload-artifact: uploading a directory path strips the `ChatSdkExample.app` wrapper and download drops the executable bit. Android test jobs must keep the "Enable KVM group perms" udev step before android-emulator-runner: the ubuntu-24.04 image has /dev/kvm but the runner user is not in the kvm group (actions/runner-images#8542), and without it the emulator silently falls back to ~10x slower software emulation and the driver's `script.done` watchdog (default 180s) times out during app startup.
 - Device regression builds differ from dev builds because they must embed the CI JS bundle: Android uses `CI_RUN=/data/local/tmp/rn_ci_run.json` with `-PbundleInDebug=true -PreactNativeArchitectures=x86_64`; iOS uses `FORCE_BUNDLING=1 CI_RUN=/tmp/rn_ci_run.json`. Debug builds normally skip bundling and load JS from Metro.
 - Single-device API scripts live in `example/ci/` and run locally with `yarn report:api --platform <android|ios> [--script <json>]`; they are not scheduled by GitHub Actions.
+
+## Git Branch Management (Iron Rules)
+
+Branch roles:
+
+| Branch | Role |
+|---|---|
+| `dev` | Default branch, pointer to the current release line; always kept in sync with the current release line |
+| `1.x` | 1 long-term line: integration target for 1.x version branches |
+| `5.x` | 5 long-term line: integration target for 5.x version branches |
+| `cn-1.x`, `cn-5.x` | Chinese API docs lines, one per long-term line (the legacy single `cn` branch predates this split); evolved independently |
+| `1.21.0`, `5.1.0`, etc. | Version branches, created from their long-term line, carrying only that version's API porting and fixes |
+
+Iron rules (one-directional flow, non-negotiable):
+
+1. **Commit only to a working branch; merge forward, never backward**: fixes and changes are committed to the current version branch (or long-term line), verified, then merged in the order version branch → long-term line → `dev`. Never commit code, test, or doc changes directly to `dev`; never cherry-pick backward into an already-merged upstream branch (when a backport is explicitly needed, recommit on the target version branch and merge forward).
+2. **1-line flow**: `1.21.0` → `1.x` → `dev`. `dev` follows the 1 line by default; every update to `1.x` is merged into `dev`.
+3. **5-line flow**: `5.1.0` → `5.x`. Do not merge `5.x` into `dev` until the 5 line becomes the release line; switch the default branch semantics to the 5 line at that time.
+4. **cn lines are independent**: `cn-1.x` / `cn-5.x` carry the Chinese API docs for their line — each is overwritten from its line's English release tag, the existing Chinese comments are restored, and the result is tagged `vX.Y.Z-cn`; merging between the cn lines and `dev`/`1.x`/`5.x` is forbidden.
+5. **Test framework and SDK architecture changes land on the long-term lines** (`1.x`/`5.x`); version branches carry only API porting and fixes. A new version branch inherits the latest architecture from its long-term line at creation time. Cross-line architecture porting uses "cover + adapt", not blind cherry-picks.
+6. **Tags pair with same-numbered branches, with different roles**: the version branch (`1.21.0`) is the development vehicle; a tag is placed on the release commit only when publishing to npm, named with a `v` prefix (`v1.21.0`, with a `-cn` suffix for Chinese docs tags) to pin the exact published version. Always use full namespaces (`refs/heads/1.21.0` / `refs/tags/v1.21.0`) and push branches as `git push <remote> refs/heads/<branch>`.
+7. **Confirm a clean working tree before switching or deleting branches** (`git status` shows no uncommitted changes); if it is not clean, stop and inform the user. **Always create worktrees under `.worktree/` in the repository root** (e.g. `git worktree add .worktree/1.21.0 1.21.0`), not outside the repository.
+8. **ci-dispatch.yml exists only on `dev`**: the cross-line dispatcher for the daily device regression (see `.github/workflows/ci-dispatch.yml`). Never copy or merge it to other branches and never delete it. It is the deliberate, documented exception to rule 1 (no direct commits to `dev`) and is maintained directly on `dev` — once it enters another branch's merge flow, that branch's merges would silently overwrite it (git merges always take the source branch's file content), losing the dispatch capability without any visible failure.
 
 ## Architecture
 
