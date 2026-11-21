@@ -7,10 +7,18 @@
  * NUMBER, unlike Flutter's error object), and `isConnected` must become
  * true afterwards. The whole procedure has a 45s total budget; the
  * connection listener is always removed in `finally`.
+ *
+ * The final database probe defends against the Android HyphenateChat
+ * 4.25.x failure mode seen on the 1.21.0 branch: `login` can report
+ * success while `onDatabaseOpened` has not fired yet, and in that window
+ * `EMChatManager.deleteConversation` returns false without reaching the
+ * native core (mapped to ChatError 1). See
+ * docs/testing/2026-11-21-ci-device-regression-analysis.md.
  */
 
 /* eslint-disable no-bitwise -- dataSyncType is a bitmask by design */
 import {
+  ChatConversationType,
   ChatDataSyncType,
   type ChatClient,
   type ChatConnectEventListener,
@@ -18,6 +26,7 @@ import {
 import { waitForCi, withCiTimeout } from './wait_for';
 
 const CI_LOGIN_BUDGET_MS = 45 * 1000;
+const CI_DB_PROBE_CONV_ID = 'ci_db_ready_probe';
 
 const SUPPORTED_SYNC_MASK =
   ChatDataSyncType.Conversations |
@@ -120,6 +129,27 @@ export async function loginForCi(
         return client.isConnected();
       },
       (connected) => connected,
+      remaining()
+    );
+    await waitForCi(
+      'native conversation database opened',
+      async () => {
+        try {
+          await client.chatManager.getConversation(
+            CI_DB_PROBE_CONV_ID,
+            ChatConversationType.PeerChat,
+            true
+          );
+          await client.chatManager.deleteConversation(
+            CI_DB_PROBE_CONV_ID,
+            true
+          );
+          return true;
+        } catch {
+          return false;
+        }
+      },
+      (ready) => ready,
       remaining()
     );
   } finally {
