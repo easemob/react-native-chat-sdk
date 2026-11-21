@@ -119,11 +119,10 @@ iOS 同 run B(`ios/group/simulator.log`，相同请求参数，响应为 true，
 10:48:07.700 onResult: createGroup, , { groupId = 331112290254852; ...; inviteNeedConfirm = 1; ... }
 ```
 
-### 处置（待决策，见 2026-11-20 文档同节）
+### 处置（已修复）
 
-1. 首选：native 4.25.x 暴露公开 `inviteNeedConfirm` getter（需向 native 团队提工单）。
-2. 备选：wrapper 增加同包桥接读取 `EMAGroupSetting.inviteNeedConfirm()`（不依赖反射，但耦合 native 内部实现，需确认后落地）。
-3. 在修复前，`1.21.0`/`dev` 的 Android logged-in group entry 会持续红；如需临时让 CI 转绿，只能由用户明确决策是否在 Android 侧跳过该断言（不推荐，会掩盖真实 bug)。
+- 用户确认按方案②修复：新增同包桥接 `modules/java/com/hyphenate/chat/ExtSdkGroupBridge.java`，经 `EMBase.emaObject`（同包可访问 protected，不用反射）读取 `EMAGroupSetting.inviteNeedConfirm()`;`ExtSdkHelper.java` 的群 JSON 映射改走桥接。`1.21.0` 与 `dev` 均已应用，`5.1.0` 使用 native 公开 getter 不受影响。
+- 后续若 native 4.25.x 暴露公开 getter（可向 native 团队提工单），桥接类即可删除。
 
 ## 复验方式
 

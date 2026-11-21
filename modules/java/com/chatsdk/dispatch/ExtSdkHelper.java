@@ -18,6 +18,7 @@ import com.hyphenate.chat.EMFileMessageBody;
 import com.hyphenate.chat.EMGroup;
 import com.hyphenate.chat.EMGroupInfo;
 import com.hyphenate.chat.EMGroupManager;
+import com.hyphenate.chat.ExtSdkGroupBridge;
 import com.hyphenate.chat.EMGroupMemberInfo;
 import com.hyphenate.chat.EMGroupOptions;
 import com.hyphenate.chat.EMGroupReadAck;
@@ -449,7 +450,7 @@ class ExtSdkGroupHelper {
 
         Map<String, Object> option = new HashMap<>();
         option.put("maxCount", group.getMaxUserCount());
-        option.put("inviteNeedConfirm", group.isMemberAllowToInvite());
+        option.put("inviteNeedConfirm", ExtSdkGroupBridge.isInviteNeedConfirm(group));
         option.put("ext", group.getExtension());
         option.put("isDisabled", group.isDisabled());
         option.put("isMemberOnly", group.isMemberOnly());
