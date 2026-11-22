@@ -89,7 +89,7 @@ test('workflow assigns an SDK/platform suffix to each logged-in lane', () => {
     assert.ok(job, `expected ${platform} logged-in job`);
     assert.match(
       job,
-      new RegExp(`^\\s+E2E_USER_SUFFIX: _rn_${platform}$`, 'm')
+      new RegExp(`^\\s+E2E_USER_SUFFIX: _rn_${platform}_1x$`, 'm')
     );
   }
 });
