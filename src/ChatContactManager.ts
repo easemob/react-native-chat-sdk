@@ -135,12 +135,12 @@ export class ChatContactManager extends BaseManager {
   }
 
   /**
-   * Deletes a contact and all the related conversations.
+   * Deletes a contact.
    *
    * @param userId The user ID of the contact to delete.
-   * @param keepConversation Whether to retain conversations of the contact to delete.
+   * @param keepConversation Whether to retain the conversations with the contact when deleting it.
    * - `true`: Yes.
-   * - (Default) `false`: No.
+   * - (Default) `false`: No, the conversations with the contact are deleted together with it.
    *
    * @platform On Android, this method uses the Android SDK async delete-contact API, which does not accept
    * `keepConversation`; therefore, this parameter is not passed through on Android. iOS is not

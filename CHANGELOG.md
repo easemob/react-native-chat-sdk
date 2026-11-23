@@ -14,6 +14,7 @@ _English | [Chinese](./CHANGELOG.zh.md)_
 ### New Features
 
 - Add `ChatManager.getConversationsFromDB` to paginate local conversations. Add the corresponding `ChatOptions.autoLoadConversations` option (default: `true`); set it to `false` when initializing the SDK before using pagination.
+- Add the `isSort` parameter to `ChatManager.getAllConversations` (default: `true`): pinned conversations come first, followed by unpinned conversations in descending order of the latest message timestamp; pass `false` to skip sorting.
 - Android now exposes the group invitation confirmation setting through `ChatGroup.configs.inviteNeedConfirm`.
 - Android adds the `GROUP_UPDATE` multi-device event (34) for group information changes. This event is now supported on both platforms.
 
@@ -27,6 +28,8 @@ The native SDK upgrade includes the following improvements:
 - Android rebuilds `libcipherdb.so` with NDK 29 and enables certificate validation for chunked uploads over DoH.
 
 ### Bug Fixes
+
+- (iOS) Fix `ChatContactManager.deleteContact` inverting the `keepConversation` behavior: the value was passed directly to the native `isDeleteConversation` parameter, so the conversation was deleted when `keepConversation` was `true` and retained when `false`. The parameter now behaves as documented. Android is unaffected.
 
 The native SDK upgrade includes the following fixes:
 

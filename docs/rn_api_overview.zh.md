@@ -212,7 +212,7 @@ ChatSDK 是一个高度可靠的全球交流平台，您的用户可以在其中
 | {@link ChatContactManager.removeContactListener removeContactListener} | 移除联系人监听器。 |
 | {@link ChatContactManager.removeAllContactListener removeAllContactListener} | 移除所有联系人监听器。 |
 | {@link ChatContactManager.addContact addContact} | 添加好友。 |
-| {@link ChatContactManager.deleteContact deleteContact} | 删除联系人及其相关的会话。 |
+| {@link ChatContactManager.deleteContact deleteContact} | 删除联系人，可选择保留与其相关的会话。 |
 | {@link ChatContactManager.getAllContactsFromServer getAllContactsFromServer} | 从服务器获取联系人列表。 |
 | {@link ChatContactManager.getAllContactsFromDB getAllContactsFromDB} | 从本地数据库获取联系人列表。 |
 | {@link ChatContactManager.addUserToBlockList addUserToBlockList} | 将指定用户加入黑名单。 |

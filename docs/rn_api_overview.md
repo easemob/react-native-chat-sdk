@@ -197,7 +197,7 @@ ChatSDK is a highly reliable global communication platform where your users can 
 | {@link ChatContactManager.removeContactListener removeContactListener} | Removes the contact listener. |
 | {@link ChatContactManager.removeAllContactListener removeAllContactListener} | Removes all contact listeners. |
 | {@link ChatContactManager.addContact addContact} | Adds a new contact. |
-| {@link ChatContactManager.deleteContact deleteContact} | Deletes a contact and all the related conversations. |
+| {@link ChatContactManager.deleteContact deleteContact} | Deletes a contact, optionally retaining the conversations with it. |
 | {@link ChatContactManager.getAllContactsFromDB getAllContactsFromDB} | Gets the contact list from the local database. |
 | {@link ChatContactManager.addUserToBlockList addUserToBlockList} | Adds a contact to the block list. |
 | {@link ChatContactManager.removeUserFromBlockList removeUserFromBlockList} | Removes the contact from the block list. |

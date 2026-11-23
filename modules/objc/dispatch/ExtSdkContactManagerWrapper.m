@@ -55,7 +55,7 @@
     BOOL keepConversation = [param[@"keepConversation"] boolValue];
     [EMClient.sharedClient.contactManager
                deleteContact:username
-        isDeleteConversation:keepConversation
+        isDeleteConversation:!keepConversation
                   completion:^(NSString *aUsername, EMError *aError) {
                     [weakSelf onResult:result
                         withMethodType:ExtSdkMethodKeyDeleteContact

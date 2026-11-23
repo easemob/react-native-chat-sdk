@@ -14,6 +14,7 @@ _Chinese | [English](./CHANGELOG.md)_
 ### 新增功能（New Features）
 
 - 新增 `ChatManager.getConversationsFromDB`，支持分页获取本地会话列表。配套新增 `ChatOptions.autoLoadConversations`（默认 `true`）；使用分页接口前需在初始化 SDK 时将其设为 `false`。
+- `ChatManager.getAllConversations` 新增 `isSort` 参数（默认 `true`）：置顶会话在前，其余会话按最新消息时间戳倒序排列；传 `false` 则不排序，返回顺序不保证。
 - Android 支持通过 `ChatGroup.configs.inviteNeedConfirm` 获取群组邀请是否需要被邀请人确认的配置。
 - Android 新增多设备群组信息更新事件 `GROUP_UPDATE`（34），该事件现在双端均支持。
 
@@ -27,6 +28,8 @@ _Chinese | [English](./CHANGELOG.md)_
 - Android 的 `libcipherdb.so` 使用 NDK 29 重新编译，DoH 分片上传启用证书校验。
 
 ### 问题修复（Bug Fixes）
+
+- （iOS）修复 `ChatContactManager.deleteContact` 的 `keepConversation` 参数行为与文档相反的问题：该值被直接传给原生 `isDeleteConversation` 参数（`YES` 表示删除会话），导致 `keepConversation` 为 `true` 时会话被删除、`false` 时反而被保留。修复后参数行为与文档一致。Android 不受影响。
 
 以下修复随原生 SDK 升级引入：
 
