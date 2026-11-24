@@ -226,6 +226,9 @@ public class ExtSdkDispatch implements ExtSdkApi {
             case ExtSdkMethodType.importMessages:
                 ExtSdkChatManagerWrapper.getInstance().importMessages(jsonParams, methodType, callback);
                 break;
+            case ExtSdkMethodType.getConversationsFromDB:
+                ExtSdkChatManagerWrapper.getInstance().getConversationsFromDB(jsonParams, methodType, callback);
+                break;
             case ExtSdkMethodType.loadAllConversations:
                 ExtSdkChatManagerWrapper.getInstance().loadAllConversations(jsonParams, methodType, callback);
                 break;
@@ -312,19 +315,19 @@ public class ExtSdkDispatch implements ExtSdkApi {
                 ExtSdkConversationWrapper.getInstance().updateConversationMessage(jsonParams, methodType, callback);
                 break;
 
-                // 根据起始消息id获取消息
+                // Fetch messages starting from the specified message id
             case ExtSdkMethodType.loadMsgWithStartId:
                 ExtSdkConversationWrapper.getInstance().loadMsgWithStartId(jsonParams, methodType, callback);
                 break;
-                // 根据关键字获取消息
+                // Fetch messages by keyword
             case ExtSdkMethodType.loadMsgWithKeywords:
                 ExtSdkConversationWrapper.getInstance().loadMsgWithKeywords(jsonParams, methodType, callback);
                 break;
-                // 根据消息类型获取消息
+                // Fetch messages by message type
             case ExtSdkMethodType.loadMsgWithMsgType:
                 ExtSdkConversationWrapper.getInstance().loadMsgWithMsgType(jsonParams, methodType, callback);
                 break;
-                // 通过时间获取消息
+                // Fetch messages by timestamp
             case ExtSdkMethodType.loadMsgWithTime:
                 ExtSdkConversationWrapper.getInstance().loadMsgWithTime(jsonParams, methodType, callback);
                 break;

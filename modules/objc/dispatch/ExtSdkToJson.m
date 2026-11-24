@@ -853,7 +853,7 @@
 + (EMMessageBody *)fromJsonObject:(NSDictionary *)aJson {
     EMTextMessageBody *body = [[EMTextMessageBody alloc] initWithText:aJson[@"content"]];
     (aJson[@"targetLanguageCodes"] && [aJson[@"targetLanguageCodes"] count] > 0) ? (body.targetLanguages = aJson[@"targetLanguageCodes"]) : nil;
-    // 给底层的时候不需要设置
+    // No need to set it when passing to the native layer
     return body;
 }
 
@@ -1218,6 +1218,8 @@
     data[@"dohVendor"] = @(self.dohVendor);
     data[@"enableUserInfo"] = @(self.enableUserInfo);
     data[@"dataSyncType"] = @(self.dataSyncType);
+    data[@"autoLoadConversations"] = @(self.autoLoadConversations);
+    data[@"enableChatroomConversation"] = @(self.enableChatroomConversation);
     // 2026-08-25 4.24.1
     data[@"ntpServers"] = self.ntpServers;
 
@@ -1235,7 +1237,12 @@
         NSLog(@"EMOptions: fromJsonObject: appKey and appId is empty");
     }
 
-    if (aJson[@"debugModel"]) { options.enableConsoleLog = [aJson[@"debugModel"] boolValue]; }
+    // Core console output (cout) is permanently disabled: it only reaches the
+    // Xcode console and duplicates the ExtSdkOSLogForwarder output there.
+    // Console observability is provided by the forwarder (unified log), gated
+    // by the TS-side `debugModel` option. The log file is written by core
+    // regardless of this switch.
+    options.enableConsoleLog = NO;
     if (aJson[@"requireDeliveryAck"]) { options.enableDeliveryAck = [aJson[@"requireDeliveryAck"] boolValue]; }
     if (aJson[@"sortMessageByServerTime"]) { options.sortMessageByServerTime = [aJson[@"sortMessageByServerTime"] boolValue]; }
     if (aJson[@"acceptInvitationAlways"]) { options.autoAcceptFriendInvitation = [aJson[@"acceptInvitationAlways"] boolValue]; }
@@ -1276,6 +1283,8 @@
     if (aJson[@"dohVendor"]) { options.dohVendor = [aJson[@"dohVendor"] intValue]; }
 
     if (aJson[@"enableUserInfo"]) { options.enableUserInfo = [aJson[@"enableUserInfo"] boolValue]; }
+    if (aJson[@"autoLoadConversations"]) { options.autoLoadConversations = [aJson[@"autoLoadConversations"] boolValue]; }
+    if (aJson[@"enableChatroomConversation"]) { options.enableChatroomConversation = [aJson[@"enableChatroomConversation"] boolValue]; }
     if (aJson[@"dataSyncType"]) { options.dataSyncType = (EMDataSyncType)[aJson[@"dataSyncType"] integerValue]; }
 
     // 2026-08-25 4.24.1

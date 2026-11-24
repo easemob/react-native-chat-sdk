@@ -2,7 +2,7 @@
 //  ExtSdkChatManagerWrapper.h
 //
 //
-//  Created by 杜洁鹏 on 2019/10/8.
+//  Created by Du Jiepeng on 2019/10/8.
 //
 
 #import "ExtSdkWrapper.h"
@@ -71,6 +71,10 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)voiceFileToText:(NSDictionary *)param
          withMethodType:(NSString *)aChannelName
                  result:(nonnull id<ExtSdkCallbackObjc>)result;
+
+- (void)getConversationsFromDB:(NSDictionary *)param
+               withMethodType:(NSString *)aChannelName
+                       result:(nonnull id<ExtSdkCallbackObjc>)result;
 
 - (void)loadAllConversations:(NSDictionary *)param
               withMethodType:(NSString *)aChannelName

@@ -178,7 +178,7 @@ public class ExtSdkApiRN extends ChatSdkSpec implements ExtSdkApi {
                 @Override
                 public void fail(@NonNull int code, @Nullable Object ext) {
                     ExtSdkThreadUtil.mainThreadExecute(() -> {
-                        // todo: errorMessage: 是code的字符串形式
+                        // todo: errorMessage is the string form of the code
                         String reason = "";
                         try {
                             if (ext != null) {

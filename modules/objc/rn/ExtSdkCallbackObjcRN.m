@@ -25,8 +25,8 @@
 }
 
 - (id)copyWithZone:(nullable NSZone *)zone {
-    // _resolve _reject 浅拷贝
-    // ExtSdkCallbackObjcRN 深拷贝
+    // _resolve and _reject are shallow-copied
+    // ExtSdkCallbackObjcRN is deep-copied
     ExtSdkCallbackObjcRN *clone = [[ExtSdkCallbackObjcRN alloc] initWithResolve:_resolve withReject:_reject];
     return clone;
 }
@@ -42,7 +42,7 @@
         if (nil != callback) {
             callback(ext);
         }
-//      RCTPromiseRejectBlock callback = [strongSelf getReject]; // todo: 后续修改
+//      RCTPromiseRejectBlock callback = [strongSelf getReject]; // todo: fix later
 //      if (nil != callback) {
 //          NSDictionary *map = (NSDictionary *)ext;
 //          NSDictionary *error = map[@"error"];

@@ -63,7 +63,7 @@ public class ExtSdkClientWrapper extends ExtSdkWrapper {
 
             @Override
             public void onProgress(int progress, String status) {
-                // todo: 原来就没有写
+                // todo: not implemented in the original code either
             }
         });
     }

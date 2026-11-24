@@ -287,7 +287,9 @@ public class ExtSdkChatManagerWrapper extends ExtSdkWrapper {
         EMMessage msg = ExtSdkMessageHelper.fromJson(param.getJSONObject("message"));
         EMMessage dbMsg =
             EMClient.getInstance().chatManager().getMessage(param.getJSONObject("message").getString("msgId"));
-        if (ExtSdkWrapper.checkMessageParams(dbMsg, channelName, result)) {
+        if (dbMsg == null) {
+            // Match the Flutter SDK contract for updating an absent message.
+            ExtSdkWrapper.onError(result, 500, "The message does not exist.");
             return;
         }
         if (msg != null) {
@@ -641,9 +643,30 @@ public class ExtSdkChatManagerWrapper extends ExtSdkWrapper {
         });
     }
 
+    public void getConversationsFromDB(JSONObject param, String channelName, ExtSdkCallback result) throws JSONException {
+        String cursor = param.getString("cursor");
+        int pageSize = param.getInt("pageSize");
+        EMClient.getInstance().chatManager().asyncGetConversationsFromDB(
+            cursor, pageSize, new EMValueCallBack<EMCursorResult<EMConversation>>() {
+                @Override
+                public void onSuccess(EMCursorResult<EMConversation> value) {
+                    ExtSdkWrapper.onSuccess(result, channelName, ExtSdkCursorResultHelper.toJson(value));
+                }
+
+                @Override
+                public void onError(int code, String error) {
+                    ExtSdkWrapper.onError(result, code, error);
+                }
+            });
+    }
+
     public void loadAllConversations(JSONObject param, String channelName, ExtSdkCallback result) throws JSONException {
 
-        List<EMConversation> list = EMClient.getInstance().chatManager().getAllConversationsBySort();
+        // 5.1.0
+        boolean isSort = param == null || param.optBoolean("isSort", true);
+        List<EMConversation> list = isSort
+                ? EMClient.getInstance().chatManager().getAllConversationsBySort()
+                : new ArrayList<>(EMClient.getInstance().chatManager().getAllConversations().values());
         List<Map> conversations = new ArrayList<>();
         for (EMConversation conversation : list) {
             conversations.add(ExtSdkConversationHelper.toJson(conversation));

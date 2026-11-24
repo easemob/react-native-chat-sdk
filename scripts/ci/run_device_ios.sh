@@ -1,12 +1,13 @@
 #!/usr/bin/env bash
-# Auto-mode device driver for iOS. Shared by the no-login smoke test and the
-# single-account nightly test, both locally and in CI.
+# Auto-mode device driver for iOS. Shared by the porting runner
+# (yarn report:api -> auto_script_local.sh) and by ci_test_local.sh (which drives
+# the example app's CI mode through run_ci_ios.sh), locally and in CI.
 #
 # Preconditions:
 #   - a booted simulator (or DEVICE_UDID pointing at one);
-#   - a Debug-iphonesimulator .app with the API_SCRIPT (and, for the nightly,
-#     API_CONFIG) host path inlined at bundle time (the babel plugin in
-#     example/babel.config.js), matching HOST_SCRIPT_PATH/HOST_CONFIG_PATH.
+#   - a Debug-iphonesimulator .app with the API_SCRIPT (auto mode) or CI_RUN
+#     (CI mode) host path inlined at bundle time (the babel plugin in
+#     example/babel.config.js), matching HOST_SCRIPT_PATH.
 #     The simulator shares the host file system, so the inlined path is a
 #     host path.
 #
@@ -18,17 +19,15 @@
 # Tunables (environment variables):
 #   DEVICE_UDID        target simulator                (default: booted)
 #   APP_PATH           path to the built .app          (default: example build output)
-#   SCRIPT_JSON        auto-mode script on the host     (default: example/ci/no_login_smoke.json)
+#   SCRIPT_JSON        auto-mode script on the host     (default: example/ci/port_5_0_0_positive.json)
 #   HOST_SCRIPT_PATH   where the app reads the script, must match the inlined API_SCRIPT
-#                                                       (default: /tmp/rn_smoke_no_login.json)
-#   OUT_DIR            where the copied log lands      (default: build/reports)
-#   OUT_LOG            full path of the copied log      (default: $OUT_DIR/smoke-ios-api_test.log)
-#   CONFIG_JSON        optional auto-mode config (API_CONFIG) on the host; copied to
-#                      HOST_CONFIG_PATH when set (single-account nightly only)
-#   HOST_CONFIG_PATH   where the app reads the config, must match the inlined API_CONFIG
-#                                                       (default: /tmp/rn_single_account_config.json)
-#   SCRIPT_TIMEOUT_S   max seconds to wait for script.done (default: 180;
-#                      SMOKE_TIMEOUT_S is still accepted for compatibility)
+#                                                       (default: /tmp/rn_auto_script.json)
+#   OUT_DIR            where the copied log lands      (default: artifacts/single)
+#   OUT_LOG            full path of the copied log      (default: $OUT_DIR/auto-ios-api_test.log)
+#   SCRIPT_TIMEOUT_S   max seconds to wait for script.done (default: 180)
+#   ASSERT_SCRIPT      assertion script invoked as `node $ASSERT_SCRIPT
+#                      "$SCRIPT_JSON" "$OUT_LOG"`      (default: assert_script.js;
+#                      the CI harness runners pass assert_ci_run.js)
 set -euo pipefail
 
 REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
@@ -36,13 +35,11 @@ REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
 BUNDLE_ID="chatsdk.example"
 DEVICE_UDID="${DEVICE_UDID:-booted}"
 APP_PATH="${APP_PATH:-$REPO_ROOT/example/ios/build/Build/Products/Debug-iphonesimulator/ChatSdkExample.app}"
-SCRIPT_JSON="${SCRIPT_JSON:-$REPO_ROOT/example/ci/no_login_smoke.json}"
-HOST_SCRIPT_PATH="${HOST_SCRIPT_PATH:-/tmp/rn_smoke_no_login.json}"
-OUT_DIR="${OUT_DIR:-$REPO_ROOT/build/reports}"
-OUT_LOG="${OUT_LOG:-$OUT_DIR/smoke-ios-api_test.log}"
-CONFIG_JSON="${CONFIG_JSON:-}"
-HOST_CONFIG_PATH="${HOST_CONFIG_PATH:-/tmp/rn_single_account_config.json}"
-TIMEOUT_S="${SCRIPT_TIMEOUT_S:-${SMOKE_TIMEOUT_S:-180}}"
+SCRIPT_JSON="${SCRIPT_JSON:-$REPO_ROOT/example/ci/port_5_0_0_positive.json}"
+HOST_SCRIPT_PATH="${HOST_SCRIPT_PATH:-/tmp/rn_auto_script.json}"
+OUT_DIR="${OUT_DIR:-$REPO_ROOT/artifacts/single}"
+OUT_LOG="${OUT_LOG:-$OUT_DIR/auto-ios-api_test.log}"
+TIMEOUT_S="${SCRIPT_TIMEOUT_S:-180}"
 
 mkdir -p "$OUT_DIR"
 
@@ -51,11 +48,6 @@ mkdir -p "$OUT_DIR"
 
 echo "[1/5] stage script -> $HOST_SCRIPT_PATH"
 cp "$SCRIPT_JSON" "$HOST_SCRIPT_PATH"
-if [ -n "$CONFIG_JSON" ]; then
-  [ -f "$CONFIG_JSON" ] || { echo "error: config not found: $CONFIG_JSON" >&2; exit 2; }
-  echo "      stage config -> $HOST_CONFIG_PATH"
-  cp "$CONFIG_JSON" "$HOST_CONFIG_PATH"
-fi
 
 echo "[2/5] install $APP_PATH"
 xcrun simctl install "$DEVICE_UDID" "$APP_PATH"
@@ -93,4 +85,5 @@ if [ "$done_seen" != "1" ]; then
 fi
 
 echo "[5/5] assert $OUT_LOG"
-node "$REPO_ROOT/scripts/ci/assert_script.js" "$SCRIPT_JSON" "$OUT_LOG"
+node "${ASSERT_SCRIPT:-$REPO_ROOT/scripts/ci/assert_script.js}" \
+  "$SCRIPT_JSON" "$OUT_LOG"

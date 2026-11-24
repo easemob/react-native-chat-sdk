@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 # CI wrapper around run_device_android.sh, called from the android-emulator-runner
-# `script:` input of the device-smoke and single-account-nightly workflows.
+# `script:` input of the ci-device workflow (via ci_test_local.sh, which
+# invokes it once per entry).
 # That action does not pass multi-line scripts to the shell reliably (observed:
 # only the first line reached `sh -c`, which broke `\` continuations and
 # `|| { }` blocks), so the workflows invoke this one-liner instead of inlining
@@ -8,16 +9,56 @@
 # action passes through unchanged.
 #
 # Tunables (in addition to run_device_android.sh's own):
-#   LOGCAT_LOG           where to dump logcat when the driver fails
-#                        (default: build/reports/android-logcat.log)
+#   CI_ENTRY_DIR         artifact directory for this entry; the full logcat is
+#                        written to $CI_ENTRY_DIR/logcat.log
+#   LOGCAT_LOG           explicit logcat path (default: $CI_ENTRY_DIR/logcat.log,
+#                        falling back to artifacts/ci when CI_ENTRY_DIR is
+#                        unset)
 #   DEVICE_CLEANUP_PATHS space-separated device paths to delete after the run
-#                        (single-account nightly: the on-device script/config
-#                        copies hold credentials and must be removed inside the
-#                        emulator session, as must the logcat dump)
+#                        (ci_test_local.sh: the on-device ci_run.json holds
+#                        credentials and must be removed inside the emulator
+#                        session, as must the logcat dump)
 
 # No `set -e`: cleanup and the logcat dump must run even when the driver fails.
 REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
-LOGCAT_LOG="${LOGCAT_LOG:-$REPO_ROOT/build/reports/android-logcat.log}"
+ENTRY_DIR="${CI_ENTRY_DIR:-}"
+if [ -z "$ENTRY_DIR" ] && [ -n "${OUT_LOG:-}" ]; then
+  ENTRY_DIR="$(dirname "$OUT_LOG")"
+fi
+ENTRY_DIR="${ENTRY_DIR:-$REPO_ROOT/artifacts/ci}"
+LOGCAT_LOG="${LOGCAT_LOG:-$ENTRY_DIR/logcat.log}"
+mkdir -p "$(dirname "$LOGCAT_LOG")"
+
+ANDROID_SERIAL="$(bash "$REPO_ROOT/scripts/ci/select_android_device.sh")" || exit $?
+export ANDROID_SERIAL
+
+LOGCAT_PID=""
+stop_logcat() {
+  if [ -n "$LOGCAT_PID" ]; then
+    kill "$LOGCAT_PID" 2>/dev/null || true
+    wait "$LOGCAT_PID" 2>/dev/null || true
+    LOGCAT_PID=""
+  fi
+}
+# Capture the full device log for the whole entry, including install/launch.
+# The app's structured api_test.log is pulled separately by the driver.
+adb logcat -c >/dev/null 2>&1 || true
+adb logcat -v threadtime > "$LOGCAT_LOG" 2>&1 &
+LOGCAT_PID=$!
+
+# Live-render the [APITEST] records from the growing logcat (✅/❌ per case).
+# Pure view layer: assert_ci_run.js stays the only judge. The renderer exits
+# by itself on script.done; the EXIT trap covers early driver exits.
+node "$REPO_ROOT/scripts/ci/render_ci_log.js" "$LOGCAT_LOG" &
+RENDERER_PID=$!
+stop_renderer() {
+  if [ -n "$RENDERER_PID" ]; then
+    kill "$RENDERER_PID" 2>/dev/null || true
+    wait "$RENDERER_PID" 2>/dev/null || true
+    RENDERER_PID=""
+  fi
+}
+trap 'stop_renderer; stop_logcat' EXIT
 
 rc=0
 bash "$REPO_ROOT/scripts/ci/run_device_android.sh" || rc=$?
@@ -27,9 +68,5 @@ if [ -n "${DEVICE_CLEANUP_PATHS:-}" ]; then
   adb shell rm -f "${cleanup_paths[@]}" || true
 fi
 
-if [ "$rc" -ne 0 ]; then
-  mkdir -p "$(dirname "$LOGCAT_LOG")"
-  adb logcat -d > "$LOGCAT_LOG" || true
-fi
-
+stop_logcat
 exit "$rc"

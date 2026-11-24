@@ -1,7 +1,7 @@
 #!/usr/bin/env node
-// Fetch a fresh user token for the single-account nightly CI run. User tokens
+// Fetch a fresh user token for the CI device regression run. User tokens
 // expire (server default ~24h), so they cannot be stored as GitHub secrets;
-// each test job calls this script right before generating the API_CONFIG.
+// ci_test_local.sh calls this script host-side before generating ci_run.json.
 //
 // Flow (same as scripts/env-gettoken.js): exchange clientId/clientSecret for
 // an app token, then exchange it for a user token via grant_type=inherit
@@ -12,13 +12,27 @@
 //   E2E_APP_KEY       app key in orgName#appName form
 //   E2E_CLIENT_ID     app client id
 //   E2E_CLIENT_SECRET app client secret
-//   E2E_USER_ID       account user id to fetch a token for
+//   E2E_USER_ID       account user id to fetch a token for (user-token mode
+//                     only, or pass --user-id)
+// Optional environment:
+//   E2E_USER_SUFFIX   appended to E2E_USER_ID in default user-token mode;
+//                     --user-id always supplies the complete id unchanged
 //
-// Output contract: the user token is the ONLY stdout line (callers capture it
+// Output contract: the token is the ONLY stdout line (callers capture it
 // with $(...)); diagnostics go to stderr. Exit code is non-zero on failure.
 //
 // Usage:
 //   E2E_USER_TOKEN="$(node scripts/ci/fetch_e2e_user_token.js)"
+//   E2E_APP_TOKEN="$(node scripts/ci/fetch_e2e_user_token.js --app)"
+//   PEER_TOKEN="$(node scripts/ci/fetch_e2e_user_token.js --user-id ci_peer)"
+//
+// Modes:
+//   (default)   user token: app token -> user token via grant_type=inherit
+//               (autoCreateUser=true, so the account is created on first use)
+//   --app       app (admin) token only, via grant_type=client_credentials;
+//               the CI REST fixture needs one for server-side preparation
+//   --user-id   fetch a user token for this complete id instead of deriving
+//               E2E_USER_ID + E2E_USER_SUFFIX (e.g. to provision a peer)
 
 const MAX_ATTEMPTS = 3;
 const RETRY_INTERVAL_MS = 1000;
@@ -43,7 +57,7 @@ function parseAppKey(appKey) {
 async function postJson(url, body, bearerToken) {
   const headers = {
     'Content-Type': 'application/json',
-    Accept: 'application/json',
+    'Accept': 'application/json',
   };
   if (bearerToken != null) {
     headers.Authorization = `Bearer ${bearerToken}`;
@@ -76,18 +90,25 @@ function sleep(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
-async function fetchUserTokenOnce(env) {
+function tokenUrl(env) {
   const { orgName, appName } = parseAppKey(env.E2E_APP_KEY);
-  const url = `${env.E2E_REST_API}/${orgName}/${appName}/token`;
-  const appToken = await postJson(url, {
+  return `${env.E2E_REST_API}/${orgName}/${appName}/token`;
+}
+
+async function fetchAppTokenOnce(env) {
+  return postJson(tokenUrl(env), {
     grant_type: 'client_credentials',
     client_id: env.E2E_CLIENT_ID,
     client_secret: env.E2E_CLIENT_SECRET,
   });
+}
+
+async function fetchUserTokenOnce(env, userId) {
+  const appToken = await fetchAppTokenOnce(env);
   return postJson(
-    url,
+    tokenUrl(env),
     {
-      username: env.E2E_USER_ID,
+      username: userId,
       grant_type: 'inherit',
       autoCreateUser: true,
     },
@@ -95,20 +116,47 @@ async function fetchUserTokenOnce(env) {
   );
 }
 
+function parseArgs(argv) {
+  const options = { app: false, userId: null };
+  for (let i = 0; i < argv.length; i++) {
+    if (argv[i] === '--app') {
+      options.app = true;
+    } else if (argv[i] === '--user-id') {
+      options.userId = argv[i + 1];
+      if (typeof options.userId !== 'string' || options.userId.length === 0) {
+        throw new Error('--user-id needs a value');
+      }
+      i++;
+    } else {
+      throw new Error(`unknown argument: ${argv[i]}`);
+    }
+  }
+  return options;
+}
+
 async function main() {
+  const options = parseArgs(process.argv.slice(2));
   const env = {
     E2E_REST_API: requireEnv('E2E_REST_API'),
     E2E_APP_KEY: requireEnv('E2E_APP_KEY'),
     E2E_CLIENT_ID: requireEnv('E2E_CLIENT_ID'),
     E2E_CLIENT_SECRET: requireEnv('E2E_CLIENT_SECRET'),
-    E2E_USER_ID: requireEnv('E2E_USER_ID'),
   };
+  const userId =
+    options.userId ??
+    (options.app
+      ? null
+      : requireEnv('E2E_USER_ID') + (process.env.E2E_USER_SUFFIX ?? ''));
   let lastError;
   for (let attempt = 1; attempt <= MAX_ATTEMPTS; attempt++) {
     try {
-      const token = await fetchUserTokenOnce(env);
+      const token = options.app
+        ? await fetchAppTokenOnce(env)
+        : await fetchUserTokenOnce(env, userId);
       console.error(
-        `fetch_e2e_user_token: got token for ${env.E2E_USER_ID} (attempt ${attempt})`
+        `fetch_e2e_user_token: got ${
+          options.app ? 'app token' : `token for ${userId}`
+        } (attempt ${attempt})`
       );
       process.stdout.write(token + '\n');
       return;

@@ -1,4 +1,7 @@
 {
+  "init": {
+    "debugModel": true
+  },
   "_comment": "5.0.0 平版新增/修改 API 反向路径（auto 模式）。只使用单账号可稳定构造的非法参数、缺失资源和无效 token；无参数本地查询没有可控错误输入，不强造反例。fetchGroupMessageReadReceipts 的缺失消息场景已确认会令 Android native 进程崩溃，按用户决策暂不执行，继续由 docs/porting/5.0.0/04-verification.md 和报告 issue candidate 记录。三个缺失消息回执 API 的目标契约为 500 MESSAGE_INVALID；本脚本执行其中两个不会崩溃的批量 API，当前返回 110 时应标记失败。",
   "steps": [
     {

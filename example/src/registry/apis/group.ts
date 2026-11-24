@@ -3,6 +3,17 @@ import type { ApiEntry } from '../api_entry';
 
 export const groupApis: ApiEntry[] = [
   {
+    name: 'ChatGroupManager.fetchGroupInfoWithoutMembersFromServer',
+    group: 'ChatGroupManager',
+    description: '从服务端获取群详情（不含成员列表）。groupId：群 ID。',
+    paramsTemplate: JSON.stringify({ groupId: 'ID' }, null, 2),
+    invoke: async (params) => {
+      return ChatClient.getInstance().groupManager.fetchGroupInfoWithoutMembersFromServer(
+        String(params.groupId)
+      );
+    },
+  },
+  {
     name: 'ChatGroupManager.createGroupEx',
     group: 'ChatGroupManager',
     description:

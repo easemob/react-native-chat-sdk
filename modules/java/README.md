@@ -1,2 +1,2 @@
-# 说明
-这里主要是java语言的通用代码。  
+# Overview
+This directory mainly contains shared Java code.  

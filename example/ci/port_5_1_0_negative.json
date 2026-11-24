@@ -1,0 +1,35 @@
+{
+  "_comment": "5.1.0 negative path, independent of the positive script. Use the same local initialization config with autoLoadConversations=false. Invalid cursor expects INVALID_PARAM (110); updating InviteNeedConfirm on a missing group expects GROUP_INVALID_ID (600). No invented error code for out-of-range page sizes or boolean initialization options.",
+  "steps": [
+    {
+      "api": "ChatManager.getConversationsFromDB",
+      "id": "conversations_invalid_cursor",
+      "params": {
+        "cursor": "rn-port-510-invalid-cursor",
+        "pageSize": 20
+      },
+      "expect": {
+        "errorCode": 110
+      }
+    },
+    {
+      "api": "ChatGroupManager.updateGroupConfigs",
+      "id": "update_invite_confirm_missing_group",
+      "params": {
+        "groupId": "not-exist-group-id-510",
+        "types": 4,
+        "configs": {
+          "maxCount": 200,
+          "inviteNeedConfirm": false,
+          "ext": "rn-port-510",
+          "isPublic": false,
+          "joinApprovalRequired": false,
+          "allowInvites": true
+        }
+      },
+      "expect": {
+        "errorCode": 600
+      }
+    }
+  ]
+}

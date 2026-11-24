@@ -65,6 +65,7 @@ static NSString *_Nonnull const ExtSdkMethodKeyDownloadAttachmentInCombine = @"d
 static NSString *_Nonnull const ExtSdkMethodKeyDownloadThumbnailInCombine = @"downloadThumbnailInCombine";
 static NSString *_Nonnull const ExtSdkMethodKeyImportMessages = @"importMessages";
 static NSString *_Nonnull const ExtSdkMethodKeyLoadAllConversations = @"loadAllConversations";
+static NSString *_Nonnull const ExtSdkMethodKeyGetConversationsFromDB = @"getConversationsFromDB";
 
 static NSString *_Nonnull const ExtSdkMethodKeyDeleteConversation = @"deleteConversation";
 static NSString *_Nonnull const ExtSdkMethodKeyDeleteConversations = @"deleteConversations";
@@ -678,6 +679,9 @@ static const int ExtSdkMethodKeyclearAllConversationUnreadMessageCountValue = 20
 static const int ExtSdkMethodKeygetGroupMessageReadReceiptsValue = 2037;
 static const int ExtSdkMethodKeyfetchGroupMessageReadReceiptsValue = 2038;
 static const int ExtSdkMethodKeyupdateGroupConfigsValue = 2039;
+
+// 5.1.0
+static const int ExtSdkMethodKeyGetConversationsFromDBValue = 2040;
 
 // 2026-04-10
 static const int ExtSdkMethodKeyOnStreamMessagesReceivedValue = 611;

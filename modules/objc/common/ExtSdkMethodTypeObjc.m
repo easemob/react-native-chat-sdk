@@ -69,6 +69,7 @@
           ExtSdkMethodKeyDownloadThumbnailInCombine : @(ExtSdkMethodKeyDownloadThumbnailInCombineValue),
           ExtSdkMethodKeyImportMessages : @(ExtSdkMethodKeyImportMessagesValue),
           ExtSdkMethodKeyLoadAllConversations : @(ExtSdkMethodKeyLoadAllConversationsValue),
+          ExtSdkMethodKeyGetConversationsFromDB : @(ExtSdkMethodKeyGetConversationsFromDBValue),
 
           ExtSdkMethodKeyDeleteConversation : @(ExtSdkMethodKeyDeleteConversationValue),
           ExtSdkMethodKeyDeleteConversations : @(ExtSdkMethodKeyDeleteConversationsValue),

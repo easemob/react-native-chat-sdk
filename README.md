@@ -1,5 +1,3 @@
-_English | [Chinese](./README.zh.md)_
-
 _Update time: 2026-08-06_
 
 - [Introduction to ChatSDK](#introduction-to-chatsdk)

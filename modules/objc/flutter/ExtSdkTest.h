@@ -4,7 +4,7 @@
 @interface ExtSdkTest : NSObject
 
 /**
- * 1.原来的 2.升级的
+ * 1. original, 2. upgraded
  */
 + (int)testType;
 

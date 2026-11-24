@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 /**
  * Run an example auto-mode script and archive traceable, local-only evidence.
- * It reuses smoke_local.sh and the platform drivers instead of duplicating
+ * It reuses auto_script_local.sh and the platform drivers instead of duplicating
  * React Native build/install logic.
  */
 
@@ -27,7 +27,9 @@ function usage() {
 
 The default script is example/ci/port_5_0_0_positive.json. Run the negative
 path with --script example/ci/port_5_0_0_negative.json. Per-run evidence is
-written under build/reports/<version>/<run-id>/ and remains Git-ignored.
+written under artifacts/single/<timestamp>/<platform>/ and remains
+Git-ignored; the directory name is only the local timestamp, and each platform
+gets its own subdirectory so Android and iOS runs cannot overwrite each other.
 `;
 }
 
@@ -56,10 +58,16 @@ function safeName(value) {
 }
 
 function timestamp(date) {
-  return date
-    .toISOString()
-    .replace(/[^0-9]/g, '')
-    .slice(0, 14);
+  return [
+    String(date.getFullYear()).padStart(4, '0'),
+    ...[
+      date.getMonth() + 1,
+      date.getDate(),
+      date.getHours(),
+      date.getMinutes(),
+      date.getSeconds(),
+    ].map((part) => String(part).padStart(2, '0')),
+  ].join('');
 }
 
 function sha256(filePath) {
@@ -144,7 +152,7 @@ function resolveIosDevice(requested) {
       }
     }
   } catch {
-    // Let smoke_local.sh report simulator discovery failures.
+    // Let auto_script_local.sh report simulator discovery failures.
   }
   return 'auto';
 }
@@ -302,7 +310,7 @@ function collectIssues(scriptPath, platform, script, evaluation, crashText) {
         key: `${source.split('.').at(-1)}-unobserved`,
         status: 'needs-review',
         summary: `Required 5.0.0 event ${source} was not observed`,
-        evidence: 'events.jsonl',
+        evidence: 'events.sanitized.jsonl',
       });
     }
   }
@@ -448,7 +456,7 @@ function writeSummary(reportDir, metadata, evaluation, issues) {
       lines.push(`- \`${issue.key}\` — ${issue.status}: ${issue.summary}`);
     }
   }
-  fs.writeFileSync(path.join(reportDir, 'summary.md'), `${lines.join('\n')}\n`);
+  fs.writeFileSync(path.join(reportDir, 'report.md'), `${lines.join('\n')}\n`);
 }
 
 function writeIssues(reportDir, metadata, issues) {
@@ -515,6 +523,27 @@ function writeReport({
   fs.writeFileSync(
     path.join(reportDir, 'run.json'),
     `${JSON.stringify(metadata, null, 2)}\n`
+  );
+  fs.writeFileSync(
+    path.join(reportDir, 'report.json'),
+    `${JSON.stringify(
+      {
+        schemaVersion: 1,
+        runId: metadata.runId,
+        platform: metadata.platform,
+        device: metadata.device,
+        sdkVersion: metadata.sdkVersion,
+        nativeVersions: metadata.nativeVersions,
+        commit: metadata.commit,
+        startedAt: metadata.startedAt,
+        finishedAt: metadata.finishedAt,
+        counts: evaluation.counts,
+        failures: evaluation.failures.length,
+        done: evaluation.doneEntry?.payload ?? null,
+      },
+      null,
+      2
+    )}\n`
   );
   writeSummary(reportDir, metadata, evaluation, issues);
   writeIssues(reportDir, metadata, issues);
@@ -631,10 +660,7 @@ function compareReports(androidPath, iosPath, outputRoot) {
       } | ${status} |`
     );
   }
-  const output = path.join(
-    outputRoot,
-    `comparison-${timestamp(new Date())}.md`
-  );
+  const output = path.join(outputRoot, 'comparison.md');
   fs.mkdirSync(outputRoot, { recursive: true });
   fs.writeFileSync(output, `${lines.join('\n')}\n`);
   return { output, mismatches };
@@ -657,13 +683,14 @@ function runMain(options) {
   const version = options.version ?? readPackageVersion();
   const startedAt = new Date();
   let device = resolveDevice(platform, options.device);
-  const runId = `${timestamp(startedAt)}-${platform}-${safeName(device)}`;
+  const runStamp = timestamp(startedAt);
+  const runId = `${runStamp}-${platform}-${safeName(device)}`;
   const outputRoot = path.resolve(
-    options['output-root'] ?? path.join(REPO_ROOT, 'build/reports', version)
+    options['output-root'] ?? path.join(REPO_ROOT, 'artifacts/single')
   );
-  const reportDir = path.join(outputRoot, runId);
+  const reportDir = path.join(outputRoot, runStamp, platform);
   fs.mkdirSync(reportDir, { recursive: true });
-  const eventsFile = path.join(reportDir, 'events.jsonl');
+  const eventsFile = path.join(reportDir, 'events.sanitized.jsonl');
   const env = {
     ...process.env,
     SCRIPT_JSON: scriptPath,
@@ -690,7 +717,7 @@ function runMain(options) {
     }
   } else {
     clearAndroidLogcat(platform, env);
-    const result = spawnSync('bash', ['scripts/ci/smoke_local.sh', platform], {
+    const result = spawnSync('bash', ['scripts/ci/auto_script_local.sh', platform], {
       cwd: REPO_ROOT,
       env,
       stdio: 'inherit',
@@ -750,12 +777,12 @@ function main() {
       }
       const version = options.version ?? readPackageVersion();
       const outputRoot = path.resolve(
-        options['output-root'] ?? path.join(REPO_ROOT, 'build/reports', version)
+        options['output-root'] ?? path.join(REPO_ROOT, 'artifacts/single')
       );
       const comparison = compareReports(
         options['android-report'],
         options['ios-report'],
-        outputRoot
+        path.join(outputRoot, timestamp(new Date()))
       );
       console.log(`Comparison report: ${comparison.output}`);
       if (comparison.mismatches > 0) process.exitCode = 1;

@@ -202,12 +202,35 @@ export class ChatOptions {
   enableEmptyConversation: boolean;
 
   /**
+   * 登录成功后是否自动将所有会话加载到内存中：
+   *
+   * - （默认）`true`：是。自动加载所有会话。
+   * - `false`：否。不自动加载会话。
+   *
+   * 若要使用 {@link ChatManager.getConversationsFromDB}，需要在初始化 SDK 前将其设置为 `false`。
+   *
+   * @since 5.1.0
+   */
+  autoLoadConversations: boolean;
+
+  /**
+   * 收发聊天室消息时是否创建会话：
+   *
+   * - `true`：是。会创建聊天室会话。
+   * - （默认）`false`：否。不会创建聊天室会话。
+   *
+   * 该属性需要在初始化 SDK 前设置。
+   *
+   * @since 5.1.0
+   */
+  enableChatroomConversation: boolean;
+
+  /**
    * 自定义设备名称。
    *
    * `customOSType` 设置为 -1，则该属性不生效。
    *
    * 典型应用：用户需要iphone手机和ipad设备同时在线。
-   *
    */
   customDeviceName?: string;
 
@@ -318,6 +341,8 @@ export class ChatOptions {
     logTag?: string;
     logTimestamp?: boolean;
     enableEmptyConversation?: boolean;
+    autoLoadConversations?: boolean;
+    enableChatroomConversation?: boolean;
     customDeviceName?: string;
     customOSType?: number;
     enableDNSConfig?: boolean;
@@ -372,6 +397,9 @@ export class ChatOptions {
     this.logTag = params.logTag;
     this.logTimestamp = params.logTimestamp;
     this.enableEmptyConversation = params.enableEmptyConversation ?? false;
+    this.autoLoadConversations = params.autoLoadConversations ?? true;
+    this.enableChatroomConversation =
+      params.enableChatroomConversation ?? false;
     this.customDeviceName = params.customDeviceName;
     this.customOSType = params.customOSType;
     this.enableTLS = params.enableTLS ?? false;
@@ -411,6 +439,8 @@ export class ChatOptions {
     logTag?: string;
     logTimestamp?: boolean;
     enableEmptyConversation?: boolean;
+    autoLoadConversations?: boolean;
+    enableChatroomConversation?: boolean;
     customDeviceName?: string;
     customOSType?: number;
     enableDNSConfig?: boolean;
@@ -457,6 +487,8 @@ export class ChatOptions {
     logTag?: string;
     logTimestamp?: boolean;
     enableEmptyConversation?: boolean;
+    autoLoadConversations?: boolean;
+    enableChatroomConversation?: boolean;
     customDeviceName?: string;
     customOSType?: number;
     enableDNSConfig?: boolean;

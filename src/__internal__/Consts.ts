@@ -78,6 +78,7 @@ export const MTvoiceMessageToText = 'voiceMessageToText';
 export const MTvoiceFileToText = 'voiceFileToText';
 export const MTimportMessages = 'importMessages';
 export const MTloadAllConversations = 'loadAllConversations';
+export const MTgetConversationsFromDB = 'getConversationsFromDB';
 export const MTdeleteConversation = 'deleteConversation';
 export const MTdeleteConversations = 'deleteConversations';
 export const MTfetchHistoryMessagesByOptions = 'fetchHistoryMessagesByOptions';

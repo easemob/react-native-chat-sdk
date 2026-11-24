@@ -1,0 +1,190 @@
+{
+  "_comment": "5.1.0 positive path, one account/device. Set config.local.json chatOptions.autoLoadConversations=false before yarn env:gettoken; omit script.init to use the generated config. Covers default/first/next/max-size DB pages and inviteNeedConfirm true/false/update server reads. Two owned temporary groups supply conversations and are cleaned up at the end. success checks API completion only; inspect returned fields/cursors in the report separately. Chatroom receive behavior and multi-device events are excluded.",
+  "steps": [
+    {
+      "api": "ChatGroupManager.createGroupEx",
+      "id": "group_true",
+      "params": {
+        "groupName": "rn-port-510-positive-true",
+        "desc": "Temporary group for 5.1.0 API verification",
+        "configs": {
+          "maxCount": 200,
+          "inviteNeedConfirm": true,
+          "ext": "rn-port-510",
+          "isPublic": false,
+          "joinApprovalRequired": false,
+          "allowInvites": true
+        }
+      },
+      "expect": {
+        "success": true
+      }
+    },
+    {
+      "api": "ChatGroupManager.fetchGroupInfoWithoutMembersFromServer",
+      "id": "fetch_true",
+      "params": {
+        "groupId": "$step.group_true.groupId"
+      },
+      "expect": {
+        "success": true
+      }
+    },
+    {
+      "api": "ChatGroupManager.updateGroupConfigs",
+      "id": "update_false",
+      "params": {
+        "groupId": "$step.group_true.groupId",
+        "types": 4,
+        "configs": {
+          "maxCount": 200,
+          "inviteNeedConfirm": false,
+          "ext": "rn-port-510",
+          "isPublic": false,
+          "joinApprovalRequired": false,
+          "allowInvites": true
+        }
+      },
+      "expect": {
+        "success": true
+      }
+    },
+    {
+      "api": "ChatGroupManager.fetchGroupInfoWithoutMembersFromServer",
+      "id": "fetch_updated_false",
+      "params": {
+        "groupId": "$step.group_true.groupId"
+      },
+      "expect": {
+        "success": true
+      }
+    },
+    {
+      "api": "ChatGroupManager.createGroupEx",
+      "id": "group_false",
+      "params": {
+        "groupName": "rn-port-510-positive-false",
+        "desc": "Temporary second conversation for cursor continuation",
+        "configs": {
+          "maxCount": 200,
+          "inviteNeedConfirm": false,
+          "ext": "rn-port-510",
+          "isPublic": false,
+          "joinApprovalRequired": false,
+          "allowInvites": true
+        }
+      },
+      "expect": {
+        "success": true
+      }
+    },
+    {
+      "api": "ChatGroupManager.fetchGroupInfoWithoutMembersFromServer",
+      "id": "fetch_false",
+      "params": {
+        "groupId": "$step.group_false.groupId"
+      },
+      "expect": {
+        "success": true
+      }
+    },
+    {
+      "api": "ChatManager.sendMessage",
+      "id": "message_true",
+      "params": {
+        "targetId": "$step.group_true.groupId",
+        "content": "port-5.1.0 pagination fixture",
+        "chatType": 1
+      },
+      "delayAfterMs": 1000,
+      "expect": {
+        "success": true
+      }
+    },
+    {
+      "api": "ChatManager.sendMessage",
+      "id": "message_false",
+      "params": {
+        "targetId": "$step.group_false.groupId",
+        "content": "port-5.1.0 pagination fixture",
+        "chatType": 1
+      },
+      "delayAfterMs": 1000,
+      "expect": {
+        "success": true
+      }
+    },
+    {
+      "api": "ChatManager.getConversationsFromDB",
+      "id": "conversations_default",
+      "params": {},
+      "expect": {
+        "success": true
+      }
+    },
+    {
+      "api": "ChatManager.getConversationsFromDB",
+      "id": "conversations_first",
+      "params": {
+        "cursor": "",
+        "pageSize": 1
+      },
+      "expect": {
+        "success": true
+      }
+    },
+    {
+      "api": "ChatManager.getConversationsFromDB",
+      "id": "conversations_next",
+      "params": {
+        "cursor": "$step.conversations_first.cursor",
+        "pageSize": 1
+      },
+      "expect": {
+        "success": true
+      }
+    },
+    {
+      "api": "ChatManager.getConversationsFromDB",
+      "id": "conversations_max_page",
+      "params": {
+        "cursor": "",
+        "pageSize": 100
+      },
+      "expect": {
+        "success": true
+      }
+    },
+    {
+      "api": "ChatGroupManager.destroyGroup",
+      "id": "destroy_true",
+      "params": {
+        "groupId": "$step.group_true.groupId"
+      },
+      "expect": {
+        "success": true
+      }
+    },
+    {
+      "api": "ChatGroupManager.destroyGroup",
+      "id": "destroy_false",
+      "params": {
+        "groupId": "$step.group_false.groupId"
+      },
+      "expect": {
+        "success": true
+      }
+    },
+    {
+      "api": "ChatManager.deleteConversations",
+      "id": "delete_fixture_conversations",
+      "params": {
+        "convIds": ["$step.group_true.groupId", "$step.group_false.groupId"],
+        "deleteMessages": true
+      },
+      "expect": {
+        "success": true
+      }
+    }
+  ]
+}

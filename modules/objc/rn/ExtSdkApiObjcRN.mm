@@ -9,6 +9,7 @@
 #import "ExtSdkApiRNImpl.h"
 #import "ExtSdkCallbackObjcRN.h"
 #import "ExtSdkDelegateObjcRN.h"
+#import "ExtSdkOSLogForwarder.h"
 #import "ExtSdkMethodTypeObjc.h"
 #import "ExtSdkThreadUtilObjc.h"
 #import <HyphenateChat/EMClient.h>
@@ -29,6 +30,9 @@ static NSString *const TAG = @"ChatSdk";
     NSLog(@"%@: init:", TAG);
     self = [super init];
     if (self) {
+        // Before SDK init: addLogDelegate registers into the core EMLog
+        // singleton directly, so init-window native logs are captured too.
+        [ExtSdkOSLogForwarder install];
         self->impl = [[ExtSdkApiRNImpl alloc] init];
         self->delegate = [[ExtSdkDelegateObjcRN alloc] initWithApi:self];
         [self->impl addListener:[[ExtSdkDelegateObjcRN alloc] initWithApi:self]];

@@ -2,7 +2,7 @@
 //  ExtSdkGroupManagerWrapper.h
 //  FlutterTest
 //
-//  Created by 杜洁鹏 on 2019/10/17.
+//  Created by Du Jiepeng on 2019/10/17.
 //  Copyright © 2019 Easemob. All rights reserved.
 //
 

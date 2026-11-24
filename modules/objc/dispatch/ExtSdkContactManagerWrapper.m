@@ -2,7 +2,7 @@
 //  ExtSdkContactManagerWrapper.m
 //
 //
-//  Created by 杜洁鹏 on 2019/10/8.
+//  Created by Du Jiepeng on 2019/10/8.
 //
 
 #import "ExtSdkContactManagerWrapper.h"
@@ -55,7 +55,7 @@
     BOOL keepConversation = [param[@"keepConversation"] boolValue];
     [EMClient.sharedClient.contactManager
                deleteContact:username
-        isDeleteConversation:keepConversation
+        isDeleteConversation:!keepConversation
                   completion:^(NSString *aUsername, EMError *aError) {
                     [weakSelf onResult:result
                         withMethodType:ExtSdkMethodKeyDeleteContact

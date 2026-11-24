@@ -2,7 +2,7 @@
 //  ExtSdkConversationWrapper.m
 //
 //
-//  Created by 杜洁鹏 on 2019/10/8.
+//  Created by Du Jiepeng on 2019/10/8.
 //
 
 #import "ExtSdkConversationWrapper.h"
@@ -141,7 +141,12 @@
                           if ([weakSelf checkMessageParams:result withMethodType:aChannelName withMessage:msg]) {
                               return;
                           }
-                          if ([weakSelf checkMessageParams:result withMethodType:aChannelName withMessage:dbMsg]) {
+                          if (dbMsg == nil) {
+                              // Match the Flutter SDK contract for updating an absent message.
+                              [weakSelf onResult:result
+                                  withMethodType:aChannelName
+                                       withError:[EMError errorWithDescription:@"The message does not exist." code:500]
+                                      withParams:nil];
                               return;
                           }
                           [self mergeMessage:msg withDBMessage:dbMsg];

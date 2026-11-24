@@ -35,6 +35,7 @@ import {
   MTfetchReactionList,
   MTfetchSupportLanguages,
   MTgetConversation,
+  MTgetConversationsFromDB,
   MTgetConvsMsgsWithKeyword,
   MTgetGroupMessageReadReceipts,
   MTgetLatestMessage,
@@ -1359,17 +1360,64 @@ export class ChatManager extends BaseManager {
   }
 
   /**
+   * 从本地数据库分页获取会话。
+   *
+   * 需要在初始化 SDK 前将 {@link ChatOptions.autoLoadConversations} 设置为 `false`。
+   * 会话按置顶状态、最新消息的服务器时间、会话 ID（不区分大小写）排序，均为降序。
+   *
+   * @param params 分页选项。
+   * - `cursor`：上一页结果中的游标。第一页不传或传入空字符串。
+   * - `pageSize`：每页大小，取值范围为 1 到 100。默认值为 20。
+   *
+   * @returns 获取的会话和下一页的游标。游标为空表示已是最后一页。
+   *
+   * @throws 如果有异常会在这里抛出，包含错误码和错误描述，详见 {@link ChatError}。游标无效时会产生原生错误 110。
+   *
+   * @since 5.1.0
+   */
+  public async getConversationsFromDB(params: {
+    cursor?: string;
+    pageSize?: number;
+  }): Promise<ChatCursorResult<ChatConversation>> {
+    chatlog.log(`${ChatManager.TAG}: getConversationsFromDB: `, params);
+    const r: any = await Native._callMethod(MTgetConversationsFromDB, {
+      [MTgetConversationsFromDB]: {
+        cursor: params.cursor ?? '',
+        pageSize: params.pageSize ?? 20,
+      },
+    });
+    Native.checkErrorFromResult(r);
+    const result = r[MTgetConversationsFromDB];
+    return new ChatCursorResult<ChatConversation>({
+      cursor: result.cursor,
+      list: result.list,
+      totalCount: result.totalCount,
+      opt: { map: (conversation: any) => new ChatConversation(conversation) },
+    });
+  }
+
+  /**
    * 获取本地数据库中所有会话。
    *
    * 该方法会先从内存中获取，如果未找到任何会话，从本地数据库获取。
+   *
+   * @param isSort 是否对会话排序：
+   * - （默认）`true`：是。置顶会话优先，其他会话按最新消息时间降序排列。
+   * - `false`：否。顺序不指定。
    *
    * @returns 获取的会话。
    *
    * @throws 如果有异常会在这里抛出，包含错误码和错误描述，详见 {@link ChatError}。
    */
-  public async getAllConversations(): Promise<Array<ChatConversation>> {
-    chatlog.log(`${ChatManager.TAG}: getAllConversations:`);
-    let r: any = await Native._callMethod(MTloadAllConversations);
+  public async getAllConversations(
+    isSort: boolean = true
+  ): Promise<Array<ChatConversation>> {
+    chatlog.log(`${ChatManager.TAG}: getAllConversations: ${isSort}`);
+    let r: any = await Native._callMethod(MTloadAllConversations, {
+      [MTloadAllConversations]: {
+        isSort: isSort,
+      },
+    });
     Native.checkErrorFromResult(r);
     let ret = new Array<ChatConversation>(0);
     const rr: Array<any> = r?.[MTloadAllConversations];

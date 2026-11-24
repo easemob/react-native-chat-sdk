@@ -9,7 +9,7 @@ import io.flutter.plugin.common.JSONMethodCodec;
 import io.flutter.plugin.common.MethodChannel;
 
 /**
- * 通道管理器
+ * Channel manager.
  */
 public class ExtSdkChannelManager {
 

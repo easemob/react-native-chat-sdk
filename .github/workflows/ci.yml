@@ -2,6 +2,14 @@ name: CI
 
 on:
   pull_request:
+  push:
+    # The merge-forward flow (iron rules) lands directly on the long-term
+    # lines without a PR, and lefthook skips merge commits (no staged
+    # files), so this is the only automated quality gate on merged trees.
+    # Version branches (1.21.0, 5.1.0) stay push-free: WIP pushes there
+    # cost no runner time. Docs-only pushes are ignored.
+    branches: [dev, 1.x, 5.x]
+    paths-ignore: ['dailylog/**', 'docs/**', '*.md']
   workflow_dispatch:
 
 permissions:

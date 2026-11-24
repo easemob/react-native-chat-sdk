@@ -13,7 +13,7 @@
 
 EXT_SDK_NAMESPACE_BEGIN
 
-/// 分发接口
+/// Dispatch interface
 class ExtSdkApiJava : public ExtSdkApi {
 public:
     static void initJni(JNIEnv* env);

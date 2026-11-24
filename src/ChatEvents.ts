@@ -341,7 +341,7 @@ export function ChatMultiDeviceEventFromNumber(
  * 注意：token 过期不会触发 `onDisconnected`，而是通过 {@link ChatConnectEventListener.onTokenDidExpire} 上报。
  */
 export enum ChatDisconnectErrorCode {
-  // 登出原因：本地登录状态无效，用户必须重新登录。
+  // 登出原因：本地登录状态失效，用户必须重新登录。
 
   /**
    * 应用的日活跃用户数（DAU）或月活跃用户数（MAU）已达到上限。
@@ -419,7 +419,7 @@ export enum ChatDisconnectErrorCode {
    */
   SERVER_SERVICE_RESTRICTED = 305,
 
-  // 连接原因：用户保持登录状态，SDK 会自动重连。
+  // 连接原因：用户保持登录状态，SDK 自动重连。
 
   /**
    * 发生网络错误。

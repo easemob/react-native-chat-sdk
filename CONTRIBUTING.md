@@ -93,6 +93,7 @@ Make sure your code passes TypeScript, lint and tests before committing:
 
 Remember to add tests for your change if possible. Note that the native wrapper code in `modules/java/` and `modules/objc/` is **not** covered by automated tests — after changing it, manually exercise the affected feature in the example app.
 
+Device-level test layers (CI regression, single-device API scripts, and multi-device orchestration) are documented in [`docs/testing/README.md`](docs/testing/README.md).
 
 ### Commit message convention
 

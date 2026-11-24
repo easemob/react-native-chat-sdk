@@ -1,6 +1,6 @@
 {
   "name": "react-native-chat-sdk",
-  "version": "5.0.0",
+  "version": "5.1.0",
   "description": "An instant messaging SDK product is a software development kit that provides interfaces and functionalities for building and integrating real-time messaging features, enabling developers to implement instant messaging services within their applications.",
   "main": "./lib/module/index.js",
   "types": "./lib/typescript/src/index.d.ts",
@@ -49,7 +49,7 @@
     "test": "jest",
     "test:unit": "jest src/__tests__/unit",
     "test:contract": "jest src/__tests__/contract",
-    "test:ci-scripts": "node --test scripts/ci/test_script_results.js",
+    "test:ci-scripts": "node --test scripts/ci/test_script_results.js scripts/ci/test_assert_ci_run.js scripts/ci/test_check_case_mapping.js scripts/ci/test_e2e_accounts.js scripts/ci/test_render_ci_log.js",
     "test:coverage": "jest --coverage",
     "report:api": "node scripts/ci/auto_report.js",
     "scan:deprecated": "bash scripts/scan-deprecated.sh",

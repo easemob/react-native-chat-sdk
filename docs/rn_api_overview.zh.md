@@ -114,6 +114,7 @@ ChatSDK 是一个高度可靠的全球交流平台，您的用户可以在其中
 | {@link ChatManager.fetchGroupMessageReadReceipts fetchGroupMessageReadReceipts} | 分页从服务端获取群组消息的已读回执。 |
 | {@link ChatManager.removeConversationFromServer removeConversationFromServer} | 删除服务端的指定会话及其历史消息。 |
 | {@link ChatManager.getConversation getConversation} | 根据会话ID和会话类型获取会话。 |
+| {@link ChatManager.getConversationsFromDB getConversationsFromDB} | 从本地数据库分页获取会话。 |
 | {@link ChatManager.getAllConversations getAllConversations} | 获取本地数据库中所有会话。 |
 | {@link ChatManager.deleteConversation deleteConversation} | 删除指定会话及其本地历史消息。 |
 | {@link ChatManager.deleteConversations deleteConversations} | 从本地数据库批量删除会话。 |
