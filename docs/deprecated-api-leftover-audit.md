@@ -3,7 +3,7 @@
 Date: 2026-09-21
 Scope: `react-native-chat-sdk` 5.0.0 worktree — `src/` (public API, internal consts, events,
 models) plus the corresponding leftover wiring in `modules/java`, `modules/objc`, `modules/cpp`.
-Example app (`example/src`, `example/ci`) and `docs/` were cross-checked for references.
+Example app (`example/src`, `testing/single/cases`) and `docs/` were cross-checked for references.
 
 ## Method
 

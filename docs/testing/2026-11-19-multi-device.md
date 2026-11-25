@@ -1,4 +1,4 @@
-# 多设备协同（example/multi_cases）
+# 多设备协同（testing/multi/cases）
 
 ## 定位
 
@@ -13,7 +13,7 @@
 
 当前 RN 状态（以报告为准，不要引用 Flutter 的结论）：
 
-- 13 个 canonical 用例已就位，除下方唯一例外外与 Flutter 仓逐字节一致；
+- 13 个 canonical 用例已就位，除下方 message-delivery 例外外与 Flutter 仓逐字节一致；第 14 个 `5.2.0-multi-message-multibody-positive` 采用 Flutter 仓的文件，同样逐字节一致，RN 侧尚未在设备上运行；
 - Android 双模拟器已端到端验收 3 个场景：`message-delivery`、`presence`、`group-member-join`，run `20261119-073454-batch-99b01f8b`，3/3 通过；
 - 其余场景 RN 侧尚未逐场景验收；
 - iOS 多设备挂起：orchestrator 的 reverse 宿主链路目前硬绑 `adb`，需要单独开发；
@@ -21,15 +21,17 @@
 
 ## 跨端共享与唯一例外
 
-`example/multi_cases/` 与 `im_flutter_sdk/testing/multi-cases/` 的同名 YAML/JSON **除唯一已声明的例外外逐字节一致**，这是跨端 canonical 用例约定（D6）。修改任何用例都必须同时改两端，并在 orchestrator 的 `multi/` 目录执行对账：
+`testing/multi/cases/` 与 `im_flutter_sdk/testing/multi/cases/` 的同名 YAML/JSON **除唯一已声明的例外外逐字节一致**，这是跨端 canonical 用例约定（D6）。修改任何用例都必须同时改两端，并在 orchestrator 的 `multi/` 目录执行对账：
 
 ```bash
-dart run bin/cli.dart cases diff <Flutter仓>/testing/multi-cases <RN仓>/example/multi_cases
-# 当前预期：identical 24，message-delivery 的 yaml/json content differs，退出码 1
+dart run bin/cli.dart cases diff <Flutter仓>/testing/multi/cases <RN仓>/testing/multi/cases
+# 当前预期：identical 26，message-delivery 的 yaml/json content differs，退出码 1
 # 例外修复后应变为 0 = 全部一致；2 = 用法错误
 ```
 
-唯一已声明的例外是 `5.0.0-multi-message-delivery-positive.yaml/.json`：RN native 5.1.0（Android hyphenate-chat 5.1.0 / iOS HyphenateChat 5.1.0）没有 delivered 回执，RN 副本做了两处最小差异——YAML 的 delivery 分支用 `delivery_ack_supported: false` 关闭，JSON 的 `requiredBindings` 去掉 `global.biz.event.delivered`。等 native 升到含修复的 5.2.x 后，把这两处恢复并重跑，即完成该场景验证。例外必须写进 `example/multi_cases/README.md`；不要私自增加其他 RN 单侧差异。
+唯一已声明的例外是 `5.0.0-multi-message-delivery-positive.yaml/.json`：RN native 5.1.0（Android hyphenate-chat 5.1.0 / iOS HyphenateChat 5.1.0）没有 delivered 回执，RN 副本做了两处最小差异——YAML 的 delivery 分支用 `delivery_ack_supported: false` 关闭，JSON 的 `requiredBindings` 去掉 `global.biz.event.delivered`。等 native 升到含修复的 5.2.x 后，把这两处恢复并重跑，即完成该场景验证。例外必须写进 `testing/multi/README.md`；不要私自增加其他 RN 单侧差异。
+
+`5.2.0-multi-message-multibody-positive.yaml/.json`（多体消息收发）取自 Flutter 仓，两端一致，不是例外。它依赖的 `sendMessage.bodies` 入参与消息 JSON 的 `bodies` 字段，还需要补进 orchestrator 的 `docs/agent-contract.md`。
 
 ## 工具与输入
 
@@ -37,7 +39,7 @@ dart run bin/cli.dart cases diff <Flutter仓>/testing/multi-cases <RN仓>/exampl
 
 1. 环境变量 `IMTO_PATH`；
 2. 本机默认路径 `/Users/asterisk/Codes/zuoyu/im-test-orchestrator`；
-3. 按 `example/multi-tool.json` 的 pin 克隆到 `example/.im-test-orchestrator`（当前 pin 为空，不会生效）。
+3. 按 `testing/multi-tool.json` 的 pin 克隆到 `example/.im-test-orchestrator`（当前 pin 为空，不会生效）。
 
 不要把 orchestrator vendor 进本仓，也不要加 submodule。下文的 `<IMTO>` 指实际解析到的工具仓根目录。
 
@@ -45,7 +47,7 @@ dart run bin/cli.dart cases diff <Flutter仓>/testing/multi-cases <RN仓>/exampl
 
 | 输入                  | 位置                        | 产生方式                                                           |
 | --------------------- | --------------------------- | ------------------------------------------------------------------ |
-| 用例 YAML/JSON        | 本仓 `example/multi_cases/` | 手工维护，跨端同步                                                 |
+| 用例 YAML/JSON        | 本仓 `testing/multi/cases/` | 手工维护，跨端同步                                                 |
 | `accounts-input.json` | `<IMTO>/multi/config/`      | `generate_accounts_input.dart` 从 `example/config.local.json` 生成 |
 | `accounts.g.dart`     | `<IMTO>/multi/lib/`         | `generate_accounts.dart` 经 REST 取 token 生成                     |
 | `cases.json`          | `<IMTO>/multi/config/`      | `generate_cases.dart` 按平台/设备/账号生成                         |
@@ -60,7 +62,7 @@ dart run bin/cli.dart cases diff <Flutter仓>/testing/multi-cases <RN仓>/exampl
 | ----------- | ------------------------------------------------------------------ | -------------------------------------------------- |
 | Dart SDK    | 由 Flutter SDK 提供；orchestrator 用 `dart run` 执行               | `dart --version`                                   |
 | Android SDK | platform-tools、emulator；至少两台可同时运行的实例                 | `adb devices`、`emulator -list-avds`               |
-| 设备 ABI    | `example/target-rn.yaml` 固定构建 `arm64-v8a`，设备必须是 arm64    | `adb -s <serial> shell getprop ro.product.cpu.abi` |
+| 设备 ABI    | `testing/target-rn.yaml` 固定构建 `arm64-v8a`，设备必须是 arm64    | `adb -s <serial> shell getprop ro.product.cpu.abi` |
 | RN 构建前置 | `example` 能正常构建：已执行 `yarn`、生成了 version/CMake/env 文件 | 按需执行 `yarn prepare`                            |
 | 账号        | `config.local.json` 中的账号必须已在服务端存在，至少两条可登录账号 | 见 orchestrator 的账号准备说明                     |
 
@@ -73,7 +75,7 @@ emulator -avd <AVD-2> &
 adb devices                  # 两台都应为 device
 ```
 
-`target-rn.yaml` 的构建命令固定 `-PreactNativeArchitectures=arm64-v8a`；x86_64 模拟器会装不上或启动失败，不能直接复用。iOS 多设备暂不支持：orchestrator 的 reverse 宿主链路目前硬绑 `adb`，不能把 Android 换成 iOS 模拟器。`target-rn.yaml` 的 `platform` 也只声明了 `android`。
+`testing/target-rn.yaml` 的构建命令固定 `-PreactNativeArchitectures=arm64-v8a`；x86_64 模拟器会装不上或启动失败，不能直接复用。iOS 多设备暂不支持：orchestrator 的 reverse 宿主链路目前硬绑 `adb`，不能把 Android 换成 iOS 模拟器。`testing/target-rn.yaml` 的 `platform` 也只声明了 `android`。
 
 ### 首次准备
 
@@ -107,8 +109,8 @@ dart run scripts/generate_accounts.dart --input config/accounts-input.json
 # 列出可用设备实例（Android 为 AVD 名，iOS 为 UDID）
 dart run bin/cli.dart devices list --platform android
 
-# 在 RN 仓根目录执行：默认扫描 example/multi_cases，生成 <IMTO>/multi/config/cases.json
-scripts/ci/multi.sh generate --platform android --target example/target-rn.yaml
+# 在 RN 仓根目录执行：默认扫描 testing/multi/cases，生成 <IMTO>/multi/config/cases.json
+scripts/ci/multi.sh generate --platform android --target testing/target-rn.yaml
 ```
 
 可选参数：`--case <场景主名>` 只生成一个场景；`--account <id>`/`--instance <id>` 指定账号与设备，可重复。生成失败时旧 `cases.json` 会保留；常见失败原因是账号为空、设备数量不足、账号/设备重复或指定值不存在。`message-recall` 会在选择阶段自动跳过。
@@ -119,12 +121,12 @@ scripts/ci/multi.sh generate --platform android --target example/target-rn.yaml
 # 全流程：准备数据/设备 → 构建 → 安装启动 → 执行 → 报告；终端会先输出 runId
 scripts/ci/multi.sh all \
   --cases <IMTO>/multi/config/cases.json \
-  --target example/target-rn.yaml
+  --target testing/target-rn.yaml
 
 # contact-add 需要账号数据，prepare 与 run 都必须带 --data-input
 scripts/ci/multi.sh all \
   --cases <IMTO>/multi/config/cases.json \
-  --target example/target-rn.yaml \
+  --target testing/target-rn.yaml \
   --data-input <IMTO>/multi/config/accounts-input.json
 ```
 
@@ -135,11 +137,11 @@ dart run bin/cli.dart prepare <case.yaml> --cases config/cases.json
 # → 输出 runId
 
 dart run bin/cli.dart devices start --platform android --instance <AVD> --run-id <runId>
-dart run bin/cli.dart build --platform android --target <RN仓>/example/target-rn.yaml --run-id <runId>
-dart run bin/cli.dart launch <case.yaml> --target <RN仓>/example/target-rn.yaml --run-id <runId>
+dart run bin/cli.dart build --platform android --target <RN仓>/testing/target-rn.yaml --run-id <runId>
+dart run bin/cli.dart launch <case.yaml> --target <RN仓>/testing/target-rn.yaml --run-id <runId>
 # → 输出 launchId
 
-dart run bin/cli.dart run <case.yaml> --target <RN仓>/example/target-rn.yaml \
+dart run bin/cli.dart run <case.yaml> --target <RN仓>/testing/target-rn.yaml \
   --run-id <runId> --launch <launchId>
 # contact-add 另加 --data-input config/accounts-input.json
 
@@ -150,9 +152,9 @@ dart run bin/cli.dart report --run-id <runId>
 
 ## RN 目标配置
 
-`example/target-rn.yaml` 是 RN 的执行目标，关键点：
+`testing/target-rn.yaml` 是 RN 的执行目标，关键点：
 
-- `platform: android`，`appDir: .`（相对 target 文件所在目录，即 `example/`）；
+- `platform: android`，`appDir: ../example`、`casesDir: multi/cases`（均相对 target 文件所在目录，即 `testing/`）；
 - `transport: reverse`：宿主起 HTTP 端点，应用通过 `adb reverse` 主动轮询/上报；需要 `app.applicationId`、`app.controlFlag`（`EASEMOB_AGENT=/data/local/tmp/rn_agent_control.json`，构建期注入，launch 前推送 `{port, token}`）、`build.command`、`build.artifacts`、`launch.start/stop`；
 - 构建命令在 `example/` 下逐字执行：`./android/gradlew -p android app:assembleDebug --no-daemon --console=plain -PreactNativeArchitectures=arm64-v8a -PbundleInDebug=true`，产物为 `android/app/build/outputs/apk/debug/app-debug.apk`；
 - 构建前置：`yarn install`，以及 `yarn gen:version_file`、`yarn gen:cmake_file`、`yarn gen:env_file`；
@@ -230,7 +232,7 @@ dart run bin/cli.dart clean --run-id <runId> --type logs --type build
 1. 先确认行为确实需要第二个运行中客户端，并确定角色、账号和事件关联键。
 2. 按 `<IMTO>/docs/case-authoring.md` 写 YAML 流程与同名 JSON；用例要有明确的准备、断言和业务清理，不能依赖固定 sleep 或执行顺序。
 3. 同时更新 Flutter 与 RN 两份副本，运行 `cases diff` 确认除已声明的 message-delivery 例外外没有新的 `content differs`；若确有其他 RN 单侧差异，必须先在本目录 README 声明原因和恢复条件。
-4. 在 Android 双设备上跑单场景，检查 `flow-report.json` 与 `device-*.log`，再把场景和 RN 验收状态补进本文件和 `example/multi_cases/README.md`。
+4. 在 Android 双设备上跑单场景，检查 `flow-report.json` 与 `device-*.log`，再把场景和 RN 验收状态补进本文件和 `testing/multi/README.md`。
 
 排查顺序：
 

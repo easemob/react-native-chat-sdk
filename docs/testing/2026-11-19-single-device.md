@@ -1,4 +1,4 @@
-# 单设备 API 脚本（example/ci）
+# 单设备 API 脚本（testing/single/cases）
 
 ## 定位
 
@@ -41,7 +41,9 @@
 | `params`       | 否   | 调用参数，可含下表的引用表达式。                                                                                                                    |
 | `timeoutMs`    | 否   | 单步超时，默认 30000ms。                                                                                                                            |
 | `delayAfterMs` | 否   | 步骤执行后的节流等待；不能代替事件等待或断言。                                                                                                      |
-| `expect`       | 是   | 宿主判定条件：`{ "success": true }`，或 `{ "success": false, "errorCode": <number> }`。`errorCode` 会与 `error.code` 精确比较，不是范围或前缀匹配。 |
+| `expect`       | 是   | 宿主判定条件：`{ "success": true }`，或 `{ "success": false, "errorCode": <number> }`。`errorCode` 会与 `error.code` 精确比较，不是范围或前缀匹配。`success: true` 可再带 `checks`（见下）。 |
+
+`checks`（可选）：`[{ "path": "bodies.0.content", "equals": "x" }, { "path": "bodies", "length": 2 }]`。`path` 相对步骤返回值（即结果的 `data`），数组下标用数字段，所以 `bodies.0`、`bodies.1` 能钉住多体消息的顺序；每项只能有 `equals`（JSON 全等）或 `length`（数组长度）之一，任何一项不满足该步骤即为 `failed`。
 
 参数引用：
 
@@ -63,21 +65,23 @@
 
 另外会校验 `init`/`login` 成功，以及 `script.done.total` 与步骤数一致；任何一项不满足都算本次运行失败。`auto_report.js` 在有失败或崩溃时以非 0 退出。
 
-脚本里可以用 `_comment` 字段记录环境前提和已知限制；执行引擎会忽略未知顶层字段。示例可参考 `example/ci/port_5_0_0_positive.json`。
+脚本里可以用 `_comment` 字段记录环境前提和已知限制；执行引擎会忽略未知顶层字段。示例可参考 `testing/single/cases/port_5_0_0_positive.json`。
 
 ## 现有脚本
 
-| 文件                                 | 步骤 | 用途与注意事项                                                                                                                  |
-| ------------------------------------ | ---- | ------------------------------------------------------------------------------------------------------------------------------- |
-| `port_5_0_0_positive.json`           | 18   | 5.0.0 平版正向基线；显式 `init.debugModel=true`；辅助的 `sendMessage`/`destroyGroup` 只做前置与清理，报告解读时不计入被测 API。 |
-| `port_5_0_0_negative.json`           | 10   | 5.0.0 反向：非法参数、缺失资源、无效 token。`_comment` 记录了不执行的场景与集群限制。                                           |
-| `port_5_1_0_positive.json`           | 15   | 5.1.0 正向；省略 `init`，依赖 env 推导；要求 `chatOptions.autoLoadConversations=false`。                                        |
-| `port_5_1_0_negative.json`           | 2    | 5.1.0 反向：非法 cursor 期望 `INVALID`；同样要求 `autoLoadConversations=false`。                                                |
-| `port_4_24_1.json`                   | 6    | 4.24.1 基线回归，保留用于老版本对比。                                                                                           |
-| `him_delete_conversations_edge.json` | 1    | 删除会话边界场景的工单复现。                                                                                                    |
-| `him_delete_conversations.json`      | 5    | 删除会话相关工单回归。                                                                                                          |
-| `him_unread_count.json`              | 1    | 未读数相关工单回归。                                                                                                            |
-| `him23707_keyword_senders.json`      | 6    | HIM-23707：按发送者关键词搜索消息。                                                                                             |
+| 文件                                 | 步骤 | 用途与注意事项                                                                                                                        |
+| ------------------------------------ | ---- | ------------------------------------------------------------------------------------------------------------------------------------- |
+| `port_5_0_0_positive.json`           | 18   | 5.0.0 平版正向基线；显式 `init.debugModel=true`；辅助的 `sendMessage`/`destroyGroup` 只做前置与清理，报告解读时不计入被测 API。       |
+| `port_5_0_0_negative.json`           | 10   | 5.0.0 反向：非法参数、缺失资源、无效 token。`_comment` 记录了不执行的场景与集群限制。                                                 |
+| `port_5_1_0_positive.json`           | 15   | 5.1.0 正向；省略 `init`，依赖 env 推导；要求 `chatOptions.autoLoadConversations=false`。                                              |
+| `port_5_1_0_negative.json`           | 2    | 5.1.0 反向：非法 cursor 期望 `INVALID`；同样要求 `autoLoadConversations=false`。                                                      |
+| `port_5_2_0_positive.json`           | 3    | 5.2.0 正向：登录后 `getConnectionState`；向 `accounts[1]` 发送双文本体多体消息，并读回最新消息；两处都用 `checks` 断言 `bodies` 长度为 2、`bodies.0`/`bodies.1` 内容与发送顺序一致。不含图片体和跨设备接收。 |
+| `port_5_2_0_negative.json`           | 1    | 5.2.0 反向：`bodies` 为空列表，构造消息即抛 `ChatError(-1)`，未到 native；`-1` 也是脚本引擎的兜底码，需在日志里确认描述。             |
+| `port_4_24_1.json`                   | 6    | 4.24.1 基线回归，保留用于老版本对比。                                                                                                 |
+| `him_delete_conversations_edge.json` | 1    | 删除会话边界场景的工单复现。                                                                                                          |
+| `him_delete_conversations.json`      | 5    | 删除会话相关工单回归。                                                                                                                |
+| `him_unread_count.json`              | 1    | 未读数相关工单回归。                                                                                                                  |
+| `him23707_keyword_senders.json`      | 6    | HIM-23707：按发送者关键词搜索消息。                                                                                                   |
 
 `him_*` 是历史工单资产，仍然可直接运行；它们断言的是工单场景，不要当作全量 API 覆盖。
 
@@ -108,8 +112,8 @@ yarn report:api --platform android
 yarn report:api --platform ios
 
 # 指定脚本/设备
-yarn report:api --platform android --script example/ci/port_5_0_0_negative.json
-yarn report:api --platform ios --device <UDID> --script example/ci/port_5_1_0_positive.json
+yarn report:api --platform android --script testing/single/cases/port_5_0_0_negative.json
+yarn report:api --platform ios --device <UDID> --script testing/single/cases/port_5_1_0_positive.json
 
 # 不跑设备，只从已有日志重建报告
 yarn report:api --platform android --from-log artifacts/single/<timestamp>/android/events.sanitized.jsonl

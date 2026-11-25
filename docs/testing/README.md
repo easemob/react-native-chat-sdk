@@ -31,8 +31,8 @@ yarn prepare             # 生成 version/CMake/env，并构建 lib/
 | 类别            | 回答什么问题                                                                                | 用例位置                                               | 执行入口                                                     | 结果                                                       |
 | --------------- | ------------------------------------------------------------------------------------------- | ------------------------------------------------------ | ------------------------------------------------------------ | ---------------------------------------------------------- |
 | CI 设备回归     | 公开契约在真实设备上是否长期不漂移？用例可在干净账号上重复，且能自建自清                    | `example/src/ci/modules/*_cases.ts`，按固定 entry 注册 | `bash scripts/ci/ci_test_local.sh <platform> [entries]`      | `artifacts/ci/<timestamp>/<platform>/summary.md`           |
-| 单设备 API 脚本 | 某版本平版后的 API 参数、返回字段和错误码是否符合预期？逐步骤留下调用证据                   | `example/ci/*.json`                                    | `yarn report:api --platform <platform> [--script <json>]`    | `artifacts/single/<timestamp>/<platform>/report.md`        |
-| 多设备协同      | 需要第二个运行中客户端才能验证的行为：送达/回执、好友申请、群通知、presence、同账号双端同步 | `example/multi_cases/*.yaml` + 同名 `.json`            | `scripts/ci/multi.sh all ...`（编排在 im-test-orchestrator） | `artifacts/multi/<timestamp>/<platform>/upgrade-report.md` |
+| 单设备 API 脚本 | 某版本平版后的 API 参数、返回字段和错误码是否符合预期？逐步骤留下调用证据                   | `testing/single/cases/*.json`                                    | `yarn report:api --platform <platform> [--script <json>]`    | `artifacts/single/<timestamp>/<platform>/report.md`        |
+| 多设备协同      | 需要第二个运行中客户端才能验证的行为：送达/回执、好友申请、群通知、presence、同账号双端同步 | `testing/multi/cases/*.yaml` + 同名 `.json`            | `scripts/ci/multi.sh all ...`（编排在 im-test-orchestrator） | `artifacts/multi/<timestamp>/<platform>/upgrade-report.md` |
 
 选择时的几个判断点：
 
@@ -67,12 +67,12 @@ yarn prepare             # 生成 version/CMake/env，并构建 lib/
 ## 与 Flutter 仓的关系
 
 - **CI 回归和单设备脚本是各仓独立实现**，不共享用例，也不能把 Flutter 的报告结论直接当 RN 结论。
-- **多设备用例是跨端 canonical 资产**：`example/multi_cases/` 与 Flutter 仓 `testing/multi-cases/` 同名 YAML/JSON 除唯一已声明的例外 `message-delivery` 外逐字节一致（原因见 [multi_cases README](../../example/multi_cases/README.md)）。改动用 orchestrator 的 `cases diff` 对账：当前预期 24 个 `identical`、仅 message-delivery 两文件 `content differs`（退出码 1）；除该例外外不应出现新的差异，例外修复后应恢复为 0。
+- **多设备用例是跨端 canonical 资产**：`testing/multi/cases/` 与 Flutter 仓 `testing/multi/cases/` 同名 YAML/JSON 除唯一已声明的例外 `message-delivery` 外逐字节一致（原因见 [testing/multi README](../../testing/multi/README.md)）。改动用 orchestrator 的 `cases diff` 对账：当前预期 26 个 `identical`、仅 message-delivery 两文件 `content differs`（退出码 1）；除该例外外不应出现新的差异，例外修复后应恢复为 0。5.2.0 新增的 `5.2.0-multi-message-multibody-positive` 取自 Flutter 仓，两端一致。
 - Flutter 仓的对应文档在其 `docs/testing/`，结构可参考，但命令和路径以本仓为准。
 
 ## 文档索引
 
 - CI 回归：[CI 设备回归](2026-11-19-ci.md)；规范与新增用例流程见 [`docs/ci/README.md`](../ci/README.md)；设计背景见 [`docs/superpowers/specs/2026-11-18-ci-device-test-architecture-design.md`](../superpowers/specs/2026-11-18-ci-device-test-architecture-design.md)。
 - 单设备脚本：[单设备 API 脚本](2026-11-19-single-device.md)。
-- 多设备协同：[多设备协同](2026-11-19-multi-device.md)；用例目录说明见 [`example/multi_cases/README.md`](../../example/multi_cases/README.md)；编排、账号和报告格式见 im-test-orchestrator 仓的 `multi/README.md`。
+- 多设备协同：[多设备协同](2026-11-19-multi-device.md)；用例目录说明见 [`testing/multi/README.md`](../../testing/multi/README.md)；编排、账号和报告格式见 im-test-orchestrator 仓的 `multi/README.md`。
 - 与 Flutter CI 的对齐记录：[CI 用例对齐 Flutter 记录](2026-11-20-ci-case-port.md)。
