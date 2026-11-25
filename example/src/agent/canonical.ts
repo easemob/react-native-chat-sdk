@@ -94,6 +94,11 @@ export function canonicalMessage(msg: ChatMessage): Json {
   put(out, 'direction', msg.direction === 'send' ? 0 : 1);
   put(out, 'status', msg.status);
   out.body = canonicalMessageBody(msg.body);
+  // Multi-body (5.2.0): `bodies` is emitted only when there is more than one
+  // body, so single-body messages keep their existing canonical shape.
+  if (Array.isArray(msg.bodies) && msg.bodies.length > 1) {
+    out.bodies = msg.bodies.map(canonicalMessageBody);
+  }
   put(out, 'attributes', msg.attributes);
   put(out, 'isRead', msg.isRead);
   put(out, 'isPeerRead', msg.isPeerRead);

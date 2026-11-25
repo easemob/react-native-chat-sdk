@@ -40,6 +40,60 @@ function hasOwn(value, key) {
   return Object.prototype.hasOwnProperty.call(value, key);
 }
 
+function valueAt(value, pathText) {
+  let current = value;
+  for (const part of pathText.split('.')) {
+    if (Array.isArray(current) && /^\d+$/.test(part)) {
+      if (Number(part) >= current.length) return { found: false };
+      current = current[Number(part)];
+    } else if (
+      current != null &&
+      typeof current === 'object' &&
+      hasOwn(current, part)
+    ) {
+      current = current[part];
+    } else {
+      return { found: false };
+    }
+  }
+  return { found: true, value: current };
+}
+
+// `checks` run against result.data: [{path, equals}] or [{path, length}].
+// Array indexes are numeric path parts, so `bodies.0.content` pins order.
+function matchChecks(result, checks) {
+  if (!Array.isArray(checks) || checks.length === 0) {
+    return { valid: false, reason: 'checks must be a nonempty list' };
+  }
+  for (const check of checks) {
+    const operators = ['equals', 'length'].filter((key) =>
+      hasOwn(check ?? {}, key)
+    );
+    if (typeof check?.path !== 'string' || operators.length !== 1) {
+      return {
+        valid: false,
+        reason: 'each check needs path and one of equals or length',
+      };
+    }
+    const actual = valueAt(result?.data, check.path);
+    const expected = check[operators[0]];
+    const passed =
+      actual.found &&
+      (operators[0] === 'equals'
+        ? JSON.stringify(actual.value) === JSON.stringify(expected)
+        : Array.isArray(actual.value) && actual.value.length === expected);
+    if (!passed) {
+      return {
+        valid: true,
+        reason: `check ${check.path} ${operators[0]} ${JSON.stringify(expected)} failed, actual ${
+          actual.found ? JSON.stringify(actual.value) : '<missing>'
+        }`,
+      };
+    }
+  }
+  return { valid: true, reason: null };
+}
+
 function matchExpectation(result, expectation) {
   if (expectation == null || typeof expectation !== 'object') {
     return { valid: false, matched: false, reason: 'missing expect object' };
@@ -58,10 +112,18 @@ function matchExpectation(result, expectation) {
   }
   if (typeof expectation.success === 'boolean') {
     const matched = result?.success === expectation.success;
+    if (!matched || !hasOwn(expectation, 'checks')) {
+      return {
+        valid: true,
+        matched,
+        reason: matched ? null : `expected success=${expectation.success}`,
+      };
+    }
+    const checked = matchChecks(result, expectation.checks);
     return {
-      valid: true,
-      matched,
-      reason: matched ? null : `expected success=${expectation.success}`,
+      valid: checked.valid,
+      matched: checked.valid && checked.reason == null,
+      reason: checked.reason,
     };
   }
   return {

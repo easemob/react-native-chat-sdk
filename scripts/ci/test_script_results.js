@@ -119,7 +119,7 @@ for (const script of ['auto_report.js', 'assert_ci_run.js']) {
 
 function readScript(name) {
   return JSON.parse(
-    fs.readFileSync(path.join(REPO_ROOT, 'example/ci', name), 'utf8')
+    fs.readFileSync(path.join(REPO_ROOT, 'testing/single/cases', name), 'utf8')
   );
 }
 
@@ -158,6 +158,33 @@ test('matchExpectation treats expected failures as passed outcomes', () => {
     ).matched,
     true
   );
+});
+
+test('matchExpectation checks pin array order and length in result.data', () => {
+  const result = {
+    success: true,
+    data: { bodies: [{ content: 'a' }, { content: 'b' }] },
+  };
+  const expectWith = (checks) =>
+    matchExpectation(result, { success: true, checks });
+  assert.equal(
+    expectWith([
+      { path: 'bodies', length: 2 },
+      { path: 'bodies.0.content', equals: 'a' },
+      { path: 'bodies.1.content', equals: 'b' },
+    ]).matched,
+    true
+  );
+  const swapped = expectWith([{ path: 'bodies.0.content', equals: 'b' }]);
+  assert.equal(swapped.matched, false);
+  assert.match(swapped.reason, /bodies\.0\.content/);
+  assert.equal(
+    expectWith([{ path: 'bodies.2.content', equals: 'c' }]).matched,
+    false
+  );
+  assert.equal(expectWith([{ path: 'bodies', length: 3 }]).matched, false);
+  assert.equal(expectWith([{ path: 'bodies' }]).valid, false);
+  assert.equal(expectWith([]).valid, false);
 });
 
 test('evaluateScript ignores script.done raw failure count when expectations pass', () => {
@@ -315,15 +342,13 @@ test('negative report records the intentionally disabled native crash case', () 
   const scriptName = 'port_5_0_0_negative.json';
   const script = readScript(scriptName);
   const issues = collectIssues(
-    path.join(REPO_ROOT, 'example/ci', scriptName),
+    path.join(REPO_ROOT, 'testing/single/cases', scriptName),
     'android',
     script,
     { outcomes: [], bySource: new Map() },
     ''
   );
   assert.ok(
-    issues.some(
-      (item) => item.key === 'fetch-group-receipt-missing-disabled'
-    )
+    issues.some((item) => item.key === 'fetch-group-receipt-missing-disabled')
   );
 });

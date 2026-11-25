@@ -162,19 +162,29 @@ export const chatApis: ApiEntry[] = [
     name: 'ChatManager.sendMultiBodyMessage',
     group: 'ChatManager',
     description:
-      '发送多体消息（5.2.0 起）：一条消息携带文本体和自定义体。chatType：0 单聊 / 1 群聊 / 2 聊天室。' +
-      '返回已发送消息 JSON，其中 bodies 含两个消息体、body 为首个；接收端的 onMessagesReceived 同样应带两个消息体。',
+      '发送多体消息（5.2.0 起）：一条消息携带 bodies 列表中的多个消息体，仅支持 txt（content）和 custom（event）。' +
+      'chatType：0 单聊 / 1 群聊 / 2 聊天室。返回已发送消息 JSON，其中 bodies 与入参一致、body 为首个；' +
+      '接收端的 onMessagesReceived 同样应带全部消息体。bodies 为空列表时构造消息即抛 ChatError(-1)，不会发出。',
     paramsTemplate: JSON.stringify(
-      { targetId: 'ID', content: 'hello', event: 'multi_second', chatType: 0 },
+      {
+        targetId: 'ID',
+        bodies: [
+          { type: 'txt', content: 'hello' },
+          { type: 'custom', event: 'multi_second' },
+        ],
+        chatType: 0,
+      },
       null,
       2
     ),
     invoke: async (params) => {
+      const bodies = (params.bodies as any[]).map((b) =>
+        b.type === 'custom'
+          ? new ChatCustomMessageBody({ event: String(b.event) })
+          : new ChatTextMessageBody({ content: String(b.content) })
+      );
       const msg = ChatMessage.createSendMessage({
-        bodies: [
-          new ChatTextMessageBody({ content: String(params.content) }),
-          new ChatCustomMessageBody({ event: String(params.event) }),
-        ],
+        bodies,
         targetId: String(params.targetId),
         chatType: (params.chatType ??
           ChatMessageChatType.PeerChat) as ChatMessageChatType,

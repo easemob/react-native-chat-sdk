@@ -47,7 +47,7 @@
 #       and accounts[0].id as the user id) and tokens are fetched the same
 #       way (user tokens expire in ~24h, so stored tokens are never reused).
 #   Optional E2E_USER_SUFFIX is appended to the resolved base user id; the
-#   default is empty (existing local behavior). CI uses _rn_android/_rn_ios.
+#   default is empty (existing local behavior). CI uses _rn_android_5x/_rn_ios_5x.
 #   The contact peer is E2E_PEER_ID when set, else "<effectiveUserId>_ci_peer";
 #   an explicit peer id is used unchanged. Both accounts are provisioned
 #   server-side through the token endpoint (autoCreateUser).

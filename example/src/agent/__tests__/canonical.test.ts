@@ -99,6 +99,31 @@ describe('canonicalMessage (contract §12.1)', () => {
     const received = { ...msg, direction: 'rec' } as unknown as ChatMessage;
     expect(canonicalMessage(received).direction).toBe(1);
   });
+
+  it('omits bodies for a single-body message', () => {
+    const single = {
+      ...msg,
+      bodies: [{ type: 'txt', content: 'hello' }],
+    } as unknown as ChatMessage;
+    expect(canonicalMessage(single)).not.toHaveProperty('bodies');
+  });
+
+  it('emits every body in order for a multi-body message', () => {
+    const multi = {
+      ...msg,
+      bodies: [
+        { type: 'txt', content: 'first' },
+        { type: 'txt', content: 'second' },
+      ],
+      body: { type: 'txt', content: 'first' },
+    } as unknown as ChatMessage;
+    const out = canonicalMessage(multi);
+    expect(out.body).toEqual({ type: 0, content: 'first' });
+    expect(out.bodies).toEqual([
+      { type: 0, content: 'first' },
+      { type: 0, content: 'second' },
+    ]);
+  });
 });
 
 describe('canonicalGroup (contract §12.4)', () => {

@@ -14,7 +14,7 @@ const { evaluateScript, parseLogText } = require('./script_results');
 const REPO_ROOT = path.resolve(__dirname, '../..');
 const DEFAULT_SCRIPT = path.join(
   REPO_ROOT,
-  'example/ci/port_5_0_0_positive.json'
+  'testing/single/cases/port_5_0_0_positive.json'
 );
 const CRASH_PATTERN =
   /FATAL EXCEPTION|SIG(?:SEGV|ABRT)|NullPointerException|uncaught exception|Terminating app|fatal error|REPORT_TIMEOUT|Lost connection to device/i;
@@ -25,8 +25,8 @@ function usage() {
   yarn report:api --platform <android|ios> --from-log <api_test.log> [--crash-log <log>]
   yarn report:api --android-report <run-dir> --ios-report <run-dir>
 
-The default script is example/ci/port_5_0_0_positive.json. Run the negative
-path with --script example/ci/port_5_0_0_negative.json. Per-run evidence is
+The default script is testing/single/cases/port_5_0_0_positive.json. Run the negative
+path with --script testing/single/cases/port_5_0_0_negative.json. Per-run evidence is
 written under artifacts/single/<timestamp>/<platform>/ and remains
 Git-ignored; the directory name is only the local timestamp, and each platform
 gets its own subdirectory so Android and iOS runs cannot overwrite each other.

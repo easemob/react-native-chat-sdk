@@ -19,7 +19,7 @@
 # Tunables (environment variables):
 #   DEVICE_UDID        target simulator                (default: booted)
 #   APP_PATH           path to the built .app          (default: example build output)
-#   SCRIPT_JSON        auto-mode script on the host     (default: example/ci/port_5_0_0_positive.json)
+#   SCRIPT_JSON        auto-mode script on the host     (default: testing/single/cases/port_5_0_0_positive.json)
 #   HOST_SCRIPT_PATH   where the app reads the script, must match the inlined API_SCRIPT
 #                                                       (default: /tmp/rn_auto_script.json)
 #   OUT_DIR            where the copied log lands      (default: artifacts/single)
@@ -35,7 +35,7 @@ REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
 BUNDLE_ID="chatsdk.example"
 DEVICE_UDID="${DEVICE_UDID:-booted}"
 APP_PATH="${APP_PATH:-$REPO_ROOT/example/ios/build/Build/Products/Debug-iphonesimulator/ChatSdkExample.app}"
-SCRIPT_JSON="${SCRIPT_JSON:-$REPO_ROOT/example/ci/port_5_0_0_positive.json}"
+SCRIPT_JSON="${SCRIPT_JSON:-$REPO_ROOT/testing/single/cases/port_5_0_0_positive.json}"
 HOST_SCRIPT_PATH="${HOST_SCRIPT_PATH:-/tmp/rn_auto_script.json}"
 OUT_DIR="${OUT_DIR:-$REPO_ROOT/artifacts/single}"
 OUT_LOG="${OUT_LOG:-$OUT_DIR/auto-ios-api_test.log}"

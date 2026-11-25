@@ -598,6 +598,13 @@
       "nativeRef": "multi-body message keeps every body through import, read-back and update"
     },
     {
+      "caseId": "RN-MSG-018",
+      "entry": "logged_in_base",
+      "module": "message",
+      "platforms": ["android", "ios"],
+      "nativeRef": "send a multi-body text message and keep both bodies"
+    },
+    {
       "caseId": "RN-MSG-007",
       "entry": "logged_out",
       "module": "message",

@@ -1,0 +1,71 @@
+{
+  "_comment": "5.2.0 positive path, one account/device. Covers getConnectionState after login and sending a two-text-body message to accounts[1] over the real server. The send result and the getLatestMessage readback are checked by body index (length 2, bodies.0 first, bodies.1 second), so order is asserted. The peer's conversation may hold preexisting history, so it is not deleted. Image bodies and cross-device receive are excluded (see testing/multi/cases).",
+  "steps": [
+    {
+      "api": "ChatClient.getConnectionState",
+      "id": "connection_state",
+      "expect": {
+        "success": true
+      }
+    },
+    {
+      "api": "ChatManager.sendMultiBodyMessage",
+      "id": "send_multi_body",
+      "params": {
+        "targetId": "$config.accounts.1.id",
+        "bodies": [
+          {
+            "type": "txt",
+            "content": "port-5.2.0 multi body first"
+          },
+          {
+            "type": "txt",
+            "content": "port-5.2.0 multi body second"
+          }
+        ],
+        "chatType": 0
+      },
+      "expect": {
+        "success": true,
+        "checks": [
+          {
+            "path": "bodies",
+            "length": 2
+          },
+          {
+            "path": "bodies.0.content",
+            "equals": "port-5.2.0 multi body first"
+          },
+          {
+            "path": "bodies.1.content",
+            "equals": "port-5.2.0 multi body second"
+          }
+        ]
+      }
+    },
+    {
+      "api": "ChatManager.getLatestMessage",
+      "id": "latest_message",
+      "params": {
+        "convId": "$config.accounts.1.id"
+      },
+      "expect": {
+        "success": true,
+        "checks": [
+          {
+            "path": "bodies",
+            "length": 2
+          },
+          {
+            "path": "bodies.0.content",
+            "equals": "port-5.2.0 multi body first"
+          },
+          {
+            "path": "bodies.1.content",
+            "equals": "port-5.2.0 multi body second"
+          }
+        ]
+      }
+    }
+  ]
+}

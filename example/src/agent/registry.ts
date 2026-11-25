@@ -45,6 +45,13 @@ export interface AgentSdkDeps {
   ) => ChatMessage;
   /** ChatTextMessageBody constructor for text-only modify */
   createTextBody: (content: string) => ChatTextMessageBody;
+  /** ChatMessage.createSendMessage with a bodies list (multi-body, 5.2.0) */
+  createMultiBodyMessage: (
+    targetId: string,
+    bodies: ChatTextMessageBody[],
+    chatType: ChatMessageChatTypeT,
+    opt?: Json
+  ) => ChatMessage;
 }
 
 export type ApiHandler = (params: Json) => Promise<ExecResult>;
@@ -159,14 +166,20 @@ function makeSendMessage(deps: AgentSdkDeps): ApiHandler {
         typeof chatTypeRaw === 'number'
           ? (chatTypeRaw as ChatMessageChatTypeT)
           : (0 as ChatMessageChatTypeT);
+      // `bodies` (multi-body, 5.2.0) takes precedence over the single `body`.
+      const multiBodies = Array.isArray(params.bodies)
+        ? (params.bodies as Json[])
+        : undefined;
       const body =
         typeof params.body === 'object' && params.body !== null
           ? (params.body as Json)
           : {};
-      if (body.type !== 0) {
-        return toolError(
-          `sendMessage: unsupported body.type ${String(body.type)} (text only)`
-        );
+      for (const b of multiBodies ?? [body]) {
+        if (b.type !== 0) {
+          return toolError(
+            `sendMessage: unsupported body.type ${String(b.type)} (text only)`
+          );
+        }
       }
       const content = typeof body.content === 'string' ? body.content : '';
       const opt: Json = {};
@@ -179,7 +192,19 @@ function makeSendMessage(deps: AgentSdkDeps): ApiHandler {
       if (Array.isArray(params.receiverList)) {
         opt.receiverList = params.receiverList;
       }
-      const msg = deps.createTextMessage(to, content, chatType, opt);
+      const msg =
+        multiBodies !== undefined
+          ? deps.createMultiBodyMessage(
+              to,
+              multiBodies.map((b) =>
+                deps.createTextBody(
+                  typeof b.content === 'string' ? b.content : ''
+                )
+              ),
+              chatType,
+              opt
+            )
+          : deps.createTextMessage(to, content, chatType, opt);
       if (typeof params.attributes === 'object' && params.attributes !== null) {
         msg.attributes = params.attributes as Record<string, unknown>;
       }

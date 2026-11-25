@@ -4,13 +4,13 @@
 # Tool resolution order (D13):
 #   1. $IMTO_PATH: path to an im-test-orchestrator checkout
 #   2. Local checkout at /Users/asterisk/Codes/zuoyu/im-test-orchestrator
-#   3. Clone pinned by example/multi-tool.json into example/.im-test-orchestrator
+#   3. Clone pinned by testing/multi-tool.json into example/.im-test-orchestrator
 #      (gitignored; inactive until the pin file carries a real URL and ref)
 #
 # Usage:
 #   scripts/ci/multi.sh generate --platform ios [--case <name>] [--instance <id>] ...
 #       Runs scripts/generate_cases.dart; defaults --cases-dir to
-#       example/multi_cases.
+#       testing/multi/cases.
 #   scripts/ci/multi.sh prepare|devices|build|launch|run|report|clean|all ...
 #       Runs bin/cli.dart; defaults --app-dir to example/.
 # Example:
@@ -28,9 +28,10 @@
 set -euo pipefail
 
 REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
-PIN_FILE="$REPO_ROOT/example/multi-tool.json"
+PIN_FILE="$REPO_ROOT/testing/multi-tool.json"
 LOCAL_CHECKOUT="/Users/asterisk/Codes/zuoyu/im-test-orchestrator"
 CLONE_DIR="$REPO_ROOT/example/.im-test-orchestrator"
+
 
 resolve_tool() {
   if [[ -n "${IMTO_PATH:-}" && -d "$IMTO_PATH/multi" ]]; then
@@ -96,7 +97,7 @@ for arg in "$@"; do
 done
 
 if [[ "$command" == "generate" && $has_cases_dir -eq 0 ]]; then
-  args+=(--cases-dir "$REPO_ROOT/example/multi_cases")
+  args+=(--cases-dir "$REPO_ROOT/testing/multi/cases")
 fi
 # Only commands whose CLI accepts --app-dir get the default (build/all).
 if [[ "$command" == "build" || "$command" == "all" ]] && [[ $has_app_dir -eq 0 ]]; then

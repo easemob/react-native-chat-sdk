@@ -16,7 +16,7 @@
 # Tunables (environment variables):
 #   ADB                 adb binary                       (default: adb)
 #   APK_PATH            path to the debug APK            (default: example build output)
-#   SCRIPT_JSON         auto-mode script on the host    (default: example/ci/port_5_0_0_positive.json)
+#   SCRIPT_JSON         auto-mode script on the host    (default: testing/single/cases/port_5_0_0_positive.json)
 #   DEVICE_SCRIPT_PATH  script path on the device, must match the inlined API_SCRIPT.
 #                       /data/local/tmp is used instead of /sdcard: it is always
 #                       adb-writable, world-traversable, and has no dependency on
@@ -36,7 +36,7 @@ REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
 PACKAGE="chatsdk.example"
 ADB="${ADB:-adb}"
 APK_PATH="${APK_PATH:-$REPO_ROOT/example/android/app/build/outputs/apk/debug/app-debug.apk}"
-SCRIPT_JSON="${SCRIPT_JSON:-$REPO_ROOT/example/ci/port_5_0_0_positive.json}"
+SCRIPT_JSON="${SCRIPT_JSON:-$REPO_ROOT/testing/single/cases/port_5_0_0_positive.json}"
 DEVICE_SCRIPT_PATH="${DEVICE_SCRIPT_PATH:-/data/local/tmp/rn_auto_script.json}"
 OUT_DIR="${OUT_DIR:-$REPO_ROOT/artifacts/single}"
 OUT_LOG="${OUT_LOG:-$OUT_DIR/auto-android-api_test.log}"

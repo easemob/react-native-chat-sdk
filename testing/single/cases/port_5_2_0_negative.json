@@ -1,0 +1,17 @@
+{
+  "_comment": "5.2.0 negative path, independent of the positive script. A message with an empty bodies list cannot be created: the ChatMessage constructor throws ChatError(-1, 'A message requires at least one body.') before anything reaches native, so nothing is sent. -1 is also the fallback code of the script runner (unknown API, non-ChatError exceptions), so confirm in the log that the description is the one above. No invented error code for the native body-count limit (20) or body-type combinations: the real codes depend on the native SDK and have not been observed on a device.",
+  "steps": [
+    {
+      "api": "ChatManager.sendMultiBodyMessage",
+      "id": "send_empty_bodies",
+      "params": {
+        "targetId": "$config.accounts.1.id",
+        "bodies": [],
+        "chatType": 0
+      },
+      "expect": {
+        "errorCode": -1
+      }
+    }
+  ]
+}

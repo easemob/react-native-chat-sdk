@@ -1363,6 +1363,59 @@ export function registerMessageCases(ctx: CiCaseContext): void {
       );
     }
   );
+
+  // Test: Send one real message carrying two text bodies to the peer.
+  // Expected: The server-confirmed message and the locally stored copy keep
+  // both text bodies in order, contentType is MULTIBODY and `body` is the
+  // first body. Image bodies are intentionally not covered: they need sample
+  // files that differ between local and cloud runs.
+  ciTest(
+    'RN-MSG-018',
+    'send a multi-body text message and keep both bodies',
+    async () => {
+      const { userId, peerId } = requireMessageLogin(ctx);
+      const run = uniqueCiName('msg', 'multi_send');
+      const first = `${run}_first`;
+      const second = `${run}_second`;
+      const message = ChatMessage.createSendMessage({
+        bodies: [
+          new ChatTextMessageBody({ content: first }),
+          new ChatTextMessageBody({ content: second }),
+        ],
+        targetId: peerId,
+        chatType: ChatMessageChatType.PeerChat,
+      });
+      const confirmed = await sendAndAwaitSuccess(
+        manager,
+        message,
+        'RN-MSG-018 send'
+      );
+      assertEqual(confirmed.status, ChatMessageStatus.SUCCESS);
+      assertTrue(confirmed.msgId.length > 0, 'server message ID is empty');
+      assertEqual(confirmed.from, userId);
+      assertEqual(confirmed.to, peerId);
+
+      const assertBodies = (actual: ChatMessage | undefined, what: string) => {
+        assertNotNull(actual, `${what}: message was not found`);
+        assertEqual(actual.bodies.length, 2, `${what}: expected 2 bodies`);
+        assertEqual(
+          actual.contentType,
+          ChatMessageType.MULTIBODY,
+          `${what}: contentType must be MULTIBODY`
+        );
+        assertEqual(actual.bodies[0]?.type, ChatMessageType.TXT);
+        assertEqual(actual.bodies[1]?.type, ChatMessageType.TXT);
+        assertEqual((actual.bodies[0] as ChatTextMessageBody).content, first);
+        assertEqual((actual.bodies[1] as ChatTextMessageBody).content, second);
+        assertEqual((actual.body as ChatTextMessageBody).content, first);
+      };
+
+      assertBodies(confirmed, 'confirmed message');
+      assertBodies(await manager.getMessage(confirmed.msgId), 'stored message');
+      // The peer can have preexisting history; do not delete its conversation.
+    },
+    { timeoutMs: 90000 }
+  );
 }
 
 /** No-login message negative cases (`logged_out` entry). */

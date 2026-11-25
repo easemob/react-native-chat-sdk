@@ -169,6 +169,7 @@ function makeDeps(): {
       type: 'txt',
       content,
     })),
+    createMultiBodyMessage: fn('createMultiBodyMessage', () => fakeMessage()),
   } as unknown as AgentSdkDeps;
   return { deps, calls };
 }
@@ -281,6 +282,56 @@ describe('api registry (contract §10)', () => {
       success: true,
       data: { msgId: 'server-rewritten', direction: 0, body: { type: 0 } },
     });
+  });
+
+  it('sendMessage builds a multi-body message from a bodies list', async () => {
+    const { deps, calls } = makeDeps();
+    calls.sendMessage?.mockImplementation(
+      (_msg: unknown, cb: { onSuccess: (m: unknown) => void }) => {
+        cb.onSuccess(fakeMessage({ msgId: 'server-multi' }));
+        return Promise.resolve();
+      }
+    );
+    const r = await run(
+      createApiRegistry(deps).get('ChatManager.sendMessage'),
+      {
+        to: 'bob',
+        chatType: 0,
+        bodies: [
+          { type: 0, content: 'first' },
+          { type: 0, content: 'second' },
+        ],
+      }
+    );
+    expect(calls.createTextMessage).not.toHaveBeenCalled();
+    expect(calls.createTextBody).toHaveBeenNthCalledWith(1, 'first');
+    expect(calls.createTextBody).toHaveBeenNthCalledWith(2, 'second');
+    expect(calls.createMultiBodyMessage).toHaveBeenCalledWith(
+      'bob',
+      [
+        { type: 'txt', content: 'first' },
+        { type: 'txt', content: 'second' },
+      ],
+      0,
+      {}
+    );
+    expect(r).toMatchObject({ success: true, data: { msgId: 'server-multi' } });
+  });
+
+  it('sendMessage rejects a non-text entry in bodies as a tool error', async () => {
+    const { deps, calls } = makeDeps();
+    const r = await run(
+      createApiRegistry(deps).get('ChatManager.sendMessage'),
+      {
+        to: 'bob',
+        bodies: [
+          { type: 0, content: 'first' },
+          { type: 7, event: 'custom' },
+        ],
+      }
+    );
+    expect(calls.createMultiBodyMessage).not.toHaveBeenCalled();
+    expect(r).toMatchObject({ success: false, failureKind: 'tool' });
   });
 
   it('sendMessage rejects non-text bodies as a tool error', async () => {

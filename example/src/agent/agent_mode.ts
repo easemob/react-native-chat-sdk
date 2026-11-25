@@ -155,6 +155,18 @@ export async function runAgentMode(): Promise<void> {
         opt as Parameters<typeof ChatMessage.createTextMessage>[3]
       ),
     createTextBody: (content: string) => new ChatTextMessageBody({ content }),
+    createMultiBodyMessage: (
+      targetId: string,
+      bodies: ChatTextMessageBody[],
+      chatType: number,
+      opt?: Record<string, unknown>
+    ) =>
+      ChatMessage.createSendMessage({
+        bodies,
+        targetId,
+        chatType: chatType as ChatMessageChatType,
+        ...opt,
+      }),
   };
   const registry = createApiRegistry(sdkDeps);
   const service = new CommandService({
