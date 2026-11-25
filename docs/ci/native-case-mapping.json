@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "nativeBaseline": "HyphenateChat 5.1.0",
+  "nativeBaseline": "HyphenateChat iOS 5.2.0 / Android 5.2.1",
   "cases": [
     {
       "caseId": "RN-APP-001",
@@ -589,6 +589,13 @@
       "module": "message",
       "platforms": ["android", "ios"],
       "nativeRef": "add and remove a message Reaction"
+    },
+    {
+      "caseId": "RN-MSG-017",
+      "entry": "logged_in_base",
+      "module": "message",
+      "platforms": ["android", "ios"],
+      "nativeRef": "multi-body message keeps every body through import, read-back and update"
     },
     {
       "caseId": "RN-MSG-007",

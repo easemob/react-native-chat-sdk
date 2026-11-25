@@ -460,6 +460,8 @@ export enum ChatDisconnectErrorCode {
  *
  * You do not need to reconnect manually as the chat SDK will handle it automatically.
  *
+ * For recoverable disconnections, the SDK defers `onDisconnected` for up to `ChatOptions.disconnectNotifyThreshold` seconds: if the connection is restored within that window, no disconnection callback is invoked at all. Fatal errors invoke `onDisconnected` immediately. To reflect the connection status in the UI, use {@link ChatClient.getConnectionState} instead of relying on these two callbacks alone.
+ *
  * There are two connection-related callbacks:
  * - `onConnected`: Occurs when the connection is set up.
  * - `onDisconnected`: Occurs when the connection breaks down, carrying an error code for the reason. See {@link ChatDisconnectErrorCode}.

@@ -254,3 +254,112 @@ describe('ChatMessage static factories', () => {
     });
   });
 });
+
+describe('ChatMessage multi-body (since 5.2.0)', () => {
+  const textBody = (content: string) => new ChatTextMessageBody({ content });
+  const fileBody = (path: string) =>
+    new ChatFileMessageBody({ localPath: path, displayName: 'f' });
+
+  beforeEach(() => {
+    installFakeChatClient({ currentUserName: 'me' });
+  });
+
+  afterEach(() => {
+    resetChatClient();
+  });
+
+  test('a single-body message exposes bodies as [body] and its own type as contentType', () => {
+    const msg = ChatMessage.createTextMessage('peer1', 'hi');
+
+    expect(msg.bodies).toHaveLength(1);
+    expect(msg.bodies[0]).toBe(msg.body);
+    expect(msg.contentType).toBe(ChatMessageType.TXT);
+  });
+
+  test('createSendMessage with bodies keeps the order; body is the first and contentType is MULTIBODY', () => {
+    const msg = ChatMessage.createSendMessage({
+      bodies: [textBody('a'), fileBody('/tmp/a.pdf'), textBody('c')],
+      targetId: 'peer1',
+      chatType: ChatMessageChatType.PeerChat,
+    });
+
+    expect(msg.bodies.map((b) => b.type)).toEqual([
+      ChatMessageType.TXT,
+      ChatMessageType.FILE,
+      ChatMessageType.TXT,
+    ]);
+    expect(msg.body).toBe(msg.bodies[0]);
+    expect((msg.body as ChatTextMessageBody).content).toBe('a');
+    expect(msg.contentType).toBe(ChatMessageType.MULTIBODY);
+  });
+
+  test('assigning body replaces the whole list with that single body (legacy usage keeps working)', () => {
+    const msg = ChatMessage.createSendMessage({
+      bodies: [textBody('a'), textBody('b')],
+      targetId: 'peer1',
+      chatType: ChatMessageChatType.PeerChat,
+    });
+
+    msg.body = textBody('only');
+
+    expect(msg.bodies).toHaveLength(1);
+    expect((msg.body as ChatTextMessageBody).content).toBe('only');
+    expect(msg.contentType).toBe(ChatMessageType.TXT);
+  });
+
+  test('contentType is computed on each read, so appending a body turns it into MULTIBODY', () => {
+    const msg = ChatMessage.createTextMessage('peer1', 'hi');
+
+    msg.bodies.push(textBody('second'));
+
+    expect(msg.contentType).toBe(ChatMessageType.MULTIBODY);
+  });
+
+  test('rebuilds every body from native JSON; bodies takes precedence over body', () => {
+    const msg = ChatMessage.createReceiveMessage({
+      from: 'peer2',
+      to: 'me',
+      conversationId: 'peer2',
+      direction: 'rec',
+      chatType: 0,
+      body: { type: 'txt', content: 'first' },
+      bodies: [
+        { type: 'txt', content: 'first' },
+        { type: 'file', localPath: '/tmp/x', displayName: 'x' },
+      ],
+    });
+
+    expect(msg.bodies).toHaveLength(2);
+    expect(msg.bodies[0]).toBeInstanceOf(ChatTextMessageBody);
+    expect(msg.bodies[1]).toBeInstanceOf(ChatFileMessageBody);
+    expect(msg.contentType).toBe(ChatMessageType.MULTIBODY);
+  });
+
+  test('a message without any body is rejected instead of being built half-way', () => {
+    expect(() =>
+      ChatMessage.createReceiveMessage({ from: 'a', to: 'b' })
+    ).toThrow();
+  });
+
+  test('only the bodies list is an own enumerable property, so the bridge sends bodies and not a stale body', () => {
+    const msg = ChatMessage.createTextMessage('peer1', 'hi');
+    const own = Object.keys(msg);
+
+    expect(own).toContain('bodies');
+    expect(own).not.toContain('body');
+    expect(own).not.toContain('contentType');
+    expect(JSON.parse(JSON.stringify(msg)).bodies).toHaveLength(1);
+  });
+
+  test('does not validate the body count or type combination (native owns those rules)', () => {
+    const many = Array.from({ length: 25 }, (_, i) => textBody(String(i)));
+
+    const msg = ChatMessage.createSendMessage({
+      bodies: many,
+      targetId: 'peer1',
+      chatType: ChatMessageChatType.PeerChat,
+    });
+
+    expect(msg.bodies).toHaveLength(25);
+  });
+});

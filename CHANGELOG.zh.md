@@ -2,6 +2,31 @@ _Chinese | [English](./CHANGELOG.md)_
 
 # Update Log
 
+## 5.2.0
+
+- 依赖的原生 SDK 升级至 iOS 5.2.0 和 Android 5.2.1。
+
+### 新增功能（New Features）
+
+- 新增多体消息：一条消息可以携带多个消息体（例如文本加文件）。`ChatMessage` 新增 `bodies`（完整消息体列表）和 `contentType`（消息含多个消息体时为 `ChatMessageType.MULTIBODY`，否则为唯一消息体的类型）；`ChatMessage.createSendMessage` 除 `body` 外也可传入 `bodies`。原生 SDK 限制每条消息最多 20 个消息体，并在发送时校验消息体类型组合。
+- 新增 `ChatClient.getConnectionState`，返回三态的 `ChatConnectionState`（`connected`、`connecting`、`disconnected`）。
+- 新增 `ChatOptions.disconnectNotifyThreshold`（单位：秒，默认 `10`）。可恢复的断开若在阈值内恢复，则不回调 `onDisconnected`。
+
+### 行为变更（Behavior Changes）
+
+- `ChatMessage.body` 改为基于 `bodies` 的访问器：读取返回第一个消息体，赋值会把整个列表替换为该单个消息体。单消息体消息的使用方式不变。由于它不再是实例自身属性，`JSON.stringify(message)` 的结果中包含 `bodies` 而不再包含 `body`。
+- `ChatOptions.enableChatroomConversation` 的含义改为：获取本地会话列表时是否包含聊天室会话。它不再控制会话的创建或存储，也不影响聊天室消息的收发。
+- `ChatConnectEventListener.onDisconnected` 现在可被 `ChatOptions.disconnectNotifyThreshold` 延迟回调。
+- （Android）原生 SDK 现在仅在开启 `usePushInBackground` 且已绑定推送 token 时，才会在应用退到后台 10 秒后断开连接（此前：FCM 类型为 3 分钟）。本 React Native SDK 未暴露 `usePushInBackground`，因此默认不再因切到后台而断开连接。
+
+### 改进（Improvements）
+
+- 多体消息的上传、下载进度按消息级别上报（按文件大小聚合）；下载的结果每次请求只上报一次。
+
+### 废弃（Deprecations）
+
+- `ChatClient.isConnected` 已被原生 SDK 废弃，请改用 `ChatClient.getConnectionState`。
+
 ## 5.1.0
 
 - 依赖的原生 SDK 升级至 iOS 5.1.0 和 Android 5.1.0。

@@ -97,6 +97,9 @@ public class ExtSdkDispatch implements ExtSdkApi {
             case ExtSdkMethodType.isConnected:
                 ExtSdkClientWrapper.getInstance().isConnected(jsonParams, methodType, callback);
                 break;
+            case ExtSdkMethodType.getConnectionState:
+                ExtSdkClientWrapper.getInstance().getConnectionState(jsonParams, methodType, callback);
+                break;
             case ExtSdkMethodType.renewToken:
                 ExtSdkClientWrapper.getInstance().renewToken(jsonParams, methodType, callback);
                 break;

@@ -28,6 +28,7 @@
           ExtSdkMethodKeyGetToken : @(ExtSdkMethodKeyGetTokenValue),
           ExtSdkMethodKeyGetCurrentUser : @(ExtSdkMethodKeyGetCurrentUserValue),
           ExtSdkMethodKeyIsConnected : @(ExtSdkMethodKeyIsConnectedValue),
+          ExtSdkMethodKeyGetConnectionState : @(ExtSdkMethodKeyGetConnectionStateValue),
           ExtSdkMethodKeyRenewToken : @(ExtSdkMethodKeyRenewTokenValue),
           ExtSdkMethodKeyBindDeviceToken : @(ExtSdkMethodKeyBindDeviceTokenValue),
           ExtSdkMethodKeyBindPushKitToken : @(ExtSdkMethodKeyBindPushKitTokenValue),

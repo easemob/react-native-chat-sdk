@@ -352,6 +352,9 @@ class ExtSdkOptionsHelper {
             }
         }
 
+        // 5.2.0
+        if (json.has("disconnectNotifyThreshold")) { options.setDisconnectNotifyThreshold(json.getInt("disconnectNotifyThreshold")); }
+
         return options;
     }
 
@@ -397,6 +400,7 @@ class ExtSdkOptionsHelper {
         data.put("dohVendor", options.getDohVendor());
         data.put("enableUserInfo", options.isEnableUserInfo());
         data.put("ntpServers", options.getNtpServers());
+        data.put("disconnectNotifyThreshold", options.getDisconnectNotifyThreshold());
         return data;
     }
 }
@@ -635,10 +639,43 @@ class ExtSdkMessageHelper {
           return null;
         }
         EMMessage message = null;
-        JSONObject bodyJson = json.getJSONObject("body");
-        String type = bodyJson.getString("type");
-        EMMessageBody body = bodyFromJson(bodyJson);
+        // `bodies` (since 5.2.0) takes precedence; a raw JSON with only `body` is the single-body form.
+        List<JSONObject> bodyJsonList = new ArrayList<>();
+        JSONArray bodiesJson = json.optJSONArray("bodies");
+        if (bodiesJson != null && bodiesJson.length() > 0) {
+            for (int i = 0; i < bodiesJson.length(); i++) {
+                bodyJsonList.add(bodiesJson.getJSONObject(i));
+            }
+        } else {
+            bodyJsonList.add(json.getJSONObject("body"));
+        }
+        List<EMMessageBody> bodies = new ArrayList<>();
+        for (JSONObject bodyJson : bodyJsonList) {
+            EMMessageBody parsed = bodyFromJson(bodyJson);
+            if (parsed == null) {
+                return null;
+            }
+            bodies.add(parsed);
+        }
 
+        if (bodies.size() > 1) {
+            // Count and type-combination rules are enforced by the native SDK when sending; do not filter here.
+            message = EMMessage.createMultiBodySendMessage(json.optString("to"), bodies);
+            if (message == null) {
+                return null;
+            }
+        } else {
+            message = createSingleBodyMessage(bodyJsonList.get(0).getString("type"));
+            if (message == null) {
+                return null;
+            }
+            message.addBody(bodies.get(0));
+        }
+        return applyMessageFields(message, json);
+    }
+
+    private static EMMessage createSingleBodyMessage(String type) {
+        EMMessage message = null;
         switch (type) {
         case "txt": {
             message = EMMessage.createSendMessage(Type.TXT);
@@ -668,13 +705,10 @@ class ExtSdkMessageHelper {
             message = EMMessage.createSendMessage(Type.COMBINE);
         } break;
         }
-        if (message == null) {
-            return null;
-        }
+        return message;
+    }
 
-        if (body != null) {
-            message.addBody(body);
-        }
+    private static EMMessage applyMessageFields(EMMessage message, JSONObject json) throws JSONException {
         if (json.getString("direction").equals("send")) {
             message.setDirection(EMMessage.Direct.SEND);
         } else {
@@ -715,34 +749,15 @@ class ExtSdkMessageHelper {
             return null;
         }
         Map<String, Object> data = new HashMap<>();
-        switch (message.getType()) {
-        case TXT: {
-            data.put("body", ExtSdkMessageBodyHelper.textBodyToJson((EMTextMessageBody)message.getBody()));
-        } break;
-        case IMAGE: {
-            data.put("body", ExtSdkMessageBodyHelper.imageBodyToJson((EMImageMessageBody)message.getBody()));
-        } break;
-        case LOCATION: {
-            data.put("body", ExtSdkMessageBodyHelper.localBodyToJson((EMLocationMessageBody)message.getBody()));
-        } break;
-        case CMD: {
-            data.put("body", ExtSdkMessageBodyHelper.cmdBodyToJson((EMCmdMessageBody)message.getBody()));
-        } break;
-        case CUSTOM: {
-            data.put("body", ExtSdkMessageBodyHelper.customBodyToJson((EMCustomMessageBody)message.getBody()));
-        } break;
-        case FILE: {
-            data.put("body", ExtSdkMessageBodyHelper.fileBodyToJson((EMNormalFileMessageBody)message.getBody()));
-        } break;
-        case VIDEO: {
-            data.put("body", ExtSdkMessageBodyHelper.videoBodyToJson((EMVideoMessageBody)message.getBody()));
-        } break;
-        case VOICE: {
-            data.put("body", ExtSdkMessageBodyHelper.voiceBodyToJson((EMVoiceMessageBody)message.getBody()));
-        } break;
-        case COMBINE: {
-            data.put("body", ExtSdkMessageBodyHelper.combineBodyToJson((EMCombineMessageBody)message.getBody()));
-        } break;
+        // Do not switch on getType(): it returns MULTIBODY (no single body type) for a multi-body message.
+        // `bodies` is the complete ordered list; `body` is kept as its first element.
+        List<Map<String, Object>> bodiesJson = new ArrayList<>();
+        for (EMMessageBody messageBody : message.getBodies()) {
+            bodiesJson.add(ExtSdkMessageBodyHelper.bodyToJson(messageBody));
+        }
+        data.put("bodies", bodiesJson);
+        if (!bodiesJson.isEmpty()) {
+            data.put("body", bodiesJson.get(0));
         }
 
         if (message.ext().size() > 0 && null != message.ext()) {

@@ -1,6 +1,7 @@
 import {
   ChatClient,
   ChatConversationType,
+  ChatCustomMessageBody,
   ChatMessage,
   ChatMessageChatType,
   ChatMessageSearchOption,
@@ -154,6 +155,30 @@ export const chatApis: ApiEntry[] = [
       if (params.isNeedReadReceipt === true) {
         msg.isNeedReadReceipt = true;
       }
+      return sendMessageAndWait(msg);
+    },
+  },
+  {
+    name: 'ChatManager.sendMultiBodyMessage',
+    group: 'ChatManager',
+    description:
+      '发送多体消息（5.2.0 起）：一条消息携带文本体和自定义体。chatType：0 单聊 / 1 群聊 / 2 聊天室。' +
+      '返回已发送消息 JSON，其中 bodies 含两个消息体、body 为首个；接收端的 onMessagesReceived 同样应带两个消息体。',
+    paramsTemplate: JSON.stringify(
+      { targetId: 'ID', content: 'hello', event: 'multi_second', chatType: 0 },
+      null,
+      2
+    ),
+    invoke: async (params) => {
+      const msg = ChatMessage.createSendMessage({
+        bodies: [
+          new ChatTextMessageBody({ content: String(params.content) }),
+          new ChatCustomMessageBody({ event: String(params.event) }),
+        ],
+        targetId: String(params.targetId),
+        chatType: (params.chatType ??
+          ChatMessageChatType.PeerChat) as ChatMessageChatType,
+      });
       return sendMessageAndWait(msg);
     },
   },

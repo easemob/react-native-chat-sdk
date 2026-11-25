@@ -12,6 +12,7 @@ import {
   MTchangeAppId,
   MTchangeAppKey,
   MTcompressLogs,
+  MTgetConnectionState,
   MTgetCurrentUser,
   MTgetLoggedInDevicesFromServer,
   MTgetRTCTokenInfoWithChannelName,
@@ -66,6 +67,24 @@ import { ChatError } from './common/ChatError';
 import { ChatRTCTokenInfo } from './common/ChatRTCTokenInfo';
 
 chatlog.log('dev:eventEmitter: ', eventEmitter);
+
+/**
+ * The connection state of the SDK to the chat server. See {@link ChatClient.getConnectionState}.
+ */
+export enum ChatConnectionState {
+  /**
+   * The SDK is connected to the chat server. Messages can be sent and received normally.
+   */
+  CONNECTED = 'connected',
+  /**
+   * The SDK is establishing the connection to the chat server.
+   */
+  CONNECTING = 'connecting',
+  /**
+   * The SDK is not connected: it is not initialized, the user has logged out, or the connection has dropped.
+   */
+  DISCONNECTED = 'disconnected',
+}
 
 /**
  * The chat client class, which is the entry of the chat SDK. It defines how to log in to and log out of the chat app and how to manage the connection between the SDK and the chat server.
@@ -414,6 +433,9 @@ export class ChatClient extends BaseManager {
    *         - `false`: No.
    *
    * @throws A description of the exception. See {@link ChatError}.
+   *
+   * @deprecated Use {@link getConnectionState} instead. This method only distinguishes
+   * "connected" from "not connected" and cannot express the {@link ChatConnectionState.CONNECTING} state.
    */
   public async isConnected(): Promise<boolean> {
     chatlog.log(`${ChatClient.TAG}: isConnected: `);
@@ -421,6 +443,28 @@ export class ChatClient extends BaseManager {
     ChatClient.checkErrorFromResult(r);
     let _connected = r?.[MTisConnected] as boolean;
     return _connected;
+  }
+
+  /**
+   * Gets the connection state of the SDK to the chat server.
+   *
+   * - {@link ChatConnectionState.DISCONNECTED}: Not connected, including before initialization and after logout.
+   * - {@link ChatConnectionState.CONNECTING}: The SDK is establishing the connection.
+   * - {@link ChatConnectionState.CONNECTED}: Connected.
+   *
+   * **Note**
+   *
+   * The state changes immediately when the connection drops, while {@link ChatConnectEventListener.onDisconnected} may be deferred for up to `ChatOptions.disconnectNotifyThreshold` seconds for recoverable disconnections.
+   *
+   * @returns The current connection state.
+   *
+   * @throws A description of the exception. See {@link ChatError}.
+   */
+  public async getConnectionState(): Promise<ChatConnectionState> {
+    chatlog.log(`${ChatClient.TAG}: getConnectionState: `);
+    const r: any = await Native._callMethod(MTgetConnectionState);
+    ChatClient.checkErrorFromResult(r);
+    return r?.[MTgetConnectionState] as ChatConnectionState;
   }
 
   /**

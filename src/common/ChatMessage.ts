@@ -128,6 +128,14 @@ export enum ChatMessageType {
    * Combined message.
    */
   COMBINE = 'combine',
+  /**
+   * Multi-body message: a message that carries more than one message body.
+   *
+   * This value is only returned by {@link ChatMessage.contentType}. It is not the type of any single message body.
+   *
+   * @since 5.2.0
+   */
+  MULTIBODY = 'multibody',
 }
 
 /**
@@ -442,9 +450,49 @@ export class ChatMessage {
    */
   attributes: Record<string, any>;
   /**
-   * The message body. See {@link ChatMessageBody}.
+   * The complete ordered list of message bodies. See {@link ChatMessageBody}.
+   *
+   * A message normally carries one body. More than one body identifies a multi-body message, whose {@link contentType} is {@link ChatMessageType.MULTIBODY}.
+   *
+   * To build a multi-body message, set this list before sending, for example `message.bodies = [...]` or `message.bodies.push(body)`. Do not change the list while the message is being sent.
+   *
+   * **Note**
+   *
+   * The SDK does not validate the number of bodies or their type combination; the native SDK does when sending, and reports an error if the message is invalid (for example, the body count exceeds 20).
+   *
+   * @since 5.2.0
    */
-  body: ChatMessageBody;
+  bodies: ChatMessageBody[];
+
+  /**
+   * The first message body, which is always the first element of {@link bodies}. See {@link ChatMessageBody}.
+   *
+   * For a single-body message, it is the only body. For a multi-body message, it returns the first body; use {@link bodies} to get the complete list.
+   *
+   * Assigning a body replaces the whole {@link bodies} list with that single body.
+   */
+  get body(): ChatMessageBody {
+    return this.bodies[0] as ChatMessageBody;
+  }
+
+  set body(value: ChatMessageBody) {
+    this.bodies = [value];
+  }
+
+  /**
+   * The content type of the message, calculated from the number of bodies each time it is read.
+   *
+   * - {@link ChatMessageType.MULTIBODY}: The message has more than one body.
+   * - The type of the only body: The message has a single body.
+   *
+   * @since 5.2.0
+   */
+  get contentType(): ChatMessageType {
+    if (this.bodies.length > 1) {
+      return ChatMessageType.MULTIBODY;
+    }
+    return this.bodies[0]?.type ?? ChatMessageType.TXT;
+  }
 
   /**
    * Whether it is a message in a message thread.
@@ -540,7 +588,8 @@ export class ChatMessage {
     direction?: string;
     status?: number;
     attributes?: any;
-    body: any;
+    body?: any;
+    bodies?: any[];
     isChatThread?: boolean;
     isOnline?: boolean;
     deliverOnlineOnly?: boolean;
@@ -567,7 +616,20 @@ export class ChatMessage {
     this.status = ChatMessageStatusFromNumber(params.status ?? 0);
     this.attributes = {};
     this.fromAttributes(params.attributes);
-    this.body = ChatMessage.getBody(params.body);
+    // `bodies` takes precedence; `body` alone is the single-body form.
+    const rawBodies =
+      params.bodies && params.bodies.length > 0
+        ? params.bodies
+        : params.body
+          ? [params.body]
+          : [];
+    if (rawBodies.length === 0) {
+      throw new ChatError({
+        code: -1,
+        description: 'A message requires at least one body.',
+      });
+    }
+    this.bodies = rawBodies.map((b) => ChatMessage.getBody(b));
     this.localMsgId = this.localTime.toString();
     this.isChatThread = params.isChatThread ?? false;
     this.isOnline = params.isOnline ?? true;
@@ -650,18 +712,31 @@ export class ChatMessage {
     }
   }
 
-  public static createSendMessage(params: {
-    body: ChatMessageBody;
-    targetId: string;
-    chatType: ChatMessageChatType;
-    isChatThread?: boolean;
-    isOnline?: boolean;
-    deliverOnlineOnly?: boolean;
-    receiverList?: string[];
-  }): ChatMessage {
+  /**
+   * Creates a message for sending.
+   *
+   * Pass `body` for a single-body message, or `bodies` for a multi-body message (since 5.2.0). Exactly one of them is required.
+   *
+   * @param params.targetId The user ID of the message recipient.
+   * @param params.chatType The chat type. See {@link ChatMessageChatType}.
+   */
+  public static createSendMessage(
+    params: (
+      | { body: ChatMessageBody; bodies?: never }
+      | { bodies: ChatMessageBody[]; body?: never }
+    ) & {
+      targetId: string;
+      chatType: ChatMessageChatType;
+      isChatThread?: boolean;
+      isOnline?: boolean;
+      deliverOnlineOnly?: boolean;
+      receiverList?: string[];
+    }
+  ): ChatMessage {
     let r = new ChatMessage({
       from: Factory.getChatClient().currentUserName ?? '',
       body: params.body,
+      bodies: params.bodies,
       direction: 'send',
       to: params.targetId,
       isRead: true,

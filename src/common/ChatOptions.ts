@@ -231,10 +231,12 @@ export class ChatOptions {
   autoLoadConversations: boolean;
 
   /**
-   * Whether to create a conversation when sending or receiving chatroom messages:
+   * Whether to include chatroom conversations in the local conversation list:
    *
-   * - `true`: Yes. A chatroom conversation is created.
-   * - (Default) `false`: No. No chatroom conversation is created.
+   * - `true`: Yes. The local conversation list includes chatroom conversations.
+   * - (Default) `false`: No. The local conversation list does not include chatroom conversations.
+   *
+   * This option neither controls the creation or storage of chatroom conversations nor affects normal chatroom message sending and receiving.
    *
    * Set this option before initializing the SDK.
    *
@@ -340,6 +342,17 @@ export class ChatOptions {
    */
   ntpServers?: string[];
 
+  /**
+   * The grace period in seconds before {@link ChatConnectEventListener.onDisconnected} is invoked for recoverable disconnections, such as network errors.
+   *
+   * If the connection is restored within the grace period, no disconnection callback is invoked at all; otherwise the callback is invoked once when the period expires. Fatal errors, such as the user being kicked offline, ignore this value and are reported immediately. The value of {@link ChatClient.getConnectionState} changes immediately; only the callback is deferred.
+   *
+   * The default value is `10`.
+   *
+   * @since 5.2.0
+   */
+  disconnectNotifyThreshold: number;
+
   private constructor(params: {
     appKey: string;
     appId: string;
@@ -382,6 +395,7 @@ export class ChatOptions {
     enableUserInfo?: boolean;
     dataSyncType?: ChatDataSyncType;
     ntpServers?: string[];
+    disconnectNotifyThreshold?: number;
   }) {
     if (!params.appKey && !params.appId) {
       throw new ChatError({
@@ -437,6 +451,7 @@ export class ChatOptions {
     this.enableUserInfo = params.enableUserInfo ?? false;
     this.dataSyncType = params.dataSyncType;
     this.ntpServers = params.ntpServers;
+    this.disconnectNotifyThreshold = params.disconnectNotifyThreshold ?? 10;
   }
 
   static withAppId(params: {
@@ -480,6 +495,7 @@ export class ChatOptions {
     enableUserInfo?: boolean;
     dataSyncType?: ChatDataSyncType;
     ntpServers?: string[];
+    disconnectNotifyThreshold?: number;
   }) {
     return new ChatOptions({
       ...params,
@@ -528,6 +544,7 @@ export class ChatOptions {
     enableUserInfo?: boolean;
     dataSyncType?: ChatDataSyncType;
     ntpServers?: string[];
+    disconnectNotifyThreshold?: number;
   }) {
     return new ChatOptions({
       ...params,

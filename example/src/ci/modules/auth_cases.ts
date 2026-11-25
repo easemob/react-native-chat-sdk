@@ -11,6 +11,7 @@
 
 import { Platform } from 'react-native';
 import {
+  ChatConnectionState,
   ChatDataSyncType,
   type ChatConnectEventListener,
 } from 'react-native-chat-sdk';
@@ -83,6 +84,10 @@ export function registerAuthCases(ctx: CiCaseContext): void {
     async () => {
       assertEqual(ctx.client.currentUserName, requireAccountId(ctx));
       assertEqual(await ctx.client.isConnected(), true);
+      assertEqual(
+        await ctx.client.getConnectionState(),
+        ChatConnectionState.CONNECTED
+      );
     }
   );
 

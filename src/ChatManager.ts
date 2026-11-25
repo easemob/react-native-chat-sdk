@@ -559,6 +559,8 @@ export class ChatManager extends BaseManager {
    *
    * - For a voice or image message or a message with an attachment, the SDK will automatically upload the attachment.
    * - You can determine whether to upload the attachment to the chat sever by setting {@link ChatOptions}.
+   * - For a multi-body message (see {@link ChatMessage.bodies}), the upload progress is reported at the message level: the SDK aggregates the progress of all attachments, weighted by their file sizes, into a single 0-100 progress, rather than reporting one progress per attachment.
+   * - The native SDK checks the number of bodies (at most 20) and their type combination when sending, and reports an error if the message is invalid.
    *
    * @param message The message object to be sent. Ensure that you set this parameter.
    * @param callback The listener that listens for message changes.
@@ -936,6 +938,8 @@ export class ChatManager extends BaseManager {
    *
    * You can also call this method if the attachment fails to be downloaded automatically.
    *
+   * For a multi-body message, all attachment bodies are downloaded and bodies without attachments (such as text) are skipped. The download progress is reported at the message level (aggregated by file size into a single 0-100 progress), and the result is reported once per request: it succeeds only if every attachment is downloaded, and if any attachment fails, the remaining downloads are aborted and the failure is reported.
+   *
    * @param message The ID of the message with the attachment to be downloaded.
    * @param callback The listener that listens for message changes.
    *
@@ -961,6 +965,8 @@ export class ChatManager extends BaseManager {
   /**
    * Downloads the message thumbnail.
    *
+   * For a multi-body message, the thumbnails of the image and video bodies are downloaded, the original file of a voice body is downloaded instead (voice has no thumbnail), and other bodies, such as file bodies, are silently skipped. If the message contains no applicable body, the call succeeds although nothing is downloaded. The size of a thumbnail cannot be known in advance, so no progress is reported; only the result is reported, once per request, and any failure aborts the remaining downloads.
+   *
    * @param message The ID of the message with the thumbnail to be downloaded. Only the image messages and video messages have a thumbnail.
    *
    * @throws A description of the exception. See {@link ChatError}.
@@ -984,6 +990,8 @@ export class ChatManager extends BaseManager {
 
   /**
    * Downloads the big image of the image message.
+   *
+   * For a multi-body message, the big images of the image bodies are downloaded, the original file of a voice body is downloaded instead (voice has no big image), and other bodies, such as video and file bodies, are silently skipped. If the message contains no applicable body, the call succeeds although nothing is downloaded. The progress is reported at the message level (weighted by original file size, range 0-100), and the result is reported once per request: any failure aborts the remaining downloads.
    *
    * @param message The image message with the big image to be downloaded.
    * @param callback The listener that listens for message changes.

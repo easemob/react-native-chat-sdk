@@ -178,7 +178,8 @@ static NSString *const TAG = @"ExtSdkWrapper";
     dbMsg.ext = msg.ext;
     //    EMMessageBody *newBody = [self mergeMessageBody:msg.body
     //    withDBMessageBody:dbMsg.body];
-    dbMsg.body = msg.body;
+    // Assigning body replaces all bodies with one; use the full list so a multi-body message keeps every body.
+    dbMsg.bodies = msg.bodies;
 }
 
 - (EMConversation *)getConversation:(NSDictionary *)param {

@@ -7,6 +7,17 @@ import type { ApiEntry } from '../api_entry';
  */
 export const clientApis: ApiEntry[] = [
   {
+    name: 'ChatClient.getConnectionState',
+    group: 'ChatClient',
+    description:
+      '获取 SDK 与服务器的连接状态（5.2.0 起，替代已废弃的 isConnected）。' +
+      '返回 connected / connecting / disconnected。',
+    paramsTemplate: '{}',
+    invoke: async () => {
+      return ChatClient.getInstance().getConnectionState();
+    },
+  },
+  {
     name: 'ChatClient.getLoggedInDevicesFromServer',
     group: 'ChatClient',
     description:

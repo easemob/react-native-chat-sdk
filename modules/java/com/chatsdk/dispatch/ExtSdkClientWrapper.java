@@ -193,8 +193,26 @@ public class ExtSdkClientWrapper extends ExtSdkWrapper {
         });
     }
 
+    @SuppressWarnings("deprecation")
     public void isConnected(JSONObject param, String channelName, ExtSdkCallback result) throws JSONException {
         onSuccess(result, channelName, EMClient.getInstance().isConnected());
+    }
+
+    public void getConnectionState(JSONObject param, String channelName, ExtSdkCallback result) throws JSONException {
+        String state;
+        // Map explicitly: the wire value is a contract string, not the enum name or ordinal.
+        switch (EMClient.getInstance().getConnectionState()) {
+        case CONNECTED:
+            state = "connected";
+            break;
+        case CONNECTING:
+            state = "connecting";
+            break;
+        default:
+            state = "disconnected";
+            break;
+        }
+        onSuccess(result, channelName, state);
     }
 
     public void renewToken(JSONObject param, String channelName, ExtSdkCallback result) throws JSONException {

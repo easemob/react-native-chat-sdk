@@ -21,7 +21,8 @@ ChatSDK 是一个高度可靠的全球交流平台，您的用户可以在其中
 | {@link ChatClient.options options} | 获取 SDK 配置项。 |
 | {@link ChatClient.currentUserName currentUserName} | 获取当前登录用户的用户 ID。 |
 | {@link ChatClient.init init} | 初始化 SDK。 |
-| {@link ChatClient.isConnected isConnected} | 检查 SDK 是否连接到 Chat 服务器。 |
+| {@link ChatClient.isConnected isConnected} | 检查 SDK 是否连接到 Chat 服务器。已废弃，请使用 `getConnectionState`。 |
+| {@link ChatClient.getConnectionState getConnectionState} | 获取 SDK 与 Chat 服务器的连接状态：已连接、连接中或已断开。 |
 | {@link ChatClient.getCurrentUsername getCurrentUsername} | 从服务器获取当前登录用户的用户 ID。 |
 | {@link ChatClient.isLoginBefore isLoginBefore} | 检查当前用户是否登录。 |
 | {@link ChatClient.getAccessToken getAccessToken} | 获取登录 token。 |

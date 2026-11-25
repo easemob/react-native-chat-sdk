@@ -700,10 +700,25 @@
 @implementation EMChatMessage (Json)
 
 + (EMChatMessage *)fromJsonObject:(NSDictionary *)aJson {
-    EMMessageBody *body = [EMMessageBody fromJsonObject:aJson[@"body"]];
-    if (!body) {
-        return nil;
+    // `bodies` (since 5.2.0) takes precedence; a raw JSON with only `body` is the single-body form.
+    NSMutableArray<EMMessageBody *> *bodies = [NSMutableArray array];
+    NSArray *bodiesJson = aJson[@"bodies"];
+    if ([bodiesJson isKindOfClass:[NSArray class]] && bodiesJson.count > 0) {
+        for (NSDictionary *bodyJson in bodiesJson) {
+            EMMessageBody *item = [EMMessageBody fromJsonObject:bodyJson];
+            if (!item) {
+                return nil;
+            }
+            [bodies addObject:item];
+        }
+    } else {
+        EMMessageBody *item = [EMMessageBody fromJsonObject:aJson[@"body"]];
+        if (!item) {
+            return nil;
+        }
+        [bodies addObject:item];
     }
+    EMMessageBody *body = bodies.firstObject;
 
     NSString *from = aJson[@"from"];
     if (from.length == 0) {
@@ -718,6 +733,14 @@
                                                                     to:to
                                                                   body:body
                                                                    ext:nil];
+    if (bodies.count > 1) {
+        // The native setter validates the whole list (count and type combination) and, on failure, only logs and
+        // leaves the message unchanged. Do not hand back a truncated message: treat it as not constructed.
+        msg.bodies = bodies;
+        if (msg.bodies.count != bodies.count) {
+            return nil;
+        }
+    }
     if (aJson[@"msgId"]) {
         msg.messageId = aJson[@"msgId"];
     }
@@ -759,6 +782,12 @@
     ret[@"status"] = @([ExtSdkConvertHelper messageStatusToInt:self.status]);
     ret[@"chatType"] = @([ExtSdkConvertHelper chatTypeToInt:self.chatType]);
     ret[@"direction"] = self.direction == EMMessageDirectionSend ? @"send" : @"rec";
+    // `bodies` is the complete ordered list; `body` is kept as its first element.
+    NSMutableArray *bodiesJson = [NSMutableArray array];
+    for (EMMessageBody *item in self.bodies) {
+        [bodiesJson addObject:[item toJsonObject]];
+    }
+    ret[@"bodies"] = bodiesJson;
     ret[@"body"] = [self.body toJsonObject];
     ret[@"isChatThread"] = @(self.isChatThreadMessage);
     ret[@"isOnline"] = @(self.onlineState);
@@ -1222,6 +1251,8 @@
     data[@"enableChatroomConversation"] = @(self.enableChatroomConversation);
     // 2026-08-25 4.24.1
     data[@"ntpServers"] = self.ntpServers;
+    // 5.2.0
+    data[@"disconnectNotifyThreshold"] = @(self.disconnectNotifyThreshold);
 
     return data;
 }
@@ -1289,6 +1320,9 @@
 
     // 2026-08-25 4.24.1
     if (aJson[@"ntpServers"]) { options.ntpServers = aJson[@"ntpServers"]; }
+
+    // 5.2.0
+    if (aJson[@"disconnectNotifyThreshold"]) { options.disconnectNotifyThreshold = [aJson[@"disconnectNotifyThreshold"] integerValue]; }
 
     return options;
 }

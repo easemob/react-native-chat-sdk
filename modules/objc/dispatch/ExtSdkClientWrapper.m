@@ -211,10 +211,37 @@
 - (void)isConnected:(NSDictionary *)param
      withMethodType:(NSString *)aChannelName
              result:(nonnull id<ExtSdkCallbackObjc>)result {
+    // native deprecated isConnected in 5.2.0 but did not remove it; the RN isConnected() keeps its behavior.
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
+    BOOL connected = EMClient.sharedClient.isConnected;
+#pragma clang diagnostic pop
     [self onResult:result
         withMethodType:ExtSdkMethodKeyIsConnected
              withError:nil
-            withParams:@(EMClient.sharedClient.isConnected)];
+            withParams:@(connected)];
+}
+
+- (void)getConnectionState:(NSDictionary *)param
+            withMethodType:(NSString *)aChannelName
+                    result:(nonnull id<ExtSdkCallbackObjc>)result {
+    // Map explicitly: the wire value is a contract string, not the native integer value.
+    NSString *state = @"disconnected";
+    switch (EMClient.sharedClient.connectionState) {
+    case EMConnectionConnected:
+        state = @"connected";
+        break;
+    case EMConnectionConnecting:
+        state = @"connecting";
+        break;
+    case EMConnectionDisconnected:
+    default:
+        break;
+    }
+    [self onResult:result
+        withMethodType:ExtSdkMethodKeyGetConnectionState
+             withError:nil
+            withParams:state];
 }
 
 - (void)renewToken:(NSDictionary *)param

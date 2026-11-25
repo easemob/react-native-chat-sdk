@@ -17,7 +17,7 @@
 - Lefthook for git hooks (pre-commit, commit-msg, post-commit)
 - Commitlint enforcing conventional commits
 - Gitleaks for secret scanning (post-commit hook)
-- HyphenateChat 5.1.0 (underlying native IM SDK for iOS and Android)
+- HyphenateChat (underlying native IM SDK): iOS 5.2.0, Android 5.2.1
 
 ## Project Structure
 

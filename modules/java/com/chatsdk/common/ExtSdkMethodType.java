@@ -14,6 +14,7 @@ public class ExtSdkMethodType {
     public static final String getCurrentUser = "getCurrentUser";
     public static final String getToken = "getToken";
     public static final String isConnected = "isConnected";
+    public static final String getConnectionState = "getConnectionState";
     public static final String renewToken = "renewToken";
     public static final String bindDeviceToken = "bindDeviceToken";
     public static final String bindPushKitToken = "bindPushKitToken";

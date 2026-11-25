@@ -91,6 +91,9 @@ static NSString *const TAG = @"ExtSdkDispatch";
     case ExtSdkMethodKeyIsConnectedValue:
         [[ExtSdkClientWrapper getInstance] isConnected:ps withMethodType:methodType result:callback];
         break;
+    case ExtSdkMethodKeyGetConnectionStateValue:
+        [[ExtSdkClientWrapper getInstance] getConnectionState:ps withMethodType:methodType result:callback];
+        break;
     case ExtSdkMethodKeyGetCurrentUserValue:
         [[ExtSdkClientWrapper getInstance] getCurrentUser:ps withMethodType:methodType result:callback];
         break;

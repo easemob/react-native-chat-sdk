@@ -13,6 +13,7 @@ static NSString *_Nonnull const ExtSdkMethodKeyGetLoggedInDevicesFromServer = @"
 static NSString *_Nonnull const ExtSdkMethodKeyGetToken = @"getToken";
 static NSString *_Nonnull const ExtSdkMethodKeyGetCurrentUser = @"getCurrentUser";
 static NSString *_Nonnull const ExtSdkMethodKeyIsConnected = @"isConnected";
+static NSString *_Nonnull const ExtSdkMethodKeyGetConnectionState = @"getConnectionState";
 static NSString *_Nonnull const ExtSdkMethodKeyRenewToken = @"renewToken";
 static NSString *_Nonnull const ExtSdkMethodKeyBindDeviceToken = @"bindDeviceToken";
 static NSString *_Nonnull const ExtSdkMethodKeyBindPushKitToken = @"bindPushKitToken";
@@ -682,6 +683,9 @@ static const int ExtSdkMethodKeyupdateGroupConfigsValue = 2039;
 
 // 5.1.0
 static const int ExtSdkMethodKeyGetConversationsFromDBValue = 2040;
+
+// 5.2.0
+static const int ExtSdkMethodKeyGetConnectionStateValue = 2041;
 
 // 2026-04-10
 static const int ExtSdkMethodKeyOnStreamMessagesReceivedValue = 611;

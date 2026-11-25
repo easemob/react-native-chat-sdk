@@ -2,6 +2,31 @@ _English | [Chinese](./CHANGELOG.zh.md)_
 
 # Update Log
 
+## 5.2.0
+
+- Upgrade the underlying native SDKs to iOS 5.2.0 and Android 5.2.1.
+
+### New Features
+
+- Add multi-body messages: a single message can now carry several message bodies (for example, text plus files). `ChatMessage` adds `bodies` (the full list) and `contentType` (`ChatMessageType.MULTIBODY` when the message has more than one body, otherwise the type of its only body), and `ChatMessage.createSendMessage` accepts `bodies` as an alternative to `body`. The native SDK allows at most 20 bodies per message and validates the type combination when sending.
+- Add `ChatClient.getConnectionState`, which returns the three-state `ChatConnectionState` (`connected`, `connecting`, `disconnected`).
+- Add `ChatOptions.disconnectNotifyThreshold` (unit: seconds, default: `10`). When a recoverable disconnection is restored within the threshold, `onDisconnected` is not called.
+
+### Behavior Changes
+
+- `ChatMessage.body` is now an accessor over `bodies`: reading it returns the first body, and assigning it replaces the whole list with that single body. For a single-body message nothing changes. Because it is no longer an own property, `JSON.stringify(message)` contains `bodies` instead of `body`.
+- `ChatOptions.enableChatroomConversation` now means whether chatroom conversations are included when getting the local conversation list. It no longer controls whether conversations are created or stored, and does not affect sending or receiving chatroom messages.
+- `ChatConnectEventListener.onDisconnected` can now be deferred by `ChatOptions.disconnectNotifyThreshold`.
+- (Android) The native SDK now disconnects in the background only when `usePushInBackground` is enabled and a push token is bound, 10 seconds after the app enters the background (previously: for FCM, 3 minutes). This React Native SDK does not expose `usePushInBackground`, so by default the connection is no longer closed because of the background transition.
+
+### Improvements
+
+- Message upload and download progress is now reported at the message level for multi-body messages (aggregated by file size). The result of a download is reported once per request.
+
+### Deprecations
+
+- `ChatClient.isConnected` is deprecated by the native SDKs; use `ChatClient.getConnectionState` instead.
+
 ## 5.1.0
 
 - Upgrade the underlying native SDKs to iOS 5.1.0 and Android 5.1.0.

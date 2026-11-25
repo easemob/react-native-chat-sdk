@@ -15,6 +15,7 @@ export const MTgetLoggedInDevicesFromServer = 'getLoggedInDevicesFromServer';
 export const MTgetCurrentUser = 'getCurrentUser';
 export const MTgetToken = 'getToken';
 export const MTisConnected = 'isConnected';
+export const MTgetConnectionState = 'getConnectionState';
 export const MTrenewToken = 'renewToken';
 export const MTbindDeviceToken = 'bindDeviceToken';
 export const MTbindPushKitToken = 'bindPushKitToken';

@@ -166,7 +166,8 @@ public class ExtSdkWrapper {
                 }
             }
         }
-        dbMsg.setBody(msg.getBody());
+        // setBody() replaces all bodies with one; use the full list so a multi-body message keeps every body.
+        dbMsg.setBodies(msg.getBodies());
     }
 
     protected EMConversation getConversation(JSONObject params) throws JSONException {

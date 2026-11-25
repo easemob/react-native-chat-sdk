@@ -21,7 +21,8 @@ ChatSDK is a highly reliable global communication platform where your users can 
 | {@link ChatClient.options options} | Gets the SDK configurations. |
 | {@link ChatClient.currentUserName currentUserName} | Gets the current logged-in user ID. |
 | {@link ChatClient.init init} | Initializes the SDK. |
-| {@link ChatClient.isConnected isConnected} | Checks whether the SDK is connected to the chat server. |
+| {@link ChatClient.isConnected isConnected} | Checks whether the SDK is connected to the chat server. Deprecated; use `getConnectionState`. |
+| {@link ChatClient.getConnectionState getConnectionState} | Gets the connection state between the SDK and the chat server: connected, connecting, or disconnected. |
 | {@link ChatClient.getCurrentUsername getCurrentUsername} | Gets the current logged-in user ID from the server. |
 | {@link ChatClient.getAccessToken getAccessToken} | Gets the token for login. |
 | {@link ChatClient.loginWithToken loginWithToken} | Logs in to the chat server with a token. An exception message is thrown if the login fails. |

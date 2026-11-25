@@ -1304,6 +1304,65 @@ export function registerMessageCases(ctx: CiCaseContext): void {
     },
     { timeoutMs: 120000 }
   );
+
+  // Test: Import a local message carrying a text body and a custom body, read
+  // it back, then update its attributes and read it back again.
+  // Expected: Both bodies keep their type, content and order through the
+  // import, the read-back and the update (updateMessage must not collapse the
+  // message to a single body); contentType is MULTIBODY and `body` is the
+  // first body.
+  ciTest(
+    'RN-MSG-017',
+    'multi-body message keeps every body through import, read-back and update',
+    async () => {
+      const { userId } = requireMessageLogin(ctx);
+      const conversationId = ownedConversation(ctx, 'multi_body');
+      const message = buildLocalMessage({
+        conversationId,
+        msgId: uniqueCiName('msg', 'multi_body'),
+        from: conversationId,
+        to: userId,
+        timestamp: nextLocalTimeBase() + 1000,
+        outgoing: false,
+        text: 'multi first',
+      });
+      message.bodies = [
+        new ChatTextMessageBody({ content: 'multi first' }),
+        new ChatCustomMessageBody({ event: 'multi_second' }),
+      ];
+
+      const assertBodies = (actual: ChatMessage | undefined, what: string) => {
+        assertNotNull(actual, `${what}: message was not found`);
+        assertEqual(actual.bodies.length, 2, `${what}: expected 2 bodies`);
+        assertEqual(
+          actual.contentType,
+          ChatMessageType.MULTIBODY,
+          `${what}: contentType must be MULTIBODY`
+        );
+        assertEqual(actual.body.type, ChatMessageType.TXT);
+        assertEqual(actual.bodies[0]?.type, ChatMessageType.TXT);
+        assertEqual(
+          (actual.bodies[0] as ChatTextMessageBody).content,
+          'multi first'
+        );
+        assertEqual(actual.bodies[1]?.type, ChatMessageType.CUSTOM);
+        assertEqual(
+          (actual.bodies[1] as ChatCustomMessageBody).event,
+          'multi_second'
+        );
+      };
+
+      await manager.importMessages([message]);
+      assertBodies(await manager.getMessage(message.msgId), 'read-back');
+
+      message.attributes = { ...message.attributes, revision: 2 };
+      await manager.updateMessage(message);
+      assertBodies(
+        await manager.getMessage(message.msgId),
+        'after updateMessage'
+      );
+    }
+  );
 }
 
 /** No-login message negative cases (`logged_out` entry). */

@@ -178,6 +178,7 @@ const CHAT_OPTIONS_KEYS = [
   'enableEmptyConversation',
   'autoLoadConversations',
   'enableChatroomConversation',
+  'disconnectNotifyThreshold',
   'customDeviceName',
   'customOSType',
   'enableDNSConfig',

@@ -22,6 +22,7 @@ public:
     static const std::string kickAllDevices;
     static const std::string getLoggedInDevicesFromServer;
     static const std::string getCurrentUser;
+    static const std::string getConnectionState;
     static const std::string bindDeviceToken;
     static const std::string bindPushKitToken;
     static const std::string unbindPushKitToken;

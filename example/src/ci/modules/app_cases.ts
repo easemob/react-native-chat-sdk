@@ -31,6 +31,7 @@ export function registerAppCases(ctx: CiCaseContext): void {
       assertEqual(options.debugModel, false);
       assertEqual(options.autoLoadConversations, true);
       assertEqual(options.enableChatroomConversation, false);
+      assertEqual(options.disconnectNotifyThreshold, 10);
       assertEqual(options.enableUserInfo, false);
       assertEqual(options.dataSyncType, ChatDataSyncType.Conversations);
       assertEqual(ctx.client.currentUserName, '');
