@@ -16,7 +16,7 @@
  *   failure for CI assertions);
  * - `script.done` as the final record, keeping the shape
  *   (`{ total, failed }`) that the existing device drivers and
- *   `scripts/ci/script_results.js` `parseLogText` already understand.
+ *   `testing/share/script_results.js` `parseLogText` already understand.
  *
  * The harness itself is pure TypeScript: the SDK client, the CI config and
  * the REST fixture reach cases through `CiCaseContext`, and the logger is

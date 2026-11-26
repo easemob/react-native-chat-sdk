@@ -1,11 +1,11 @@
 #!/usr/bin/env node
 /**
  * Assert a CI harness device run (example/src/ci/) against the structured
- * `[APITEST]` log and reconcile it with docs/ci/native-case-mapping.json.
+ * `[APITEST]` log and reconcile it with testing/regression/native-case-mapping.json.
  * The log parsing is shared with assert_script.js / auto_report.js.
  *
  * Usage:
- *   CI_PLATFORM=<android|ios> node scripts/ci/assert_ci_run.js <ci_run.json> <api_test.log>
+ *   CI_PLATFORM=<android|ios> node testing/regression/assert_ci_run.js <ci_run.json> <api_test.log>
  *
  * Environment:
  *   CI_PLATFORM     (required) device platform that produced the log;
@@ -15,7 +15,7 @@
  *                   precedence over CI_REPORT_ROOT. ci_test_local.sh sets it
  *                   so all artifacts stay in one timestamped run directory.
  *   CI_REPORT_ROOT  (optional) report output root; defaults to
- *                   <repo>/artifacts/ci. Tests point it at a temp dir.
+ *                   <repo>/artifacts/regression. Tests point it at a temp dir.
  *
  * Exit code 0 when the run is green, 1 on any assertion failure, 2 on
  * usage/IO errors. A run fails when any of the following holds:
@@ -40,12 +40,14 @@
 
 const fs = require('node:fs');
 const path = require('node:path');
-const { parseLogText } = require('./script_results');
-const { sanitize } = require('./auto_report');
+const { parseLogText, sanitize } = require('../share/script_results');
 
 const REPO_ROOT = path.resolve(__dirname, '../..');
-const MAPPING_PATH = path.join(REPO_ROOT, 'docs/ci/native-case-mapping.json');
-const DEFAULT_REPORT_ROOT = path.join(REPO_ROOT, 'artifacts/ci');
+const MAPPING_PATH = path.join(
+  REPO_ROOT,
+  'testing/regression/native-case-mapping.json'
+);
+const DEFAULT_REPORT_ROOT = path.join(REPO_ROOT, 'artifacts/regression');
 const PLATFORMS = ['android', 'ios'];
 const ENTRIES = [
   'logged_out',
@@ -282,7 +284,7 @@ function main() {
   const platform = process.env.CI_PLATFORM;
   if (ciRunPath == null || logPath == null) {
     fail2(
-      'usage: CI_PLATFORM=<android|ios> node scripts/ci/assert_ci_run.js <ci_run.json> <api_test.log>'
+      'usage: CI_PLATFORM=<android|ios> node testing/regression/assert_ci_run.js <ci_run.json> <api_test.log>'
     );
   }
   if (!PLATFORMS.includes(platform)) {

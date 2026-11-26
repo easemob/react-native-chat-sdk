@@ -35,7 +35,7 @@
 
 ## 版本对齐约定
 
-- 契约文档与实现一同演进：修改本目录行为时若偏离契约，先改 orchestrator 仓的 `docs/agent-contract.md` 再改实现；两仓提交各自独立，引用以 pin 文件（`testing/multi-tool.json`）的 ref 为准。
+- 契约文档与实现一同演进：修改本目录行为时若偏离契约，先改 orchestrator 仓的 `docs/agent-contract.md` 再改实现；两仓提交各自独立，引用以 pin 文件（`testing/multi/multi-tool.json`）的 ref 为准。
 - 契约中标注"待 T11 实测校准"的字段，以三代表场景（message-delivery / presence / group-member-join）端到端实测结果为最终基准，校准后回填契约文档并去掉标注。
 - 已知缺口：`ChatClient.getCurrentDeviceId` 在 RN SDK 无公开实现（契约 §13 G1），注册表内为 typed 桩（tool error -1），message-device-sync 场景的 RN 版用例允许显式差异。
 - RN 侧已实现的协议 v2 强化：证据缓冲降级（degraded）后业务命令在提交路径即拒绝（503 `evidence_gap`），比 Flutter 侧现状多这一道拦截（契约 §5 注记的差异，RN 按协议要求落实）。
@@ -43,5 +43,5 @@
 ## 边界
 
 - 只使用 SDK 公开 API（`src/`，`modules/` 零改动）。
-- 不触碰现有单设备 CI 资产（`example/src/ci/`、`scripts/ci/`）；agent 构建开关与其他自动化入口（`API_SCRIPT` / `CI_RUN`）互斥，默认关闭。
+- 不触碰现有设备回归资产（`example/src/ci/`、`testing/regression/`、`testing/share/`）；agent 构建开关与其他自动化入口（`API_SCRIPT` / `CI_RUN`）互斥，默认关闭。
 - 零新增 npm 运行时依赖（reverse 通道用 RN 内置 `fetch`；配置文件读取用既有依赖 `react-native-fs`）。

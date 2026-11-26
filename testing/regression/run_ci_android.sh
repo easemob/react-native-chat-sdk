@@ -12,7 +12,7 @@
 #   CI_ENTRY_DIR         artifact directory for this entry; the full logcat is
 #                        written to $CI_ENTRY_DIR/logcat.log
 #   LOGCAT_LOG           explicit logcat path (default: $CI_ENTRY_DIR/logcat.log,
-#                        falling back to artifacts/ci when CI_ENTRY_DIR is
+#                        falling back to artifacts/regression when CI_ENTRY_DIR is
 #                        unset)
 #   DEVICE_CLEANUP_PATHS space-separated device paths to delete after the run
 #                        (ci_test_local.sh: the on-device ci_run.json holds
@@ -25,11 +25,11 @@ ENTRY_DIR="${CI_ENTRY_DIR:-}"
 if [ -z "$ENTRY_DIR" ] && [ -n "${OUT_LOG:-}" ]; then
   ENTRY_DIR="$(dirname "$OUT_LOG")"
 fi
-ENTRY_DIR="${ENTRY_DIR:-$REPO_ROOT/artifacts/ci}"
+ENTRY_DIR="${ENTRY_DIR:-$REPO_ROOT/artifacts/regression}"
 LOGCAT_LOG="${LOGCAT_LOG:-$ENTRY_DIR/logcat.log}"
 mkdir -p "$(dirname "$LOGCAT_LOG")"
 
-ANDROID_SERIAL="$(bash "$REPO_ROOT/scripts/ci/select_android_device.sh")" || exit $?
+ANDROID_SERIAL="$(bash "$REPO_ROOT/testing/share/select_android_device.sh")" || exit $?
 export ANDROID_SERIAL
 
 LOGCAT_PID=""
@@ -49,7 +49,7 @@ LOGCAT_PID=$!
 # Live-render the [APITEST] records from the growing logcat (✅/❌ per case).
 # Pure view layer: assert_ci_run.js stays the only judge. The renderer exits
 # by itself on script.done; the EXIT trap covers early driver exits.
-node "$REPO_ROOT/scripts/ci/render_ci_log.js" "$LOGCAT_LOG" &
+node "$REPO_ROOT/testing/regression/render_ci_log.js" "$LOGCAT_LOG" &
 RENDERER_PID=$!
 stop_renderer() {
   if [ -n "$RENDERER_PID" ]; then
@@ -61,7 +61,7 @@ stop_renderer() {
 trap 'stop_renderer; stop_logcat' EXIT
 
 rc=0
-bash "$REPO_ROOT/scripts/ci/run_device_android.sh" || rc=$?
+bash "$REPO_ROOT/testing/share/run_device_android.sh" || rc=$?
 
 if [ -n "${DEVICE_CLEANUP_PATHS:-}" ]; then
   read -r -a cleanup_paths <<< "$DEVICE_CLEANUP_PATHS"

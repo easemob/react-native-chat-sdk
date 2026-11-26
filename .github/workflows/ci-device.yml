@@ -4,7 +4,7 @@ name: CI Device Regression
 # example app's CI mode (example/src/ci/) covers both the no-login smoke
 # (logged_out entry) and the single-account logged-in regression (the four
 # logged_in_* entries). Local runs match CI exactly — both go through
-# scripts/ci/ci_test_local.sh; this workflow only orchestrates
+# testing/regression/ci_test_local.sh; this workflow only orchestrates
 # build/upload/boot/call-script.
 
 on:
@@ -54,7 +54,7 @@ jobs:
         working-directory: example/android
         env:
           # Inlined into the JS bundle by example/babel-plugin-inline-api-env.js;
-          # must match DEVICE_CI_RUN_PATH in scripts/ci/ci_test_local.sh.
+          # must match DEVICE_CI_RUN_PATH in testing/regression/ci_test_local.sh.
           CI_RUN: /data/local/tmp/rn_ci_run.json
         # Same invocation as ci_test_local.sh, pinned to x86_64 for the CI
         # emulator (the base CI builds arm64-v8a). -PbundleInDebug=true embeds
@@ -112,7 +112,7 @@ jobs:
           # the shell), so this stays a single line; ci_test_local.sh calls
           # run_ci_android.sh per entry. run_ci_android.sh captures that entry's
           # logcat inside the emulator session, before the emulator goes away.
-          script: bash scripts/ci/ci_test_local.sh android logged_out
+          script: bash testing/regression/ci_test_local.sh android logged_out
         env:
           # No secrets in this lane: init targets the public demo app key
           # (same key the old no-login smoke used; also in example/src/env.ts).
@@ -125,7 +125,7 @@ jobs:
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: rn-ci-device-android-logged-out-${{ github.run_id }}
-          path: artifacts/ci/
+          path: artifacts/regression/
           if-no-files-found: warn
           retention-days: 7
 
@@ -173,7 +173,7 @@ jobs:
           # the contact peer, then loops the four logged-in entries. The
           # on-device ci_run.json holds credentials; run_ci_android.sh deletes
           # it via DEVICE_CLEANUP_PATHS inside the emulator session.
-          script: bash scripts/ci/ci_test_local.sh android logged_in_base,logged_in_group,logged_in_contact,logged_in_user_info
+          script: bash testing/regression/ci_test_local.sh android logged_in_base,logged_in_group,logged_in_contact,logged_in_user_info
         env:
           E2E_APP_KEY: ${{ secrets.E2E_APP_KEY }}
           E2E_USER_ID: ${{ secrets.E2E_USER_ID }}
@@ -189,7 +189,7 @@ jobs:
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: rn-ci-device-android-logged-in-${{ github.run_id }}
-          path: artifacts/ci/
+          path: artifacts/regression/
           if-no-files-found: warn
           retention-days: 7
 
@@ -246,7 +246,7 @@ jobs:
         # env). FORCE_BUNDLING=1 makes the Debug build embed the JS bundle;
         # Debug simulator builds normally skip bundling and load from Metro.
         # The simulator shares the host file system, so the value must match
-        # DEVICE_CI_RUN_PATH in scripts/ci/ci_test_local.sh. Do NOT pass
+        # DEVICE_CI_RUN_PATH in testing/regression/ci_test_local.sh. Do NOT pass
         # CODE_SIGNING_ALLOWED=NO: the embedded HyphenateChat.framework must be
         # ad-hoc signed or dyld refuses to load it on Apple Silicon simulators.
         run: |
@@ -299,7 +299,7 @@ jobs:
       - name: Run logged_out entry on iOS simulator
         run: |
           ditto -x -k artifacts/ChatSdkExample.app.zip artifacts
-          bash scripts/ci/ci_test_local.sh ios logged_out
+          bash testing/regression/ci_test_local.sh ios logged_out
         env:
           # No secrets in this lane: init targets the public demo app key
           # (same key the old no-login smoke used; also in example/src/env.ts).
@@ -322,7 +322,7 @@ jobs:
         with:
           name: rn-ci-device-ios-logged-out-${{ github.run_id }}
           path: |
-            artifacts/ci/
+            artifacts/regression/
             artifacts/*diagnose*.tar.gz
           if-no-files-found: warn
           retention-days: 7
@@ -361,7 +361,7 @@ jobs:
         # base user.
         run: |
           ditto -x -k artifacts/ChatSdkExample.app.zip artifacts
-          bash scripts/ci/ci_test_local.sh ios logged_in_base,logged_in_group,logged_in_contact,logged_in_user_info
+          bash testing/regression/ci_test_local.sh ios logged_in_base,logged_in_group,logged_in_contact,logged_in_user_info
         env:
           E2E_APP_KEY: ${{ secrets.E2E_APP_KEY }}
           E2E_USER_ID: ${{ secrets.E2E_USER_ID }}
@@ -387,7 +387,7 @@ jobs:
         with:
           name: rn-ci-device-ios-logged-in-${{ github.run_id }}
           path: |
-            artifacts/ci/
+            artifacts/regression/
             artifacts/*diagnose*.tar.gz
           if-no-files-found: warn
           retention-days: 7

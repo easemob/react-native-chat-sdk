@@ -10,7 +10,7 @@
 
 set -euo pipefail
 
-repo_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
+repo_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "$repo_root"
 
 echo "==> Install dependencies"
@@ -36,10 +36,10 @@ yarn test:contract --no-watchman
 echo "==> Circular dependency check"
 yarn check:circular:dpdm
 
-echo "==> CI case mapping check"
-node scripts/ci/check_case_mapping.js
+echo "==> Regression case mapping check"
+node testing/regression/check_case_mapping.js
 
-echo "==> CI script regression tests"
-yarn test:ci-scripts
+echo "==> Testing tool tests"
+yarn test:tools
 
 echo "==> All quality gates passed"

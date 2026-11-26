@@ -4,17 +4,17 @@
 # Tool resolution order (D13):
 #   1. $IMTO_PATH: path to an im-test-orchestrator checkout
 #   2. Local checkout at /Users/asterisk/Codes/zuoyu/im-test-orchestrator
-#   3. Clone pinned by testing/multi-tool.json into example/.im-test-orchestrator
+#   3. Clone pinned by testing/multi/multi-tool.json into example/.im-test-orchestrator
 #      (gitignored; inactive until the pin file carries a real URL and ref)
 #
 # Usage:
-#   scripts/ci/multi.sh generate --platform ios [--case <name>] [--instance <id>] ...
+#   testing/multi/multi.sh generate --platform ios [--case <name>] [--instance <id>] ...
 #       Runs scripts/generate_cases.dart; defaults --cases-dir to
 #       testing/multi/cases.
-#   scripts/ci/multi.sh prepare|devices|build|launch|run|report|clean|all ...
+#   testing/multi/multi.sh prepare|devices|build|launch|run|report|clean|all ...
 #       Runs bin/cli.dart; defaults --app-dir to example/.
 # Example:
-#   scripts/ci/multi.sh all --cases /path/to/im-test-orchestrator/multi/config/cases.json
+#   testing/multi/multi.sh all --cases /path/to/im-test-orchestrator/multi/config/cases.json
 # `generate` writes cases.json under <IMTO>/multi/config/, not under this
 # repository; pass that absolute path to --cases.
 # Relative path arguments are resolved against this repository root.
@@ -28,7 +28,7 @@
 set -euo pipefail
 
 REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
-PIN_FILE="$REPO_ROOT/testing/multi-tool.json"
+PIN_FILE="$REPO_ROOT/testing/multi/multi-tool.json"
 LOCAL_CHECKOUT="/Users/asterisk/Codes/zuoyu/im-test-orchestrator"
 CLONE_DIR="$REPO_ROOT/example/.im-test-orchestrator"
 

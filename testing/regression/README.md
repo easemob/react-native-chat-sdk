@@ -1,62 +1,34 @@
-# CI 设备回归（example/src/ci）
+# 设备回归（example/src/ci）
 
 ## 定位
 
-CI 设备回归在真机/模拟器上启动 `example` 应用，用真实 native SDK 跑一组**长期可重复**的契约用例：单账号、固定前置、用例自建自清、结果可静态对账。它补的是 Jest 与 contract test 看不到的部分——TS 调用经过 native 后的真实行为、事件解码、本地 DB 读取，以及服务端可见的读写路径。
+设备回归在真机/模拟器上启动 `example` 应用，用真实 native SDK 跑一组**长期可重复**的契约用例：单账号、固定前置、用例自建自清、结果可静态对账。它补的是 Jest 与 contract test 看不到的部分——TS 调用经过 native 后的真实行为、事件解码、本地 DB 读取，以及服务端可见的读写路径。
 
 它不负责：
 
 - 纯 TypeScript 逻辑（用 Jest）；
-- 某版本的逐 API 平版验收与工单复现（用[单设备脚本](2026-11-19-single-device.md)）；
-- 需要第二个运行中客户端的行为（用[多设备协同](2026-11-19-multi-device.md)）。
+- 某版本的逐 API 平版验收与工单复现（用[单设备脚本](../single/README.md)）；
+- 需要第二个运行中客户端的行为（用[多设备协同](../multi/README.md)）。
 
-当前基线：native iOS `HyphenateChat 5.2.0` / Android `5.2.1`，5 个固定入口、98 条用例（以 `docs/ci/native-case-mapping.json` 为准，`check_case_mapping.js` 校验）。
+当前基线：native iOS `HyphenateChat 5.2.0` / Android `5.2.1`，5 个固定入口、98 条用例（以 `testing/regression/native-case-mapping.json` 为准，`check_case_mapping.js` 校验）。
 
 ## 从零开始：初始化、设备与数据
 
 这一节按“新机器第一次跑”的顺序写。已有工作区可以跳过初始化，但仍要确认设备选择与凭据。
 
-### 1. 工具链
+### 1. 工具链与仓库
 
-| 依赖             | 要求                                                                     | 检查                                 |
-| ---------------- | ------------------------------------------------------------------------ | ------------------------------------ |
-| Node.js          | 24.x（见 `.nvmrc`）                                                      | `node -v`                            |
-| Yarn             | 4.14.1（仓库内 `.yarn/releases/yarn-4.14.1.cjs`，见 `packageManager`）   | `yarn -v`                            |
-| JDK              | 17（CI 使用 17；Android Gradle 构建）                                    | `java -version`                      |
-| Android SDK      | compileSdk 36；platform-tools、emulator；Apple Silicon 用 arm64-v8a 镜像 | `adb version`、`emulator -list-avds` |
-| Xcode            | 能构建 RN 0.83 的版本（CI 当前使用 Xcode 26.3）                          | `xcodebuild -version`                |
-| Ruby / CocoaPods | Ruby >= 2.6.10；Bundler；CocoaPods 版本由 `example/Gemfile` 固定         | `bundle -v`、`pod --version`         |
+Node、Yarn、JDK 17、Android SDK、Xcode / CocoaPods 的要求和 `yarn prepare` 见 [测试入口的环境一节](../README.md#环境)。`java -version` 必须是 17。
 
-macOS 本机首次配置 Android 环境时，通常需要把 SDK 加到 `PATH`：
+`ci_test_local.sh` 在真正构建前也会执行 `gen:version_file`、`gen:cmake_file`、`gen:env_file`，所以只跑设备回归时这三步不是手工前置；首次检出仍应先 `yarn prepare`，避免 `lib/` 或生成文件缺失影响其他任务。
 
-```bash
-export ANDROID_HOME="$HOME/Library/Android/sdk"
-export PATH="$ANDROID_HOME/platform-tools:$ANDROID_HOME/emulator:$PATH"
-export JAVA_HOME="$(/usr/libexec/java_home -v 17)"
-```
-
-`java -version` 必须是 17；如果机器上有多个 JDK，先把 `JAVA_HOME` 指到 17，再运行 Gradle。
-
-### 2. 初始化仓库
-
-在仓库根目录执行（不要用 `npm`）：
-
-```bash
-nvm use
-corepack enable          # 如果本机还没有可用的 Yarn
-yarn                     # 安装 workspace 依赖
-yarn prepare             # 生成 version/CMake/env，并构建 lib/
-```
-
-`ci_test_local.sh` 在真正构建前也会执行 `gen:version_file`、`gen:cmake_file`、`gen:env_file`，所以只跑设备回归时这三步不是手工前置；但首次检出仍建议按 `CONTRIBUTING.md` 完成 `yarn prepare`，避免 `lib/` 或生成文件缺失影响其他任务。
-
-### 3. 准备账号与凭据
+### 2. 准备账号与凭据
 
 只跑 `logged_out` 时不需要账号和 token，只需要一个可初始化的 appKey。CI 的 `logged-out lane` 使用公开 demo key `easemob-demo#zuoyu`；本地等价命令：
 
 ```bash
 E2E_APP_KEY='easemob-demo#zuoyu' \
-  bash scripts/ci/ci_test_local.sh android logged_out
+  bash testing/regression/ci_test_local.sh android logged_out
 ```
 
 跑任意 `logged_in_*` entry 时，从以下两种来源中选一种：
@@ -80,8 +52,8 @@ E2E_APP_KEY='easemob-demo#zuoyu' \
 - `restApi` 是环境基础地址，脚本会拼成 `<restApi>/<org>/<app>/token`；
 - `accounts[0].id`（或 `E2E_USER_ID`）是基础账号；设置可选 `E2E_USER_SUFFIX` 后，有效登录账号为 `<基础账号><后缀>`。脚本取 token 时带 `autoCreateUser=true`，首次使用会自动创建；如果集群关闭了该能力，需要先在控制台创建账号；
 - 联系人用例的 peer 默认是 `<有效登录账号>_ci_peer`，也通过同一 token 接口自动创建；可用 `E2E_PEER_ID` 指定完整 peer ID，显式值不会再追加后缀，并行时需自行保证 peer 隔离；
-- token 由 `scripts/ci/fetch_e2e_user_token.js` 在每次运行时现取，只存在宿主临时文件和 `ci_run.json`（0600），不会写进仓库；
-- **CI 不需要**先跑 `yarn env:gettoken`，也不读 `example/src/env.ts`；那是单设备脚本的初始化路径（见[单设备文档](2026-11-19-single-device.md#前置与凭据)）。
+- token 由 `testing/regression/fetch_e2e_user_token.js` 在每次运行时现取，只存在宿主临时文件和 `ci_run.json`（0600），不会写进仓库；
+- **CI 不需要**先跑 `yarn env:gettoken`，也不读 `example/src/env.ts`；那是单设备脚本的初始化路径（见[单设备文档](../single/README.md#前置与凭据)）。
 
 配置完可以先用一次 `logged_in_contact` 单例验证凭据；不要提交 `config.local.json`。
 
@@ -90,13 +62,13 @@ CI 两个登录态 lane 分别设置固定后缀 `_rn_android_5x` / `_rn_ios_5x`
 本地默认不追加后缀，保持现有账号行为；需要双平台并行时显式设置（两种凭据来源均支持）：
 
 ```bash
-E2E_USER_SUFFIX=_rn_android_5x bash scripts/ci/ci_test_local.sh android
-E2E_USER_SUFFIX=_rn_ios_5x bash scripts/ci/ci_test_local.sh ios
+E2E_USER_SUFFIX=_rn_android_5x bash testing/regression/ci_test_local.sh android
+E2E_USER_SUFFIX=_rn_ios_5x bash testing/regression/ci_test_local.sh ios
 ```
 
 固定后缀只隔离 SDK/平台，不隔离同平台的不同分支或本地与 CI 并行。同分支 CI run 沿用 workflow 的 concurrency 约束。直接调用 `fetch_e2e_user_token.js` 时默认使用基础账号加后缀；`--user-id` 则表示完整 ID，原样使用。
 
-### 4. 准备设备
+### 3. 准备设备
 
 #### Android
 
@@ -150,35 +122,35 @@ cd ..
 - 脚本每次 iOS 构建前都会刷新 Pods（`bundle check`/必要时 `bundle install`，再 `bundle exec pod install`）；设置 `SKIP_POD_INSTALL=1` 可跳过。已有 Pods 不会被当成“已是最新”。
 - `pod install` 可能更新 `example/ios/Podfile.lock` 和 `example/ios/ChatSdkExample.xcodeproj/project.pbxproj`。这些是已跟踪文件，测试后先看 `git diff`，不要无意中把依赖升级一起提交。
 
-### 5. 第一次运行
+### 4. 第一次运行
 
 先跑 `logged_out`，确认构建、安装、启动、日志拉取和断言链路都通：
 
 ```bash
 # Android；已有 config.local.json 时可省略 E2E_APP_KEY
 E2E_APP_KEY='easemob-demo#zuoyu' \
-  bash scripts/ci/ci_test_local.sh android logged_out
+  bash testing/regression/ci_test_local.sh android logged_out
 
 # iOS；没有 config.local.json 时同样需要 E2E_APP_KEY
 E2E_APP_KEY='easemob-demo#zuoyu' DEVICE_UDID=<UDID> \
-  bash scripts/ci/ci_test_local.sh ios logged_out
+  bash testing/regression/ci_test_local.sh ios logged_out
 ```
 
 再跑一条登录态用例（`logged_in_contact` 只有一条，适合做单例验证）：
 
 ```bash
 ANDROID_SERIAL=emulator-5554 \
-  bash scripts/ci/ci_test_local.sh android logged_in_contact '^RN-CONTACT-001$'
+  bash testing/regression/ci_test_local.sh android logged_in_contact '^RN-CONTACT-001$'
 
 DEVICE_UDID=<UDID> \
-  bash scripts/ci/ci_test_local.sh ios logged_in_contact '^RN-CONTACT-001$'
+  bash testing/regression/ci_test_local.sh ios logged_in_contact '^RN-CONTACT-001$'
 ```
 
 最后跑全量：
 
 ```bash
-ANDROID_SERIAL=emulator-5554 bash scripts/ci/ci_test_local.sh android
-DEVICE_UDID=<UDID> bash scripts/ci/ci_test_local.sh ios
+ANDROID_SERIAL=emulator-5554 bash testing/regression/ci_test_local.sh android
+DEVICE_UDID=<UDID> bash testing/regression/ci_test_local.sh ios
 ```
 
 构建耗时参考：Android 增量构建约 35 秒，首次构建更久；iOS 完整构建约 8–10 分钟。`logged_out` 只初始化 SDK、不登录，通常是定位环境问题最快的一层。
@@ -188,16 +160,16 @@ DEVICE_UDID=<UDID> bash scripts/ci/ci_test_local.sh ios
 ```bash
 # 默认会使用 example/android/app/build/outputs/apk/debug/app-debug.apk
 CI_SKIP_BUILD=1 ANDROID_SERIAL=emulator-5554 \
-  bash scripts/ci/ci_test_local.sh android
+  bash testing/regression/ci_test_local.sh android
 
 # 包在别处时再提供 APK_PATH / APP_PATH
 CI_SKIP_BUILD=1 APK_PATH=/path/to/app-debug.apk \
-  ANDROID_SERIAL=emulator-5554 bash scripts/ci/ci_test_local.sh android
+  ANDROID_SERIAL=emulator-5554 bash testing/regression/ci_test_local.sh android
 ```
 
 `CI_SKIP_BUILD=1` 只跳过依赖/生成/构建阶段，不会检查默认包是否存在；路径不对时会在安装阶段报错。
 
-### 6. 常见问题
+### 5. 常见问题
 
 | 现象                                                            | 原因                                                           | 处理                                                                     |
 | --------------------------------------------------------------- | -------------------------------------------------------------- | ------------------------------------------------------------------------ |
@@ -213,18 +185,18 @@ CI_SKIP_BUILD=1 APK_PATH=/path/to/app-debug.apk \
 | 一直等不到 `script.done`                                        | 应用崩溃、entry 初始化失败或设备卡住                           | 看 `summary.md` 的错误 phase 和原始日志；必要时调大 `CI_ENTRY_TIMEOUT_S` |
 | `total=0` / `script.done` 缺失                                  | 用例没有注册到该 entry，或启动时没进入 CI 模式                 | 检查 registrar 与 entry 的对应关系、mapping 和 CI_RUN 内联路径           |
 | `CI_SKIP_BUILD=1` 后全部用例 `missing`                          | 复用了最近一次构建包；若上次是 auto-mode，包内没有 CI_RUN      | 重新构建 CI APK，或把 `APK_PATH`/`APP_PATH` 指到 CI 版构建产物           |
-| 找不到报告目录                                                  | 默认 run-id 使用运行机器本地时间；历史目录可能使用 UTC         | 用 `date +%Y%m%d%H%M%S` 对照，或直接看终端输出的 run-id                 |
-| `adb: command not found` / `emulator: command not found`        | Android SDK 的 `platform-tools`、`emulator` 不在 `PATH`        | 按第 1 节设置 `ANDROID_HOME` 和 `PATH`                                   |
-| `java` 版本不是 17                                              | `JAVA_HOME` 指向了别的 JDK                                     | 设置 `JAVA_HOME` 后重新构建                                              |
+| 找不到报告目录                                                  | 默认 run-id 使用运行机器本地时间；历史目录可能使用 UTC         | 用 `date +%Y%m%d%H%M%S` 对照，或直接看终端输出的 run-id                  |
+| `adb: command not found` / `emulator: command not found`        | Android SDK 的 `platform-tools`、`emulator` 不在 `PATH`        | 按[环境一节](../README.md#环境)设置 `ANDROID_HOME` 和 `PATH`             |
+| `java` 版本不是 17                                              | `JAVA_HOME` 指向了别的 JDK                                     | 按[环境一节](../README.md#环境)设置 `JAVA_HOME` 后重新构建               |
 
 ## 运行机制
 
 1. 构建时把 `CI_RUN`（设备上的路径）和 JS bundle 内联进包。Android 为 `/data/local/tmp/rn_ci_run.json`，iOS 为 `/tmp/rn_ci_run.json`。
 2. 应用启动后 `ci_mode.ts` 进入 CI 模式，读取该 JSON（`entry`、可选 `testNameRegex`、账号/token 配置），选择对应 entry 的 registrar，串行执行用例。
 3. 应用通过 CI 日志行上报运行状态，`source` 依次为 `ci.run.start`、`script.start`、每条 case 的 `ci.case.result`，最后是 `script.done`。这些日志被写入设备上的 `api_test.log`，由宿主拉回判定；CI 模式不使用 auto mode 的 `[APITEST]` 前缀。
-4. `scripts/ci/ci_test_local.sh` 只构建一次，然后按 entry 逐个冷启动（`logged_out` 前还会清理应用数据），每个 entry 生成一份 0600 配置并拉取自己的日志。
-5. `scripts/ci/assert_ci_run.js` 按 `docs/ci/native-case-mapping.json` 判定：失败、阻塞、缺失、未登记、运行错误、缺 `script.done`、空跑都算失败。
-6. `scripts/ci/check_case_mapping.js` 在 `scripts/ci/run_quality.sh` 里做代码与 mapping 的双向静态校验，本地和 CI 的 `quality` job 用同一道门。
+4. `testing/regression/ci_test_local.sh` 只构建一次，然后按 entry 逐个冷启动（`logged_out` 前还会清理应用数据），每个 entry 生成一份 0600 配置并拉取自己的日志。
+5. `testing/regression/assert_ci_run.js` 按 `testing/regression/native-case-mapping.json` 判定：失败、阻塞、缺失、未登记、运行错误、缺 `script.done`、空跑都算失败。
+6. `testing/regression/check_case_mapping.js` 在 `ci/run_quality.sh` 里做代码与 mapping 的双向静态校验，本地和 CI 的 `quality` job 用同一道门。
 
 ## 五个固定入口
 
@@ -264,33 +236,82 @@ entry 是固定前置，不是可自由组合的标签；每个 entry 独立冷�
 | RN-USERINFO-002 | logged_in_user_info | user_info    | `fetchSubscribedUsers` 只读                                                  |
 | RN-USERINFO-003 | logged_out          | user_info    | 未登录 `fetchSubscribedUsers` 返回 201                                       |
 
-caseId 前缀固定：`app→APP`、`auth→AUTH`、`conversation→CONV`、`message→MSG`、`group→GROUP`、`contact→CONTACT`、`presence→PRESENCE`、`room→ROOM`、`user_info→USERINFO`。每个模块从 `001` 开始，登录/未登录共享序号，删除后的编号不复用。
+编号规则见下一节。
 
-## 编写与准入规则
+## 编写用例
 
-完整规范见 [`docs/ci/README.md`](../ci/README.md)，这里只列准入要点：
+用例写在 `example/src/ci/modules/<module>_cases.ts`。登录态放进 `register*Cases(ctx)`，未登录负例放进 `register*LoggedOutCases(ctx)`。registrar 只在 entry 模块加载时收集注册，注册当下不执行；每个 registrar 必须且只能被一个 entry 引用，`check_case_mapping.js` 会把零引用和多引用都判为违规。模块内部多个用例共用的 helper 留在该模块文件里，跨模块 helper 才提升到 `support/`。
 
-- 用例写在 `example/src/ci/modules/<module>_cases.ts` 的 `register*Cases(ctx)`（登录态）或 `register*LoggedOutCases(ctx)`（`logged_out`）里；registrar 必须且只能被一个 entry 引用。
-- 新增 caseId 必须同时登记 `docs/ci/native-case-mapping.json`（`caseId`、`entry`、`module`、`platforms`、`nativeRef`），否则 `check_case_mapping.js` 或运行时断言会失败。
-- 创建资源时就在创建点登记 `addTearDown`；修改他人状态先 snapshot 再 restore；自建群/聊天室删除后用 404 证明清理。不要删除历史数据。
-- 断言用 `expectCiError` 精确匹配错误码；等待用 `waitForCi` 并带超时；监听先注册再触发；不要固定 sleep。
-- 用例之间不能有顺序依赖；凭据只能来自运行时配置，不能写死或打印。
+entry 文件不可为了加用例而修改：不要增删改 entry、不要改共享 init、不要为了让一条用例塞进去而去改 workflow 或 runner。确实没有任何 entry 能提供所需 init（例如 `autoLoadConversations: false`）时，先记录冲突并确认，再单独设计。
+
+最小用例：
+
+```ts
+ciTest(
+  'RN-PRESENCE-002',
+  'publishPresence while logged out throws 201',
+  async () => {
+    await expectCiError(
+      () => ctx.client.presenceManager.publishPresence('away'),
+      201
+    );
+  }
+);
+```
+
+`ctx` 上可用：`ctx.client`（`ChatClient` 单例）、`ctx.config`（本次 `ci_run.json`：`appKey`、`accounts`、`loginToken`、`peerId`、`restApi`、`appToken`）、`ctx.rest`（`CiRestFixture`，只做准备、核对和恢复）。常用 helper：
+
+- `ciTest(caseId, description, body)`：单例默认超时 2 分钟，超时即失败；用例严格串行。
+- `addTearDown(fn)`：用例级清理，body 成功或失败后都执行，其中一个失败也不拦住其余 tearDown；tearDown 失败记为 cleanup failure 并使该用例失败。创建或修改资源时就在创建点登记。
+- `expectCiError(op, code)`：负例的唯一断言方式，`ChatError.code` 必须精确等于 `code`。
+- `waitForCi(description, read, matches, timeout?)`：200ms 轮询，默认 30 秒；超时错误带上最后一次观察到的值。
+- `loginForCi(client, userId, token)`：登录并等到该 entry 的 `dataSyncType` 同步位和 `isConnected`（预算 45 秒）。
+- `uniqueCiName(module, label)`：资源名 `ci_<module>_<ts>_<seq>_<label>`，重复运行不会撞名。
+- `CiRestFixture`：联系人 snapshot/set/verify/restore、黑名单、建删群和聊天室、`verifyGroupAbsent` / `verifyChatRoomAbsent`（只有 404 算清理完成）、给离线 peer 发文本。
+
+编号与登记：
+
+- caseId 形如 `RN-<PREFIX>-<seq>`。前缀固定：`app→APP`、`auth→AUTH`、`conversation→CONV`、`message→MSG`、`group→GROUP`、`contact→CONTACT`、`presence→PRESENCE`、`room→ROOM`、`user_info→USERINFO`。每个模块从 `001` 起，登录与未登录共用序号，删除后的编号不复用。
+- 每条用例必须同时登记 `testing/regression/native-case-mapping.json` 的 `caseId`、`entry`、`module`、`platforms`（`android` / `ios` 的子集）、`nativeRef`。
+- `node testing/regression/check_case_mapping.js` 做代码与 mapping 的双向校验，并包含在 `bash ci/run_quality.sh` 里。运行时 `assert_ci_run.js` 还会把当前平台 mapping 中缺失的用例，以及日志里出现的未登记 `RN-*`，判为失败。
+
+清理与禁止项：
+
+- 每例独立准备、执行、断言、清理；结束后的服务端状态必须回到开始前。
+- 改自己没创建的状态（联系人、黑名单）先 snapshot 再 restore。自建群和聊天室在 tearDown 里删除，并用 404 证明已不存在。不要删除或覆盖本次运行之前就存在的账号历史数据。
+- REST 只安排前置和证明清理，不代替 SDK 断言。
+- 不使用固定 sleep。监听必须在触发动作之前注册；用 `waitForCi` 等结果，不要用 `setTimeout`，也不要依赖可能已经发出的事件。
+- 用例之间不能有顺序依赖。串行只是执行方式，每例必须单独能过，也不能留下下一条会碰巧依赖的状态。
+- 凭据只从 `ci_run.json` 来。不要在代码或日志里写死 appKey、token、用户 ID（未登录 lane 使用的公开 demo key 除外），也不要打印它们。报告写入前会脱敏，但不能依赖这一点。
+- 不放宽正确断言来绕过 SDK 缺陷；保留失败和证据。
+
+本地验证新用例：
+
+```bash
+bash testing/regression/ci_test_local.sh android logged_in_contact '^RN-CONTACT-001$'
+```
+
+`testNameRegex` 只是运行时过滤。`assert_ci_run.js` 仍按 mapping 校验该 entry 的全部用例，没跑到的记为 `missing` 并失败。因此过滤只适合能覆盖该 entry 全部用例的情况；`logged_in_contact` 只有一条，所以上面的命令是安全的。一次运行 `total: 0` 判为失败，不是跳过。
+
+运行过程中 `testing/regression/render_ci_log.js` 会尾随 `logcat.log` / `simulator.log`，把用例结果打到终端：compact 下每例一行 `✅` / `❌` / `🚫`（blocked），结束时有计数。它只是视图，判定仍只由 `assert_ci_run.js` 负责。reporter 由 `CI_LOG_REPORTER` 决定，默认 GitHub Actions 用 compact、本地用 expanded。事后重渲染：
+
+```bash
+node testing/regression/render_ci_log.js --reporter compact <logcat.log|simulator.log>
+```
 
 ## 执行参数与 CI 工作流
 
-| 变量                 | 作用                                                            |
-| -------------------- | --------------------------------------------------------------- |
-| `ANDROID_SERIAL`     | 多台 Android 设备/模拟器时指定目标；不设置时 adb 必须能唯一选中 |
-| `DEVICE_UDID`        | iOS 模拟器目标；脚本会校验并在需要时启动，建议显式设置          |
-| `E2E_*`              | 五个登录态凭据；全部设置才生效，否则回退 `config.local.json`    |
+| 变量                 | 作用                                                                                                            |
+| -------------------- | --------------------------------------------------------------------------------------------------------------- |
+| `ANDROID_SERIAL`     | 多台 Android 设备/模拟器时指定目标；不设置时 adb 必须能唯一选中                                                 |
+| `DEVICE_UDID`        | iOS 模拟器目标；脚本会校验并在需要时启动，建议显式设置                                                          |
+| `E2E_*`              | 五个登录态凭据；全部设置才生效，否则回退 `config.local.json`                                                    |
 | `E2E_USER_SUFFIX`    | 可选账号后缀，默认空；CI 分别为 `_rn_android_5x` / `_rn_ios_5x`（平台+线路后缀，与 1.x 线共用 app key，需隔离） |
-| `E2E_PEER_ID`        | 完整 peer ID，原样使用；默认 `<有效登录账号>_ci_peer`           |
-| `CI_ENTRY_TIMEOUT_S` | 单个 entry 等待 `script.done` 的看门狗，默认 600 秒             |
-| `CI_SKIP_BUILD`      | `1` 时跳过构建；可配 `APK_PATH` / `APP_PATH` 指向别处的包       |
-| `SKIP_POD_INSTALL`   | iOS 设为 `1` 时跳过构建前的 Pods 刷新（默认每次刷新）           |
-| `CI_RUN_ID`          | 固定本次运行目录名；默认取启动时的本地时间戳                   |
-
-`testNameRegex` 只是运行时过滤，`assert_ci_run.js` 仍按 mapping 校验该 entry 的**全部**用例，未跑到的会记为 `missing` 并失败。因此过滤只适合“regex 覆盖该 entry 全部用例”的情况；`logged_in_contact` 只有一条，所以上面的单例命令安全。其他 entry 建议按 entry 全量跑。
+| `E2E_PEER_ID`        | 完整 peer ID，原样使用；默认 `<有效登录账号>_ci_peer`                                                           |
+| `CI_ENTRY_TIMEOUT_S` | 单个 entry 等待 `script.done` 的看门狗，默认 600 秒                                                             |
+| `CI_SKIP_BUILD`      | `1` 时跳过构建；可配 `APK_PATH` / `APP_PATH` 指向别处的包                                                       |
+| `SKIP_POD_INSTALL`   | iOS 设为 `1` 时跳过构建前的 Pods 刷新（默认每次刷新）                                                           |
+| `CI_RUN_ID`          | 固定本次运行目录名；默认取启动时的本地时间戳                                                                    |
 
 CI 中由 `.github/workflows/ci-device.yml` 执行：每天 UTC 19:37 定时和手动触发，Android/iOS 各有 `logged-out lane` 与 `logged-in lane`，构建 job 上传 APK/.app，测试 job 用 `CI_SKIP_BUILD=1` 运行 `ci_test_local.sh`。构建 job 和本地脚本现在都会在 iOS 构建前刷新 Pods；测试 job 不构建，因此不会重复安装。
 
@@ -299,7 +320,7 @@ CI 中由 `.github/workflows/ci-device.yml` 执行：每天 UTC 19:37 定时和�
 每次 `ci_test_local.sh` 执行只创建一个以本地时间戳命名的目录，格式为 `YYYYMMDDHHMMSS`，使用运行机器的时区，与 Flutter 保持一致。报告中的 ISO 时间字段仍保留 UTC。目录名只有时间戳、不带平台或 entry 后缀，所有产物都在其中：
 
 ```text
-artifacts/ci/20261119105125/
+artifacts/regression/20261119105125/
 └── android/
     ├── summary.md                # 本次执行总览：命令、设备、entry 结果
     ├── report.json               # 机器可读的平台级结果
@@ -317,15 +338,14 @@ artifacts/ci/20261119105125/
 
 iOS 执行把 `android/` 换成 `ios/`，原生日志名为 `simulator.log`。`summary.md`、`report.json`、`run.json` 和 `runner.log` 都放在平台目录里而不是时间戳目录根下；如果 Android 和 iOS 用同一个 `CI_RUN_ID` 跑，两者会并列在 `android/`、`ios/` 下，互不覆盖。
 
-- 多 entry 时是多个 `android/<suite>/`、`ios/<suite>/` 子目录（suite 为 entry 短名），仍然全在同一个时间戳目录内。
-- 时间戳是 **UTC**（例如本地 17:40 生成 `20261119094037`）；用 `date -u` 对照，不要按本地时间找目录。
+- 多 entry 时是多个 `android/<suite>/`、`ios/<suite>/` 子目录（suite 为 entry 短名），仍然全在同一个时间戳目录内。目录名是运行机器的本地时间，用 `date +%Y%m%d%H%M%S` 对照，或直接看终端打印的 run-id。
 - `summary.md`（entry 级）含每条用例状态、失败 phase 与错误信息；平台级 `summary.md` 汇总该平台各 entry 的 PASS/FAIL 和产物位置。
 - 状态语义：`pass` 通过；`fail` 断言失败；`blocked` 前置/基础设施失败导致没跑（算失败）；`missing` mapping 中有但日志没有；`unregistered` 日志中有但 mapping 没有。
 - 报告与日志在 `artifacts/` 下，默认不进 Git；断言脚本只对报告做脱敏，`api_test.log`、`logcat.log`、`simulator.log` 是原始日志，分享前必须自行检查账号、appKey、token、设备 ID 和测试消息内容。
 
 ## 维护
 
-- 新增/调整用例：按 `docs/ci/README.md` 执行，更新 mapping，跑 `bash scripts/ci/run_quality.sh` 和对应 entry 的本地回归。
+- 新增/调整用例：按上面的编写规则更新代码和 mapping，跑 `bash ci/run_quality.sh` 和对应 entry 的本地回归。
 - 修改 entry 的 init 组合或入口分类：先走设计确认，不能作为普通用例改动合并。
 - 升级 native 基线时同步更新 mapping 的 `nativeBaseline`，并在报告中记录实际版本。
 - 工具链或脚本行为变化时同步更新本文；如果文档与脚本不一致，以脚本为准并记录待修正点。

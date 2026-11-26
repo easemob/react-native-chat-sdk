@@ -284,6 +284,30 @@ function evaluateScript(script, entries, options = {}) {
   };
 }
 
+function sanitize(value) {
+  if (Array.isArray(value)) return value.map(sanitize);
+  if (value != null && typeof value === 'object') {
+    const result = {};
+    for (const [key, item] of Object.entries(value)) {
+      if (/token|password|client.?secret|authorization/i.test(key)) {
+        result[key] = '<redacted>';
+      } else {
+        result[key] = sanitize(item);
+      }
+    }
+    return result;
+  }
+  if (typeof value === 'string') {
+    return value
+      .replace(
+        /(token|password|client[_-]?secret|authorization)\s*[:=]\s*[^,}\s]+/gi,
+        '$1=<redacted>'
+      )
+      .replace(/(appkey|app_key)\s*[:=]\s*[^,}\s]+/gi, '$1=<redacted>');
+  }
+  return value;
+}
+
 module.exports = {
   APITEST_PREFIX,
   collectStepReferences,
@@ -291,4 +315,5 @@ module.exports = {
   indexLastEntries,
   matchExpectation,
   parseLogText,
+  sanitize,
 };

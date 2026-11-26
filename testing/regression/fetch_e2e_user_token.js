@@ -22,9 +22,9 @@
 // with $(...)); diagnostics go to stderr. Exit code is non-zero on failure.
 //
 // Usage:
-//   E2E_USER_TOKEN="$(node scripts/ci/fetch_e2e_user_token.js)"
-//   E2E_APP_TOKEN="$(node scripts/ci/fetch_e2e_user_token.js --app)"
-//   PEER_TOKEN="$(node scripts/ci/fetch_e2e_user_token.js --user-id ci_peer)"
+//   E2E_USER_TOKEN="$(node testing/regression/fetch_e2e_user_token.js)"
+//   E2E_APP_TOKEN="$(node testing/regression/fetch_e2e_user_token.js --app)"
+//   PEER_TOKEN="$(node testing/regression/fetch_e2e_user_token.js --user-id ci_peer)"
 //
 // Modes:
 //   (default)   user token: app token -> user token via grant_type=inherit

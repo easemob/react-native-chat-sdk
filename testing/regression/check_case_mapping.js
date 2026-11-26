@@ -1,10 +1,10 @@
 #!/usr/bin/env node
 /**
  * Static consistency check between the CI case registration code under
- * example/src/ci/ and docs/ci/native-case-mapping.json.
+ * example/src/ci/ and testing/regression/native-case-mapping.json.
  *
  * Usage:
- *   node scripts/ci/check_case_mapping.js
+ *   node testing/regression/check_case_mapping.js
  *
  * Validations (any violation exits non-zero):
  *   1. Every `ciTest('RN-...')` id in the module files exists exactly once
@@ -36,7 +36,10 @@ const path = require('node:path');
 const REPO_ROOT = path.resolve(__dirname, '../..');
 const MODULES_DIR = path.join(REPO_ROOT, 'example/src/ci/modules');
 const ENTRIES_DIR = path.join(REPO_ROOT, 'example/src/ci/entries');
-const MAPPING_PATH = path.join(REPO_ROOT, 'docs/ci/native-case-mapping.json');
+const MAPPING_PATH = path.join(
+  REPO_ROOT,
+  'testing/regression/native-case-mapping.json'
+);
 
 const PLATFORMS = ['android', 'ios'];
 const CASE_ID_PATTERN = /^RN-[A-Z]+-[0-9]+$/;

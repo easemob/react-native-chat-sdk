@@ -8,16 +8,16 @@
 - Jira 工单的最小复现与回归；
 - 需要精确控制 `init`/`login` 前置的一次性验证。
 
-它不追求长期可重复的 CI 口径（没有 mapping、entry、清理纪律），也不验证需要第二个客户端的行为。公开契约的长期回归用 [CI 设备回归](2026-11-19-ci.md)；多客户端行为用[多设备协同](2026-11-19-multi-device.md)。
+它不追求长期可重复的设备回归口径（没有 mapping、entry、清理纪律），也不验证需要第二个客户端的行为。公开契约的长期回归用 [设备回归](../regression/README.md)；多客户端行为用[多设备协同](../multi/README.md)。
 
-仓库初始化（Node/Yarn/JDK/SDK/Xcode/CocoaPods）、账号配置和设备启动步骤见[测试指南的“开始之前”](README.md#开始之前环境与项目初始化)以及 [CI 文档的“从零开始”](2026-11-19-ci.md#从零开始初始化设备与数据)。本节只列单设备层额外的要求。
+仓库初始化见 [测试入口的环境一节](../README.md#环境)。设备启动见 [设备回归的准备设备](../regression/README.md#3-准备设备)。本节只列单设备层额外的要求。
 
 ## 运行机制
 
 1. `auto_script_local.sh` 构建应用，把 `API_SCRIPT`（设备上的脚本路径）和 JS bundle 内联进包；启动后 auto mode 读取脚本。
 2. `init` 以 `example/src/env.ts` 的 ChatOptions 为基座，脚本里的 `init` 覆盖同名字段；`login` 默认取 `accounts[0]`，也可在脚本中显式指定或关闭。
 3. 步骤串行执行，单步失败不会中断后续步骤；成功步骤的结果写入 `$prev` 和 `$step.<id>`，失败步骤清空 `$prev`。
-4. 宿主侧 `scripts/ci/script_results.js` 按日志逐个检查 `expect`：失败、依赖被阻断、崩溃、未执行分别标记；`auto_report.js` 汇总成报告。
+4. 宿主侧 `testing/share/script_results.js` 按日志逐个检查 `expect`：失败、依赖被阻断、崩溃、未执行分别标记；`auto_report.js` 汇总成报告。
 5. `auto_report.js` 有三种模式：跑设备、从已有日志重建报告、对比 Android/iOS 两份报告。
 
 一次构建只内联一份脚本，切换脚本必须重新构建。`auto_script_local.sh` 每次会清理 Metro 缓存，因为 `API_SCRIPT` 不被 Gradle/Metro 的缓存键跟踪。
@@ -34,13 +34,13 @@
 
 步骤字段：
 
-| 字段           | 必填 | 含义                                                                                                                                                |
-| -------------- | ---- | --------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `api`          | 是   | API registry 名称，如 `ChatManager.sendMessage`。                                                                                                   |
-| `id`           | 否   | 步骤标识，供后续步骤的 `$step.<id>` 引用，也出现在报告里。                                                                                          |
-| `params`       | 否   | 调用参数，可含下表的引用表达式。                                                                                                                    |
-| `timeoutMs`    | 否   | 单步超时，默认 30000ms。                                                                                                                            |
-| `delayAfterMs` | 否   | 步骤执行后的节流等待；不能代替事件等待或断言。                                                                                                      |
+| 字段           | 必填 | 含义                                                                                                                                                                                         |
+| -------------- | ---- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `api`          | 是   | API registry 名称，如 `ChatManager.sendMessage`。                                                                                                                                            |
+| `id`           | 否   | 步骤标识，供后续步骤的 `$step.<id>` 引用，也出现在报告里。                                                                                                                                   |
+| `params`       | 否   | 调用参数，可含下表的引用表达式。                                                                                                                                                             |
+| `timeoutMs`    | 否   | 单步超时，默认 30000ms。                                                                                                                                                                     |
+| `delayAfterMs` | 否   | 步骤执行后的节流等待；不能代替事件等待或断言。                                                                                                                                               |
 | `expect`       | 是   | 宿主判定条件：`{ "success": true }`，或 `{ "success": false, "errorCode": <number> }`。`errorCode` 会与 `error.code` 精确比较，不是范围或前缀匹配。`success: true` 可再带 `checks`（见下）。 |
 
 `checks`（可选）：`[{ "path": "bodies.0.content", "equals": "x" }, { "path": "bodies", "length": 2 }]`。`path` 相对步骤返回值（即结果的 `data`），数组下标用数字段，所以 `bodies.0`、`bodies.1` 能钉住多体消息的顺序；每项只能有 `equals`（JSON 全等）或 `length`（数组长度）之一，任何一项不满足该步骤即为 `failed`。
@@ -69,25 +69,25 @@
 
 ## 现有脚本
 
-| 文件                                 | 步骤 | 用途与注意事项                                                                                                                        |
-| ------------------------------------ | ---- | ------------------------------------------------------------------------------------------------------------------------------------- |
-| `port_5_0_0_positive.json`           | 18   | 5.0.0 平版正向基线；显式 `init.debugModel=true`；辅助的 `sendMessage`/`destroyGroup` 只做前置与清理，报告解读时不计入被测 API。       |
-| `port_5_0_0_negative.json`           | 10   | 5.0.0 反向：非法参数、缺失资源、无效 token。`_comment` 记录了不执行的场景与集群限制。                                                 |
-| `port_5_1_0_positive.json`           | 15   | 5.1.0 正向；省略 `init`，依赖 env 推导；要求 `chatOptions.autoLoadConversations=false`。                                              |
-| `port_5_1_0_negative.json`           | 2    | 5.1.0 反向：非法 cursor 期望 `INVALID`；同样要求 `autoLoadConversations=false`。                                                      |
+| 文件                                 | 步骤 | 用途与注意事项                                                                                                                                                                                               |
+| ------------------------------------ | ---- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `port_5_0_0_positive.json`           | 18   | 5.0.0 平版正向基线；显式 `init.debugModel=true`；辅助的 `sendMessage`/`destroyGroup` 只做前置与清理，报告解读时不计入被测 API。                                                                              |
+| `port_5_0_0_negative.json`           | 10   | 5.0.0 反向：非法参数、缺失资源、无效 token。`_comment` 记录了不执行的场景与集群限制。                                                                                                                        |
+| `port_5_1_0_positive.json`           | 15   | 5.1.0 正向；省略 `init`，依赖 env 推导；要求 `chatOptions.autoLoadConversations=false`。                                                                                                                     |
+| `port_5_1_0_negative.json`           | 2    | 5.1.0 反向：非法 cursor 期望 `INVALID`；同样要求 `autoLoadConversations=false`。                                                                                                                             |
 | `port_5_2_0_positive.json`           | 3    | 5.2.0 正向：登录后 `getConnectionState`；向 `accounts[1]` 发送双文本体多体消息，并读回最新消息；两处都用 `checks` 断言 `bodies` 长度为 2、`bodies.0`/`bodies.1` 内容与发送顺序一致。不含图片体和跨设备接收。 |
-| `port_5_2_0_negative.json`           | 1    | 5.2.0 反向：`bodies` 为空列表，构造消息即抛 `ChatError(-1)`，未到 native；`-1` 也是脚本引擎的兜底码，需在日志里确认描述。             |
-| `port_4_24_1.json`                   | 6    | 4.24.1 基线回归，保留用于老版本对比。                                                                                                 |
-| `him_delete_conversations_edge.json` | 1    | 删除会话边界场景的工单复现。                                                                                                          |
-| `him_delete_conversations.json`      | 5    | 删除会话相关工单回归。                                                                                                                |
-| `him_unread_count.json`              | 1    | 未读数相关工单回归。                                                                                                                  |
-| `him23707_keyword_senders.json`      | 6    | HIM-23707：按发送者关键词搜索消息。                                                                                                   |
+| `port_5_2_0_negative.json`           | 1    | 5.2.0 反向：`bodies` 为空列表，构造消息即抛 `ChatError(-1)`，未到 native；`-1` 也是脚本引擎的兜底码，需在日志里确认描述。                                                                                    |
+| `port_4_24_1.json`                   | 6    | 4.24.1 基线回归，保留用于老版本对比。                                                                                                                                                                        |
+| `him_delete_conversations_edge.json` | 1    | 删除会话边界场景的工单复现。                                                                                                                                                                                 |
+| `him_delete_conversations.json`      | 5    | 删除会话相关工单回归。                                                                                                                                                                                       |
+| `him_unread_count.json`              | 1    | 未读数相关工单回归。                                                                                                                                                                                         |
+| `him23707_keyword_senders.json`      | 6    | HIM-23707：按发送者关键词搜索消息。                                                                                                                                                                          |
 
 `him_*` 是历史工单资产，仍然可直接运行；它们断言的是工单场景，不要当作全量 API 覆盖。
 
 ## 前置与凭据
 
-1. `example/config.local.json`（gitignored）提供 `appKey`、`restApi`、`clientId`、`clientSecret`、`accounts[].id`，以及 `chatOptions`。账号建议固定为测试账号；取 token 时带 `autoCreateUser=true`，集群允许时会自动创建，关闭该能力时需先在控制台创建。字段模板与获取方式见 [CI 文档的“准备账号与凭据”](2026-11-19-ci.md#3-准备账号与凭据)。
+1. `example/config.local.json`（gitignored）提供 `appKey`、`restApi`、`clientId`、`clientSecret`、`accounts[].id`，以及 `chatOptions`。账号建议固定为测试账号；取 token 时带 `autoCreateUser=true`，集群允许时会自动创建，关闭该能力时需先在控制台创建。字段模板与获取方式见 [设备回归的准备账号与凭据](../regression/README.md#2-准备账号与凭据)。
 2. `yarn env:gettoken` 用 client 凭据取 App Token，再逐账号取 User Token（`autoCreateUser=true`），全量重写 `example/src/env.ts`。`env.ts` 是生成文件，不要手改；token 过期后重新执行。
 3. `yarn gen:env_file` 只在 `env.ts` 不存在时生成占位，不会刷新 token；`yarn report:api` 会自动执行它。
 4. 5.1.0 的两个脚本要求先把 `config.local.json` 的 `chatOptions.autoLoadConversations` 设为 `false`，再执行 `yarn env:gettoken`；否则 init 与脚本预期不一致。
@@ -126,7 +126,7 @@ yarn report:api \
 
 `--device` 对 Android 设置 `ANDROID_SERIAL`，对 iOS 设置模拟器 UDID；也可以直接导出这两个变量，效果相同。不传时 Android 要求恰好一台在线设备（多台报错）；iOS 0 台 booted 自动启动一台、恰好 1 台直接使用、多台报错。iOS 指定了 `DEVICE_UDID` 但尚未启动时，脚本会先启动并等待它。
 
-底层入口是 `bash scripts/ci/auto_script_local.sh <android|ios>`，它只跑默认脚本、不写 `auto_report` 报告，通常不需要直接调用。
+底层入口是 `bash testing/single/auto_script_local.sh <android|ios>`，它只跑默认脚本、不写 `auto_report` 报告，通常不需要直接调用。
 
 ## 报告
 

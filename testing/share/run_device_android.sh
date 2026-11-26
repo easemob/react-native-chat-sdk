@@ -86,5 +86,5 @@ if [ "$done_seen" != "1" ]; then
 fi
 
 echo "[5/5] assert $OUT_LOG"
-node "${ASSERT_SCRIPT:-$REPO_ROOT/scripts/ci/assert_script.js}" \
+node "${ASSERT_SCRIPT:-$REPO_ROOT/testing/single/assert_script.js}" \
   "$SCRIPT_JSON" "$OUT_LOG"

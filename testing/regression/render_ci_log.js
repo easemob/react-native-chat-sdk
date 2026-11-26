@@ -11,7 +11,7 @@
  * errors, which exit 2).
  *
  * Usage:
- *   node scripts/ci/render_ci_log.js [--reporter compact|expanded] <log-file>
+ *   node testing/regression/render_ci_log.js [--reporter compact|expanded] <log-file>
  *
  * Reporter resolution (mirrors the Flutter repo's tool/ci/run_*_test.sh):
  *   --reporter flag > CI_LOG_REPORTER env > GITHUB_ACTIONS=true ? compact
@@ -31,7 +31,7 @@
  */
 
 const fs = require('node:fs');
-const { parseLogText } = require('./script_results');
+const { parseLogText } = require('../share/script_results');
 
 const REPORTERS = ['compact', 'expanded'];
 const POLL_INTERVAL_MS = 500;

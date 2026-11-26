@@ -32,7 +32,7 @@ jobs:
         uses: ./.github/actions/setup
 
       - name: Run quality gates
-        run: bash scripts/ci/run_quality.sh
+        run: bash ci/run_quality.sh
 
       - name: Upload unit test coverage
         if: always()

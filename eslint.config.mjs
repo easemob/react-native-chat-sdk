@@ -28,6 +28,7 @@ export default defineConfig([
       '**/node_modules/',
       '**/lib/',
       'scripts/',
+      'testing/',
       'docs/',
       '**/.worktree/',
       '**/build/',

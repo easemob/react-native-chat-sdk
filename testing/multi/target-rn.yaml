@@ -1,18 +1,18 @@
 # React Native example（react-native-chat-sdk/example）目标登记
-# —— im-test-orchestrator 多设备编排的 target 信息，经 --target testing/target-rn.yaml 传入。
+# —— im-test-orchestrator 多设备编排的 target 信息，经 --target testing/multi/target-rn.yaml 传入。
 #
 # 生效字段（orchestrator 当前消费）：appDir / transport / iosProcessName / logcatTags /
 # casesDir / app.* / build.* / launch.*（reverse 模式下 build/launch 字段被消费）。
 name: react-native-chat-sdk-example
 platform: android
-appDir: ../example
+appDir: ../../example
 transport: reverse
 iosProcessName: ChatSdkExample
 logcatTags:
   - ReactNativeJS:I   # RN console.log 的 logcat tag（agent 的 [AGENT_CONTROL] 配对行经此输出）
   - testing_v2:I      # 宿主就绪探针 marker（契约 §9）
   - '*:S'
-casesDir: multi/cases
+casesDir: cases
 app:
   applicationId: chatsdk.example   # example/android/app/build.gradle applicationId
   # agent 入口的打包期内联开关（NAME=设备绝对路径），机制同

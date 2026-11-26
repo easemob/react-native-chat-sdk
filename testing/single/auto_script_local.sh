@@ -2,13 +2,13 @@
 # One-command local build+run of an auto-mode script on a device: builds the
 # example app with the JS bundle embedded and API_SCRIPT inlined, then runs
 # the platform driver script. This is the entry point of the porting runner
-# (yarn report:api -> scripts/ci/auto_report.js spawns this script with
+# (yarn report:api -> testing/single/auto_report.js spawns this script with
 # SCRIPT_JSON/OUT_LOG overrides). The CI device regression harness uses
 # ci_test_local.sh instead (CI mode, CI_RUN inlined).
 #
 # Usage:
-#   bash scripts/ci/auto_script_local.sh android   # needs one online emulator/device
-#   bash scripts/ci/auto_script_local.sh ios       # uses DEVICE_UDID/one booted sim
+#   bash testing/single/auto_script_local.sh android   # needs one online emulator/device
+#   bash testing/single/auto_script_local.sh ios       # uses DEVICE_UDID/one booted sim
 #
 # Android device selection goes through select_android_device.sh (set
 # ANDROID_SERIAL when several devices are online). iOS goes through
@@ -25,7 +25,7 @@ PLATFORM="${1:-}"
 case "$PLATFORM" in
   android|ios) ;;
   *)
-    echo "usage: bash scripts/ci/auto_script_local.sh <android|ios>" >&2
+    echo "usage: bash testing/single/auto_script_local.sh <android|ios>" >&2
     exit 2
     ;;
 esac
@@ -52,7 +52,7 @@ yarn gen:version_file && yarn gen:cmake_file && yarn gen:env_file
 rm -rf "${TMPDIR:-/tmp}/metro-cache"
 
 if [ "$PLATFORM" = "android" ]; then
-  ANDROID_SERIAL="$(bash scripts/ci/select_android_device.sh)"
+  ANDROID_SERIAL="$(bash testing/share/select_android_device.sh)"
   export ANDROID_SERIAL
   # Build for the ABI of the attached device (arm64 on Apple Silicon,
   # x86_64 on CI), not a hardcoded one.
@@ -65,11 +65,11 @@ if [ "$PLATFORM" = "android" ]; then
       --no-daemon --console=plain \
       "-PreactNativeArchitectures=$ABI" -PbundleInDebug=true
   )
-  exec bash scripts/ci/run_device_android.sh
+  exec bash testing/share/run_device_android.sh
 fi
 
 # ios
-DEVICE_UDID="$(bash scripts/ci/select_ios_simulator.sh)"
+DEVICE_UDID="$(bash testing/share/select_ios_simulator.sh)"
 export DEVICE_UDID
 
 if [ "${SKIP_POD_INSTALL:-0}" != "1" ]; then
@@ -96,4 +96,4 @@ echo ">> build auto-mode app (bundle embedded, API_SCRIPT inlined)"
     API_SCRIPT=/tmp/rn_auto_script.json \
     build
 )
-exec bash scripts/ci/run_device_ios.sh
+exec bash testing/share/run_device_ios.sh

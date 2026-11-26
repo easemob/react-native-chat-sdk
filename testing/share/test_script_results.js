@@ -10,14 +10,14 @@ const {
   evaluateScript,
   matchExpectation,
   parseLogText,
+  sanitize,
 } = require('./script_results');
 const {
   collectIssues,
   differentShapePaths,
   extractCrashEvidence,
-  sanitize,
   shapeOf,
-} = require('./auto_report');
+} = require('../single/auto_report');
 
 const REPO_ROOT = path.resolve(__dirname, '../..');
 
@@ -41,12 +41,23 @@ function localTimestamp(date, timeZone) {
     .join('');
 }
 
+const SCRIPT_PATHS = {
+  'ci_test_local.sh': 'testing/regression/ci_test_local.sh',
+  'auto_script_local.sh': 'testing/single/auto_script_local.sh',
+  'multi.sh': 'testing/multi/multi.sh',
+  'auto_report.js': 'testing/single/auto_report.js',
+  'assert_ci_run.js': 'testing/regression/assert_ci_run.js',
+};
+
 for (const [script, variable, override] of [
   ['ci_test_local.sh', 'RUN_ID', 'CI_RUN_ID'],
   ['auto_script_local.sh', 'AUTO_RUN_STAMP', null],
   ['multi.sh', 'RUN_STAMP', 'MULTI_RUN_STAMP'],
 ]) {
-  const source = fs.readFileSync(path.join(__dirname, script), 'utf8');
+  const source = fs.readFileSync(
+    path.join(REPO_ROOT, SCRIPT_PATHS[script]),
+    'utf8'
+  );
   const assignment = source.match(new RegExp(`^\\s*${variable}=.*$`, 'm'))?.[0];
 
   test(`${script} uses host local time for artifact directory names`, () => {
@@ -94,7 +105,10 @@ for (const [script, variable, override] of [
 
 for (const script of ['auto_report.js', 'assert_ci_run.js']) {
   test(`${script} formats artifact timestamps in host local time`, () => {
-    const source = fs.readFileSync(path.join(__dirname, script), 'utf8');
+    const source = fs.readFileSync(
+      path.join(REPO_ROOT, SCRIPT_PATHS[script]),
+      'utf8'
+    );
     const formatter = source.match(
       /function timestamp\(date\) \{[\s\S]*?\n\}/
     )?.[0];

@@ -28,7 +28,7 @@ mkdir -p "$REPORT_DIR"
 # Run gradle build (clean first to force re-compilation so deprecation warnings are emitted)
 # Note: || true is intentional - we want to parse the output even if the build fails
 # Note: -Xlint:deprecation is a javac flag; it is injected via the init script
-# scripts/ci/enable-deprecation-lint.gradle because AGP compile tasks do not enable
+# scripts/enable-deprecation-lint.gradle because AGP compile tasks do not enable
 # it by default.
 # assembleDebug is enough: the SDK module has a single sourceset, and skipping the
 # release variant halves build time and downloads. --no-daemon/--console=plain match
@@ -37,7 +37,7 @@ mkdir -p "$REPORT_DIR"
 # Full build output goes to RAW_LOG; stdout only contains the final JSON.
 echo "Building (full log: $RAW_LOG)..." >&2
 (cd "$ANDROID_DIR" && ./gradlew clean assembleDebug --no-daemon --console=plain \
-  -I "$PROJECT_ROOT/scripts/ci/enable-deprecation-lint.gradle" \
+  -I "$PROJECT_ROOT/scripts/enable-deprecation-lint.gradle" \
   -Dorg.gradle.internal.http.socketTimeout=60000 \
   -Dorg.gradle.internal.http.connectionTimeout=60000 \
   > "$RAW_LOG" 2>&1) || true

@@ -12,7 +12,7 @@
 # assert via assert_ci_run.js) -> aggregate exit code. A failing entry does
 # NOT abort the loop.
 #
-# Output: one artifacts/ci/<local timestamp>/ directory per invocation. The
+# Output: one artifacts/regression/<local timestamp>/ directory per invocation. The
 # run-level runner.log and summary.md live under <platform>/, next to the
 # suite directories, so Android and iOS invocations that share CI_RUN_ID do
 # not overwrite each other:
@@ -27,7 +27,7 @@
 # logged_out keeps its name.
 #
 # Usage:
-#   bash scripts/ci/ci_test_local.sh <android|ios> [entries] [testNameRegex]
+#   bash testing/regression/ci_test_local.sh <android|ios> [entries] [testNameRegex]
 #     entries       space/comma-separated subset of: logged_out logged_in_base
 #                   logged_in_group logged_in_contact logged_in_user_info
 #                   (default: all five, logged_out first). The GitHub device
@@ -41,7 +41,7 @@
 #   (a) if the five E2E_* variables are set (E2E_APP_KEY, E2E_USER_ID,
 #       E2E_REST_API, E2E_CLIENT_ID, E2E_CLIENT_SECRET — same names as the
 #       GitHub `rn-single-account` environment), tokens are fetched fresh via
-#       scripts/ci/fetch_e2e_user_token.js;
+#       testing/regression/fetch_e2e_user_token.js;
 #   (b) otherwise the git-ignored local dev config example/config.local.json
 #       supplies the same five values (restApi/appKey/clientId/clientSecret
 #       and accounts[0].id as the user id) and tokens are fetched the same
@@ -71,7 +71,7 @@
 #                        runs before every iOS build (local builds default to
 #                        refreshing; CI test jobs skip the build step entirely)
 #   CI_RUN_ID            optional fixed run id (default: local timestamp at start)
-#                        (the run directory is artifacts/ci/<CI_RUN_ID>)
+#                        (the run directory is artifacts/regression/<CI_RUN_ID>)
 #
 # Device selection: Android goes through select_android_device.sh (requires
 # ANDROID_SERIAL when several devices are online); iOS goes through
@@ -86,7 +86,7 @@ REGEX_ARG="${3:-}"
 case "$PLATFORM" in
   android|ios) ;;
   *)
-    echo "usage: bash scripts/ci/ci_test_local.sh <android|ios> [entries] [testNameRegex]" >&2
+    echo "usage: bash testing/regression/ci_test_local.sh <android|ios> [entries] [testNameRegex]" >&2
     exit 2
     ;;
 esac
@@ -130,7 +130,7 @@ else
 fi
 
 CI_ENTRY_TIMEOUT_S="${CI_ENTRY_TIMEOUT_S:-600}"
-REPORT_DIR="$REPO_ROOT/artifacts/ci"
+REPORT_DIR="$REPO_ROOT/artifacts/regression"
 RUN_ID="${CI_RUN_ID:-$(date +%Y%m%d%H%M%S)}"
 RUN_DIR="$REPORT_DIR/$RUN_ID"
 PLATFORM_DIR="$RUN_DIR/$PLATFORM"
@@ -298,11 +298,11 @@ if [ "$NEED_TOKENS" = "1" ]; then
   USER_ID="${E2E_USER_ID}${E2E_USER_SUFFIX:-}"
   PEER_ID="${E2E_PEER_ID:-${USER_ID}_ci_peer}"
   echo ">> credentials: fetching fresh app/user tokens (host-side only)"
-  APP_TOKEN="$(node scripts/ci/fetch_e2e_user_token.js --app)"
-  USER_TOKEN="$(node scripts/ci/fetch_e2e_user_token.js --user-id "$USER_ID")"
+  APP_TOKEN="$(node testing/regression/fetch_e2e_user_token.js --app)"
+  USER_TOKEN="$(node testing/regression/fetch_e2e_user_token.js --user-id "$USER_ID")"
   # Provision the contact peer server-side (autoCreateUser on the token
   # endpoint); the returned peer token is not needed and discarded.
-  node scripts/ci/fetch_e2e_user_token.js --user-id "$PEER_ID" >/dev/null
+  node testing/regression/fetch_e2e_user_token.js --user-id "$PEER_ID" >/dev/null
 fi
 
 # --- device selection --------------------------------------------------------
@@ -311,10 +311,10 @@ fi
 # step would otherwise have selected a device.
 
 if [ "$PLATFORM" = "android" ]; then
-  ANDROID_SERIAL="$(bash scripts/ci/select_android_device.sh)"
+  ANDROID_SERIAL="$(bash testing/share/select_android_device.sh)"
   export ANDROID_SERIAL
 else
-  DEVICE_UDID="$(bash scripts/ci/select_ios_simulator.sh)"
+  DEVICE_UDID="$(bash testing/share/select_ios_simulator.sh)"
   export DEVICE_UDID
 fi
 
@@ -446,9 +446,9 @@ run_entry() {
       OUT_LOG="$entry_dir/api_test.log" \
       CI_ENTRY_DIR="$entry_dir" \
       CI_REPORT_DIR="$entry_dir" \
-      ASSERT_SCRIPT="$REPO_ROOT/scripts/ci/assert_ci_run.js" \
+      ASSERT_SCRIPT="$REPO_ROOT/testing/regression/assert_ci_run.js" \
       SCRIPT_TIMEOUT_S="$CI_ENTRY_TIMEOUT_S" \
-      bash scripts/ci/run_ci_android.sh || rc=$?
+      bash testing/regression/run_ci_android.sh || rc=$?
   else
     env \
       CI_PLATFORM=ios \
@@ -458,9 +458,9 @@ run_entry() {
       OUT_LOG="$entry_dir/api_test.log" \
       CI_ENTRY_DIR="$entry_dir" \
       CI_REPORT_DIR="$entry_dir" \
-      ASSERT_SCRIPT="$REPO_ROOT/scripts/ci/assert_ci_run.js" \
+      ASSERT_SCRIPT="$REPO_ROOT/testing/regression/assert_ci_run.js" \
       SCRIPT_TIMEOUT_S="$CI_ENTRY_TIMEOUT_S" \
-      bash scripts/ci/run_ci_ios.sh || rc=$?
+      bash testing/regression/run_ci_ios.sh || rc=$?
     rm -f "$DEVICE_CI_RUN_PATH"
   fi
 
@@ -497,7 +497,7 @@ done
 write_run_summary() {
   local result="PASS"
   local device=""
-  local command="bash scripts/ci/ci_test_local.sh $PLATFORM"
+  local command="bash testing/regression/ci_test_local.sh $PLATFORM"
   local entry status
   [ "${#FAILED_ENTRIES[@]}" -gt 0 ] && result="FAIL"
   if [ "$PLATFORM" = "android" ]; then
@@ -546,7 +546,7 @@ done
 export CI_RUN_ID CI_PLATFORM="$PLATFORM" CI_STARTED_AT="$RUN_STARTED_AT" \
   CI_FINISHED_AT="$(date -u +%Y-%m-%dT%H:%M:%SZ)" CI_PLATFORM_DIR="$PLATFORM_DIR" \
   CI_ENTRY_ROWS="$ENTRY_ROWS"
-CI_COMMAND="bash scripts/ci/ci_test_local.sh $PLATFORM"
+CI_COMMAND="bash testing/regression/ci_test_local.sh $PLATFORM"
 [ -n "${ENTRY_ARG:-}" ] && CI_COMMAND="$CI_COMMAND $ENTRY_ARG"
 [ -n "${REGEX_ARG:-}" ] && CI_COMMAND="$CI_COMMAND '$REGEX_ARG'"
 export CI_COMMAND

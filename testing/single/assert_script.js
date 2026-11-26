@@ -4,13 +4,13 @@
  * The parsing and classification logic is shared with auto_report.js.
  *
  * Usage:
- *   node scripts/ci/assert_script.js <script.json> <api_test.log>
+ *   node testing/single/assert_script.js <script.json> <api_test.log>
  *
  * Exit code 0 on success, 1 on assertion failure, 2 on usage/IO errors.
  */
 
 const fs = require('node:fs');
-const { evaluateScript, parseLogText } = require('./script_results');
+const { evaluateScript, parseLogText } = require('../share/script_results');
 
 function fail2(message) {
   console.error(`assert_script: error: ${message}`);
@@ -21,7 +21,7 @@ function main() {
   const [, , scriptPath, logPath] = process.argv;
   if (scriptPath == null || logPath == null) {
     fail2(
-      'usage: node scripts/ci/assert_script.js <script.json> <api_test.log>'
+      'usage: node testing/single/assert_script.js <script.json> <api_test.log>'
     );
   }
   if (!fs.existsSync(scriptPath)) {

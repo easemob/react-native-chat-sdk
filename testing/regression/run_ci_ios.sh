@@ -12,11 +12,11 @@ ENTRY_DIR="${CI_ENTRY_DIR:-}"
 if [ -z "$ENTRY_DIR" ] && [ -n "${OUT_LOG:-}" ]; then
   ENTRY_DIR="$(dirname "$OUT_LOG")"
 fi
-ENTRY_DIR="${ENTRY_DIR:-$REPO_ROOT/artifacts/ci}"
+ENTRY_DIR="${ENTRY_DIR:-$REPO_ROOT/artifacts/regression}"
 SIM_LOG="${SIM_LOG:-$ENTRY_DIR/simulator.log}"
 mkdir -p "$(dirname "$SIM_LOG")"
 
-DEVICE_UDID="$(bash "$REPO_ROOT/scripts/ci/select_ios_simulator.sh")"
+DEVICE_UDID="$(bash "$REPO_ROOT/testing/share/select_ios_simulator.sh")"
 export DEVICE_UDID
 echo "Using iOS simulator $DEVICE_UDID"
 
@@ -42,7 +42,7 @@ fi
 # Live-render the [APITEST] records from the growing simulator log (✅/❌ per
 # case). Pure view layer: assert_ci_run.js stays the only judge. The renderer
 # exits by itself on script.done; the EXIT trap covers early driver exits.
-node "$REPO_ROOT/scripts/ci/render_ci_log.js" "$SIM_LOG" &
+node "$REPO_ROOT/testing/regression/render_ci_log.js" "$SIM_LOG" &
 RENDERER_PID=$!
 stop_renderer() {
   if [ -n "$RENDERER_PID" ]; then
@@ -53,4 +53,4 @@ stop_renderer() {
 }
 trap 'stop_renderer; stop_sim_log' EXIT
 
-bash "$REPO_ROOT/scripts/ci/run_device_ios.sh"
+bash "$REPO_ROOT/testing/share/run_device_ios.sh"

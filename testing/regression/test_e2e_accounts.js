@@ -116,9 +116,11 @@ function readJsonLines(file) {
 function runEntry(t, options = {}) {
   const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'rn-e2e-accounts-'));
   t.after(() => fs.rmSync(dir, { recursive: true, force: true }));
-  const scripts = path.join(dir, 'scripts/ci');
+  const scripts = path.join(dir, 'testing/regression');
+  const share = path.join(dir, 'testing/share');
   const bin = path.join(dir, 'bin');
   fs.mkdirSync(scripts, { recursive: true });
+  fs.mkdirSync(share, { recursive: true });
   fs.mkdirSync(bin);
   let source = fs.readFileSync(
     path.join(__dirname, 'ci_test_local.sh'),
@@ -140,7 +142,7 @@ function runEntry(t, options = {}) {
         ? 'select_android_device.sh'
         : 'select_ios_simulator.sh';
     fs.writeFileSync(
-      path.join(scripts, selector),
+      path.join(share, selector),
       "printf 'fixture-device\\n'\n"
     );
     fs.writeFileSync(

@@ -9,7 +9,11 @@ const crypto = require('node:crypto');
 const fs = require('node:fs');
 const path = require('node:path');
 const { execFileSync, spawnSync } = require('node:child_process');
-const { evaluateScript, parseLogText } = require('./script_results');
+const {
+  evaluateScript,
+  parseLogText,
+  sanitize,
+} = require('../share/script_results');
 
 const REPO_ROOT = path.resolve(__dirname, '../..');
 const DEFAULT_SCRIPT = path.join(
@@ -161,30 +165,6 @@ function resolveDevice(platform, requested) {
   return platform === 'android'
     ? resolveAndroidDevice(requested)
     : resolveIosDevice(requested);
-}
-
-function sanitize(value) {
-  if (Array.isArray(value)) return value.map(sanitize);
-  if (value != null && typeof value === 'object') {
-    const result = {};
-    for (const [key, item] of Object.entries(value)) {
-      if (/token|password|client.?secret|authorization/i.test(key)) {
-        result[key] = '<redacted>';
-      } else {
-        result[key] = sanitize(item);
-      }
-    }
-    return result;
-  }
-  if (typeof value === 'string') {
-    return value
-      .replace(
-        /(token|password|client[_-]?secret|authorization)\s*[:=]\s*[^,}\s]+/gi,
-        '$1=<redacted>'
-      )
-      .replace(/(appkey|app_key)\s*[:=]\s*[^,}\s]+/gi, '$1=<redacted>');
-  }
-  return value;
 }
 
 function extractCrashEvidence(text) {
@@ -717,7 +697,7 @@ function runMain(options) {
     }
   } else {
     clearAndroidLogcat(platform, env);
-    const result = spawnSync('bash', ['scripts/ci/auto_script_local.sh', platform], {
+    const result = spawnSync('bash', ['testing/single/auto_script_local.sh', platform], {
       cwd: REPO_ROOT,
       env,
       stdio: 'inherit',
@@ -742,7 +722,7 @@ function runMain(options) {
     worktreeDirty: dirty,
     scriptSha256: sha256(scriptPath),
     runnerSha256: sha256(__filename),
-    evaluatorSha256: sha256(path.join(__dirname, 'script_results.js')),
+    evaluatorSha256: sha256(path.join(__dirname, '../share/script_results.js')),
     runnerExitCode,
     crashEvidence: crashText.length > 0,
     sensitiveValues: 'redacted or not included',
@@ -805,7 +785,6 @@ module.exports = {
   differentShapePaths,
   extractCrashEvidence,
   parseArgs,
-  sanitize,
   shapeOf,
   writeReport,
 };
