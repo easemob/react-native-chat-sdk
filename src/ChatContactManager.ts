@@ -244,7 +244,7 @@ export class ChatContactManager extends BaseManager {
   }
 
   /**
-   * Accepts a friend invitation。
+   * Accepts a friend invitation.
    *
    * @param userId The user who sends the friend invitation.
    *

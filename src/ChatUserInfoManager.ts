@@ -149,7 +149,7 @@ export class ChatUserInfoManager extends Native {
    * Gets the user attributes of the specified users.
    *
    * @param userIds The user ID array.
-   * @returns A map that contains key-value pairs where the key is the user ID and the value is user attributes，see {@link ChatUserInfo}.
+   * @returns A map that contains key-value pairs where the key is the user ID and the value is user attributes, see {@link ChatUserInfo}.
    *
    * @throws A description of the exception. See {@link ChatError}.
    */

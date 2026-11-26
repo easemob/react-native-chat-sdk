@@ -1178,7 +1178,7 @@ export class ChatManager extends BaseManager {
    *  @param from          The sender of the message. If you set this parameter as `undefined`, the SDK ignores this parameter when retrieving messages.
    *  @param direction       The message search direction. See {@link ChatSearchDirection}.
    *                        - `UP`: The SDK retrieves messages in the descending order of the timestamp included in them.
-   *                        - `DOWN`：The SDK retrieves messages in the ascending order of the timestamp included in them.
+   *                        - `DOWN`: The SDK retrieves messages in the ascending order of the timestamp included in them.
    *  @param searchScope           The message search scope. See {@link ChatMessageSearchScope}.
    *
    * @returns A dictionary containing conversation IDs and message ID arrays. If no message is obtained, an empty dictionary is returned.
@@ -2939,7 +2939,7 @@ export class ChatManager extends BaseManager {
    *
    * @param convId The conversation ID.
    * @param isPinned Whether to pin a conversation:
-   * - `true`：Yes.
+   * - `true`: Yes.
    * - `false`: No. The conversation is unpinned.
    *
    * @throws A description of the exception. See {@link ChatError}.
@@ -3098,9 +3098,9 @@ export class ChatManager extends BaseManager {
    * Clears all conversations and all messages in them.
    *
    * @param clearServerData Whether to clear all conversations and all messages in them on the server.
-   *   - `true`：Yes. All conversations and all messages in them will be cleared on the server side.
+   *   - `true`: Yes. All conversations and all messages in them will be cleared on the server side.
    *   The current user cannot retrieve messages and conversations from the server, while this has no impact on other users.
-   *  - (Default) `false`：No. All local conversations and all messages in them will be cleared, while those on the server remain.
+   *  - (Default) `false`: No. All local conversations and all messages in them will be cleared, while those on the server remain.
    *
    * @throws A description of the exception. See {@link ChatError}.
    */

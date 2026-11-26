@@ -523,8 +523,8 @@ export class ChatMessage {
 
   /**
    * Whether the message is delivered only when the recipient(s) is/are online:
-   * - `true`：The message is delivered only when the recipient(s) is/are online. If the recipient is offline, the message is discarded.
-   * - (Default) `false`：The message is delivered when the recipient(s) is/are online. If the recipient(s) is/are offline, the message will not be delivered to them until they get online.
+   * - `true`: The message is delivered only when the recipient(s) is/are online. If the recipient is offline, the message is discarded.
+   * - (Default) `false`: The message is delivered when the recipient(s) is/are online. If the recipient(s) is/are offline, the message will not be delivered to them until they get online.
    */
   deliverOnlineOnly: boolean;
 
@@ -1034,13 +1034,13 @@ export class ChatMessage {
    * - compatibleText: The compatible text of the combined message. This field is used for compatibility with SDK versions that do not support combined messages.
    * - isChatThread: Whether this message is a threaded message.
    *   - `true`: Yes.
-   *   - (Default) `false`：No.
+   *   - (Default) `false`: No.
    * - isOnline: Whether it is a online message.
    *   - `true`: Yes.
-   *   - `false`：No.
+   *   - `false`: No.
    * - deliverOnlineOnly: Whether the message is delivered only when the recipient(s) is/are online:
-   *   - `true`: - `true`：The message is delivered only when the recipient(s) is/are online. If the recipient is offline, the message is discarded.
-   *   - (Default) `false`：The message is delivered when the recipient(s) is/are online. If the recipient(s) is/are offline, the message will not be delivered to them until they get online.
+   *   - `true`: - `true`: The message is delivered only when the recipient(s) is/are online. If the recipient is offline, the message is discarded.
+   *   - (Default) `false`: The message is delivered when the recipient(s) is/are online. If the recipient(s) is/are offline, the message will not be delivered to them until they get online.
    * - receiverList: The recipient list of a targeted message.
    * @returns The message instance.
    */
@@ -1816,7 +1816,7 @@ export class ChatFetchMessageOptions {
   /**
    * Whether to save the retrieved messages to the database:
    * - `true`: save to database;
-   * - `false`(Default)：no save to database.
+   * - `false`(Default): no save to database.
    */
   needSave: boolean;
   constructor(params: {

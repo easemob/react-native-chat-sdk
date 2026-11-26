@@ -1461,7 +1461,7 @@ export class ChatGroupManager extends BaseManager {
   /**
    * Joins a public group.
    *
-   * For a group that requires no authentication，users can join it freely without obtaining permissions from the group owner or admin.
+   * For a group that requires no authentication, users can join it freely without obtaining permissions from the group owner or admin.
    *
    * For a group that requires authentication, users need to wait for the group owner or admin to agree before joining the group. For details, see {@link ChatGroupConfigs.joinApprovalRequired}.
    *
